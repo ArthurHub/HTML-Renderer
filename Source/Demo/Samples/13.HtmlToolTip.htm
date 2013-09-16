@@ -1,0 +1,94 @@
+<html>
+<head>
+    <title>HtmlToolTip</title>
+    <link rel="Stylesheet" href="StyleSheet" />
+</head>
+<body>
+    <h1>HtmlToolTip Control
+    </h1>
+    <code>HtmlRenderer.HtmlToolTip</code>
+    <div>
+        Extends <code>System.Windows.Forms.ToolTip</code>
+    </div>
+    <blockquote>
+        <p>
+            Inherits directly from System.Windows.Forms.ToolTip, the only difference is that
+            the ToolTip text will be interpreted as HTML. All HTML Renderer Rules apply.<br />
+            Try the <a href="ShowSampleForm">Sample Form</a> and place the mouse over
+            the button to change the ToolTip of the button.
+        </p>
+        <h2>Properties
+        </h2>
+        <ul>
+            <li>
+                <img src="PropertyIcon" />
+                <b>AllowLinksHandling</b> - <span class="comment2">If to handle links in the tooltip When set to true the mouse pointer will change to hand when hovering over a tooltip and
+        if clicked the <i>LinkClicked</i> event will be raised although the tooltip will be closed.(default: false).
+                </span>
+            </li>
+            <li>
+                <img src="PropertyIcon" />
+                <b>BaseStylesheet</b> - <span class="comment2">Set base stylesheet to be used by html rendered in the tooltip.</span> </li>
+            <li>
+                <img src="PropertyIcon" />
+                <b>MaximumSize</b> - <span class="comment2">Gets or sets the max size of the tooltip.</span> </li>
+        </ul>
+        <h2>Events
+        </h2>
+        <ul>
+            <li>
+                <img src="EventIcon" />
+                <b>LinkClicked</b> - <span class="comment2">Raised when the user clicks on a link in
+                    the html, Allows canceling the execution of the link.</span> </li>
+            <li>
+                <img src="EventIcon" />
+                <b>RenderError</b> - <span class="comment2">Raised when an error occured during html
+                    rendering.</span> </li>
+            <li>
+                <img src="EventIcon" />
+                <b>StylesheetLoad</b> - <span class="comment2">Raised when aa stylesheet is about to
+                    be loaded by file path or URI by link element. This event allows to provide the
+                    stylesheet manually or provide new source (file or uri) to load from.</span>
+            </li>
+            <li>
+                <img src="EventIcon" />
+                <b>ImageLoad</b> - <span class="comment2">Raised when an image is about to be loaded
+                    by file path or URI. This event allows to provide the image manually, if not handled
+                    the image will be loaded from file or download from URI.</span> </li>
+        </ul>
+        <h1>Remarks
+        </h1>
+        <p>
+            <h3>Changing tooltip style
+            </h3>
+            You can change the style used for the tooltip by setting <i>BaseStylesheet</i> property with stylesheet data containing <i>htmltooltip</i> class.
+        </p>
+        <p>
+            <h3>LinkClicked event
+            </h3>
+            Raised when the user clicks on a link in the html.<br />
+            Allows canceling the execution of the link.
+        </p>
+        <p>
+            <h3>StylesheetLoad event
+            </h3>
+            Raised when aa stylesheet is about to be loaded by file path or URI by link element.<br />
+            This event allows to provide the stylesheet manually or provide new source (file
+            or uri) to load from.<br />
+            If no alternative data is provided the original source will be used.<br />
+        </p>
+        <p>
+            <h3>ImageLoad event
+            </h3>
+            Raised when an image is about to be loaded by file path or URI.<br />
+            This event allows to provide the image manually, if not handled the image will be
+            loaded from file or download from URI.
+        </p>
+        <p>
+            <h3>RenderError event
+            </h3>
+            Raised when an error occured during html rendering.<br />
+        </p>
+    </blockquote>
+</body>
+</html>

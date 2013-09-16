@@ -1,0 +1,115 @@
+<html>
+<head>
+    <title>Intro</title>
+    <link rel="Stylesheet" href="StyleSheet" />
+</head>
+<body style="background-color: #333; background-gradient: #707; background-gradient-angle: 60;
+    margin: 0;">
+    <h1 align="center" style="color: white">
+        HTML Renderer Project
+        <br />
+        <span style="font-size: xx-small;">Release 1.4.6.2</span>
+    </h1>
+    <blockquote class="whitehole">
+        <p style="margin-top: 0px">
+            <table border="0" width="100%">
+                <tr style="vertical-align: top;">
+                    <td width="32" style="padding: 2px 5px 0 0">
+                        <img src="HtmlIcon" />
+                    </td>
+                    <td>
+                        Everything you see on this panel (see samples on the left) is <b>custom-painted</b>
+                        by the HTML Renderer. Including tables, images, links and videos.<br />
+                        This project allows you can have the rich format power of HTML on you desktop applications
+                        without <b>WebBrowser</b> control and <b>MSHTML</b>.<br />
+                        The library is <b>100% managed code</b> without any external libraries dependencies,
+                        the only requirement is <b>.NET 2.0 or higher</b>.
+                    </td>
+                </tr>
+            </table>
+        </p>
+        <h3>
+            Text selection (copy-paste)
+        </h3>
+        <div>
+            The rendered html has full support for <b>text selection</b> including <b>drag-and-drop</b>
+            and <b>copy</b> to clipboard of rich html and plain text to handle <b>paste</b>
+            operation to editor that support rich or/and plain text.<br />
+            Addtionally there is <b>context-menu</b> with select all, copy text, copy image,
+            save image, open link, copy link url, open video, copy video url.
+        </div>
+        <h3>
+            Cascading Style Sheets (CSS) support
+        </h3>
+        <div>
+            The core layout engine of the renderer was builded according to <b>CSS Level 2 specification</b>,
+            so you can use Cascading Style Sheets to format your html documents.<br />
+            Additionally there are a couple extensions: <b>Gradients</b> on backgrounds and
+            <b>rounded corners</b>.
+        </div>
+        <h3>
+            WinForms support
+        </h3>
+        <div>
+            It comes with handy WinForms controls (see <a href="ShowSampleForm">Sample Form</a>):
+        </div>
+        <ul>
+            <li><code>HtmlPanel</code> - The control where you are reading this, panel with scrollbars.</li>
+            <li><code>HtmlLabel</code> - Same as html panel but without scrollbars and optional
+                auto size.</li>
+            <li><code>HtmlToolTip</code> - For ToolTip with rich html.</li>
+        </ul>
+        <h3>
+            Limitations
+        </h3>
+        <div>
+            Here are some warnings that you should know when using the capabilities of the HTML
+            Renderer:
+        </div>
+        <ul>
+            <li>All HTML <b>end tags</b> marked as <a href="http://www.w3.org/TR/1999/REC-html401-19991224/index/elements.html">
+                optional</a> should be there. No problem with tags marked as forbidden.</li>
+            <li>When using rounded corners with borders, you must prevent the corner radius to be
+                larger than the border thickness</li>
+        </ul>
+        <hr />
+        <h3>
+            On the roadmap</h3>
+        Of course it's not quite finished yet. Here are some of the important things to
+        do.
+        <ul>
+            <li>Better performance</li>
+            <li>Support of position CSS property</li>
+            <li>Support of height and min-height CSS property</li>
+            <li>Better tables support, especially layouts</li>
+            <li>Support image align</li>
+            <li>Handle :hover selector</li>
+            <li>Selection by shift+arrows</li>
+            <li>Better word wrap, not just whitespace</li>
+            <li>Support rtl using lang attribute</li>
+            <li>Better HTML tag parsing (optional closing tags)</li>
+            <li>More styles support</li>
+        </ul>
+        <h3>
+            Vision
+        </h3>
+        <ul>
+            <li>Most complete static HTML Renderer (no java script).</li>
+            <li>Commercial web browser performance level.</li>
+        </ul>
+        <hr />
+        <h3>
+            2012 - Arthur Teplitzki
+        </h3>
+        <blockquote>
+            <a href="http://theartofdev.wordpress.com/">http://TheArtOfDev.wordpress.com</a>
+        </blockquote>
+        <h3>
+            2009 - Jose Manuel Menendez Poo
+        </h3>
+        <blockquote>
+            <a href="http://www.menendezpoo.com">www.menendezpoo.com</a>
+        </blockquote>
+    </blockquote>
+</body>
+</html>

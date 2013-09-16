@@ -1,0 +1,195 @@
+<html>
+<head>
+    <title>HtmlContainer</title>
+    <link rel="Stylesheet" href="StyleSheet" />
+</head>
+<body>
+    <h1>
+        HtmlContainer Class
+    </h1>
+    <code>HtmlRenderer.HtmlContainer</code>
+    <blockquote>
+        <p>
+            Low level handling of Html Renderer logic, this class is used by <span style="color: blue">
+                HtmlParser</span>, <span style="color: blue">HtmlLabel</span>, <span style="color: blue">
+                    HtmlToolTip</span> and <span style="color: blue">HtmlRender</span>.<br />
+            The class allows html layout and rendering without association to actual winforms
+            control, thouse allowing to handle html rendering on any graphics object.<br />
+            Using this class will require the client to handle all propogation of mouse\keyboard
+            events, layout/paint calls, scrolling offset and location/size/rectangle handling
+            and UI refresh requests.
+            <h2>
+                Properties
+            </h2>
+            <ul>
+                <li>
+                    <img src="PropertyIcon" />
+                    <b>CssData</b> - <span class="comment2">the parsed stylesheet data used for handling
+                        the html.</span> </li>
+                <li>
+                    <img src="PropertyIcon" />
+                    <b>AvoidGeometryAntialias</b> - <span class="comment2">Gets or sets a value indicating
+                        if antialiasing should be avoided for geometry like backgrounds and borders (default
+                        - false).</span> </li>
+                <li>
+                    <img src="PropertyIcon" />
+                    <b>IsSelectionEnabled</b> - <span class="comment2">Is content selection is enabled for
+                        the rendered html (default - true).</span> </li>
+                <li>
+                    <img src="PropertyIcon" />
+                    <b>IsContextMenuEnabled</b> - <span class="comment2">Is the build-in context menu enabled
+                        and will be shown on mouse right click (default - true).</span> </li>
+                <li>
+                    <img src="PropertyIcon" />
+                    <b>ScrollOffset</b> - <span class="comment2">The scroll offset of the html.</span>
+                </li>
+                <li>
+                    <img src="PropertyIcon" />
+                    <b>Location</b> - <span class="comment2">the top-left most location of the rendered
+                        html.</span> </li>
+                <li>
+                    <img src="PropertyIcon" />
+                    <b>MaxSize</b> - <span class="comment2">the max width and height of the rendered html,
+                        effects layout, actual size cannot exceed this values. Set zero for unlimited.</span>
+                </li>
+                <li>
+                    <img src="PropertyIcon" />
+                    <b>ActualSize</b> - <span class="comment2">The actual size of the rendered html (after
+                        layout).</span> </li>
+            </ul>
+            <h2>
+                Methods
+            </h2>
+            <ul>
+                <li>
+                    <img src="MethodIcon" />
+                    <b>GetHtml(HtmlGenerationStyle styleGen = HtmlGenerationStyle.Inline)</b> - <span
+                        class="comment2">Get html from the current DOM tree with style if requested.</span>
+                </li>
+                <li>
+                    <img src="MethodIcon" />
+                    <b>PerformLayout(Graphics)</b> - <span class="comment2">Measures the bounds of box and
+                        children, recursively.</span> </li>
+                <li>
+                    <img src="MethodIcon" />
+                    <b>PerformPaint(Graphics)</b> - <span class="comment2">Render the html using the given
+                        device.</span> </li>
+                <li>
+                    <img src="MethodIcon" />
+                    <b>HandleMouseDown(Control, MouseEventArgs)</b> - <span class="comment2">Handle mouse
+                        down to handle selection.</span> </li>
+                <li>
+                    <img src="MethodIcon" />
+                    <b>HandleMouseUp(Control, MouseEventArgs)</b> - <span class="comment2">Handle mouse
+                        up to handle selection and link click.</span> </li>
+                <li>
+                    <img src="MethodIcon" />
+                    <b>HandleMouseDoubleClick(Control, MouseEventArgs)</b> - <span class="comment2">Handle
+                        mouse double click to select word under the mouse.</span> </li>
+                <li>
+                    <img src="MethodIcon" />
+                    <b>HandleMouseMove(Control, MouseEventArgs)</b> - <span class="comment2">Handle mouse
+                        move to handle hover cursor and text selection.</span> </li>
+                <li>
+                    <img src="MethodIcon" />
+                    <b>HandleMouseLeave(Control, MouseEventArgs)</b> - <span class="comment2">Handle mouse
+                        move to handle hover cursor.</span> </li>
+                <li>
+                    <img src="MethodIcon" />
+                    <b>HandleKeyDown(parent, KeyEventArgs)</b> - <span class="comment2">Handle key down
+                        event for selection and copy.</span> </li>
+            </ul>
+            <h2>
+                Events
+            </h2>
+            <ul>
+                <li>
+                    <img src="EventIcon" />
+                    <b>LinkClicked</b> - <span class="comment2">Raised when the user clicks on a link in
+                        the html, Allows canceling the execution of the link.</span> </li>
+                <li>
+                    <img src="EventIcon" />
+                    <b>Refresh</b> - <span class="comment2">Raised when html renderer requires refresh of
+                        the control hosting (invalidation and re-layout).</span> </li>
+                <li>
+                    <img src="EventIcon" />
+                    <b>RenderError</b> - <span class="comment2">Raised when an error occured during html
+                        rendering.</span> </li>
+                <li>
+                    <img src="EventIcon" />
+                    <b>StylesheetLoad</b> - <span class="comment2">Raised when aa stylesheet is about to
+                        be loaded by file path or URI by link element. This event allows to provide the
+                        stylesheet manually or provide new source (file or uri) to load from.</span>
+                </li>
+                <li>
+                    <img src="EventIcon" />
+                    <b>ImageLoad</b> - <span class="comment2">Raised when an image is about to be loaded
+                        by file path or URI. This event allows to provide the image manually, if not handled
+                        the image will be loaded from file or download from URI.</span> </li>
+            </ul>
+            <h1>
+                Remarks
+            </h1>
+            <p>
+                <h3>
+                    MaxSize and ActualSize
+                </h3>
+                The max width and height of the rendered html.<br />
+                The max width will effect the html layout wrapping lines, resize images and tables
+                where possible.<br />
+                The max height does NOT effect layout, but will not render outside it (clip).<br />
+                <span style="color: blue">ActualSize</span> can be exceed the max size by layout
+                restrictions (unwrappable line, set image size, etc.).<br />
+                Set zero for unlimited (width\height separately).<br />
+            </p>
+            <p>
+                <h3>
+                    ScrollOffset
+                </h3>
+                This will adjust the rendered html by the given offset so the content will be "scrolled".<br />
+                Element that is rendered at location (50,100) with offset of (0,200) will not be
+                rendered as it will be at -100 therefore outside the client rectangle of the control.
+            </p>
+            <p>
+                <h3>
+                    LinkClicked event
+                </h3>
+                Raised when the user clicks on a link in the html.<br />
+                Allows canceling the execution of the link.
+            </p>
+            <p>
+                <h3>
+                    StylesheetLoad event
+                </h3>
+                Raised when aa stylesheet is about to be loaded by file path or URI by link element.<br />
+                This event allows to provide the stylesheet manually or provide new source (file
+                or uri) to load from.<br />
+                If no alternative data is provided the original source will be used.<br />
+            </p>
+            <p>
+                <h3>
+                    ImageLoad event
+                </h3>
+                Raised when an image is about to be loaded by file path or URI.<br />
+                This event allows to provide the image manually, if not handled the image will be
+                loaded from file or download from URI.
+            </p>
+            <p>
+                <h3>
+                    Refresh event
+                </h3>
+                Raised when html renderer requires refresh of the control hosting (invalidation
+                and re-layout).<br />
+                There is no garantie that the event will be raised on the main thread, it can be
+                raised on threadpool thread.
+            </p>
+            <p>
+                <h3>
+                    RenderError event
+                </h3>
+                Raised when an error occured during html rendering.<br />
+            </p>
+        </p>
+    </blockquote>
+</body>
+</html>

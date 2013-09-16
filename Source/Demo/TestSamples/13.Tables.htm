@@ -1,0 +1,164 @@
+<html>
+<head>
+    <style type="text/css">
+        .header
+        {
+            font: 12pt;
+        }
+        .key
+        {
+            color: #404080;
+            font-weight: bold;
+            border-style: none;
+        }
+        .value
+        {
+            color: #404040;
+            border-style: none;
+        }
+        .summary
+        {
+            border-style: none;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <blockquote>
+        <table cellpadding="8" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td>
+                        <strong>A:</strong>
+                    </td>
+                    <td>
+                        1
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>B:</strong>
+                    </td>
+                    <td>
+                        2
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>C:</strong>
+                    </td>
+                    <td>
+                        3
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <hr />
+        <!-- empty table to check that it doesn't break layout -->
+        <table>
+            <tr>
+            </tr>
+        </table>
+        <table border="1" style="width: 500px;">
+            <tr>
+                <td>
+                    <strong>Nuance
+                        <br />
+                        df</strong>
+                </td>
+                <td>
+                    sdfsdf
+                </td>
+                <td>
+                    sdfsd
+                </td>
+            </tr>
+        </table>
+        <hr />
+        <table border="1" style="border: 1px solid #000000; width: 100%;">
+            <tbody>
+                <tr>
+                    <td>
+                        a
+                    </td>
+                    <td>
+                        LongStringLongStringLongStringLongStringLongStringLongStringLongString
+                    </td>
+                    <td>
+                        text
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <hr />
+        <table border="1" style="border: 1px solid #000000; width: 100%;">
+            <thead>
+                <tr>
+                    <th colspan="3" style="width: 50%; padding: 2px; border: 1px solid #000000; color: #ffffff;
+                        background-color: #6690bc; text-align: left;">
+                        Title
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Word 1
+                    </td>
+                    <td>
+                        Word 2
+                    </td>
+                    <td>
+                        Word 3
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <hr />
+        <table border="1" style="border: 1px solid #000000; max-width: 100%">
+            <tr>
+                <td>
+                    Word1Word1 Word1Word1Word1
+                </td>
+                <td>
+                    Word 2
+                </td>
+                <td>
+                    Word3Word3Word3Word3 Word3Word3Word3Word3Word3Word3Word3Word3Word3
+                </td>
+            </tr>
+        </table>
+        <hr />
+        <table border="1" style="border: 1px solid #000000; max-width: 100%">
+            <tr>
+                <td width="200px">
+                    Word1 Word1Word1
+                </td>
+                <td width="150px">
+                    Word 2
+                </td>
+                <td width="300px">
+                    Word3Word3Word3 Word3
+                </td>
+            </tr>
+        </table>
+        <hr />
+        <table class="summary">
+            <tr>
+                <td colspan="2" class="header">
+                    Container
+                </td>
+            </tr>
+            <tr>
+                <td class="key">
+                    Type
+                </td>
+                <td class="value">
+                    $Type
+                </td>
+            </tr>
+        </table>
+    </blockquote>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<html>
+<head>
+    <link rel="Stylesheet" href="StyleSheet" />
+</head>
+<body>
+    <h1>
+        Using the code
+    </h1>
+    <blockquote>
+        <p>
+            The renderer follows the CSS Box Model. Box model is nothing but a tree of boxes,
+            just as the tree of HTML, each of this boxes is represented by a very used class
+            called CssBox. The start node is represented by the class HtmlContainer.
+        </p>
+        <p>
+            All the known CSS properties apply to each of this boxes. Each box may contain any
+            number of child boxes and just one parent. The only box that has no parent at all
+            is the so called Html Container.
+        </p>
+        <p>
+            The most common use
+        </p>
+        <p>
+            <h3>
+                HtmlPanel
+            </h3>
+            <p>
+                A panel that is ready to accept HTML code via its Text property.<br />
+            </p>
+            <p>
+                The only properties you need to know are: AutoScroll. Activates/Deactivates the
+                auto-scroll capabilities as you know. It is set to true by default. Text. Gets/Sets
+                the HTML source. The panel will update the bounds of the elements as you scroll
+                or resize the control.
+            </p>
+            <h3>
+                HtmlLabel
+            </h3>
+            <p>
+                A label that is ready to accept HTML code via its Text property.<br />
+            </p>
+            <p>
+                The only properties you need to know are: . AutoSize. Sets the size of the label
+                automatically if activated. Text. Gets/Sets the HTML source.
+            </p>
+            <h3>
+                HtmlToolTip
+            </h3>
+            <p>
+                Works exactly like the ToolTip you already know, with the little difference that
+                this tooltip will render HTML on it.<br />
+                There are no properties here to learn. Use it just the way you use the ToolTip that
+                comes with the framework. Internally, it just handles the OwnerDraw event.
+            </p>
+            <h3>
+                HtmlRender
+            </h3>
+            <p>
+                Use this static class to easily render small pieces of html directly using 'Graphics'
+                object.<br/>
+                For example it can be used to render html into an Image:
+                <pre>
+<span class="comment2">// Measure the size of the html to know the image size</span>
+SizeF size;
+using (var gImg = new Bitmap(1, 1))
+using (var g = Graphics.FromImage(gImg))
+{
+    size = HtmlRender.Measure(g, html, 800);
+}
+
+<span class="comment2">// Render the html into the output image</span>
+var img = new Bitmap((int)size.Width, (int)size.Height);
+using (var g = Graphics.FromImage(img))
+{
+    g.Clear(Color.White);
+    HtmlRender.Render(g, html, 0, 0, 800);
+}
+
+img.Save(@"c:\html.png", ImageFormat.Png);
+</pre>
+            </p>
+            <h3>
+                HtmlContainer
+            </h3>
+            <p>
+                Low level handling of Html Renderer logic, this class is used by <span style="color: blue">
+                    HtmlParser</span>, <span style="color: blue">HtmlLabel</span>, <span style="color: blue">
+                        HtmlToolTip</span> and <span style="color: blue">HtmlRender</span>.<br />
+                The class allows html layout and rendering without association to actual winforms
+                control, thouse allowing to handle html rendering on any graphics object.<br />
+                Using this class will require the client to handle all propogation of mouse\keyboard
+                events, layout/paint calls, scrolling offset and location/size/rectangle handling.<br/>
+                A simple use of an Html Container to draw HTML would look like this:
+                <pre>
+<span class="comment2">// Create the Html Container</span>
+var c = new HtmlContainer();
+
+<span class="comment2">// Set html to render</span>
+c.SetHtml("&lt;div&gt;hello &lt;b&gt;world&lt;/b&gt;&lt;/div&gt;");
+
+<span class="comment2">// Perform layout of the html</span>
+c.PerformLayout(graphics);
+
+<span class="comment2">// Paint the HTML</span>
+c.PerformPaint(graphics);
+</pre>
+            </p>
+        </p>
+    </blockquote>
+</body>
+</html>

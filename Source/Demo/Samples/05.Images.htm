@@ -1,0 +1,91 @@
+<html>
+<head>
+    <title></title>
+    <link rel="Stylesheet" href="StyleSheet" />
+    <style>
+        td
+        {
+            vertical-align: middle;
+            padding: 1em;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        Images
+        <img src="ImageIcon" />
+    </h1>
+    <blockquote>
+        <p>
+            Of course, there's the capability of displaying images. In this release, images
+            lack of the expected alignment features to behave just as expected on an HTML context,
+            but they will do just fine for inline contexts, tables and some others.</p>
+        <h2>
+            Inserting images
+        </h2>
+        <p>
+            We all know that the <code>src</code> attribute of the <code>img</code> HTML tag
+            can be a relative or absolute path to an image on the same or any other server.
+            Here things are slightly different. Images can come from other sources:</p>
+        <ul>
+            <li><b>File Paths</b>: If you place a path to a file, the Renderer will try to load
+                it using <code><font color="#099">Image</font>.FromFile</code></li>
+            <li><b>Static Properties:</b> Obtains the image from a static property that returns
+                an <code><font color="#099">Image</font></code> object</li>
+            <li><b>Static Methods:</b> Obtains the image from a static method that takes no arguments
+                and returns an <code><font color="#099">Image</font></code> </li>
+        </ul>
+        <h2>
+            Positioning Images
+        </h2>
+        <p>
+            You can use Images anyway you like, apply borders margin and padding as for any
+            other box.
+        </p>
+        <p>
+            Some examples of image positioning:
+        </p>
+        <table border="1">
+            <tr>
+                <td>
+                    Just an image:
+                </td>
+                <td align="center">
+                    <img src="FontIcon" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Image with border and background:
+                </td>
+                <td align="center">
+                    <img src="FontIcon" style="border: 1px solid blue; background-color: Silver" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Stretched Image:
+                </td>
+                <td align="center">
+                    <img src="FontIcon" width="50" height="50" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Huge padding and border:
+                </td>
+                <td>
+                    <img align="center" src="FontIcon" style="padding: 1em; border: solid 1em blue; background-color: #def" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center" valign="middle">
+                    Image in line
+                    <img src="CommentIcon" />
+                    with the text
+                </td>
+            </tr>
+        </table>
+    </blockquote>
+</body>
+</html>

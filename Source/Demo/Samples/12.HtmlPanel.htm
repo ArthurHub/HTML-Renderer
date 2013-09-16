@@ -1,0 +1,142 @@
+<html>
+<head>
+    <title>HtmlPanel</title>
+    <link rel="Stylesheet" href="StyleSheet" />
+</head>
+<body>
+    <h1>
+        HtmlPanel Control
+    </h1>
+    <code>HtmlRenderer.HtmlPanel</code>
+    <div>
+        Extends <code>System.Windows.Forms.ScrollableControl</code>
+    </div>
+    <blockquote>
+        <p>
+            You can use it just as an HTML container control, just place the panel on a form
+            and feed the <code>Text</code> property with HTML code.<br />
+            If <span style="color: blue">AutoScroll</span> is true and the layout of the html
+            resulted in its content beyond the client bounds of the panel it will show scrollbars
+            (horizontal/verticle) allowing to scroll the content.<br />
+            If <span style="color: blue">AutoScroll</span> is false html content outside the
+            client bounds will be cliped.<br />
+            The control will handle mouse and keyboard events on it to support html text selection,
+            copy-paste and mouse clicks.<br />
+            <br />
+            Try the <a href="ShowSampleForm">Sample Form</a> to play with html panel control.
+        </p>
+        <h2>
+            Properties
+        </h2>
+        <ul>
+            <li>
+                    <img src="PropertyIcon" />
+                    <b>IsSelectionEnabled</b> - <span class="comment2">Is content selection is enabled for
+                        the rendered html (default - true).</span> </li>
+            <li>
+                <img src="PropertyIcon" />
+                <b>IsContextMenuEnabled</b> - <span class="comment2">Is the build-in context menu enabled
+                                                  and will be shown on mouse right click (default - true).</span> </li>
+            <li>
+                <img src="PropertyIcon" />
+                <b>BaseStylesheet</b> - <span class="comment2">Set base stylesheet to be used by html
+                                            rendered in the panel.</span> </li>
+            <li>
+                <img src="PropertyIcon" />
+                <b>AutoScroll</b> - <span class="comment2">Gives the panel scroll bars when content
+                                        needs it.</span> </li>
+            <li>
+                <img src="PropertyIcon" />
+                <b>Text</b> - <span class="comment2">Gets or sets the HTML source for rendering.</span>
+            </li>
+        </ul>
+        <h2>
+            Methods
+        </h2>
+        <ul>
+            <li>
+                <img src="MethodIcon" />
+                <b>GetHtml()</b> - <span class="comment2">Get html from the current DOM tree with inline
+                    style.</span> </li>
+        </ul>
+        <h2>
+            Events
+        </h2>
+        <ul>
+            <li>
+                <img src="EventIcon" />
+                <b>LinkClicked</b> - <span class="comment2">Raised when the user clicks on a link in
+                    the html, Allows canceling the execution of the link.</span> </li>
+            <li>
+                <img src="EventIcon" />
+                <b>RenderError</b> - <span class="comment2">Raised when an error occured during html
+                    rendering.</span> </li>
+            <li>
+                <img src="EventIcon" />
+                <b>StylesheetLoad</b> - <span class="comment2">Raised when aa stylesheet is about to
+                    be loaded by file path or URI by link element. This event allows to provide the
+                    stylesheet manually or provide new source (file or uri) to load from.</span>
+            </li>
+            <li>
+                <img src="EventIcon" />
+                <b>ImageLoad</b> - <span class="comment2">Raised when an image is about to be loaded
+                    by file path or URI. This event allows to provide the image manually, if not handled
+                    the image will be loaded from file or download from URI.</span> </li>
+        </ul>
+        <h1>
+            Remarks
+        </h1>
+        <p>
+            <h3>
+                Differences between HtmlPanel and HtmlLabel
+            </h3>
+            The major differential to use HtmlPanel or HtmlLabel is size and scrollbars.<br />
+            If the size of the control depends on the html content the HtmlLabel should be used.<br />
+            If the size is set by some kind of layout then HtmlPanel is more suitable, also
+            shows scrollbars if the html contents is larger than the control client rectangle.<br />
+            <ul>
+                <li>HtmlPanel has scrollbars support</li>
+                <li>HtmlLabel can be <i>autosized</i></li>
+                <li>HtmlLabel can have transparent background</li>
+            </ul>
+        </p>
+        <p>
+            <h3>
+                AutoScroll
+            </h3>
+            Allows showing scrollbars if html content is placed outside the visible boundaries
+            of the panel.
+        </p>
+        <p>
+            <h3>
+                LinkClicked event
+            </h3>
+            Raised when the user clicks on a link in the html.<br />
+            Allows canceling the execution of the link.
+        </p>
+        <p>
+            <h3>
+                StylesheetLoad event
+            </h3>
+            Raised when aa stylesheet is about to be loaded by file path or URI by link element.<br />
+            This event allows to provide the stylesheet manually or provide new source (file
+            or uri) to load from.<br />
+            If no alternative data is provided the original source will be used.<br />
+        </p>
+        <p>
+            <h3>
+                ImageLoad event
+            </h3>
+            Raised when an image is about to be loaded by file path or URI.<br />
+            This event allows to provide the image manually, if not handled the image will be
+            loaded from file or download from URI.
+        </p>
+        <p>
+            <h3>
+                RenderError event
+            </h3>
+            Raised when an error occured during html rendering.<br />
+        </p>
+    </blockquote>
+</body>
+</html>

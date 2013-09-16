@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <style>
+            .bimg {
+                background-image: url('ImageIcon');
+                /*background-image: url('c:\image.png');*/
+            }
+            .text {
+                padding-left: 15px; 
+                background-image: url('HtmlIcon'); 
+                background-repeat: no-repeat;
+                background-position: left center;
+            }
+        </style>
+    </head>
+    <body>
+        <p class="bimg" style="background-repeat: repeat; font-size: 3em;">
+            background image: repeat
+        </p>
+        <p class="bimg" style="background-repeat: repeat-x; background-position: center; font-size: 3em;">
+            background image: repeat-x, center
+        </p>
+        <p class="bimg" style="background-repeat: repeat-y; background-position: bottom; font-size: 3em;">
+            background image: repeat-y, bottom
+        </p>
+        <p class="bimg" style="background-repeat: no-repeat; font-size: 2em;  padding-left: 40px;">
+            background image: no-repeat
+        </p>
+        <p class="bimg" style="background-repeat: no-repeat; background-position: center bottom; font-size: 2em;  padding-left: 40px;">
+            background image: no-repeat, center bottom
+        </p>
+        <p class="bimg" style="background-repeat: no-repeat; background-position: right center; font-size: 2em;  padding-left: 40px;">
+            background image: no-repeat, right center
+        </p>
+        <p class="bimg" style="background-repeat: no-repeat; font-size: 2em; background-position: left center; padding-left: 25px;" byrect="10,11,16,16">
+            background image: no-repeat, rectangle, left center
+        </p>
+        <div>
+            <span>
+                text text text text
+                <a class="text" byrect="10,11,12,12">link link link link link link link</a>
+                text text text text
+                <a class="text" byrect="10,11,12,12">link link link link link link link</a>
+                text text text text
+                <a class="text" byrect="10,11,12,12">link link link link link link link</a>
+                text text text text
+            </span>
+        </div>
+    </body>
+</html>

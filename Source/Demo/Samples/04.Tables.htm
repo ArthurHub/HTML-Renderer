@@ -1,0 +1,318 @@
+<html>
+<head>
+    <title>Tables</title>
+    <link rel="Stylesheet" href="StyleSheet" />
+    <style type="text/css">
+        table, tr, th
+        {
+            border-style: solid;
+            border-style: outset;
+        }
+        td, th
+        {
+            border-style: inset;
+        }
+        .caption
+        {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        Tables</h1>
+    <blockquote>
+        <ul>
+            <li>Table <i>captions</i> are not yet supported.</li>
+            <li><i>align</i> attribute of <i>TABLE</i> tag is not yet supported.</li>
+        </ul>
+        <h2>
+            Examples</h2>
+        <div class="caption">
+            Regular table:</div>
+        <table>
+            <tr>
+                <td>
+                    Cell One
+                </td>
+                <td>
+                    Cell Two
+                </td>
+                <td>
+                    Cell Three
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cell Four
+                </td>
+                <td>
+                    Cell Five
+                </td>
+                <td>
+                    Cell Six
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cell Seven
+                </td>
+                <td>
+                    Cell Eight
+                </td>
+                <td>
+                    Cell Nine
+                </td>
+            </tr>
+        </table>
+        <br />
+        <div class="caption">
+            Table with complex text and width=100%
+        </div>
+        <table border="1" cellpadding="3" cellspacing="0" width="100%">
+            <tr>
+                <td>
+                    <p>
+                        You can use all the well known tags and CSS properties to format text, fonts and
+                        colors.
+                    </p>
+                    <ul>
+                        <li><span style="color: red">Colors</span>, <span style="color: #8dd">Colors</span>,
+                            <span style="color: rgb(160,80,90)">Colors</span></li>
+                        <li><span style="background-color: red">Back colors</span>, <span style="background-color: #8dd">
+                            Back colors</span>, <span style="background-color: rgb(160,80,90)">Back colors</span></li>
+                        <li><span style="font-style: normal">Font style</span>, <span style="font-style: italic">
+                            Font style</span>, <span style="font-weight: bolder">Font style</span>, <span style="text-decoration: underline">
+                                Font style</span>, <span style="text-decoration: line-through">Font style</span></li>
+                    </ul>
+                </td>
+                <td valign="middle">
+                    Cell Two
+                </td>
+                <td>
+                    <ul>
+                        <li>Item one</li>
+                        <li>Item two
+                            <ul>
+                                <li>Sub item one</li>
+                                <li>Sub item two</li>
+                            </ul>
+                        </li>
+                        <li>Item three</li>
+                        <li>Item four</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td valign="middle" style="text-align: center">
+                    Cell Four
+                </td>
+                <td>
+                    <div align="center" class="gray">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ornare mollis
+                        elit. Integer sagittis. Fusce elementum commodo felis. Vivamus lacinia eleifend
+                        libero. Donec lacus. Nam sit amet urna. Nullam nulla. Donec accumsan porta magna.
+                        Mauris a dolor eu elit rutrum commodo. Nam iaculis turpis non augue.</div>
+                </td>
+                <td style="background-color: #8e9">
+                    Cell Six
+                </td>
+            </tr>
+        </table>
+        <br />
+        <div class="caption">
+            Table with colspans:</div>
+        <table>
+            <tr>
+                <td colspan="2">
+                    Cell One
+                </td>
+                <td>
+                    Cell Two
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cell Four
+                </td>
+                <td>
+                    Cell Five
+                </td>
+                <td>
+                    Cell Six
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cell Seven
+                </td>
+                <td colspan="2">
+                    Cell Eight
+                </td>
+            </tr>
+        </table>
+        <br />
+        <div class="caption">
+            Table with rowspans:</div>
+        <table>
+            <tr>
+                <td rowspan="2">
+                    Cell One
+                </td>
+                <td>
+                    Cell Two
+                </td>
+                <td>
+                    Cell Three
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cell Five
+                </td>
+                <td rowspan="2">
+                    Cell Six
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cell Seven
+                </td>
+                <td>
+                    Cell Eight
+                </td>
+            </tr>
+        </table>
+        <p>
+        </p>
+        <div class="caption">
+            Mixed spans:</div>
+        <table>
+            <tr>
+                <td rowspan="2">
+                    Cell One
+                </td>
+                <td colspan="2">
+                    Cell Two
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cell Five
+                </td>
+                <td rowspan="2">
+                    Cell Six
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    Cell Seven
+                </td>
+            </tr>
+        </table>
+        <p>
+        </p>
+        <div class="caption">
+            Table on table:</div>
+        <table width="50%">
+            <tr>
+                <td rowspan="2">
+                    Cell One
+                </td>
+                <td colspan="2">
+                    Cell Two
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cell Five
+                </td>
+                <td rowspan="2">
+                    Cell Six
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table width="100%">
+                        <tr>
+                            <td rowspan="2">
+                                Cell One
+                            </td>
+                            <td colspan="2">
+                                Cell Two
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Cell Five
+                            </td>
+                            <td rowspan="2">
+                                Cell Six
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                Cell Seven
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <p>
+        </p>
+        <div class="caption">
+            Thick border and spacing:</div>
+        <table border="10" cellspacing="10">
+            <tr>
+                <td rowspan="2">
+                    Cell One
+                </td>
+                <td colspan="2">
+                    Cell Two
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cell Five
+                </td>
+                <td rowspan="2">
+                    Cell Six
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    Cell Seven
+                </td>
+            </tr>
+        </table>
+        <p>
+        </p>
+        <table border="10" cellspacing="0">
+            <tr>
+                <td rowspan="2">
+                    Cell One
+                </td>
+                <td colspan="2">
+                    Cell Two
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cell Five
+                </td>
+                <td rowspan="2">
+                    Cell Six
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    Cell Seven
+                </td>
+            </tr>
+        </table>
+        <p>
+        </p>
+    </blockquote>
+</body>
+</html>
