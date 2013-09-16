@@ -19,7 +19,8 @@ The library is **100% managed code** without any external dependencies, the only
  * 
 
 **NuGet package install**
-PM> Install-Package HtmlRenderer.WinForms
+ 1. PM> Install-Package HtmlRenderer.WinForms
+ 2. Or from NuGet UI
 
 **Manual install**
  1. Download the binaries.
