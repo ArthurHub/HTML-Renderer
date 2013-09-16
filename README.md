@@ -3,9 +3,9 @@ HTML Renderer
 
 Originally hosted on [CodePlex](https://htmlrenderer.codeplex.com/)
 
-This project allows you to have the rich formating power of HTML on your .NET desktop applications without **WebBrowser** control or **MSHTML**.
+The rich formating power of HTML on your WinForms applications without **WebBrowser** control or **MSHTML**.
 
-The library is **100% managed code** without any external libraries dependencies, the only requirement is **.NET 2.0 or higher**.
+The library is **100% managed code** without any external dependencies, the only requirement is **.NET 2.0 or higher**.
 
 ![Demo](http://download-codeplex.sec.s-msft.com/Download?ProjectName=HtmlRenderer&DownloadId=636137)
 
