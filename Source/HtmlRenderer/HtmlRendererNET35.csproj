@@ -68,6 +68,7 @@
     <Compile Include="Entities\HtmlScrollEventArgs.cs" />
     <Compile Include="Entities\HtmlStylesheetLoadEventArgs.cs" />
     <Compile Include="Entities\SubString.cs" />
+    <Compile Include="Entities\Tuple.cs" />
     <Compile Include="Handlers\BackgroundImageDrawHandler.cs" />
     <Compile Include="Handlers\BordersDrawHandler.cs" />
     <Compile Include="Handlers\ContextMenuHandler.cs" />
