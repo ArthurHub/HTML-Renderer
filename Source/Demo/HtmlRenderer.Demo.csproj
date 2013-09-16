@@ -223,8 +223,6 @@
     <EmbeddedResource Include="TestSamples\17.Languages.htm" />
     <EmbeddedResource Include="Samples\06.Tooltip.htm" />
     <EmbeddedResource Include="TestSamples\16.Borders.htm" />
-    <EmbeddedResource Include="PerfSamples\3.Tables.htm" />
-    <EmbeddedResource Include="PerfSamples\2.Big table 2.htm" />
     <Content Include="Resources\Event16.png" />
     <Content Include="Resources\html.ico" />
     <Content Include="Resources\html32.png" />
@@ -233,7 +231,6 @@
     <EmbeddedResource Include="Samples\08.Embeded video.htm" />
     <EmbeddedResource Include="TestSamples\15.MaxWidth.htm" />
     <EmbeddedResource Include="TestSamples\14.Iframes.htm" />
-    <EmbeddedResource Include="PerfSamples\1.Big table.htm" />
     <EmbeddedResource Include="TestSamples\30.Misc.htm" />
     <EmbeddedResource Include="TestSamples\07.Background Image.htm" />
     <EmbeddedResource Include="TestSamples\06.External Image.htm" />
@@ -248,6 +245,9 @@
     <EmbeddedResource Include="TestSamples\04.Blockquotes.htm" />
     <EmbeddedResource Include="TestSamples\03.Paragraphs.htm" />
     <EmbeddedResource Include="TestSamples\01.Header.htm" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="PerfSamples\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
