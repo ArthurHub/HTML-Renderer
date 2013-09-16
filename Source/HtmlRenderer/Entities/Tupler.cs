@@ -15,12 +15,12 @@ namespace HtmlRenderer.Entities
     /// <summary>
     /// Used to hold two items
     /// </summary>
-    internal struct Tuple<T1,T2>
+    internal struct Tupler<T1,T2>
     {
         public T1 Item1 { get; set; }
         public T2 Item2 { get; set; }
 
-        public Tuple(T1 item1 = default(T1), T2 item2 = default(T2))
+        public Tupler(T1 item1 = default(T1), T2 item2 = default(T2))
             : this()
         {
             Item1 = item1;
@@ -31,13 +31,13 @@ namespace HtmlRenderer.Entities
     /// <summary>
     /// Used to hold three items
     /// </summary>
-    internal struct Tuple<T1, T2, T3>
+    internal struct Tupler<T1, T2, T3>
     {
         public T1 Item1 { get; set; }
         public T2 Item2 { get; set; }
         public T3 Item3 { get; set; }
 
-        public Tuple(T1 item1 = default(T1), T2 item2 = default(T2), T3 item3 = default(T3))
+        public Tupler(T1 item1 = default(T1), T2 item2 = default(T2), T3 item3 = default(T3))
             : this()
         {
             Item1 = item1;

@@ -81,7 +81,7 @@ namespace HtmlRenderer
         /// <summary>
         /// dictionary of all css boxes that have ":hover" selector on them
         /// </summary>
-        private List<Tuple<CssBox,CssBlock>> _hoverBoxes;
+        private List<Tupler<CssBox,CssBlock>> _hoverBoxes;
 
         /// <summary>
         /// Handler for text selection in the html. 
@@ -735,9 +735,9 @@ namespace HtmlRenderer
             ArgChecker.AssertArgNotNull(block, "block");
 
             if(_hoverBoxes == null)
-                _hoverBoxes = new List<Tuple<CssBox, CssBlock>>();
+                _hoverBoxes = new List<Tupler<CssBox, CssBlock>>();
 
-            _hoverBoxes.Add(new Tuple<CssBox, CssBlock>(box, block));
+            _hoverBoxes.Add(new Tupler<CssBox, CssBlock>(box, block));
         }
 
         /// <summary>
