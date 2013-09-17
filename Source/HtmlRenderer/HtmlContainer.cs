@@ -708,10 +708,11 @@ namespace HtmlRenderer
                 {
                     if( ScrollChange != null )
                     {
-                        var linkBox = DomUtils.GetBoxById(_root, link.HrefLink.Substring(1));
-                        if( linkBox != null )
+                        var box = DomUtils.GetBoxById(_root, link.HrefLink.Substring(1));
+                        if (box != null)
                         {
-                            ScrollChange(this, new HtmlScrollEventArgs(Point.Round(CommonUtils.GetFirstValueOrDefault(linkBox.Rectangles).Location)));
+                            var rect = CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds);
+                            ScrollChange(this, new HtmlScrollEventArgs(Point.Round(rect.Location)));
                         }
                     }
                 }
