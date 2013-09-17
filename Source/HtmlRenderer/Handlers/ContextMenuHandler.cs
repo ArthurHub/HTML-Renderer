@@ -380,7 +380,8 @@ namespace HtmlRenderer.Handlers
         {
             try
             {
-                _currentLink.HtmlContainer.HandleLinkClicked(_parentControl, new MouseEventArgs(MouseButtons.None, 0, Control.MousePosition.X, Control.MousePosition.Y, 0), _currentLink);
+                var mp = _parentControl.PointToClient(Control.MousePosition);
+                _currentLink.HtmlContainer.HandleLinkClicked(_parentControl, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0), _currentLink);
                 DisposeContextMenu();
             }
             catch (Exception ex)

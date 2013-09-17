@@ -287,6 +287,10 @@ namespace HtmlRenderer
             {
                 _htmlContainer.ScrollOffset = AutoScrollPosition;
                 _htmlContainer.PerformPaint(e.Graphics);
+
+                // call mouse move to handle paint after scroll or html change affecting mouse cursor.
+                var mp = PointToClient(MousePosition);
+                _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
             }
         }
 
