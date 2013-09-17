@@ -222,7 +222,7 @@ namespace HtmlRenderer.Parse
             {
                 assignable = IsBlockAssignableToBoxWithSelector(box, block);
             }
-            else if (box.HtmlTag.Name.Equals("a") && !box.HtmlTag.HasAttribute("href"))
+            else if (box.HtmlTag.Name.Equals("a", StringComparison.OrdinalIgnoreCase) && block.Class.Equals("a", StringComparison.OrdinalIgnoreCase) && !box.HtmlTag.HasAttribute("href"))
             {
                 assignable = false;
             }
