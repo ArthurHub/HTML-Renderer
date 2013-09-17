@@ -460,6 +460,7 @@ namespace HtmlRenderer
         private void OnScrollChange(object sender, HtmlScrollEventArgs e)
         {
             AutoScrollPosition = e.Location;
+            _htmlContainer.ScrollOffset = AutoScrollPosition;
         }
 
         /// <summary>
