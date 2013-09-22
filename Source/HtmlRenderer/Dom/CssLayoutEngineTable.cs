@@ -800,12 +800,19 @@ namespace HtmlRenderer.Dom
                     int col = GetCellRealColumnIndex(row, row.Boxes[i]);
                     col = _columnWidths.Length > col ? col : _columnWidths.Length - 1;
 
-                    if ((!onlyNans || float.IsNaN(_columnWidths[col])) && i < row.Boxes.Count && GetColSpan(row.Boxes[i]) == 1)
+                    if ((!onlyNans || float.IsNaN(_columnWidths[col])) && i < row.Boxes.Count)
                     {
                         float minWidth, maxWidth;
                         row.Boxes[i].GetFullWidth(g, out minWidth, out maxWidth);
-                        minFullWidths[col] = Math.Max(minFullWidths[col], minWidth);
-                        maxFullWidths[col] = Math.Max(maxFullWidths[col], maxWidth);
+                        
+                        var colSpan = GetColSpan(row.Boxes[i]);
+                        minWidth = minWidth / colSpan;
+                        maxWidth = maxWidth / colSpan;
+                        for (int j = 0; j < colSpan; j++)
+                        {
+                            minFullWidths[col + j] = Math.Max(minFullWidths[col], minWidth);
+                            maxFullWidths[col + j] = Math.Max(maxFullWidths[col], maxWidth);
+                        }
                     }
                 }
             }

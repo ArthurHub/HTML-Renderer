@@ -1,55 +1,83 @@
 <html>
 <head>
     <style type="text/css">
-        .header
-        {
+        .header {
             font: 12pt;
         }
-        .key
-        {
+
+        .key {
             color: #404080;
             font-weight: bold;
             border-style: none;
         }
-        .value
-        {
+
+        .value {
             color: #404040;
             border-style: none;
         }
-        .summary
-        {
+
+        .summary {
             border-style: none;
             width: 100%;
             height: 100%;
         }
+
+        .table1 td {
+            border-width:1px;
+            border-style:solid;
+            border-color:blue;
+        }       
     </style>
 </head>
 <body>
     <blockquote>
+        <table class="table1" >
+            <tr>
+                <td colspan="2" nowrap>Cell One Cell One Cell this text is not visible
+                </td>
+            </tr>
+            <tr>
+                <td>Cell Three
+                </td>
+                <td>Cell Four
+                </td>
+            </tr>
+        </table>
+        <hr />
+        <table class="table1">
+           <tr>
+               <td>
+                  <table width="100%">
+                      <tr>
+                          <td style="white-space:nowrap;">Left Inner Cell One</td>
+                          <td style="white-space:nowrap;" align="right">Right Inner Cell Two</td>
+                      </tr>
+                  </table>
+               </td>
+           </tr>
+       </table>
+        <hr/>
         <table cellpadding="8" cellspacing="0">
             <tbody>
                 <tr>
                     <td>
                         <strong>A:</strong>
                     </td>
-                    <td>
-                        1
+                    <td>1
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <strong>B:</strong>
                     </td>
-                    <td>
-                        2
+                    <td>2
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <strong>C:</strong>
                     </td>
-                    <td>
-                        3
+                    <td>3
                     </td>
                 </tr>
             </tbody>
@@ -67,11 +95,9 @@
                         <br />
                         df</strong>
                 </td>
-                <td>
-                    sdfsdf
+                <td>sdfsdf
                 </td>
-                <td>
-                    sdfsd
+                <td>sdfsd
                 </td>
             </tr>
         </table>
@@ -79,14 +105,11 @@
         <table border="1" style="border: 1px solid #000000; width: 100%;">
             <tbody>
                 <tr>
-                    <td>
-                        a
+                    <td>a
                     </td>
-                    <td>
-                        LongStringLongStringLongStringLongStringLongStringLongStringLongString
+                    <td>LongStringLongStringLongStringLongStringLongStringLongStringLongString
                     </td>
-                    <td>
-                        text
+                    <td>text
                     </td>
                 </tr>
             </tbody>
@@ -95,22 +118,17 @@
         <table border="1" style="border: 1px solid #000000; width: 100%;">
             <thead>
                 <tr>
-                    <th colspan="3" style="width: 50%; padding: 2px; border: 1px solid #000000; color: #ffffff;
-                        background-color: #6690bc; text-align: left;">
-                        Title
+                    <th colspan="3" style="width: 50%; padding: 2px; border: 1px solid #000000; color: #ffffff; background-color: #6690bc; text-align: left;">Title
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>
-                        Word 1
+                    <td>Word 1
                     </td>
-                    <td>
-                        Word 2
+                    <td>Word 2
                     </td>
-                    <td>
-                        Word 3
+                    <td>Word 3
                     </td>
                 </tr>
             </tbody>
@@ -118,44 +136,35 @@
         <hr />
         <table border="1" style="border: 1px solid #000000; max-width: 100%">
             <tr>
-                <td>
-                    Word1Word1 Word1Word1Word1
+                <td>Word1Word1 Word1Word1Word1
                 </td>
-                <td>
-                    Word 2
+                <td>Word 2
                 </td>
-                <td>
-                    Word3Word3Word3Word3 Word3Word3Word3Word3Word3Word3Word3Word3Word3
+                <td>Word3Word3Word3Word3 Word3Word3Word3Word3Word3Word3Word3Word3Word3
                 </td>
             </tr>
         </table>
         <hr />
         <table border="1" style="border: 1px solid #000000; max-width: 100%">
             <tr>
-                <td width="200px">
-                    Word1 Word1Word1
+                <td width="200px">Word1 Word1Word1
                 </td>
-                <td width="150px">
-                    Word 2
+                <td width="150px">Word 2
                 </td>
-                <td width="300px">
-                    Word3Word3Word3 Word3
+                <td width="300px">Word3Word3Word3 Word3
                 </td>
             </tr>
         </table>
         <hr />
         <table class="summary">
             <tr>
-                <td colspan="2" class="header">
-                    Container
+                <td colspan="2" class="header">Container
                 </td>
             </tr>
             <tr>
-                <td class="key">
-                    Type
+                <td class="key">Type
                 </td>
-                <td class="value">
-                    $Type
+                <td class="value">$Type
                 </td>
             </tr>
         </table>

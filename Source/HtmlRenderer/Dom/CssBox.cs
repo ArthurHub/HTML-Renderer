@@ -961,7 +961,8 @@ namespace HtmlRenderer.Dom
                     sum += word.FullWidth;
                     min = Math.Max(min, word.Width);
                 }
-
+                if( b.Words.Count > 0 )
+                    sum -= b.Words[b.Words.Count - 1].ActualWordSpacing;
             }
             else
             {
