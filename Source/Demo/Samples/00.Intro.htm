@@ -65,6 +65,7 @@
         <ul>
             <li>100% managed code and no external dependencies.</li>
             <li>Supports .NET 2.0 or higher including Client Profile.</li>
+            <li>Handles "real world" malformed HTML, it doesn't have to be XHTML.</li>
             <li>Lightweight single dll (~250K).</li>
             <li>High performance and low memory footprint.</li>
             <li>Extendable and configurable.</li>
@@ -72,15 +73,9 @@
         <h3>
             Limitations
         </h3>
-        <div>
-            Here are some warnings that you should know when using the capabilities of the HTML
-            Renderer:
-        </div>
         <ul>
             <li>All HTML <b>end tags</b> marked as <a href="http://www.w3.org/TR/1999/REC-html401-19991224/index/elements.html">
                 optional</a> should be there. No problem with tags marked as forbidden.</li>
-            <li>When using rounded corners with borders, you must prevent the corner radius to be
-                larger than the border thickness</li>
         </ul>
         <hr />
         <h3>
