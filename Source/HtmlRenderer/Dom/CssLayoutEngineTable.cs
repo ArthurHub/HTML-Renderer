@@ -76,6 +76,46 @@ namespace HtmlRenderer.Dom
         }
 
         /// <summary>
+        /// Get the table cells spacing for all the cells in the table.<br/>
+        /// Used to calculate the spacing the table has in addition to regular padding and borders.
+        /// </summary>
+        /// <param name="tableBox">the table box to calculate the spacing for</param>
+        /// <returns>the calculated spacing</returns>
+        public static float GetTableSpacing(CssBox tableBox)
+        {
+            int count = 0;
+            int columns = 0;
+            foreach (var box in tableBox.Boxes)
+            {
+                if( box.Display == CssConstants.TableColumn )
+                {
+                    columns += GetSpan(box);
+                }
+                else if (box.Display == CssConstants.TableRowGroup)
+                {
+                    foreach (CssBox cr in tableBox.Boxes)
+                    {
+                        count++;
+                        if (cr.Display == CssConstants.TableRow)
+                            columns = Math.Max(columns, cr.Boxes.Count);
+                    }
+                }
+                else if (box.Display == CssConstants.TableRow)
+                {
+                    count++;
+                    columns = Math.Max(columns, box.Boxes.Count);
+                }
+
+                // limit the amount of rows to process for performance
+                if(count > 30)
+                    break;
+            }
+
+            // +1 columns because padding is between the cell and table borders
+            return ( columns + 1 )*GetHorizontalSpacing(tableBox);
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="g"></param>
@@ -116,13 +156,13 @@ namespace HtmlRenderer.Dom
             // Determine Row and Column Count, and ColumnWidths
             var availCellSpace = CalculateCountAndWidth();
 
-            DetermineMissingColumnWidths(g, availCellSpace);
+            DetermineMissingColumnWidths(availCellSpace);
 
             // Check for minimum sizes (increment widths if necessary)
             EnforceMinimumSize();
 
-            // While table width is larger than it should, and width is reductable
-            EnforceMaximumSize(g);
+            // While table width is larger than it should, and width is reducible
+            EnforceMaximumSize();
 
             // Ensure there's no padding
             _tableBox.PaddingLeft = _tableBox.PaddingTop = _tableBox.PaddingRight = _tableBox.PaddingBottom = "0";
@@ -330,9 +370,8 @@ namespace HtmlRenderer.Dom
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="g"></param>
         /// <param name="availCellSpace"></param>
-        private void DetermineMissingColumnWidths(IGraphics g, float availCellSpace)
+        private void DetermineMissingColumnWidths(float availCellSpace)
         {
             float occupedSpace = 0f;
             if (_widthSpecified) //If a width was specified,
@@ -340,7 +379,7 @@ namespace HtmlRenderer.Dom
                 //Assign NaNs equally with space left after gathering not-NaNs
                 int numberOfNans = 0;
 
-                //Calculate number of NaNs and occuped space
+                //Calculate number of NaNs and occupied space
                 foreach (float colWidth in _columnWidths)
                 {
                     if (float.IsNaN(colWidth))
@@ -351,14 +390,43 @@ namespace HtmlRenderer.Dom
 
                 if (numberOfNans > 0)
                 {
-                    //Determine width that will be assigned to un asigned widths
-                    float nanWidth = (availCellSpace - occupedSpace) / Convert.ToSingle(numberOfNans);
+                    // Determine the max width for each column
+                    float[] minFullWidths, maxFullWidths;
+                    GetColumnsMinMaxWidthByContent(true, out minFullWidths, out maxFullWidths);
 
-                    for (int i = 0; i < _columnWidths.Length; i++)
-                        if (float.IsNaN(_columnWidths[i]))
-                            _columnWidths[i] = nanWidth;
+                    // set the columns that can fulfill by the max width in a loop because it changes the nanWidth
+                    int oldNumOfNans;
+                    do
+                    {
+                        oldNumOfNans = numberOfNans;
+
+                        for (int i = 0; i < _columnWidths.Length; i++)
+                        {
+                            var nanWidth = (availCellSpace - occupedSpace) / numberOfNans;
+                            if (float.IsNaN(_columnWidths[i]) && nanWidth > maxFullWidths[i])
+                            {
+                                _columnWidths[i] = maxFullWidths[i];
+                                numberOfNans--;
+                                occupedSpace += maxFullWidths[i];
+                            }
+                        }
+                    }
+                    while (oldNumOfNans != numberOfNans);
+
+                    if (numberOfNans > 0)
+                    {
+                        // Determine width that will be assigned to un assigned widths
+                        float nanWidth = (availCellSpace - occupedSpace) / numberOfNans;
+
+                        for (int i = 0; i < _columnWidths.Length; i++)
+                        {
+                            if (float.IsNaN(_columnWidths[i]))
+                                _columnWidths[i] = nanWidth;
+                        }
+                    }
                 }
-                else if (occupedSpace < availCellSpace)
+                
+                if (numberOfNans == 0 && occupedSpace < availCellSpace)
                 {
                     // spread extra width between all columns
                     float extWidth = (availCellSpace - occupedSpace) / Convert.ToSingle(_columnWidths.Length);
@@ -370,7 +438,7 @@ namespace HtmlRenderer.Dom
             {
                 //Get the minimum and maximum full length of NaN boxes
                 float[] minFullWidths, maxFullWidths;
-                GetColumnsMinMaxWidthByContent(g, true, out minFullWidths, out maxFullWidths);
+                GetColumnsMinMaxWidthByContent(true, out minFullWidths, out maxFullWidths);
 
                 for (int i = 0; i < _columnWidths.Length; i++)
                 {
@@ -394,8 +462,7 @@ namespace HtmlRenderer.Dom
         /// While table width is larger than it should, and width is reductable.<br/>
         /// If table max width is limited by we need to lower the columns width even if it will result in clipping<br/>
         /// </summary>
-        /// <param name="g">used for content measure</param>
-        private void EnforceMaximumSize(IGraphics g)
+        private void EnforceMaximumSize()
         {
             int curCol = 0;
             var widthSum = GetWidthSum();
@@ -421,7 +488,7 @@ namespace HtmlRenderer.Dom
                 {
                     //Get the minimum and maximum full length of NaN boxes
                     float[] minFullWidths, maxFullWidths;
-                    GetColumnsMinMaxWidthByContent(g, false, out minFullWidths, out maxFullWidths);
+                    GetColumnsMinMaxWidthByContent(false, out minFullWidths, out maxFullWidths);
 
                     // lower all the columns to the minimum
                     for (int i = 0; i < _columnWidths.Length; i++)
@@ -784,11 +851,10 @@ namespace HtmlRenderer.Dom
         /// the min width possible without clipping content<br/>
         /// the max width the cell content can take without wrapping<br/>
         /// </summary>
-        /// <param name="g">used to measure</param>
         /// <param name="onlyNans">if to measure only columns that have no calculated width</param>
         /// <param name="minFullWidths">return the min width for each column - the min width possible without clipping content</param>
         /// <param name="maxFullWidths">return the max width for each column - the max width the cell content can take without wrapping</param>
-        private void GetColumnsMinMaxWidthByContent(IGraphics g, bool onlyNans, out float[] minFullWidths, out float[] maxFullWidths)
+        private void GetColumnsMinMaxWidthByContent(bool onlyNans, out float[] minFullWidths, out float[] maxFullWidths)
         {
             maxFullWidths = new float[_columnWidths.Length];
             minFullWidths = new float[_columnWidths.Length];
@@ -803,15 +869,15 @@ namespace HtmlRenderer.Dom
                     if ((!onlyNans || float.IsNaN(_columnWidths[col])) && i < row.Boxes.Count)
                     {
                         float minWidth, maxWidth;
-                        row.Boxes[i].GetFullWidth(g, out minWidth, out maxWidth);
+                        row.Boxes[i].GetMinMaxWidth(out minWidth, out maxWidth);
                         
                         var colSpan = GetColSpan(row.Boxes[i]);
                         minWidth = minWidth / colSpan;
                         maxWidth = maxWidth / colSpan;
                         for (int j = 0; j < colSpan; j++)
                         {
-                            minFullWidths[col + j] = Math.Max(minFullWidths[col], minWidth);
-                            maxFullWidths[col + j] = Math.Max(maxFullWidths[col], maxWidth);
+                            minFullWidths[col + j] = Math.Max(minFullWidths[col+j], minWidth);
+                            maxFullWidths[col + j] = Math.Max(maxFullWidths[col+j], maxWidth);
                         }
                     }
                 }
@@ -898,6 +964,14 @@ namespace HtmlRenderer.Dom
         private float GetHorizontalSpacing()
         {
             return _tableBox.BorderCollapse == CssConstants.Collapse ? -1f : _tableBox.ActualBorderSpacingHorizontal;
+        }
+
+        /// <summary>
+        /// Gets the actual horizontal spacing of the table
+        /// </summary>
+        private static float GetHorizontalSpacing(CssBox box)
+        {
+            return box.BorderCollapse == CssConstants.Collapse ? -1f : box.ActualBorderSpacingHorizontal;
         }
 
         /// <summary>

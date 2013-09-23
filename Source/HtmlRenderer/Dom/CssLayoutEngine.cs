@@ -96,14 +96,14 @@ namespace HtmlRenderer.Dom
                 // If only the width was set in the html tag, ratio the height.
                 if ((hasImageTagWidth && !hasImageTagHeight) || scaleImageHeight)
                 {
-                    // Devide the given tag width with the actual image width, to get the ratio.
+                    // Divide the given tag width with the actual image width, to get the ratio.
                     float ratio = imageWord.Width / imageWord.Image.Width;
                     imageWord.Height = imageWord.Image.Height * ratio;
                 }
                 // If only the height was set in the html tag, ratio the width.
                 else if (hasImageTagHeight && !hasImageTagWidth)
                 {
-                    // Devide the given tag height with the actual image height, to get the ratio.
+                    // Divide the given tag height with the actual image height, to get the ratio.
                     float ratio = imageWord.Height / imageWord.Image.Height;
                     imageWord.Width = imageWord.Image.Width * ratio;
                 }
@@ -255,7 +255,7 @@ namespace HtmlRenderer.Dom
                 if (b.Words.Count > 0)
                 {
                     bool wrapNoWrapBox = false;
-                    if (b.WhiteSpace == CssConstants.Nowrap && curx > startx)
+                    if (b.WhiteSpace == CssConstants.NoWrap && curx > startx)
                     {
                         var boxRight = curx;
                         foreach(var word in b.Words)
@@ -272,7 +272,7 @@ namespace HtmlRenderer.Dom
                         if (maxbottom - cury < box.ActualLineHeight)
                             maxbottom += box.ActualLineHeight - (maxbottom - cury);
 
-                        if ((b.WhiteSpace != CssConstants.Nowrap && b.WhiteSpace != CssConstants.Pre && curx + word.Width + rightspacing > limitRight) || word.IsLineBreak || wrapNoWrapBox)
+                        if ((b.WhiteSpace != CssConstants.NoWrap && b.WhiteSpace != CssConstants.Pre && curx + word.Width + rightspacing > limitRight) || word.IsLineBreak || wrapNoWrapBox)
                         {
                             wrapNoWrapBox = false;
                             curx = startx;

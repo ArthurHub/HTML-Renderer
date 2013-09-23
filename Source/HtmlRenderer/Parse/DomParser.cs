@@ -419,7 +419,7 @@ namespace HtmlRenderer.Parse
                             box.MarginRight = box.MarginLeft = TranslateLength(value);
                             break;
                         case HtmlConstants.Nowrap:
-                            box.WhiteSpace = CssConstants.Nowrap;
+                            box.WhiteSpace = CssConstants.NoWrap;
                             break;
                         case HtmlConstants.Size:
                             if (tag.Name.Equals(HtmlConstants.Hr,StringComparison.OrdinalIgnoreCase))

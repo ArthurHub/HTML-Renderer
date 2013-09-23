@@ -565,22 +565,22 @@ namespace HtmlRenderer.Dom
         /// <param name="g">Device context to use</param>
         protected virtual void PerformLayoutImp(IGraphics g)
         {
-            if (Display != CssConstants.None)
+            if( Display != CssConstants.None )
             {
                 RectanglesReset();
                 MeasureWordsSize(g);
             }
 
-            if (IsBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell)
+            if( IsBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell )
             {
                 // Because their width and height are set by CssTable
-                if (Display != CssConstants.TableCell && Display != CssConstants.Table)
+                if( Display != CssConstants.TableCell && Display != CssConstants.Table )
                 {
                     float width = ContainingBlock.Size.Width
                                   - ContainingBlock.ActualPaddingLeft - ContainingBlock.ActualPaddingRight
                                   - ContainingBlock.ActualBorderLeftWidth - ContainingBlock.ActualBorderRightWidth;
 
-                    if (Width != CssConstants.Auto && !string.IsNullOrEmpty(Width))
+                    if( Width != CssConstants.Auto && !string.IsNullOrEmpty(Width) )
                     {
                         width = CssValueParser.ParseLength(Width, width, this);
                     }
@@ -591,31 +591,31 @@ namespace HtmlRenderer.Dom
                     Size = new SizeF(width - ActualMarginLeft - ActualMarginRight, Size.Height);
                 }
 
-                if (Display != CssConstants.TableCell)
+                if( Display != CssConstants.TableCell )
                 {
                     var prevSibling = DomUtils.GetPreviousSibling(this);
                     float left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
-                    float top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+                    float top = ( prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0 ) + MarginTopCollapse(prevSibling) + ( prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0 );
                     Location = new PointF(left, top);
                     ActualBottom = top;
                 }
 
                 //If we're talking about a table here..
-                if (Display == CssConstants.Table || Display == CssConstants.InlineTable)
+                if( Display == CssConstants.Table || Display == CssConstants.InlineTable )
                 {
                     CssLayoutEngineTable.PerformLayout(g, this);
                 }
                 else
                 {
                     //If there's just inline boxes, create LineBoxes
-                    if (DomUtils.ContainsInlinesOnly(this))
+                    if( DomUtils.ContainsInlinesOnly(this) )
                     {
                         ActualBottom = Location.Y;
                         CssLayoutEngine.CreateLineBoxes(g, this); //This will automatically set the bottom of this block
                     }
-                    else if (_boxes.Count > 0)
+                    else if( _boxes.Count > 0 )
                     {
-                        foreach (var childBox in Boxes)
+                        foreach(var childBox in Boxes)
                         {
                             childBox.PerformLayout(g);
                         }
@@ -627,9 +627,9 @@ namespace HtmlRenderer.Dom
             else
             {
                 var prevSibling = DomUtils.GetPreviousSibling(this);
-                if (prevSibling != null)
+                if( prevSibling != null )
                 {
-                    if (Location == PointF.Empty)
+                    if( Location == PointF.Empty )
                         Location = prevSibling.Location;
                     ActualBottom = prevSibling.ActualBottom;
                 }
@@ -921,60 +921,81 @@ namespace HtmlRenderer.Dom
         }
 
         /// <summary>
-        /// Get the width of the box at full width (No line breaks)
+        /// Get the <paramref name="minWidth"/> and <paramref name="maxWidth"/> width of the box content.<br/>
         /// </summary>
-        /// <returns></returns>
-        internal void GetFullWidth(IGraphics g, out float minWidth, out float maxWidth)
+        /// <param name="minWidth">The minimum width the content must be so it won't overflow (largest word + padding).</param>
+        /// <param name="maxWidth">The total width the content can take without line wrapping (with padding).</param>
+        internal void GetMinMaxWidth(out float minWidth, out float maxWidth)
         {
-            float sum = 0f;
             float min = 0f;
-            float paddingsum = 0f;
-            GetFullWidth_WordsWith(this, ref sum, ref min, ref paddingsum);
+            float maxSum = 0f;
+            float paddingSum = 0f;
+            float marginSum = 0f;
+            GetMinMaxSumWords(this, ref min, ref maxSum, ref paddingSum, ref marginSum);
 
-            maxWidth = paddingsum + sum;
-            minWidth = paddingsum + (min < 90999 ? min : 0);
+            maxWidth = paddingSum + maxSum;
+            minWidth = paddingSum + (min < 90999 ? min : 0);
         }
 
         /// <summary>
-        /// Gets the longest word (in width) inside the box, deeply.
+        /// Get the <paramref name="min"/> and <paramref name="maxSum"/> of the box words content and <paramref name="paddingSum"/>.<br/>
         /// </summary>
-        /// <param name="b"></param>
-        /// <param name="sum"> </param>
-        /// <param name="min"></param>
-        /// <param name="paddingsum"> </param>
+        /// <param name="box">the box to calculate for</param>
+        /// <param name="min">the width that allows for each word to fit (width of the longest word)</param>
+        /// <param name="maxSum">the max width a single line of words can take without wrapping</param>
+        /// <param name="paddingSum">the total amount of padding the content has </param>
+        /// <param name="marginSum"></param>
         /// <returns></returns>
-        private static void GetFullWidth_WordsWith(CssBox b, ref float sum, ref float min, ref float paddingsum)
+        private static void GetMinMaxSumWords(CssBox box, ref float min, ref float maxSum, ref float paddingSum, ref float marginSum)
         {
             float? oldSum = null;
-            if (b.Display != CssConstants.Inline)
+            
+            // not inline (block) boxes start a new line so we need to reset the max sum
+            if (box.Display != CssConstants.Inline && box.Display != CssConstants.TableCell && box.WhiteSpace != CssConstants.NoWrap)
             {
-                oldSum = sum;
-                sum = 0;
+                oldSum = maxSum;
+                maxSum = marginSum;
             }
 
-            paddingsum += b.ActualBorderLeftWidth + b.ActualBorderRightWidth + b.ActualPaddingRight + b.ActualPaddingLeft;
+            // add the padding 
+            paddingSum += box.ActualBorderLeftWidth + box.ActualBorderRightWidth + box.ActualPaddingRight + box.ActualPaddingLeft;
 
-            if (b.Words.Count > 0)
+
+            // for tables the padding also contains the spacing between cells
+            if( box.Display == CssConstants.Table )
+                paddingSum += CssLayoutEngineTable.GetTableSpacing(box);
+
+            if (box.Words.Count > 0)
             {
-                foreach (CssRect word in b.Words)
+                // calculate the min and max sum for all the words in the box
+                foreach (CssRect word in box.Words)
                 {
-                    sum += word.FullWidth;
+                    maxSum += word.FullWidth;
                     min = Math.Max(min, word.Width);
                 }
-                if( b.Words.Count > 0 )
-                    sum -= b.Words[b.Words.Count - 1].ActualWordSpacing;
+                
+                // remove the last word padding
+                if( box.Words.Count > 0 )
+                    maxSum -= box.Words[box.Words.Count - 1].ActualWordSpacing;
             }
             else
             {
-                foreach (CssBox bb in b.Boxes)
+                // recursively on all the child boxes
+                foreach (CssBox childBox in box.Boxes)
                 {
-                    GetFullWidth_WordsWith(bb, ref sum, ref min, ref paddingsum);
+                    marginSum += childBox.ActualMarginLeft + childBox.ActualMarginRight;
+
+                    //maxSum += childBox.ActualMarginLeft + childBox.ActualMarginRight;
+                    GetMinMaxSumWords(childBox, ref min, ref maxSum, ref paddingSum, ref marginSum);
+                    
+                    marginSum -= childBox.ActualMarginLeft + childBox.ActualMarginRight;
                 }
             }
 
+            // max sum is max of all the lines in the box
             if (oldSum.HasValue)
             {
-                sum = Math.Max(sum, oldSum.Value);
+                maxSum = Math.Max(maxSum, oldSum.Value);
             }
         }
 
@@ -984,12 +1005,7 @@ namespace HtmlRenderer.Dom
         /// <returns></returns>
         internal bool HasJustInlineSiblings()
         {
-            if (ParentBox == null)
-            {
-                return false;
-            }
-
-            return DomUtils.ContainsInlinesOnly(ParentBox);
+            return ParentBox != null && DomUtils.ContainsInlinesOnly(ParentBox);
         }
 
         /// <summary>
@@ -997,7 +1013,7 @@ namespace HtmlRenderer.Dom
         /// </summary>
         /// <returns>Rectangles where content should be placed</returns>
         /// <remarks>
-        /// Inline boxes can be splitted across different LineBoxes, that's why this method
+        /// Inline boxes can be split across different LineBoxes, that's why this method
         /// Delivers a rectangle for each LineBox related to this box, if inline.
         /// </remarks>
 
