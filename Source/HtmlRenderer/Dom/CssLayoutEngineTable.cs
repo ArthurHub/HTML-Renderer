@@ -377,18 +377,27 @@ namespace HtmlRenderer.Dom
             if (_widthSpecified) //If a width was specified,
             {
                 //Assign NaNs equally with space left after gathering not-NaNs
-                int numberOfNans = 0;
+                int numOfNans = 0;
 
                 //Calculate number of NaNs and occupied space
                 foreach (float colWidth in _columnWidths)
                 {
                     if (float.IsNaN(colWidth))
-                        numberOfNans++;
+                        numOfNans++;
                     else
                         occupedSpace += colWidth;
                 }
+                var orgNumOfNans = numOfNans;
 
-                if (numberOfNans > 0)
+                float[] orgColWidths = null;
+                if (numOfNans < _columnWidths.Length)
+                {
+                    orgColWidths = new float[_columnWidths.Length];
+                    for (int i = 0; i < _columnWidths.Length; i++)
+                        orgColWidths[i] = _columnWidths[i];
+                }
+
+                if (numOfNans > 0)
                 {
                     // Determine the max width for each column
                     float[] minFullWidths, maxFullWidths;
@@ -398,25 +407,25 @@ namespace HtmlRenderer.Dom
                     int oldNumOfNans;
                     do
                     {
-                        oldNumOfNans = numberOfNans;
+                        oldNumOfNans = numOfNans;
 
                         for (int i = 0; i < _columnWidths.Length; i++)
                         {
-                            var nanWidth = (availCellSpace - occupedSpace) / numberOfNans;
+                            var nanWidth = (availCellSpace - occupedSpace) / numOfNans;
                             if (float.IsNaN(_columnWidths[i]) && nanWidth > maxFullWidths[i])
                             {
                                 _columnWidths[i] = maxFullWidths[i];
-                                numberOfNans--;
+                                numOfNans--;
                                 occupedSpace += maxFullWidths[i];
                             }
                         }
                     }
-                    while (oldNumOfNans != numberOfNans);
+                    while (oldNumOfNans != numOfNans);
 
-                    if (numberOfNans > 0)
+                    if (numOfNans > 0)
                     {
                         // Determine width that will be assigned to un assigned widths
-                        float nanWidth = (availCellSpace - occupedSpace) / numberOfNans;
+                        float nanWidth = (availCellSpace - occupedSpace) / numOfNans;
 
                         for (int i = 0; i < _columnWidths.Length; i++)
                         {
@@ -425,12 +434,13 @@ namespace HtmlRenderer.Dom
                         }
                     }
                 }
-                
-                if (numberOfNans == 0 && occupedSpace < availCellSpace)
+
+                if (numOfNans == 0 && occupedSpace < availCellSpace)
                 {
                     // spread extra width between all columns
-                    float extWidth = (availCellSpace - occupedSpace) / Convert.ToSingle(_columnWidths.Length);
+                    float extWidth = (availCellSpace - occupedSpace) / orgNumOfNans;
                     for (int i = 0; i < _columnWidths.Length; i++)
+                        if (orgColWidths == null || float.IsNaN(orgColWidths[i]))
                             _columnWidths[i] += extWidth;
                 }
             }
