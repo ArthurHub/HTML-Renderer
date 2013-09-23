@@ -369,9 +369,9 @@ namespace HtmlRenderer.Parse
                     {
                         case HtmlConstants.Align:
                             if (value == HtmlConstants.Left || value == HtmlConstants.Center || value == HtmlConstants.Right || value == HtmlConstants.Justify)
-                                box.TextAlign = value;
+                                box.TextAlign = value.ToLower();
                             else
-                                box.VerticalAlign = value;
+                                box.VerticalAlign = value.ToLower();
                             break;
                         case HtmlConstants.Background:
                             box.BackgroundImage = value;
@@ -404,10 +404,10 @@ namespace HtmlRenderer.Parse
                             ApplyTablePadding(box, value);
                             break;
                         case HtmlConstants.Color:
-                            box.Color = value;
+                            box.Color = value.ToLower();
                             break;
                         case HtmlConstants.Dir:
-                            box.Direction = value;
+                            box.Direction = value.ToLower();
                             break;
                         case HtmlConstants.Face:
                             box.FontFamily = CssParser.ParseFontFamily(value);
@@ -428,7 +428,7 @@ namespace HtmlRenderer.Parse
                                 box.FontSize = value;
                             break;
                         case HtmlConstants.Valign:
-                            box.VerticalAlign = value;
+                            box.VerticalAlign = value.ToLower();
                             break;
                         case HtmlConstants.Vspace:
                             box.MarginTop = box.MarginBottom = TranslateLength(value);

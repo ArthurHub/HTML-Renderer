@@ -1431,6 +1431,7 @@ namespace HtmlRenderer.Dom
                 _listStyle = p._listStyle;
                 _lineHeight = p._lineHeight;
                 _wordBreak = p.WordBreak;
+                _direction = p._direction;
 
                 if (everything)
                 {
@@ -1458,7 +1459,6 @@ namespace HtmlRenderer.Dom
                     _cornerSERadius = p._cornerSERadius;
                     _cornerSWRadius = p._cornerSWRadius;
                     _cornerRadius = p._cornerRadius;
-                    _direction = p._direction;
                     _display = p._display;
                     _float = p._float;
                     _height = p._height;

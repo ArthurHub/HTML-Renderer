@@ -152,9 +152,7 @@ namespace HtmlRenderer.Dom
             foreach (var linebox in blockBox.LineBoxes)
             {
                 ApplyAlignment(g, linebox);
-                if (blockBox.Direction == CssConstants.Rtl) 
-                    ApplyRightToLeft(linebox);
-                
+                ApplyRightToLeft(blockBox, linebox);
                 BubbleRectangles(blockBox, linebox);
                 linebox.AssignRectanglesToBoxes();
             }
@@ -447,17 +445,73 @@ namespace HtmlRenderer.Dom
         /// <summary>
         /// Applies right to left direction to words
         /// </summary>
-        /// <param name="line"></param>
-        private static void ApplyRightToLeft(CssLineBox line)
+        /// <param name="blockBox"></param>
+        /// <param name="lineBox"></param>
+        private static void ApplyRightToLeft(CssBox blockBox, CssLineBox lineBox)
         {
-            float left = line.OwnerBox.ClientLeft;
-            float right = line.OwnerBox.ClientRight;
+            if( blockBox.Direction == CssConstants.Rtl )
+            {
+                ApplyRightToLeftOnLine(lineBox);
+            }
+            else
+            {
+                foreach(var box in lineBox.RelatedBoxes)
+                {
+                    if (box.Direction == CssConstants.Rtl)
+                    {
+                        ApplyRightToLeftOnSingleBox(lineBox, box);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Applies RTL direction to all the words on the line.
+        /// </summary>
+        /// <param name="line">the line to apply RTL to</param>
+        private static void ApplyRightToLeftOnLine(CssLineBox line)
+        {
+            float left = line.Words[0].Left;
+            float right = line.Words[line.Words.Count-1].Right;
 
             foreach (CssRect word in line.Words)
             {
                 float diff = word.Left - left;
                 float wright = right - diff;
                 word.Left = wright - word.Width;
+            }
+        }
+
+        /// <summary>
+        /// Applies RTL direction to specific box words on the line.
+        /// </summary>
+        /// <param name="lineBox"></param>
+        /// <param name="box"></param>
+        private static void ApplyRightToLeftOnSingleBox(CssLineBox lineBox, CssBox box)
+        {
+            int leftWordIdx = -1;
+            int rightWordIdx = -1;
+            for (int i = 0; i < lineBox.Words.Count; i++)
+            {
+                if (lineBox.Words[i].OwnerBox == box)
+                {
+                    if (leftWordIdx < 0)
+                        leftWordIdx = i;
+                    rightWordIdx = i;
+                }
+            }
+
+            if (leftWordIdx > -1 && rightWordIdx > leftWordIdx)
+            {
+                float left = lineBox.Words[leftWordIdx].Left;
+                float right = lineBox.Words[rightWordIdx].Right;
+
+                for (int i = leftWordIdx; i <= rightWordIdx; i++)
+                {
+                    float diff = lineBox.Words[i].Left - left;
+                    float wright = right - diff;
+                    lineBox.Words[i].Left = wright - lineBox.Words[i].Width;
+                }
             }
         }
 
