@@ -611,20 +611,21 @@ namespace HtmlRenderer.Dom
 
             CssRect lastWord = line.Words[line.Words.Count - 1];
             float right = line.OwnerBox.ActualRight - line.OwnerBox.ActualPaddingRight - line.OwnerBox.ActualBorderRightWidth;
-            float diff = right - lastWord.Right - lastWord.LeftGlyphPadding - lastWord.OwnerBox.ActualBorderRightWidth - lastWord.OwnerBox.ActualPaddingRight;
+            float diff = right - lastWord.Right - lastWord.OwnerBox.ActualBorderRightWidth - lastWord.OwnerBox.ActualPaddingRight;
             diff /= 2;
 
-            if (diff <= 0) return;
-
-            foreach (CssRect word in line.Words)
+            if (diff > 0)
             {
-                word.Left += diff;
-            }
+                foreach (CssRect word in line.Words)
+                {
+                    word.Left += diff;
+                }
 
-            foreach (CssBox b in line.Rectangles.Keys)
-            {
-                RectangleF r = b.Rectangles[line];
-                b.Rectangles[line] = new RectangleF(r.X + diff, r.Y, r.Width, r.Height);
+                foreach (CssBox b in line.Rectangles.Keys)
+                {
+                    RectangleF r = b.Rectangles[line];
+                    b.Rectangles[line] = new RectangleF(r.X + diff, r.Y, r.Width, r.Height);
+                }
             }
         }
 
@@ -640,25 +641,20 @@ namespace HtmlRenderer.Dom
 
             CssRect lastWord = line.Words[line.Words.Count - 1];
             float right = line.OwnerBox.ActualRight - line.OwnerBox.ActualPaddingRight - line.OwnerBox.ActualBorderRightWidth;
-            float diff = right - lastWord.Right - lastWord.LeftGlyphPadding - lastWord.OwnerBox.ActualBorderRightWidth - lastWord.OwnerBox.ActualPaddingRight;
+            float diff = right - lastWord.Right - lastWord.OwnerBox.ActualBorderRightWidth - lastWord.OwnerBox.ActualPaddingRight;
 
-
-            if (diff <= 0) return;
-
-            //if (line.OwnerBox.Direction == CssConstants.Rtl)
-            //{
-
-            //}
-
-            foreach (CssRect word in line.Words)
+            if (diff > 0)
             {
-                word.Left += diff;
-            }
+                foreach (CssRect word in line.Words)
+                {
+                    word.Left += diff;
+                }
 
-            foreach (CssBox b in line.Rectangles.Keys)
-            {
-                RectangleF r = b.Rectangles[line];
-                b.Rectangles[line] = new RectangleF(r.X + diff, r.Y, r.Width, r.Height);
+                foreach (CssBox b in line.Rectangles.Keys)
+                {
+                    RectangleF r = b.Rectangles[line];
+                    b.Rectangles[line] = new RectangleF(r.X + diff, r.Y, r.Width, r.Height);
+                }
             }
         }
 
