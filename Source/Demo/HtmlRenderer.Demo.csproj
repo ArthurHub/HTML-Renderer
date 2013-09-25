@@ -148,25 +148,25 @@
     <None Include="Resources\web_pallete.gif" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Samples\12.HtmlPanel.htm" />
+    <EmbeddedResource Include="Samples\10.HtmlPanel.htm" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Samples\10.HtmlLabel.htm" />
+    <EmbeddedResource Include="Samples\11.HtmlLabel.htm" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Samples\13.HtmlToolTip.htm" />
+    <EmbeddedResource Include="Samples\12.HtmlToolTip.htm" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Samples\03.Text.htm" />
+    <EmbeddedResource Include="Samples\02.Text.htm" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Samples\05.Images.htm" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Samples\07.Links.htm" />
+    <EmbeddedResource Include="Samples\04.Links.htm" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Samples\04.Tables.htm" />
+    <EmbeddedResource Include="Samples\03.Tables.htm" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Samples\20.About.htm" />
@@ -176,7 +176,7 @@
       <SubType>Designer</SubType>
       <DependentUpon>SampleForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Samples\09.Non standard.htm" />
+    <EmbeddedResource Include="Samples\07.Additional features.htm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\image32.png" />
@@ -186,7 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\method16.gif" />
-    <EmbeddedResource Include="Samples\14.HtmlRender.htm" />
+    <EmbeddedResource Include="Samples\13.HtmlRender.htm" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -221,21 +221,21 @@
     <EmbeddedResource Include="TestSamples\18.Anchors.htm" />
     <EmbeddedResource Include="TestSamples\31.ACID 1.htm" />
     <EmbeddedResource Include="TestSamples\17.Languages.htm" />
-    <EmbeddedResource Include="Samples\06.Tooltip.htm" />
+    <EmbeddedResource Include="Samples\08.Tooltip.htm" />
     <EmbeddedResource Include="TestSamples\16.Borders.htm" />
     <Content Include="Resources\Event16.png" />
     <Content Include="Resources\html.ico" />
     <Content Include="Resources\html32.png" />
-    <EmbeddedResource Include="Samples\02.Using the code.htm" />
-    <EmbeddedResource Include="Samples\01.Background.htm" />
-    <EmbeddedResource Include="Samples\08.Embeded video.htm" />
+    <EmbeddedResource Include="Samples\09.Using the library.htm" />
+    <EmbeddedResource Include="Samples\01.History.htm" />
+    <EmbeddedResource Include="Samples\06.Embeded video.htm" />
     <EmbeddedResource Include="TestSamples\15.MaxWidth.htm" />
     <EmbeddedResource Include="TestSamples\14.Iframes.htm" />
     <EmbeddedResource Include="TestSamples\30.Misc.htm" />
     <EmbeddedResource Include="TestSamples\07.Background Image.htm" />
     <EmbeddedResource Include="TestSamples\06.External Image.htm" />
     <EmbeddedResource Include="TestSamples\11.LineHeight.htm" />
-    <EmbeddedResource Include="Samples\15.HtmlContainer.htm" />
+    <EmbeddedResource Include="Samples\14.HtmlContainer.htm" />
     <EmbeddedResource Include="TestSamples\10.BlockInInline.htm" />
     <EmbeddedResource Include="TestSamples\09.Inline.htm" />
     <EmbeddedResource Include="TestSamples\13.Tables.htm" />

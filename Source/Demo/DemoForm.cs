@@ -123,7 +123,9 @@ namespace HtmlRenderer.Demo
                     {
                         using (StreamReader sreader = new StreamReader(resourceStream, Encoding.Default))
                         {
-                            _samples[name] = sreader.ReadToEnd();
+                            var html = sreader.ReadToEnd();
+                            html = html.Replace("$$Release$$", _htmlPanel.GetType().Assembly.GetName().Version.ToString());
+                            _samples[name] = html;
                         }
 
                         var node = new TreeNode(shortName);

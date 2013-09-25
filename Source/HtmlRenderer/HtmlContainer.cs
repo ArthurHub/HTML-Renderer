@@ -483,7 +483,7 @@ namespace HtmlRenderer
                         var link = DomUtils.GetLinkBox(_root, loc);
                         if (link != null)
                         {
-                            HandleLinkClicked(link);
+                            HandleLinkClicked(parent, e, link);
                         }
                     }
                 }
@@ -527,7 +527,7 @@ namespace HtmlRenderer
 
             try
             {
-                    var loc = OffsetByScroll(e.Location);
+                var loc = OffsetByScroll(e.Location);
                 if (_selectionHandler != null && IsMouseInContainer(e.Location))
                     _selectionHandler.HandleMouseMove(parent, loc);
 
@@ -689,8 +689,10 @@ namespace HtmlRenderer
         /// <summary>
         /// Handle link clicked going over <see cref="LinkClicked"/> event and using <see cref="Process.Start()"/> if not canceled.
         /// </summary>
+        /// <param name="parent">the control hosting the html to invalidate</param>
+        /// <param name="e">the mouse event args</param>
         /// <param name="link">the link that was clicked</param>
-        internal void HandleLinkClicked(CssBox link)
+        internal void HandleLinkClicked(Control parent, MouseEventArgs e, CssBox link)
         {
             if (LinkClicked != null)
             {
@@ -708,10 +710,12 @@ namespace HtmlRenderer
                 {
                     if( ScrollChange != null )
                     {
-                        var linkBox = DomUtils.GetBoxById(_root, link.HrefLink.Substring(1));
-                        if( linkBox != null )
+                        var box = DomUtils.GetBoxById(_root, link.HrefLink.Substring(1));
+                        if (box != null)
                         {
-                            ScrollChange(this, new HtmlScrollEventArgs(Point.Round(CommonUtils.GetFirstValueOrDefault(linkBox.Rectangles).Location)));
+                            var rect = CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds);
+                            ScrollChange(this, new HtmlScrollEventArgs(Point.Round(rect.Location)));
+                            HandleMouseMove(parent, e);
                         }
                     }
                 }

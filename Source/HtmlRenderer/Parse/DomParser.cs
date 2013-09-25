@@ -222,7 +222,7 @@ namespace HtmlRenderer.Parse
             {
                 assignable = IsBlockAssignableToBoxWithSelector(box, block);
             }
-            else if (box.HtmlTag.Name.Equals("a") && !box.HtmlTag.HasAttribute("href"))
+            else if (box.HtmlTag.Name.Equals("a", StringComparison.OrdinalIgnoreCase) && block.Class.Equals("a", StringComparison.OrdinalIgnoreCase) && !box.HtmlTag.HasAttribute("href"))
             {
                 assignable = false;
             }
@@ -369,9 +369,9 @@ namespace HtmlRenderer.Parse
                     {
                         case HtmlConstants.Align:
                             if (value == HtmlConstants.Left || value == HtmlConstants.Center || value == HtmlConstants.Right || value == HtmlConstants.Justify)
-                                box.TextAlign = value;
+                                box.TextAlign = value.ToLower();
                             else
-                                box.VerticalAlign = value;
+                                box.VerticalAlign = value.ToLower();
                             break;
                         case HtmlConstants.Background:
                             box.BackgroundImage = value;
@@ -404,10 +404,10 @@ namespace HtmlRenderer.Parse
                             ApplyTablePadding(box, value);
                             break;
                         case HtmlConstants.Color:
-                            box.Color = value;
+                            box.Color = value.ToLower();
                             break;
                         case HtmlConstants.Dir:
-                            box.Direction = value;
+                            box.Direction = value.ToLower();
                             break;
                         case HtmlConstants.Face:
                             box.FontFamily = CssParser.ParseFontFamily(value);
@@ -419,7 +419,7 @@ namespace HtmlRenderer.Parse
                             box.MarginRight = box.MarginLeft = TranslateLength(value);
                             break;
                         case HtmlConstants.Nowrap:
-                            box.WhiteSpace = CssConstants.Nowrap;
+                            box.WhiteSpace = CssConstants.NoWrap;
                             break;
                         case HtmlConstants.Size:
                             if (tag.Name.Equals(HtmlConstants.Hr,StringComparison.OrdinalIgnoreCase))
@@ -428,7 +428,7 @@ namespace HtmlRenderer.Parse
                                 box.FontSize = value;
                             break;
                         case HtmlConstants.Valign:
-                            box.VerticalAlign = value;
+                            box.VerticalAlign = value.ToLower();
                             break;
                         case HtmlConstants.Vspace:
                             box.MarginTop = box.MarginBottom = TranslateLength(value);

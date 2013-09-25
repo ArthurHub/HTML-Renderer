@@ -103,6 +103,10 @@ namespace HtmlRenderer.Utils
                 pen = new Pen(GetSolidBrush(color));
                 _penCache[color] = pen;
             }
+            else
+            {
+                pen.Width = 1;                
+            }
             return pen;
         }
 

@@ -90,7 +90,20 @@ namespace HtmlRenderer.Parse
         /// <returns>the parsed length value with adjustments</returns>
         public static float ParseLength(string length, float hundredPercent, CssBoxProperties box, bool fontAdjust = false)
         {
-            return ParseLength(length, hundredPercent, box.GetEmHeight(), fontAdjust, false);
+            return ParseLength(length, hundredPercent, box.GetEmHeight(), null, fontAdjust, false);
+        }
+
+        /// <summary>
+        /// Parses a length. Lengths are followed by an unit identifier (e.g. 10px, 3.1em)
+        /// </summary>
+        /// <param name="length">Specified length</param>
+        /// <param name="hundredPercent">Equivalent to 100 percent when length is percentage</param>
+        /// <param name="box"></param>
+        /// <param name="defaultUnit"></param>
+        /// <returns>the parsed length value with adjustments</returns>
+        public static float ParseLength(string length, float hundredPercent, CssBoxProperties box, string defaultUnit)
+        {
+            return ParseLength(length, hundredPercent, box.GetEmHeight(), defaultUnit, false, false);
         }
 
         /// <summary>
@@ -99,10 +112,11 @@ namespace HtmlRenderer.Parse
         /// <param name="length">Specified length</param>
         /// <param name="hundredPercent">Equivalent to 100 percent when length is percentage</param>
         /// <param name="emFactor"></param>
+        /// <param name="defaultUnit"></param>
         /// <param name="fontAdjust">if the length is in pixels and the length is font related it needs to use 72/96 factor</param>
         /// <param name="returnPoints">Allows the return float to be in points. If false, result will be pixels</param>
         /// <returns>the parsed length value with adjustments</returns>
-        public static float ParseLength(string length, float hundredPercent, float emFactor, bool fontAdjust, bool returnPoints)
+        public static float ParseLength(string length, float hundredPercent, float emFactor, string defaultUnit, bool fontAdjust, bool returnPoints)
         {
             //Return zero if no length specified, zero specified
             if (string.IsNullOrEmpty(length) || length == "0") return 0f;
@@ -110,17 +124,15 @@ namespace HtmlRenderer.Parse
             //If percentage, use ParseNumber
             if (length.EndsWith("%")) return ParseNumber(length, hundredPercent);
 
-            //If no units, return zero
-            if (length.Length < 3) return 0f;
-
             //Get units of the length
-            string unit = length.Substring(length.Length - 2, 2);
+            bool hasUnit;
+            string unit = GetUnit(length, defaultUnit, out hasUnit);
 
             //Factor will depend on the unit
             float factor;
 
             //Number of the length
-            string number = length.Substring(0, length.Length - 2);
+            string number = hasUnit ? length.Substring(0, length.Length - 2) : length;
 
             //TODO: Units behave different in paper and in screen!
             switch (unit)
@@ -161,6 +173,32 @@ namespace HtmlRenderer.Parse
             }
 
             return factor * ParseNumber(number, hundredPercent);
+        }
+
+        /// <summary>
+        /// Get the unit to use for the length, use default if no unit found in length string.
+        /// </summary>
+        private static string GetUnit(string length, string defaultUnit, out bool hasUnit)
+        {
+            var unit = length.Length >= 3 ? length.Substring(length.Length - 2, 2) : string.Empty;
+            switch (unit)
+            {
+                case CssConstants.Em:
+                case CssConstants.Ex:
+                case CssConstants.Px:
+                case CssConstants.Mm:
+                case CssConstants.Cm:
+                case CssConstants.In:
+                case CssConstants.Pt:
+                case CssConstants.Pc:
+                    hasUnit = true;
+                    break;
+                default:
+                    hasUnit = false;
+                    unit = defaultUnit ?? String.Empty;
+                    break;
+            }
+            return unit;
         }
 
         /// <summary>

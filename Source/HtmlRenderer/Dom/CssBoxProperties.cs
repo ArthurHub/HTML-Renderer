@@ -489,7 +489,7 @@ namespace HtmlRenderer.Dom
         public string LineHeight
         {
             get { return _lineHeight; }
-            set { _lineHeight = string.Format(NumberFormatInfo.InvariantInfo, "{0}px", CssValueParser.ParseLength(value, Size.Height, this)); }
+            set { _lineHeight = string.Format(NumberFormatInfo.InvariantInfo, "{0}px", CssValueParser.ParseLength(value, Size.Height, this, CssConstants.Em)); }
         }
 
         public string VerticalAlign
@@ -1240,7 +1240,7 @@ namespace HtmlRenderer.Dom
                         case CssConstants.Larger:
                             fsize = parentSize + 2; break;
                         default:
-                            fsize = CssValueParser.ParseLength(FontSize, parentSize, parentSize, true, true);
+                            fsize = CssValueParser.ParseLength(FontSize, parentSize, parentSize, null, true, true);
                             break;
                     }
 
@@ -1431,6 +1431,7 @@ namespace HtmlRenderer.Dom
                 _listStyle = p._listStyle;
                 _lineHeight = p._lineHeight;
                 _wordBreak = p.WordBreak;
+                _direction = p._direction;
 
                 if (everything)
                 {
@@ -1458,7 +1459,6 @@ namespace HtmlRenderer.Dom
                     _cornerSERadius = p._cornerSERadius;
                     _cornerSWRadius = p._cornerSWRadius;
                     _cornerRadius = p._cornerRadius;
-                    _direction = p._direction;
                     _display = p._display;
                     _float = p._float;
                     _height = p._height;

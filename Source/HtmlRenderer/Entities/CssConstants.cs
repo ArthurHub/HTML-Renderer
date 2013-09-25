@@ -68,7 +68,7 @@ namespace HtmlRenderer.Entities
         public const string Monospace = "monospace";
         public const string None = "none";
         public const string Normal = "normal";
-        public const string Nowrap = "nowrap";
+        public const string NoWrap = "nowrap";
         public const string Oblique = "oblique";
         public const string Outset = "outset";
         public const string Overline = "overline";
