@@ -29,12 +29,13 @@ namespace HtmlRenderer.Demo
         private void InitializeComponent()
         {
             this._splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this._clearLink = new System.Windows.Forms.LinkLabel();
+            this._iterations = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
             this._runTestButton = new System.Windows.Forms.Button();
             this._samplesTreeView = new System.Windows.Forms.TreeView();
             this._htmlPanel = new HtmlRenderer.HtmlPanel();
-            this._iterations = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
-            this._clearLink = new System.Windows.Forms.LinkLabel();
+            ((System.ComponentModel.ISupportInitialize)(this._splitContainer1)).BeginInit();
             this._splitContainer1.Panel1.SuspendLayout();
             this._splitContainer1.Panel2.SuspendLayout();
             this._splitContainer1.SuspendLayout();
@@ -64,6 +65,43 @@ namespace HtmlRenderer.Demo
             this._splitContainer1.TabIndex = 0;
             this._splitContainer1.TabStop = false;
             // 
+            // _clearLink
+            // 
+            this._clearLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this._clearLink.AutoSize = true;
+            this._clearLink.BackColor = System.Drawing.Color.White;
+            this._clearLink.Location = new System.Drawing.Point(111, 365);
+            this._clearLink.Name = "_clearLink";
+            this._clearLink.Size = new System.Drawing.Size(31, 13);
+            this._clearLink.TabIndex = 18;
+            this._clearLink.TabStop = true;
+            this._clearLink.Text = "Clear";
+            this._clearLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnClearLinkClicked);
+            // 
+            // _iterations
+            // 
+            this._iterations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this._iterations.Location = new System.Drawing.Point(65, 386);
+            this._iterations.Name = "_iterations";
+            this._iterations.Size = new System.Drawing.Size(77, 20);
+            this._iterations.TabIndex = 16;
+            this._iterations.Value = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(6, 389);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(53, 13);
+            this.label1.TabIndex = 17;
+            this.label1.Text = "Iterations:";
+            // 
             // _runTestButton
             // 
             this._runTestButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -90,6 +128,8 @@ namespace HtmlRenderer.Demo
             // _htmlPanel
             // 
             this._htmlPanel.AutoScroll = true;
+            this._htmlPanel.AvoidGeometryAntialias = false;
+            this._htmlPanel.AvoidImagesLateLoading = false;
             this._htmlPanel.BackColor = System.Drawing.SystemColors.Window;
             this._htmlPanel.BaseStylesheet = null;
             this._htmlPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -98,43 +138,6 @@ namespace HtmlRenderer.Demo
             this._htmlPanel.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
             this._htmlPanel.Size = new System.Drawing.Size(517, 439);
             this._htmlPanel.TabIndex = 9;
-            // 
-            // _iterations
-            // 
-            this._iterations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this._iterations.Location = new System.Drawing.Point(65, 386);
-            this._iterations.Name = "_iterations";
-            this._iterations.Size = new System.Drawing.Size(77, 20);
-            this._iterations.TabIndex = 16;
-            this._iterations.Value = new decimal(new int[] {
-            20,
-            0,
-            0,
-            0});
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(6, 389);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 13);
-            this.label1.TabIndex = 17;
-            this.label1.Text = "Iterations:";
-            // 
-            // _clearLink
-            // 
-            this._clearLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this._clearLink.AutoSize = true;
-            this._clearLink.BackColor = System.Drawing.Color.White;
-            this._clearLink.Location = new System.Drawing.Point(111, 365);
-            this._clearLink.Name = "_clearLink";
-            this._clearLink.Size = new System.Drawing.Size(31, 13);
-            this._clearLink.TabIndex = 18;
-            this._clearLink.TabStop = true;
-            this._clearLink.Text = "Clear";
-            this._clearLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnClearLinkClicked);
             // 
             // PerfForm
             // 
@@ -150,6 +153,7 @@ namespace HtmlRenderer.Demo
             this._splitContainer1.Panel1.ResumeLayout(false);
             this._splitContainer1.Panel1.PerformLayout();
             this._splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this._splitContainer1)).EndInit();
             this._splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this._iterations)).EndInit();
             this.ResumeLayout(false);

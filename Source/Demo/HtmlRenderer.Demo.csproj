@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HtmlRenderer.Demo</RootNamespace>
     <AssemblyName>HtmlRendererDemo</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -31,8 +31,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -223,6 +222,7 @@
     <EmbeddedResource Include="TestSamples\17.Languages.htm" />
     <EmbeddedResource Include="Samples\08.Tooltip.htm" />
     <EmbeddedResource Include="TestSamples\16.Borders.htm" />
+    <EmbeddedResource Include="PerfSamples\1.Big table.htm" />
     <Content Include="Resources\Event16.png" />
     <Content Include="Resources\html.ico" />
     <Content Include="Resources\html32.png" />
@@ -246,9 +246,7 @@
     <EmbeddedResource Include="TestSamples\03.Paragraphs.htm" />
     <EmbeddedResource Include="TestSamples\01.Header.htm" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="PerfSamples\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

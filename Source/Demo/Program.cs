@@ -15,6 +15,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace HtmlRenderer.Demo
@@ -33,6 +34,8 @@ namespace HtmlRenderer.Demo
             Application.Run(new DemoForm());
 
 //            Application.Run(new PerfForm());
+
+//            PerfForm.Run();
 
 //            ObfuscateHtml();
         }

@@ -41,9 +41,11 @@ namespace HtmlRenderer.Demo
             this._reloadColorsLink = new System.Windows.Forms.LinkLabel();
             this._htmlEditor = new System.Windows.Forms.RichTextBox();
             this._htmlToolTip = new HtmlRenderer.HtmlToolTip();
+            ((System.ComponentModel.ISupportInitialize)(this._splitContainer1)).BeginInit();
             this._splitContainer1.Panel1.SuspendLayout();
             this._splitContainer1.Panel2.SuspendLayout();
             this._splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._splitContainer2)).BeginInit();
             this._splitContainer2.Panel1.SuspendLayout();
             this._splitContainer2.Panel2.SuspendLayout();
             this._splitContainer2.SuspendLayout();
@@ -120,7 +122,7 @@ namespace HtmlRenderer.Demo
             this._runTestButton.Size = new System.Drawing.Size(138, 23);
             this._runTestButton.TabIndex = 15;
             this._runTestButton.TabStop = false;
-            this._runTestButton.Text = "Run Test";
+            this._runTestButton.Text = "Run Performance Test";
             this._runTestButton.UseVisualStyleBackColor = true;
             this._runTestButton.Click += new System.EventHandler(this.OnRunTestButtonClick);
             // 
@@ -159,6 +161,8 @@ namespace HtmlRenderer.Demo
             // _htmlPanel
             // 
             this._htmlPanel.AutoScroll = true;
+            this._htmlPanel.AvoidGeometryAntialias = false;
+            this._htmlPanel.AvoidImagesLateLoading = false;
             this._htmlPanel.BackColor = System.Drawing.SystemColors.Window;
             this._htmlPanel.BaseStylesheet = null;
             this._htmlPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -236,10 +240,12 @@ namespace HtmlRenderer.Demo
             this._splitContainer1.Panel1.ResumeLayout(false);
             this._splitContainer1.Panel1.PerformLayout();
             this._splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this._splitContainer1)).EndInit();
             this._splitContainer1.ResumeLayout(false);
             this._splitContainer2.Panel1.ResumeLayout(false);
             this._splitContainer2.Panel2.ResumeLayout(false);
             this._splitContainer2.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._splitContainer2)).EndInit();
             this._splitContainer2.ResumeLayout(false);
             this.ResumeLayout(false);
 

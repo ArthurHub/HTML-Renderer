@@ -33,6 +33,11 @@ namespace HtmlRenderer.Demo
         #region Fields and Consts
 
         /// <summary>
+        /// Cache for resource images
+        /// </summary>
+        private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
         /// the private font used for the demo
         /// </summary>
         private readonly PrivateFontCollection _privateFont = new PrivateFontCollection();
@@ -116,12 +121,12 @@ namespace HtmlRenderer.Demo
                 string ext = name.Substring(extPos >= 0 ? extPos : 0);
                 string shortName = namePos > 0 && name.Length > 2 ? name.Substring(namePos + 1, name.Length - namePos - ext.Length - 1) : name;
 
-                if (".htm".IndexOf(ext) >= 0)
+                if (".htm".IndexOf(ext, StringComparison.Ordinal) >= 0)
                 {
                     var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
                     if (resourceStream != null)
                     {
-                        using (StreamReader sreader = new StreamReader(resourceStream, Encoding.Default))
+                        using (var sreader = new StreamReader(resourceStream, Encoding.Default))
                         {
                             var html = sreader.ReadToEnd();
                             html = html.Replace("$$Release$$", _htmlPanel.GetType().Assembly.GetName().Version.ToString());
@@ -381,7 +386,7 @@ namespace HtmlRenderer.Demo
         /// <summary>
         /// On image load in renderer set the image by event async.
         /// </summary>
-        private static void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
+        private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
         {
             var img = TryLoadResourceImage(e.Src);
 
@@ -422,28 +427,43 @@ namespace HtmlRenderer.Demo
         /// <summary>
         /// Get image by resource key.
         /// </summary>
-        private static Image TryLoadResourceImage(string src)
+        private Image TryLoadResourceImage(string src)
         {
-            switch (src.ToLower())
+            Image image;
+            if (!_imageCache.TryGetValue(src, out image))
             {
-                case "htmlicon":
-                    return Resources.html32;
-                case "staricon":
-                    return Resources.favorites32;
-                case "fonticon":
-                    return Resources.font32;
-                case "commenticon":
-                    return Resources.comment16;
-                case "imageicon":
-                    return Resources.image32;
-                case "methodicon":
-                    return Resources.method16;
-                case "propertyicon":
-                    return Resources.property16;
-                case "eventicon":
-                    return Resources.Event16;
+                switch (src.ToLower())
+                {
+                    case "htmlicon":
+                        image = Resources.html32;
+                        break;
+                    case "staricon":
+                        image = Resources.favorites32;
+                        break;
+                    case "fonticon":
+                        image = Resources.font32;
+                        break;
+                    case "commenticon":
+                        image = Resources.comment16;
+                        break;
+                    case "imageicon":
+                        image = Resources.image32;
+                        break;
+                    case "methodicon":
+                        image = Resources.method16;
+                        break;
+                    case "propertyicon":
+                        image = Resources.property16;
+                        break;
+                    case "eventicon":
+                        image = Resources.Event16;
+                        break;
+                }
+
+                if (image != null)
+                    _imageCache[src] = image;
             }
-            return null;
+            return image;
         }
 
         /// <summary>
@@ -466,7 +486,7 @@ namespace HtmlRenderer.Demo
             }
             else if (e.Link == "ShowSampleForm")
             {
-                using (SampleForm f = new SampleForm())
+                using (var f = new SampleForm())
                 {
                     f.ShowDialog();
                     e.Handled = true;
@@ -484,9 +504,13 @@ namespace HtmlRenderer.Demo
             _runTestButton.Enabled = false;
             Application.DoEvents();
 
+            GC.Collect();
+            AppDomain.MonitoringIsEnabled = true;
+            var startMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
+
             var sw = Stopwatch.StartNew();
 
-            const int iterations = 12;
+            const int iterations = 20;
             for (int i = 0; i < iterations; i++)
             {
                 foreach (var html in _perfTestSamples)
@@ -495,16 +519,32 @@ namespace HtmlRenderer.Demo
                     Application.DoEvents(); // so paint will be called
                 }
             }
-            
+
             sw.Stop();
 
-            var msg = string.Format("Total: {0} mSec\r\nIterationAvg: {1:N2} msec\r\nSingleAvg: {2:N2} msec",
-                                    sw.ElapsedMilliseconds, sw.ElapsedMilliseconds / (double)iterations, sw.ElapsedMilliseconds / (double)iterations / _perfTestSamples.Count);
+
+            var endMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
+            var totalMem = (endMemory - startMemory)/1024f;
+
+            float htmlSize = 0;
+            foreach (var sample in _perfTestSamples)
+                htmlSize += sample.Length*2;
+            htmlSize = htmlSize/1024f;
+
+
+            var msg = string.Format("{0} HTMLs ({1:N0} KB)\r\n{2} Iterations", _perfTestSamples.Count, htmlSize, iterations);
+            msg += "\r\n\r\n";
+            msg += string.Format("CPU:\r\nTotal: {0} msec\r\nIterationAvg: {1:N2} msec\r\nSingleAvg: {2:N2} msec",
+                                    sw.ElapsedMilliseconds, sw.ElapsedMilliseconds/(double) iterations, sw.ElapsedMilliseconds/(double) iterations/_perfTestSamples.Count);
+            msg += "\r\n\r\n";
+            msg += string.Format("Memory:\r\nTotal: {0:N0} KB\r\nIterationAvg: {1:N0} KB\r\nSingleAvg: {2:N0} KB\r\nOverhead: {3:N0}%",
+                                 totalMem, totalMem/iterations, totalMem/iterations/_perfTestSamples.Count, 100*(totalMem/iterations)/htmlSize);
+
             Clipboard.SetDataObject(msg);
             MessageBox.Show(msg, "Test run results");
 
             _updateLock = false;
-            _runTestButton.Text = "Run Tests";
+            _runTestButton.Text = "Run Performance Test";
             _runTestButton.Enabled = true;
         }
 
