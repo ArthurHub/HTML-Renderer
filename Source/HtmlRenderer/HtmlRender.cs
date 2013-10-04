@@ -101,19 +101,21 @@ namespace HtmlRenderer
             SizeF actualSize = SizeF.Empty;
             if (!string.IsNullOrEmpty(html))
             {
-                var container = new HtmlContainer();
-                if(stylesheetLoad != null)
-                    container.StylesheetLoad += stylesheetLoad;
-                if (imageLoad != null)
-                    container.ImageLoad += imageLoad;
-                container.SetHtml(html, cssData);
-                container.MaxSize = new SizeF(maxWidth, 0);
-                container.PerformLayout(g);
-                if (stylesheetLoad != null)
-                    container.StylesheetLoad -= stylesheetLoad;
-                if (imageLoad != null)
-                    container.ImageLoad -= imageLoad;
-                actualSize = container.ActualSize;
+                using(var container = new HtmlContainer())
+                {
+                    if(stylesheetLoad != null)
+                        container.StylesheetLoad += stylesheetLoad;
+                    if (imageLoad != null)
+                        container.ImageLoad += imageLoad;
+                    container.SetHtml(html, cssData);
+                    container.MaxSize = new SizeF(maxWidth, 0);
+                    container.PerformLayout(g);
+                    if (stylesheetLoad != null)
+                        container.StylesheetLoad -= stylesheetLoad;
+                    if (imageLoad != null)
+                        container.ImageLoad -= imageLoad;
+                    actualSize = container.ActualSize;
+                }
             }
             return actualSize;
         }
@@ -172,44 +174,46 @@ namespace HtmlRenderer
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the actual size of the rendered html</returns>
-        public static SizeF Render(Graphics g, string html, PointF location, SizeF maxSize, CssData cssData, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad, EventHandler<HtmlImageLoadEventArgs> imageLoad)
+public static SizeF Render(Graphics g, string html, PointF location, SizeF maxSize, CssData cssData, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad, EventHandler<HtmlImageLoadEventArgs> imageLoad)
+{
+    ArgChecker.AssertArgNotNull(g, "g");
+
+    SizeF actualSize = SizeF.Empty;
+    if (!string.IsNullOrEmpty(html))
+    {
+        Region prevClip = null;
+        if (maxSize.Height > 0)
         {
-            ArgChecker.AssertArgNotNull(g, "g");
+            prevClip = g.Clip;
+            g.SetClip(new RectangleF(location, maxSize));
+        }
 
-            SizeF actualSize = SizeF.Empty;
-            if (!string.IsNullOrEmpty(html))
-            {
-                Region prevClip = null;
-                if (maxSize.Height > 0)
-                {
-                    prevClip = g.Clip;
-                    g.SetClip(new RectangleF(location, maxSize));
-                }
-
-                var container = new HtmlContainer();
-                if (stylesheetLoad != null)
-                    container.StylesheetLoad += stylesheetLoad;
-                if (imageLoad != null)
-                    container.ImageLoad += imageLoad;
-                container.SetHtml(html, cssData);
-                container.Location = location;
-                container.MaxSize = maxSize;
-                container.PerformLayout(g);
-                container.PerformPaint(g);
-                if (stylesheetLoad != null)
-                    container.StylesheetLoad -= stylesheetLoad;
-                if (imageLoad != null)
-                    container.ImageLoad -= imageLoad;
+        using(var container = new HtmlContainer())
+        {
+            if (stylesheetLoad != null)
+                container.StylesheetLoad += stylesheetLoad;
+            if (imageLoad != null)
+                container.ImageLoad += imageLoad;
+            container.SetHtml(html, cssData);
+            container.Location = location;
+            container.MaxSize = maxSize;
+            container.PerformLayout(g);
+            container.PerformPaint(g);
+            if (stylesheetLoad != null)
+                container.StylesheetLoad -= stylesheetLoad;
+            if (imageLoad != null)
+                container.ImageLoad -= imageLoad;
                 
-                if (prevClip != null)
-                {
-                    g.SetClip(prevClip, CombineMode.Replace);
-                }
-
-                actualSize = container.ActualSize;
+            if (prevClip != null)
+            {
+                g.SetClip(prevClip, CombineMode.Replace);
             }
 
-            return actualSize;
+            actualSize = container.ActualSize;
         }
+    }
+
+    return actualSize;
+}
     }
 }
