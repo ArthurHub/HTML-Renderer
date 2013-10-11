@@ -13,6 +13,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Drawing.Text;
 using HtmlRenderer.Entities;
 using HtmlRenderer.Utils;
@@ -101,19 +102,15 @@ namespace HtmlRenderer
             SizeF actualSize = SizeF.Empty;
             if (!string.IsNullOrEmpty(html))
             {
-                using(var container = new HtmlContainer())
+                using (var container = new HtmlContainer())
                 {
-                    if(stylesheetLoad != null)
+                    if (stylesheetLoad != null)
                         container.StylesheetLoad += stylesheetLoad;
                     if (imageLoad != null)
                         container.ImageLoad += imageLoad;
                     container.SetHtml(html, cssData);
                     container.MaxSize = new SizeF(maxWidth, 0);
                     container.PerformLayout(g);
-                    if (stylesheetLoad != null)
-                        container.StylesheetLoad -= stylesheetLoad;
-                    if (imageLoad != null)
-                        container.ImageLoad -= imageLoad;
                     actualSize = container.ActualSize;
                 }
             }
@@ -174,46 +171,175 @@ namespace HtmlRenderer
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the actual size of the rendered html</returns>
-public static SizeF Render(Graphics g, string html, PointF location, SizeF maxSize, CssData cssData, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad, EventHandler<HtmlImageLoadEventArgs> imageLoad)
-{
-    ArgChecker.AssertArgNotNull(g, "g");
-
-    SizeF actualSize = SizeF.Empty;
-    if (!string.IsNullOrEmpty(html))
-    {
-        Region prevClip = null;
-        if (maxSize.Height > 0)
+        public static SizeF Render(Graphics g, string html, PointF location, SizeF maxSize, CssData cssData, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad, EventHandler<HtmlImageLoadEventArgs> imageLoad)
         {
-            prevClip = g.Clip;
-            g.SetClip(new RectangleF(location, maxSize));
-        }
+            ArgChecker.AssertArgNotNull(g, "g");
 
-        using(var container = new HtmlContainer())
-        {
-            if (stylesheetLoad != null)
-                container.StylesheetLoad += stylesheetLoad;
-            if (imageLoad != null)
-                container.ImageLoad += imageLoad;
-            container.SetHtml(html, cssData);
-            container.Location = location;
-            container.MaxSize = maxSize;
-            container.PerformLayout(g);
-            container.PerformPaint(g);
-            if (stylesheetLoad != null)
-                container.StylesheetLoad -= stylesheetLoad;
-            if (imageLoad != null)
-                container.ImageLoad -= imageLoad;
-                
-            if (prevClip != null)
+            SizeF actualSize = SizeF.Empty;
+            if (!string.IsNullOrEmpty(html))
             {
-                g.SetClip(prevClip, CombineMode.Replace);
+                Region prevClip = null;
+                if (maxSize.Height > 0)
+                {
+                    prevClip = g.Clip;
+                    g.SetClip(new RectangleF(location, maxSize));
+                }
+
+                using (var container = new HtmlContainer())
+                {
+                    if (stylesheetLoad != null)
+                        container.StylesheetLoad += stylesheetLoad;
+                    if (imageLoad != null)
+                        container.ImageLoad += imageLoad;
+                    container.SetHtml(html, cssData);
+                    container.Location = location;
+                    container.MaxSize = maxSize;
+                    container.PerformLayout(g);
+                    container.PerformPaint(g);
+                    
+                    if (prevClip != null)
+                    {
+                        g.SetClip(prevClip, CombineMode.Replace);
+                    }
+
+                    actualSize = container.ActualSize;
+                }
             }
 
-            actualSize = container.ActualSize;
+            return actualSize;
         }
-    }
 
-    return actualSize;
-}
+        /// <summary>
+        /// Renders the specified HTML into image of the requested size.<br/>
+        /// The HTML will be layout by the given size but will be clipped if cannot fit.
+        /// </summary>
+        /// <param name="html">HTML source to render</param>
+        /// <param name="size">The size of the image to render into, layout html by width and clipped by height</param>
+        /// <param name="cssData">optiona: the style to use for html rendering (default - use W3 default style)</param>
+        /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
+        /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
+        /// <returns>the generated image of the html</returns>
+        public static Image RenderToImage(string html, Size size, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+        {
+            // create the final image to render into
+            var image = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
+
+            if (!string.IsNullOrEmpty(html))
+            {
+                // create memory buffer from desktop handle that supports alpha chanel
+                IntPtr dib;
+                var memoryHdc = Win32Utils.CreateMemoryHdc(IntPtr.Zero, image.Width, image.Height, out dib);
+                try
+                {
+                    // create memory buffer graphics to use for HTML rendering
+                    using (var memoryGraphics = Graphics.FromHdc(memoryHdc))
+                    {
+                        memoryGraphics.Clear(Color.White);
+
+                        // render HTML into the memory buffer
+                        using (var htmlContainer = new HtmlContainer())
+                        {
+                            if (stylesheetLoad != null)
+                                htmlContainer.StylesheetLoad += stylesheetLoad;
+                            if (imageLoad != null)
+                                htmlContainer.ImageLoad += imageLoad;
+                            htmlContainer.SetHtml(html, cssData);
+                            htmlContainer.MaxSize = size;
+                            htmlContainer.PerformLayout(memoryGraphics);
+                            htmlContainer.PerformPaint(memoryGraphics);
+                        }
+                    }
+
+                    // copy from memory buffer to image
+                    using (var imageGraphics = Graphics.FromImage(image))
+                    {
+                        var imgHdc = imageGraphics.GetHdc();
+                        Win32Utils.BitBlt(imgHdc, 0, 0, image.Width, image.Height, memoryHdc, 0, 0, Win32Utils.BitBltCopy);
+                        imageGraphics.ReleaseHdc(imgHdc);
+                    }
+                }
+                finally
+                {
+                    Win32Utils.ReleaseMemoryHdc(memoryHdc, dib);
+                }
+            }
+
+            return image;
+        }
+
+        /// <summary>
+        /// Renders the specified HTML into image of unknown size that will be determined by max width/height and HTML layout.<br/>
+        /// If <paramref name="maxWidth"/> is zero the html will use all the required width, otherwise it will perform line 
+        /// wrap as specified in the html<br/>
+        /// If <paramref name="maxHeight"/> is zero the html will use all the required height, otherwise it will clip at the
+        /// given max height not rendering the html below it.<br/>
+        /// </summary>
+        /// <param name="html">HTML source to render</param>
+        /// <param name="maxWidth">the max width of the rendered html</param>
+        /// <param name="maxHeight">optional: the max height of the rendered html, if above zero it will be clipped</param>
+        /// <param name="cssData">optiona: the style to use for html rendering (default - use W3 default style)</param>
+        /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
+        /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
+        /// <returns>the generated image of the html</returns>
+        public static Image RenderToImage(string html, int maxWidth, int maxHeight = 0, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+        {
+            if (string.IsNullOrEmpty(html))
+                return new Bitmap(0, 0, PixelFormat.Format32bppArgb);
+
+            using (var htmlContainer = new HtmlContainer())
+            {
+                // use desktop created graphics to measure the HTML
+                using (var measureGraphics = Graphics.FromHwnd(IntPtr.Zero))
+                {
+                    if (stylesheetLoad != null)
+                        htmlContainer.StylesheetLoad += stylesheetLoad;
+                    if (imageLoad != null)
+                        htmlContainer.ImageLoad += imageLoad;
+                    htmlContainer.SetHtml(html, cssData);
+
+                    htmlContainer.PerformLayout(measureGraphics);
+
+                    if (maxWidth > 0 && maxWidth < htmlContainer.ActualSize.Width)
+                    {
+                        // to allow the actual size be smaller than max we need to set max size only if it is really larger
+                        htmlContainer.MaxSize = new SizeF(maxWidth, 0);
+                        htmlContainer.PerformLayout(measureGraphics);
+                    }
+                }
+
+                var size = new Size(maxWidth > 0 ? Math.Min(maxWidth, (int) htmlContainer.ActualSize.Width) : (int) htmlContainer.ActualSize.Width,
+                                    maxHeight > 0 ? Math.Min(maxHeight, (int) htmlContainer.ActualSize.Height) : (int) htmlContainer.ActualSize.Height);
+
+                // create the final image to render into by measured size
+                var image = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
+
+                // create memory buffer from desktop handle that supports alpha chanel
+                IntPtr dib;
+                var memoryHdc = Win32Utils.CreateMemoryHdc(IntPtr.Zero, image.Width, image.Height, out dib);
+                try
+                {
+                    // render HTML into the memory buffer
+                    using (var memoryGraphics = Graphics.FromHdc(memoryHdc))
+                    {
+                        memoryGraphics.Clear(Color.White);
+                        htmlContainer.PerformPaint(memoryGraphics);
+                    }
+
+                    // copy from memory buffer to image
+                    using (var imageGraphics = Graphics.FromImage(image))
+                    {
+                        var imgHdc = imageGraphics.GetHdc();
+                        Win32Utils.BitBlt(imgHdc, 0, 0, image.Width, image.Height, memoryHdc, 0, 0, Win32Utils.BitBltCopy);
+                        imageGraphics.ReleaseHdc(imgHdc);
+                    }
+                }
+                finally
+                {
+                    Win32Utils.ReleaseMemoryHdc(memoryHdc, dib);
+                }
+
+                return image;
+            }
+        }
     }
 }
