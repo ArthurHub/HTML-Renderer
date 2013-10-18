@@ -211,15 +211,19 @@ namespace HtmlRenderer
 
         /// <summary>
         /// Renders the specified HTML into image of the requested size.<br/>
-        /// The HTML will be layout by the given size but will be clipped if cannot fit.
+        /// The HTML will be layout by the given size but will be clipped if cannot fit.<br/>
+        /// <p>
+        /// Limitation: The image cannot have transparent background, by default it will be white.
+        /// </p>
         /// </summary>
         /// <param name="html">HTML source to render</param>
         /// <param name="size">The size of the image to render into, layout html by width and clipped by height</param>
-        /// <param name="cssData">optiona: the style to use for html rendering (default - use W3 default style)</param>
+        /// <param name="backgroundColor">optional: the color to fill the image with (default - white)</param>
+        /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
-        public static Image RenderToImage(string html, Size size, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+        public static Image RenderToImage(string html, Size size, Color backgroundColor = new Color(), CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             // create the final image to render into
             var image = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
@@ -234,7 +238,7 @@ namespace HtmlRenderer
                     // create memory buffer graphics to use for HTML rendering
                     using (var memoryGraphics = Graphics.FromHdc(memoryHdc))
                     {
-                        memoryGraphics.Clear(Color.White);
+                        memoryGraphics.Clear(backgroundColor != Color.Empty ? backgroundColor : Color.White);
 
                         // render HTML into the memory buffer
                         using (var htmlContainer = new HtmlContainer())
@@ -254,7 +258,7 @@ namespace HtmlRenderer
                     using (var imageGraphics = Graphics.FromImage(image))
                     {
                         var imgHdc = imageGraphics.GetHdc();
-                        Win32Utils.BitBlt(imgHdc, 0, 0, image.Width, image.Height, memoryHdc, 0, 0, Win32Utils.BitBltCopy);
+                        Win32Utils.BitBlt(imgHdc, 0, 0, image.Width, image.Height, memoryHdc, 0, 0, Win32Utils.BitBltPaint);
                         imageGraphics.ReleaseHdc(imgHdc);
                     }
                 }
@@ -273,15 +277,19 @@ namespace HtmlRenderer
         /// wrap as specified in the html<br/>
         /// If <paramref name="maxHeight"/> is zero the html will use all the required height, otherwise it will clip at the
         /// given max height not rendering the html below it.<br/>
+        /// <p>
+        /// Limitation: The image cannot have transparent background, by default it will be white.
+        /// </p>
         /// </summary>
         /// <param name="html">HTML source to render</param>
         /// <param name="maxWidth">the max width of the rendered html</param>
         /// <param name="maxHeight">optional: the max height of the rendered html, if above zero it will be clipped</param>
+        /// <param name="backgroundColor">optional: the color to fill the image with (default - white)</param>
         /// <param name="cssData">optiona: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
-        public static Image RenderToImage(string html, int maxWidth, int maxHeight = 0, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+        public static Image RenderToImage(string html, int maxWidth, int maxHeight = 0, Color backgroundColor = new Color(), CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             if (string.IsNullOrEmpty(html))
                 return new Bitmap(0, 0, PixelFormat.Format32bppArgb);
@@ -321,7 +329,7 @@ namespace HtmlRenderer
                     // render HTML into the memory buffer
                     using (var memoryGraphics = Graphics.FromHdc(memoryHdc))
                     {
-                        memoryGraphics.Clear(Color.White);
+                        memoryGraphics.Clear(backgroundColor != Color.Empty ? backgroundColor : Color.White);
                         htmlContainer.PerformPaint(memoryGraphics);
                     }
 
@@ -329,7 +337,7 @@ namespace HtmlRenderer
                     using (var imageGraphics = Graphics.FromImage(image))
                     {
                         var imgHdc = imageGraphics.GetHdc();
-                        Win32Utils.BitBlt(imgHdc, 0, 0, image.Width, image.Height, memoryHdc, 0, 0, Win32Utils.BitBltCopy);
+                        Win32Utils.BitBlt(imgHdc, 0, 0, image.Width, image.Height, memoryHdc, 0, 0, Win32Utils.BitBltPaint);
                         imageGraphics.ReleaseHdc(imgHdc);
                     }
                 }

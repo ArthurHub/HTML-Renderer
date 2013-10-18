@@ -22,9 +22,14 @@ namespace HtmlRenderer.Utils
     internal static class Win32Utils
     {
         /// <summary>
-        /// Const for BitBlt copy
+        /// Const for BitBlt copy raster-operation code.
         /// </summary>
         public const int BitBltCopy = 0x00CC0020;
+
+        /// <summary>
+        /// Const for BitBlt paint raster-operation code.
+        /// </summary>
+        public const int BitBltPaint = 0x00EE0086;
 
         /// <summary>
         /// Create a compatible memory HDC from the given HDC.<br/>
