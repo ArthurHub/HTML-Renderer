@@ -258,7 +258,7 @@ namespace HtmlRenderer
                     using (var imageGraphics = Graphics.FromImage(image))
                     {
                         var imgHdc = imageGraphics.GetHdc();
-                        Win32Utils.BitBlt(imgHdc, 0, 0, image.Width, image.Height, memoryHdc, 0, 0, Win32Utils.BitBltPaint);
+                        Win32Utils.BitBlt(imgHdc, 0, 0, image.Width, image.Height, memoryHdc, 0, 0, Win32Utils.BitBltCopy);
                         imageGraphics.ReleaseHdc(imgHdc);
                     }
                 }
@@ -337,7 +337,7 @@ namespace HtmlRenderer
                     using (var imageGraphics = Graphics.FromImage(image))
                     {
                         var imgHdc = imageGraphics.GetHdc();
-                        Win32Utils.BitBlt(imgHdc, 0, 0, image.Width, image.Height, memoryHdc, 0, 0, Win32Utils.BitBltPaint);
+                        Win32Utils.BitBlt(imgHdc, 0, 0, image.Width, image.Height, memoryHdc, 0, 0, Win32Utils.BitBltCopy);
                         imageGraphics.ReleaseHdc(imgHdc);
                     }
                 }
