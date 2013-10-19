@@ -79,6 +79,7 @@
     <Compile Include="Dom\CssLayoutEngineTable.cs" />
     <Compile Include="Dom\HtmlTag.cs" />
     <Compile Include="Entities\Border.cs" />
+    <Compile Include="Entities\HtmlLinkClickedException.cs" />
     <Compile Include="Entities\HtmlImageLoadEventArgs.cs" />
     <Compile Include="Entities\HtmlLinkClickedEventArgs.cs" />
     <Compile Include="Entities\HtmlRefreshEventArgs.cs" />

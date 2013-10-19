@@ -61,6 +61,7 @@
     <Compile Include="Entities\HtmlGenerationStyle.cs" />
     <Compile Include="Entities\HtmlImageLoadEventArgs.cs" />
     <Compile Include="Entities\HtmlLinkClickedEventArgs.cs" />
+    <Compile Include="Entities\HtmlLinkClickedException.cs" />
     <Compile Include="Entities\HtmlRefreshEventArgs.cs" />
     <Compile Include="Entities\HtmlRenderErrorEventArgs.cs" />
     <Compile Include="Entities\HtmlRenderErrorType.cs" />

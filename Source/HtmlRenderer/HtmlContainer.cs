@@ -488,6 +488,10 @@ namespace HtmlRenderer
                     }
                 }
             }
+            catch (HtmlLinkClickedException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse up handle", ex);
@@ -697,7 +701,14 @@ namespace HtmlRenderer
             if (LinkClicked != null)
             {
                 var args = new HtmlLinkClickedEventArgs(link.HrefLink, link.HtmlTag.Attributes);
-                LinkClicked(this, args);
+                try
+                {
+                    LinkClicked(this, args);
+                }
+                catch (Exception ex)
+                {
+                    throw new HtmlLinkClickedException("Error in link clicked intercept", ex);
+                }
                 if (args.Handled)
                 {
                     return;
