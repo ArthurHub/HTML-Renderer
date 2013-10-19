@@ -382,11 +382,18 @@ namespace HtmlRenderer.Handlers
             {
                 var mp = _parentControl.PointToClient(Control.MousePosition);
                 _currentLink.HtmlContainer.HandleLinkClicked(_parentControl, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0), _currentLink);
-                DisposeContextMenu();
+            }
+            catch (HtmlLinkClickedException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                _htmlContainer.ReportError(HtmlRenderErrorType.ContextMenu, "Failed to open link", ex);                
+                _htmlContainer.ReportError(HtmlRenderErrorType.ContextMenu, "Failed to open link", ex);
+            }
+            finally
+            {
+                DisposeContextMenu();                
             }
         }
 
@@ -398,11 +405,14 @@ namespace HtmlRenderer.Handlers
             try
             {
                 Clipboard.SetText(_currentLink.HrefLink);
-                DisposeContextMenu();
             }
             catch (Exception ex)
             {
                 _htmlContainer.ReportError(HtmlRenderErrorType.ContextMenu, "Failed to copy link url to clipboard", ex);                
+            }
+            finally
+            {
+                DisposeContextMenu();
             }
         }
 
@@ -425,11 +435,14 @@ namespace HtmlRenderer.Handlers
                         _currentRect.Image.Save(saveDialog.FileName);
                     }
                 }
-                DisposeContextMenu();
             }
             catch (Exception ex)
             {
                 _htmlContainer.ReportError(HtmlRenderErrorType.ContextMenu, "Failed to save image", ex);
+            }
+            finally
+            {
+                DisposeContextMenu();
             }
         }
 
@@ -441,11 +454,14 @@ namespace HtmlRenderer.Handlers
             try
             {
                 Clipboard.SetText(_currentRect.OwnerBox.GetAttribute("src"));
-                DisposeContextMenu();
             }
             catch (Exception ex)
             {
                 _htmlContainer.ReportError(HtmlRenderErrorType.ContextMenu, "Failed to copy image url to clipboard", ex);                
+            }
+            finally
+            {
+                DisposeContextMenu();
             }
         }
 
@@ -457,11 +473,14 @@ namespace HtmlRenderer.Handlers
             try
             {
                 Clipboard.SetImage(_currentRect.Image);
-                DisposeContextMenu();
             }
             catch (Exception ex)
             {
                 _htmlContainer.ReportError(HtmlRenderErrorType.ContextMenu, "Failed to copy image to clipboard", ex);                
+            }
+            finally
+            {
+                DisposeContextMenu();
             }
         }
 
@@ -473,11 +492,14 @@ namespace HtmlRenderer.Handlers
             try
             {
                 _selectionHandler.CopySelectedHtml();
-                DisposeContextMenu();
             }
             catch (Exception ex)
             {
                 _htmlContainer.ReportError(HtmlRenderErrorType.ContextMenu, "Failed to copy text to clipboard", ex);                
+            }
+            finally
+            {
+                DisposeContextMenu();
             }
         }
 
@@ -489,11 +511,14 @@ namespace HtmlRenderer.Handlers
             try
             {
                 _selectionHandler.SelectAll(_parentControl);
-                DisposeContextMenu();
             }
             catch (Exception ex)
             {
                 _htmlContainer.ReportError(HtmlRenderErrorType.ContextMenu, "Failed to select all text", ex);
+            }
+            finally
+            {
+                DisposeContextMenu();
             }
         }
 

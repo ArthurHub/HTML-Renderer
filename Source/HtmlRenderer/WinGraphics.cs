@@ -13,7 +13,6 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Runtime.InteropServices;
 using HtmlRenderer.Utils;
 
 namespace HtmlRenderer
@@ -323,38 +322,28 @@ namespace HtmlRenderer
         /// </summary>
         private static void DrawTransparentText(IntPtr hdc, string str, Font font, Point point, Size size, Color color)
         {
-            // Create a memory DC so we can work off-screen
-            IntPtr memoryHdc = Win32Utils.CreateCompatibleDC(hdc);
-            Win32Utils.SetBkMode(memoryHdc, 1);
+            IntPtr dib;
+            var memoryHdc = Win32Utils.CreateMemoryHdc(hdc, size.Width, size.Height, out dib);
 
-            // Create a device-independent bitmap and select it into our DC
-            BitMapInfo info = new BitMapInfo();
-            info.biSize = Marshal.SizeOf(info);
-            info.biWidth = size.Width;
-            info.biHeight = -size.Height;
-            info.biPlanes = 1;
-            info.biBitCount = 32;
-            info.biCompression = 0; // BI_RGB
-            IntPtr ppvBits;
-            IntPtr dib = Win32Utils.CreateDIBSection(hdc, ref info, 0, out ppvBits, IntPtr.Zero, 0);
-            Win32Utils.SelectObject(memoryHdc, dib);
+            try
+            {
+                // copy target background to memory HDC so when copied back it will have the proper background
+                Win32Utils.BitBlt(memoryHdc, 0, 0, size.Width, size.Height, hdc, point.X, point.Y, Win32Utils.BitBltCopy);
 
-            // copy target background to buffer
-            Win32Utils.BitBlt(memoryHdc, 0, 0, size.Width, size.Height, hdc, point.X, point.Y, 0x00CC0020);
+                // Create and select font
+                Win32Utils.SelectObject(memoryHdc, FontsUtils.GetCachedHFont(font));
+                Win32Utils.SetTextColor(memoryHdc, (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R);
 
-            // Create and select font
-            Win32Utils.SelectObject(memoryHdc, FontsUtils.GetCachedHFont(font));
-            Win32Utils.SetTextColor(memoryHdc, (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R);
+                // Draw text to memory HDC
+                Win32Utils.TextOut(memoryHdc, 0, 0, str, str.Length);
 
-            // Draw glowing text
-            Win32Utils.TextOut(memoryHdc, 0, 0, str, str.Length);
-
-            // Copy to foreground
-            Win32Utils.AlphaBlend(hdc, point.X, point.Y, size.Width, size.Height, memoryHdc, 0, 0, size.Width, size.Height, new BlendFunction(color.A));
-
-            // Clean up
-            Win32Utils.DeleteObject(dib);
-            Win32Utils.DeleteDC(memoryHdc);
+                // copy from memory HDC to normal HDC with alpha blend so achive the transparent text
+                Win32Utils.AlphaBlend(hdc, point.X, point.Y, size.Width, size.Height, memoryHdc, 0, 0, size.Width, size.Height, new BlendFunction(color.A));
+            }
+            finally
+            {
+                Win32Utils.ReleaseMemoryHdc(memoryHdc, dib);                
+            }
         }
 
         #endregion

@@ -1231,7 +1231,7 @@ namespace HtmlRenderer.Dom
                     }
                     else
                     {
-                        g.FillRectangle(brush, rect.X, rect.Y, rect.Width, rect.Height);
+                        g.FillRectangle(brush, (float)Math.Ceiling(rect.X), (float)Math.Ceiling(rect.Y), rect.Width, rect.Height);
                     }
 
                     g.SmoothingMode = smooth;

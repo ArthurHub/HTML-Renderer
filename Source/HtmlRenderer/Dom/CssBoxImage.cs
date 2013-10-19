@@ -10,6 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System;
 using System.Drawing;
 using HtmlRenderer.Entities;
 using HtmlRenderer.Handlers;
@@ -88,6 +89,8 @@ namespace HtmlRenderer.Dom
             r.Offset(offset);
             r.Height -= ActualBorderTopWidth + ActualBorderBottomWidth + ActualPaddingTop + ActualPaddingBottom;
             r.Y += ActualBorderTopWidth + ActualPaddingTop;
+            r.X = (float) Math.Floor(r.X);
+            r.Y = (float)Math.Floor(r.Y);
             
             if (_imageWord.Image != null)
             {

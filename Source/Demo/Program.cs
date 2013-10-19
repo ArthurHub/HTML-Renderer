@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System;
+using System.Drawing.Printing;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -26,8 +27,10 @@ namespace HtmlRenderer.Demo
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
+            // TestPrint();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -38,6 +41,39 @@ namespace HtmlRenderer.Demo
 //            PerfForm.Run();
 
 //            ObfuscateHtml();
+        }
+
+        private static void TestPrint()
+        {
+//            string html = File.ReadAllText(@"c:\source\html.txt");
+            string html = File.ReadAllText(@"C:\Source\GitHub\HTML-Renderer\Source\Demo\Samples\02.text.htm");
+
+            var doc = new PrintDocument();
+            doc.PrintPage += (sender, args) =>
+                {
+                    var fact = args.Graphics.DpiX/96f;
+
+//                    args.Graphics.PageScale = 1/fact;
+
+//                    var font = new Font("Arial", 10*fact);
+//                    TextRenderer.DrawText(args.Graphics,"Hello World of PDF", font, new Point((int) (50*fact),(int) (50*fact)), Color.Red);
+
+//                    var font2 = new Font("Arial", 10);
+//                    args.Graphics.DrawString("Hello World of PDF", font2, Brushes.DarkGreen, new PointF(50, 50));
+
+//                    Point location = new Point((int) (args.MarginBounds.Location.X*fact), (int) (args.MarginBounds.Location.Y*fact));
+//                    Size maxSize = new Size((int)(args.MarginBounds.Size.Width * fact), (int) (args.MarginBounds.Size.Height*fact));
+//                    HtmlRender.Render(args.Graphics, html, args.MarginBounds.Location, args.MarginBounds.Size);
+
+                    var image = HtmlRender.RenderToImage(html, args.MarginBounds.Size);
+
+                    args.Graphics.DrawImageUnscaled(image, args.MarginBounds.Location);
+                };
+//            doc.Print();
+
+//            var bitmap = HtmlRender.RenderToImage(File.ReadAllText(@"c:\source\html.txt"), 350, 500);
+//            var bitmap = HtmlRender.RenderToImage(html, 600);
+//            bitmap.Save(@"c:\source\test.png", ImageFormat.Png);
         }
 
         /// <summary>
