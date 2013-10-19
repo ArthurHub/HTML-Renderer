@@ -11,16 +11,12 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Drawing.Text;
+using System.Drawing.Printing;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using HtmlRenderer.Entities;
 
 namespace HtmlRenderer.Demo
 {
@@ -30,39 +26,9 @@ namespace HtmlRenderer.Demo
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
-            using (var bitmap = new Bitmap(300, 200, PixelFormat.Format24bppRgb))
-            {
-                using (var graphics = Graphics.FromImage(bitmap))
-                {
-                    graphics.Clear(Color.Black);
-
-                    graphics.DrawLine(Pens.Fuchsia, 0,0,300,200);
-
-                    TextRenderer.DrawText(graphics, "TEST", new Font("Arial", 20), new Point(0, 0), Color.FromArgb(50, 0, 255, 0),Color.White);
-
-                    graphics.CompositingQuality = CompositingQuality.HighQuality;
-                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    graphics.SmoothingMode = SmoothingMode.HighQuality;
-                    graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
-
-                    using (var htmlContainer = new HtmlContainer())
-                    {
-                        htmlContainer.TextRenderingMethod = TextRenderingMethod.Gdi;
-                        htmlContainer.AvoidGeometryAntialias = false;
-                        htmlContainer.SetHtml(File.ReadAllText(@"c:\source\html.txt"));
-                        htmlContainer.MaxSize = new SizeF(bitmap.Width, bitmap.Height);
-                        htmlContainer.PerformLayout(graphics);
-                        htmlContainer.PerformPaint(graphics);
-                    }
-                }
-
-                bitmap.Save(@"c:\source\test.png");
-            }
-
-            return;
+            // TestPrint();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -72,6 +38,39 @@ namespace HtmlRenderer.Demo
 //            Application.Run(new PerfForm());
 
 //            ObfuscateHtml();
+        }
+
+        private static void TestPrint()
+        {
+//            string html = File.ReadAllText(@"c:\source\html.txt");
+            string html = File.ReadAllText(@"C:\Source\GitHub\HTML-Renderer\Source\Demo\Samples\02.text.htm");
+
+            var doc = new PrintDocument();
+            doc.PrintPage += (sender, args) =>
+                {
+                    var fact = args.Graphics.DpiX/96f;
+
+//                    args.Graphics.PageScale = 1/fact;
+
+//                    var font = new Font("Arial", 10*fact);
+//                    TextRenderer.DrawText(args.Graphics,"Hello World of PDF", font, new Point((int) (50*fact),(int) (50*fact)), Color.Red);
+
+//                    var font2 = new Font("Arial", 10);
+//                    args.Graphics.DrawString("Hello World of PDF", font2, Brushes.DarkGreen, new PointF(50, 50));
+
+//                    Point location = new Point((int) (args.MarginBounds.Location.X*fact), (int) (args.MarginBounds.Location.Y*fact));
+//                    Size maxSize = new Size((int)(args.MarginBounds.Size.Width * fact), (int) (args.MarginBounds.Size.Height*fact));
+//                    HtmlRender.Render(args.Graphics, html, args.MarginBounds.Location, args.MarginBounds.Size);
+
+                    var image = HtmlRender.RenderToImage(html, args.MarginBounds.Size);
+
+                    args.Graphics.DrawImageUnscaled(image, args.MarginBounds.Location);
+                };
+//            doc.Print();
+
+//            var bitmap = HtmlRender.RenderToImage(File.ReadAllText(@"c:\source\html.txt"), 350, 500);
+//            var bitmap = HtmlRender.RenderToImage(html, 600);
+//            bitmap.Save(@"c:\source\test.png", ImageFormat.Png);
         }
 
         /// <summary>
