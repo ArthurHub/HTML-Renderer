@@ -413,6 +413,8 @@ namespace HtmlRenderer.Dom
             tmpRect.Offset(offset);
             tmpRect.Height -= ActualBorderTopWidth + ActualBorderBottomWidth + ActualPaddingTop + ActualPaddingBottom;
             tmpRect.Y += ActualBorderTopWidth + ActualPaddingTop;
+            tmpRect.X = (float)Math.Floor(tmpRect.X);
+            tmpRect.Y = (float)Math.Floor(tmpRect.Y);
             var rect = Rectangle.Round(tmpRect);
 
             DrawImage(g, offset, rect);
