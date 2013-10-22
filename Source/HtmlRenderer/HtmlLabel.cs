@@ -24,7 +24,7 @@ namespace HtmlRenderer
     /// Provides HTML rendering using the text property.<br/>
     /// WinForms control that will render html content in it's client rectangle.<br/>
     /// Using <see cref="AutoSize"/> and <see cref="AutoSizeHeightOnly"/> client can control how the html content effects the
-    /// size of the label. Either case scrollbars are never shown and html content outside of client bounds will be cliped.
+    /// size of the label. Either case scrollbars are never shown and html content outside of client bounds will be clipped.
     /// <see cref="MaximumSize"/> and <see cref="MinimumSize"/> with AutoSize can limit the max/min size of the control<br/>
     /// The control will handle mouse and keyboard events on it to support html text selection, copy-paste and mouse clicks.<br/>
     /// <para>
@@ -339,7 +339,10 @@ namespace HtmlRenderer
                         {
                             var prevWidth = Width;
 
-                            Height = (int)_htmlContainer.ActualSize.Height;
+                            // make sure the height is not lower than min if given
+                            Height = MinimumSize.Height > 0 && MinimumSize.Height > _htmlContainer.ActualSize.Height
+                                         ? MinimumSize.Height
+                                         : (int)_htmlContainer.ActualSize.Height;
 
                             // handle if changing the height of the label affects the desired width and those require re-layout
                             if( prevWidth != Width )
