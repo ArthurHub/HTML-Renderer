@@ -2,7 +2,7 @@
 // are infinite as heaven and earth,
 // inexhaustible as the great rivers.
 // When they come to an end,
-// they bagin again,
+// they begin again,
 // like the days and months;
 // they die and are reborn,
 // like the four seasons."
