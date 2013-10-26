@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1B058920-24B4-4140-8AE7-C8C6C38CA52D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HtmlRenderer</RootNamespace>
+    <AssemblyName>HtmlRenderer</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\DebugNet20\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\ReleaseNet20\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\AssemblyInfo.cs" />
+    <Compile Include="Core\CssData.cs" />
+    <Compile Include="Core\Entities\IContextMenu.cs" />
+    <Compile Include="Core\HtmlContainerBase.cs" />
+    <Compile Include="Core\IGraphics.cs" />
+    <Compile Include="Core\Dom\CssRectWord.cs" />
+    <Compile Include="Core\Dom\CssRectImage.cs" />
+    <Compile Include="Core\Dom\CssBoxFrame.cs" />
+    <Compile Include="Core\Dom\CssBoxHr.cs" />
+    <Compile Include="Core\Dom\CssBox.cs" />
+    <Compile Include="Core\Dom\CssBoxImage.cs" />
+    <Compile Include="Core\Dom\CssRect.cs" />
+    <Compile Include="Core\Dom\CssBoxProperties.cs" />
+    <Compile Include="Core\Dom\CssLayoutEngine.cs" />
+    <Compile Include="Core\Dom\CssLength.cs" />
+    <Compile Include="Core\Dom\CssLineBox.cs" />
+    <Compile Include="Core\Dom\CssSpacingBox.cs" />
+    <Compile Include="Core\Dom\CssLayoutEngineTable.cs" />
+    <Compile Include="Core\Dom\HtmlTag.cs" />
+    <Compile Include="Core\Entities\Border.cs" />
+    <Compile Include="Core\Entities\HtmlLinkClickedException.cs" />
+    <Compile Include="Core\Entities\HtmlImageLoadEventArgs.cs" />
+    <Compile Include="Core\Entities\HtmlLinkClickedEventArgs.cs" />
+    <Compile Include="Core\Entities\HtmlRefreshEventArgs.cs" />
+    <Compile Include="Core\Entities\HtmlRenderErrorEventArgs.cs" />
+    <Compile Include="Core\Entities\HtmlRenderErrorType.cs" />
+    <Compile Include="Core\Entities\HtmlScrollEventArgs.cs" />
+    <Compile Include="Core\Entities\HtmlStylesheetLoadEventArgs.cs" />
+    <Compile Include="Core\Entities\IControl.cs" />
+    <Compile Include="Core\Entities\KeyEvent.cs" />
+    <Compile Include="Core\Entities\MouseEvent.cs" />
+    <Compile Include="Core\Entities\SubString.cs" />
+    <Compile Include="Core\Entities\CssBlockSelectorItem.cs" />
+    <Compile Include="Core\Entities\CssBlock.cs" />
+    <Compile Include="Core\Entities\HtmlGenerationStyle.cs" />
+    <Compile Include="Core\Entities\CssDefaults.cs" />
+    <Compile Include="Core\Entities\Tupler.cs" />
+    <Compile Include="Core\Handlers\ContextMenuHandler.cs" />
+    <Compile Include="Core\Handlers\ImageLoadHandler.cs" />
+    <Compile Include="Core\Handlers\SelectionHandler.cs" />
+    <Compile Include="Core\Handlers\BackgroundImageDrawHandler.cs" />
+    <Compile Include="Core\Handlers\BordersDrawHandler.cs" />
+    <Compile Include="Core\Parse\DomParser.cs" />
+    <Compile Include="Core\Parse\CssValueParser.cs" />
+    <Compile Include="Core\Parse\HtmlParser.cs" />
+    <Compile Include="WinForm\HtmlContainer.cs" />
+    <Compile Include="Core\Utils\ArgChecker.cs" />
+    <Compile Include="Core\Utils\FontsUtils.cs" />
+    <Compile Include="WinForm\Utils\WinFormsContextMenu.cs" />
+    <Compile Include="WinForm\Utils\HtmlClipboardUtils.cs" />
+    <Compile Include="Core\Utils\RenderUtils.cs" />
+    <Compile Include="Core\Entities\CssConstants.cs" />
+    <Compile Include="Core\Entities\CssUnit.cs" />
+    <Compile Include="Core\Entities\HtmlConstants.cs" />
+    <Compile Include="WinForm\HtmlLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinForm\HtmlPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinForm\HtmlRender.cs" />
+    <Compile Include="WinForm\HtmlToolTip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Core\Parse\CssParser.cs" />
+    <Compile Include="Core\Parse\RegexParserUtils.cs" />
+    <Compile Include="Core\Utils\CssUtils.cs" />
+    <Compile Include="Core\Utils\DomUtils.cs" />
+    <Compile Include="Core\Utils\HtmlUtils.cs" />
+    <Compile Include="Core\Utils\CommonUtils.cs" />
+    <Compile Include="Core\Utils\StylesheetLoadHelper.cs" />
+    <Compile Include="WinForm\Utils\WinFormsControl.cs" />
+    <Compile Include="WinForm\Utils\WinFormsGraphics.cs" />
+    <Compile Include="WinForm\Utils\Win32Utils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Utils\ImageError.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Utils\ImageLoad.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

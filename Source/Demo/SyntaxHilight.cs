@@ -6,7 +6,7 @@
 
 using System.Windows.Forms;
 
-namespace HtmlRenderer.Demo
+namespace HtmlRenderer.Demo.WinForms
 {
     public static class SyntaxHilight
     {

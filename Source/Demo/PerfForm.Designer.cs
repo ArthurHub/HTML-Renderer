@@ -1,4 +1,4 @@
-namespace HtmlRenderer.Demo
+namespace HtmlRenderer.Demo.WinForms
 {
     partial class PerfForm
     {

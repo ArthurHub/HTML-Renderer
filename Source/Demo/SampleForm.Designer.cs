@@ -1,6 +1,4 @@
-using HtmlRenderer;
-
-namespace HtmlRenderer.Demo
+namespace HtmlRenderer.Demo.WinForms
 {
     partial class SampleForm
     {

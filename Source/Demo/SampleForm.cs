@@ -14,9 +14,9 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using HtmlRenderer.Demo.Properties;
+using HtmlRenderer.Demo.WinForms.Properties;
 
-namespace HtmlRenderer.Demo
+namespace HtmlRenderer.Demo.WinForms
 {
     public partial class SampleForm : Form
     {

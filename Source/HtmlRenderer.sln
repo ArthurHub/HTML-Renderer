@@ -1,17 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Demo", "Demo\HtmlRenderer.Demo.csproj", "{8AD34FE8-8382-4A8A-B3AA-A0392ED42423}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Demo.WinForms", "Demo\HtmlRenderer.Demo.WinForms.csproj", "{8AD34FE8-8382-4A8A-B3AA-A0392ED42423}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer", "HtmlRenderer\HtmlRenderer.csproj", "{1B058920-24B4-4140-8AE7-C8C6C38CA52D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.WinForms", "HtmlRenderer\HtmlRenderer.WinForms.csproj", "{1B058920-24B4-4140-8AE7-C8C6C38CA52D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRendererNET45", "HtmlRenderer\HtmlRendererNET45.csproj", "{6018296C-7FE3-40A4-A8CC-28D8DA1FD934}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.WinForms.NET45", "HtmlRenderer\HtmlRenderer.WinForms.NET45.csproj", "{6018296C-7FE3-40A4-A8CC-28D8DA1FD934}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MultiTarget", "MultiTarget", "{1BED3EBA-15BF-4AEC-A03C-581D5F1C4DD5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WF.MultiTarget", "WF.MultiTarget", "{1BED3EBA-15BF-4AEC-A03C-581D5F1C4DD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRendererNET35", "HtmlRenderer\HtmlRendererNET35.csproj", "{06CFAAB3-459A-46F1-982B-CE0D62483AC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.WinForms.NET35", "HtmlRenderer\HtmlRenderer.WinForms.NET35.csproj", "{06CFAAB3-459A-46F1-982B-CE0D62483AC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRendererNET40", "HtmlRenderer\HtmlRendererNET40.csproj", "{73A762F1-C802-4659-9B3E-2BF6B284E606}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.WinForms.NET40", "HtmlRenderer\HtmlRenderer.WinForms.NET40.csproj", "{73A762F1-C802-4659-9B3E-2BF6B284E606}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.WPF", "HtmlRenderer\HtmlRenderer.WPF.csproj", "{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Core", "HtmlRenderer\HtmlRenderer.Core.csproj", "{FE611685-391F-4E3E-B27E-D3150E51E49B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{E263EA16-2E6A-4269-A319-AA2F97ADA8E1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF.MultiTarget", "WPF.MultiTarget", "{22F881FF-127B-4B9B-A1BE-EA87715BBD85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +81,26 @@ Global
 		{73A762F1-C802-4659-9B3E-2BF6B284E606}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{73A762F1-C802-4659-9B3E-2BF6B284E606}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{73A762F1-C802-4659-9B3E-2BF6B284E606}.Release|x86.ActiveCfg = Release|Any CPU
+		{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}.Release|x86.ActiveCfg = Release|Any CPU
+		{FE611685-391F-4E3E-B27E-D3150E51E49B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE611685-391F-4E3E-B27E-D3150E51E49B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE611685-391F-4E3E-B27E-D3150E51E49B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FE611685-391F-4E3E-B27E-D3150E51E49B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FE611685-391F-4E3E-B27E-D3150E51E49B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FE611685-391F-4E3E-B27E-D3150E51E49B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE611685-391F-4E3E-B27E-D3150E51E49B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE611685-391F-4E3E-B27E-D3150E51E49B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FE611685-391F-4E3E-B27E-D3150E51E49B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FE611685-391F-4E3E-B27E-D3150E51E49B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,5 +109,6 @@ Global
 		{6018296C-7FE3-40A4-A8CC-28D8DA1FD934} = {1BED3EBA-15BF-4AEC-A03C-581D5F1C4DD5}
 		{06CFAAB3-459A-46F1-982B-CE0D62483AC7} = {1BED3EBA-15BF-4AEC-A03C-581D5F1C4DD5}
 		{73A762F1-C802-4659-9B3E-2BF6B284E606} = {1BED3EBA-15BF-4AEC-A03C-581D5F1C4DD5}
+		{8AD34FE8-8382-4A8A-B3AA-A0392ED42423} = {E263EA16-2E6A-4269-A319-AA2F97ADA8E1}
 	EndGlobalSection
 EndGlobal
