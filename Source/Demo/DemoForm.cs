@@ -16,13 +16,12 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using System.Reflection;
 using System.IO;
-using HtmlRenderer.Demo.WinForms.Properties;
+using HtmlRenderer.Demo.Common;
+using HtmlRenderer.Demo.Common.Properties;
 using HtmlRenderer.Entities;
 using Timer = System.Threading.Timer;
 
@@ -31,6 +30,11 @@ namespace HtmlRenderer.Demo.WinForms
     public partial class DemoForm : Form
     {
         #region Fields and Consts
+        
+        /// <summary>
+        /// the name of the tree node root for all performance samples
+        /// </summary>
+        private const string PerformanceSamplesTreeNodeName = "Performance Samples";
 
         /// <summary>
         /// Cache for resource images
@@ -103,67 +107,53 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         private void LoadSamples()
         {
-            var root = new TreeNode("HTML Renderer");
-            _samplesTreeView.Nodes.Add(root);
-            
+            var showcaseRoot = new TreeNode("HTML Renderer");
+            _samplesTreeView.Nodes.Add(showcaseRoot);
+
+            foreach(var sample in SamplesLoader.ShowcaseSamples)
+            {
+                _perfTestSamples.Add(sample.Value);
+                AddTreeNode(showcaseRoot, sample.Key, sample.Value);
+            }
+
             var testSamplesRoot = new TreeNode("Test Samples");
             _samplesTreeView.Nodes.Add(testSamplesRoot);
 
-            var perfTestSamplesRoot = new TreeNode("Performance Samples");
-            _samplesTreeView.Nodes.Add(perfTestSamplesRoot);
-            
-            var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-            Array.Sort(names);
-            foreach (string name in names)
+            foreach (var sample in SamplesLoader.TestSamples)
             {
-                int extPos = name.LastIndexOf('.');
-                int namePos = extPos > 0 && name.Length > 1 ? name.LastIndexOf('.', extPos - 1) : 0;
-                string ext = name.Substring(extPos >= 0 ? extPos : 0);
-                string shortName = namePos > 0 && name.Length > 2 ? name.Substring(namePos + 1, name.Length - namePos - ext.Length - 1) : name;
+                AddTreeNode(testSamplesRoot, sample.Key, sample.Value);
+            }
 
-                if (".htm".IndexOf(ext, StringComparison.Ordinal) >= 0)
+            if( SamplesLoader.PerformanceSamples.Count > 0 )
+            {
+                var perfTestSamplesRoot = new TreeNode(PerformanceSamplesTreeNodeName);
+                _samplesTreeView.Nodes.Add(perfTestSamplesRoot);
+
+                foreach(var sample in SamplesLoader.PerformanceSamples)
                 {
-                    var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
-                    if (resourceStream != null)
-                    {
-                        using (var sreader = new StreamReader(resourceStream, Encoding.Default))
-                        {
-                            var html = sreader.ReadToEnd();
-                            html = html.Replace("$$Release$$", _htmlPanel.GetType().Assembly.GetName().Version.ToString());
-                            _samples[name] = html;
-                        }
-
-                        var node = new TreeNode(shortName);
-                        if (name.Contains("TestSamples."))
-                        {
-                            testSamplesRoot.Nodes.Add(node);
-                        }
-                        else if (name.Contains("PerfSamples"))
-                        {
-                            perfTestSamplesRoot.Nodes.Add(node);
-                        }
-                        else
-                        {
-                            root.Nodes.Add(node);
-                            _perfTestSamples.Add(_samples[name]);
-                        }
-                        node.Tag = name;
-                    }
+                    AddTreeNode(perfTestSamplesRoot, sample.Key, sample.Value);
                 }
             }
            
-            root.Expand();
-            //testSamplesRoot.Expand();
+            showcaseRoot.Expand();
 
-            if (perfTestSamplesRoot.Nodes.Count < 1)
+            if (showcaseRoot.Nodes.Count > 0)
             {
-                perfTestSamplesRoot.Remove();
+                _samplesTreeView.SelectedNode = showcaseRoot.Nodes[0];
             }
+        }
 
-            if (root.Nodes.Count > 0)
-            {
-                _samplesTreeView.SelectedNode = root.Nodes[0];
-            }
+        /// <summary>
+        /// Add an html sample to the tree and to all samples collection
+        /// </summary>
+        private void AddTreeNode(TreeNode root, string name, string html)
+        {
+            html = html.Replace("$$Release$$", _htmlPanel.GetType().Assembly.GetName().Version.ToString());
+            _samples[name] = html;
+
+            var node = new TreeNode(name);
+            node.Tag = name;
+            root.Nodes.Add(node);
         }
 
         /// <summary>
@@ -195,7 +185,7 @@ namespace HtmlRenderer.Demo.WinForms
 
                 string html = _samples[name];
 
-                if (!name.Contains("PerfSamples"))
+                if (e.Node.Parent.Text != PerformanceSamplesTreeNodeName)
                     SyntaxHilight.AddColoredText(html, _htmlEditor);
                 else
                     _htmlEditor.Text = html;

@@ -19,7 +19,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Reflection;
 using System.IO;
-using HtmlRenderer.Demo.WinForms.Properties;
+using HtmlRenderer.Demo.Common.Properties;
 
 namespace HtmlRenderer.Demo.WinForms
 {

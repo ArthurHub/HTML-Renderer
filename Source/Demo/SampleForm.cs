@@ -14,7 +14,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using HtmlRenderer.Demo.WinForms.Properties;
+using HtmlRenderer.Demo.Common.Properties;
 
 namespace HtmlRenderer.Demo.WinForms
 {

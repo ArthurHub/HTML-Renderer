@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HtmlRenderer.Demo.WinForms.Properties {
+namespace HtmlRenderer.Demo.Common.Properties {
     using System;
     
     
@@ -22,7 +22,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,10 +36,10 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HtmlRenderer.Demo.WinForms.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HtmlRenderer.Demo.Common.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap comment16 {
+        public static System.Drawing.Bitmap comment16 {
             get {
                 object obj = ResourceManager.GetObject("comment16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -73,7 +73,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] CustomFont {
+        public static byte[] CustomFont {
             get {
                 object obj = ResourceManager.GetObject("CustomFont", resourceCulture);
                 return ((byte[])(obj));
@@ -83,7 +83,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Event16 {
+        public static System.Drawing.Bitmap Event16 {
             get {
                 object obj = ResourceManager.GetObject("Event16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -93,7 +93,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap favorites32 {
+        public static System.Drawing.Bitmap favorites32 {
             get {
                 object obj = ResourceManager.GetObject("favorites32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -103,7 +103,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap font32 {
+        public static System.Drawing.Bitmap font32 {
             get {
                 object obj = ResourceManager.GetObject("font32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -113,7 +113,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon html {
+        public static System.Drawing.Icon html {
             get {
                 object obj = ResourceManager.GetObject("html", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
@@ -123,7 +123,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap html32 {
+        public static System.Drawing.Bitmap html32 {
             get {
                 object obj = ResourceManager.GetObject("html32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -133,7 +133,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap image32 {
+        public static System.Drawing.Bitmap image32 {
             get {
                 object obj = ResourceManager.GetObject("image32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -143,7 +143,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap method16 {
+        public static System.Drawing.Bitmap method16 {
             get {
                 object obj = ResourceManager.GetObject("method16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -153,7 +153,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap property16 {
+        public static System.Drawing.Bitmap property16 {
             get {
                 object obj = ResourceManager.GetObject("property16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -173,7 +173,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         ///                &lt;/tr&gt;
         ///             [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Tooltip {
+        public static string Tooltip {
             get {
                 return ResourceManager.GetString("Tooltip", resourceCulture);
             }
@@ -182,7 +182,7 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap web_pallete {
+        public static System.Drawing.Bitmap web_pallete {
             get {
                 object obj = ResourceManager.GetObject("web_pallete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));

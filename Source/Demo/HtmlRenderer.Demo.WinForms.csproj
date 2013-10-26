@@ -55,7 +55,8 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\html.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -88,16 +89,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>DemoForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="SampleForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,85 +98,10 @@
     <Compile Include="SyntaxHilight.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\CustomFont.ttf" />
-    <None Include="Resources\Window.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\property32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\refreshdocument32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\delete16.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\delete32.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\exclamation32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\favorites32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\font32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\formula32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\paly32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Samples\00.Intro.htm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\comment16.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\web_pallete.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Samples\10.HtmlPanel.htm" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Samples\11.HtmlLabel.htm" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Samples\12.HtmlToolTip.htm" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Samples\02.Text.htm" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Samples\05.Images.htm" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Samples\04.Links.htm" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Samples\03.Tables.htm" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Samples\20.About.htm" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="SampleForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SampleForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Samples\07.Additional features.htm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\image32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\property16.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\method16.gif" />
-    <EmbeddedResource Include="Samples\13.HtmlRender.htm" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -205,46 +121,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HtmlRenderer.Demo.Common\HtmlRenderer.Demo.Common.csproj">
+      <Project>{2390b71f-9400-47f4-b23a-7f2649c87d35}</Project>
+      <Name>HtmlRenderer.Demo.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HtmlRenderer\HtmlRenderer.WinForms.csproj">
       <Project>{1B058920-24B4-4140-8AE7-C8C6C38CA52D}</Project>
       <Name>HtmlRenderer.WinForms</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="TestSamples\02.Line break.htm" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="TestSamples\21.Bullets.htm" />
-    <EmbeddedResource Include="TestSamples\20.Fonts decorations.htm" />
-    <EmbeddedResource Include="TestSamples\19.Many images.htm" />
-    <EmbeddedResource Include="TestSamples\18.Anchors.htm" />
-    <EmbeddedResource Include="TestSamples\31.ACID 1.htm" />
-    <EmbeddedResource Include="TestSamples\17.Languages.htm" />
-    <EmbeddedResource Include="Samples\08.Tooltip.htm" />
-    <EmbeddedResource Include="TestSamples\16.Borders.htm" />
-    <EmbeddedResource Include="PerfSamples\1.Big table.htm" />
-    <Content Include="Resources\Event16.png" />
-    <Content Include="Resources\html.ico" />
-    <Content Include="Resources\html32.png" />
-    <EmbeddedResource Include="Samples\09.Using the library.htm" />
-    <EmbeddedResource Include="Samples\01.History.htm" />
-    <EmbeddedResource Include="Samples\06.Embeded video.htm" />
-    <EmbeddedResource Include="TestSamples\15.MaxWidth.htm" />
-    <EmbeddedResource Include="TestSamples\14.Iframes.htm" />
-    <EmbeddedResource Include="TestSamples\30.Misc.htm" />
-    <EmbeddedResource Include="TestSamples\07.Background Image.htm" />
-    <EmbeddedResource Include="TestSamples\06.External Image.htm" />
-    <EmbeddedResource Include="TestSamples\11.LineHeight.htm" />
-    <EmbeddedResource Include="Samples\14.HtmlContainer.htm" />
-    <EmbeddedResource Include="TestSamples\10.BlockInInline.htm" />
-    <EmbeddedResource Include="TestSamples\09.Inline.htm" />
-    <EmbeddedResource Include="TestSamples\13.Tables.htm" />
-    <EmbeddedResource Include="TestSamples\12.Text.htm" />
-    <EmbeddedResource Include="TestSamples\08.White-space.htm" />
-    <EmbeddedResource Include="TestSamples\05.Images.htm" />
-    <EmbeddedResource Include="TestSamples\04.Blockquotes.htm" />
-    <EmbeddedResource Include="TestSamples\03.Paragraphs.htm" />
-    <EmbeddedResource Include="TestSamples\01.Header.htm" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
