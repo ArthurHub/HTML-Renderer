@@ -156,7 +156,7 @@ namespace HtmlRenderer.Utils
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct BlendFunction
+    internal struct BlendFunction
     {
         public byte BlendOp;
         public byte BlendFlags;
@@ -173,7 +173,7 @@ namespace HtmlRenderer.Utils
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct BitMapInfo
+    internal struct BitMapInfo
     {
         public int biSize;
         public int biWidth;

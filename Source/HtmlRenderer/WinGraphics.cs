@@ -337,7 +337,7 @@ namespace HtmlRenderer
                 // Draw text to memory HDC
                 Win32Utils.TextOut(memoryHdc, 0, 0, str, str.Length);
 
-                // copy from memory HDC to normal HDC with alpha blend so achive the transparent text
+                // copy from memory HDC to normal HDC with alpha blend so achieve the transparent text
                 Win32Utils.AlphaBlend(hdc, point.X, point.Y, size.Width, size.Height, memoryHdc, 0, 0, size.Width, size.Height, new BlendFunction(color.A));
             }
             finally
