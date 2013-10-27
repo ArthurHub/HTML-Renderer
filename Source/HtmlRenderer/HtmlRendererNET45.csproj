@@ -110,12 +110,6 @@
     <Content Include="Images\ErrorImage.png" />
     <Content Include="Images\LoadImage.png" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\HtmlRendererInterface\HtmlRenderer.Interface.csproj">
-      <Project>{662e04fa-86a4-4533-b6e2-4828a1f2fff9}</Project>
-      <Name>HtmlRenderer.Interface</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx" />
