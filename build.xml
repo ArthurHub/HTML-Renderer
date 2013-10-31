@@ -1,0 +1,55 @@
+﻿<Project DefaultTargets="run" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <OutputRoot>Build</OutputRoot>
+    <OutputSourceRoot>Build\Source</OutputSourceRoot>
+    <OutputBinRoot>Build\Bins</OutputBinRoot>
+    <SourceRoot>Source</SourceRoot>
+    <LibRoot>Source\HtmlRenderer</LibRoot>
+    <DemoRoot>Source\Demo</DemoRoot>
+    <BuildProperties>Configuration=Release</BuildProperties>
+    <BuildOutputPath>OutputPath=..\..\$(OutputBinRoot)</BuildOutputPath>
+  </PropertyGroup>
+
+  <!--Execute all steps of the build-->
+  <Target Name="Run">
+
+    <Message Text="===================================== Clean build output..."/>
+    <RemoveDir Directories="$(OutputRoot)"/>
+
+    <Message Text="===================================== Build library..."/>
+    <CallTarget Targets="BuildLibrary"/>
+
+    <Message Text="===================================== Build demo..."/>
+    <CallTarget Targets="BuildDemo"/>
+
+    <Message Text="===================================== Copy source..."/>
+    <CallTarget Targets="CopySource"/>
+  </Target>
+
+  <Target Name="BuildLibrary">
+    <MSBuild Properties="$(BuildProperties);$(BuildOutputPath)\NET20" Targets="Rebuild" Projects="$(LibRoot)\HtmlRenderer.csproj" />
+    <MSBuild Properties="$(BuildProperties);$(BuildOutputPath)\NET35" Targets="Rebuild" Projects="$(LibRoot)\HtmlRendererNET35.csproj" />
+    <MSBuild Properties="$(BuildProperties);$(BuildOutputPath)\NET40" Targets="Rebuild" Projects="$(LibRoot)\HtmlRendererNET40.csproj" />
+    <MSBuild Properties="$(BuildProperties);$(BuildOutputPath)\NET45" Targets="Rebuild" Projects="$(LibRoot)\HtmlRendererNET45.csproj" />
+  </Target>
+
+  <Target Name="BuildDemo">
+    <MSBuild Properties="$(BuildProperties);OutputPath=..\..\$(OutputRoot)" Targets="Rebuild" Projects="$(DemoRoot)\HtmlRenderer.Demo.csproj" />
+    <!--
+    <ItemGroup>
+      <files Include="$(OutputRoot)\*.*" Exclude="$(OutputRoot)\*.exe;$(OutputRoot)\*.dll;"/>
+    </ItemGroup>
+    <Delete Files="@(files)"/>
+    -->
+  </Target>
+
+  <Target Name="CopySource">
+    <ItemGroup>
+      <Source Include="$(SourceRoot)\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Source)" DestinationFolder="$(OutputSourceRoot)\%(RecursiveDir)"/>
+    <RemoveDir Directories="$(OutputSourceRoot)\Demo\bin;$(OutputSourceRoot)\Demo\obj;$(OutputSourceRoot)\HtmlRenderer\bin;$(OutputSourceRoot)\HtmlRenderer\obj"/>
+  </Target>
+
+</Project>
