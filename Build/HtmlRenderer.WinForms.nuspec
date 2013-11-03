@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>HtmlRenderer.WinForms</id>
+        <version>0.0.0.1</version>
+        <title>HTML Renderer</title>
+        <authors>Arthur Teplitzki</authors>
+        <owners>Arthur Teplitzki,José Manuel Menéndez Poo</owners>
+        <licenseUrl>https://htmlrenderer.codeplex.com/license</licenseUrl>
+        <projectUrl>https://htmlrenderer.codeplex.com/</projectUrl>
+        <iconUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/html.ico?raw=true</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>The rich formatting power of HTML in your .NET applications using simple controls or static rendering code.
+The library is 100% managed C# code without any external dependencies (no WebBrowser control, ActiveX / COM or MSHTML dll), the only requirement is .NET 2.0 or higher.
+
+Features and Benefits
+---
+* Extensive HTML 4.01 and CSS level 2 specifications support.
+* Support separating CSS from HTML by loading stylesheet code separately.
+* Support text selection, copy-paste and context menu.
+* WinForms controls: HtmlPanel, HtmlLabel and HtmlToolTip.
+* Create images from HTML snippets.
+* Handles "real world" malformed HTML, it doesn't have to be XHTML.
+* 100% managed code and no external dependencies.
+* Supports .NET 2.0 or higher including Client Profile.
+* Lightweight single dll (~250K).
+* High performance and low memory footprint.
+* Extendable and configurable.
+* Powerful Demo application to explore and learn the library.</description>
+        <summary>The rich formatting power of HTML in your .NET applications using simple controls or static rendering code with 100% managed C# code.</summary>
+        <releaseNotes>* added HtmlRender.RenderToImage to handle GDI text rendering into an image (AA isues).
+* fix static render not disposing HtmlComponent.
+* propagate LinkClicked exception from client intercept.
+* fix rounding issues with borders, background and images.</releaseNotes>
+        <tags>html, renderer, control</tags>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System.Windows.Forms" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Drawing" targetFramework="" />
+        </frameworkAssemblies>
+    </metadata>
+    <files>
+        <file src="Release\Bins\net20\HtmlRenderer.dll" target="lib\net20\HtmlRenderer.dll" />
+        <file src="Release\Bins\net20\HtmlRenderer.pdb" target="lib\net20\HtmlRenderer.pdb" />
+        <file src="Release\Bins\net35\HtmlRenderer.dll" target="lib\net35-client\HtmlRenderer.dll" />
+        <file src="Release\Bins\net35\HtmlRenderer.pdb" target="lib\net35-client\HtmlRenderer.pdb" />
+        <file src="Release\Bins\net40\HtmlRenderer.dll" target="lib\net40-client\HtmlRenderer.dll" />
+        <file src="Release\Bins\net40\HtmlRenderer.pdb" target="lib\net40-client\HtmlRenderer.pdb" />
+        <file src="Release\Bins\net45\HtmlRenderer.dll" target="lib\net45\HtmlRenderer.dll" />
+        <file src="Release\Bins\net45\HtmlRenderer.pdb" target="lib\net45\HtmlRenderer.pdb" />
+    </files>
+</package>
