@@ -395,7 +395,7 @@ namespace HtmlRenderer.Dom
                             left -= box.ParentBox.ActualMarginLeft + box.ParentBox.ActualBorderLeftWidth + box.ParentBox.ActualPaddingLeft;
                         
                         x = Math.Min(x, left);
-                        r = Math.Max(r, word.Right - word.ActualWordSpacing);
+                        r = Math.Max(r, word.Right);
                         y = Math.Min(y, word.Top);
                         b = Math.Max(b, word.Bottom);
                     }
