@@ -37,7 +37,7 @@ namespace HtmlRenderer.Parse
             if (root != null)
             {
                 root.HtmlContainer = htmlContainer;
-                
+
                 bool cssDataChanged = false;
                 CascadeStyles(root, htmlContainer, ref cssData, ref cssDataChanged);
 
@@ -47,7 +47,8 @@ namespace HtmlRenderer.Parse
 
                 CorrectImgBoxes(root);
 
-                CorrectLineBreaksBlocks(root);
+                bool followingBlock = true;
+                CorrectLineBreaksBlocks(root, ref followingBlock);
 
                 CorrectInlineBoxesParent(root);
 
@@ -183,7 +184,7 @@ namespace HtmlRenderer.Parse
                     var cls = "." + classes.Substring(startIdx, endIdx - startIdx);
                     AssignCssBlocks(box, cssData, cls);
                     AssignCssBlocks(box, cssData, box.HtmlTag.Name + cls);
-                    
+
                     startIdx = endIdx + 1;
                 }
             }
@@ -226,8 +227,8 @@ namespace HtmlRenderer.Parse
             {
                 assignable = false;
             }
-            
-            if(assignable && block.Hover)
+
+            if (assignable && block.Hover)
             {
                 box.HtmlContainer.AddHoverBox(box, block);
                 assignable = false;
@@ -244,36 +245,36 @@ namespace HtmlRenderer.Parse
         /// <returns>true - the block is assignable to the box, false - otherwise</returns>
         private static bool IsBlockAssignableToBoxWithSelector(CssBox box, CssBlock block)
         {
-            foreach(var selector in block.Selectors)
+            foreach (var selector in block.Selectors)
             {
                 bool matched = false;
-                while( !matched )
+                while (!matched)
                 {
                     box = box.ParentBox;
-                    while( box != null && box.HtmlTag == null )
+                    while (box != null && box.HtmlTag == null)
                         box = box.ParentBox;
 
-                    if( box == null )
+                    if (box == null)
                         return false;
 
-                    if( box.HtmlTag.Name.Equals(selector.Class, StringComparison.InvariantCultureIgnoreCase) )
+                    if (box.HtmlTag.Name.Equals(selector.Class, StringComparison.InvariantCultureIgnoreCase))
                         matched = true;
 
-                    if( !matched && box.HtmlTag.HasAttribute("class") )
+                    if (!matched && box.HtmlTag.HasAttribute("class"))
                     {
                         var className = box.HtmlTag.TryGetAttribute("class");
-                        if( selector.Class.Equals("." + className, StringComparison.InvariantCultureIgnoreCase) || selector.Class.Equals(box.HtmlTag.Name + "." + className, StringComparison.InvariantCultureIgnoreCase) )
+                        if (selector.Class.Equals("." + className, StringComparison.InvariantCultureIgnoreCase) || selector.Class.Equals(box.HtmlTag.Name + "." + className, StringComparison.InvariantCultureIgnoreCase))
                             matched = true;
                     }
 
-                    if( !matched && box.HtmlTag.HasAttribute("id") )
+                    if (!matched && box.HtmlTag.HasAttribute("id"))
                     {
                         var id = box.HtmlTag.TryGetAttribute("id");
-                        if( selector.Class.Equals("#" + id, StringComparison.InvariantCultureIgnoreCase) )
+                        if (selector.Class.Equals("#" + id, StringComparison.InvariantCultureIgnoreCase))
                             matched = true;
                     }
 
-                    if( !matched && selector.DirectParent )
+                    if (!matched && selector.DirectParent)
                         return false;
                 }
             }
@@ -359,7 +360,7 @@ namespace HtmlRenderer.Parse
         /// <param name="box"></param>
         private static void TranslateAttributes(HtmlTag tag, CssBox box)
         {
-            if(tag.HasAttributes())
+            if (tag.HasAttributes())
             {
                 foreach (string att in tag.Attributes.Keys)
                 {
@@ -422,9 +423,9 @@ namespace HtmlRenderer.Parse
                             box.WhiteSpace = CssConstants.NoWrap;
                             break;
                         case HtmlConstants.Size:
-                            if (tag.Name.Equals(HtmlConstants.Hr,StringComparison.OrdinalIgnoreCase))
+                            if (tag.Name.Equals(HtmlConstants.Hr, StringComparison.OrdinalIgnoreCase))
                                 box.Height = TranslateLength(value);
-                            else if(tag.Name.Equals(HtmlConstants.Font,StringComparison.OrdinalIgnoreCase))
+                            else if (tag.Name.Equals(HtmlConstants.Font, StringComparison.OrdinalIgnoreCase))
                                 box.FontSize = value;
                             break;
                         case HtmlConstants.Valign:
@@ -536,7 +537,7 @@ namespace HtmlRenderer.Parse
                     keepBox = keepBox || (i > 0 && i < box.Boxes.Count - 1 && box.Boxes[i - 1].IsInline && box.Boxes[i + 1].IsInline);
 
                     // is first/last box where is in inline box and it's next/previous box is inline
-                    keepBox = keepBox || ( i == 0 && box.Boxes.Count > 1 && box.Boxes[1].IsInline && box.IsInline ) || ( i == box.Boxes.Count-1 && box.Boxes.Count > 1 && box.Boxes[i-1].IsInline && box.IsInline );
+                    keepBox = keepBox || (i == 0 && box.Boxes.Count > 1 && box.Boxes[1].IsInline && box.IsInline) || (i == box.Boxes.Count - 1 && box.Boxes.Count > 1 && box.Boxes[i - 1].IsInline && box.IsInline);
 
                     if (keepBox)
                     {
@@ -586,14 +587,22 @@ namespace HtmlRenderer.Parse
         /// but if it is after block box then it will have min-height of the font size so it will create empty line.
         /// </summary>
         /// <param name="box">the current box to correct its sub-tree</param>
-        private static void CorrectLineBreaksBlocks(CssBox box)
+        /// <param name="followingBlock">used to know if the br is following a box so it should create an empty line or not so it only
+        /// move to a new line</param>
+        private static void CorrectLineBreaksBlocks(CssBox box, ref bool followingBlock)
         {
+            followingBlock = followingBlock || box.IsBlock;
+            foreach (var childBox in box.Boxes)
+            {
+                CorrectLineBreaksBlocks(childBox, ref followingBlock);
+                followingBlock = childBox.Words.Count == 0 && (followingBlock || childBox.IsBlock);
+            }
+
             int lastBr = -1;
             CssBox brBox;
             do
             {
                 brBox = null;
-                CssBox prevBox = null;
                 for (int i = 0; i < box.Boxes.Count && brBox == null; i++)
                 {
                     if (i > lastBr && box.Boxes[i].IsBrElement)
@@ -601,32 +610,30 @@ namespace HtmlRenderer.Parse
                         brBox = box.Boxes[i];
                         lastBr = i;
                     }
-                    else
+                    else if (box.Boxes[i].Words.Count > 0)
                     {
-                        prevBox = box.Boxes[i];
+                        followingBlock = false;
+                    }
+                    else if (box.Boxes[i].IsBlock)
+                    {
+                        followingBlock = true;
                     }
                 }
 
                 if (brBox != null)
                 {
                     var anonBlock = CssBox.CreateBlock(box, new HtmlTag("br"), brBox);
-                    if (!box.IsInline && (prevBox == null || !prevBox.IsInline)) // if (prevBox == null || !prevBox.IsInline) atodo: why Tanay Gábor?
-                        anonBlock.Height = ".9em"; // atodo: check the height to min-height when it is supported
+                    if (followingBlock)
+                        anonBlock.Height = ".95em"; // atodo: check the height to min-height when it is supported
                     brBox.ParentBox = null;
                 }
 
             } while (brBox != null);
-            
-
-            foreach (var childBox in box.Boxes)
-            {
-                CorrectLineBreaksBlocks(childBox);
-            }
         }
 
         /// <summary>
         /// Correct DOM tree if there is block boxes that are inside inline blocks.<br/>
-        /// Need to rearange the tree so block box will be only the child of other block box.
+        /// Need to rearrange the tree so block box will be only the child of other block box.
         /// </summary>
         /// <param name="box">the current box to correct its sub-tree</param>
         private static void CorrectBlockInsideInline(CssBox box)
@@ -682,7 +689,7 @@ namespace HtmlRenderer.Parse
             {
                 box.Boxes[0].Display = CssConstants.Block;
             }
-            if(box.Display == CssConstants.Inline)
+            if (box.Display == CssConstants.Inline)
                 box.Display = CssConstants.Block;
         }
 
@@ -727,7 +734,7 @@ namespace HtmlRenderer.Parse
                     if (parentBox.Boxes.Count > 2)
                         rightBox.SetBeforeBox(parentBox.Boxes[1]);
 
-                    if(splitBox.ParentBox != null)
+                    if (splitBox.ParentBox != null)
                         splitBox.SetBeforeBox(rightBox);
                 }
                 else
@@ -738,14 +745,14 @@ namespace HtmlRenderer.Parse
                 while (badBox.Boxes.Count > 0)
                     badBox.Boxes[0].ParentBox = rightBox;
             }
-            else if(splitBox.ParentBox != null && parentBox.Boxes.Count > 1)
+            else if (splitBox.ParentBox != null && parentBox.Boxes.Count > 1)
             {
                 splitBox.SetBeforeBox(parentBox.Boxes[1]);
-                if (splitBox.HtmlTag != null && splitBox.HtmlTag.Name == "br" && (hadLeft || leftBlock.Boxes.Count > 1 ))
+                if (splitBox.HtmlTag != null && splitBox.HtmlTag.Name == "br" && (hadLeft || leftBlock.Boxes.Count > 1))
                     splitBox.Display = CssConstants.Inline;
             }
         }
-        
+
         /// <summary>
         /// Makes block boxes be among only block boxes and all inline boxes have block parent box.<br/>
         /// Inline boxes should live in a pool of Inline boxes only so they will define a single block.<br/>

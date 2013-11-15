@@ -1189,11 +1189,6 @@ namespace HtmlRenderer.Dom
         {
             if (rect.Width > 0 && rect.Height > 0)
             {
-                if (_imageLoadHandler != null && _imageLoadHandler.Image != null && isFirst)
-                {
-                    BackgroundImageDrawHandler.DrawBackgroundImage(g, this, _imageLoadHandler, rect);
-                }
-
                 Brush brush = null;
                 bool dispose = false;
                 SmoothingMode smooth = g.SmoothingMode;
@@ -1238,6 +1233,11 @@ namespace HtmlRenderer.Dom
 
                     if (roundrect != null) roundrect.Dispose();
                     if (dispose) brush.Dispose();
+                }
+
+                if (_imageLoadHandler != null && _imageLoadHandler.Image != null && isFirst)
+                {
+                    BackgroundImageDrawHandler.DrawBackgroundImage(g, this, _imageLoadHandler, rect);
                 }
             }
         }

@@ -282,7 +282,7 @@ namespace HtmlRenderer.Dom
                             curx = startx;
 
                             // handle if line is wrapped for the first text element where parent has left margin\padding
-                            if (b == box.Boxes[0] && !word.IsLineBreak && (word == b.Words[0] || box.ParentBox.IsBlock))
+                            if (b == box.Boxes[0] && !word.IsLineBreak && (word == b.Words[0] || (box.ParentBox != null && box.ParentBox.IsBlock)))
                                 curx += box.ActualMarginLeft + box.ActualBorderLeftWidth + box.ActualPaddingLeft;
 
                             cury = maxbottom + linespacing;
@@ -395,7 +395,7 @@ namespace HtmlRenderer.Dom
                             left -= box.ParentBox.ActualMarginLeft + box.ParentBox.ActualBorderLeftWidth + box.ParentBox.ActualPaddingLeft;
                         
                         x = Math.Min(x, left);
-                        r = Math.Max(r, word.Right - word.ActualWordSpacing);
+                        r = Math.Max(r, word.Right);
                         y = Math.Min(y, word.Top);
                         b = Math.Max(b, word.Bottom);
                     }
