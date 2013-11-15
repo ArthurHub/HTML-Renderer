@@ -110,8 +110,11 @@ namespace HtmlRenderer.Parse
                 Dictionary<string, string> tagAttributes;
                 if (ParseHtmlTag(source, tagIdx, endIdx - tagIdx + 1, out tagName, out tagAttributes))
                 {
-                    // need to find the parent tag to go one level up
-                    curBox = DomUtils.FindParent(curBox.ParentBox, tagName, curBox);
+                    if (!HtmlUtils.IsSingleTag(tagName) && curBox.ParentBox != null)
+                    {
+                        // need to find the parent tag to go one level up
+                        curBox = DomUtils.FindParent(curBox.ParentBox, tagName, curBox);
+                    }
                 }
                 else if (!string.IsNullOrEmpty(tagName))
                 {
