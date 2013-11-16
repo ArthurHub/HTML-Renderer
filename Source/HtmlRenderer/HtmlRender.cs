@@ -196,7 +196,7 @@ namespace HtmlRenderer
                     container.MaxSize = maxSize;
                     container.PerformLayout(g);
                     container.PerformPaint(g);
-                    
+
                     if (prevClip != null)
                     {
                         g.SetClip(prevClip, CombineMode.Replace);
@@ -223,8 +223,12 @@ namespace HtmlRenderer
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
+        /// <exception cref="ArgumentOutOfRangeException">if <paramref name="backgroundColor"/> is <see cref="Color.Transparent"/></exception>.
         public static Image RenderToImage(string html, Size size, Color backgroundColor = new Color(), CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
+            if (backgroundColor == Color.Transparent)
+                throw new ArgumentOutOfRangeException("backgroundColor", "Transparent background in not supported");
+
             // create the final image to render into
             var image = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
 
@@ -285,12 +289,43 @@ namespace HtmlRenderer
         /// <param name="maxWidth">the max width of the rendered html</param>
         /// <param name="maxHeight">optional: the max height of the rendered html, if above zero it will be clipped</param>
         /// <param name="backgroundColor">optional: the color to fill the image with (default - white)</param>
-        /// <param name="cssData">optiona: the style to use for html rendering (default - use W3 default style)</param>
+        /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
-        public static Image RenderToImage(string html, int maxWidth, int maxHeight = 0, Color backgroundColor = new Color(), CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+        /// <exception cref="ArgumentOutOfRangeException">if <paramref name="backgroundColor"/> is <see cref="Color.Transparent"/></exception>.
+        public static Image RenderToImage(string html, int maxWidth, int maxHeight = 0, Color backgroundColor = new Color(), CssData cssData = null,
+                                            EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
+            return RenderToImage(html, Size.Empty, new Size(maxWidth, maxHeight), backgroundColor, cssData, stylesheetLoad, imageLoad);
+        }
+
+        /// <summary>
+        /// Renders the specified HTML into image of unknown size that will be determined by max width/height and HTML layout.<br/>
+        /// If <paramref name="maxSize.Width"/> is zero the html will use all the required width, otherwise it will perform line 
+        /// wrap as specified in the html<br/>
+        /// If <paramref name="maxSize.Height"/> is zero the html will use all the required height, otherwise it will clip at the
+        /// given max height not rendering the html below it.<br/>
+        /// If <paramref name="minSize"/> (Width/Height) is above zero the rendered image will not be smaller than the given min size.<br/>
+        /// <p>
+        /// Limitation: The image cannot have transparent background, by default it will be white.
+        /// </p>
+        /// </summary>
+        /// <param name="html">HTML source to render</param>
+        /// <param name="minSize">the max width of the rendered html</param>
+        /// <param name="maxSize">optional: the max height of the rendered html, if above zero it will be clipped</param>
+        /// <param name="backgroundColor">optional: the color to fill the image with (default - white)</param>
+        /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
+        /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
+        /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
+        /// <returns>the generated image of the html</returns>
+        /// <exception cref="ArgumentOutOfRangeException">if <paramref name="backgroundColor"/> is <see cref="Color.Transparent"/></exception>.
+        public static Image RenderToImage(string html, Size minSize, Size maxSize, Color backgroundColor = new Color(), CssData cssData = null,
+                                            EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+        {
+            if (backgroundColor == Color.Transparent)
+                throw new ArgumentOutOfRangeException("backgroundColor", "Transparent background in not supported");
+
             if (string.IsNullOrEmpty(html))
                 return new Bitmap(0, 0, PixelFormat.Format32bppArgb);
 
@@ -305,23 +340,25 @@ namespace HtmlRenderer
                         htmlContainer.ImageLoad += imageLoad;
                     htmlContainer.SetHtml(html, cssData);
 
+                    // first layout without size restriction to know html actual size
                     htmlContainer.PerformLayout(measureGraphics);
 
-                    if (maxWidth > 0 && maxWidth < htmlContainer.ActualSize.Width)
+                    if (maxSize.Width > 0 && maxSize.Width < htmlContainer.ActualSize.Width)
                     {
                         // to allow the actual size be smaller than max we need to set max size only if it is really larger
-                        htmlContainer.MaxSize = new SizeF(maxWidth, 0);
+                        htmlContainer.MaxSize = new SizeF(maxSize.Width, 0);
                         htmlContainer.PerformLayout(measureGraphics);
                     }
                 }
 
-                var size = new Size(maxWidth > 0 ? Math.Min(maxWidth, (int) htmlContainer.ActualSize.Width) : (int) htmlContainer.ActualSize.Width,
-                                    maxHeight > 0 ? Math.Min(maxHeight, (int) htmlContainer.ActualSize.Height) : (int) htmlContainer.ActualSize.Height);
+                // restrict the final size by min/max
+                var finalWidth = Math.Max(maxSize.Width > 0 ? Math.Min(maxSize.Width, (int)htmlContainer.ActualSize.Width) : (int)htmlContainer.ActualSize.Width, minSize.Width);
+                var finalHeight = Math.Max(maxSize.Height > 0 ? Math.Min(maxSize.Height, (int)htmlContainer.ActualSize.Height) : (int)htmlContainer.ActualSize.Height, minSize.Height);
 
                 // create the final image to render into by measured size
-                var image = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
+                var image = new Bitmap(finalWidth, finalHeight, PixelFormat.Format32bppArgb);
 
-                // create memory buffer from desktop handle that supports alpha chanel
+                // create memory buffer from desktop handle that supports alpha channel
                 IntPtr dib;
                 var memoryHdc = Win32Utils.CreateMemoryHdc(IntPtr.Zero, image.Width, image.Height, out dib);
                 try
