@@ -88,6 +88,11 @@ namespace HtmlRenderer.Handlers
         private bool _isDoubleClickSelect;
 
         /// <summary>
+        /// used to know if selection is in the control or started outside so it needs to be ignored
+        /// </summary>
+        private bool _mouseDownInControl;
+
+        /// <summary>
         /// used to handle drag & drop
         /// </summary>
         private bool _mouseDownOnSelectedWord;
@@ -165,8 +170,9 @@ namespace HtmlRenderer.Handlers
         public void HandleMouseDown(IControl parent, Point loc, bool isMouseInContainer)
         {
             bool clear = !isMouseInContainer;
-            if(isMouseInContainer)
+            if (isMouseInContainer)
             {
+                _mouseDownInControl = true;
                 _isDoubleClickSelect = (DateTime.Now - _lastMouseDown).TotalMilliseconds < 400;
                 _lastMouseDown = DateTime.Now;
                 _mouseDownOnSelectedWord = false;
@@ -187,7 +193,7 @@ namespace HtmlRenderer.Handlers
                 {
                     var rect = DomUtils.GetCssBoxWord(_root, loc);
                     var link = DomUtils.GetLinkBox(_root, loc);
-                    if(_root.HtmlContainer.IsContextMenuEnabled)
+                    if (_root.HtmlContainer.IsContextMenuEnabled)
                     {
                         _contextMenuHandler.ShowContextMenu(parent, rect, link);
                     }
@@ -211,6 +217,7 @@ namespace HtmlRenderer.Handlers
         public bool HandleMouseUp(IControl parent, bool leftMouseButton)
         {
             bool ignore = false;
+            _mouseDownInControl = false;
             if (_root.HtmlContainer.IsSelectionEnabled)
             {
                 ignore = _inSelection;
@@ -226,7 +233,7 @@ namespace HtmlRenderer.Handlers
             ignore = ignore || (DateTime.Now - _lastMouseDown > TimeSpan.FromSeconds(1));
             return ignore;
         }
-        
+
         /// <summary>
         /// Handle mouse move to handle hover cursor and text selection.
         /// </summary>
@@ -234,11 +241,13 @@ namespace HtmlRenderer.Handlers
         /// <param name="loc">the location of the mouse on the html</param>
         public void HandleMouseMove(IControl parent, Point loc)
         {
-            if (_root.HtmlContainer.IsSelectionEnabled && parent.LeftMouseButton)
+            if (_root.HtmlContainer.IsSelectionEnabled && _mouseDownInControl && parent.LeftMouseButton)
             {
                 if (_mouseDownOnSelectedWord)
                 {
-                    StartDragDrop(parent);
+                    // make sure not to start drag-drop on click but when it actually moves as it fucks mouse-up
+                    if ((DateTime.Now - _lastMouseDown).TotalMilliseconds > 200)
+                        StartDragDrop(parent);
                 }
                 else
                 {
@@ -258,26 +267,26 @@ namespace HtmlRenderer.Handlers
                 else if (_root.HtmlContainer.IsSelectionEnabled)
                 {
                     var word = DomUtils.GetCssBoxWord(_root, loc);
-                    _cursorChanged = word != null && !word.IsImage && !( word.Selected && ( word.SelectedStartIndex < 0 || word.Left + word.SelectedStartOffset <= loc.X ) && ( word.SelectedEndOffset < 0 || word.Left + word.SelectedEndOffset >= loc.X ) );
-                    if( _cursorChanged )
+                    _cursorChanged = word != null && !word.IsImage && !(word.Selected && (word.SelectedStartIndex < 0 || word.Left + word.SelectedStartOffset <= loc.X) && (word.SelectedEndOffset < 0 || word.Left + word.SelectedEndOffset >= loc.X));
+                    if (_cursorChanged)
                         parent.SetCursorIBeam();
                     else
                         parent.SetCursorDefault();
                 }
-                else if(_cursorChanged)
+                else if (_cursorChanged)
                 {
                     parent.SetCursorDefault();
                 }
             }
         }
-        
+
         /// <summary>
         /// On mouse leave change the cursor back to default.
         /// </summary>
         /// <param name="parent">the control hosting the html to set cursor and invalidate</param>
         public void HandleMouseLeave(IControl parent)
         {
-            if(_cursorChanged)
+            if (_cursorChanged)
             {
                 _cursorChanged = false;
                 parent.SetCursorDefault();
@@ -291,7 +300,7 @@ namespace HtmlRenderer.Handlers
         /// <param name="parent">the control hosting the html to use for clipboard access</param>
         public void CopySelectedHtml(IControl parent)
         {
-            if(_root.HtmlContainer.IsSelectionEnabled)
+            if (_root.HtmlContainer.IsSelectionEnabled)
             {
                 var html = DomUtils.GenerateHtml(_root, HtmlGenerationStyle.Inline, true);
                 var plainText = DomUtils.GetSelectedPlainText(_root);
@@ -588,7 +597,7 @@ namespace HtmlRenderer.Handlers
             float selectionOffset;
             CalculateWordCharIndexAndOffset(control, word, loc, selectionStart, out selectionIndex, out selectionOffset);
 
-            if(selectionStart)
+            if (selectionStart)
             {
                 _selectionStartIndex = selectionIndex;
                 _selectionStartOffset = selectionOffset;
@@ -638,7 +647,7 @@ namespace HtmlRenderer.Handlers
                 {
                     int charFit;
                     int charFitWidth;
-                    var maxWidth = offset + ( inclusive ? 0 : 1.5f*word.LeftGlyphPadding );
+                    var maxWidth = offset + (inclusive ? 0 : 1.5f * word.LeftGlyphPadding);
                     g.MeasureString(word.Text, font, maxWidth, out charFit, out charFitWidth);
 
                     selectionIndex = charFit;
