@@ -89,6 +89,11 @@ namespace HtmlRenderer.Handlers
         private bool _isDoubleClickSelect;
 
         /// <summary>
+        /// used to know if selection is in the control or started outside so it needs to be ignored
+        /// </summary>
+        private bool _mouseDownInControl;
+
+        /// <summary>
         /// used to handle drag & drop
         /// </summary>
         private bool _mouseDownOnSelectedWord;
@@ -168,6 +173,7 @@ namespace HtmlRenderer.Handlers
             bool clear = !isMouseInContainer;
             if(isMouseInContainer)
             {
+                _mouseDownInControl = true;
                 _isDoubleClickSelect = (DateTime.Now - _lastMouseDown).TotalMilliseconds < 400;
                 _lastMouseDown = DateTime.Now;
                 _mouseDownOnSelectedWord = false;
@@ -212,6 +218,7 @@ namespace HtmlRenderer.Handlers
         public bool HandleMouseUp(Control parent, MouseButtons button)
         {
             bool ignore = false;
+            _mouseDownInControl = false;
             if (_root.HtmlContainer.IsSelectionEnabled)
             {
                 ignore = _inSelection;
@@ -235,11 +242,13 @@ namespace HtmlRenderer.Handlers
         /// <param name="loc">the location of the mouse on the html</param>
         public void HandleMouseMove(Control parent, Point loc)
         {
-            if (_root.HtmlContainer.IsSelectionEnabled && (Control.MouseButtons & MouseButtons.Left) != 0)
+            if (_root.HtmlContainer.IsSelectionEnabled && _mouseDownInControl && (Control.MouseButtons & MouseButtons.Left) != 0)
             {
                 if (_mouseDownOnSelectedWord)
                 {
-                    StartDragDrop(parent);
+                    // make sure not to start drag-drop on click but when it actually moves as it fucks mouse-up
+                    if ((DateTime.Now - _lastMouseDown).TotalMilliseconds > 200)
+                        StartDragDrop(parent);
                 }
                 else
                 {
@@ -305,7 +314,7 @@ namespace HtmlRenderer.Handlers
         /// Handles backward selecting by returning the selection end data instead of start.
         /// </remarks>
         /// <param name="word">the word to return the selection start index for</param>
-        /// <returns>data value or -1 if not aplicable</returns>
+        /// <returns>data value or -1 if not applicable</returns>
         public int GetSelectingStartIndex(CssRect word)
         {
             return word == (_backwardSelection ? _selectionEnd : _selectionStart) ? (_backwardSelection ? _selectionEndIndex : _selectionStartIndex) : -1;
