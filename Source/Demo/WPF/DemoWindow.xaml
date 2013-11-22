@@ -8,9 +8,7 @@
             <ColumnDefinition Width="auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <TreeView Grid.Column="0">
-            
-        </TreeView>
+        <TreeView x:Name="_samplesTreeView" Grid.Column="0" SelectedItemChanged="OnSelectedItemChanged"/>
         <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" Width="4" Background="#FFBCBCBC"/>
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
@@ -20,7 +18,7 @@
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="hello"></TextBlock>
             <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="4" Background="#FFBCBCBC"/>
-            <TextBlock Grid.Row="2" Text="hello"></TextBlock>
+            <RichTextBox x:Name="_htmlEditor" Grid.Row="2" VerticalScrollBarVisibility="Auto"/>
         </Grid>
     </Grid>
 </Window>

@@ -83,6 +83,12 @@
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\HtmlRenderer.Demo.Common.csproj">
+      <Project>{2390B71F-9400-47F4-B23A-7F2649C87D35}</Project>
+      <Name>HtmlRenderer.Demo.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

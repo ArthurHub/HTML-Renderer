@@ -121,11 +121,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HtmlRenderer.Demo.Common\HtmlRenderer.Demo.Common.csproj">
+    <ProjectReference Include="..\Common\HtmlRenderer.Demo.Common.csproj">
       <Project>{2390b71f-9400-47f4-b23a-7f2649c87d35}</Project>
       <Name>HtmlRenderer.Demo.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HtmlRenderer\HtmlRenderer.WinForms.csproj">
+    <ProjectReference Include="..\..\HtmlRenderer\HtmlRenderer.WinForms.csproj">
       <Project>{1B058920-24B4-4140-8AE7-C8C6C38CA52D}</Project>
       <Name>HtmlRenderer.WinForms</Name>
     </ProjectReference>

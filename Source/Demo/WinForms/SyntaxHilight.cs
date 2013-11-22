@@ -24,7 +24,7 @@ namespace HtmlRenderer.Demo.WinForms
              * ADD COLOUR TABLE TO THE HEADER FIRST 
              * */
 
-            // Search for colour table info, if it exists (which it shouldn't)
+            // Search for color table info, if it exists (which it shouldn't)
             // remove it and replace with our one
             int iCTableStart = strRtf.IndexOf("colortbl;");
 
