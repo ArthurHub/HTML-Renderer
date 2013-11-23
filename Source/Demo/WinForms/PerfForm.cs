@@ -19,7 +19,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Reflection;
 using System.IO;
-using HtmlRenderer.Demo.Common.Properties;
+using HtmlRenderer.Demo.Common;
 
 namespace HtmlRenderer.Demo.WinForms
 {
@@ -47,7 +47,7 @@ namespace HtmlRenderer.Demo.WinForms
         {
             InitializeComponent();
 
-            Icon = Resources.html;
+            Icon = DemoForm.GetIcon();
 
             StartPosition = FormStartPosition.CenterScreen;
             Size = new Size(1200, 800);

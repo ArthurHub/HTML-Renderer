@@ -21,7 +21,6 @@ using System.Threading;
 using System.Windows.Forms;
 using System.IO;
 using HtmlRenderer.Demo.Common;
-using HtmlRenderer.Demo.Common.Properties;
 using HtmlRenderer.Entities;
 using Timer = System.Threading.Timer;
 
@@ -76,7 +75,7 @@ namespace HtmlRenderer.Demo.WinForms
         {
             InitializeComponent();
 
-            Icon = Resources.html;
+            Icon = GetIcon();
 
             _htmlPanel.RenderError += OnRenderError;
             _htmlPanel.LinkClicked += OnLinkClicked;
@@ -97,6 +96,15 @@ namespace HtmlRenderer.Demo.WinForms
             LoadCustomFonts();
 
             _updateHtmlTimer = new Timer(OnUpdateHtmlTimerTick);
+        }
+
+        /// <summary>
+        /// Get icon for the demo.
+        /// </summary>
+        internal static Icon GetIcon()
+        {
+            var stream = typeof(DemoForm).Assembly.GetManifestResourceStream("HtmlRenderer.Demo.WinForms.html.ico");
+            return stream != null ? new Icon(stream) : null;
         }
 
 
@@ -405,7 +413,7 @@ namespace HtmlRenderer.Demo.WinForms
                 {
                     var split = e.Attributes["byrect"].Split(',');
                     var rect = new Rectangle(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]), int.Parse(split[3]));
-                    e.Callback( img ?? Resources.html32, rect);
+                    e.Callback(img ?? TryLoadResourceImage("htmlicon"), rect);
                     return;
                 }
             }
@@ -425,28 +433,28 @@ namespace HtmlRenderer.Demo.WinForms
                 switch (src.ToLower())
                 {
                     case "htmlicon":
-                        image = Resources.html32;
+                        image = Image.FromStream(Resources.Html32);
                         break;
                     case "staricon":
-                        image = Resources.favorites32;
+                        image = Image.FromStream(Resources.Favorites32);
                         break;
                     case "fonticon":
-                        image = Resources.font32;
+                        image = Image.FromStream(Resources.Font32);
                         break;
                     case "commenticon":
-                        image = Resources.comment16;
+                        image = Image.FromStream(Resources.Comment16);
                         break;
                     case "imageicon":
-                        image = Resources.image32;
+                        image = Image.FromStream(Resources.Image32);
                         break;
                     case "methodicon":
-                        image = Resources.method16;
+                        image = Image.FromStream(Resources.Method16);
                         break;
                     case "propertyicon":
-                        image = Resources.property16;
+                        image = Image.FromStream(Resources.Property16);
                         break;
                     case "eventicon":
-                        image = Resources.Event16;
+                        image = Image.FromStream(Resources.Event16);
                         break;
                 }
 

@@ -36,37 +36,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Resources.cs" />
     <Compile Include="SamplesLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <DependentUpon>Resources.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="SyntaxHilight.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PerfSamples\1.Big table.htm" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\comment16.gif" />
-    <None Include="Resources\CustomFont.ttf" />
+    <EmbeddedResource Include="Resources\comment16.gif" />
+    <EmbeddedResource Include="Resources\CustomFont.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\delete16.gif" />
+    <EmbeddedResource Include="Resources\delete16.gif" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\delete32.gif" />
+    <EmbeddedResource Include="Resources\delete32.gif" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Event16.png" />
-    <Content Include="Resources\html.ico" />
-    <Content Include="Resources\html32.png" />
+    <EmbeddedResource Include="Resources\Event16.png" />
+    <EmbeddedResource Include="Resources\html32.png" />
     <EmbeddedResource Include="TestSamples\31.ACID 1.htm" />
     <EmbeddedResource Include="TestSamples\30.Misc.htm" />
     <EmbeddedResource Include="TestSamples\21.Bullets.htm" />
@@ -106,18 +96,21 @@
     <EmbeddedResource Include="Samples\02.Text.htm" />
     <EmbeddedResource Include="Samples\01.History.htm" />
     <EmbeddedResource Include="Samples\00.Intro.htm" />
-    <None Include="Resources\Window.gif" />
-    <None Include="Resources\web_pallete.gif" />
-    <None Include="Resources\refreshdocument32.png" />
-    <None Include="Resources\property32.png" />
-    <None Include="Resources\property16.gif" />
-    <None Include="Resources\paly32.png" />
-    <None Include="Resources\method16.gif" />
-    <None Include="Resources\image32.png" />
-    <None Include="Resources\formula32.png" />
-    <None Include="Resources\font32.png" />
-    <None Include="Resources\favorites32.png" />
-    <None Include="Resources\exclamation32.png" />
+    <EmbeddedResource Include="Resources\Window.gif" />
+    <EmbeddedResource Include="Resources\web_pallete.gif" />
+    <EmbeddedResource Include="Resources\refreshdocument32.png" />
+    <EmbeddedResource Include="Resources\property32.png" />
+    <EmbeddedResource Include="Resources\property16.gif" />
+    <EmbeddedResource Include="Resources\paly32.png" />
+    <EmbeddedResource Include="Resources\method16.gif" />
+    <EmbeddedResource Include="Resources\image32.png" />
+    <EmbeddedResource Include="Resources\formula32.png" />
+    <EmbeddedResource Include="Resources\font32.png" />
+    <EmbeddedResource Include="Resources\favorites32.png" />
+    <EmbeddedResource Include="Resources\exclamation32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Tooltip.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
