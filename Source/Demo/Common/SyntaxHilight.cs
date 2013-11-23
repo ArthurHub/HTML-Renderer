@@ -4,25 +4,13 @@
  * Copyright Alun Evans 2006
  * */
 
-using System.Windows.Forms;
-
-namespace HtmlRenderer.Demo.WinForms
+namespace HtmlRenderer.Demo.Common
 {
     public static class SyntaxHilight
     {
-        public static void AddColoredText(string strTextToAdd, RichTextBox rtb)
+        public static string AddColoredText(string strRtf)
         {
-            var selectionStart = rtb.SelectionStart;
-            
-            //Use the RichTextBox to create the initial RTF code
-            rtb.Clear();
-            rtb.AppendText(strTextToAdd);
-            string strRtf = rtb.Rtf;
-            rtb.Clear();
-
-            /* 
-             * ADD COLOUR TABLE TO THE HEADER FIRST 
-             * */
+            // ADD COLOUR TABLE TO THE HEADER FIRST 
 
             // Search for color table info, if it exists (which it shouldn't)
             // remove it and replace with our one
@@ -41,7 +29,7 @@ namespace HtmlRenderer.Demo.WinForms
                     "colortbl ;\\red255\\green0\\blue0;\\red0\\green128\\blue0;\\red0\\green0\\blue255;}");
             }
 
-            //colour table doesn't exist yet, so let's make one
+            //color table doesn't exist yet, so let's make one
             else
             {
                 // find index of start of header
@@ -144,8 +132,7 @@ namespace HtmlRenderer.Demo.WinForms
                     inAttributeVal = !inAttributeVal;
                 }
             }
-            rtb.Rtf = strRtf;
-            rtb.SelectionStart = selectionStart;
+            return strRtf;
         }
     }
 }

@@ -95,7 +95,6 @@
     <Compile Include="SampleForm.Designer.cs">
       <DependentUpon>SampleForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SyntaxHilight.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SampleForm.resx">

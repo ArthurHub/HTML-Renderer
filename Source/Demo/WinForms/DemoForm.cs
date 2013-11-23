@@ -186,7 +186,7 @@ namespace HtmlRenderer.Demo.WinForms
                 string html = _samples[name];
 
                 if (e.Node.Parent.Text != PerformanceSamplesTreeNodeName)
-                    SyntaxHilight.AddColoredText(html, _htmlEditor);
+                    SetColoredText(html);
                 else
                     _htmlEditor.Text = html;
 
@@ -333,7 +333,7 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         private void OnReloadColorsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            SyntaxHilight.AddColoredText(_htmlEditor.Text, _htmlEditor);
+            SetColoredText(_htmlEditor.Text);
         }
 
         /// <summary>
@@ -482,6 +482,21 @@ namespace HtmlRenderer.Demo.WinForms
                     e.Handled = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Set html syntax color text on the RTF html editor.
+        /// </summary>
+        private void SetColoredText(string text)
+        {
+            var selectionStart = _htmlEditor.SelectionStart;
+            _htmlEditor.Clear();
+            _htmlEditor.AppendText(text);
+            text = _htmlEditor.Rtf;
+
+            _htmlEditor.Clear();
+            _htmlEditor.Rtf = SyntaxHilight.AddColoredText(text);
+            _htmlEditor.SelectionStart = selectionStart;
         }
 
         /// <summary>
