@@ -23,17 +23,17 @@ namespace HtmlRenderer.Demo.Common
         /// <summary>
         /// Samples to showcase the HTML Renderer capabilities
         /// </summary>
-        private static readonly List<KeyValuePair<string, string>> _showcaseSamples = new List<KeyValuePair<string, string>>();
+        private static readonly List<HtmlSample> _showcaseSamples = new List<HtmlSample>();
 
         /// <summary>
         /// Samples to test the different features of HTML Renderer that they work correctly
         /// </summary>
-        private static readonly List<KeyValuePair<string, string>> _testSamples = new List<KeyValuePair<string, string>>();
+        private static readonly List<HtmlSample> _testSamples = new List<HtmlSample>();
 
         /// <summary>
         /// Samples used to test extreme performance
         /// </summary>
-        private static readonly List<KeyValuePair<string, string>> _performanceSamples = new List<KeyValuePair<string, string>>();
+        private static readonly List<HtmlSample> _performanceSamples = new List<HtmlSample>();
 
         /// <summary>
         /// Init.
@@ -46,7 +46,7 @@ namespace HtmlRenderer.Demo.Common
         /// <summary>
         /// Samples to showcase the HTML Renderer capabilities
         /// </summary>
-        public static List<KeyValuePair<string, string>> ShowcaseSamples
+        public static List<HtmlSample> ShowcaseSamples
         {
             get { return _showcaseSamples; }
         }
@@ -54,7 +54,7 @@ namespace HtmlRenderer.Demo.Common
         /// <summary>
         /// Samples to test the different features of HTML Renderer that they work correctly
         /// </summary>
-        public static List<KeyValuePair<string, string>> TestSamples
+        public static List<HtmlSample> TestSamples
         {
             get { return _testSamples; }
         }
@@ -62,7 +62,7 @@ namespace HtmlRenderer.Demo.Common
         /// <summary>
         /// Samples used to test extreme performance
         /// </summary>
-        public static List<KeyValuePair<string, string>> PerformanceSamples
+        public static List<HtmlSample> PerformanceSamples
         {
             get { return _performanceSamples; }
         }
@@ -92,15 +92,15 @@ namespace HtmlRenderer.Demo.Common
 
                             if( name.Contains("TestSamples.") )
                             {
-                                _testSamples.Add(new KeyValuePair<string, string>(shortName, html));
+                                _testSamples.Add(new HtmlSample(shortName, name, html));
                             }
                             else if( name.Contains("PerfSamples") )
                             {
-                                _performanceSamples.Add(new KeyValuePair<string, string>(shortName, html));
+                                _performanceSamples.Add(new HtmlSample(shortName, name, html));
                             }
                             else
                             {
-                                _showcaseSamples.Add(new KeyValuePair<string, string>(shortName, html));                                
+                                _showcaseSamples.Add(new HtmlSample(shortName, name, html));                                
                             }
                         }
                     }

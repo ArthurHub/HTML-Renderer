@@ -51,11 +51,6 @@ namespace HtmlRenderer.Demo.WinForms
         private readonly List<string> _perfTestSamples = new List<string>();
 
         /// <summary>
-        /// the html samples to show in the demo
-        /// </summary>
-        private readonly Dictionary<string, string> _samples = new Dictionary<string, string>();
-
-        /// <summary>
         /// timer to update the rendered html when html in editor changes with delay
         /// </summary>
         private readonly Timer _updateHtmlTimer;
@@ -120,8 +115,8 @@ namespace HtmlRenderer.Demo.WinForms
 
             foreach(var sample in SamplesLoader.ShowcaseSamples)
             {
-                _perfTestSamples.Add(sample.Value);
-                AddTreeNode(showcaseRoot, sample.Key, sample.Value);
+                _perfTestSamples.Add(sample.Html);
+                AddTreeNode(showcaseRoot, sample);
             }
 
             var testSamplesRoot = new TreeNode("Test Samples");
@@ -129,7 +124,7 @@ namespace HtmlRenderer.Demo.WinForms
 
             foreach (var sample in SamplesLoader.TestSamples)
             {
-                AddTreeNode(testSamplesRoot, sample.Key, sample.Value);
+                AddTreeNode(testSamplesRoot, sample);
             }
 
             if( SamplesLoader.PerformanceSamples.Count > 0 )
@@ -139,7 +134,7 @@ namespace HtmlRenderer.Demo.WinForms
 
                 foreach(var sample in SamplesLoader.PerformanceSamples)
                 {
-                    AddTreeNode(perfTestSamplesRoot, sample.Key, sample.Value);
+                    AddTreeNode(perfTestSamplesRoot, sample);
                 }
             }
            
@@ -154,13 +149,12 @@ namespace HtmlRenderer.Demo.WinForms
         /// <summary>
         /// Add an html sample to the tree and to all samples collection
         /// </summary>
-        private void AddTreeNode(TreeNode root, string name, string html)
+        private void AddTreeNode(TreeNode root, HtmlSample sample)
         {
-            html = html.Replace("$$Release$$", _htmlPanel.GetType().Assembly.GetName().Version.ToString());
-            _samples[name] = html;
+            var html = sample.Html.Replace("$$Release$$", _htmlPanel.GetType().Assembly.GetName().Version.ToString());
 
-            var node = new TreeNode(name);
-            node.Tag = name;
+            var node = new TreeNode(sample.Name);
+            node.Tag = new HtmlSample(sample.Name, sample.FullName, html);
             root.Nodes.Add(node);
         }
 
@@ -186,25 +180,23 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         private void OnSamplesTreeViewAfterSelect(object sender, TreeViewEventArgs e)
         {
-            var name = e.Node.Tag as string;
-            if (!string.IsNullOrEmpty(name))
+            var sample = e.Node.Tag as HtmlSample;
+            if (sample != null)
             {
                 _updateLock = true;
 
-                string html = _samples[name];
-
                 if (e.Node.Parent.Text != PerformanceSamplesTreeNodeName)
-                    SetColoredText(html);
+                    SetColoredText(sample.Html);
                 else
-                    _htmlEditor.Text = html;
+                    _htmlEditor.Text = sample.Html;
 
                 Application.UseWaitCursor = true;
 
                 try
                 {
-                    _htmlPanel.AvoidImagesLateLoading = !name.Contains("Many images");
+                    _htmlPanel.AvoidImagesLateLoading = !sample.FullName.Contains("Many images");
 
-                    _htmlPanel.Text = html;
+                    _htmlPanel.Text = sample.Html;
                 }
                 catch (Exception ex)
                 {

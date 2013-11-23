@@ -36,6 +36,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HtmlSample.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="SamplesLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
