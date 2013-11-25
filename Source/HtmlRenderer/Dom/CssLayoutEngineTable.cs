@@ -462,7 +462,10 @@ namespace HtmlRenderer.Dom
                 {
                     if (maxFullWidths[i] > _columnWidths[i])
                     {
+                        var temp = _columnWidths[i];
                         _columnWidths[i] = Math.Min(_columnWidths[i] + (availCellSpace - occupedSpace) / Convert.ToSingle(_columnWidths.Length - i), maxFullWidths[i]);
+                        occupedSpace = occupedSpace + _columnWidths[i] - temp;
+
                     }
                 }
             }
