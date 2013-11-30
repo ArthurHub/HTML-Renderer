@@ -61,6 +61,11 @@ namespace HtmlRenderer
         private IntPtr _tooltipHandle;
 
         /// <summary>
+        /// The CSS class used for tooltip html root div
+        /// </summary>
+        private string _tooltipCssClass = "htmltooltip";
+
+        /// <summary>
         /// If to handle links in the tooltip (default: false).<br/>
         /// When set to true the mouse pointer will change to hand when hovering over a tooltip and
         /// if clicked the <see cref="LinkClicked"/> event will be raised although the tooltip will be closed.
@@ -137,6 +142,20 @@ namespace HtmlRenderer
         }
 
         /// <summary>
+        /// The CSS class used for tooltip html root div (default: htmltooltip)<br/>
+        /// Setting to 'null' clear base style on the tooltip.<br/>
+        /// Set custom class found in <see cref="BaseStylesheet"/> to change the base style of the tooltip.
+        /// </summary>
+        [Browsable(true)]
+        [Description("The CSS class used for tooltip html root div.")]
+        [Category("Appearance")]
+        public string TooltipCssClass
+        {
+            get { return _tooltipCssClass; }
+            set { _tooltipCssClass = value; }
+        }
+
+        /// <summary>
         /// If to handle links in the tooltip (default: false).<br/>
         /// When set to true the mouse pointer will change to hand when hovering over a tooltip and
         /// if clicked the <see cref="LinkClicked"/> event will be raised although the tooltip will be closed.
@@ -173,7 +192,8 @@ namespace HtmlRenderer
         private void OnToolTipPopup(object sender, PopupEventArgs e)
         {
             //Create fragment container
-            var toolipHtml = string.Format("<div class=htmltooltip>{0}</div>", GetToolTip(e.AssociatedControl));
+            var cssClass = string.IsNullOrEmpty(_tooltipCssClass) ? null : string.Format(" class=\"{0}\"", _tooltipCssClass);
+            var toolipHtml = string.Format("<div{0}>{1}</div>", cssClass, GetToolTip(e.AssociatedControl));
             _htmlContainer.SetHtml(toolipHtml, _baseCssData);
             _htmlContainer.MaxSize = MaximumSize;
 
