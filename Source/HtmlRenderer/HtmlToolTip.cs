@@ -84,7 +84,6 @@ namespace HtmlRenderer
             _htmlContainer.AvoidImagesLateLoading = true;
             _htmlContainer.LinkClicked += OnLinkClicked;
             _htmlContainer.RenderError += OnRenderError;
-            _htmlContainer.Refresh += OnRefresh;
             _htmlContainer.StylesheetLoad += OnStylesheetLoad;
             _htmlContainer.ImageLoad += OnImageLoad;
 
@@ -125,7 +124,7 @@ namespace HtmlRenderer
         /// Set base stylesheet to be used by html rendered in the panel.
         /// </summary>
         [Browsable(true)]
-        [Description("Set base stylesheet to be used by html rendered in the control.")]
+        [Description("Set base stylesheet to be used by html rendered in the tooltip.")]
         [Category("Appearance")]
         public string BaseStylesheet
         {
@@ -158,7 +157,7 @@ namespace HtmlRenderer
         /// <returns>An ordered pair of type <see cref="T:System.Drawing.Size"/> representing the width and height of a rectangle.</returns>
         [Browsable(true)]
         [Category("Layout")]
-        [Description("If AutoSize or AutoSizeHeightOnly is set this will restrict the max size of the control (0 is not restricted)")]
+        [Description("Restrict the max size of the shown tooltip (0 is not restricted)")]
         public Size MaximumSize
         {
             get { return Size.Round(_htmlContainer.MaxSize); }
@@ -174,9 +173,11 @@ namespace HtmlRenderer
         private void OnToolTipPopup(object sender, PopupEventArgs e)
         {
             //Create fragment container
-            _htmlContainer.SetHtml("<div class=htmltooltip>" + GetToolTip(e.AssociatedControl) + "</div>", _baseCssData);
+            var toolipHtml = string.Format("<div class=htmltooltip>{0}</div>", GetToolTip(e.AssociatedControl));
+            _htmlContainer.SetHtml(toolipHtml, _baseCssData);
+            _htmlContainer.MaxSize = MaximumSize;
 
-            //Measure bounds of the container
+            //Measure size of the container
             using (var g = e.AssociatedControl.CreateGraphics())
             {
                 _htmlContainer.PerformLayout(g);
@@ -184,7 +185,7 @@ namespace HtmlRenderer
 
             //Set the size of the tooltip
             e.ToolTipSize = new Size((int)Math.Ceiling(_htmlContainer.ActualSize.Width), (int)Math.Ceiling(_htmlContainer.ActualSize.Height));
-
+            
             // start mouse handle timer
             if( _allowLinksHandling )
             {
@@ -198,16 +199,41 @@ namespace HtmlRenderer
         /// </summary>
         private void OnToolTipDraw(object sender, DrawToolTipEventArgs e)
         {
-            if(_allowLinksHandling && _tooltipHandle == IntPtr.Zero)
+            if(_tooltipHandle == IntPtr.Zero)
             {
                 // get the handle of the tooltip window using the graphics device context
                 var hdc = e.Graphics.GetHdc();
                 _tooltipHandle = Win32Utils.WindowFromDC(hdc);
                 e.Graphics.ReleaseHdc(hdc);
+
+                AdjustTooltipPosition(e.AssociatedControl, e.Bounds.Size);
             }
 
             e.Graphics.Clear(Color.White);
             _htmlContainer.PerformPaint(e.Graphics);
+        }
+
+        /// <summary>
+        /// Adjust the location of the tooltip window to the location of the mouse and handle
+        /// if the tooltip window will try to appear outside the boundaries of the control.
+        /// </summary>
+        /// <param name="associatedControl">the control the tooltip is appearing on</param>
+        /// <param name="size">the size of the tooltip window</param>
+        private void AdjustTooltipPosition(Control associatedControl, Size size)
+        {
+            var mousePos = Control.MousePosition;
+            var screenBounds = Screen.FromControl(associatedControl).WorkingArea;
+
+            // adjust if tooltip is outside form bounds
+            if (mousePos.X + size.Width > screenBounds.Right)
+                mousePos.X = Math.Max(screenBounds.Right - size.Width - 5, screenBounds.Left + 3);
+
+            const int yOffset = 20;
+            if (mousePos.Y + size.Height + yOffset > screenBounds.Bottom)
+                mousePos.Y = Math.Max(screenBounds.Bottom - size.Height - yOffset - 3, screenBounds.Top + 2);
+            
+            // move the tooltip window to new location
+            Win32Utils.MoveWindow(_tooltipHandle, mousePos.X, mousePos.Y + yOffset, size.Width, size.Height, false);
         }
 
         /// <summary>
@@ -252,24 +278,6 @@ namespace HtmlRenderer
             {
                 ImageLoad(this, e);
             }
-        }
-
-        /// <summary>
-        /// Handle html renderer invalidate and re-layout as requested.
-        /// </summary>
-        private void OnRefresh(object sender, HtmlRefreshEventArgs e)
-        {
-//            if (e.Layout)
-//            {
-//                if (InvokeRequired)
-//                    Invoke(new MethodInvoker(PerformLayout));
-//                else
-//                    PerformLayout();
-//            }
-//            if (InvokeRequired)
-//                Invoke(new MethodInvoker(Invalidate));
-//            else
-//                Invalidate();
         }
 
         /// <summary>
@@ -331,7 +339,6 @@ namespace HtmlRenderer
             {
                 _htmlContainer.LinkClicked -= OnLinkClicked;
                 _htmlContainer.RenderError -= OnRenderError;
-                _htmlContainer.Refresh -= OnRefresh;
                 _htmlContainer.StylesheetLoad -= OnStylesheetLoad;
                 _htmlContainer.ImageLoad -= OnImageLoad;
                 _htmlContainer.Dispose();
