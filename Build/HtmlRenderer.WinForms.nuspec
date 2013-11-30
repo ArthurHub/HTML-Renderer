@@ -28,13 +28,10 @@ Features and Benefits
 * Extendable and configurable.
 * Powerful Demo application to explore and learn the library.</description>
         <summary>The rich formatting power of HTML in your .NET applications using simple controls or static rendering code with 100% managed C# code.</summary>
-        <releaseNotes>* fix error in html parsing with single tags having closing tag as well
-* fix rendering error for html without root element
-* change the order of filling background (first) color and drawing background image (second)
-* fix br tags handling (not creating empty lines in some cases)
-* fix incorrect box width calculation in some cases
-* fix text selection on scrollbars click/drag
-* fix selection not clearing after selection text by going outside of control bound and then clicking on selected text</releaseNotes>
+        <releaseNotes>* Fix invalid table width detection (Thx Nikolay!)
+* Fix tooltip popup possition
+* Add tooltip CSS class change support
+        </releaseNotes>
         <tags>html, renderer, control</tags>
         <frameworkAssemblies>
             <frameworkAssembly assemblyName="System.Windows.Forms" targetFramework="" />
