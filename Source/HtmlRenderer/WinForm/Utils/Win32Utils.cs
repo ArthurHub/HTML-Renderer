@@ -108,6 +108,9 @@ namespace HtmlRenderer.Utils
             return new Rectangle(rect.Left, rect.Top, rect.Right - rect.Left, rect.Bottom - rect.Top);
         }
 
+        [DllImport("User32.dll")]
+        public static extern bool MoveWindow(IntPtr handle, int x, int y, int width, int height, bool redraw);
+
         [DllImport("gdi32.dll")]
         public static extern int SetBkMode(IntPtr hdc, int mode);
 

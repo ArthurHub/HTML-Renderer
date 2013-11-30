@@ -9,6 +9,10 @@
     <LibRoot>$(SourceRoot)\HtmlRenderer</LibRoot>
     <DemoRoot>$(SourceRoot)\Demo</DemoRoot>
     <BuildWarn>WarningLevel=0</BuildWarn>
+    <Build20>TargetFrameworkVersion=v2.0</Build20>
+    <Build35>TargetFrameworkVersion=v3.5;TargetFrameworkProfile=client</Build35>
+    <Build40>TargetFrameworkVersion=v4.0;TargetFrameworkProfile=client</Build40>
+    <Build45>TargetFrameworkVersion=v4.5</Build45>
     <BuildProperties>Configuration=Release</BuildProperties>
     <BuildOutputPath>OutputPath=..\..\Build\$(OutputBinRoot)</BuildOutputPath>
     <DemoBuildOutputPath>OutputPath=..\..\Build\$(OutputRoot)</DemoBuildOutputPath>
@@ -64,16 +68,16 @@
   <!--Build all the multi-target dlls of the library-->
   <Target Name="BuildLibrary">
     <Message Importance="high" Text="====================== Build .NET 2.0..."/>
-    <MSBuild Properties="$(BuildProperties);$(BuildOutputPath)\NET20;$(BuildWarn)" UseResultsCache="true" Targets="Rebuild" Projects="$(LibRoot)\HtmlRenderer.csproj" />
+    <MSBuild Properties="$(BuildProperties);$(BuildOutputPath)\NET20;$(BuildWarn);$(Build20)" UseResultsCache="true" Targets="Rebuild" Projects="$(LibRoot)\HtmlRenderer.csproj" />
 
     <Message Importance="high" Text="====================== Build .NET 3.5..."/>
-    <MSBuild Properties="$(BuildProperties);$(BuildOutputPath)\NET35;$(BuildWarn)" Targets="Rebuild" Projects="$(LibRoot)\HtmlRendererNET35.csproj" />
+    <MSBuild Properties="$(BuildProperties);$(BuildOutputPath)\NET35;$(BuildWarn);$(Build35)" Targets="Rebuild" Projects="$(LibRoot)\HtmlRenderer.csproj" />
 
     <Message Importance="high" Text="====================== Build .NET 4.0..."/>
-    <MSBuild Properties="$(BuildProperties);$(BuildOutputPath)\NET40;$(BuildWarn)" Targets="Rebuild" Projects="$(LibRoot)\HtmlRendererNET40.csproj" />
+    <MSBuild Properties="$(BuildProperties);$(BuildOutputPath)\NET40;$(BuildWarn);$(Build40)" Targets="Rebuild" Projects="$(LibRoot)\HtmlRenderer.csproj" />
 
     <Message Importance="high" Text="====================== Build .NET 4.5..."/>
-    <MSBuild Properties="$(BuildProperties);$(BuildOutputPath)\NET45;$(BuildWarn)" Targets="Rebuild" Projects="$(LibRoot)\HtmlRendererNET45.csproj" />
+    <MSBuild Properties="$(BuildProperties);$(BuildOutputPath)\NET45;$(BuildWarn);$(Build45)" Targets="Rebuild" Projects="$(LibRoot)\HtmlRenderer.csproj" />
   </Target>
 
   <!--Get current version-->
