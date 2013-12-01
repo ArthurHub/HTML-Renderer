@@ -6,7 +6,7 @@ HTML Renderer
 The rich formatting power of *HTML* in your *.NET applications* using simple controls or static rendering code.
 The library is *100% managed C# code* without any external dependencies (no WebBrowser control, ActiveX / COM or MSHTML dll), the only requirement is *.NET 2.0 or higher*.
 
-[Download](https://htmlrenderer.codeplex.com/) the [Demo application](https://htmlrenderer.codeplex.com/wikipage?title=Demo%20application&referringTitle=Home) to explore HTML Renderer capabilities.
+[Download](https://htmlrenderer.codeplex.com/releases/) the [Demo application](https://htmlrenderer.codeplex.com/wikipage?title=Demo%20application&referringTitle=Home) to explore HTML Renderer capabilities.
 
 ![Renderer1.png](http://download-codeplex.sec.s-msft.com/Download?ProjectName=HtmlRenderer&DownloadId=731219)
 
