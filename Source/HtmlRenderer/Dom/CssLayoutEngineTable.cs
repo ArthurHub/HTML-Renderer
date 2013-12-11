@@ -263,7 +263,7 @@ namespace HtmlRenderer.Dom
                             if (rows.Count > i)
                             {
                                 int colcount = 0;
-                                for (int j = 0; j <= rows[i].Boxes.Count; j++)
+                                for (int j = 0; j < rows[i].Boxes.Count; j++)
                                 {
                                     if (colcount == realcol)
                                     {
