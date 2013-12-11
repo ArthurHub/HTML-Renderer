@@ -35,9 +35,24 @@ namespace HtmlRenderer
         private static readonly int[] _charFitWidth = new int[1000];
 
         /// <summary>
+        /// Used for GDI+ measure string.
+        /// </summary>
+        private static readonly CharacterRange[] _characterRanges = new CharacterRange[1];
+
+        /// <summary>
+        /// The string format to use for measuring strings for GDI+ text rendering
+        /// </summary>
+        private static readonly StringFormat _stringFormat;
+
+        /// <summary>
         /// The wrapped WinForms graphics object
         /// </summary>
         private readonly Graphics _g;
+
+        /// <summary>
+        /// Use GDI+ text rendering to measure/draw text.
+        /// </summary>
+        private readonly bool _useGdiPlusTextRendering;
 
         /// <summary>
         /// the initialized HDC used
@@ -46,13 +61,24 @@ namespace HtmlRenderer
 
         #endregion
 
+        /// <summary>
+        /// Init static resources.
+        /// </summary>
+        static WinGraphics()
+        {
+            _stringFormat = new StringFormat(StringFormat.GenericDefault);
+            _stringFormat.FormatFlags = StringFormatFlags.NoClip | StringFormatFlags.MeasureTrailingSpaces;
+        }
 
         /// <summary>
         /// Init.
         /// </summary>
-        public WinGraphics(Graphics g)
+        /// <param name="g">the real graphics to use</param>
+        /// <param name="useGdiPlusTextRendering">Use GDI+ text rendering to measure/draw text.</param>
+        public WinGraphics(Graphics g, bool useGdiPlusTextRendering)
         {
             _g = g;
+            _useGdiPlusTextRendering = useGdiPlusTextRendering;
         }
 
         /// <summary>
@@ -93,11 +119,22 @@ namespace HtmlRenderer
         /// <returns>the size of the string</returns>
         public Size MeasureString(string str, Font font)
         {
-            SetFont(font);
+            if( _useGdiPlusTextRendering )
+            {
+                ReleaseHdc();
+                _characterRanges[0] = new CharacterRange(0, str.Length);
+                _stringFormat.SetMeasurableCharacterRanges(_characterRanges);
+                var size = _g.MeasureCharacterRanges(str, font, RectangleF.Empty, _stringFormat)[0].GetBounds(_g).Size;
+                return new Size((int)Math.Round(size.Width), (int)Math.Round(size.Height));
+            }
+            else
+            {
+                SetFont(font);
 
-            var size = new Size();
-            Win32Utils.GetTextExtentPoint32(_hdc, str, str.Length, ref size);
-            return size;
+                var size = new Size();
+                Win32Utils.GetTextExtentPoint32(_hdc, str, str.Length, ref size);
+                return size;
+            }
         }
 
         /// <summary>
@@ -114,13 +151,21 @@ namespace HtmlRenderer
         /// <returns>the size of the string</returns>
         public Size MeasureString(string str, Font font, float maxWidth, out int charFit, out int charFitWidth)
         {
-            SetFont(font);
+            if( _useGdiPlusTextRendering )
+            {
+                ReleaseHdc();
+                throw new NotSupportedException("Char fit string measuring is not supported for GDI+ text rendering");
+            }
+            else
+            {
+                SetFont(font);
 
-            var size = new Size();
-            Win32Utils.GetTextExtentExPoint(_hdc, str, str.Length, (int)Math.Round(maxWidth), _charFit, _charFitWidth, ref size);
-            charFit = _charFit[0];
-            charFitWidth = charFit > 0 ? _charFitWidth[charFit-1] : 0;
-            return size;
+                var size = new Size();
+                Win32Utils.GetTextExtentExPoint(_hdc, str, str.Length, (int)Math.Round(maxWidth), _charFit, _charFitWidth, ref size);
+                charFit = _charFit[0];
+                charFitWidth = charFit > 0 ? _charFitWidth[charFit - 1] : 0;
+                return size;
+            }
         }
 
         /// <summary>
@@ -133,17 +178,25 @@ namespace HtmlRenderer
         /// <param name="size">used to know the size of the rendered text for transparent text support</param>
         public void DrawString(String str, Font font, Color color, PointF point, SizeF size)
         {
-            if( color.A == 255 )
+            if( _useGdiPlusTextRendering )
             {
-                SetFont(font);
-                SetTextColor(color);
-
-                Win32Utils.TextOut(_hdc, (int)Math.Round(point.X), (int)Math.Round(point.Y), str, str.Length);
+                ReleaseHdc();
+                _g.DrawString(str, font, RenderUtils.GetSolidBrush(color), point.X - FontsUtils.GetFontLeftPadding(font)*.8f, point.Y);
             }
             else
             {
-                InitHdc();
-                DrawTransparentText(_hdc, str, font, new Point((int)Math.Round(point.X), (int)Math.Round(point.Y)), Size.Round(size), color);
+                if (color.A == 255)
+                {
+                    SetFont(font);
+                    SetTextColor(color);
+
+                    Win32Utils.TextOut(_hdc, (int)Math.Round(point.X), (int)Math.Round(point.Y), str, str.Length);
+                }
+                else
+                {
+                    InitHdc();
+                    DrawTransparentText(_hdc, str, font, new Point((int)Math.Round(point.X), (int)Math.Round(point.Y)), Size.Round(size), color);
+                }
             }
         }
 

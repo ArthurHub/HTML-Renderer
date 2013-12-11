@@ -640,7 +640,7 @@ namespace HtmlRenderer.Handlers
             {
                 // calculate partial word selection
                 var font = word.OwnerBox.ActualFont;
-                using (var g = new WinGraphics(control.CreateGraphics()))
+                using (var g = new WinGraphics(control.CreateGraphics(),false))
                 {
                     int charFit;
                     int charFitWidth;

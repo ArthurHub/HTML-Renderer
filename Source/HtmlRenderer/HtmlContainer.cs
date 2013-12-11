@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 using System.Windows.Forms;
 using HtmlRenderer.Dom;
 using HtmlRenderer.Entities;
@@ -81,7 +82,7 @@ namespace HtmlRenderer
         /// <summary>
         /// dictionary of all css boxes that have ":hover" selector on them
         /// </summary>
-        private List<Tupler<CssBox,CssBlock>> _hoverBoxes;
+        private List<Tupler<CssBox, CssBlock>> _hoverBoxes;
 
         /// <summary>
         /// Handler for text selection in the html. 
@@ -124,6 +125,11 @@ namespace HtmlRenderer
         /// Gets or sets a value indicating if image loading only when visible should be avoided (default - false).<br/>
         /// </summary>
         private bool _avoidImagesLateLoading;
+
+        /// <summary>
+        /// Use GDI+ text rendering to measure/draw text.
+        /// </summary>
+        private bool _useGdiPlusTextRendering;
 
         /// <summary>
         /// the top-left most location of the rendered html
@@ -227,6 +233,32 @@ namespace HtmlRenderer
         }
 
         /// <summary>
+        /// Use GDI+ text rendering to measure/draw text.<br/>
+        /// </summary>
+        /// <remarks>
+        /// <p>
+        /// GDI+ text rendering is less smooth than GDI text rendering but it natively supports alpha channel
+        /// thus allows creating transparent images.
+        /// </p>
+        /// <p>
+        /// While using GDI+ text rendering you can control the text rendering using <see cref="Graphics.TextRenderingHint"/>, note that
+        /// using <see cref="TextRenderingHint.ClearTypeGridFit"/> doesn't work well with transparent background.
+        /// </p>
+        /// </remarks>
+        public bool UseGdiPlusTextRendering
+        {
+            get { return _useGdiPlusTextRendering; }
+            set
+            {
+                if( _useGdiPlusTextRendering != value )
+                {
+                    _useGdiPlusTextRendering = value;
+                    RequestRefresh(true);
+                }
+            }
+        }
+
+        /// <summary>
         /// Is content selection is enabled for the rendered html (default - true).<br/>
         /// If set to 'false' the rendered html will be static only with ability to click on links.
         /// </summary>
@@ -324,22 +356,22 @@ namespace HtmlRenderer
         /// <param name="baseCssData">optional: the stylesheet to init with, init default if not given</param>
         public void SetHtml(string htmlSource, CssData baseCssData = null)
         {
-            
-            if(_root != null)
+
+            if( _root != null )
             {
                 _root.Dispose();
                 _root = null;
-                if (_selectionHandler != null)
+                if( _selectionHandler != null )
                     _selectionHandler.Dispose();
                 _selectionHandler = null;
             }
 
-            if (!string.IsNullOrEmpty(htmlSource))
+            if( !string.IsNullOrEmpty(htmlSource) )
             {
                 _cssData = baseCssData ?? CssUtils.DefaultCssData;
 
                 _root = DomParser.GenerateCssTree(htmlSource, this, ref _cssData);
-                if (_root != null)
+                if( _root != null )
                 {
                     _selectionHandler = new SelectionHandler(_root);
                 }
@@ -355,7 +387,7 @@ namespace HtmlRenderer
         {
             return DomUtils.GenerateHtml(_root, styleGen);
         }
-        
+
         /// <summary>
         /// Get attribute value of element at the given x,y location by given key.<br/>
         /// If more than one element exist with the attribute at the location the inner most is returned.
@@ -364,12 +396,12 @@ namespace HtmlRenderer
         /// <param name="attribute">the attribute key to get value by</param>
         /// <returns>found attribute value or null if not found</returns>
         public string GetAttributeAt(Point location, string attribute)
-         {
+        {
             ArgChecker.AssertArgNotNullOrEmpty(attribute, "attribute");
 
-             var cssBox = DomUtils.GetCssBox(_root, OffsetByScroll(location));
-             return cssBox != null ? DomUtils.GetAttribute(cssBox, attribute) : null;
-         }
+            var cssBox = DomUtils.GetCssBox(_root, OffsetByScroll(location));
+            return cssBox != null ? DomUtils.GetAttribute(cssBox, attribute) : null;
+        }
 
         /// <summary>
         /// Get css link href at the given x,y location.
@@ -390,9 +422,9 @@ namespace HtmlRenderer
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
-            if (_root != null)
+            if( _root != null )
             {
-                using (var ig = new WinGraphics(g))
+                using(var ig = new WinGraphics(g, _useGdiPlusTextRendering))
                 {
                     _actualSize = SizeF.Empty;
 
@@ -401,7 +433,7 @@ namespace HtmlRenderer
                     _root.Location = _location;
                     _root.PerformLayout(ig);
 
-                    if (_maxSize.Width <= 0.1)
+                    if( _maxSize.Width <= 0.1 )
                     {
                         // in case the width is not restricted we need to double layout, first will find the width so second can layout by it (center alignment)
                         _root.Size = new SizeF((int)Math.Ceiling(_actualSize.Width), 0);
@@ -421,21 +453,21 @@ namespace HtmlRenderer
             ArgChecker.AssertArgNotNull(g, "g");
 
             Region prevClip = null;
-            if (MaxSize.Height > 0)
+            if( MaxSize.Height > 0 )
             {
                 prevClip = g.Clip;
                 g.SetClip(new RectangleF(_location, _maxSize));
             }
 
-            if (_root != null)
+            if( _root != null )
             {
-                using (var ig = new WinGraphics(g))
+                using(var ig = new WinGraphics(g, _useGdiPlusTextRendering))
                 {
                     _root.Paint(ig);
                 }
             }
 
-            if (prevClip != null)
+            if( prevClip != null )
             {
                 g.SetClip(prevClip, CombineMode.Replace);
             }
@@ -453,10 +485,10 @@ namespace HtmlRenderer
 
             try
             {
-                if (_selectionHandler != null)
+                if( _selectionHandler != null )
                     _selectionHandler.HandleMouseDown(parent, OffsetByScroll(e.Location), IsMouseInContainer(e.Location));
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse down handle", ex);
             }
@@ -474,25 +506,25 @@ namespace HtmlRenderer
 
             try
             {
-                if (_selectionHandler != null && IsMouseInContainer(e.Location))
+                if( _selectionHandler != null && IsMouseInContainer(e.Location) )
                 {
                     var ignore = _selectionHandler.HandleMouseUp(parent, e.Button);
-                    if (!ignore && (e.Button & MouseButtons.Left) != 0)
+                    if( !ignore && ( e.Button & MouseButtons.Left ) != 0 )
                     {
                         var loc = OffsetByScroll(e.Location);
                         var link = DomUtils.GetLinkBox(_root, loc);
-                        if (link != null)
+                        if( link != null )
                         {
                             HandleLinkClicked(parent, e, link);
                         }
                     }
                 }
             }
-            catch (HtmlLinkClickedException)
+            catch(HtmlLinkClickedException)
             {
                 throw;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse up handle", ex);
             }
@@ -510,10 +542,10 @@ namespace HtmlRenderer
 
             try
             {
-                if (_selectionHandler != null && IsMouseInContainer(e.Location))
+                if( _selectionHandler != null && IsMouseInContainer(e.Location) )
                     _selectionHandler.SelectWord(parent, OffsetByScroll(e.Location));
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse double click handle", ex);
             }
@@ -532,7 +564,7 @@ namespace HtmlRenderer
             try
             {
                 var loc = OffsetByScroll(e.Location);
-                if (_selectionHandler != null && IsMouseInContainer(e.Location))
+                if( _selectionHandler != null && IsMouseInContainer(e.Location) )
                     _selectionHandler.HandleMouseMove(parent, loc);
 
                 /*
@@ -556,7 +588,7 @@ namespace HtmlRenderer
                 }
                  */
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse move handle", ex);
             }
@@ -572,10 +604,10 @@ namespace HtmlRenderer
 
             try
             {
-                if (_selectionHandler != null)
+                if( _selectionHandler != null )
                     _selectionHandler.HandleMouseLeave(parent);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse leave handle", ex);
             }
@@ -593,22 +625,22 @@ namespace HtmlRenderer
 
             try
             {
-                if (e.Control && _selectionHandler != null)
+                if( e.Control && _selectionHandler != null )
                 {
                     // select all
-                    if (e.KeyCode == Keys.A)
+                    if( e.KeyCode == Keys.A )
                     {
                         _selectionHandler.SelectAll(parent);
                     }
 
                     // copy currently selected text
-                    if (e.KeyCode == Keys.C)
+                    if( e.KeyCode == Keys.C )
                     {
                         _selectionHandler.CopySelectedHtml();
                     }
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed key down handle", ex);
             }
@@ -622,12 +654,12 @@ namespace HtmlRenderer
         {
             try
             {
-                if (StylesheetLoad != null)
+                if( StylesheetLoad != null )
                 {
                     StylesheetLoad(this, args);
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.CssParsing, "Failed stylesheet load event", ex);
             }
@@ -641,12 +673,12 @@ namespace HtmlRenderer
         {
             try
             {
-                if(ImageLoad != null)
+                if( ImageLoad != null )
                 {
                     ImageLoad(this, args);
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.Image, "Failed image load event", ex);
             }
@@ -660,12 +692,12 @@ namespace HtmlRenderer
         {
             try
             {
-                if (Refresh != null)
+                if( Refresh != null )
                 {
                     Refresh(this, new HtmlRefreshEventArgs(layout));
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.General, "Failed refresh request", ex);
             }
@@ -681,13 +713,13 @@ namespace HtmlRenderer
         {
             try
             {
-                if (RenderError != null)
+                if( RenderError != null )
                 {
                     RenderError(this, new HtmlRenderErrorEventArgs(type, message, exception));
                 }
             }
             catch
-            { }
+            {}
         }
 
         /// <summary>
@@ -698,31 +730,31 @@ namespace HtmlRenderer
         /// <param name="link">the link that was clicked</param>
         internal void HandleLinkClicked(Control parent, MouseEventArgs e, CssBox link)
         {
-            if (LinkClicked != null)
+            if( LinkClicked != null )
             {
                 var args = new HtmlLinkClickedEventArgs(link.HrefLink, link.HtmlTag.Attributes);
                 try
                 {
                     LinkClicked(this, args);
                 }
-                catch (Exception ex)
+                catch(Exception ex)
                 {
                     throw new HtmlLinkClickedException("Error in link clicked intercept", ex);
                 }
-                if (args.Handled)
+                if( args.Handled )
                 {
                     return;
                 }
             }
 
-            if (!string.IsNullOrEmpty(link.HrefLink))
+            if( !string.IsNullOrEmpty(link.HrefLink) )
             {
-                if (link.HrefLink.StartsWith("#"))
+                if( link.HrefLink.StartsWith("#") )
                 {
                     if( ScrollChange != null )
                     {
                         var box = DomUtils.GetBoxById(_root, link.HrefLink.Substring(1));
-                        if (box != null)
+                        if( box != null )
                         {
                             var rect = CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds);
                             ScrollChange(this, new HtmlScrollEventArgs(Point.Round(rect.Location)));
@@ -749,7 +781,7 @@ namespace HtmlRenderer
             ArgChecker.AssertArgNotNull(box, "box");
             ArgChecker.AssertArgNotNull(block, "block");
 
-            if(_hoverBoxes == null)
+            if( _hoverBoxes == null )
                 _hoverBoxes = new List<Tupler<CssBox, CssBlock>>();
 
             _hoverBoxes.Add(new Tupler<CssBox, CssBlock>(box, block));
@@ -774,7 +806,7 @@ namespace HtmlRenderer
         /// <returns>the adjusted location</returns>
         private Point OffsetByScroll(Point location)
         {
-            location.Offset(-(int) ScrollOffset.X, -(int) ScrollOffset.Y);
+            location.Offset(-(int)ScrollOffset.X, -(int)ScrollOffset.Y);
             return location;
         }
 
@@ -794,7 +826,7 @@ namespace HtmlRenderer
         {
             try
             {
-                if (all)
+                if( all )
                 {
                     LinkClicked = null;
                     Refresh = null;
@@ -804,16 +836,15 @@ namespace HtmlRenderer
                 }
 
                 _cssData = null;
-                if (_root != null)
+                if( _root != null )
                     _root.Dispose();
                 _root = null;
-                if (_selectionHandler != null)
+                if( _selectionHandler != null )
                     _selectionHandler.Dispose();
                 _selectionHandler = null;
             }
             catch
-            {
-            }
+            {}
         }
 
         #endregion
