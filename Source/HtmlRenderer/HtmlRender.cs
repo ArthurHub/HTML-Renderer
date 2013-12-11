@@ -203,6 +203,7 @@ namespace HtmlRenderer
 
         /// <summary>
         /// Renders the specified HTML on top of the given image.<br/>
+        /// <paramref name="image"/> will contain the rendered html in it on top of original content.<br/>
         /// The HTML will be layout by the given image size but may be clipped if cannot fit.<br/>
         /// </summary>
         /// <param name="image">the image to render the html on</param>
@@ -211,7 +212,6 @@ namespace HtmlRenderer
         /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
-        /// <returns>the generated image of the html</returns>
         public static void RenderToImage(Image image, string html, PointF location, CssData cssData = null,
                                          EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
@@ -222,6 +222,7 @@ namespace HtmlRenderer
 
         /// <summary>
         /// Renders the specified HTML on top of the given image.<br/>
+        /// <paramref name="image"/> will contain the rendered html in it on top of original content.<br/>
         /// </summary>
         /// <param name="image">the image to render the html on</param>
         /// <param name="html">HTML source to render</param>
@@ -230,7 +231,6 @@ namespace HtmlRenderer
         /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
-        /// <returns>the generated image of the html</returns>
         public static void RenderToImage(Image image, string html, PointF location, SizeF maxSize, CssData cssData = null,
                                          EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
@@ -326,8 +326,8 @@ namespace HtmlRenderer
         /// </p>
         /// </summary>
         /// <param name="html">HTML source to render</param>
-        /// <param name="maxWidth">the max width of the rendered html</param>
-        /// <param name="maxHeight">optional: the max height of the rendered html, if above zero it will be clipped</param>
+        /// <param name="maxWidth">the max width of the rendered html, if not zero and html cannot be layout within the limit it will be clipped</param>
+        /// <param name="maxHeight">optional: the max height of the rendered html, if not zero and html cannot be layout within the limit it will be clipped</param>
         /// <param name="backgroundColor">optional: the color to fill the image with (default - white)</param>
         /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
@@ -352,8 +352,8 @@ namespace HtmlRenderer
         /// </p>
         /// </summary>
         /// <param name="html">HTML source to render</param>
-        /// <param name="minSize">the max width of the rendered html</param>
-        /// <param name="maxSize">optional: the max height of the rendered html, if above zero it will be clipped</param>
+        /// <param name="minSize">optional: the min size of the rendered html (zero - not limit the width/height)</param>
+        /// <param name="maxSize">optional: the max size of the rendered html, if not zero and html cannot be layout within the limit it will be clipped (zero - not limit the width/height)</param>
         /// <param name="backgroundColor">optional: the color to fill the image with (default - white)</param>
         /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
@@ -377,12 +377,11 @@ namespace HtmlRenderer
                     htmlContainer.ImageLoad += imageLoad;
                 htmlContainer.SetHtml(html, cssData);
 
-                int finalWidth, finalHeight;
-                MeasureHtmlByRestrictions(htmlContainer, minSize, maxSize, out finalWidth, out finalHeight);
-                htmlContainer.MaxSize = new SizeF(finalWidth, finalHeight);
-
+                var finalSize = MeasureHtmlByRestrictions(htmlContainer, minSize, maxSize);
+                htmlContainer.MaxSize = finalSize;
+                
                 // create the final image to render into by measured size
-                var image = new Bitmap(finalWidth, finalHeight, PixelFormat.Format32bppArgb);
+                var image = new Bitmap(finalSize.Width, finalSize.Height, PixelFormat.Format32bppArgb);
 
                 // create memory buffer from desktop handle that supports alpha channel
                 IntPtr dib;
@@ -444,8 +443,8 @@ namespace HtmlRenderer
         /// </p>
         /// </summary>
         /// <param name="html">HTML source to render</param>
-        /// <param name="maxWidth">the max width of the rendered html</param>
-        /// <param name="maxHeight">optional: the max height of the rendered html, if above zero it will be clipped</param>
+        /// <param name="maxWidth">the max width of the rendered html, if not zero and html cannot be layout within the limit it will be clipped</param>
+        /// <param name="maxHeight">optional: the max height of the rendered html, if not zero and html cannot be layout within the limit it will be clipped</param>
         /// <param name="textRenderingHint">optional: (default - SingleBitPerPixelGridFit)</param>
         /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
@@ -469,8 +468,8 @@ namespace HtmlRenderer
         /// </p>
         /// </summary>
         /// <param name="html">HTML source to render</param>
-        /// <param name="minSize">the max width of the rendered html</param>
-        /// <param name="maxSize">optional: the max height of the rendered html, if above zero it will be clipped</param>
+        /// <param name="minSize">optional: the min size of the rendered html (zero - not limit the width/height)</param>
+        /// <param name="maxSize">optional: the max size of the rendered html, if not zero and html cannot be layout within the limit it will be clipped (zero - not limit the width/height)</param>
         /// <param name="textRenderingHint">optional: (default - SingleBitPerPixelGridFit)</param>
         /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
@@ -490,12 +489,11 @@ namespace HtmlRenderer
                     htmlContainer.ImageLoad += imageLoad;
                 htmlContainer.SetHtml(html, cssData);
 
-                int finalWidth, finalHeight;
-                MeasureHtmlByRestrictions(htmlContainer, minSize, maxSize, out finalWidth, out finalHeight);
-                htmlContainer.MaxSize = new SizeF(finalWidth, finalHeight);
+                var finalSize = MeasureHtmlByRestrictions(htmlContainer, minSize, maxSize);
+                htmlContainer.MaxSize = finalSize;
 
                 // create the final image to render into by measured size
-                var image = new Bitmap(finalWidth, finalHeight, PixelFormat.Format32bppArgb);
+                var image = new Bitmap(finalSize.Width, finalSize.Height, PixelFormat.Format32bppArgb);
                 
                 // render HTML into the image
                 using (var g = Graphics.FromImage(image))
@@ -549,12 +547,11 @@ namespace HtmlRenderer
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="htmlContainer"></param>
-        /// <param name="minSize"></param>
-        /// <param name="maxSize"></param>
-        /// <param name="finalWidth"></param>
-        /// <param name="finalHeight"></param>
-        private static void MeasureHtmlByRestrictions(HtmlContainer htmlContainer, Size minSize, Size maxSize, out int finalWidth, out int finalHeight)
+        /// <param name="htmlContainer">the html to calculate the layout for</param>
+        /// <param name="minSize">the minimal size of the rendered html (zero - not limit the width/height)</param>
+        /// <param name="maxSize">the maximum size of the rendered html, if not zero and html cannot be layout within the limit it will be clipped (zero - not limit the width/height)</param>
+        /// <returns>return: the size of the html to be rendered within the min/max limits</returns>
+        private static Size MeasureHtmlByRestrictions(HtmlContainer htmlContainer, Size minSize, Size maxSize)
         {
             // use desktop created graphics to measure the HTML
             using (var measureGraphics = Graphics.FromHwnd(IntPtr.Zero))
@@ -571,8 +568,10 @@ namespace HtmlRenderer
             }
 
             // restrict the final size by min/max
-            finalWidth = Math.Max(maxSize.Width > 0 ? Math.Min(maxSize.Width, (int)htmlContainer.ActualSize.Width) : (int)htmlContainer.ActualSize.Width, minSize.Width);
-            finalHeight = Math.Max(maxSize.Height > 0 ? Math.Min(maxSize.Height, (int)htmlContainer.ActualSize.Height) : (int)htmlContainer.ActualSize.Height, minSize.Height);
+            var finalWidth = Math.Max(maxSize.Width > 0 ? Math.Min(maxSize.Width, (int)htmlContainer.ActualSize.Width) : (int)htmlContainer.ActualSize.Width, minSize.Width);
+            var finalHeight = Math.Max(maxSize.Height > 0 ? Math.Min(maxSize.Height, (int)htmlContainer.ActualSize.Height) : (int)htmlContainer.ActualSize.Height, minSize.Height);
+
+            return new Size(finalWidth, finalHeight);
         }
 
         /// <summary>
