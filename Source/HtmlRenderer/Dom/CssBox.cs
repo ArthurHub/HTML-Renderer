@@ -634,7 +634,8 @@ namespace HtmlRenderer.Dom
                     ActualBottom = prevSibling.ActualBottom;
                 }
             }
-
+            ActualBottom = Math.Max(ActualBottom, Location.Y + ActualHeight);
+            
             CreateListItemBox(g);
 
             var actualWidth = Math.Max(GetMinimumWidth() + GetWidthMarginDeep(this), Size.Width < 90999 ? ActualRight : 0);
