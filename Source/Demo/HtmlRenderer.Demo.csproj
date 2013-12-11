@@ -214,6 +214,7 @@
     <EmbeddedResource Include="TestSamples\02.Line break.htm" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="TestSamples\22.RTL.htm" />
     <EmbeddedResource Include="TestSamples\21.Bullets.htm" />
     <EmbeddedResource Include="TestSamples\20.Fonts decorations.htm" />
     <EmbeddedResource Include="TestSamples\19.Many images.htm" />

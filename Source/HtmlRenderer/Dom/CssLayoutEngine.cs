@@ -471,14 +471,17 @@ namespace HtmlRenderer.Dom
         /// <param name="line">the line to apply RTL to</param>
         private static void ApplyRightToLeftOnLine(CssLineBox line)
         {
-            float left = line.Words[0].Left;
-            float right = line.Words[line.Words.Count-1].Right;
-
-            foreach (CssRect word in line.Words)
+            if (line.Words.Count > 0)
             {
-                float diff = word.Left - left;
-                float wright = right - diff;
-                word.Left = wright - word.Width;
+                float left = line.Words[0].Left;
+                float right = line.Words[line.Words.Count - 1].Right;
+
+                foreach (CssRect word in line.Words)
+                {
+                    float diff = word.Left - left;
+                    float wright = right - diff;
+                    word.Left = wright - word.Width;
+                }
             }
         }
 
