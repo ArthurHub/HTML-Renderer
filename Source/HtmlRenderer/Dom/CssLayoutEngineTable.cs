@@ -671,6 +671,7 @@ namespace HtmlRenderer.Dom
                 currentrow++;
             }
 
+            maxRight = Math.Max(maxRight,_tableBox.Location.X + _tableBox.ActualWidth);
             _tableBox.ActualRight = maxRight + GetHorizontalSpacing() + _tableBox.ActualBorderRightWidth;
             _tableBox.ActualBottom = Math.Max(maxBottom, starty) + GetVerticalSpacing() + _tableBox.ActualBorderBottomWidth;
         }
@@ -828,7 +829,7 @@ namespace HtmlRenderer.Dom
             if (tblen.Number > 0)
             {
                 _widthSpecified = true;
-                return tblen.IsPercentage ? CssValueParser.ParseNumber(tblen.Length, _tableBox.ParentBox.AvailableWidth) : tblen.Number;
+                return CssValueParser.ParseLength(_tableBox.Width, _tableBox.ParentBox.AvailableWidth, _tableBox);
             }
             else
             {
@@ -851,7 +852,7 @@ namespace HtmlRenderer.Dom
             if (tblen.Number > 0)
             {
                 _widthSpecified = true;
-                return tblen.IsPercentage ? CssValueParser.ParseNumber(tblen.Length, _tableBox.ParentBox.AvailableWidth) : tblen.Number;
+                return CssValueParser.ParseLength(_tableBox.MaxWidth, _tableBox.ParentBox.AvailableWidth, _tableBox);
             }
             else
             {

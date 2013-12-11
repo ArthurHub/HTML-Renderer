@@ -42,8 +42,8 @@ namespace HtmlRenderer.Parse
                 {
                     number = value.Substring(0, value.Length - 2);
                 }
-                int stub;
-                return int.TryParse(number, out stub);
+                float stub;
+                return float.TryParse(number, out stub);
             }
             return false;
         }
@@ -147,10 +147,10 @@ namespace HtmlRenderer.Parse
                     factor = fontAdjust ? 72f / 96f : 1f; //atodo: check support for hi dpi
                     break;
                 case CssConstants.Mm:
-                    factor = 3f; //3 pixels per millimeter
+                    factor = 3.779527559f; //3 pixels per millimeter
                     break;
                 case CssConstants.Cm:
-                    factor = 37f; //37 pixels per centimeter
+                    factor = 37.795275591f; //37 pixels per centimeter
                     break;
                 case CssConstants.In:
                     factor = 96f; //96 pixels per inch
@@ -165,7 +165,7 @@ namespace HtmlRenderer.Parse
 
                     break;
                 case CssConstants.Pc:
-                    factor = 96f / 72f * 12f; // 1 pica = 12 points
+                    factor = 16f; // 1 pica = 12 points
                     break;
                 default:
                     factor = 0f;
