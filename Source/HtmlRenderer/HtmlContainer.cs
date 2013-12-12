@@ -324,6 +324,22 @@ namespace HtmlRenderer
         }
 
         /// <summary>
+        /// Get the currently selected text segment in the html.
+        /// </summary>
+        public string SelectedText
+        {
+            get { return _selectionHandler.GetSelectedText(); }
+        }
+
+        /// <summary>
+        /// Copy the currently selected html segment with style.
+        /// </summary>
+        public string SelectedHtml
+        {
+            get { return _selectionHandler.GetSelectedHtml(); }
+        }
+
+        /// <summary>
         /// the root css box of the parsed html
         /// </summary>
         internal CssBox Root

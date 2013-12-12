@@ -307,6 +307,22 @@ namespace HtmlRenderer.Handlers
         }
 
         /// <summary>
+        /// Get the currently selected text segment in the html.<br/>
+        /// </summary>
+        public string GetSelectedText()
+        {
+            return _root.HtmlContainer.IsSelectionEnabled ? DomUtils.GetSelectedPlainText(_root) : null;
+        }
+
+        /// <summary>
+        /// Copy the currently selected html segment with style.<br/>
+        /// </summary>
+        public string GetSelectedHtml()
+        {
+            return _root.HtmlContainer.IsSelectionEnabled ? DomUtils.GenerateHtml(_root, HtmlGenerationStyle.Inline, true) : null;
+        }
+
+        /// <summary>
         /// The selection start index if the first selected word is partially selected (-1 if not selected or fully selected)<br/>
         /// if the given word is not starting or ending selection word -1 is returned as full word selection is in place.
         /// </summary>
