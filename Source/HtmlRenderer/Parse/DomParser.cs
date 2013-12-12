@@ -376,10 +376,10 @@ namespace HtmlRenderer.Parse
                                 box.VerticalAlign = value.ToLower();
                             break;
                         case HtmlConstants.Background:
-                            box.BackgroundImage = value;
+                            box.BackgroundImage = value.ToLower();
                             break;
                         case HtmlConstants.Bgcolor:
-                            box.BackgroundColor = value;
+                            box.BackgroundColor = value.ToLower();
                             break;
                         case HtmlConstants.Border:
                             if (!string.IsNullOrEmpty(value) && value != "0")
@@ -397,7 +397,7 @@ namespace HtmlRenderer.Parse
                             }
                             break;
                         case HtmlConstants.Bordercolor:
-                            box.BorderLeftColor = box.BorderTopColor = box.BorderRightColor = box.BorderBottomColor = value;
+                            box.BorderLeftColor = box.BorderTopColor = box.BorderRightColor = box.BorderBottomColor = value.ToLower();
                             break;
                         case HtmlConstants.Cellspacing:
                             box.BorderSpacing = TranslateLength(value);
