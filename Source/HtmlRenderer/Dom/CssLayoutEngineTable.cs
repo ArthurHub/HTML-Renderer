@@ -335,18 +335,19 @@ namespace HtmlRenderer.Dom
                     //Check for column width in table-cell definitions
                     for (int i = 0; i < _columnCount; i++)
                     {
-                        if (float.IsNaN(_columnWidths[i]) && //Check if no width specified for column
-                            i < row.Boxes.Count && //And there's a box to check
-                            row.Boxes[i].Display == CssConstants.TableCell) //And the box is a table-cell
+                        if (i < 20 || float.IsNaN(_columnWidths[i])) // limit column width check
                         {
-                            float len = CssValueParser.ParseLength(row.Boxes[i].Width, availCellSpace, row.Boxes[i]); //Get width as an absolute-pixel value
-                            if (len > 0) //If some width specified
+                            if (i < row.Boxes.Count && row.Boxes[i].Display == CssConstants.TableCell)
                             {
-                                int colspan = GetColSpan(row.Boxes[i]);
-                                len /= Convert.ToSingle(colspan);
-                                for (int j = i; j < i + colspan; j++)
+                                float len = CssValueParser.ParseLength(row.Boxes[i].Width, availCellSpace, row.Boxes[i]);
+                                if (len > 0) //If some width specified
                                 {
-                                    _columnWidths[j] = len;
+                                    int colspan = GetColSpan(row.Boxes[i]);
+                                    len /= Convert.ToSingle(colspan);
+                                    for (int j = i; j < i + colspan; j++)
+                                    {
+                                        _columnWidths[j] = float.IsNaN(_columnWidths[j]) ? len : Math.Max(_columnWidths[j], len);
+                                    }
                                 }
                             }
                         }
