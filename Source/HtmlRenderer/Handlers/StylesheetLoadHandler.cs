@@ -1,4 +1,4 @@
-﻿// "Therefore those skilled at the unorthodox
+// "Therefore those skilled at the unorthodox
 // are infinite as heaven and earth,
 // inexhaustible as the great rivers.
 // When they come to an end,
@@ -15,16 +15,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using HtmlRenderer.Entities;
+using HtmlRenderer.Utils;
 
-namespace HtmlRenderer.Utils
+namespace HtmlRenderer.Handlers
 {
     /// <summary>
-    /// Helper for loading a stylesheet data.
+    /// Handler for loading a stylesheet data.
     /// </summary>
-    internal static class StylesheetLoadHelper
+    internal static class StylesheetLoadHandler
     {
         /// <summary>
-        /// 
+        /// Load stylesheet data from the given source.<br/>
+        /// The source can be local file or web URI.<br/>
+        /// First raise <see cref="HtmlStylesheetLoadEventArgs"/> event to allow the client to overwrite the stylesheet loading.<br/>
+        /// If the stylesheet is downloaded from URI we will try to correct local URIs to absolute.<br/>
         /// </summary>
         /// <param name="htmlContainer">the container of the html to handle load stylesheet for</param>
         /// <param name="src">the source of the element to load the stylesheet by</param>
@@ -70,26 +74,13 @@ namespace HtmlRenderer.Utils
         private static string LoadStylesheet(HtmlContainer htmlContainer, string src)
         {
             var uri = CommonUtils.TryGetUri(src);
-            if (uri != null && uri.Scheme != "file")
-            {
-                return LoadStylesheetFromUri(uri);
-            }
-            else
+            if( uri == null || uri.Scheme == "file" )
             {
                 return LoadStylesheetFromFile(htmlContainer, uri != null ? uri.AbsolutePath : src);
             }
-        }
-
-        /// <summary>
-        /// Load the stylesheet from uri by downloading the string.
-        /// </summary>
-        /// <param name="uri">the uri to download from</param>
-        /// <returns>the loaded stylesheet string</returns>
-        private static string LoadStylesheetFromUri(Uri uri)
-        {
-            using (var client = new WebClient())
+            else
             {
-                return client.DownloadString(uri);
+                return LoadStylesheetFromUri(htmlContainer, uri);
             }
         }
 
@@ -123,7 +114,66 @@ namespace HtmlRenderer.Utils
             return string.Empty;
         }
 
-        #endregion
+        /// <summary>
+        /// Load the stylesheet from uri by downloading the string.
+        /// </summary>
+        /// <param name="htmlContainer">the container of the html to handle load stylesheet for</param>
+        /// <param name="uri">the uri to download from</param>
+        /// <returns>the loaded stylesheet string</returns>
+        private static string LoadStylesheetFromUri(HtmlContainer htmlContainer, Uri uri)
+        {
+            using (var client = new WebClient())
+            {
+                var stylesheet = client.DownloadString(uri);
+                try
+                {
+                    stylesheet = CorrectRelativeUrls(stylesheet, uri);
+                }
+                catch(Exception ex)
+                {
+                    htmlContainer.ReportError(HtmlRenderErrorType.CssParsing, "Error in correcting relative URL in loaded stylesheet", ex);
+                }
+                return stylesheet;
+            }
+        }
 
+        /// <summary>
+        /// Make relative URLs absolute in the stylesheet using the URI of the stylesheet.
+        /// </summary>
+        /// <param name="stylesheet">the stylesheet to correct</param>
+        /// <param name="baseUri">the stylesheet uri to use to create absolute URLs</param>
+        /// <returns>Corrected stylesheet</returns>
+        private static string CorrectRelativeUrls(string stylesheet, Uri baseUri)
+        {
+            int idx = 0;
+            while( idx != -1 && idx < stylesheet.Length )
+            {
+                idx = stylesheet.IndexOf("url", idx, StringComparison.OrdinalIgnoreCase);
+                if( idx > 0 )
+                {
+                    int endIdx = stylesheet.IndexOf(")", idx, StringComparison.OrdinalIgnoreCase);
+                    if( endIdx > 0 )
+                    {
+                        var urlStr = stylesheet.Substring(idx + 4, endIdx - idx - 4);
+                        Uri url;
+                        if( Uri.TryCreate(urlStr, UriKind.Relative, out url) )
+                        {
+                            url = new Uri(baseUri, url);
+                            stylesheet = stylesheet.Remove(idx + 4, endIdx - idx - 4);
+                            stylesheet = stylesheet.Insert(idx + 4, url.AbsoluteUri);
+                            idx += url.AbsoluteUri.Length + 4;
+                        }
+                        else
+                        {
+                            idx = endIdx + 1;
+                        }
+                    }
+                }
+            }
+
+            return stylesheet;
+        }
+
+        #endregion
     }
 }

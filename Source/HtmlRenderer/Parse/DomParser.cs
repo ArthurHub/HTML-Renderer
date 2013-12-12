@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Globalization;
 using HtmlRenderer.Dom;
 using HtmlRenderer.Entities;
+using HtmlRenderer.Handlers;
 using HtmlRenderer.Utils;
 
 namespace HtmlRenderer.Parse
@@ -116,7 +117,7 @@ namespace HtmlRenderer.Parse
                     box.GetAttribute("rel", string.Empty).Equals("stylesheet", StringComparison.CurrentCultureIgnoreCase))
                 {
                     CloneCssData(ref cssData, ref cssDataChanged);
-                    var styleSheet = StylesheetLoadHelper.LoadStylesheet(htmlContainer, box.GetAttribute("href", string.Empty), box.HtmlTag.Attributes);
+                    var styleSheet = StylesheetLoadHandler.LoadStylesheet(htmlContainer, box.GetAttribute("href", string.Empty), box.HtmlTag.Attributes);
                     CssParser.ParseStyleSheet(cssData, styleSheet);
                 }
             }

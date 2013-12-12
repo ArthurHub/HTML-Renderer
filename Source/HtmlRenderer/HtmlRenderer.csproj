@@ -96,6 +96,7 @@
     <Compile Include="Handlers\ContextMenuHandler.cs" />
     <Compile Include="Handlers\ImageLoadHandler.cs" />
     <Compile Include="Handlers\SelectionHandler.cs" />
+    <Compile Include="Handlers\StylesheetLoadHandler.cs" />
     <Compile Include="IGraphics.cs" />
     <Compile Include="Handlers\BackgroundImageDrawHandler.cs" />
     <Compile Include="Handlers\BordersDrawHandler.cs" />
@@ -132,7 +133,6 @@
     <Compile Include="Utils\DomUtils.cs" />
     <Compile Include="Utils\HtmlUtils.cs" />
     <Compile Include="Utils\CommonUtils.cs" />
-    <Compile Include="Utils\StylesheetLoadHelper.cs" />
     <Compile Include="WinGraphics.cs" />
     <Compile Include="Utils\Win32Utils.cs" />
   </ItemGroup>
