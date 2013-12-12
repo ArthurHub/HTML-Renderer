@@ -339,25 +339,14 @@ namespace HtmlRenderer.Dom
                             i < row.Boxes.Count && //And there's a box to check
                             row.Boxes[i].Display == CssConstants.TableCell) //And the box is a table-cell
                         {
-                            CssLength len = new CssLength(row.Boxes[i].Width); //Get specified width
-
-                            if (len.Number > 0) //If some width specified
+                            float len = CssValueParser.ParseLength(row.Boxes[i].Width, availCellSpace, row.Boxes[i]); //Get width as an absolute-pixel value
+                            if (len > 0) //If some width specified
                             {
                                 int colspan = GetColSpan(row.Boxes[i]);
-                                float flen = 0f;
-                                if (len.IsPercentage) //Get width as a percentage
-                                {
-                                    flen = CssValueParser.ParseNumber(row.Boxes[i].Width, availCellSpace);
-                                }
-                                else if (len.Unit == CssUnit.Pixels || len.Unit == CssUnit.None)
-                                {
-                                    flen = len.Number; //Get width as an absolute-pixel value
-                                }
-                                flen /= Convert.ToSingle(colspan);
-
+                                len /= Convert.ToSingle(colspan);
                                 for (int j = i; j < i + colspan; j++)
                                 {
-                                    _columnWidths[j] = flen;
+                                    _columnWidths[j] = len;
                                 }
                             }
                         }
