@@ -426,11 +426,20 @@ namespace HtmlRenderer.Dom
 
                 if (numOfNans == 0 && occupedSpace < availCellSpace)
                 {
-                    // spread extra width between all columns
-                    float extWidth = (availCellSpace - occupedSpace) / orgNumOfNans;
-                    for (int i = 0; i < _columnWidths.Length; i++)
-                        if (orgColWidths == null || float.IsNaN(orgColWidths[i]))
-                            _columnWidths[i] += extWidth;
+                    if (orgNumOfNans > 0)
+                    {
+                        // spread extra width between all non width specified columns
+                        float extWidth = (availCellSpace - occupedSpace) / orgNumOfNans;
+                        for (int i = 0; i < _columnWidths.Length; i++)
+                            if (orgColWidths == null || float.IsNaN(orgColWidths[i]))
+                                _columnWidths[i] += extWidth;
+                    }
+                    else
+                    {
+                        // spread extra width between all columns with respect to relative sizes
+                        for (int i = 0; i < _columnWidths.Length; i++)
+                            _columnWidths[i] += (availCellSpace - occupedSpace) * (_columnWidths[i] / occupedSpace);
+                    }
                 }
             }
             else
