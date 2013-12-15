@@ -21,24 +21,32 @@ using HtmlRenderer.Utils;
 namespace HtmlRenderer
 {
     /// <summary>
-    /// Static class for direct html rendering, intendent for small html fragments.<br/>
-    /// Prefer using WinForms Html controls: <see cref="HtmlPanel"/> or <see cref="HtmlLabel"/>.
-    /// For direct non-trivial html rendering consider using <see cref="HtmlContainer"/>.
+    /// Standalone static class for simple and direct HTML rendering.<br/>
+    /// For WinForms UI prefer using HTML controls: <see cref="HtmlPanel"/> or <see cref="HtmlLabel"/>.<br/>
+    /// For low-level control and performance consider using <see cref="HtmlContainer"/>.<br/>
     /// </summary>
     /// <remarks>
-    /// Not suitable for large htmls as each render call will parse the given html string into DOM structure, for large html it
-    /// can be very expensive.<br/>
-    /// Consider using <see cref="HtmlContainer"/> for large html or for performance.
+    /// <b>GDI vs. GDI+ text rendering</b><br/>
+    /// Windows supports two text rendering technologies: GDI and GDI+.<br/> 
+    /// GDI is older, has better performance and looks better on standard monitors but doesn't support alpha channel for transparency.<br/> 
+    /// GDI+ is newer, device independent so work better for printers but is slower and looks worse on monitors.<br/>
+    /// HtmlRender supports both GDI and GDI+ text rendering to acc
     /// </remarks>
     /// <example>
+    /// <para>
+    /// <b>Simple rendering</b><br/>
     /// HtmlRender.Render(g, "<![CDATA[<div>Hello <b>World</b></div>]]>");<br/>
     /// HtmlRender.Render(g, "<![CDATA[<div>Hello <b>World</b></div>]]>", 10, 10, 500, CssData.Parse("body {font-size: 20px}")");<br/>
+    /// </para>
+    /// <para>
+    /// <b>Image rendering</b><br/>
+    /// </para>
     /// </example>
     public static class HtmlRender
     {
         /// <summary>
         /// Adds a font family to be used in html rendering.<br/>
-        /// The added font will be used by all rendering function including <see cref="HtmlContainer"/> and all winforms controls.
+        /// The added font will be used by all rendering function including <see cref="HtmlContainer"/> and all WinForms controls.
         /// </summary>
         /// <remarks>
         /// The given font family instance must be remain alive while the renderer is in use.<br/>
