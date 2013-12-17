@@ -33,32 +33,39 @@ namespace HtmlRenderer.Handlers
         /// <param name="htmlContainer">the container of the html to handle load stylesheet for</param>
         /// <param name="src">the source of the element to load the stylesheet by</param>
         /// <param name="attributes">the attributes of the link element</param>
-        public static string LoadStylesheet(HtmlContainer htmlContainer, string src, Dictionary<string, string> attributes)
+        /// <param name="stylesheet">return the stylesheet string that has been loaded (null if failed or <paramref name="stylesheetData"/> is given)</param>
+        /// <param name="stylesheetData">return stylesheet data object that was provided by overwrite (null if failed or <paramref name="stylesheet"/> is given)</param>
+        public static void LoadStylesheet(HtmlContainer htmlContainer, string src, Dictionary<string, string> attributes, out string stylesheet, out CssData stylesheetData)
         {
             ArgChecker.AssertArgNotNull(htmlContainer, "htmlContainer");
 
+            stylesheet = null;
+            stylesheetData = null;
             try
             {
                 var args = new HtmlStylesheetLoadEventArgs(src, attributes);
                 htmlContainer.RaiseHtmlStylesheetLoadEvent(args);
 
-                if(args.SetStyleSheet != null)
+                if (!string.IsNullOrEmpty(args.SetStyleSheet))
                 {
-                    return args.SetStyleSheet;
+                    stylesheet = args.SetStyleSheet;
                 }
-                else if(args.SetSrc != null)
+                else if (args.SetStyleSheetData != null)
                 {
-                    return LoadStylesheet(htmlContainer, args.SetSrc);
+                    stylesheetData = args.SetStyleSheetData;
+                }
+                else if (args.SetSrc != null)
+                {
+                    stylesheet = LoadStylesheet(htmlContainer, args.SetSrc);
                 }
                 else
                 {
-                    return LoadStylesheet(htmlContainer, src);
+                    stylesheet = LoadStylesheet(htmlContainer, src);
                 }
             }
             catch (Exception ex)
             {
                 htmlContainer.ReportError(HtmlRenderErrorType.CssParsing, "Exception in handling stylesheet source", ex);
-                return string.Empty;
             }
         }
 

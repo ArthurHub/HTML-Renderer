@@ -117,8 +117,13 @@ namespace HtmlRenderer.Parse
                     box.GetAttribute("rel", string.Empty).Equals("stylesheet", StringComparison.CurrentCultureIgnoreCase))
                 {
                     CloneCssData(ref cssData, ref cssDataChanged);
-                    var styleSheet = StylesheetLoadHandler.LoadStylesheet(htmlContainer, box.GetAttribute("href", string.Empty), box.HtmlTag.Attributes);
-                    CssParser.ParseStyleSheet(cssData, styleSheet);
+                    string stylesheet;
+                    CssData stylesheetData;
+                    StylesheetLoadHandler.LoadStylesheet(htmlContainer, box.GetAttribute("href", string.Empty), box.HtmlTag.Attributes,out stylesheet, out stylesheetData);
+                    if (stylesheet != null)
+                        CssParser.ParseStyleSheet(cssData, stylesheet);
+                    else if( stylesheetData != null )
+                        cssData.Combine(stylesheetData);
                 }
             }
 

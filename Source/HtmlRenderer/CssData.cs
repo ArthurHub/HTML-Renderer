@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using HtmlRenderer.Entities;
 using HtmlRenderer.Parse;
+using HtmlRenderer.Utils;
 
 namespace HtmlRenderer
 {
@@ -154,6 +155,31 @@ namespace HtmlRenderer
                         list.Insert(0, cssBlock);
                     else 
                         list.Add(cssBlock);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Combine this CSS data blocks with <paramref name="other"/> CSS blocks for each media.<br/>
+        /// Merge blocks if exists in both.
+        /// </summary>
+        /// <param name="other">the CSS data to combine with</param>
+        public void Combine(CssData other)
+        {
+            ArgChecker.AssertArgNotNull(other, "other");
+
+            // for each media block
+            foreach(var mediaBlock in other.MediaBlocks)
+            {
+                // for each css class in the media block
+                foreach(var bla in mediaBlock.Value)
+                {
+                    // for each css block of the css class
+                    foreach(var cssBlock in bla.Value)
+                    {
+                        // combine with this
+                        AddCssBlock(mediaBlock.Key, cssBlock);
+                    }
                 }
             }
         }

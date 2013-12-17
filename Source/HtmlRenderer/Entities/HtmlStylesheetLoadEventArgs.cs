@@ -16,7 +16,7 @@ using System.Collections.Generic;
 namespace HtmlRenderer.Entities
 {
     /// <summary>
-    /// Raised when aa stylesheet is about to be loaded by file path or URI by link element.<br/>
+    /// Raised when a stylesheet is about to be loaded by file path or URL in link element.<br/>
     /// This event allows to provide the stylesheet manually or provide new source (file or uri) to load from.<br/>
     /// If no alternative data is provided the original source will be used.<br/>
     /// </summary>
@@ -25,7 +25,7 @@ namespace HtmlRenderer.Entities
         #region Fields and Consts
 
         /// <summary>
-        /// the source of the stylesheet (file path or uri)
+        /// the source of the stylesheet as found in the HTML (file path or URL)
         /// </summary>
         private readonly string _src;
 
@@ -35,7 +35,7 @@ namespace HtmlRenderer.Entities
         private readonly Dictionary<string, string> _attributes;
 
         /// <summary>
-        /// provide the new source (file path or uri) to load stylesheet from
+        /// provide the new source (file path or URL) to load stylesheet from
         /// </summary>
         private string _setSrc;
 
@@ -44,13 +44,18 @@ namespace HtmlRenderer.Entities
         /// </summary>
         private string _setStyleSheet;
 
+        /// <summary>
+        /// provide the stylesheet data to load
+        /// </summary>
+        private CssData _setStyleSheetData;
+
         #endregion
 
 
         /// <summary>
         /// Init.
         /// </summary>
-        /// <param name="src">the source of the image (file path or uri)</param>
+        /// <param name="src">the source of the image (file path or URL)</param>
         /// <param name="attributes">collection of all the attributes that are defined on the image element</param>
         public HtmlStylesheetLoadEventArgs(string src, Dictionary<string, string> attributes)
         {
@@ -59,7 +64,7 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        /// the source of the image (file path or uri)
+        /// the source of the stylesheet as found in the HTML (file path or URL)
         /// </summary>
         public string Src
         {
@@ -67,7 +72,7 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        /// collection of all the attributes that are defined on the image element
+        /// collection of all the attributes that are defined on the link element
         /// </summary>
         public Dictionary<string, string> Attributes
         {
@@ -75,7 +80,7 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        /// provide the new source (file path or uri) to load stylesheet from
+        /// provide the new source (file path or URL) to load stylesheet from
         /// </summary>
         public string SetSrc
         {
@@ -90,6 +95,15 @@ namespace HtmlRenderer.Entities
         {
             get { return _setStyleSheet; }
             set { _setStyleSheet = value; }
+        }
+
+        /// <summary>
+        /// provide the stylesheet data to load
+        /// </summary>
+        public CssData SetStyleSheetData
+        {
+            get { return _setStyleSheetData; }
+            set { _setStyleSheetData = value; }
         }
     }
 }
