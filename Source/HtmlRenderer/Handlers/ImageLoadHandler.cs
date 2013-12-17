@@ -27,7 +27,6 @@ namespace HtmlRenderer.Handlers
     /// Handler for all loading image logic.<br/>
     /// <p>
     /// Loading by <see cref="HtmlRenderer.Entities.HtmlImageLoadEventArgs"/>.<br/>
-    /// Loading by calling property/method on bridge object.<br/>
     /// Loading by file path.<br/>
     /// Loading by URI.<br/>
     /// </p>
@@ -49,10 +48,10 @@ namespace HtmlRenderer.Handlers
         /// <summary>
         /// callback raised when image load process is complete with image or without
         /// </summary>
-        private readonly Utils.Action<Image, Rectangle, bool> _loadCompleteCallback;
+        private readonly Action<Image, Rectangle, bool> _loadCompleteCallback;
 
         /// <summary>
-        /// the web client used to download image from uri (to cancel on dispose)
+        /// the web client used to download image from URL (to cancel on dispose)
         /// </summary>
         private WebClient _client;
 
@@ -93,7 +92,7 @@ namespace HtmlRenderer.Handlers
         /// Init.
         /// </summary>
         /// <param name="loadCompleteCallback">callback raised when image load process is complete with image or without</param>
-        public ImageLoadHandler(Utils.Action<Image, Rectangle, bool> loadCompleteCallback)
+        public ImageLoadHandler(Action<Image, Rectangle, bool> loadCompleteCallback)
         {
             ArgChecker.AssertArgNotNull(loadCompleteCallback, "loadCompleteCallback");
 
@@ -119,7 +118,7 @@ namespace HtmlRenderer.Handlers
         /// <summary>
         /// Set image of this image box by analyzing the src attribute.<br/>
         /// Load the image from inline base64 encoded string.<br/>
-        /// Or from calling property/method on the bridge object that returns image or url to image.<br/>
+        /// Or from calling property/method on the bridge object that returns image or URL to image.<br/>
         /// Or from file path<br/>
         /// Or from URI.
         /// </summary>
@@ -189,12 +188,12 @@ namespace HtmlRenderer.Handlers
         /// Load image from path of image file or uri.
         /// </summary>
         /// <param name="path">the file path or uri to load image from</param>
-        public void SetImageFromPath(string path)
+        private void SetImageFromPath(string path)
         {
             var uri = CommonUtils.TryGetUri(path);
             if (uri != null && uri.Scheme != "file")
             {
-                SetImageFromUri(uri);
+                SetImageFromUrl(uri);
             }
             else
             {
@@ -214,7 +213,7 @@ namespace HtmlRenderer.Handlers
         /// <summary>
         /// Extract image object from inline base64 encoded data in the src of the html img element.
         /// </summary>
-        /// <param name="src">the source that hase the base64 encoded image</param>
+        /// <param name="src">the source that has the base64 encoded image</param>
         /// <returns>image from base64 data string or null if failed</returns>
         private static Image GetImageFromData(string src)
         {
@@ -307,24 +306,24 @@ namespace HtmlRenderer.Handlers
         /// <summary>
         /// Load image from the given URI by downloading it.<br/>
         /// Create local file name in temp folder from the URI, if the file already exists use it as it has already been downloaded.
-        /// If not download the file using <see cref="SetImageFromUriAsync"/>.
+        /// If not download the file using <see cref="SetImageFromUrlAsync"/>.
         /// </summary>
         /// <param name="source"></param>
-        private void SetImageFromUri(Uri source)
+        private void SetImageFromUrl(Uri source)
         {
             var filePath = CommonUtils.GetLocalfileName(source);
             if (filePath.Exists && filePath.Length > 0)
                 SetImageFromFile(filePath);
             else
-                ThreadPool.QueueUserWorkItem(SetImageFromUriAsync, new KeyValuePair<Uri, FileInfo>(source, filePath));
+                ThreadPool.QueueUserWorkItem(SetImageFromUrlAsync, new KeyValuePair<Uri, FileInfo>(source, filePath));
         }
 
         /// <summary>
         /// Download the requested file in the URI to the given file path.<br/>
         /// Use async sockets API to download from web, <see cref="OnDownloadImageCompleted"/>.
         /// </summary>
-        /// <param name="data">key value pair of uri and file info to download the file to</param>
-        private void SetImageFromUriAsync(object data)
+        /// <param name="data">key value pair of URL and file info to download the file to</param>
+        private void SetImageFromUrlAsync(object data)
         {
             var uri = ((KeyValuePair<Uri, FileInfo>) data).Key;
             var filePath = ((KeyValuePair<Uri, FileInfo>) data).Value;
@@ -337,7 +336,7 @@ namespace HtmlRenderer.Handlers
             }
             catch (Exception ex)
             {
-                _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image from uri: " + uri, ex);
+                _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image from URL: " + uri, ex);
                 ImageLoadComplete(false);
             }
         }
@@ -373,7 +372,7 @@ namespace HtmlRenderer.Handlers
                         }
                         else
                         {
-                            _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image from uri: " + client.BaseAddress, e.Error);
+                            _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image from URL: " + client.BaseAddress, e.Error);
                             ImageLoadComplete();
                         }
                     }
@@ -381,7 +380,7 @@ namespace HtmlRenderer.Handlers
             }
             catch (Exception ex)
             {
-                _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image from uri: " + sender, ex);
+                _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image from URL: " + sender, ex);
                 ImageLoadComplete();
             }
         }

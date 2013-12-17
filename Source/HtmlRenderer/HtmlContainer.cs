@@ -26,39 +26,48 @@ using HtmlRenderer.Utils;
 namespace HtmlRenderer
 {
     /// <summary>
-    /// Low level handling of Html Renderer logic, this class is used by <see cref="HtmlParser"/>, <see cref="HtmlLabel"/>, <see cref="HtmlToolTip"/> and <see cref="HtmlRender"/>.<br/>
-    /// The class allows html layout and rendering without association to actual winforms control, those allowing to handle html rendering on any graphics object.<br/>
-    /// Using this class will require the client to handle all propagations of mouse\keyboard events, layout/paint calls, scrolling offset, 
+    /// Low level handling of Html Renderer logic.<br/>
+    /// Allows html layout and rendering without association to actual control, those allowing to handle html rendering on any graphics object.<br/>
+    /// Using this class will require the client to handle all propagations of mouse/keyboard events, layout/paint calls, scrolling offset, 
     /// location/size/rectangle handling and UI refresh requests.<br/>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// <b>MaxSize and ActualSize:</b><br/>
     /// The max width and height of the rendered html.<br/>
     /// The max width will effect the html layout wrapping lines, resize images and tables where possible.<br/>
     /// The max height does NOT effect layout, but will not render outside it (clip).<br/>
-    /// <see cref="ActualSize"/> can be exceed the max size by layout restrictions (unwrappable line, set image size, etc.).<br/>
-    /// Set zero for unlimited (width\height separately).<br/>
+    /// <see cref="ActualSize"/> can exceed the max size by layout restrictions (unwrap-able line, set image size, etc.).<br/>
+    /// Set zero for unlimited (width/height separately).<br/>
     /// </para>
     /// <para>
     /// <b>ScrollOffset:</b><br/>
     /// This will adjust the rendered html by the given offset so the content will be "scrolled".<br/>
-    /// Element that is rendered at location (50,100) with offset of (0,200) will not be rendered as it
-    /// will be at -100 therefore outside the client rectangle of the control.
+    /// Element that is rendered at location (50,100) with offset of (0,200) will not be rendered 
+    /// at -100, therefore outside the client rectangle.
     /// </para>
     /// <para>
     /// <b>LinkClicked event</b><br/>
     /// Raised when the user clicks on a link in the html.<br/>
-    /// Allows canceling the execution of the link.
+    /// Allows canceling the execution of the link to overwrite by custom logic.<br/>
+    /// If error occurred in event handler it will propagate up the stack.
     /// </para>
     /// <para>
     /// <b>StylesheetLoad event:</b><br/>
-    /// Raised when aa stylesheet is about to be loaded by file path or URI by link element.<br/>
-    /// This event allows to provide the stylesheet manually or provide new source (file or Uri) to load from.<br/>
+    /// Raised when a stylesheet is about to be loaded by file path or URL in 'link' element.<br/>
+    /// Allows to overwrite the loaded stylesheet by providing the stylesheet data manually, or different source (file or URL) to load from.<br/>
+    /// Example: The stylesheet 'href' can be non-valid URI string that is interpreted in the overwrite delegate by custom logic to pre-loaded stylesheet object<br/>
     /// If no alternative data is provided the original source will be used.<br/>
     /// </para>
     /// <para>
     /// <b>ImageLoad event:</b><br/>
-    /// Raised when an image is about to be loaded by file path or URI.<br/>
-    /// This event allows to provide the image manually, if not handled the image will be loaded from file or download from URI.
+    /// Raised when an image is about to be loaded by file path, URL or inline data in 'img' element or background-image CSS style.<br/>
+    /// Allows to overwrite the loaded image by providing the image object manually, or different source (file or URL) to load from.<br/>
+    /// Example: image 'src' can be non-valid string that is interpreted in the overwrite delegate by custom logic to resource image object<br/>
+    /// Example: image 'src' in the html is relative - the overwrite intercepts the load and provide full source URL to load the image from<br/>
+    /// Example: image download requires authentication - the overwrite intercepts the load, downloads the image to disk using custom code and provide 
+    /// file path to load the image from.<br/>
+    /// If no alternative data is provided the original source will be used.<br/>
     /// </para>
     /// <para>
     /// <b>Refresh event:</b><br/>
@@ -69,7 +78,7 @@ namespace HtmlRenderer
     /// <b>RenderError event:</b><br/>
     /// Raised when an error occurred during html rendering.<br/>
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class HtmlContainer : IDisposable
     {
         #region Fields and Consts
@@ -236,14 +245,14 @@ namespace HtmlRenderer
         /// Use GDI+ text rendering to measure/draw text.<br/>
         /// </summary>
         /// <remarks>
-        /// <p>
+        /// <para>
         /// GDI+ text rendering is less smooth than GDI text rendering but it natively supports alpha channel
         /// thus allows creating transparent images.
-        /// </p>
-        /// <p>
+        /// </para>
+        /// <para>
         /// While using GDI+ text rendering you can control the text rendering using <see cref="Graphics.TextRenderingHint"/>, note that
         /// using <see cref="TextRenderingHint.ClearTypeGridFit"/> doesn't work well with transparent background.
-        /// </p>
+        /// </para>
         /// </remarks>
         public bool UseGdiPlusTextRendering
         {
@@ -283,7 +292,7 @@ namespace HtmlRenderer
         /// </summary>
         /// <example>
         /// Element that is rendered at location (50,100) with offset of (0,200) will not be rendered as it
-        /// will be at -100 therefore outside the rectangle of the control.
+        /// will be at -100 therefore outside the client rectangle.
         /// </example>
         public PointF ScrollOffset
         {

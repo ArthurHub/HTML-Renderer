@@ -26,11 +26,38 @@ namespace HtmlRenderer
     /// For low-level control and performance consider using <see cref="HtmlContainer"/>.<br/>
     /// </summary>
     /// <remarks>
+    /// <para>
     /// <b>GDI vs. GDI+ text rendering</b><br/>
     /// Windows supports two text rendering technologies: GDI and GDI+.<br/> 
     /// GDI is older, has better performance and looks better on standard monitors but doesn't support alpha channel for transparency.<br/> 
     /// GDI+ is newer, device independent so work better for printers but is slower and looks worse on monitors.<br/>
-    /// HtmlRender supports both GDI and GDI+ text rendering to acc
+    /// HtmlRender supports both GDI and GDI+ text rendering to accommodate different needs, GDI+ text rendering methods have "GdiPlus" suffix
+    /// in their name where GDI do not.<br/>
+    /// </para>
+    /// <para>
+    /// <b>Rendering to bitmap</b>
+    /// 
+    /// </para>
+    /// <para>
+    /// <b>Overwrite stylesheet resolution</b>
+    /// Exposed by optional "stylesheetLoad" delegate argument.<br/>
+    /// Invoked when a stylesheet is about to be loaded by file path or URL in 'link' element.<br/>
+    /// Allows to overwrite the loaded stylesheet by providing the stylesheet data manually, or different source (file or URL) to load from.<br/>
+    /// Example: The stylesheet 'href' can be non-valid URI string that is interpreted in the overwrite delegate by custom logic to pre-loaded stylesheet object<br/>
+    /// If no alternative data is provided the original source will be used.<br/>
+    /// </para>
+    /// <para>
+    /// <b>Overwrite image resolution</b>
+    /// Exposed by optional "imageLoad" delegate argument.<br/>
+    /// Invoked when an image is about to be loaded by file path, URL or inline data in 'img' element or background-image CSS style.<br/>
+    /// Allows to overwrite the loaded image by providing the image object manually, or different source (file or URL) to load from.<br/>
+    /// Example: image 'src' can be non-valid string that is interpreted in the overwrite delegate by custom logic to resource image object<br/>
+    /// Example: image 'src' in the html is relative - the overwrite intercepts the load and provide full source URL to load the image from<br/>
+    /// Example: image download requires authentication - the overwrite intercepts the load, downloads the image to disk using custom code and provide 
+    /// file path to load the image from.<br/>
+    /// If no alternative data is provided the original source will be used.<br/>
+    /// Note: Cannot use asynchronous scheme overwrite scheme.<br/>
+    /// </para>
     /// </remarks>
     /// <example>
     /// <para>
@@ -40,6 +67,9 @@ namespace HtmlRenderer
     /// </para>
     /// <para>
     /// <b>Image rendering</b><br/>
+    /// HtmlRender.RenderToImage("<![CDATA[<div>Hello <b>World</b></div>]]>", new Size(600,400));<br/>
+    /// HtmlRender.RenderToImage("<![CDATA[<div>Hello <b>World</b></div>]]>", 600);<br/>
+    /// HtmlRender.RenderToImage(existingImage, "<![CDATA[<div>Hello <b>World</b></div>]]>");<br/>
     /// </para>
     /// </example>
     public static class HtmlRender
@@ -80,7 +110,9 @@ namespace HtmlRenderer
         }
 
         /// <summary>
-        /// Measure the size (width and height) required to draw the given html under given width and height restrictions.<br/>
+        /// Measure the size (width and height) required to draw the given html under given max width restriction.<br/>
+        /// If no max width restriction is given the layout will use the maximum possible width required by the content,
+        /// it can be the longest text line or full image width.<br/>
         /// Use GDI text rendering, note <see cref="Graphics.TextRenderingHint"/> has no effect.
         /// </summary>
         /// <param name="g">Device to use for measure</param>
@@ -90,7 +122,7 @@ namespace HtmlRenderer
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the size required for the html</returns>
-        public static SizeF Measure(Graphics g, string html, float maxWidth, CssData cssData = null,
+        public static SizeF Measure(Graphics g, string html, float maxWidth = 0, CssData cssData = null,
                                     EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             ArgChecker.AssertArgNotNull(g, "g");
@@ -98,7 +130,9 @@ namespace HtmlRenderer
         }
 
         /// <summary>
-        /// Measure the size (width and height) required to draw the given html under given width and height restrictions.<br/>
+        /// Measure the size (width and height) required to draw the given html under given max width restriction.<br/>
+        /// If no max width restriction is given the layout will use the maximum possible width required by the content,
+        /// it can be the longest text line or full image width.<br/>
         /// Use GDI+ text rending, use <see cref="Graphics.TextRenderingHint"/> to control text rendering.
         /// </summary>
         /// <param name="g">Device to use for measure</param>
@@ -108,7 +142,7 @@ namespace HtmlRenderer
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the size required for the html</returns>
-        public static SizeF MeasureGdiPlus(Graphics g, string html, float maxWidth, CssData cssData = null,
+        public static SizeF MeasureGdiPlus(Graphics g, string html, float maxWidth = 0, CssData cssData = null,
                                            EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             ArgChecker.AssertArgNotNull(g, "g");
@@ -116,8 +150,8 @@ namespace HtmlRenderer
         }
 
         /// <summary>
-        /// Renders the specified HTML source on the specified location and max size restriction.<br/>
-        /// Use GDI text rendering, note <see cref="Graphics.TextRenderingHint"/> has no effect.
+        /// Renders the specified HTML source on the specified location and max width restriction.<br/>
+        /// Use GDI text rendering, note <see cref="Graphics.TextRenderingHint"/> has no effect.<br/>
         /// If <paramref name="maxWidth"/> is zero the html will use all the required width, otherwise it will perform line 
         /// wrap as specified in the html<br/>
         /// Returned is the actual width and height of the rendered html.<br/>
@@ -126,7 +160,7 @@ namespace HtmlRenderer
         /// <param name="html">HTML source to render</param>
         /// <param name="left">optional: the left most location to start render the html at (default - 0)</param>
         /// <param name="top">optional: the top most location to start render the html at (default - 0)</param>
-        /// <param name="maxWidth">optional: Width to fit HTML drawing (default - 0, unlimited)</param>
+        /// <param name="maxWidth">optional: bound the width of the html to render in (default - 0, unlimited)</param>
         /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
@@ -140,7 +174,7 @@ namespace HtmlRenderer
 
         /// <summary>
         /// Renders the specified HTML source on the specified location and max size restriction.<br/>
-        /// Use GDI text rendering, note <see cref="Graphics.TextRenderingHint"/> has no effect.
+        /// Use GDI text rendering, note <see cref="Graphics.TextRenderingHint"/> has no effect.<br/>
         /// If <paramref name="maxSize"/>.Width is zero the html will use all the required width, otherwise it will perform line 
         /// wrap as specified in the html<br/>
         /// If <paramref name="maxSize"/>.Height is zero the html will use all the required height, otherwise it will clip at the
@@ -164,7 +198,7 @@ namespace HtmlRenderer
 
         /// <summary>
         /// Renders the specified HTML source on the specified location and max size restriction.<br/>
-        /// Use GDI+ text rending, use <see cref="Graphics.TextRenderingHint"/> to control text rendering.
+        /// Use GDI+ text rending, use <see cref="Graphics.TextRenderingHint"/> to control text rendering.<br/>
         /// If <paramref name="maxWidth"/> is zero the html will use all the required width, otherwise it will perform line 
         /// wrap as specified in the html<br/>
         /// Returned is the actual width and height of the rendered html.<br/>
@@ -173,7 +207,7 @@ namespace HtmlRenderer
         /// <param name="html">HTML source to render</param>
         /// <param name="left">optional: the left most location to start render the html at (default - 0)</param>
         /// <param name="top">optional: the top most location to start render the html at (default - 0)</param>
-        /// <param name="maxWidth">optional: Width to fit HTML drawing (default - 0, unlimited)</param>
+        /// <param name="maxWidth">optional: bound the width of the html to render in (default - 0, unlimited)</param>
         /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
@@ -187,7 +221,7 @@ namespace HtmlRenderer
 
         /// <summary>
         /// Renders the specified HTML source on the specified location and max size restriction.<br/>
-        /// Use GDI+ text rending, use <see cref="Graphics.TextRenderingHint"/> to control text rendering.
+        /// Use GDI+ text rending, use <see cref="Graphics.TextRenderingHint"/> to control text rendering.<br/>
         /// If <paramref name="maxSize"/>.Width is zero the html will use all the required width, otherwise it will perform line 
         /// wrap as specified in the html<br/>
         /// If <paramref name="maxSize"/>.Height is zero the html will use all the required height, otherwise it will clip at the
@@ -213,14 +247,15 @@ namespace HtmlRenderer
         /// Renders the specified HTML on top of the given image.<br/>
         /// <paramref name="image"/> will contain the rendered html in it on top of original content.<br/>
         /// The HTML will be layout by the given image size but may be clipped if cannot fit.<br/>
+        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </summary>
         /// <param name="image">the image to render the html on</param>
         /// <param name="html">HTML source to render</param>
-        /// <param name="location">the top-left most location to start render the html at</param>
+        /// <param name="location">optional: the top-left most location to start render the html at (default - 0,0)</param>
         /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
-        public static void RenderToImage(Image image, string html, PointF location, CssData cssData = null,
+        public static void RenderToImage(Image image, string html, PointF location = new PointF(), CssData cssData = null,
                                          EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             ArgChecker.AssertArgNotNull(image, "image");
@@ -231,6 +266,7 @@ namespace HtmlRenderer
         /// <summary>
         /// Renders the specified HTML on top of the given image.<br/>
         /// <paramref name="image"/> will contain the rendered html in it on top of original content.<br/>
+        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </summary>
         /// <param name="image">the image to render the html on</param>
         /// <param name="html">HTML source to render</param>
@@ -272,10 +308,11 @@ namespace HtmlRenderer
         }
 
         /// <summary>
-        /// Renders the specified HTML into image of the requested size.<br/>
+        /// Renders the specified HTML into a new image of the requested size.<br/>
         /// The HTML will be layout by the given size but will be clipped if cannot fit.<br/>
         /// <p>
-        /// Limitation: The image cannot have transparent background, by default it will be white.
+        /// Limitation: The image cannot have transparent background, by default it will be white.<br/>
+        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </p>
         /// </summary>
         /// <param name="html">HTML source to render</param>
@@ -324,17 +361,18 @@ namespace HtmlRenderer
         }
 
         /// <summary>
-        /// Renders the specified HTML into image of unknown size that will be determined by max width/height and HTML layout.<br/>
+        /// Renders the specified HTML into a new image of unknown size that will be determined by max width/height and HTML layout.<br/>
         /// If <paramref name="maxWidth"/> is zero the html will use all the required width, otherwise it will perform line 
         /// wrap as specified in the html<br/>
         /// If <paramref name="maxHeight"/> is zero the html will use all the required height, otherwise it will clip at the
         /// given max height not rendering the html below it.<br/>
         /// <p>
-        /// Limitation: The image cannot have transparent background, by default it will be white.
+        /// Limitation: The image cannot have transparent background, by default it will be white.<br/>
+        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </p>
         /// </summary>
         /// <param name="html">HTML source to render</param>
-        /// <param name="maxWidth">the max width of the rendered html, if not zero and html cannot be layout within the limit it will be clipped</param>
+        /// <param name="maxWidth">optional: the max width of the rendered html, if not zero and html cannot be layout within the limit it will be clipped</param>
         /// <param name="maxHeight">optional: the max height of the rendered html, if not zero and html cannot be layout within the limit it will be clipped</param>
         /// <param name="backgroundColor">optional: the color to fill the image with (default - white)</param>
         /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
@@ -342,21 +380,22 @@ namespace HtmlRenderer
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
         /// <exception cref="ArgumentOutOfRangeException">if <paramref name="backgroundColor"/> is <see cref="Color.Transparent"/></exception>.
-        public static Image RenderToImage(string html, int maxWidth, int maxHeight = 0, Color backgroundColor = new Color(), CssData cssData = null,
+        public static Image RenderToImage(string html, int maxWidth = 0, int maxHeight = 0, Color backgroundColor = new Color(), CssData cssData = null,
                                           EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             return RenderToImage(html, Size.Empty, new Size(maxWidth, maxHeight), backgroundColor, cssData, stylesheetLoad, imageLoad);
         }
 
         /// <summary>
-        /// Renders the specified HTML into image of unknown size that will be determined by max width/height and HTML layout.<br/>
+        /// Renders the specified HTML into a new image of unknown size that will be determined by min/max width/height and HTML layout.<br/>
         /// If <paramref name="maxSize.Width"/> is zero the html will use all the required width, otherwise it will perform line 
         /// wrap as specified in the html<br/>
         /// If <paramref name="maxSize.Height"/> is zero the html will use all the required height, otherwise it will clip at the
         /// given max height not rendering the html below it.<br/>
         /// If <paramref name="minSize"/> (Width/Height) is above zero the rendered image will not be smaller than the given min size.<br/>
         /// <p>
-        /// Limitation: The image cannot have transparent background, by default it will be white.
+        /// Limitation: The image cannot have transparent background, by default it will be white.<br/>
+        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </p>
         /// </summary>
         /// <param name="html">HTML source to render</param>
@@ -379,15 +418,15 @@ namespace HtmlRenderer
 
             using(var htmlContainer = new HtmlContainer())
             {
-                if (stylesheetLoad != null)
+                if( stylesheetLoad != null )
                     htmlContainer.StylesheetLoad += stylesheetLoad;
-                if (imageLoad != null)
+                if( imageLoad != null )
                     htmlContainer.ImageLoad += imageLoad;
                 htmlContainer.SetHtml(html, cssData);
 
                 var finalSize = MeasureHtmlByRestrictions(htmlContainer, minSize, maxSize);
                 htmlContainer.MaxSize = finalSize;
-                
+
                 // create the final image to render into by measured size
                 var image = new Bitmap(finalSize.Width, finalSize.Height, PixelFormat.Format32bppArgb);
 
@@ -416,8 +455,11 @@ namespace HtmlRenderer
         }
 
         /// <summary>
-        /// Renders the specified HTML into image of the requested size.<br/>
+        /// Renders the specified HTML into a new image of the requested size.<br/>
         /// The HTML will be layout by the given size but will be clipped if cannot fit.<br/>
+        /// The generated image have transparent background that the html is rendered on.<br/>
+        /// GDI+ text rending can be controlled by providing <see cref="TextRenderingHint"/>.<br/>
+        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </summary>
         /// <param name="html">HTML source to render</param>
         /// <param name="size">The size of the image to render into, layout html by width and clipped by height</param>
@@ -427,7 +469,7 @@ namespace HtmlRenderer
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
         public static Image RenderToImageGdiPlus(string html, Size size, TextRenderingHint textRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit, CssData cssData = null,
-                                              EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+                                                 EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             var image = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
 
@@ -441,39 +483,39 @@ namespace HtmlRenderer
         }
 
         /// <summary>
-        /// Renders the specified HTML into image of unknown size that will be determined by max width/height and HTML layout.<br/>
+        /// Renders the specified HTML into a new image of unknown size that will be determined by max width/height and HTML layout.<br/>
         /// If <paramref name="maxWidth"/> is zero the html will use all the required width, otherwise it will perform line 
         /// wrap as specified in the html<br/>
         /// If <paramref name="maxHeight"/> is zero the html will use all the required height, otherwise it will clip at the
         /// given max height not rendering the html below it.<br/>
-        /// <p>
-        /// Limitation: The image cannot have transparent background, by default it will be white.
-        /// </p>
+        /// The generated image have transparent background that the html is rendered on.<br/>
+        /// GDI+ text rending can be controlled by providing <see cref="TextRenderingHint"/>.<br/>
+        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </summary>
         /// <param name="html">HTML source to render</param>
-        /// <param name="maxWidth">the max width of the rendered html, if not zero and html cannot be layout within the limit it will be clipped</param>
+        /// <param name="maxWidth">optional: the max width of the rendered html, if not zero and html cannot be layout within the limit it will be clipped</param>
         /// <param name="maxHeight">optional: the max height of the rendered html, if not zero and html cannot be layout within the limit it will be clipped</param>
         /// <param name="textRenderingHint">optional: (default - SingleBitPerPixelGridFit)</param>
         /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
-        public static Image RenderToImageGdiPlus(string html, int maxWidth, int maxHeight = 0, TextRenderingHint textRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit, CssData cssData = null,
-                                          EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+        public static Image RenderToImageGdiPlus(string html, int maxWidth = 0, int maxHeight = 0, TextRenderingHint textRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit, CssData cssData = null,
+                                                 EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             return RenderToImageGdiPlus(html, Size.Empty, new Size(maxWidth, maxHeight), textRenderingHint, cssData, stylesheetLoad, imageLoad);
         }
 
         /// <summary>
-        /// Renders the specified HTML into image of unknown size that will be determined by max width/height and HTML layout.<br/>
+        /// Renders the specified HTML into a new image of unknown size that will be determined by min/max width/height and HTML layout.<br/>
         /// If <paramref name="maxSize.Width"/> is zero the html will use all the required width, otherwise it will perform line 
         /// wrap as specified in the html<br/>
         /// If <paramref name="maxSize.Height"/> is zero the html will use all the required height, otherwise it will clip at the
         /// given max height not rendering the html below it.<br/>
         /// If <paramref name="minSize"/> (Width/Height) is above zero the rendered image will not be smaller than the given min size.<br/>
-        /// <p>
-        /// Limitation: The image cannot have transparent background, by default it will be white.
-        /// </p>
+        /// The generated image have transparent background that the html is rendered on.<br/>
+        /// GDI+ text rending can be controlled by providing <see cref="TextRenderingHint"/>.<br/>
+        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </summary>
         /// <param name="html">HTML source to render</param>
         /// <param name="minSize">optional: the min size of the rendered html (zero - not limit the width/height)</param>
@@ -484,9 +526,9 @@ namespace HtmlRenderer
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
         public static Image RenderToImageGdiPlus(string html, Size minSize, Size maxSize, TextRenderingHint textRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit, CssData cssData = null,
-                                          EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+                                                 EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
-            if (string.IsNullOrEmpty(html))
+            if( string.IsNullOrEmpty(html) )
                 return new Bitmap(0, 0, PixelFormat.Format32bppArgb);
 
             using(var htmlContainer = new HtmlContainer())
@@ -502,9 +544,9 @@ namespace HtmlRenderer
 
                 // create the final image to render into by measured size
                 var image = new Bitmap(finalSize.Width, finalSize.Height, PixelFormat.Format32bppArgb);
-                
+
                 // render HTML into the image
-                using (var g = Graphics.FromImage(image))
+                using(var g = Graphics.FromImage(image))
                 {
                     g.TextRenderingHint = textRenderingHint;
                     htmlContainer.PerformPaint(g);
@@ -528,7 +570,8 @@ namespace HtmlRenderer
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the size required for the html</returns>
-        private static SizeF Measure(Graphics g, string html, float maxWidth, CssData cssData, bool useGdiPlusTextRendering, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad, EventHandler<HtmlImageLoadEventArgs> imageLoad)
+        private static SizeF Measure(Graphics g, string html, float maxWidth, CssData cssData, bool useGdiPlusTextRendering,
+                                     EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad, EventHandler<HtmlImageLoadEventArgs> imageLoad)
         {
             SizeF actualSize = SizeF.Empty;
             if( !string.IsNullOrEmpty(html) )
@@ -562,12 +605,12 @@ namespace HtmlRenderer
         private static Size MeasureHtmlByRestrictions(HtmlContainer htmlContainer, Size minSize, Size maxSize)
         {
             // use desktop created graphics to measure the HTML
-            using (var measureGraphics = Graphics.FromHwnd(IntPtr.Zero))
+            using(var measureGraphics = Graphics.FromHwnd(IntPtr.Zero))
             {
                 // first layout without size restriction to know html actual size
                 htmlContainer.PerformLayout(measureGraphics);
 
-                if (maxSize.Width > 0 && maxSize.Width < htmlContainer.ActualSize.Width)
+                if( maxSize.Width > 0 && maxSize.Width < htmlContainer.ActualSize.Width )
                 {
                     // to allow the actual size be smaller than max we need to set max size only if it is really larger
                     htmlContainer.MaxSize = new SizeF(maxSize.Width, 0);

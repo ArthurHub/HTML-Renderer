@@ -19,19 +19,23 @@ namespace HtmlRenderer.Entities
 {
     /// <summary>
     /// Callback used in <see cref="HtmlImageLoadEventArgs"/> to allow setting image externally and async.<br/>
-    /// The callback can provide path to image file or uri, or the actual image to use.<br/>
-    /// If <paramref name="imageRectangle"/> is not <see cref="System.Drawing.Rectangle.Empty"/> then only the specified rectangle will
-    /// be used from the loaded image and not all of it.<br/> 
-    /// if <paramref name="imageRectangle"/> is given it will be used for the size of the image and not the actual image size.
+    /// The callback can provide path to image file path, URL or the actual image to use.<br/>
+    /// If <paramref name="imageRectangle"/> is given (not <see cref="System.Drawing.Rectangle.Empty"/>) then only the specified rectangle will
+    /// be used from the loaded image and not all of it, also the rectangle will be used for size and not the actual image size.<br/> 
     /// </summary>
-    /// <param name="path">the path to the image to load (file path or uri)</param>
-    /// <param name="image">the image to load</param>
-    /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
-    public delegate void HtmlImageLoadCallback(string path, Image image, Rectangle imageRectangle);
+    /// <param name="path">the path to the image to load (file path or URL)</param>
+    /// <param name="image">the image to use</param>
+    /// <param name="imageRectangle">optional: limit to specific rectangle in the loaded image</param>
+    internal delegate void HtmlImageLoadCallback(string path, Image image, Rectangle imageRectangle);
 
     /// <summary>
-    /// Raised when an image is about to be loaded by file path or URI.<br/>
-    /// This event allows to provide the image manually, if not handled the image will be loaded from file or download from URI.
+    /// Invoked when an image is about to be loaded by file path, URL or inline data in 'img' element or background-image CSS style.<br/>
+    /// Allows to overwrite the loaded image by providing the image object manually, or different source (file or URL) to load from.<br/>
+    /// Example: image 'src' can be non-valid string that is interpreted in the overwrite delegate by custom logic to resource image object<br/>
+    /// Example: image 'src' in the html is relative - the overwrite intercepts the load and provide full source URL to load the image from<br/>
+    /// Example: image download requires authentication - the overwrite intercepts the load, downloads the image to disk using custom code and 
+    /// provide file path to load the image from. Can also use the asynchronous image overwrite not to block HTML rendering is applicable.<br/>
+    /// If no alternative data is provided the original source will be used.<br/>
     /// </summary>
     public sealed class HtmlImageLoadEventArgs : EventArgs
     {
@@ -66,7 +70,7 @@ namespace HtmlRenderer.Entities
         /// <param name="src">the source of the image (file path or uri)</param>
         /// <param name="attributes">collection of all the attributes that are defined on the image element</param>
         /// <param name="callback">Callback used to allow setting image externally and async.</param>
-        public HtmlImageLoadEventArgs(string src, Dictionary<string, string> attributes, HtmlImageLoadCallback callback)
+        internal HtmlImageLoadEventArgs(string src, Dictionary<string, string> attributes, HtmlImageLoadCallback callback)
         {
             _src = src;
             _attributes = attributes;
@@ -74,7 +78,7 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        /// the source of the image (file path or uri)
+        /// the source of the image (file path, URL or inline data)
         /// </summary>
         public string Src
         {
@@ -82,7 +86,7 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        /// collection of all the attributes that are defined on the image element
+        /// collection of all the attributes that are defined on the image element or CSS style
         /// </summary>
         public Dictionary<string, string> Attributes
         {
@@ -90,7 +94,8 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        /// use to cancel the image loading by html renderer, the provided image will be used.
+        /// Indicate the image load is handled asynchronously.
+        /// Cancel this image loading and overwrite the image asynchronously using callback method.<br/>
         /// </summary>
         public bool Handled
         {
@@ -99,8 +104,8 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        /// Callback used to allow setting image externally and async.<br/>
-        /// This call will set error image.
+        /// Callback to overwrite the loaded image with error image.<br/>
+        /// Can be called directly from delegate handler or asynchronously after setting <see cref="Handled"/> to True.<br/>
         /// </summary>
         public void Callback()
         {
@@ -109,13 +114,12 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        /// Callback used to allow setting image externally and async.<br/>
-        /// The callback can provide path to image file or uri, or the actual image to use.<br/>
-        /// If <paramref name="imageRectangle"/> is not <see cref="System.Drawing.Rectangle.Empty"/> then only the specified rectangle will
-        /// be used from the loaded image and not all of it.<br/> 
-        /// if <paramref name="imageRectangle"/> is given it will be used for the size of the image and not the actual image size.
+        /// Callback to overwrite the loaded image with image to load from given URI.<br/>
+        /// Can be called directly from delegate handler or asynchronously after setting <see cref="Handled"/> to True.<br/>
+        /// If <paramref name="imageRectangle"/> is given (not <see cref="System.Drawing.Rectangle.Empty"/>) then only the specified rectangle will
+        /// be used from the loaded image and not all of it, also the rectangle will be used for size and not the actual image size.<br/> 
         /// </summary>
-        /// <param name="path">the path to the image to load (file path or uri)</param>
+        /// <param name="path">the path to the image to load (file path or URL)</param>
         /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
         public void Callback(string path, Rectangle imageRectangle = new Rectangle())
         {
@@ -126,11 +130,10 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        /// Callback used to allow setting image externally and async.<br/>
-        /// The callback can provide path to image file or uri, or the actual image to use.<br/>
-        /// If <paramref name="imageRectangle"/> is not <see cref="System.Drawing.Rectangle.Empty"/> then only the specified rectangle will
-        /// be used from the loaded image and not all of it.<br/> 
-        /// if <paramref name="imageRectangle"/> is given it will be used for the size of the image and not the actual image size.
+        /// Callback to overwrite the loaded image with given image object.<br/>
+        /// Can be called directly from delegate handler or asynchronously after setting <see cref="Handled"/> to True.<br/>
+        /// If <paramref name="imageRectangle"/> is given (not <see cref="System.Drawing.Rectangle.Empty"/>) then only the specified rectangle will
+        /// be used from the loaded image and not all of it, also the rectangle will be used for size and not the actual image size.<br/> 
         /// </summary>
         /// <param name="image">the image to load</param>
         /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
