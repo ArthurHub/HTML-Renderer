@@ -652,8 +652,8 @@ namespace HtmlRenderer.Dom
             {
                 if (BackgroundImage != CssConstants.None && _imageLoadHandler == null)
                 {
-                    _imageLoadHandler = new ImageLoadHandler(OnImageLoadComplete);
-                    _imageLoadHandler.LoadImage(HtmlContainer, BackgroundImage, HtmlTag != null ? HtmlTag.Attributes : null);
+                    _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnImageLoadComplete);
+                    _imageLoadHandler.LoadImage(BackgroundImage, HtmlTag != null ? HtmlTag.Attributes : null);
                 }
 
                 MeasureWordSpacing(g);

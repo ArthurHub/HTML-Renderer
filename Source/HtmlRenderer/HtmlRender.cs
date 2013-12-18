@@ -416,16 +416,19 @@ namespace HtmlRenderer
             if( string.IsNullOrEmpty(html) )
                 return new Bitmap(0, 0, PixelFormat.Format32bppArgb);
 
-            using(var htmlContainer = new HtmlContainer())
+            using(var container = new HtmlContainer())
             {
-                if( stylesheetLoad != null )
-                    htmlContainer.StylesheetLoad += stylesheetLoad;
-                if( imageLoad != null )
-                    htmlContainer.ImageLoad += imageLoad;
-                htmlContainer.SetHtml(html, cssData);
+                container.AvoidAsyncImagesLoading = true;
+                container.AvoidImagesLateLoading = true;
 
-                var finalSize = MeasureHtmlByRestrictions(htmlContainer, minSize, maxSize);
-                htmlContainer.MaxSize = finalSize;
+                if( stylesheetLoad != null )
+                    container.StylesheetLoad += stylesheetLoad;
+                if( imageLoad != null )
+                    container.ImageLoad += imageLoad;
+                container.SetHtml(html, cssData);
+
+                var finalSize = MeasureHtmlByRestrictions(container, minSize, maxSize);
+                container.MaxSize = finalSize;
 
                 // create the final image to render into by measured size
                 var image = new Bitmap(finalSize.Width, finalSize.Height, PixelFormat.Format32bppArgb);
@@ -439,7 +442,7 @@ namespace HtmlRenderer
                     using(var memoryGraphics = Graphics.FromHdc(memoryHdc))
                     {
                         memoryGraphics.Clear(backgroundColor != Color.Empty ? backgroundColor : Color.White);
-                        htmlContainer.PerformPaint(memoryGraphics);
+                        container.PerformPaint(memoryGraphics);
                     }
 
                     // copy from memory buffer to image
@@ -531,16 +534,19 @@ namespace HtmlRenderer
             if( string.IsNullOrEmpty(html) )
                 return new Bitmap(0, 0, PixelFormat.Format32bppArgb);
 
-            using(var htmlContainer = new HtmlContainer())
+            using(var container = new HtmlContainer())
             {
+                container.AvoidAsyncImagesLoading = true;
+                container.AvoidImagesLateLoading = true;
+                    
                 if( stylesheetLoad != null )
-                    htmlContainer.StylesheetLoad += stylesheetLoad;
+                    container.StylesheetLoad += stylesheetLoad;
                 if( imageLoad != null )
-                    htmlContainer.ImageLoad += imageLoad;
-                htmlContainer.SetHtml(html, cssData);
+                    container.ImageLoad += imageLoad;
+                container.SetHtml(html, cssData);
 
-                var finalSize = MeasureHtmlByRestrictions(htmlContainer, minSize, maxSize);
-                htmlContainer.MaxSize = finalSize;
+                var finalSize = MeasureHtmlByRestrictions(container, minSize, maxSize);
+                container.MaxSize = finalSize;
 
                 // create the final image to render into by measured size
                 var image = new Bitmap(finalSize.Width, finalSize.Height, PixelFormat.Format32bppArgb);
@@ -549,7 +555,7 @@ namespace HtmlRenderer
                 using(var g = Graphics.FromImage(image))
                 {
                     g.TextRenderingHint = textRenderingHint;
-                    htmlContainer.PerformPaint(g);
+                    container.PerformPaint(g);
                 }
 
                 return image;
@@ -579,6 +585,8 @@ namespace HtmlRenderer
                 using(var container = new HtmlContainer())
                 {
                     container.MaxSize = new SizeF(maxWidth, 0);
+                    container.AvoidAsyncImagesLoading = true;
+                    container.AvoidImagesLateLoading = true;
                     container.UseGdiPlusTextRendering = useGdiPlusTextRendering;
 
                     if( stylesheetLoad != null )
@@ -689,6 +697,8 @@ namespace HtmlRenderer
                 {
                     container.Location = location;
                     container.MaxSize = maxSize;
+                    container.AvoidAsyncImagesLoading = true;
+                    container.AvoidImagesLateLoading = true;
                     container.UseGdiPlusTextRendering = useGdiPlusTextRendering;
 
                     if( stylesheetLoad != null )

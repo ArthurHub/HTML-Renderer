@@ -32,9 +32,14 @@ namespace HtmlRenderer.Handlers
     /// </p>
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// Supports sync and async image loading.
+    /// </para>
+    /// <para>
     /// If the image object is created by the handler on calling dispose of the handler the image will be released, this
     /// makes release of unused images faster as they can be large.<br/>
     /// Disposing image load handler will also cancel download of image from the web.
+    /// </para>
     /// </remarks>
     internal sealed class ImageLoadHandler : IDisposable
     {
@@ -43,7 +48,7 @@ namespace HtmlRenderer.Handlers
         /// <summary>
         /// the container of the html to handle load image for
         /// </summary>
-        private HtmlContainer _htmlContainer;
+        private readonly HtmlContainer _htmlContainer;
 
         /// <summary>
         /// callback raised when image load process is complete with image or without
@@ -91,11 +96,14 @@ namespace HtmlRenderer.Handlers
         /// <summary>
         /// Init.
         /// </summary>
+        /// <param name="htmlContainer">the container of the html to handle load image for</param>
         /// <param name="loadCompleteCallback">callback raised when image load process is complete with image or without</param>
-        public ImageLoadHandler(Action<Image, Rectangle, bool> loadCompleteCallback)
+        public ImageLoadHandler(HtmlContainer htmlContainer, Action<Image, Rectangle, bool> loadCompleteCallback)
         {
+            ArgChecker.AssertArgNotNull(htmlContainer, "htmlContainer");
             ArgChecker.AssertArgNotNull(loadCompleteCallback, "loadCompleteCallback");
 
+            _htmlContainer = htmlContainer;
             _loadCompleteCallback = loadCompleteCallback;
         }
 
@@ -126,21 +134,16 @@ namespace HtmlRenderer.Handlers
         /// File path and URI image loading is executed async and after finishing calling <see cref="ImageLoadComplete"/>
         /// on the main thread and not thread-pool.
         /// </remarks>
-        /// <param name="htmlContainer">the container of the html to handle load image for</param>
         /// <param name="src">the source of the image to load</param>
         /// <param name="attributes">the collection of attributes on the element to use in event</param>
         /// <returns>the image object (null if failed)</returns>
-        public void LoadImage(HtmlContainer htmlContainer, string src, Dictionary<string, string> attributes)
+        public void LoadImage(string src, Dictionary<string, string> attributes)
         {
-            ArgChecker.AssertArgNotNull(htmlContainer, "htmlContainer");
-            
-            _htmlContainer = htmlContainer;
-            
             try
             {
                 var args = new HtmlImageLoadEventArgs(src, attributes, OnHtmlImageLoadEventCallback);
                 _htmlContainer.RaiseHtmlImageLoadEvent(args);
-                _asyncCallback = true;
+                _asyncCallback = !_htmlContainer.AvoidAsyncImagesLoading;
 
                 if (!args.Handled)
                 {
@@ -148,11 +151,7 @@ namespace HtmlRenderer.Handlers
                     {
                         if (src.StartsWith("data:image", StringComparison.CurrentCultureIgnoreCase))
                         {
-                            _image = GetImageFromData(src);
-                            if (_image == null)
-                                _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed extract image from inline data");
-                            _releaseImageObject = true;
-                            ImageLoadComplete(false);
+                            SetFromInlineData(src);
                         }
                         else
                         {
@@ -185,7 +184,77 @@ namespace HtmlRenderer.Handlers
         #region Private methods
 
         /// <summary>
-        /// Load image from path of image file or uri.
+        /// Set the image using callback from load image event, use the given data.
+        /// </summary>
+        /// <param name="path">the path to the image to load (file path or uri)</param>
+        /// <param name="image">the image to load</param>
+        /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
+        private void OnHtmlImageLoadEventCallback(string path, Image image, Rectangle imageRectangle)
+        {
+            if (!_disposed)
+            {
+                _imageRectangle = imageRectangle;
+
+                if (image != null)
+                {
+                    _image = image;
+                    ImageLoadComplete(_asyncCallback);
+                }
+                else if (!string.IsNullOrEmpty(path))
+                {
+                    SetImageFromPath(path);
+                }
+                else
+                {
+                    ImageLoadComplete(_asyncCallback);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Load the image from inline base64 encoded string data.
+        /// </summary>
+        /// <param name="src">the source that has the base64 encoded image</param>
+        private void SetFromInlineData(string src)
+        {
+            _image = GetImageFromData(src);
+            if (_image == null)
+                _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed extract image from inline data");
+            _releaseImageObject = true;
+            ImageLoadComplete(false);
+        }
+
+        /// <summary>
+        /// Extract image object from inline base64 encoded data in the src of the html img element.
+        /// </summary>
+        /// <param name="src">the source that has the base64 encoded image</param>
+        /// <returns>image from base64 data string or null if failed</returns>
+        private static Image GetImageFromData(string src)
+        {
+            var s = src.Substring(src.IndexOf(':') + 1).Split(new[] { ',' }, 2);
+            if (s.Length == 2)
+            {
+                int imagePartsCount = 0, base64PartsCount = 0;
+                foreach (var part in s[0].Split(new[] { ';' }))
+                {
+                    var pPart = part.Trim();
+                    if (pPart.StartsWith("image/", StringComparison.InvariantCultureIgnoreCase))
+                        imagePartsCount++;
+                    if (pPart.Equals("base64", StringComparison.InvariantCultureIgnoreCase))
+                        base64PartsCount++;
+                }
+
+                if (imagePartsCount > 0)
+                {
+                    byte[] imageData = base64PartsCount > 0 ? Convert.FromBase64String(s[1].Trim()) : new UTF8Encoding().GetBytes(Uri.UnescapeDataString(s[1].Trim()));
+                    return Image.FromStream(new MemoryStream(imageData));
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Load image from path of image file or URL.
         /// </summary>
         /// <param name="path">the file path or uri to load image from</param>
         private void SetImageFromPath(string path)
@@ -211,72 +280,22 @@ namespace HtmlRenderer.Handlers
         }
 
         /// <summary>
-        /// Extract image object from inline base64 encoded data in the src of the html img element.
-        /// </summary>
-        /// <param name="src">the source that has the base64 encoded image</param>
-        /// <returns>image from base64 data string or null if failed</returns>
-        private static Image GetImageFromData(string src)
-        {
-            var s = src.Substring(src.IndexOf(':') + 1).Split(new[] { ',' }, 2);
-            if (s.Length == 2)
-            {
-                int imagePartsCount = 0, base64PartsCount = 0;
-                foreach (var part in s[0].Split(new[] {';'}))
-                {
-                    var pPart = part.Trim();
-                    if (pPart.StartsWith("image/",StringComparison.InvariantCultureIgnoreCase))
-                        imagePartsCount++;
-                    if (pPart.Equals("base64",StringComparison.InvariantCultureIgnoreCase))
-                        base64PartsCount++;
-                }
-
-                if (imagePartsCount > 0)
-                {
-                    byte[] imageData = base64PartsCount > 0 ? Convert.FromBase64String(s[1].Trim()) : new UTF8Encoding().GetBytes(Uri.UnescapeDataString(s[1].Trim()));
-                    return Image.FromStream(new MemoryStream(imageData));
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Set the image using callback from load image event, use the given data.
-        /// </summary>
-        /// <param name="path">the path to the image to load (file path or uri)</param>
-        /// <param name="image">the image to load</param>
-        /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
-        private void OnHtmlImageLoadEventCallback(string path, Image image, Rectangle imageRectangle)
-        {
-            if(!_disposed)
-            {
-                _imageRectangle = imageRectangle;
-            
-                if (image != null)
-                {
-                    _image = image;
-                    ImageLoadComplete(_asyncCallback);
-                }
-                else if (!string.IsNullOrEmpty(path))
-                {
-                    SetImageFromPath(path);
-                }
-                else
-                {
-                    ImageLoadComplete(_asyncCallback);
-                }
-            }
-        }
-
-        /// <summary>
         /// Load the image file on thread-pool thread and calling <see cref="ImageLoadComplete"/> after.
         /// </summary>
         /// <param name="source">the file path to get the image from</param>
         private void SetImageFromFile(FileInfo source)
         {
-            if (source.Exists)
-                ThreadPool.QueueUserWorkItem(SetImageFromFileAsync, source);
+            if( source.Exists )
+            {
+                if (_htmlContainer.AvoidAsyncImagesLoading)
+                    LoadImageFromFile(source);
+                else
+                    ThreadPool.QueueUserWorkItem(state => LoadImageFromFile(source));
+            }
             else
+            {
                 ImageLoadComplete();
+            }
         }
 
         /// <summary>
@@ -284,13 +303,13 @@ namespace HtmlRenderer.Handlers
         /// Calling <see cref="ImageLoadComplete"/> on the main thread and not thread-pool.
         /// </summary>
         /// <param name="source">the file path to get the image from</param>
-        private void SetImageFromFileAsync(object source)
+        private void LoadImageFromFile(FileInfo source)
         {
             try
             {
-                if (((FileInfo)source).Exists)
+                if (source.Exists)
                 {
-                    _imageFileStream = File.Open(((FileInfo) source).FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    _imageFileStream = File.Open(source.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                     _image = Image.FromStream(_imageFileStream);
                     _releaseImageObject = true;
                 }
@@ -306,24 +325,50 @@ namespace HtmlRenderer.Handlers
         /// <summary>
         /// Load image from the given URI by downloading it.<br/>
         /// Create local file name in temp folder from the URI, if the file already exists use it as it has already been downloaded.
-        /// If not download the file using <see cref="SetImageFromUrlAsync"/>.
+        /// If not download the file using <see cref="DownloadImageFromUrlAsync"/>.
         /// </summary>
-        /// <param name="source"></param>
         private void SetImageFromUrl(Uri source)
         {
             var filePath = CommonUtils.GetLocalfileName(source);
-            if (filePath.Exists && filePath.Length > 0)
+            if( filePath.Exists && filePath.Length > 0 )
+            {
                 SetImageFromFile(filePath);
+            }
             else
-                ThreadPool.QueueUserWorkItem(SetImageFromUrlAsync, new KeyValuePair<Uri, FileInfo>(source, filePath));
+            {
+                if (_htmlContainer.AvoidAsyncImagesLoading)
+                    DownloadImageFromUrl(source, filePath);
+                else
+                    ThreadPool.QueueUserWorkItem(DownloadImageFromUrlAsync, new KeyValuePair<Uri, FileInfo>(source, filePath));
+            }
         }
 
         /// <summary>
         /// Download the requested file in the URI to the given file path.<br/>
-        /// Use async sockets API to download from web, <see cref="OnDownloadImageCompleted"/>.
+        /// Use async sockets API to download from web, <see cref="OnDownloadImageCompleted(object,System.ComponentModel.AsyncCompletedEventArgs)"/>.
+        /// </summary>
+        private void DownloadImageFromUrl(Uri source, FileInfo filePath)
+        {
+            try
+            {
+                using (var client = _client = new WebClient())
+                {
+                    client.DownloadFile(source, filePath.FullName);
+                    OnDownloadImageCompleted(false, null, filePath, client);
+                }
+            }
+            catch (Exception ex)
+            {
+                OnDownloadImageCompleted(false, ex, null, null);
+            }
+        }
+
+        /// <summary>
+        /// Download the requested file in the URI to the given file path.<br/>
+        /// Use async sockets API to download from web, <see cref="OnDownloadImageCompleted(object,System.ComponentModel.AsyncCompletedEventArgs)"/>.
         /// </summary>
         /// <param name="data">key value pair of URL and file info to download the file to</param>
-        private void SetImageFromUrlAsync(object data)
+        private void DownloadImageFromUrlAsync(object data)
         {
             var uri = ((KeyValuePair<Uri, FileInfo>) data).Key;
             var filePath = ((KeyValuePair<Uri, FileInfo>) data).Value;
@@ -336,52 +381,58 @@ namespace HtmlRenderer.Handlers
             }
             catch (Exception ex)
             {
-                _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image from URL: " + uri, ex);
-                ImageLoadComplete(false);
+                OnDownloadImageCompleted(false, ex, null, null);
             }
         }
 
         /// <summary>
-        /// On download image complete to local file use <see cref="SetImageFromFileAsync"/> to load the image file.<br/>
+        /// On download image complete to local file use <see cref="LoadImageFromFile"/> to load the image file.<br/>
         /// If the download canceled do nothing, if failed report error.
         /// </summary>
         private void OnDownloadImageCompleted(object sender, AsyncCompletedEventArgs e)
         {
             try
             {
-                using (var client = (WebClient) sender)
+                using (var client = (WebClient)sender)
                 {
                     client.DownloadFileCompleted -= OnDownloadImageCompleted;
-
-                    if (!e.Cancelled && !_disposed)
-                    {
-                        if (e.Error == null)
-                        {
-                            ((FileInfo) e.UserState).Refresh();
-                            var contentType = CommonUtils.GetResponseContentType(client);
-                            if (contentType != null && contentType.StartsWith("image", StringComparison.OrdinalIgnoreCase))
-                            {
-                                SetImageFromFileAsync(e.UserState);
-                            }
-                            else
-                            {
-                                _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image, not image content type: " + contentType, e.Error);
-                                ImageLoadComplete();
-                                ((FileInfo) e.UserState).Delete();
-                            }
-                        }
-                        else
-                        {
-                            _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image from URL: " + client.BaseAddress, e.Error);
-                            ImageLoadComplete();
-                        }
-                    }
+                    OnDownloadImageCompleted(e.Cancelled, e.Error, (FileInfo)e.UserState, client);
                 }
             }
             catch (Exception ex)
             {
-                _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image from URL: " + sender, ex);
-                ImageLoadComplete();
+                OnDownloadImageCompleted(false, ex, null, null);
+            }
+        }
+
+        /// <summary>
+        /// On download image complete to local file use <see cref="LoadImageFromFile"/> to load the image file.<br/>
+        /// If the download canceled do nothing, if failed report error.
+        /// </summary>
+        private void OnDownloadImageCompleted(bool cancelled, Exception error, FileInfo filePath, WebClient client)
+        {
+            if (!cancelled && !_disposed)
+            {
+                if (error == null)
+                {
+                    filePath.Refresh();
+                    var contentType = CommonUtils.GetResponseContentType(client);
+                    if( contentType != null && contentType.StartsWith("image", StringComparison.OrdinalIgnoreCase) )
+                    {
+                        LoadImageFromFile(filePath);
+                    }
+                    else
+                    {
+                        _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image, not image content type: " + contentType);
+                        ImageLoadComplete();
+                        filePath.Delete();
+                    }
+                }
+                else
+                {
+                    _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image from URL: " + client.BaseAddress, error);
+                    ImageLoadComplete();
+                }
             }
         }
 
