@@ -27,7 +27,7 @@ namespace HtmlRenderer.Demo
         private static void Main()
         {
 //            TestPrint();
-//            TestImage();
+//            TestImage1();
 //            return;
 
             Application.EnableVisualStyles();
@@ -39,8 +39,15 @@ namespace HtmlRenderer.Demo
 
 //            PerfForm.Run();
         }
+        
+        private static void TestImage1()
+        {
+            var html1 = "<p><h2>Hellow</h2><img height='80' src='d:\\b.png'/><h2>world</h2><img height='80' src='http://i.tinyuploads.com/Co66A2.jpg'/><h2>bla</h2></p>";
+            var img = HtmlRender.RenderToImageGdiPlus(html1, new Size(600, 400));
+            img.Save(@"d:\test1.png", ImageFormat.Png);
+        }
 
-        private static void TestImage()
+        private static void TestImage2()
         {
             var html1 = "<p style='font-size:2em;color: gray'>This is an <b>HtmlLabel</b> on transparent background with <span style='color: red'>colors</span> and links: <a href='http://htmlrenderer.codeplex.com/'>HTML Renderer</a></p>";
             var img = HtmlRender.RenderToImageGdiPlus(html1, new Size(600, 200));

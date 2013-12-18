@@ -131,7 +131,7 @@ namespace HtmlRenderer.Dom
         {
             if (!_wordsSizeMeasured)
             {
-                if (_imageLoadHandler == null && HtmlContainer.AvoidImagesLateLoading)
+                if (_imageLoadHandler == null && (HtmlContainer.AvoidAsyncImagesLoading || HtmlContainer.AvoidImagesLateLoading))
                 {
                     _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
                     _imageLoadHandler.LoadImage(GetAttribute("src"), HtmlTag != null ? HtmlTag.Attributes : null);
