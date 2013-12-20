@@ -35,11 +35,19 @@ namespace HtmlRenderer
     /// in their name where GDI do not.<br/>
     /// </para>
     /// <para>
-    /// <b>Rendering to bitmap</b>
-    /// 
+    /// <b>Rendering to image</b><br/>
+    /// See https://htmlrenderer.codeplex.com/wikipage?title=Image%20generation <br/>
+    /// Because of GDI text rendering issue with alpha channel clear type text rendering rendering to image requires special handling.<br/>
+    /// <u>Solid color background -</u> generate an image where the background is filled with solid color and all the html is rendered on top
+    /// of the background color, GDI text rendering will be used. (RenderToImage method where the first argument is html string)<br/>
+    /// <u>Image background -</u> render html on top of existing image with whatever currently exist but it cannot have transparent pixels, 
+    /// GDI text rendering will be used. (RenderToImage method where the first argument is Image object)<br/>
+    /// <u>Transparent background -</u> render html to empty image using GDI+ text rendering, the generated image can be transparent.
+    /// Text rendering can be controlled using <see cref="TextRenderingHint"/>, note that <see cref="TextRenderingHint.ClearTypeGridFit"/>
+    /// doesn't render well on transparent background. (RenderToImageGdiPlus method)<br/>
     /// </para>
     /// <para>
-    /// <b>Overwrite stylesheet resolution</b>
+    /// <b>Overwrite stylesheet resolution</b><br/>
     /// Exposed by optional "stylesheetLoad" delegate argument.<br/>
     /// Invoked when a stylesheet is about to be loaded by file path or URL in 'link' element.<br/>
     /// Allows to overwrite the loaded stylesheet by providing the stylesheet data manually, or different source (file or URL) to load from.<br/>
@@ -47,7 +55,7 @@ namespace HtmlRenderer
     /// If no alternative data is provided the original source will be used.<br/>
     /// </para>
     /// <para>
-    /// <b>Overwrite image resolution</b>
+    /// <b>Overwrite image resolution</b><br/>
     /// Exposed by optional "imageLoad" delegate argument.<br/>
     /// Invoked when an image is about to be loaded by file path, URL or inline data in 'img' element or background-image CSS style.<br/>
     /// Allows to overwrite the loaded image by providing the image object manually, or different source (file or URL) to load from.<br/>
@@ -246,8 +254,9 @@ namespace HtmlRenderer
         /// <summary>
         /// Renders the specified HTML on top of the given image.<br/>
         /// <paramref name="image"/> will contain the rendered html in it on top of original content.<br/>
+        /// <paramref name="image"/> must not contain transparent pixels as it will corrupt the rendered html text.<br/>
         /// The HTML will be layout by the given image size but may be clipped if cannot fit.<br/>
-        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
+        /// See "Rendering to image" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </summary>
         /// <param name="image">the image to render the html on</param>
         /// <param name="html">HTML source to render</param>
@@ -266,7 +275,8 @@ namespace HtmlRenderer
         /// <summary>
         /// Renders the specified HTML on top of the given image.<br/>
         /// <paramref name="image"/> will contain the rendered html in it on top of original content.<br/>
-        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
+        /// <paramref name="image"/> must not contain transparent pixels as it will corrupt the rendered html text.<br/>
+        /// See "Rendering to image" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </summary>
         /// <param name="image">the image to render the html on</param>
         /// <param name="html">HTML source to render</param>
@@ -312,7 +322,7 @@ namespace HtmlRenderer
         /// The HTML will be layout by the given size but will be clipped if cannot fit.<br/>
         /// <p>
         /// Limitation: The image cannot have transparent background, by default it will be white.<br/>
-        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
+        /// See "Rendering to image" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </p>
         /// </summary>
         /// <param name="html">HTML source to render</param>
@@ -368,7 +378,7 @@ namespace HtmlRenderer
         /// given max height not rendering the html below it.<br/>
         /// <p>
         /// Limitation: The image cannot have transparent background, by default it will be white.<br/>
-        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
+        /// See "Rendering to image" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </p>
         /// </summary>
         /// <param name="html">HTML source to render</param>
@@ -395,7 +405,7 @@ namespace HtmlRenderer
         /// If <paramref name="minSize"/> (Width/Height) is above zero the rendered image will not be smaller than the given min size.<br/>
         /// <p>
         /// Limitation: The image cannot have transparent background, by default it will be white.<br/>
-        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
+        /// See "Rendering to image" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </p>
         /// </summary>
         /// <param name="html">HTML source to render</param>
@@ -459,7 +469,7 @@ namespace HtmlRenderer
         /// The HTML will be layout by the given size but will be clipped if cannot fit.<br/>
         /// The generated image have transparent background that the html is rendered on.<br/>
         /// GDI+ text rending can be controlled by providing <see cref="TextRenderingHint"/>.<br/>
-        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
+        /// See "Rendering to image" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </summary>
         /// <param name="html">HTML source to render</param>
         /// <param name="size">The size of the image to render into, layout html by width and clipped by height</param>
@@ -490,7 +500,7 @@ namespace HtmlRenderer
         /// given max height not rendering the html below it.<br/>
         /// The generated image have transparent background that the html is rendered on.<br/>
         /// GDI+ text rending can be controlled by providing <see cref="TextRenderingHint"/>.<br/>
-        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
+        /// See "Rendering to image" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </summary>
         /// <param name="html">HTML source to render</param>
         /// <param name="maxWidth">optional: the max width of the rendered html, if not zero and html cannot be layout within the limit it will be clipped</param>
@@ -515,7 +525,7 @@ namespace HtmlRenderer
         /// If <paramref name="minSize"/> (Width/Height) is above zero the rendered image will not be smaller than the given min size.<br/>
         /// The generated image have transparent background that the html is rendered on.<br/>
         /// GDI+ text rending can be controlled by providing <see cref="TextRenderingHint"/>.<br/>
-        /// See "Rendering to bitmap" remarks section on <see cref="HtmlRender"/>.<br/>
+        /// See "Rendering to image" remarks section on <see cref="HtmlRender"/>.<br/>
         /// </summary>
         /// <param name="html">HTML source to render</param>
         /// <param name="minSize">optional: the min size of the rendered html (zero - not limit the width/height)</param>
