@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System.Drawing;
+using System.Drawing.Text;
 using System.Windows.Forms;
 using HtmlRenderer.Entities;
 using HtmlRenderer.Parse;
@@ -25,6 +26,38 @@ namespace HtmlRenderer
     /// <seealso cref="HtmlContainerBase"/>
     public sealed class HtmlContainer : HtmlContainerBase
     {
+
+        /// <summary>
+        /// Use GDI+ text rendering to measure/draw text.
+        /// </summary>
+        private bool _useGdiPlusTextRendering;
+
+        /// <summary>
+        /// Use GDI+ text rendering to measure/draw text.<br/>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// GDI+ text rendering is less smooth than GDI text rendering but it natively supports alpha channel
+        /// thus allows creating transparent images.
+        /// </para>
+        /// <para>
+        /// While using GDI+ text rendering you can control the text rendering using <see cref="Graphics.TextRenderingHint"/>, note that
+        /// using <see cref="TextRenderingHint.ClearTypeGridFit"/> doesn't work well with transparent background.
+        /// </para>
+        /// </remarks>
+        public bool UseGdiPlusTextRendering
+        {
+            get { return _useGdiPlusTextRendering; }
+            set
+            {
+                if (_useGdiPlusTextRendering != value)
+                {
+                    _useGdiPlusTextRendering = value;
+                    RequestRefresh(true);
+                }
+            }
+        }
+
         /// <summary>
         /// Measures the bounds of box and children, recursively.
         /// </summary>
@@ -33,7 +66,7 @@ namespace HtmlRenderer
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
-            using(var ig = new WinFormsGraphics(g))
+            using(var ig = new WinFormsGraphics(g,_useGdiPlusTextRendering))
             {
                 PerformLayout(ig);
             }
@@ -47,12 +80,11 @@ namespace HtmlRenderer
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
-            using(var ig = new WinFormsGraphics(g))
+            using (var ig = new WinFormsGraphics(g, _useGdiPlusTextRendering))
             {
                 PerformPaint(ig);
             }
         }
-
 
         /// <summary>
         /// Handle mouse down to handle selection.

@@ -233,7 +233,7 @@ namespace HtmlRenderer.Handlers
             ignore = ignore || (DateTime.Now - _lastMouseDown > TimeSpan.FromSeconds(1));
             return ignore;
         }
-
+        
         /// <summary>
         /// Handle mouse move to handle hover cursor and text selection.
         /// </summary>
@@ -279,7 +279,7 @@ namespace HtmlRenderer.Handlers
                 }
             }
         }
-
+        
         /// <summary>
         /// On mouse leave change the cursor back to default.
         /// </summary>
@@ -307,6 +307,22 @@ namespace HtmlRenderer.Handlers
                 if (!string.IsNullOrEmpty(plainText))
                     parent.SetToClipboard(html, plainText);
             }
+        }
+
+        /// <summary>
+        /// Get the currently selected text segment in the html.<br/>
+        /// </summary>
+        public string GetSelectedText()
+        {
+            return _root.HtmlContainer.IsSelectionEnabled ? DomUtils.GetSelectedPlainText(_root) : null;
+        }
+
+        /// <summary>
+        /// Copy the currently selected html segment with style.<br/>
+        /// </summary>
+        public string GetSelectedHtml()
+        {
+            return _root.HtmlContainer.IsSelectionEnabled ? DomUtils.GenerateHtml(_root, HtmlGenerationStyle.Inline, true) : null;
         }
 
         /// <summary>

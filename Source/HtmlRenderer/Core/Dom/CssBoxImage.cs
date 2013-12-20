@@ -72,8 +72,8 @@ namespace HtmlRenderer.Dom
             // load image iff it is in visible rectangle
             if (_imageLoadHandler == null)
             {
-                _imageLoadHandler = new ImageLoadHandler(OnLoadImageComplete);
-                _imageLoadHandler.LoadImage(HtmlContainer, GetAttribute("src"), HtmlTag != null ? HtmlTag.Attributes : null);
+                _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
+                _imageLoadHandler.LoadImage(GetAttribute("src"), HtmlTag != null ? HtmlTag.Attributes : null);
             }
 
             var rect = CommonUtils.GetFirstValueOrDefault(Rectangles);
@@ -131,10 +131,10 @@ namespace HtmlRenderer.Dom
         {
             if (!_wordsSizeMeasured)
             {
-                if (_imageLoadHandler == null && HtmlContainer.AvoidImagesLateLoading)
+                if (_imageLoadHandler == null && (HtmlContainer.AvoidAsyncImagesLoading || HtmlContainer.AvoidImagesLateLoading))
                 {
-                    _imageLoadHandler = new ImageLoadHandler(OnLoadImageComplete);
-                    _imageLoadHandler.LoadImage(HtmlContainer, GetAttribute("src"), HtmlTag != null ? HtmlTag.Attributes : null);
+                    _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
+                    _imageLoadHandler.LoadImage(GetAttribute("src"), HtmlTag != null ? HtmlTag.Attributes : null);
                 }
 
                 MeasureWordSpacing(g);

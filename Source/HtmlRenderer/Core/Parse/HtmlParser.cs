@@ -226,7 +226,7 @@ namespace HtmlRenderer.Parse
                 {
                     if (attributes == null)
                         attributes = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-                    attributes[key] = value;
+                    attributes[key.ToLower()] = value;
                 }
 
                 startIdx = endIdx + (hasPChar ? 2 : 1);

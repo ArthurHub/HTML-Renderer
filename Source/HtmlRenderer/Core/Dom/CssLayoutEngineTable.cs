@@ -263,7 +263,7 @@ namespace HtmlRenderer.Dom
                             if (rows.Count > i)
                             {
                                 int colcount = 0;
-                                for (int j = 0; j <= rows[i].Boxes.Count; j++)
+                                for (int j = 0; j < rows[i].Boxes.Count; j++)
                                 {
                                     if (colcount == realcol)
                                     {
@@ -335,29 +335,19 @@ namespace HtmlRenderer.Dom
                     //Check for column width in table-cell definitions
                     for (int i = 0; i < _columnCount; i++)
                     {
-                        if (float.IsNaN(_columnWidths[i]) && //Check if no width specified for column
-                            i < row.Boxes.Count && //And there's a box to check
-                            row.Boxes[i].Display == CssConstants.TableCell) //And the box is a table-cell
+                        if (i < 20 || float.IsNaN(_columnWidths[i])) // limit column width check
                         {
-                            CssLength len = new CssLength(row.Boxes[i].Width); //Get specified width
-
-                            if (len.Number > 0) //If some width specified
+                            if (i < row.Boxes.Count && row.Boxes[i].Display == CssConstants.TableCell)
                             {
-                                int colspan = GetColSpan(row.Boxes[i]);
-                                float flen = 0f;
-                                if (len.IsPercentage) //Get width as a percentage
+                                float len = CssValueParser.ParseLength(row.Boxes[i].Width, availCellSpace, row.Boxes[i]);
+                                if (len > 0) //If some width specified
                                 {
-                                    flen = CssValueParser.ParseNumber(row.Boxes[i].Width, availCellSpace);
-                                }
-                                else if (len.Unit == CssUnit.Pixels || len.Unit == CssUnit.None)
-                                {
-                                    flen = len.Number; //Get width as an absolute-pixel value
-                                }
-                                flen /= Convert.ToSingle(colspan);
-
-                                for (int j = i; j < i + colspan; j++)
-                                {
-                                    _columnWidths[j] = flen;
+                                    int colspan = GetColSpan(row.Boxes[i]);
+                                    len /= Convert.ToSingle(colspan);
+                                    for (int j = i; j < i + colspan; j++)
+                                    {
+                                        _columnWidths[j] = float.IsNaN(_columnWidths[j]) ? len : Math.Max(_columnWidths[j], len);
+                                    }
                                 }
                             }
                         }
@@ -437,11 +427,20 @@ namespace HtmlRenderer.Dom
 
                 if (numOfNans == 0 && occupedSpace < availCellSpace)
                 {
-                    // spread extra width between all columns
-                    float extWidth = (availCellSpace - occupedSpace) / orgNumOfNans;
-                    for (int i = 0; i < _columnWidths.Length; i++)
-                        if (orgColWidths == null || float.IsNaN(orgColWidths[i]))
-                            _columnWidths[i] += extWidth;
+                    if (orgNumOfNans > 0)
+                    {
+                        // spread extra width between all non width specified columns
+                        float extWidth = (availCellSpace - occupedSpace) / orgNumOfNans;
+                        for (int i = 0; i < _columnWidths.Length; i++)
+                            if (orgColWidths == null || float.IsNaN(orgColWidths[i]))
+                                _columnWidths[i] += extWidth;
+                    }
+                    else
+                    {
+                        // spread extra width between all columns with respect to relative sizes
+                        for (int i = 0; i < _columnWidths.Length; i++)
+                            _columnWidths[i] += (availCellSpace - occupedSpace) * (_columnWidths[i] / occupedSpace);
+                    }
                 }
             }
             else
@@ -671,6 +670,7 @@ namespace HtmlRenderer.Dom
                 currentrow++;
             }
 
+            maxRight = Math.Max(maxRight,_tableBox.Location.X + _tableBox.ActualWidth);
             _tableBox.ActualRight = maxRight + GetHorizontalSpacing() + _tableBox.ActualBorderRightWidth;
             _tableBox.ActualBottom = Math.Max(maxBottom, starty) + GetVerticalSpacing() + _tableBox.ActualBorderBottomWidth;
         }
@@ -828,7 +828,7 @@ namespace HtmlRenderer.Dom
             if (tblen.Number > 0)
             {
                 _widthSpecified = true;
-                return tblen.IsPercentage ? CssValueParser.ParseNumber(tblen.Length, _tableBox.ParentBox.AvailableWidth) : tblen.Number;
+                return CssValueParser.ParseLength(_tableBox.Width, _tableBox.ParentBox.AvailableWidth, _tableBox);
             }
             else
             {
@@ -851,7 +851,7 @@ namespace HtmlRenderer.Dom
             if (tblen.Number > 0)
             {
                 _widthSpecified = true;
-                return tblen.IsPercentage ? CssValueParser.ParseNumber(tblen.Length, _tableBox.ParentBox.AvailableWidth) : tblen.Number;
+                return CssValueParser.ParseLength(_tableBox.MaxWidth, _tableBox.ParentBox.AvailableWidth, _tableBox);
             }
             else
             {

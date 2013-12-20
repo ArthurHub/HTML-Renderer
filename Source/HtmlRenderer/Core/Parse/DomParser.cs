@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Globalization;
 using HtmlRenderer.Dom;
 using HtmlRenderer.Entities;
+using HtmlRenderer.Handlers;
 using HtmlRenderer.Utils;
 
 namespace HtmlRenderer.Parse
@@ -116,8 +117,13 @@ namespace HtmlRenderer.Parse
                     box.GetAttribute("rel", string.Empty).Equals("stylesheet", StringComparison.CurrentCultureIgnoreCase))
                 {
                     CloneCssData(ref cssData, ref cssDataChanged);
-                    var styleSheet = StylesheetLoadHelper.LoadStylesheet(htmlContainer, box.GetAttribute("href", string.Empty), box.HtmlTag.Attributes);
-                    CssParser.ParseStyleSheet(cssData, styleSheet);
+                    string stylesheet;
+                    CssData stylesheetData;
+                    StylesheetLoadHandler.LoadStylesheet(htmlContainer, box.GetAttribute("href", string.Empty), box.HtmlTag.Attributes,out stylesheet, out stylesheetData);
+                    if (stylesheet != null)
+                        CssParser.ParseStyleSheet(cssData, stylesheet);
+                    else if( stylesheetData != null )
+                        cssData.Combine(stylesheetData);
                 }
             }
 
@@ -375,10 +381,10 @@ namespace HtmlRenderer.Parse
                                 box.VerticalAlign = value.ToLower();
                             break;
                         case HtmlConstants.Background:
-                            box.BackgroundImage = value;
+                            box.BackgroundImage = value.ToLower();
                             break;
                         case HtmlConstants.Bgcolor:
-                            box.BackgroundColor = value;
+                            box.BackgroundColor = value.ToLower();
                             break;
                         case HtmlConstants.Border:
                             if (!string.IsNullOrEmpty(value) && value != "0")
@@ -396,7 +402,7 @@ namespace HtmlRenderer.Parse
                             }
                             break;
                         case HtmlConstants.Bordercolor:
-                            box.BorderLeftColor = box.BorderTopColor = box.BorderRightColor = box.BorderBottomColor = value;
+                            box.BorderLeftColor = box.BorderTopColor = box.BorderRightColor = box.BorderBottomColor = value.ToLower();
                             break;
                         case HtmlConstants.Cellspacing:
                             box.BorderSpacing = TranslateLength(value);
@@ -490,7 +496,7 @@ namespace HtmlRenderer.Parse
         /// </summary>
         /// <param name="table">the table element</param>
         /// <param name="action">the action to execute</param>
-        private static void SetForAllCells(CssBox table, Utils.Action<CssBox> action)
+        private static void SetForAllCells(CssBox table, ActionInt<CssBox> action)
         {
             foreach (var l1 in table.Boxes)
             {

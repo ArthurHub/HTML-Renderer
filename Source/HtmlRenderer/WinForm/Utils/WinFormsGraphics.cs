@@ -34,9 +34,24 @@ namespace HtmlRenderer.Utils
         private static readonly int[] _charFitWidth = new int[1000];
 
         /// <summary>
+        /// Used for GDI+ measure string.
+        /// </summary>
+        private static readonly CharacterRange[] _characterRanges = new CharacterRange[1];
+
+        /// <summary>
+        /// The string format to use for measuring strings for GDI+ text rendering
+        /// </summary>
+        private static readonly StringFormat _stringFormat;
+
+        /// <summary>
         /// The wrapped WinForms graphics object
         /// </summary>
         private readonly Graphics _g;
+
+        /// <summary>
+        /// Use GDI+ text rendering to measure/draw text.
+        /// </summary>
+        private readonly bool _useGdiPlusTextRendering;
 
         /// <summary>
         /// if to release the graphics object on dispose
@@ -50,17 +65,27 @@ namespace HtmlRenderer.Utils
 
         #endregion
 
+        /// <summary>
+        /// Init static resources.
+        /// </summary>
+        static WinFormsGraphics()
+        {
+            _stringFormat = new StringFormat(StringFormat.GenericDefault);
+            _stringFormat.FormatFlags = StringFormatFlags.NoClip | StringFormatFlags.MeasureTrailingSpaces;
+        }
 
         /// <summary>
         /// Init.
         /// </summary>
         /// <param name="g">the win forms graphics object to use</param>
+        /// <param name="useGdiPlusTextRendering">Use GDI+ text rendering to measure/draw text</param>
         /// <param name="releaseGraphics">optional: if to release the graphics object on dispose (default - false)</param>
-        public WinFormsGraphics(Graphics g, bool releaseGraphics = false)
+        public WinFormsGraphics(Graphics g, bool useGdiPlusTextRendering, bool releaseGraphics = false)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
             _g = g;
+            _useGdiPlusTextRendering = useGdiPlusTextRendering;
             _releaseGraphics = releaseGraphics;
         }
 
@@ -102,11 +127,22 @@ namespace HtmlRenderer.Utils
         /// <returns>the size of the string</returns>
         public Size MeasureString(string str, Font font)
         {
+            if( _useGdiPlusTextRendering )
+            {
+                ReleaseHdc();
+                _characterRanges[0] = new CharacterRange(0, str.Length);
+                _stringFormat.SetMeasurableCharacterRanges(_characterRanges);
+                var size = _g.MeasureCharacterRanges(str, font, RectangleF.Empty, _stringFormat)[0].GetBounds(_g).Size;
+                return new Size((int)Math.Round(size.Width), (int)Math.Round(size.Height));
+            }
+            else
+            {
             SetFont(font);
 
             var size = new Size();
             Win32Utils.GetTextExtentPoint32(_hdc, str, str.Length, ref size);
             return size;
+        }
         }
 
         /// <summary>
@@ -123,13 +159,21 @@ namespace HtmlRenderer.Utils
         /// <returns>the size of the string</returns>
         public Size MeasureString(string str, Font font, float maxWidth, out int charFit, out int charFitWidth)
         {
+            if( _useGdiPlusTextRendering )
+            {
+                ReleaseHdc();
+                throw new NotSupportedException("Char fit string measuring is not supported for GDI+ text rendering");
+            }
+            else
+            {
             SetFont(font);
 
             var size = new Size();
             Win32Utils.GetTextExtentExPoint(_hdc, str, str.Length, (int)Math.Round(maxWidth), _charFit, _charFitWidth, ref size);
             charFit = _charFit[0];
-            charFitWidth = charFit > 0 ? _charFitWidth[charFit-1] : 0;
+                charFitWidth = charFit > 0 ? _charFitWidth[charFit - 1] : 0;
             return size;
+        }
         }
 
         /// <summary>
@@ -142,7 +186,14 @@ namespace HtmlRenderer.Utils
         /// <param name="size">used to know the size of the rendered text for transparent text support</param>
         public void DrawString(String str, Font font, Color color, PointF point, SizeF size)
         {
-            if( color.A == 255 )
+            if( _useGdiPlusTextRendering )
+            {
+                ReleaseHdc();
+                _g.DrawString(str, font, RenderUtils.GetSolidBrush(color), point.X - FontsUtils.GetFontLeftPadding(font)*.8f, point.Y);
+            }
+            else
+            {
+                if (color.A == 255)
             {
                 SetFont(font);
                 SetTextColor(color);
@@ -154,6 +205,7 @@ namespace HtmlRenderer.Utils
                 InitHdc();
                 DrawTransparentText(_hdc, str, font, new Point((int)Math.Round(point.X), (int)Math.Round(point.Y)), Size.Round(size), color);
             }
+        }
         }
 
         /// <summary>

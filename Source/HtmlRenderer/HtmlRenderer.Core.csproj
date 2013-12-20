@@ -84,6 +84,7 @@
     <Compile Include="Core\Handlers\ContextMenuHandler.cs" />
     <Compile Include="Core\Handlers\ImageLoadHandler.cs" />
     <Compile Include="Core\Handlers\SelectionHandler.cs" />
+    <Compile Include="Core\Handlers\StylesheetLoadHandler.cs" />
     <Compile Include="Core\Parse\CssParser.cs" />
     <Compile Include="Core\Parse\CssValueParser.cs" />
     <Compile Include="Core\Parse\DomParser.cs" />
@@ -96,7 +97,6 @@
     <Compile Include="Core\Utils\FontsUtils.cs" />
     <Compile Include="Core\Utils\HtmlUtils.cs" />
     <Compile Include="Core\Utils\RenderUtils.cs" />
-    <Compile Include="Core\Utils\StylesheetLoadHelper.cs" />
     <Compile Include="Core\HtmlContainerBase.cs" />
     <Compile Include="Core\CssData.cs" />
     <Compile Include="Core\IGraphics.cs" />

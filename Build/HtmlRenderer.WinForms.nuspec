@@ -28,13 +28,23 @@ Features and Benefits
 * Extendable and configurable.
 * Powerful Demo application to explore and learn the library.</description>
         <summary>The rich formatting power of HTML in your .NET applications using simple controls or static rendering code with 100% managed C# code.</summary>
-        <releaseNotes>* fix error in html parsing with single tags having closing tag as well
-* fix rendering error for html without root element
-* change the order of filling background (first) color and drawing background image (second)
-* fix br tags handling (not creating empty lines in some cases)
-* fix incorrect box width calculation in some cases
-* fix text selection on scrollbars click/drag
-* fix selection not clearing after selection text by going outside of control bound and then clicking on selected text</releaseNotes>
+        <releaseNotes>* Add GDI+ text rendering support
+* Add GDI+ static rendering methods in HtmlRender
+* Add RenderToImage on existing image to act as background
+* Add support for synchronous image loading, used by HtmlRender.
+* Add SelectedText, SelectedHtml to get selected text/html.
+* Improve HtmlRender documentation
+* Handle relative URLs in downloaded stylesheet.
+* Fix html attributes case sensitivity
+* Fix element height not respected
+* Fix index out of range exception in table layout (thx Kublia)
+* Fix error with empty lines and RTL
+* Fix floating point values handling
+* Fix mm and cm units factor
+* Fix table width not respected and incorrect unit handling
+* Fix table columns width incorrect unit handling
+* Handle when all table cells width is provided but smaller than set table width
+        </releaseNotes>
         <tags>html, renderer, control</tags>
         <frameworkAssemblies>
             <frameworkAssembly assemblyName="System.Windows.Forms" targetFramework="" />

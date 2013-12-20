@@ -24,38 +24,47 @@ namespace HtmlRenderer
 {
     /// <summary>
     /// Low level handling of Html Renderer logic.<br/>
-    /// The class allows html layout and rendering without association to actual winforms control, those allowing to handle html rendering on any graphics object.<br/>
-    /// Using this class will require the client to handle all propagations of mouse\keyboard events, layout/paint calls, scrolling offset, 
+    /// Allows html layout and rendering without association to actual control, those allowing to handle html rendering on any graphics object.<br/>
+    /// Using this class will require the client to handle all propagations of mouse/keyboard events, layout/paint calls, scrolling offset, 
     /// location/size/rectangle handling and UI refresh requests.<br/>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// <b>MaxSize and ActualSize:</b><br/>
     /// The max width and height of the rendered html.<br/>
     /// The max width will effect the html layout wrapping lines, resize images and tables where possible.<br/>
     /// The max height does NOT effect layout, but will not render outside it (clip).<br/>
-    /// <see cref="ActualSize"/> can be exceed the max size by layout restrictions (unwrappable line, set image size, etc.).<br/>
-    /// Set zero for unlimited (width\height separately).<br/>
+    /// <see cref="ActualSize"/> can exceed the max size by layout restrictions (unwrap-able line, set image size, etc.).<br/>
+    /// Set zero for unlimited (width/height separately).<br/>
     /// </para>
     /// <para>
     /// <b>ScrollOffset:</b><br/>
     /// This will adjust the rendered html by the given offset so the content will be "scrolled".<br/>
-    /// Element that is rendered at location (50,100) with offset of (0,200) will not be rendered as it
-    /// will be at -100 therefore outside the client rectangle of the control.
+    /// Element that is rendered at location (50,100) with offset of (0,200) will not be rendered 
+    /// at -100, therefore outside the client rectangle.
     /// </para>
     /// <para>
     /// <b>LinkClicked event</b><br/>
     /// Raised when the user clicks on a link in the html.<br/>
-    /// Allows canceling the execution of the link.
+    /// Allows canceling the execution of the link to overwrite by custom logic.<br/>
+    /// If error occurred in event handler it will propagate up the stack.
     /// </para>
     /// <para>
     /// <b>StylesheetLoad event:</b><br/>
-    /// Raised when aa stylesheet is about to be loaded by file path or URI by link element.<br/>
-    /// This event allows to provide the stylesheet manually or provide new source (file or Uri) to load from.<br/>
+    /// Raised when a stylesheet is about to be loaded by file path or URL in 'link' element.<br/>
+    /// Allows to overwrite the loaded stylesheet by providing the stylesheet data manually, or different source (file or URL) to load from.<br/>
+    /// Example: The stylesheet 'href' can be non-valid URI string that is interpreted in the overwrite delegate by custom logic to pre-loaded stylesheet object<br/>
     /// If no alternative data is provided the original source will be used.<br/>
     /// </para>
     /// <para>
     /// <b>ImageLoad event:</b><br/>
-    /// Raised when an image is about to be loaded by file path or URI.<br/>
-    /// This event allows to provide the image manually, if not handled the image will be loaded from file or download from URI.
+    /// Raised when an image is about to be loaded by file path, URL or inline data in 'img' element or background-image CSS style.<br/>
+    /// Allows to overwrite the loaded image by providing the image object manually, or different source (file or URL) to load from.<br/>
+    /// Example: image 'src' can be non-valid string that is interpreted in the overwrite delegate by custom logic to resource image object<br/>
+    /// Example: image 'src' in the html is relative - the overwrite intercepts the load and provide full source URL to load the image from<br/>
+    /// Example: image download requires authentication - the overwrite intercepts the load, downloads the image to disk using custom code and provide 
+    /// file path to load the image from.<br/>
+    /// If no alternative data is provided the original source will be used.<br/>
     /// </para>
     /// <para>
     /// <b>Refresh event:</b><br/>
@@ -66,7 +75,7 @@ namespace HtmlRenderer
     /// <b>RenderError event:</b><br/>
     /// Raised when an error occurred during html rendering.<br/>
     /// </para>
-    /// </summary>
+    /// </remarks>
     public abstract class HtmlContainerBase : IDisposable
     {
         #region Fields and Consts
@@ -79,7 +88,7 @@ namespace HtmlRenderer
         /// <summary>
         /// dictionary of all css boxes that have ":hover" selector on them
         /// </summary>
-        private List<Tupler<CssBox,CssBlock>> _hoverBoxes;
+        private List<Tupler<CssBox, CssBlock>> _hoverBoxes;
 
         /// <summary>
         /// Handler for text selection in the html. 
@@ -117,6 +126,11 @@ namespace HtmlRenderer
         /// for geometry like backgrounds and borders
         /// </summary>
         private bool _avoidGeometryAntialias;
+
+        /// <summary>
+        /// Gets or sets a value indicating if image asynchronous loading should be avoided (default - false).<br/>
+        /// </summary>
+        private bool _avoidAsyncImagesLoading;
 
         /// <summary>
         /// Gets or sets a value indicating if image loading only when visible should be avoided (default - false).<br/>
@@ -206,6 +220,22 @@ namespace HtmlRenderer
         }
 
         /// <summary>
+        /// Gets or sets a value indicating if image asynchronous loading should be avoided (default - false).<br/>
+        /// True - images are loaded synchronously during html parsing.<br/>
+        /// False - images are loaded asynchronously to html parsing when downloaded from URL or loaded from disk.<br/>
+        /// </summary>
+        /// <remarks>
+        /// Asynchronously image loading allows to unblock html rendering while image is downloaded or loaded from disk using IO 
+        /// ports to achieve better performance.<br/>
+        /// Asynchronously image loading should be avoided when the full html content must be available during render, like render to image.
+        /// </remarks>
+        public bool AvoidAsyncImagesLoading
+        {
+            get { return _avoidAsyncImagesLoading; }
+            set { _avoidAsyncImagesLoading = value; }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating if image loading only when visible should be avoided (default - false).<br/>
         /// True - images are loaded as soon as the html is parsed.<br/>
         /// False - images that are not visible because of scroll location are not loaded until they are scrolled to.
@@ -249,7 +279,7 @@ namespace HtmlRenderer
         /// </summary>
         /// <example>
         /// Element that is rendered at location (50,100) with offset of (0,200) will not be rendered as it
-        /// will be at -100 therefore outside the rectangle of the control.
+        /// will be at -100 therefore outside the client rectangle.
         /// </example>
         public PointF ScrollOffset
         {
@@ -290,6 +320,22 @@ namespace HtmlRenderer
         }
 
         /// <summary>
+        /// Get the currently selected text segment in the html.
+        /// </summary>
+        public string SelectedText
+        {
+            get { return _selectionHandler.GetSelectedText(); }
+        }
+
+        /// <summary>
+        /// Copy the currently selected html segment with style.
+        /// </summary>
+        public string SelectedHtml
+        {
+            get { return _selectionHandler.GetSelectedHtml(); }
+        }
+
+        /// <summary>
         /// the root css box of the parsed html
         /// </summary>
         internal CssBox Root
@@ -323,21 +369,21 @@ namespace HtmlRenderer
         public void SetHtml(string htmlSource, CssData baseCssData = null)
         {
             
-            if(_root != null)
+            if( _root != null )
             {
                 _root.Dispose();
                 _root = null;
-                if (_selectionHandler != null)
+                if( _selectionHandler != null )
                     _selectionHandler.Dispose();
                 _selectionHandler = null;
             }
 
-            if (!string.IsNullOrEmpty(htmlSource))
+            if( !string.IsNullOrEmpty(htmlSource) )
             {
                 _cssData = baseCssData ?? CssUtils.DefaultCssData;
 
                 _root = DomParser.GenerateCssTree(htmlSource, this, ref _cssData);
-                if (_root != null)
+                if( _root != null )
                 {
                     _selectionHandler = new SelectionHandler(_root);
                 }
@@ -390,22 +436,22 @@ namespace HtmlRenderer
 
             if( _root != null )
             {
-                _actualSize = SizeF.Empty;
+                    _actualSize = SizeF.Empty;
 
-                // if width is not restricted we set it to large value to get the actual later
-                _root.Size = new SizeF(_maxSize.Width > 0 ? _maxSize.Width : 99999, 0);
-                _root.Location = _location;
+                    // if width is not restricted we set it to large value to get the actual later
+                    _root.Size = new SizeF(_maxSize.Width > 0 ? _maxSize.Width : 99999, 0);
+                    _root.Location = _location;
                 _root.PerformLayout(g);
 
-                if( _maxSize.Width <= 0.1 )
-                {
-                    // in case the width is not restricted we need to double layout, first will find the width so second can layout by it (center alignment)
-                    _root.Size = new SizeF((int)Math.Ceiling(_actualSize.Width), 0);
-                    _actualSize = SizeF.Empty;
+                    if( _maxSize.Width <= 0.1 )
+                    {
+                        // in case the width is not restricted we need to double layout, first will find the width so second can layout by it (center alignment)
+                        _root.Size = new SizeF((int)Math.Ceiling(_actualSize.Width), 0);
+                        _actualSize = SizeF.Empty;
                     _root.PerformLayout(g);
+                    }
                 }
             }
-        }
 
         /// <summary>
         /// Render the html using the given device.
@@ -422,10 +468,10 @@ namespace HtmlRenderer
                 g.SetClip(new RectangleF(_location, _maxSize));
             }
 
-            if (_root != null)
+            if( _root != null )
             {
                 _root.Paint(g);
-            }
+                }
 
             if (prevClip != RectangleF.Empty)
             {
@@ -441,13 +487,13 @@ namespace HtmlRenderer
         public void HandleMouseDown(IControl parent, Point location)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
-            
+
             try
             {
                 if (_selectionHandler != null)
                     _selectionHandler.HandleMouseDown(parent, OffsetByScroll(location), IsMouseInContainer(location));
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse down handle", ex);
             }
@@ -472,18 +518,18 @@ namespace HtmlRenderer
                     {
                         var loc = OffsetByScroll(location);
                         var link = DomUtils.GetLinkBox(_root, loc);
-                        if (link != null)
+                        if( link != null )
                         {
                             HandleLinkClicked(parent, location, link);
                         }
                     }
                 }
             }
-            catch (HtmlLinkClickedException)
+            catch(HtmlLinkClickedException)
             {
                 throw;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse up handle", ex);
             }
@@ -503,7 +549,7 @@ namespace HtmlRenderer
                 if (_selectionHandler != null && IsMouseInContainer(location))
                     _selectionHandler.SelectWord(parent, OffsetByScroll(location));
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse double click handle", ex);
             }
@@ -545,7 +591,7 @@ namespace HtmlRenderer
                 }
                  */
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse move handle", ex);
             }
@@ -561,10 +607,10 @@ namespace HtmlRenderer
 
             try
             {
-                if (_selectionHandler != null)
+                if( _selectionHandler != null )
                     _selectionHandler.HandleMouseLeave(parent);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse leave handle", ex);
             }
@@ -582,7 +628,7 @@ namespace HtmlRenderer
 
             try
             {
-                if (e.Control && _selectionHandler != null)
+                if( e.Control && _selectionHandler != null )
                 {
                     // select all
                     if (e.AKeyCode)
@@ -597,7 +643,7 @@ namespace HtmlRenderer
                     }
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed key down handle", ex);
             }
@@ -611,12 +657,12 @@ namespace HtmlRenderer
         {
             try
             {
-                if (StylesheetLoad != null)
+                if( StylesheetLoad != null )
                 {
                     StylesheetLoad(this, args);
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.CssParsing, "Failed stylesheet load event", ex);
             }
@@ -630,12 +676,12 @@ namespace HtmlRenderer
         {
             try
             {
-                if(ImageLoad != null)
+                if( ImageLoad != null )
                 {
                     ImageLoad(this, args);
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.Image, "Failed image load event", ex);
             }
@@ -649,12 +695,12 @@ namespace HtmlRenderer
         {
             try
             {
-                if (Refresh != null)
+                if( Refresh != null )
                 {
                     Refresh(this, new HtmlRefreshEventArgs(layout));
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ReportError(HtmlRenderErrorType.General, "Failed refresh request", ex);
             }
@@ -670,13 +716,13 @@ namespace HtmlRenderer
         {
             try
             {
-                if (RenderError != null)
+                if( RenderError != null )
                 {
                     RenderError(this, new HtmlRenderErrorEventArgs(type, message, exception));
                 }
             }
             catch
-            { }
+            {}
         }
 
         /// <summary>
@@ -687,31 +733,31 @@ namespace HtmlRenderer
         /// <param name="link">the link that was clicked</param>
         internal void HandleLinkClicked(IControl parent, Point location, CssBox link)
         {
-            if (LinkClicked != null)
+            if( LinkClicked != null )
             {
                 var args = new HtmlLinkClickedEventArgs(link.HrefLink, link.HtmlTag.Attributes);
                 try
                 {
                     LinkClicked(this, args);
                 }
-                catch (Exception ex)
+                catch(Exception ex)
                 {
                     throw new HtmlLinkClickedException("Error in link clicked intercept", ex);
                 }
-                if (args.Handled)
+                if( args.Handled )
                 {
                     return;
                 }
             }
 
-            if (!string.IsNullOrEmpty(link.HrefLink))
+            if( !string.IsNullOrEmpty(link.HrefLink) )
             {
-                if (link.HrefLink.StartsWith("#"))
+                if( link.HrefLink.StartsWith("#") )
                 {
                     if( ScrollChange != null )
                     {
                         var box = DomUtils.GetBoxById(_root, link.HrefLink.Substring(1));
-                        if (box != null)
+                        if( box != null )
                         {
                             var rect = CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds);
                             ScrollChange(this, new HtmlScrollEventArgs(Point.Round(rect.Location)));
@@ -738,7 +784,7 @@ namespace HtmlRenderer
             ArgChecker.AssertArgNotNull(box, "box");
             ArgChecker.AssertArgNotNull(block, "block");
 
-            if(_hoverBoxes == null)
+            if( _hoverBoxes == null )
                 _hoverBoxes = new List<Tupler<CssBox, CssBlock>>();
 
             _hoverBoxes.Add(new Tupler<CssBox, CssBlock>(box, block));
@@ -763,7 +809,7 @@ namespace HtmlRenderer
         /// <returns>the adjusted location</returns>
         private Point OffsetByScroll(Point location)
         {
-            location.Offset(-(int) ScrollOffset.X, -(int) ScrollOffset.Y);
+            location.Offset(-(int)ScrollOffset.X, -(int)ScrollOffset.Y);
             return location;
         }
 
@@ -783,7 +829,7 @@ namespace HtmlRenderer
         {
             try
             {
-                if (all)
+                if( all )
                 {
                     LinkClicked = null;
                     Refresh = null;
@@ -793,16 +839,15 @@ namespace HtmlRenderer
                 }
 
                 _cssData = null;
-                if (_root != null)
+                if( _root != null )
                     _root.Dispose();
                 _root = null;
-                if (_selectionHandler != null)
+                if( _selectionHandler != null )
                     _selectionHandler.Dispose();
                 _selectionHandler = null;
             }
             catch
-            {
-            }
+            {}
         }
 
         #endregion

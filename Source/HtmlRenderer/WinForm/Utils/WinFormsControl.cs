@@ -149,7 +149,7 @@ namespace HtmlRenderer.Utils
         public IGraphics CreateGraphics()
         {
             // the win forms graphics object will be disposed by WinGraphics
-            return new WinFormsGraphics(_control.CreateGraphics(), true);
+            return new WinFormsGraphics(_control.CreateGraphics(), false, true);
         }
 
         /// <summary>

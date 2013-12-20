@@ -230,6 +230,24 @@ namespace HtmlRenderer
         }
 
         /// <summary>
+        /// Get the currently selected text segment in the html.
+        /// </summary>
+        [Browsable(false)]
+        public string SelectedText
+        {
+            get { return _htmlContainer.SelectedText; }
+        }
+
+        /// <summary>
+        /// Copy the currently selected html segment with style.
+        /// </summary>
+        [Browsable(false)]
+        public string SelectedHtml
+        {
+            get { return _htmlContainer.SelectedHtml; }
+        }
+
+        /// <summary>
         /// Get html from the current DOM tree with inline style.
         /// </summary>
         /// <returns>generated html</returns>
