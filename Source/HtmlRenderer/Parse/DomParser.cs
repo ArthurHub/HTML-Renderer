@@ -496,7 +496,7 @@ namespace HtmlRenderer.Parse
         /// </summary>
         /// <param name="table">the table element</param>
         /// <param name="action">the action to execute</param>
-        private static void SetForAllCells(CssBox table, Utils.Action<CssBox> action)
+        private static void SetForAllCells(CssBox table, ActionInt<CssBox> action)
         {
             foreach (var l1 in table.Boxes)
             {

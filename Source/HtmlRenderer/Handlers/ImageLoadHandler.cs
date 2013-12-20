@@ -53,7 +53,9 @@ namespace HtmlRenderer.Handlers
         /// <summary>
         /// callback raised when image load process is complete with image or without
         /// </summary>
-        private readonly Action<Image, Rectangle, bool> _loadCompleteCallback;
+// ReSharper disable RedundantNameQualifier
+        private readonly Utils.ActionInt<Image, Rectangle, bool> _loadCompleteCallback;
+// ReSharper restore RedundantNameQualifier
 
         /// <summary>
         /// the web client used to download image from URL (to cancel on dispose)
@@ -98,7 +100,7 @@ namespace HtmlRenderer.Handlers
         /// </summary>
         /// <param name="htmlContainer">the container of the html to handle load image for</param>
         /// <param name="loadCompleteCallback">callback raised when image load process is complete with image or without</param>
-        public ImageLoadHandler(HtmlContainer htmlContainer, Action<Image, Rectangle, bool> loadCompleteCallback)
+        public ImageLoadHandler(HtmlContainer htmlContainer, ActionInt<Image, Rectangle, bool> loadCompleteCallback)
         {
             ArgChecker.AssertArgNotNull(htmlContainer, "htmlContainer");
             ArgChecker.AssertArgNotNull(loadCompleteCallback, "loadCompleteCallback");
