@@ -131,10 +131,15 @@ namespace HtmlRenderer
         private bool _avoidGeometryAntialias;
 
         /// <summary>
+        /// Gets or sets a value indicating if image asynchronous loading should be avoided (default - false).<br/>
+        /// </summary>
+        private bool _avoidAsyncImagesLoading;
+
+        /// <summary>
         /// Gets or sets a value indicating if image loading only when visible should be avoided (default - false).<br/>
         /// </summary>
         private bool _avoidImagesLateLoading;
-
+        
         /// <summary>
         /// Use GDI+ text rendering to measure/draw text.
         /// </summary>
@@ -220,6 +225,22 @@ namespace HtmlRenderer
         {
             get { return _avoidGeometryAntialias; }
             set { _avoidGeometryAntialias = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating if image asynchronous loading should be avoided (default - false).<br/>
+        /// True - images are loaded synchronously during html parsing.<br/>
+        /// False - images are loaded asynchronously to html parsing when downloaded from URL or loaded from disk.<br/>
+        /// </summary>
+        /// <remarks>
+        /// Asynchronously image loading allows to unblock html rendering while image is downloaded or loaded from disk using IO 
+        /// ports to achieve better performance.<br/>
+        /// Asynchronously image loading should be avoided when the full html content must be available during render, like render to image.
+        /// </remarks>
+        public bool AvoidAsyncImagesLoading
+        {
+            get { return _avoidAsyncImagesLoading; }
+            set { _avoidAsyncImagesLoading = value; }
         }
 
         /// <summary>

@@ -371,8 +371,8 @@ namespace HtmlRenderer.Dom
             {
                 if (_videoImageUrl != null)
                 {
-                    _imageLoadHandler = new ImageLoadHandler(OnLoadImageComplete);
-                    _imageLoadHandler.LoadImage(HtmlContainer, _videoImageUrl, HtmlTag != null ? HtmlTag.Attributes : null);
+                    _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
+                    _imageLoadHandler.LoadImage(_videoImageUrl, HtmlTag != null ? HtmlTag.Attributes : null);
                 }
                 else
                 {
