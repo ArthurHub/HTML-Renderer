@@ -634,13 +634,21 @@ namespace HtmlRenderer
                     htmlContainer.MaxSize = new SizeF(maxSize.Width, 0);
                     htmlContainer.PerformLayout(measureGraphics);
                 }
+
+                // restrict the final size by min/max
+                var finalWidth = Math.Max(maxSize.Width > 0 ? Math.Min(maxSize.Width, (int)htmlContainer.ActualSize.Width) : (int)htmlContainer.ActualSize.Width, minSize.Width);
+
+                // if the final width is larger than the actual we need to re-layout so the html can take the full given width.
+                if (finalWidth > htmlContainer.ActualSize.Width)
+                {
+                    htmlContainer.MaxSize = new SizeF(finalWidth, 0);
+                    htmlContainer.PerformLayout(measureGraphics);
+                }
+
+                var finalHeight = Math.Max(maxSize.Height > 0 ? Math.Min(maxSize.Height, (int)htmlContainer.ActualSize.Height) : (int)htmlContainer.ActualSize.Height, minSize.Height);
+
+                return new Size(finalWidth, finalHeight);
             }
-
-            // restrict the final size by min/max
-            var finalWidth = Math.Max(maxSize.Width > 0 ? Math.Min(maxSize.Width, (int)htmlContainer.ActualSize.Width) : (int)htmlContainer.ActualSize.Width, minSize.Width);
-            var finalHeight = Math.Max(maxSize.Height > 0 ? Math.Min(maxSize.Height, (int)htmlContainer.ActualSize.Height) : (int)htmlContainer.ActualSize.Height, minSize.Height);
-
-            return new Size(finalWidth, finalHeight);
         }
 
         /// <summary>
