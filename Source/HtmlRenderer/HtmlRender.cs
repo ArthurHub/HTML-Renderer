@@ -548,6 +548,7 @@ namespace HtmlRenderer
             {
                 container.AvoidAsyncImagesLoading = true;
                 container.AvoidImagesLateLoading = true;
+                container.UseGdiPlusTextRendering = true;
                     
                 if( stylesheetLoad != null )
                     container.StylesheetLoad += stylesheetLoad;
