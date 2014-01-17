@@ -471,7 +471,7 @@ namespace HtmlRenderer
         {
             ArgChecker.AssertArgNotNullOrEmpty(elementId, "elementId");
 
-            var box = DomUtils.GetBoxById(_root, elementId);
+            var box = DomUtils.GetBoxById(_root, elementId.ToLower());
             return box != null ? CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds) : (RectangleF?)null;
         }
 
