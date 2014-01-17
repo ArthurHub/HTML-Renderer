@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using HtmlRenderer.Entities;
 using HtmlRenderer.Parse;
+using HtmlRenderer.Utils;
 
 namespace HtmlRenderer
 {
@@ -256,6 +257,26 @@ namespace HtmlRenderer
             return _htmlContainer != null ? _htmlContainer.GetHtml() : null;
         }
 
+        /// <summary>
+        /// Adjust the scrollbar of the panel on html element by the given id.<br/>
+        /// The top of the html element rectangle will be at the top of the panel, if there
+        /// is not enough height to scroll to the top the scroll will be at maximum.<br/>
+        /// </summary>
+        /// <param name="elementId">the id of the element to scroll to</param>
+        public void ScrollToElement(string elementId)
+        {
+            ArgChecker.AssertArgNotNullOrEmpty(elementId, "elementId");
+
+            if( _htmlContainer != null )
+            {
+                var rect = _htmlContainer.GetElementRectangle(elementId);
+                if (rect.HasValue)
+                {
+                    UpdateScroll(Point.Round(rect.Value.Location));
+                    _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons, 0, MousePosition.X, MousePosition.Y, 0));
+                }
+            }
+        }
 
         #region Private methods
 
@@ -481,7 +502,16 @@ namespace HtmlRenderer
         /// </summary>
         private void OnScrollChange(object sender, HtmlScrollEventArgs e)
         {
-            AutoScrollPosition = e.Location;
+            UpdateScroll(e.Location);
+        }
+
+        /// <summary>
+        /// Adjust the scrolling of the panel to the requested location.
+        /// </summary>
+        /// <param name="location">the location to adjust the scroll to</param>
+        private void UpdateScroll(Point location)
+        {
+            AutoScrollPosition = location;
             _htmlContainer.ScrollOffset = AutoScrollPosition;
         }
 
