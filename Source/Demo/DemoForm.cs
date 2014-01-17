@@ -505,9 +505,10 @@ namespace HtmlRenderer.Demo
             Application.DoEvents();
 
             GC.Collect();
+#if NET_40
             AppDomain.MonitoringIsEnabled = true;
             var startMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
-
+#endif
             var sw = Stopwatch.StartNew();
 
             const int iterations = 20;
@@ -522,10 +523,12 @@ namespace HtmlRenderer.Demo
 
             sw.Stop();
 
-
-            var endMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
-            var totalMem = (endMemory - startMemory)/1024f;
-
+            long endMemory = 0;
+            float totalMem = 0;
+#if NET_40
+            endMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
+            totalMem = (endMemory - startMemory)/1024f;
+#endif
             float htmlSize = 0;
             foreach (var sample in _perfTestSamples)
                 htmlSize += sample.Length*2;

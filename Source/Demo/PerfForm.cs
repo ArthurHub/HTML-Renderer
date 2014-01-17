@@ -208,9 +208,10 @@ namespace HtmlRenderer.Demo
                 var html = _samples[(string)_samplesTreeView.SelectedNode.Tag];
                 
                 GC.Collect();
+#if NET_40
                 AppDomain.MonitoringIsEnabled = true;
                 var startMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
-
+#endif
                 var sw = Stopwatch.StartNew();
 
                 for (int i = 0; i < _iterations.Value; i++)
@@ -221,10 +222,13 @@ namespace HtmlRenderer.Demo
 
                 sw.Stop();
 
-
-                var endMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
-                var totalMem = (endMemory - startMemory) / 1024f;
-                float htmlSize = html.Length*2/1024f;
+                long endMemory = 0;
+                float totalMem = 0;
+#if NET_40
+                endMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
+                totalMem = (endMemory - startMemory) / 1024f;
+#endif
+                float htmlSize = html.Length * 2 / 1024f;
 
                 var msg = string.Format("1 HTML ({0:N0} KB)\r\n{1} Iterations", htmlSize, _iterations.Value);
                 msg += "\r\n\r\n";
