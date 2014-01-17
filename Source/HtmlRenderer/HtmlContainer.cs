@@ -461,6 +461,21 @@ namespace HtmlRenderer
         }
 
         /// <summary>
+        /// Get the rectangle of html element as calculated by html layout.<br/>
+        /// Element if found by id (id attribute on the html element).<br/>
+        /// Note: to get the screen rectangle you need to adjust by the hosting control.<br/>
+        /// </summary>
+        /// <param name="elementId">the id of the element to get its rectangle</param>
+        /// <returns>the rectangle of the element or null if not found</returns>
+        public RectangleF? GetElementRectangle(string elementId)
+        {
+            ArgChecker.AssertArgNotNullOrEmpty(elementId, "elementId");
+
+            var box = DomUtils.GetBoxById(_root, elementId);
+            return box != null ? CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds) : (RectangleF?)null;
+        }
+
+        /// <summary>
         /// Measures the bounds of box and children, recursively.
         /// </summary>
         /// <param name="g">Device context to draw</param>
@@ -788,22 +803,19 @@ namespace HtmlRenderer
                     throw new HtmlLinkClickedException("Error in link clicked intercept", ex);
                 }
                 if( args.Handled )
-                {
                     return;
-                }
             }
 
             if( !string.IsNullOrEmpty(link.HrefLink) )
             {
-                if( link.HrefLink.StartsWith("#") )
+                if( link.HrefLink.StartsWith("#") && link.HrefLink.Length > 1 )
                 {
                     if( ScrollChange != null )
                     {
-                        var box = DomUtils.GetBoxById(_root, link.HrefLink.Substring(1));
-                        if( box != null )
+                        var rect = GetElementRectangle(link.HrefLink.Substring(1));
+                        if( rect.HasValue )
                         {
-                            var rect = CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds);
-                            ScrollChange(this, new HtmlScrollEventArgs(Point.Round(rect.Location)));
+                            ScrollChange(this, new HtmlScrollEventArgs(Point.Round(rect.Value.Location)));
                             HandleMouseMove(parent, e);
                         }
                     }
