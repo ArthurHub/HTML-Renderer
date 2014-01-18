@@ -21,6 +21,7 @@
   <!--Execute all steps of the build-->
   <Target Name="Run">
 
+    
     <Message Importance="high" Text="====================== Clean build output..."/>
     <RemoveDir Directories="$(OutputRoot)" ContinueOnError="true"/>
     <RemoveDir Directories="$(OutputRoot)" ContinueOnError="true"/>
@@ -29,17 +30,17 @@
 
     <Message Importance="high" Text="====================== Build demo..."/>
     <CallTarget Targets="BuildDemo"/>
-
+    
     <Message Importance="high" Text="====================== Build libraries..."/>
     <CallTarget Targets="BuildLibrary"/>
-
+    
     <Message Importance="high" Text="====================== Get current version..."/>
     <GetAssemblyIdentity AssemblyFiles="$(OutputBinRoot)\NET20\HtmlRenderer.dll">
       <Output TaskParameter="Assemblies" ItemName="AsmInfo" />
     </GetAssemblyIdentity>
-
+    
     <Message Importance="high" Text="====================== Build demo..."/>
-    <CallTarget Targets="BuildDemo"/>
+    <CallTarget Targets="BuildDemo" />
 
     <Message Importance="high" Text="====================== Copy source..."/>
     <CallTarget Targets="CopySource"/>
@@ -56,9 +57,7 @@
     <Error Condition="!Exists('$(OutputBinRoot)\NET40\HtmlRenderer.dll')" Text="Validation failed (.NET 4.0)!" />
     <Error Condition="!Exists('$(OutputBinRoot)\NET45\HtmlRenderer.dll')" Text="Validation failed (.NET 4.5)!" />
     <Error Condition="!Exists('$(OutputSourceRoot)\HtmlRenderer.sln')" Text="Validation failed (Source)!" />
-    <Error Condition="!Exists('$(OutputRoot)\HtmlRendererDemo.exe')" Text="Validation failed (Demo)!" />
-    <Error Condition="!Exists('$(OutputRoot)\HtmlRenderer.dll')" Text="Validation failed (Demo)!" />
-    <Error Condition="!Exists('$(OutputRoot)\HtmlRenderer.dll')" Text="Validation failed (Demo)!" />
+    <Error Condition="!Exists('$(OutputRoot)\HtmlRendererDemo.WinForms.exe')" Text="Validation failed (Demo)!" />
     <Error Condition="!Exists('$(OutputRoot)\HtmlRenderer %(AsmInfo.Version).zip')" Text="Validation failed (zip)!" />
 
     <Message Importance="high" Text="====================== SUCCESS!"/>
@@ -90,13 +89,21 @@
     </CreateProperty>
   </Target>
 
-    <!--Build the demo application and delete the pdbs-->
+    <!--Build the demo application, merge to single exe and delete the rest of the files-->
   <Target Name="BuildDemo">
     <MSBuild Properties="$(BuildProperties);$(DemoBuildOutputPath);$(BuildWarn)" UseResultsCache="true" Targets="Rebuild" Projects="$(DemoRoot)\HtmlRenderer.Demo.csproj" />
+
+    <GetAssemblyIdentity AssemblyFiles="$(OutputRoot)\HtmlRenderer.dll">
+      <Output TaskParameter="Assemblies" ItemName="AsmInfo" />
+    </GetAssemblyIdentity>
+    
+    <Exec Command="ILMerge.exe $(OutputRoot)\HtmlRendererDemo.exe $(OutputRoot)\HtmlRenderer.dll /out:$(OutputRoot)\HtmlRendererDemo.WinForms.exe /ver:%(AsmInfo.Version)" />
+    
     <ItemGroup>
-      <files Include="$(OutputRoot)\*.*" Exclude="$(OutputRoot)\*.exe;$(OutputRoot)\*.dll;"/>
+      <files Include="$(OutputRoot)\*.*" Exclude="$(OutputRoot)\HtmlRendererDemo.WinForms.exe"/>
     </ItemGroup>
     <Delete Files="@(files)"/>
+    
   </Target>
 
   <!--Copy all the source and remove the bin and obj folders-->
@@ -115,6 +122,7 @@
 
   <!--Create NuGet package-->
   <Target Name="CreatePackage">
+    <Copy SourceFiles="readme.txt" DestinationFolder="$(OutputRoot)"/>
     <Exec Command="nuget.exe pack HtmlRenderer.WinForms.nuspec -Version $(Version) -OutputDirectory $(OutputRoot)" />
   </Target>
 

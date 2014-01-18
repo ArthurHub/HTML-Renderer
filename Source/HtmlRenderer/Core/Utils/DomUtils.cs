@@ -194,7 +194,7 @@ namespace HtmlRenderer.Utils
                 {
                     foreach(var childBox in box.Boxes)
                     {
-                        if( childBox.Bounds.Contains(location) )
+                        if( CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds).Contains(location) )
                         {
                             return GetCssBox(childBox, location) ?? childBox;
                         }

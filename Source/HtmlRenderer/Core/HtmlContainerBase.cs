@@ -136,7 +136,7 @@ namespace HtmlRenderer
         /// Gets or sets a value indicating if image loading only when visible should be avoided (default - false).<br/>
         /// </summary>
         private bool _avoidImagesLateLoading;
-
+        
         /// <summary>
         /// the top-left most location of the rendered html
         /// </summary>
@@ -368,7 +368,7 @@ namespace HtmlRenderer
         /// <param name="baseCssData">optional: the stylesheet to init with, init default if not given</param>
         public void SetHtml(string htmlSource, CssData baseCssData = null)
         {
-            
+
             if( _root != null )
             {
                 _root.Dispose();
@@ -399,7 +399,7 @@ namespace HtmlRenderer
         {
             return DomUtils.GenerateHtml(_root, styleGen);
         }
-        
+
         /// <summary>
         /// Get attribute value of element at the given x,y location by given key.<br/>
         /// If more than one element exist with the attribute at the location the inner most is returned.
@@ -408,12 +408,12 @@ namespace HtmlRenderer
         /// <param name="attribute">the attribute key to get value by</param>
         /// <returns>found attribute value or null if not found</returns>
         public string GetAttributeAt(Point location, string attribute)
-         {
+        {
             ArgChecker.AssertArgNotNullOrEmpty(attribute, "attribute");
 
-             var cssBox = DomUtils.GetCssBox(_root, OffsetByScroll(location));
-             return cssBox != null ? DomUtils.GetAttribute(cssBox, attribute) : null;
-         }
+            var cssBox = DomUtils.GetCssBox(_root, OffsetByScroll(location));
+            return cssBox != null ? DomUtils.GetAttribute(cssBox, attribute) : null;
+        }
 
         /// <summary>
         /// Get css link href at the given x,y location.
@@ -424,6 +424,21 @@ namespace HtmlRenderer
         {
             var link = DomUtils.GetLinkBox(_root, OffsetByScroll(location));
             return link != null ? link.HrefLink : null;
+        }
+
+        /// <summary>
+        /// Get the rectangle of html element as calculated by html layout.<br/>
+        /// Element if found by id (id attribute on the html element).<br/>
+        /// Note: to get the screen rectangle you need to adjust by the hosting control.<br/>
+        /// </summary>
+        /// <param name="elementId">the id of the element to get its rectangle</param>
+        /// <returns>the rectangle of the element or null if not found</returns>
+        public RectangleF? GetElementRectangle(string elementId)
+        {
+            ArgChecker.AssertArgNotNullOrEmpty(elementId, "elementId");
+
+            var box = DomUtils.GetBoxById(_root, elementId.ToLower());
+            return box != null ? CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds) : (RectangleF?)null;
         }
 
         /// <summary>
@@ -745,22 +760,19 @@ namespace HtmlRenderer
                     throw new HtmlLinkClickedException("Error in link clicked intercept", ex);
                 }
                 if( args.Handled )
-                {
                     return;
                 }
-            }
 
             if( !string.IsNullOrEmpty(link.HrefLink) )
             {
-                if( link.HrefLink.StartsWith("#") )
+                if( link.HrefLink.StartsWith("#") && link.HrefLink.Length > 1 )
                 {
                     if( ScrollChange != null )
                     {
-                        var box = DomUtils.GetBoxById(_root, link.HrefLink.Substring(1));
-                        if( box != null )
+                        var rect = GetElementRectangle(link.HrefLink.Substring(1));
+                        if( rect.HasValue )
                         {
-                            var rect = CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds);
-                            ScrollChange(this, new HtmlScrollEventArgs(Point.Round(rect.Location)));
+                            ScrollChange(this, new HtmlScrollEventArgs(Point.Round(rect.Value.Location)));
                             HandleMouseMove(parent, location);
                         }
                     }

@@ -266,11 +266,11 @@ namespace HtmlRenderer
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         public static void RenderToImage(Image image, string html, PointF location = new PointF(), CssData cssData = null,
                                          EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
-            {
+        {
             ArgChecker.AssertArgNotNull(image, "image");
             var maxSize = new SizeF(image.Size.Width - location.X, image.Size.Height - location.Y);
             RenderToImage(image, html, location, maxSize, cssData, stylesheetLoad, imageLoad);
-                }
+        }
 
         /// <summary>
         /// Renders the specified HTML on top of the given image.<br/>
@@ -287,11 +287,11 @@ namespace HtmlRenderer
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         public static void RenderToImage(Image image, string html, PointF location, SizeF maxSize, CssData cssData = null,
                                          EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
-                {
+        {
             ArgChecker.AssertArgNotNull(image, "image");
 
             if( !string.IsNullOrEmpty(html) )
-                    {
+            {
                 // create memory buffer from desktop handle that supports alpha channel
                 IntPtr dib;
                 var memoryHdc = Win32Utils.CreateMemoryHdc(IntPtr.Zero, image.Width, image.Height, out dib);
@@ -391,7 +391,7 @@ namespace HtmlRenderer
         /// <returns>the generated image of the html</returns>
         /// <exception cref="ArgumentOutOfRangeException">if <paramref name="backgroundColor"/> is <see cref="Color.Transparent"/></exception>.
         public static Image RenderToImage(string html, int maxWidth = 0, int maxHeight = 0, Color backgroundColor = new Color(), CssData cssData = null,
-                                            EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+                                          EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             return RenderToImage(html, Size.Empty, new Size(maxWidth, maxHeight), backgroundColor, cssData, stylesheetLoad, imageLoad);
         }
@@ -418,7 +418,7 @@ namespace HtmlRenderer
         /// <returns>the generated image of the html</returns>
         /// <exception cref="ArgumentOutOfRangeException">if <paramref name="backgroundColor"/> is <see cref="Color.Transparent"/></exception>.
         public static Image RenderToImage(string html, Size minSize, Size maxSize, Color backgroundColor = new Color(), CssData cssData = null,
-                                            EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+                                          EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             if( backgroundColor == Color.Transparent )
                 throw new ArgumentOutOfRangeException("backgroundColor", "Transparent background in not supported");
@@ -548,6 +548,7 @@ namespace HtmlRenderer
             {
                 container.AvoidAsyncImagesLoading = true;
                 container.AvoidImagesLateLoading = true;
+                container.UseGdiPlusTextRendering = true;
                     
                 if( stylesheetLoad != null )
                     container.StylesheetLoad += stylesheetLoad;
@@ -621,26 +622,34 @@ namespace HtmlRenderer
         /// <param name="maxSize">the maximum size of the rendered html, if not zero and html cannot be layout within the limit it will be clipped (zero - not limit the width/height)</param>
         /// <returns>return: the size of the html to be rendered within the min/max limits</returns>
         private static Size MeasureHtmlByRestrictions(HtmlContainer htmlContainer, Size minSize, Size maxSize)
-            {
-                // use desktop created graphics to measure the HTML
+        {
+            // use desktop created graphics to measure the HTML
             using(var measureGraphics = Graphics.FromHwnd(IntPtr.Zero))
-                {
-                    // first layout without size restriction to know html actual size
-                    htmlContainer.PerformLayout(measureGraphics);
+            {
+                // first layout without size restriction to know html actual size
+                htmlContainer.PerformLayout(measureGraphics);
 
                 if( maxSize.Width > 0 && maxSize.Width < htmlContainer.ActualSize.Width )
-                    {
-                        // to allow the actual size be smaller than max we need to set max size only if it is really larger
-                        htmlContainer.MaxSize = new SizeF(maxSize.Width, 0);
-                        htmlContainer.PerformLayout(measureGraphics);
-                    }
+                {
+                    // to allow the actual size be smaller than max we need to set max size only if it is really larger
+                    htmlContainer.MaxSize = new SizeF(maxSize.Width, 0);
+                    htmlContainer.PerformLayout(measureGraphics);
                 }
 
-                // restrict the final size by min/max
-                var finalWidth = Math.Max(maxSize.Width > 0 ? Math.Min(maxSize.Width, (int)htmlContainer.ActualSize.Width) : (int)htmlContainer.ActualSize.Width, minSize.Width);
-                var finalHeight = Math.Max(maxSize.Height > 0 ? Math.Min(maxSize.Height, (int)htmlContainer.ActualSize.Height) : (int)htmlContainer.ActualSize.Height, minSize.Height);
+            // restrict the final size by min/max
+            var finalWidth = Math.Max(maxSize.Width > 0 ? Math.Min(maxSize.Width, (int)htmlContainer.ActualSize.Width) : (int)htmlContainer.ActualSize.Width, minSize.Width);
+
+                // if the final width is larger than the actual we need to re-layout so the html can take the full given width.
+                if (finalWidth > htmlContainer.ActualSize.Width)
+                {
+                    htmlContainer.MaxSize = new SizeF(finalWidth, 0);
+                    htmlContainer.PerformLayout(measureGraphics);
+                }
+
+            var finalHeight = Math.Max(maxSize.Height > 0 ? Math.Min(maxSize.Height, (int)htmlContainer.ActualSize.Height) : (int)htmlContainer.ActualSize.Height, minSize.Height);
 
             return new Size(finalWidth, finalHeight);
+        }
         }
 
         /// <summary>
@@ -662,23 +671,23 @@ namespace HtmlRenderer
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the actual size of the rendered html</returns>
         private static SizeF RenderClip(Graphics g, string html, PointF location, SizeF maxSize, CssData cssData, bool useGdiPlusTextRendering, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad, EventHandler<HtmlImageLoadEventArgs> imageLoad)
-                {
+        {
             Region prevClip = null;
             if( maxSize.Height > 0 )
-                    {
+            {
                 prevClip = g.Clip;
                 g.SetClip(new RectangleF(location, maxSize));
-                    }
+            }
 
             var actualSize = RenderHtml(g, html, location, maxSize, cssData, useGdiPlusTextRendering, stylesheetLoad, imageLoad);
 
             if( prevClip != null )
-                    {
+            {
                 g.SetClip(prevClip, CombineMode.Replace);
-                    }
+            }
 
             return actualSize;
-                }
+        }
 
         /// <summary>
         /// Renders the specified HTML source on the specified location and max size restriction.<br/>
@@ -725,7 +734,7 @@ namespace HtmlRenderer
             }
 
             return actualSize;
-                }
+        }
 
         /// <summary>
         /// Copy all the bitmap bits from memory bitmap buffer to the given image.
