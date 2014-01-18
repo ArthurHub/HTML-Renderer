@@ -21,6 +21,7 @@
   <!--Execute all steps of the build-->
   <Target Name="Run">
 
+    
     <Message Importance="high" Text="====================== Clean build output..."/>
     <RemoveDir Directories="$(OutputRoot)" ContinueOnError="true"/>
     <RemoveDir Directories="$(OutputRoot)" ContinueOnError="true"/>
@@ -121,6 +122,7 @@
 
   <!--Create NuGet package-->
   <Target Name="CreatePackage">
+    <Copy SourceFiles="readme.txt" DestinationFolder="$(OutputRoot)"/>
     <Exec Command="nuget.exe pack HtmlRenderer.WinForms.nuspec -Version $(Version) -OutputDirectory $(OutputRoot)" />
   </Target>
 
