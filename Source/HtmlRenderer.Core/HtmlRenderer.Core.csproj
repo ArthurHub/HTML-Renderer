@@ -43,6 +43,9 @@
     <EmbeddedResource Include="Utils\ImageLoad.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Dom\CssBox.cs" />
     <Compile Include="Dom\CssBoxFrame.cs" />
     <Compile Include="Dom\CssBoxHr.cs" />
@@ -100,11 +103,9 @@
     <Compile Include="HtmlContainerBase.cs" />
     <Compile Include="CssData.cs" />
     <Compile Include="IGraphics.cs" />
-    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

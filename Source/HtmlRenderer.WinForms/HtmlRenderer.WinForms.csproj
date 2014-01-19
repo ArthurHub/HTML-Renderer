@@ -63,6 +63,9 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="HtmlContainer.cs" />
     <Compile Include="Utils\WinFormsContextMenu.cs" />
     <Compile Include="Utils\HtmlClipboardUtils.cs" />
@@ -97,9 +100,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\HtmlRenderer.Core\HtmlRenderer.Core.csproj">
       <Project>{fe611685-391f-4e3e-b27e-d3150e51e49b}</Project>
