@@ -13,10 +13,9 @@
 using System.Drawing;
 using System.Windows.Forms;
 using HtmlRenderer.Core;
-using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Utils
+namespace HtmlRenderer.WinForms.Utils
 {
     /// <summary>
     /// atodo: add doc

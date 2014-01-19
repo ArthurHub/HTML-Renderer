@@ -1,3 +1,5 @@
+using HtmlRenderer.WinForms;
+
 namespace HtmlRenderer.Demo.WinForms
 {
     partial class DemoForm
@@ -35,12 +37,12 @@ namespace HtmlRenderer.Demo.WinForms
             this._runTestButton = new System.Windows.Forms.Button();
             this._samplesTreeView = new System.Windows.Forms.TreeView();
             this._splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this._htmlPanel = new HtmlRenderer.HtmlPanel();
+            this._htmlPanel = new HtmlPanel();
             this._splitter = new System.Windows.Forms.Splitter();
             this._webBrowser = new System.Windows.Forms.WebBrowser();
             this._reloadColorsLink = new System.Windows.Forms.LinkLabel();
             this._htmlEditor = new System.Windows.Forms.RichTextBox();
-            this._htmlToolTip = new HtmlRenderer.HtmlToolTip();
+            this._htmlToolTip = new HtmlToolTip();
             this._splitContainer1.Panel1.SuspendLayout();
             this._splitContainer1.Panel2.SuspendLayout();
             this._splitContainer1.SuspendLayout();

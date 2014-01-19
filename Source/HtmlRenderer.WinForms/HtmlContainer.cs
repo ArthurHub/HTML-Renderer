@@ -17,9 +17,9 @@ using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Utils;
+using HtmlRenderer.WinForms.Utils;
 
-namespace HtmlRenderer
+namespace HtmlRenderer.WinForms
 {
     /// <summary>
     /// Low level handling of Html Renderer logic, this class is used by <see cref="HtmlParser"/>, 

@@ -1,3 +1,5 @@
+using HtmlRenderer.WinForms;
+
 namespace HtmlRenderer.Demo.WinForms
 {
     partial class SampleForm
@@ -29,13 +31,13 @@ namespace HtmlRenderer.Demo.WinForms
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SampleForm));
-            this._htmlToolTip = new HtmlRenderer.HtmlToolTip();
+            this._htmlToolTip = new HtmlToolTip();
             this._changeTooltipButton = new System.Windows.Forms.Button();
             this._splitContainer = new System.Windows.Forms.SplitContainer();
-            this._htmlPanel = new HtmlRenderer.HtmlPanel();
+            this._htmlPanel = new HtmlPanel();
             this.label2 = new System.Windows.Forms.Label();
             this._htmlLabelHostingPanel = new System.Windows.Forms.Panel();
-            this._htmlLabel = new HtmlRenderer.HtmlLabel();
+            this._htmlLabel = new HtmlLabel();
             this.label1 = new System.Windows.Forms.Label();
             this._pGrid = new System.Windows.Forms.PropertyGrid();
             this._splitContainer.Panel1.SuspendLayout();

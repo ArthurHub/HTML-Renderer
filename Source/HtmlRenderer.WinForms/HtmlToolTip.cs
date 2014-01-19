@@ -17,9 +17,9 @@ using System.Windows.Forms;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
-using HtmlRenderer.Utils;
+using HtmlRenderer.WinForms.Utils;
 
-namespace HtmlRenderer
+namespace HtmlRenderer.WinForms
 {
     /// <summary>
     /// Provides HTML rendering on the tooltips.

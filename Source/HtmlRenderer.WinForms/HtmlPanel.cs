@@ -19,7 +19,7 @@ using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer
+namespace HtmlRenderer.WinForms
 {
     /// <summary>
     /// Provides HTML rendering using the text property.<br/>

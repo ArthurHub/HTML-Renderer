@@ -16,7 +16,7 @@ using System.Drawing.Drawing2D;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Utils
+namespace HtmlRenderer.WinForms.Utils
 {
     /// <summary>
     /// atodo: add doc

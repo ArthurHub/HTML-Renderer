@@ -1,3 +1,5 @@
+using HtmlRenderer.WinForms;
+
 namespace HtmlRenderer.Demo.WinForms
 {
     partial class PerfForm
@@ -34,7 +36,7 @@ namespace HtmlRenderer.Demo.WinForms
             this.label1 = new System.Windows.Forms.Label();
             this._runTestButton = new System.Windows.Forms.Button();
             this._samplesTreeView = new System.Windows.Forms.TreeView();
-            this._htmlPanel = new HtmlRenderer.HtmlPanel();
+            this._htmlPanel = new HtmlPanel();
             ((System.ComponentModel.ISupportInitialize)(this._splitContainer1)).BeginInit();
             this._splitContainer1.Panel1.SuspendLayout();
             this._splitContainer1.Panel2.SuspendLayout();

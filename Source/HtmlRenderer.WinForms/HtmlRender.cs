@@ -18,9 +18,9 @@ using System.Drawing.Text;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Utils;
+using HtmlRenderer.WinForms.Utils;
 
-namespace HtmlRenderer
+namespace HtmlRenderer.WinForms
 {
     /// <summary>
     /// Standalone static class for simple and direct HTML rendering.<br/>

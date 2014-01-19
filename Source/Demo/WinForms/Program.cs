@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Printing;
 using System.Windows.Forms;
+using HtmlRenderer.WinForms;
 
 namespace HtmlRenderer.Demo.WinForms
 {
