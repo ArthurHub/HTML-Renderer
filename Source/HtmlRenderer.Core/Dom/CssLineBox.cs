@@ -12,7 +12,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core.Dom
 {
@@ -29,7 +29,7 @@ namespace HtmlRenderer.Core.Dom
 
         private readonly List<CssRect> _words;
         private readonly CssBox _ownerBox;
-        private readonly Dictionary<CssBox, RectangleF> _rects;
+        private readonly Dictionary<CssBox, RectangleInt> _rects;
         private readonly List<CssBox> _relatedBoxes;
 
         #endregion
@@ -40,7 +40,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         public CssLineBox(CssBox ownerBox)
         {
-            _rects = new Dictionary<CssBox, RectangleF>();
+            _rects = new Dictionary<CssBox, RectangleInt>();
             _relatedBoxes = new List<CssBox>();
             _words = new List<CssRect>();
             _ownerBox = ownerBox;
@@ -75,7 +75,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets a List of rectangles that are to be painted on this linebox
         /// </summary>
-        public Dictionary<CssBox, RectangleF> Rectangles
+        public Dictionary<CssBox, RectangleInt> Rectangles
         {
             get { return _rects; }
         }
@@ -171,12 +171,12 @@ namespace HtmlRenderer.Core.Dom
 
             if (!Rectangles.ContainsKey(box))
             {
-                Rectangles.Add(box, RectangleF.FromLTRB(x, y, r, b));
+                Rectangles.Add(box, RectangleInt.FromLTRB(x, y, r, b));
             }
             else
             {
-                RectangleF f = Rectangles[box];
-                Rectangles[box] = RectangleF.FromLTRB(
+                RectangleInt f = Rectangles[box];
+                Rectangles[box] = RectangleInt.FromLTRB(
                     Math.Min(f.X, x), Math.Min(f.Y, y),
                     Math.Max(f.Right, r), Math.Max(f.Bottom, b));
             }
@@ -199,36 +199,6 @@ namespace HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Draws the rectangles for debug purposes
-        /// </summary>
-        /// <param name="g"></param>
-        internal void DrawRectangles(Graphics g)
-        {
-            foreach (CssBox b in Rectangles.Keys)
-            {
-                if (float.IsInfinity(Rectangles[b].Width)) 
-                    continue;
-                g.FillRectangle(new SolidBrush(Color.FromArgb(50, Color.Black)),
-                    Rectangle.Round(Rectangles[b]));
-                g.DrawRectangle(Pens.Red, Rectangle.Round(Rectangles[b]));
-            }
-        }
-
-        /// <summary>
-        /// Gets the baseline Height of the rectangle
-        /// </summary>
-        /// <param name="b"> </param>
-        /// <param name="g"></param>
-        /// <returns></returns>
-        public float GetBaseLineHeight(CssBox b, Graphics g)
-        {
-            Font f = b.ActualFont;
-            FontFamily ff = f.FontFamily;
-            FontStyle s = f.Style;
-            return f.GetHeight(g) * ff.GetCellAscent(s) / ff.GetLineSpacing(s);
-        }
-
-        /// <summary>
         /// Sets the baseline of the words of the specified box to certain height
         /// </summary>
         /// <param name="g">Device info</param>
@@ -241,7 +211,7 @@ namespace HtmlRenderer.Core.Dom
 
             if (!Rectangles.ContainsKey(b)) return;
 
-            RectangleF r = Rectangles[b];
+            RectangleInt r = Rectangles[b];
 
             //Save top of words related to the top of rectangle
             float gap = 0f;
@@ -270,7 +240,7 @@ namespace HtmlRenderer.Core.Dom
             {
                 //Do this only if rectangle is shorter than parent's
                 float recttop = newtop - gap;
-                RectangleF newr = new RectangleF(r.X, recttop, r.Width, r.Height);
+                RectangleInt newr = new RectangleInt(r.X, recttop, r.Width, r.Height);
                 Rectangles[b] = newr;
                 b.OffsetRectangle(this, gap);
             }

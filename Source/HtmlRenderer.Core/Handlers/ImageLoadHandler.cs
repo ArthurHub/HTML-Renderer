@@ -19,6 +19,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Handlers
@@ -48,12 +49,12 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// the container of the html to handle load image for
         /// </summary>
-        private readonly HtmlContainerBase _htmlContainer;
+        private readonly HtmlContainerInt _htmlContainer;
 
         /// <summary>
         /// callback raised when image load process is complete with image or without
         /// </summary>
-        private readonly ActionInt<Image, Rectangle, bool> _loadCompleteCallback;
+        private readonly ActionInt<Image, RectangleInt, bool> _loadCompleteCallback;
 
         /// <summary>
         /// the web client used to download image from URL (to cancel on dispose)
@@ -73,7 +74,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// the image rectangle restriction as returned from image load event
         /// </summary>
-        private Rectangle _imageRectangle;
+        private RectangleInt _imageRectangle;
 
         /// <summary>
         /// to know if image load event callback was sync or async raised
@@ -98,7 +99,7 @@ namespace HtmlRenderer.Core.Handlers
         /// </summary>
         /// <param name="htmlContainer">the container of the html to handle load image for</param>
         /// <param name="loadCompleteCallback">callback raised when image load process is complete with image or without</param>
-        public ImageLoadHandler(HtmlContainerBase htmlContainer, ActionInt<Image, Rectangle, bool> loadCompleteCallback)
+        public ImageLoadHandler(HtmlContainerInt htmlContainer, ActionInt<Image, RectangleInt, bool> loadCompleteCallback)
         {
             ArgChecker.AssertArgNotNull(htmlContainer, "htmlContainer");
             ArgChecker.AssertArgNotNull(loadCompleteCallback, "loadCompleteCallback");
@@ -118,7 +119,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// the image rectangle restriction as returned from image load event
         /// </summary>
-        public Rectangle Rectangle
+        public RectangleInt Rectangle
         {
             get { return _imageRectangle; }
         }
@@ -189,7 +190,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="path">the path to the image to load (file path or uri)</param>
         /// <param name="image">the image to load</param>
         /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
-        private void OnHtmlImageLoadEventCallback(string path, Image image, Rectangle imageRectangle)
+        private void OnHtmlImageLoadEventCallback(string path, Image image, RectangleInt imageRectangle)
         {
             if (!_disposed)
             {

@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System.Drawing;
+using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core.Dom
 {
@@ -29,7 +30,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// the image rectange restriction as returned from image load event
         /// </summary>
-        private Rectangle _imageRectangle;
+        private RectangleInt _imageRectangle;
 
         #endregion
 
@@ -62,7 +63,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// the image rectange restriction as returned from image load event
         /// </summary>
-        public Rectangle ImageRectangle
+        public RectangleInt ImageRectangle
         {
             get { return _imageRectangle; }
             set { _imageRectangle = value; }

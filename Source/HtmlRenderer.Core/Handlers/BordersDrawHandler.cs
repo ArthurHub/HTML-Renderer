@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Handlers
@@ -29,7 +30,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// used for all border paint to use the same points and not create new array each time.
         /// </summary>
-        private static readonly PointF[] _borderPts = new PointF[4];
+        private static readonly PointInt[] _borderPts = new PointInt[4];
 
         #endregion
 
@@ -42,7 +43,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="rect">the bounding rectangle to draw in</param>
         /// <param name="isFirst">is it the first rectangle of the element</param>
         /// <param name="isLast">is it the last rectangle of the element</param>
-        public static void DrawBoxBorders(IGraphics g, CssBox box, RectangleF rect, bool isFirst, bool isLast)
+        public static void DrawBoxBorders(IGraphics g, CssBox box, RectangleInt rect, bool isFirst, bool isLast)
         {
             if( rect.Width > 0 && rect.Height > 0 )
             {
@@ -74,7 +75,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="brush">the brush to use</param>
         /// <param name="rectangle">the bounding rectangle to draw in</param>
         /// <returns>Beveled border path, null if there is no rounded corners</returns>
-        public static void DrawBorder(Border border, IGraphics g, CssBox box, Brush brush, RectangleF rectangle)
+        public static void DrawBorder(Border border, IGraphics g, CssBox box, Brush brush, RectangleInt rectangle)
         {
             SetInOutsetRectanglePoints(border, box, rectangle, true, true);
             g.FillPolygon(brush, _borderPts);
@@ -92,7 +93,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="rect">the rectangle the border is enclosing</param>
         /// <param name="isLineStart">Specifies if the border is for a starting line (no bevel on left)</param>
         /// <param name="isLineEnd">Specifies if the border is for an ending line (no bevel on right)</param>
-        private static void DrawBorder(Border border, CssBox box, IGraphics g, RectangleF rect, bool isLineStart, bool isLineEnd)
+        private static void DrawBorder(Border border, CssBox box, IGraphics g, RectangleInt rect, bool isLineStart, bool isLineEnd)
         {
             var style = GetStyle(border, box);
             var color = GetColor(border, box, style);
@@ -152,41 +153,41 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="isLineStart">Specifies if the border is for a starting line (no bevel on left)</param>
         /// <param name="isLineEnd">Specifies if the border is for an ending line (no bevel on right)</param>
         /// <returns>Beveled border path, null if there is no rounded corners</returns>
-        private static void SetInOutsetRectanglePoints(Border border, CssBox b, RectangleF r, bool isLineStart, bool isLineEnd)
+        private static void SetInOutsetRectanglePoints(Border border, CssBox b, RectangleInt r, bool isLineStart, bool isLineEnd)
         {
             switch( border )
             {
                 case Border.Top:
-                    _borderPts[0] = new PointF(r.Left, r.Top);
-                    _borderPts[1] = new PointF(r.Right, r.Top);
-                    _borderPts[2] = new PointF(r.Right, r.Top + b.ActualBorderTopWidth);
-                    _borderPts[3] = new PointF(r.Left, r.Top + b.ActualBorderTopWidth);
+                    _borderPts[0] = new PointInt(r.Left, r.Top);
+                    _borderPts[1] = new PointInt(r.Right, r.Top);
+                    _borderPts[2] = new PointInt(r.Right, r.Top + b.ActualBorderTopWidth);
+                    _borderPts[3] = new PointInt(r.Left, r.Top + b.ActualBorderTopWidth);
                     if( isLineEnd )
                         _borderPts[2].X -= b.ActualBorderRightWidth;
                     if( isLineStart )
                         _borderPts[3].X += b.ActualBorderLeftWidth;
                     break;
                 case Border.Right:
-                    _borderPts[0] = new PointF(r.Right - b.ActualBorderRightWidth, r.Top + b.ActualBorderTopWidth);
-                    _borderPts[1] = new PointF(r.Right, r.Top);
-                    _borderPts[2] = new PointF(r.Right, r.Bottom);
-                    _borderPts[3] = new PointF(r.Right - b.ActualBorderRightWidth, r.Bottom - b.ActualBorderBottomWidth);
+                    _borderPts[0] = new PointInt(r.Right - b.ActualBorderRightWidth, r.Top + b.ActualBorderTopWidth);
+                    _borderPts[1] = new PointInt(r.Right, r.Top);
+                    _borderPts[2] = new PointInt(r.Right, r.Bottom);
+                    _borderPts[3] = new PointInt(r.Right - b.ActualBorderRightWidth, r.Bottom - b.ActualBorderBottomWidth);
                     break;
                 case Border.Bottom:
-                    _borderPts[0] = new PointF(r.Left, r.Bottom - b.ActualBorderBottomWidth);
-                    _borderPts[1] = new PointF(r.Right, r.Bottom - b.ActualBorderBottomWidth);
-                    _borderPts[2] = new PointF(r.Right, r.Bottom);
-                    _borderPts[3] = new PointF(r.Left, r.Bottom);
+                    _borderPts[0] = new PointInt(r.Left, r.Bottom - b.ActualBorderBottomWidth);
+                    _borderPts[1] = new PointInt(r.Right, r.Bottom - b.ActualBorderBottomWidth);
+                    _borderPts[2] = new PointInt(r.Right, r.Bottom);
+                    _borderPts[3] = new PointInt(r.Left, r.Bottom);
                     if( isLineStart )
                         _borderPts[0].X += b.ActualBorderLeftWidth;
                     if( isLineEnd )
                         _borderPts[1].X -= b.ActualBorderRightWidth;
                     break;
                 case Border.Left:
-                    _borderPts[0] = new PointF(r.Left, r.Top);
-                    _borderPts[1] = new PointF(r.Left + b.ActualBorderLeftWidth, r.Top + b.ActualBorderTopWidth);
-                    _borderPts[2] = new PointF(r.Left + b.ActualBorderLeftWidth, r.Bottom - b.ActualBorderBottomWidth);
-                    _borderPts[3] = new PointF(r.Left, r.Bottom);
+                    _borderPts[0] = new PointInt(r.Left, r.Top);
+                    _borderPts[1] = new PointInt(r.Left + b.ActualBorderLeftWidth, r.Top + b.ActualBorderTopWidth);
+                    _borderPts[2] = new PointInt(r.Left + b.ActualBorderLeftWidth, r.Bottom - b.ActualBorderBottomWidth);
+                    _borderPts[3] = new PointInt(r.Left, r.Bottom);
                     break;
             }
         }
@@ -200,7 +201,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="b">Box which the border corresponds</param>
         /// <param name="r">the rectangle the border is enclosing</param>
         /// <returns>Beveled border path, null if there is no rounded corners</returns>
-        private static GraphicsPath GetRoundedBorderPath(Border border, CssBox b, RectangleF r)
+        private static GraphicsPath GetRoundedBorderPath(Border border, CssBox b, RectangleInt r)
         {
             GraphicsPath path = null;
 
@@ -278,7 +279,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// Get pen to be used for border draw respecting its style.
         /// </summary>
-        private static Pen GetPen(string style, Color color, float width)
+        private static Pen GetPen(string style, ColorInt color, float width)
         {
             var p = RenderUtils.GetPen(color);
             p.Width = width;
@@ -303,7 +304,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// Get the border color for the given box border.
         /// </summary>
-        private static Color GetColor(Border border, CssBoxProperties box, string style)
+        private static ColorInt GetColor(Border border, CssBoxProperties box, string style)
         {
             switch (border)
             {
@@ -363,9 +364,9 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// Makes the specified color darker for inset/outset borders.
         /// </summary>
-        private static Color Darken(Color c)
+        private static ColorInt Darken(ColorInt c)
         {
-            return Color.FromArgb(c.R / 2, c.G / 2, c.B / 2);
+            return ColorInt.FromArgb(c.R / 2, c.G / 2, c.B / 2);
         }
 
         #endregion

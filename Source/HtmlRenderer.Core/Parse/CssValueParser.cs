@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Globalization;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Parse
@@ -208,7 +209,7 @@ namespace HtmlRenderer.Core.Parse
         /// <returns>true - valid, false - invalid</returns>
         public static bool IsColorValid(string colorValue)
         {
-            Color color;
+            ColorInt color;
             return TryGetColor(colorValue, 0, colorValue.Length, out color);
         }
 
@@ -217,9 +218,9 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="colorValue">color string value to parse</param>
         /// <returns>Color value</returns>
-        public static Color GetActualColor(string colorValue)
+        public static ColorInt GetActualColor(string colorValue)
         {
-            Color color;
+            ColorInt color;
             TryGetColor(colorValue, 0, colorValue.Length, out color);
             return color;
         }
@@ -362,7 +363,7 @@ namespace HtmlRenderer.Core.Parse
         /// <returns>found border width value or null</returns>
         private static string ParseBorderColor(string str, int idx, int length)
         {
-            Color color;
+            ColorInt color;
             return TryGetColor(str, idx, length, out color) ? str.Substring(idx, length) : null;
         }
 
@@ -374,7 +375,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="length">substring length</param>
         /// <param name="color">return the parsed color</param>
         /// <returns>true - valid color, false - otherwise</returns>
-        private static bool TryGetColor(string str, int idx, int length, out Color color)
+        private static bool TryGetColor(string str, int idx, int length, out ColorInt color)
         {
             try
             {
@@ -400,7 +401,7 @@ namespace HtmlRenderer.Core.Parse
             }
             catch
             {}
-            color = Color.Black;
+            color = ColorInt.Black;
             return false;
         }
 
@@ -408,7 +409,7 @@ namespace HtmlRenderer.Core.Parse
         /// Get color by parsing given hex value color string (#A28B34).
         /// </summary>
         /// <returns>true - valid color, false - otherwise</returns>
-        private static bool GetColorByHex(string str, int idx, int length, out Color color)
+        private static bool GetColorByHex(string str, int idx, int length, out ColorInt color)
         {
             int r = -1;
             int g = -1;
@@ -430,10 +431,10 @@ namespace HtmlRenderer.Core.Parse
             }
             if(r > -1 && g > -1 && b > -1)
             {
-                color = Color.FromArgb(r, g, b);
+                color = ColorInt.FromArgb(r, g, b);
                 return true;
             }
-            color = Color.Empty;
+            color = ColorInt.Empty;
             return false;
         }
 
@@ -441,7 +442,7 @@ namespace HtmlRenderer.Core.Parse
         /// Get color by parsing given RGB value color string (RGB(255,180,90))
         /// </summary>
         /// <returns>true - valid color, false - otherwise</returns>
-        private static bool GetColorByRgb(string str, int idx, int length, out Color color)
+        private static bool GetColorByRgb(string str, int idx, int length, out ColorInt color)
         {
             int r = -1;
             int g = -1;
@@ -463,10 +464,10 @@ namespace HtmlRenderer.Core.Parse
             
             if (r > -1 && g > -1 && b > -1)
             {
-                color = Color.FromArgb(r, g, b);
+                color = ColorInt.FromArgb(r, g, b);
                 return true;
             }
-            color = Color.Empty;
+            color = ColorInt.Empty;
             return false;
         }
 
@@ -474,7 +475,7 @@ namespace HtmlRenderer.Core.Parse
         /// Get color by parsing given RGBA value color string (RGBA(255,180,90,180))
         /// </summary>
         /// <returns>true - valid color, false - otherwise</returns>
-        private static bool GetColorByRgba(string str, int idx, int length, out Color color)
+        private static bool GetColorByRgba(string str, int idx, int length, out ColorInt color)
         {
             int r = -1;
             int g = -1;
@@ -502,10 +503,10 @@ namespace HtmlRenderer.Core.Parse
 
             if (r > -1 && g > -1 && b > -1 && a > -1)
             {
-                color = Color.FromArgb(a, r, g, b);
+                color = ColorInt.FromArgb(a, r, g, b);
                 return true;
             }
-            color = Color.Empty;
+            color = ColorInt.Empty;
             return false;
         }
 
@@ -513,9 +514,9 @@ namespace HtmlRenderer.Core.Parse
         /// Get color by given name, including .NET name.
         /// </summary>
         /// <returns>true - valid color, false - otherwise</returns>
-        private static bool GetColorByName(string str, int idx, int length, out Color color)
+        private static bool GetColorByName(string str, int idx, int length, out ColorInt color)
         {
-            color = Color.FromName(str.Substring(idx, length));
+            color = ColorInt.FromName(str.Substring(idx, length));
             return color.A > 0;
         }
 

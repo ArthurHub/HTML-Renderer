@@ -13,6 +13,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Entities
@@ -20,13 +21,13 @@ namespace HtmlRenderer.Core.Entities
     /// <summary>
     /// Callback used in <see cref="HtmlImageLoadEventArgs"/> to allow setting image externally and async.<br/>
     /// The callback can provide path to image file path, URL or the actual image to use.<br/>
-    /// If <paramref name="imageRectangle"/> is given (not <see cref="System.Drawing.Rectangle.Empty"/>) then only the specified rectangle will
+    /// If <paramref name="imageRectangle"/> is given (not <see cref="RectangleInt.Empty"/>) then only the specified rectangle will
     /// be used from the loaded image and not all of it, also the rectangle will be used for size and not the actual image size.<br/> 
     /// </summary>
     /// <param name="path">the path to the image to load (file path or URL)</param>
     /// <param name="image">the image to use</param>
     /// <param name="imageRectangle">optional: limit to specific rectangle in the loaded image</param>
-    internal delegate void HtmlImageLoadCallback(string path, Image image, Rectangle imageRectangle);
+    internal delegate void HtmlImageLoadCallback(string path, Image image, RectangleInt imageRectangle);
 
     /// <summary>
     /// Invoked when an image is about to be loaded by file path, URL or inline data in 'img' element or background-image CSS style.<br/>
@@ -110,18 +111,18 @@ namespace HtmlRenderer.Core.Entities
         public void Callback()
         {
             _handled = true;
-            _callback(null, null, new Rectangle());
+            _callback(null, null, new RectangleInt());
         }
 
         /// <summary>
         /// Callback to overwrite the loaded image with image to load from given URI.<br/>
         /// Can be called directly from delegate handler or asynchronously after setting <see cref="Handled"/> to True.<br/>
-        /// If <paramref name="imageRectangle"/> is given (not <see cref="System.Drawing.Rectangle.Empty"/>) then only the specified rectangle will
+        /// If <paramref name="imageRectangle"/> is given (not <see cref="RectangleInt.Empty"/>) then only the specified rectangle will
         /// be used from the loaded image and not all of it, also the rectangle will be used for size and not the actual image size.<br/> 
         /// </summary>
         /// <param name="path">the path to the image to load (file path or URL)</param>
         /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
-        public void Callback(string path, Rectangle imageRectangle = new Rectangle())
+        public void Callback(string path, RectangleInt imageRectangle = new RectangleInt())
         {
             ArgChecker.AssertArgNotNullOrEmpty(path, "path");
             
@@ -132,12 +133,12 @@ namespace HtmlRenderer.Core.Entities
         /// <summary>
         /// Callback to overwrite the loaded image with given image object.<br/>
         /// Can be called directly from delegate handler or asynchronously after setting <see cref="Handled"/> to True.<br/>
-        /// If <paramref name="imageRectangle"/> is given (not <see cref="System.Drawing.Rectangle.Empty"/>) then only the specified rectangle will
+        /// If <paramref name="imageRectangle"/> is given (not <see cref="RectangleInt.Empty"/>) then only the specified rectangle will
         /// be used from the loaded image and not all of it, also the rectangle will be used for size and not the actual image size.<br/> 
         /// </summary>
         /// <param name="image">the image to load</param>
         /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
-        public void Callback(Image image, Rectangle imageRectangle = new Rectangle())
+        public void Callback(Image image, RectangleInt imageRectangle = new RectangleInt())
         {
             ArgChecker.AssertArgNotNull(image, "image");
             

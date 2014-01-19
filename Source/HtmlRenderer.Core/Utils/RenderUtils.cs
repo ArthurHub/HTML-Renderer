@@ -16,6 +16,7 @@ using System.Drawing.Drawing2D;
 using System.Reflection;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core.Utils
 {
@@ -29,12 +30,12 @@ namespace HtmlRenderer.Core.Utils
         /// <summary>
         /// cache of brush color to brush instance
         /// </summary>
-        private static readonly Dictionary<Color, Brush> _brushesCache = new Dictionary<Color, Brush>();
+        private static readonly Dictionary<ColorInt, Brush> _brushesCache = new Dictionary<ColorInt, Brush>();
 
         /// <summary>
         /// cache of pen color to pen instance
         /// </summary>
-        private static readonly Dictionary<Color, Pen> _penCache = new Dictionary<Color, Pen>();
+        private static readonly Dictionary<ColorInt, Pen> _penCache = new Dictionary<ColorInt, Pen>();
 
         /// <summary>
         /// image used to draw loading image icon
@@ -54,7 +55,7 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         /// <param name="color">the color to check</param>
         /// <returns>true - visible, false - not visible</returns>
-        public static bool IsColorVisible(Color color)
+        public static bool IsColorVisible(ColorInt color)
         {
             return color.A > 0;
         }
@@ -64,13 +65,13 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         /// <param name="color">the color to get brush for</param>
         /// <returns>brush instance</returns>
-        public static Brush GetSolidBrush(Color color)
+        public static Brush GetSolidBrush(ColorInt color)
         {
-            if (color == Color.White)
+            if (color == ColorInt.White)
             {
                 return Brushes.White;
             }
-            else if (color == Color.Black)
+            else if (color == ColorInt.Black)
             {
                 return Brushes.Black;
             }
@@ -95,7 +96,7 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         /// <param name="color">the color to get pen for</param>
         /// <returns>pen instance</returns>
-        public static Pen GetPen(Color color)
+        public static Pen GetPen(ColorInt color)
         {
             Pen pen;
             if (!_penCache.TryGetValue(color, out pen))
@@ -118,7 +119,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="g">the graphics to clip</param>
         /// <param name="box">the box that is rendered to get containing blocks</param>
         /// <returns>the prev region if clipped, otherwise null</returns>
-        public static RectangleF ClipGraphicsByOverflow(IGraphics g, CssBox box)
+        public static RectangleInt ClipGraphicsByOverflow(IGraphics g, CssBox box)
         {
             var containingBlock = box.ContainingBlock;
             while (true)
@@ -138,7 +139,7 @@ namespace HtmlRenderer.Core.Utils
                 {
                     var cBlock = containingBlock.ContainingBlock;
                     if (cBlock == containingBlock)
-                        return RectangleF.Empty;
+                        return RectangleInt.Empty;
                     containingBlock = cBlock;
                 }
             }
@@ -150,9 +151,9 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         /// <param name="g">the graphics to clip</param>
         /// <param name="prevClip">the region to set on the graphics (null - ignore)</param>
-        public static void ReturnClip(IGraphics g, RectangleF prevClip)
+        public static void ReturnClip(IGraphics g, RectangleInt prevClip)
         {
-            if (prevClip != RectangleF.Empty)
+            if (prevClip != RectangleInt.Empty)
             {
                 g.SetClip(prevClip);
             }
@@ -163,11 +164,11 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         /// <param name="g">the device to draw into</param>
         /// <param name="r">the rectangle to draw icon in</param>
-        public static void DrawImageLoadingIcon(IGraphics g, RectangleF r)
+        public static void DrawImageLoadingIcon(IGraphics g, RectangleInt r)
         {
             g.DrawRectangle(Pens.LightGray, r.Left + 3, r.Top + 3, 13, 14);
             var image = GetLoadImage();
-            g.DrawImage(image, new RectangleF(r.Left + 4, r.Top + 4, image.Width, image.Height));
+            g.DrawImage(image, new RectangleInt(r.Left + 4, r.Top + 4, image.Width, image.Height));
         }
 
         /// <summary>
@@ -175,11 +176,11 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         /// <param name="g">the device to draw into</param>
         /// <param name="r">the rectangle to draw icon in</param>
-        public static void DrawImageErrorIcon(IGraphics g, RectangleF r)
+        public static void DrawImageErrorIcon(IGraphics g, RectangleInt r)
         {
             g.DrawRectangle(Pens.LightGray, r.Left + 2, r.Top + 2, 15, 15);
             var image = GetErrorImage();
-            g.DrawImage(image, new RectangleF(r.Left + 3, r.Top + 3, image.Width, image.Height));
+            g.DrawImage(image, new RectangleInt(r.Left + 3, r.Top + 3, image.Width, image.Height));
         }
 
         /// <summary>
@@ -191,7 +192,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="seRadius">Radius of the south east corner</param>
         /// <param name="swRadius">Radius of the south west corner</param>
         /// <returns>GraphicsPath with the lines of the rounded rectangle ready to be painted</returns>
-        public static GraphicsPath GetRoundRect(RectangleF rect, float nwRadius, float neRadius, float seRadius, float swRadius)
+        public static GraphicsPath GetRoundRect(RectangleInt rect, float nwRadius, float neRadius, float seRadius, float swRadius)
         {
             //  NW-----NE
             //  |       |
@@ -212,7 +213,7 @@ namespace HtmlRenderer.Core.Utils
             if( neRadius > 0f )
             {
                 path.AddArc(
-                    RectangleF.FromLTRB(rect.Right - neRadius, rect.Top, rect.Right, rect.Top + neRadius),
+                    RectangleInt.FromLTRB(rect.Right - neRadius, rect.Top, rect.Right, rect.Top + neRadius),
                     -90, 90);
             }
 
@@ -225,7 +226,7 @@ namespace HtmlRenderer.Core.Utils
             if( seRadius > 0f )
             {
                 path.AddArc(
-                    RectangleF.FromLTRB(rect.Right - seRadius, rect.Bottom - seRadius, rect.Right, rect.Bottom),
+                    RectangleInt.FromLTRB(rect.Right - seRadius, rect.Bottom - seRadius, rect.Right, rect.Bottom),
                     0, 90);
             }
 
@@ -236,7 +237,7 @@ namespace HtmlRenderer.Core.Utils
             if( swRadius > 0f )
             {
                 path.AddArc(
-                    RectangleF.FromLTRB(rect.Left, rect.Bottom - swRadius, rect.Left + swRadius, rect.Bottom),
+                    RectangleInt.FromLTRB(rect.Left, rect.Bottom - swRadius, rect.Left + swRadius, rect.Bottom),
                     90, 90);
             }
 
@@ -249,7 +250,7 @@ namespace HtmlRenderer.Core.Utils
             if( nwRadius > 0f )
             {
                 path.AddArc(
-                    RectangleF.FromLTRB(rect.Left, rect.Top, rect.Left + nwRadius, rect.Top + nwRadius),
+                    RectangleInt.FromLTRB(rect.Left, rect.Top, rect.Left + nwRadius, rect.Top + nwRadius),
                     180, 90);
             }
 

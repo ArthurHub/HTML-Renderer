@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Dom
@@ -628,8 +629,8 @@ namespace HtmlRenderer.Core.Dom
                     int rowspan = GetRowSpan(cell);
                     var columnIndex = GetCellRealColumnIndex(row, cell);
                     float width = GetCellWidth(columnIndex, cell);
-                    cell.Location = new PointF(curx, cury);
-                    cell.Size = new SizeF(width, 0f);
+                    cell.Location = new PointInt(curx, cury);
+                    cell.Size = new SizeInt(width, 0f);
                     cell.PerformLayout(g); //That will automatically set the bottom of the cell
                     
                     //Alter max bottom only if row is cell's row + cell's rowspan - 1

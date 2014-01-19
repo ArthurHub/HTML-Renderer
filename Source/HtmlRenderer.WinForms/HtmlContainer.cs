@@ -10,12 +10,14 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 using HtmlRenderer.WinForms.Utils;
 
@@ -25,14 +27,96 @@ namespace HtmlRenderer.WinForms
     /// Low level handling of Html Renderer logic, this class is used by <see cref="HtmlParser"/>, 
     /// <see cref="HtmlLabel"/>, <see cref="HtmlToolTip"/> and <see cref="HtmlRender"/>.<br/>
     /// </summary>
-    /// <seealso cref="HtmlContainerBase"/>
-    public sealed class HtmlContainer : HtmlContainerBase
+    /// <seealso cref="HtmlContainerInt"/>
+    public sealed class HtmlContainer : IDisposable
     {
+        #region Fields and Consts
+
+        /// <summary>
+        /// The internal core html container
+        /// </summary>
+        private readonly HtmlContainerInt _htmlContainerInt;
 
         /// <summary>
         /// Use GDI+ text rendering to measure/draw text.
         /// </summary>
         private bool _useGdiPlusTextRendering;
+
+        #endregion
+
+
+        /// <summary>
+        /// Init.
+        /// </summary>
+        public HtmlContainer()
+        {
+            _htmlContainerInt = new HtmlContainerInt();
+        }
+
+        /// <summary>
+        /// Raised when the user clicks on a link in the html.<br/>
+        /// Allows canceling the execution of the link.
+        /// </summary>
+        public event EventHandler<HtmlLinkClickedEventArgs> LinkClicked
+        {
+            add { _htmlContainerInt.LinkClicked += value; }
+            remove { _htmlContainerInt.LinkClicked -= value; }
+        }
+
+        /// <summary>
+        /// Raised when html renderer requires refresh of the control hosting (invalidation and re-layout).
+        /// </summary>
+        /// <remarks>
+        /// There is no guarantee that the event will be raised on the main thread, it can be raised on thread-pool thread.
+        /// </remarks>
+        public event EventHandler<HtmlRefreshEventArgs> Refresh
+        {
+            add { _htmlContainerInt.Refresh += value; }
+            remove { _htmlContainerInt.Refresh -= value; }
+        }
+
+        /// <summary>
+        /// Raised when Html Renderer request scroll to specific location.<br/>
+        /// This can occur on document anchor click.
+        /// </summary>
+        public event EventHandler<HtmlScrollEventArgs> ScrollChange
+        {
+            add { _htmlContainerInt.ScrollChange += value; }
+            remove { _htmlContainerInt.ScrollChange -= value; }
+        }
+
+        /// <summary>
+        /// Raised when an error occurred during html rendering.<br/>
+        /// </summary>
+        /// <remarks>
+        /// There is no guarantee that the event will be raised on the main thread, it can be raised on thread-pool thread.
+        /// </remarks>
+        public event EventHandler<HtmlRenderErrorEventArgs> RenderError
+        {
+            add { _htmlContainerInt.RenderError += value; }
+            remove { _htmlContainerInt.RenderError -= value; }
+        }
+
+        /// <summary>
+        /// Raised when a stylesheet is about to be loaded by file path or URI by link element.<br/>
+        /// This event allows to provide the stylesheet manually or provide new source (file or Uri) to load from.<br/>
+        /// If no alternative data is provided the original source will be used.<br/>
+        /// </summary>
+        public event EventHandler<HtmlStylesheetLoadEventArgs> StylesheetLoad
+        {
+            add { _htmlContainerInt.StylesheetLoad += value; }
+            remove { _htmlContainerInt.StylesheetLoad -= value; }
+        }
+
+        /// <summary>
+        /// Raised when an image is about to be loaded by file path or URI.<br/>
+        /// This event allows to provide the image manually, if not handled the image will be loaded from file or download from URI.
+        /// </summary>
+        public event EventHandler<HtmlImageLoadEventArgs> ImageLoad
+        {
+            add { _htmlContainerInt.ImageLoad += value; }
+            remove { _htmlContainerInt.ImageLoad -= value; }
+        }
 
         /// <summary>
         /// Use GDI+ text rendering to measure/draw text.<br/>
@@ -55,9 +139,197 @@ namespace HtmlRenderer.WinForms
                 if (_useGdiPlusTextRendering != value)
                 {
                     _useGdiPlusTextRendering = value;
-                    RequestRefresh(true);
+                    _htmlContainerInt.RequestRefresh(true);
                 }
             }
+        }
+
+        /// <summary>
+        /// the parsed stylesheet data used for handling the html
+        /// </summary>
+        public CssData CssData
+        {
+            get { return _htmlContainerInt.CssData; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating if anti-aliasing should be avoided for geometry like backgrounds and borders (default - false).
+        /// </summary>
+        public bool AvoidGeometryAntialias
+        {
+            get { return _htmlContainerInt.AvoidGeometryAntialias; }
+            set { _htmlContainerInt.AvoidGeometryAntialias = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating if image asynchronous loading should be avoided (default - false).<br/>
+        /// True - images are loaded synchronously during html parsing.<br/>
+        /// False - images are loaded asynchronously to html parsing when downloaded from URL or loaded from disk.<br/>
+        /// </summary>
+        /// <remarks>
+        /// Asynchronously image loading allows to unblock html rendering while image is downloaded or loaded from disk using IO 
+        /// ports to achieve better performance.<br/>
+        /// Asynchronously image loading should be avoided when the full html content must be available during render, like render to image.
+        /// </remarks>
+        public bool AvoidAsyncImagesLoading
+        {
+            get { return _htmlContainerInt.AvoidAsyncImagesLoading; }
+            set { _htmlContainerInt.AvoidAsyncImagesLoading = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating if image loading only when visible should be avoided (default - false).<br/>
+        /// True - images are loaded as soon as the html is parsed.<br/>
+        /// False - images that are not visible because of scroll location are not loaded until they are scrolled to.
+        /// </summary>
+        /// <remarks>
+        /// Images late loading improve performance if the page contains image outside the visible scroll area, especially if there is large 
+        /// amount of images, as all image loading is delayed (downloading and loading into memory).<br/>
+        /// Late image loading may effect the layout and actual size as image without set size will not have actual size until they are loaded
+        /// resulting in layout change during user scroll.<br/>
+        /// Early image loading may also effect the layout if image without known size above the current scroll location are loaded as they
+        /// will push the html elements down.
+        /// </remarks>
+        public bool AvoidImagesLateLoading
+        {
+            get { return _htmlContainerInt.AvoidImagesLateLoading; }
+            set { _htmlContainerInt.AvoidImagesLateLoading = value; }
+        }
+
+        /// <summary>
+        /// Is content selection is enabled for the rendered html (default - true).<br/>
+        /// If set to 'false' the rendered html will be static only with ability to click on links.
+        /// </summary>
+        public bool IsSelectionEnabled
+        {
+            get { return _htmlContainerInt.IsSelectionEnabled; }
+            set { _htmlContainerInt.IsSelectionEnabled = value; }
+        }
+
+        /// <summary>
+        /// Is the build-in context menu enabled and will be shown on mouse right click (default - true)
+        /// </summary>
+        public bool IsContextMenuEnabled
+        {
+            get { return _htmlContainerInt.IsContextMenuEnabled; }
+            set { _htmlContainerInt.IsContextMenuEnabled = value; }
+        }
+
+        /// <summary>
+        /// The scroll offset of the html.<br/>
+        /// This will adjust the rendered html by the given offset so the content will be "scrolled".<br/>
+        /// </summary>
+        /// <example>
+        /// Element that is rendered at location (50,100) with offset of (0,200) will not be rendered as it
+        /// will be at -100 therefore outside the client rectangle.
+        /// </example>
+        public PointF ScrollOffset
+        {
+            get { return new PointF(_htmlContainerInt.ScrollOffset.X, _htmlContainerInt.ScrollOffset.Y); }
+            set { _htmlContainerInt.ScrollOffset = new PointInt(value.X, value.Y); }
+        }
+
+        /// <summary>
+        /// The top-left most location of the rendered html.<br/>
+        /// This will offset the top-left corner of the rendered html.
+        /// </summary>
+        public PointF Location
+        {
+            get { return new PointF(_htmlContainerInt.Location.X, _htmlContainerInt.Location.Y); }
+            set { _htmlContainerInt.Location = new PointInt(value.X, value.Y); }
+        }
+
+        /// <summary>
+        /// The max width and height of the rendered html.<br/>
+        /// The max width will effect the html layout wrapping lines, resize images and tables where possible.<br/>
+        /// The max height does NOT effect layout, but will not render outside it (clip).<br/>
+        /// <see cref="HtmlContainerInt.ActualSize"/> can be exceed the max size by layout restrictions (unwrappable line, set image size, etc.).<br/>
+        /// Set zero for unlimited (width\height separately).<br/>
+        /// </summary>
+        public SizeF MaxSize
+        {
+            get { return new SizeF(_htmlContainerInt.MaxSize.Width, _htmlContainerInt.MaxSize.Height); }
+            set { _htmlContainerInt.MaxSize = new SizeInt(value.Width,value.Height); }
+        }
+
+        /// <summary>
+        /// The actual size of the rendered html (after layout)
+        /// </summary>
+        public SizeF ActualSize
+        {
+            get { return new SizeF(_htmlContainerInt.ActualSize.Width, _htmlContainerInt.ActualSize.Height); }
+            internal set { _htmlContainerInt.ActualSize = new SizeInt(value.Width, value.Height); }
+        }
+
+        /// <summary>
+        /// Get the currently selected text segment in the html.
+        /// </summary>
+        public string SelectedText
+        {
+            get { return _htmlContainerInt.SelectedText; }
+        }
+
+        /// <summary>
+        /// Copy the currently selected html segment with style.
+        /// </summary>
+        public string SelectedHtml
+        {
+            get { return _htmlContainerInt.SelectedHtml; }
+        }
+
+        /// <summary>
+        /// Init with optional document and stylesheet.
+        /// </summary>
+        /// <param name="htmlSource">the html to init with, init empty if not given</param>
+        /// <param name="baseCssData">optional: the stylesheet to init with, init default if not given</param>
+        public void SetHtml(string htmlSource, CssData baseCssData = null)
+        {
+            _htmlContainerInt.SetHtml(htmlSource, baseCssData);
+        }
+
+        /// <summary>
+        /// Get html from the current DOM tree with style if requested.
+        /// </summary>
+        /// <param name="styleGen">Optional: controls the way styles are generated when html is generated (default: <see cref="HtmlGenerationStyle.Inline"/>)</param>
+        /// <returns>generated html</returns>
+        public string GetHtml(HtmlGenerationStyle styleGen = HtmlGenerationStyle.Inline)
+        {
+            return _htmlContainerInt.GetHtml(styleGen);
+        }
+
+        /// <summary>
+        /// Get attribute value of element at the given x,y location by given key.<br/>
+        /// If more than one element exist with the attribute at the location the inner most is returned.
+        /// </summary>
+        /// <param name="location">the location to find the attribute at</param>
+        /// <param name="attribute">the attribute key to get value by</param>
+        /// <returns>found attribute value or null if not found</returns>
+        public string GetAttributeAt(Point location, string attribute)
+        {
+            return _htmlContainerInt.GetAttributeAt(new PointInt(location.X, location.Y), attribute);
+        }
+
+        /// <summary>
+        /// Get css link href at the given x,y location.
+        /// </summary>
+        /// <param name="location">the location to find the link at</param>
+        /// <returns>css link href if exists or null</returns>
+        public string GetLinkAt(Point location)
+        {
+            return _htmlContainerInt.GetLinkAt(new PointInt(location.X, location.Y));
+        }
+
+        /// <summary>
+        /// Get the rectangle of html element as calculated by html layout.<br/>
+        /// Element if found by id (id attribute on the html element).<br/>
+        /// Note: to get the screen rectangle you need to adjust by the hosting control.<br/>
+        /// </summary>
+        /// <param name="elementId">the id of the element to get its rectangle</param>
+        /// <returns>the rectangle of the element or null if not found</returns>
+        public RectangleF? GetElementRectangle(string elementId)
+        {
+            var r = _htmlContainerInt.GetElementRectangle(elementId);
+            return r.HasValue ? new RectangleF(r.Value.X, r.Value.Y, r.Value.Width, r.Value.Height) : (RectangleF?)null;
         }
 
         /// <summary>
@@ -70,7 +342,7 @@ namespace HtmlRenderer.WinForms
 
             using(var ig = new WinFormsGraphics(g,_useGdiPlusTextRendering))
             {
-                PerformLayout(ig);
+                _htmlContainerInt.PerformLayout(ig);
             }
         }
 
@@ -84,7 +356,7 @@ namespace HtmlRenderer.WinForms
 
             using (var ig = new WinFormsGraphics(g, _useGdiPlusTextRendering))
             {
-                PerformPaint(ig);
+                _htmlContainerInt.PerformPaint(ig);
             }
         }
 
@@ -98,7 +370,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            HandleMouseDown(new WinFormsControl(parent), e.Location);
+            _htmlContainerInt.HandleMouseDown(new WinFormsControl(parent), new PointInt(e.Location.X, e.Location.Y));
         }
 
         /// <summary>
@@ -111,7 +383,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            HandleMouseUp(new WinFormsControl(parent), e.Location, CreateMouseEvent(e));
+            _htmlContainerInt.HandleMouseUp(new WinFormsControl(parent), new PointInt(e.Location.X, e.Location.Y), CreateMouseEvent(e));
         }
 
         /// <summary>
@@ -124,7 +396,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            HandleMouseDoubleClick(new WinFormsControl(parent), e.Location);
+            _htmlContainerInt.HandleMouseDoubleClick(new WinFormsControl(parent), new PointInt(e.Location.X, e.Location.Y));
         }
 
         /// <summary>
@@ -137,7 +409,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            HandleMouseMove(new WinFormsControl(parent), e.Location);
+            _htmlContainerInt.HandleMouseMove(new WinFormsControl(parent), new PointInt(e.Location.X, e.Location.Y));
         }
 
         /// <summary>
@@ -148,7 +420,7 @@ namespace HtmlRenderer.WinForms
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
 
-            HandleMouseLeave(new WinFormsControl(parent));
+            _htmlContainerInt.HandleMouseLeave(new WinFormsControl(parent));
         }
 
         /// <summary>
@@ -161,7 +433,15 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            HandleKeyDown(new WinFormsControl(parent),CreateKeyEevent(e));
+            _htmlContainerInt.HandleKeyDown(new WinFormsControl(parent), CreateKeyEevent(e));
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            _htmlContainerInt.Dispose();
         }
 
 

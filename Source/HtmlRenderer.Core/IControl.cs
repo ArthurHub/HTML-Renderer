@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System.Drawing;
+using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core
 {
@@ -32,7 +33,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// Get the current location of the mouse relative to the control
         /// </summary>
-        Point MouseLocation { get; }
+        PointInt MouseLocation { get; }
 
         /// <summary>
         /// Set the cursor over the control to default cursor

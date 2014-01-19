@@ -79,7 +79,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// the html container the handler is on
         /// </summary>
-        private readonly HtmlContainerBase _htmlContainer;
+        private readonly HtmlContainerInt _htmlContainer;
 
         /// <summary>
         /// the last context menu shown
@@ -260,7 +260,7 @@ namespace HtmlRenderer.Core.Handlers
         /// </summary>
         /// <param name="selectionHandler">the selection handler linked to the context menu handler</param>
         /// <param name="htmlContainer">the html container the handler is on</param>
-        public ContextMenuHandler(SelectionHandler selectionHandler, HtmlContainerBase htmlContainer)
+        public ContextMenuHandler(SelectionHandler selectionHandler, HtmlContainerInt htmlContainer)
         {
             ArgChecker.AssertArgNotNull(selectionHandler, "selectionHandler");
             ArgChecker.AssertArgNotNull(htmlContainer, "htmlContainer");

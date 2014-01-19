@@ -12,6 +12,7 @@
 
 using System.Drawing;
 using HtmlRenderer.Core.Handlers;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Dom
@@ -37,7 +38,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Rectangle
         /// </summary>
-        private RectangleF _rect;
+        private RectangleInt _rect;
 
         /// <summary>
         /// If the word is selected this points to the selection handler for more data
@@ -67,7 +68,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets or sets the bounds of the rectangle
         /// </summary>
-        public RectangleF Rectangle
+        public RectangleInt Rectangle
         {
             get { return _rect; }
             set { _rect = value; }

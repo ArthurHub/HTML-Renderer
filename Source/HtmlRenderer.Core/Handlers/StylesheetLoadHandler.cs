@@ -35,7 +35,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="attributes">the attributes of the link element</param>
         /// <param name="stylesheet">return the stylesheet string that has been loaded (null if failed or <paramref name="stylesheetData"/> is given)</param>
         /// <param name="stylesheetData">return stylesheet data object that was provided by overwrite (null if failed or <paramref name="stylesheet"/> is given)</param>
-        public static void LoadStylesheet(HtmlContainerBase htmlContainer, string src, Dictionary<string, string> attributes, out string stylesheet, out CssData stylesheetData)
+        public static void LoadStylesheet(HtmlContainerInt htmlContainer, string src, Dictionary<string, string> attributes, out string stylesheet, out CssData stylesheetData)
         {
             ArgChecker.AssertArgNotNull(htmlContainer, "htmlContainer");
 
@@ -78,7 +78,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="htmlContainer">the container of the html to handle load stylesheet for</param>
         /// <param name="src">the file path or uri to load the stylesheet from</param>
         /// <returns>the stylesheet string</returns>
-        private static string LoadStylesheet(HtmlContainerBase htmlContainer, string src)
+        private static string LoadStylesheet(HtmlContainerInt htmlContainer, string src)
         {
             var uri = CommonUtils.TryGetUri(src);
             if( uri == null || uri.Scheme == "file" )
@@ -97,7 +97,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="htmlContainer">the container of the html to handle load stylesheet for</param>
         /// <param name="path">the stylesheet file to load</param>
         /// <returns>the loaded stylesheet string</returns>
-        private static string LoadStylesheetFromFile(HtmlContainerBase htmlContainer, string path)
+        private static string LoadStylesheetFromFile(HtmlContainerInt htmlContainer, string path)
         {
             var fileInfo = CommonUtils.TryGetFileInfo(path);
             if (fileInfo != null)
@@ -127,7 +127,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="htmlContainer">the container of the html to handle load stylesheet for</param>
         /// <param name="uri">the uri to download from</param>
         /// <returns>the loaded stylesheet string</returns>
-        private static string LoadStylesheetFromUri(HtmlContainerBase htmlContainer, Uri uri)
+        private static string LoadStylesheetFromUri(HtmlContainerInt htmlContainer, Uri uri)
         {
             using (var client = new WebClient())
             {

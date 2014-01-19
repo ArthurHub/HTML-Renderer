@@ -11,7 +11,7 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
+using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core.Entities
 {
@@ -24,13 +24,13 @@ namespace HtmlRenderer.Core.Entities
         /// <summary>
         /// the location to scroll to
         /// </summary>
-        private readonly Point _location;
+        private readonly PointInt _location;
 
         /// <summary>
         /// Init.
         /// </summary>
         /// <param name="location">the location to scroll to</param>
-        public HtmlScrollEventArgs(Point location)
+        public HtmlScrollEventArgs(PointInt location)
         {
             _location = location;
         }
@@ -38,7 +38,7 @@ namespace HtmlRenderer.Core.Entities
         /// <summary>
         /// the location to scroll to
         /// </summary>
-        public Point Location
+        public PointInt Location
         {
             get { return _location; }
         }

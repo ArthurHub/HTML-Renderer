@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Dom
@@ -399,7 +400,7 @@ namespace HtmlRenderer.Core.Dom
         {
             var rects = CommonUtils.GetFirstValueOrDefault(Rectangles);
 
-            PointF offset = HtmlContainer != null ? HtmlContainer.ScrollOffset : PointF.Empty;
+            PointInt offset = HtmlContainer != null ? HtmlContainer.ScrollOffset : PointInt.Empty;
             rects.Offset(offset);
 
             var prevClip = RenderUtils.ClipGraphicsByOverflow(g, this);
@@ -415,7 +416,7 @@ namespace HtmlRenderer.Core.Dom
             tmpRect.Y += ActualBorderTopWidth + ActualPaddingTop;
             tmpRect.X = (float)Math.Floor(tmpRect.X);
             tmpRect.Y = (float)Math.Floor(tmpRect.Y);
-            var rect = Rectangle.Round(tmpRect);
+            var rect = tmpRect;
 
             DrawImage(g, offset, rect);
 
@@ -429,11 +430,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Draw video image over the iframe if found.
         /// </summary>
-        private void DrawImage(IGraphics g, PointF offset, Rectangle rect)
+        private void DrawImage(IGraphics g, PointInt offset, RectangleInt rect)
         {
             if (_imageWord.Image != null)
             {
-                if (_imageWord.ImageRectangle == Rectangle.Empty)
+                if (_imageWord.ImageRectangle == RectangleInt.Empty)
                     g.DrawImage(_imageWord.Image, rect);
                 else
                     g.DrawImage(_imageWord.Image, rect, _imageWord.ImageRectangle);
@@ -456,19 +457,19 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Draw video title on top of the iframe if found.
         /// </summary>
-        private void DrawTitle(IGraphics g, Rectangle rect)
+        private void DrawTitle(IGraphics g, RectangleInt rect)
         {
             if (_videoTitle != null && _imageWord.Width > 40 && _imageWord.Height > 40)
             {
                 var font = FontsUtils.GetCachedFont("Arial", 9f, System.Drawing.FontStyle.Regular);
-                g.FillRectangle(RenderUtils.GetSolidBrush(System.Drawing.Color.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, FontsUtils.GetFontHeight(font) + 7);
+                g.FillRectangle(RenderUtils.GetSolidBrush(SysEntities.ColorInt.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, FontsUtils.GetFontHeight(font) + 7);
 
                 using (var sf = new StringFormat(StringFormat.GenericTypographic))
                 {
                     sf.FormatFlags = StringFormatFlags.NoWrap;
                     sf.Trimming = StringTrimming.EllipsisCharacter;
-                    var titleRect = new RectangleF(rect.Left + 3, rect.Top + 3, rect.Width - 6, rect.Height - 6);
-                    g.DrawString(_videoTitle, font, System.Drawing.Color.WhiteSmoke, titleRect.Location, SizeF.Empty);
+                    var titleRect = new RectangleInt(rect.Left + 3, rect.Top + 3, rect.Width - 6, rect.Height - 6);
+                    g.DrawString(_videoTitle, font, SysEntities.ColorInt.WhiteSmoke, titleRect.Location, SizeInt.Empty);
                 }
             }
         }
@@ -476,17 +477,17 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Draw play over the iframe if we found link url.
         /// </summary>
-        private void DrawPlay(IGraphics g, Rectangle rect)
+        private void DrawPlay(IGraphics g, RectangleInt rect)
         {
             if (_isVideo && _imageWord.Width > 70 && _imageWord.Height > 50)
             {
                 var smooth = g.SmoothingMode;
                 g.SmoothingMode = SmoothingMode.AntiAlias;
 
-                var size = new Size(60, 40);
+                var size = new SizeInt(60, 40);
                 var left = rect.Left + (rect.Width - size.Width)/2;
                 var top = rect.Top + (rect.Height - size.Height)/2;
-                g.FillRectangle(RenderUtils.GetSolidBrush(System.Drawing.Color.FromArgb(160, 0, 0, 0)), left, top, size.Width, size.Height);
+                g.FillRectangle(RenderUtils.GetSolidBrush(SysEntities.ColorInt.FromArgb(160, 0, 0, 0)), left, top, size.Width, size.Height);
 
                 using (var path = new GraphicsPath())
                 {
@@ -529,7 +530,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="image">the image loaded or null if failed</param>
         /// <param name="rectangle">the source rectangle to draw in the image (empty - draw everything)</param>
         /// <param name="async">is the callback was called async to load image call</param>
-        private void OnLoadImageComplete(Image image, Rectangle rectangle, bool async)
+        private void OnLoadImageComplete(Image image, RectangleInt rectangle, bool async)
         {
             _imageWord.Image = image;
             _imageWord.ImageRectangle = rectangle;

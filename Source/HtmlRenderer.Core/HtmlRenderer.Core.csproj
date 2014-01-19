@@ -31,9 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
@@ -93,6 +91,10 @@
     <Compile Include="Parse\DomParser.cs" />
     <Compile Include="Parse\HtmlParser.cs" />
     <Compile Include="Parse\RegexParserUtils.cs" />
+    <Compile Include="SysEntities\ColorInt.cs" />
+    <Compile Include="SysEntities\SizeInt.cs" />
+    <Compile Include="SysEntities\PointInt.cs" />
+    <Compile Include="SysEntities\RectangleInt.cs" />
     <Compile Include="Utils\ArgChecker.cs" />
     <Compile Include="Utils\CommonUtils.cs" />
     <Compile Include="Utils\CssUtils.cs" />
@@ -100,7 +102,7 @@
     <Compile Include="Utils\FontsUtils.cs" />
     <Compile Include="Utils\HtmlUtils.cs" />
     <Compile Include="Utils\RenderUtils.cs" />
-    <Compile Include="HtmlContainerBase.cs" />
+    <Compile Include="HtmlContainerInt.cs" />
     <Compile Include="CssData.cs" />
     <Compile Include="IGraphics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

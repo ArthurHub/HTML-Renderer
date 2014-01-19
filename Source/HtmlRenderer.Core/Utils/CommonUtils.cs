@@ -18,6 +18,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core.Utils
 {
@@ -127,9 +128,9 @@ namespace HtmlRenderer.Core.Utils
         /// <summary>
         /// Get size that is max of <paramref name="size"/> and <paramref name="other"/> for width and height separately.
         /// </summary>
-        public static SizeF Max(SizeF size, SizeF other)
+        public static SizeInt Max(SizeInt size, SizeInt other)
         {
-            return new SizeF(Math.Max(size.Width, other.Width), Math.Max(size.Height, other.Height));
+            return new SizeInt(Math.Max(size.Width, other.Width), Math.Max(size.Height, other.Height));
         }
 
         /// <summary>

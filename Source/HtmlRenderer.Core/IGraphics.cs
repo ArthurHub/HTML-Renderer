@@ -13,13 +13,14 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core
 {
     /// <summary>
     /// Interface for the graphics methods required for HTML rendering.<br/>
     /// The core HTML Renderer components use this interface for rendering logic, implementing this
-    /// interface in different platform: WinForms, WPF, Silverlight, Mono, PdfSharp, etc.
+    /// interface in different platform: WinForms, WPF, Silver-light, Mono, PdfSharp, etc.
     /// </summary>
     public interface IGraphics : IDisposable
     {
@@ -30,7 +31,7 @@ namespace HtmlRenderer.Core
         /// A <see cref="T:System.Drawing.RectangleF"/> structure that represents a bounding rectangle for the clipping region of this <see cref="T:System.Drawing.Graphics"/>.
         /// </returns>
         /// <PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        RectangleF GetClip();
+        RectangleInt GetClip();
 
         /// <summary>
         /// Gets or sets the rendering quality for this <see cref="T:System.Drawing.Graphics"/>.
@@ -48,7 +49,7 @@ namespace HtmlRenderer.Core
         /// <param name="str">the string to measure</param>
         /// <param name="font">the font to measure string with</param>
         /// <returns>the size of the string</returns>
-        Size MeasureString(string str, Font font);
+        SizeInt MeasureString(string str, Font font);
 
         /// <summary>
         /// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
@@ -62,7 +63,7 @@ namespace HtmlRenderer.Core
         /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
         /// <param name="charFitWidth"></param>
         /// <returns>the size of the string</returns>
-        Size MeasureString(string str, Font font, float maxWidth, out int charFit, out int charFitWidth);
+        SizeInt MeasureString(string str, Font font, float maxWidth, out int charFit, out int charFitWidth);
 
         /// <summary>
         /// Draw the given string using the given font and foreground color at given location.
@@ -72,7 +73,7 @@ namespace HtmlRenderer.Core
         /// <param name="color">the text color to set</param>
         /// <param name="point">the location to start string draw (top-left)</param>
         /// <param name="size">used to know the size of the rendered text for transparent text support</param>
-        void DrawString(String str, Font font, Color color, PointF point, SizeF size);
+        void DrawString(String str, Font font, ColorInt color, PointInt point, SizeInt size);
 
         /// <summary>
         /// Draws a line connecting the two points specified by the coordinate pairs.
@@ -95,13 +96,13 @@ namespace HtmlRenderer.Core
         /// <param name="destRect"><see cref="T:System.Drawing.RectangleF"/> structure that specifies the location and size of the drawn image. The image is scaled to fit the rectangle. </param>
         /// <param name="srcRect"><see cref="T:System.Drawing.RectangleF"/> structure that specifies the portion of the <paramref name="image"/> object to draw. </param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="image"/> is null.</exception>
-        void DrawImage(Image image, RectangleF destRect, RectangleF srcRect);
+        void DrawImage(Image image, RectangleInt destRect, RectangleInt srcRect);
 
         /// <summary>
         /// Draws the specified <see cref="T:System.Drawing.Image"/> at the specified location and with the specified size.
         /// </summary>
         /// <param name="image"><see cref="T:System.Drawing.Image"/> to draw. </param><param name="destRect"><see cref="T:System.Drawing.Rectangle"/> structure that specifies the location and size of the drawn image. </param><exception cref="T:System.ArgumentNullException"><paramref name="image"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        void DrawImage(Image image, RectangleF destRect);
+        void DrawImage(Image image, RectangleInt destRect);
 
         /// <summary>
         /// Fills the interior of a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.
@@ -113,13 +114,13 @@ namespace HtmlRenderer.Core
         /// Fills the interior of a polygon defined by an array of points specified by <see cref="T:System.Drawing.PointF"/> structures.
         /// </summary>
         /// <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the characteristics of the fill. </param><param name="points">Array of <see cref="T:System.Drawing.PointF"/> structures that represent the vertices of the polygon to fill. </param><exception cref="T:System.ArgumentNullException"><paramref name="brush"/> is null.-or-<paramref name="points"/> is null.</exception>
-        void FillPolygon(Brush brush, PointF[] points);
+        void FillPolygon(Brush brush, PointInt[] points);
 
         /// <summary>
         /// Sets the clipping region of this <see cref="T:System.Drawing.Graphics"/> to the result of the specified operation combining the current clip region and the rectangle specified by a <see cref="T:System.Drawing.RectangleF"/> structure.
         /// </summary>
         /// <param name="rect"><see cref="T:System.Drawing.RectangleF"/> structure to combine. </param><param name="combineMode">Member of the <see cref="T:System.Drawing.Drawing2D.CombineMode"/> enumeration that specifies the combining operation to use. </param><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        void SetClip(RectangleF rect, CombineMode combineMode = CombineMode.Replace);
+        void SetClip(RectangleInt rect, CombineMode combineMode = CombineMode.Replace);
 
         /// <summary>
         /// Draws a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.

@@ -11,14 +11,14 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
+using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core
 {
     /// <summary>
     /// atodo: add doc
     /// </summary>
-    public interface IContextMenu : IDisposable
+    internal interface IContextMenu : IDisposable
     {
         /// <summary>
         /// The total number of items in the context menu
@@ -49,6 +49,6 @@ namespace HtmlRenderer.Core
         /// </summary>
         /// <param name="parent">the parent control to show in</param>
         /// <param name="location">the location to show at relative to the parent control</param>
-        void Show(IControl parent, Point location);
+        void Show(IControl parent, PointInt location);
     }
 }

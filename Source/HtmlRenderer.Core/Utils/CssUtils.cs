@@ -15,6 +15,7 @@ using System.Drawing;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
+using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core.Utils
 {
@@ -28,7 +29,7 @@ namespace HtmlRenderer.Core.Utils
         /// <summary>
         /// Brush for selection background
         /// </summary>
-        private static readonly Brush _defaultSelectionBackcolor = new SolidBrush(Color.FromArgb(0xa9,0x33, 0x99, 0xFF));
+        private static readonly Brush _defaultSelectionBackcolor = new SolidBrush(ColorInt.FromArgb(0xa9,0x33, 0x99, 0xFF));
 
         /// <summary>
         /// default CSS parsed data singleton

@@ -14,6 +14,7 @@ using System;
 using System.Drawing;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Dom
@@ -77,7 +78,7 @@ namespace HtmlRenderer.Core.Dom
             }
 
             var rect = CommonUtils.GetFirstValueOrDefault(Rectangles);
-            PointF offset = HtmlContainer.ScrollOffset;
+            PointInt offset = HtmlContainer.ScrollOffset;
             rect.Offset(offset);
 
             var prevClip = RenderUtils.ClipGraphicsByOverflow(g, this);
@@ -85,7 +86,7 @@ namespace HtmlRenderer.Core.Dom
             PaintBackground(g, rect, true, true);
             BordersDrawHandler.DrawBoxBorders(g, this, rect, true, true);
 
-            RectangleF r = _imageWord.Rectangle;
+            RectangleInt r = _imageWord.Rectangle;
             r.Offset(offset);
             r.Height -= ActualBorderTopWidth + ActualBorderBottomWidth + ActualPaddingTop + ActualPaddingBottom;
             r.Y += ActualBorderTopWidth + ActualPaddingTop;
@@ -94,10 +95,10 @@ namespace HtmlRenderer.Core.Dom
             
             if (_imageWord.Image != null)
             {
-                if (_imageWord.ImageRectangle == Rectangle.Empty)
-                    g.DrawImage(_imageWord.Image, Rectangle.Round(r));
+                if (_imageWord.ImageRectangle == RectangleInt.Empty)
+                    g.DrawImage(_imageWord.Image, r);
                 else
-                    g.DrawImage(_imageWord.Image, Rectangle.Round(r), _imageWord.ImageRectangle);
+                    g.DrawImage(_imageWord.Image, r, _imageWord.ImageRectangle);
 
                 if (_imageWord.Selected)
                 {
@@ -172,7 +173,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="image">the image loaded or null if failed</param>
         /// <param name="rectangle">the source rectangle to draw in the image (empty - draw everything)</param>
         /// <param name="async">is the callback was called async to load image call</param>
-        private void OnLoadImageComplete(Image image, Rectangle rectangle, bool async)
+        private void OnLoadImageComplete(Image image, RectangleInt rectangle, bool async)
         {
             _imageWord.Image = image;
             _imageWord.ImageRectangle = rectangle;

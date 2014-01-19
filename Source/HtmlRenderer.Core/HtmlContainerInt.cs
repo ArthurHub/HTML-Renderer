@@ -13,11 +13,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
 using HtmlRenderer.Core.Parse;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core
@@ -76,7 +76,7 @@ namespace HtmlRenderer.Core
     /// Raised when an error occurred during html rendering.<br/>
     /// </para>
     /// </remarks>
-    public abstract class HtmlContainerBase : IDisposable
+    public sealed class HtmlContainerInt : IDisposable
     {
         #region Fields and Consts
 
@@ -98,12 +98,12 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// the text fore color use for selected text
         /// </summary>
-        private Color _selectionForeColor;
+        private ColorInt _selectionForeColor;
 
         /// <summary>
         /// the backcolor to use for selected text
         /// </summary>
-        private Color _selectionBackColor;
+        private ColorInt _selectionBackColor;
 
         /// <summary>
         /// the parsed stylesheet data used for handling the html
@@ -140,23 +140,23 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// the top-left most location of the rendered html
         /// </summary>
-        private PointF _location;
+        private PointInt _location;
 
         /// <summary>
         /// the max width and height of the rendered html, effects layout, actual size cannot exceed this values.<br/>
         /// Set zero for unlimited.<br/>
         /// </summary>
-        private SizeF _maxSize;
+        private SizeInt _maxSize;
 
         /// <summary>
         /// Gets or sets the scroll offset of the document for scroll controls
         /// </summary>
-        private PointF _scrollOffset;
+        private PointInt _scrollOffset;
 
         /// <summary>
         /// The actual size of the rendered html (after layout)
         /// </summary>
-        private SizeF _actualSize;
+        private SizeInt _actualSize;
 
         #endregion
 
@@ -281,7 +281,7 @@ namespace HtmlRenderer.Core
         /// Element that is rendered at location (50,100) with offset of (0,200) will not be rendered as it
         /// will be at -100 therefore outside the client rectangle.
         /// </example>
-        public PointF ScrollOffset
+        public PointInt ScrollOffset
         {
             get { return _scrollOffset; }
             set { _scrollOffset = value; }
@@ -291,7 +291,7 @@ namespace HtmlRenderer.Core
         /// The top-left most location of the rendered html.<br/>
         /// This will offset the top-left corner of the rendered html.
         /// </summary>
-        public PointF Location
+        public PointInt Location
         {
             get { return _location; }
             set { _location = value; }
@@ -304,7 +304,7 @@ namespace HtmlRenderer.Core
         /// <see cref="ActualSize"/> can be exceed the max size by layout restrictions (unwrappable line, set image size, etc.).<br/>
         /// Set zero for unlimited (width\height separately).<br/>
         /// </summary>
-        public SizeF MaxSize
+        public SizeInt MaxSize
         {
             get { return _maxSize; }
             set { _maxSize = value; }
@@ -313,7 +313,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// The actual size of the rendered html (after layout)
         /// </summary>
-        public SizeF ActualSize
+        public SizeInt ActualSize
         {
             get { return _actualSize; }
             internal set { _actualSize = value; }
@@ -346,7 +346,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// the text fore color use for selected text
         /// </summary>
-        internal Color SelectionForeColor
+        internal ColorInt SelectionForeColor
         {
             get { return _selectionForeColor; }
             set { _selectionForeColor = value; }
@@ -355,7 +355,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// the back-color to use for selected text
         /// </summary>
-        internal Color SelectionBackColor
+        internal ColorInt SelectionBackColor
         {
             get { return _selectionBackColor; }
             set { _selectionBackColor = value; }
@@ -407,7 +407,7 @@ namespace HtmlRenderer.Core
         /// <param name="location">the location to find the attribute at</param>
         /// <param name="attribute">the attribute key to get value by</param>
         /// <returns>found attribute value or null if not found</returns>
-        public string GetAttributeAt(Point location, string attribute)
+        public string GetAttributeAt(PointInt location, string attribute)
         {
             ArgChecker.AssertArgNotNullOrEmpty(attribute, "attribute");
 
@@ -420,7 +420,7 @@ namespace HtmlRenderer.Core
         /// </summary>
         /// <param name="location">the location to find the link at</param>
         /// <returns>css link href if exists or null</returns>
-        public string GetLinkAt(Point location)
+        public string GetLinkAt(PointInt location)
         {
             var link = DomUtils.GetLinkBox(_root, OffsetByScroll(location));
             return link != null ? link.HrefLink : null;
@@ -433,12 +433,12 @@ namespace HtmlRenderer.Core
         /// </summary>
         /// <param name="elementId">the id of the element to get its rectangle</param>
         /// <returns>the rectangle of the element or null if not found</returns>
-        public RectangleF? GetElementRectangle(string elementId)
+        public RectangleInt? GetElementRectangle(string elementId)
         {
             ArgChecker.AssertArgNotNullOrEmpty(elementId, "elementId");
 
             var box = DomUtils.GetBoxById(_root, elementId.ToLower());
-            return box != null ? CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds) : (RectangleF?)null;
+            return box != null ? CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds) : (RectangleInt?)null;
         }
 
         /// <summary>
@@ -451,18 +451,18 @@ namespace HtmlRenderer.Core
 
             if( _root != null )
             {
-                    _actualSize = SizeF.Empty;
+                    _actualSize = SizeInt.Empty;
 
                     // if width is not restricted we set it to large value to get the actual later
-                    _root.Size = new SizeF(_maxSize.Width > 0 ? _maxSize.Width : 99999, 0);
+                    _root.Size = new SizeInt(_maxSize.Width > 0 ? _maxSize.Width : 99999, 0);
                     _root.Location = _location;
                 _root.PerformLayout(g);
 
                     if( _maxSize.Width <= 0.1 )
                     {
                         // in case the width is not restricted we need to double layout, first will find the width so second can layout by it (center alignment)
-                        _root.Size = new SizeF((int)Math.Ceiling(_actualSize.Width), 0);
-                        _actualSize = SizeF.Empty;
+                        _root.Size = new SizeInt((int)Math.Ceiling(_actualSize.Width), 0);
+                        _actualSize = SizeInt.Empty;
                     _root.PerformLayout(g);
                     }
                 }
@@ -476,11 +476,11 @@ namespace HtmlRenderer.Core
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
-            RectangleF prevClip = RectangleF.Empty;
+            RectangleInt prevClip = RectangleInt.Empty;
             if (MaxSize.Height > 0)
             {
                 prevClip = g.GetClip();
-                g.SetClip(new RectangleF(_location, _maxSize));
+                g.SetClip(new RectangleInt(_location, _maxSize));
             }
 
             if( _root != null )
@@ -488,7 +488,7 @@ namespace HtmlRenderer.Core
                 _root.Paint(g);
                 }
 
-            if (prevClip != RectangleF.Empty)
+            if (prevClip != RectangleInt.Empty)
             {
                 g.SetClip(prevClip);
             }
@@ -499,7 +499,7 @@ namespace HtmlRenderer.Core
         /// </summary>
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="location">the location of the mouse</param>
-        public void HandleMouseDown(IControl parent, Point location)
+        public void HandleMouseDown(IControl parent, PointInt location)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
 
@@ -520,7 +520,7 @@ namespace HtmlRenderer.Core
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="location">the location of the mouse</param>
         /// <param name="e">the mouse event data</param>
-        public void HandleMouseUp(IControl parent, Point location, MouseEvent e)
+        public void HandleMouseUp(IControl parent, PointInt location, MouseEvent e)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
 
@@ -555,7 +555,7 @@ namespace HtmlRenderer.Core
         /// </summary>
         /// <param name="parent">the control hosting the html to set cursor and invalidate</param>
         /// <param name="location">the location of the mouse</param>
-        public void HandleMouseDoubleClick(IControl parent, Point location)
+        public void HandleMouseDoubleClick(IControl parent, PointInt location)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
 
@@ -575,7 +575,7 @@ namespace HtmlRenderer.Core
         /// </summary>
         /// <param name="parent">the control hosting the html to set cursor and invalidate</param>
         /// <param name="location">the location of the mouse</param>
-        public void HandleMouseMove(IControl parent, Point location)
+        public void HandleMouseMove(IControl parent, PointInt location)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
 
@@ -746,7 +746,7 @@ namespace HtmlRenderer.Core
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="location">the location of the mouse</param>
         /// <param name="link">the link that was clicked</param>
-        internal void HandleLinkClicked(IControl parent, Point location, CssBox link)
+        internal void HandleLinkClicked(IControl parent, PointInt location, CssBox link)
         {
             if( LinkClicked != null )
             {
@@ -772,7 +772,7 @@ namespace HtmlRenderer.Core
                         var rect = GetElementRectangle(link.HrefLink.Substring(1));
                         if( rect.HasValue )
                         {
-                            ScrollChange(this, new HtmlScrollEventArgs(Point.Round(rect.Value.Location)));
+                            ScrollChange(this, new HtmlScrollEventArgs(rect.Value.Location));
                             HandleMouseMove(parent, location);
                         }
                     }
@@ -819,17 +819,16 @@ namespace HtmlRenderer.Core
         /// </summary>
         /// <param name="location">the location to adjust</param>
         /// <returns>the adjusted location</returns>
-        private Point OffsetByScroll(Point location)
+        private PointInt OffsetByScroll(PointInt location)
         {
-            location.Offset(-(int)ScrollOffset.X, -(int)ScrollOffset.Y);
-            return location;
+            return new PointInt(location.X - ScrollOffset.X, location.Y - ScrollOffset.Y);
         }
 
         /// <summary>
         /// Check if the mouse is currently on the html container.<br/>
         /// Relevant if the html container is not filled in the hosted control (location is not zero and the size is not the full size of the control).
         /// </summary>
-        private bool IsMouseInContainer(Point location)
+        private bool IsMouseInContainer(PointInt location)
         {
             return location.X >= _location.X && location.X <= _location.X + _actualSize.Width && location.Y >= _location.Y + ScrollOffset.Y && location.Y <= _location.Y + ScrollOffset.Y + _actualSize.Height;
         }

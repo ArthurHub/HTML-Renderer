@@ -16,6 +16,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Dom
@@ -105,18 +106,18 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets or sets the location of the box
         /// </summary>
-        private PointF _location;
+        private PointInt _location;
         
         /// <summary>
         /// Gets or sets the size of the box
         /// </summary>
-        private SizeF _size;
+        private SizeInt _size;
 
         private float _actualCornerNW = float.NaN;
         private float _actualCornerNE = float.NaN;
         private float _actualCornerSW = float.NaN;
         private float _actualCornerSE = float.NaN;
-        private Color _actualColor = System.Drawing.Color.Empty;
+        private ColorInt _actualColor = SysEntities.ColorInt.Empty;
         private float _actualBackgroundGradientAngle = float.NaN;
         private float _actualHeight = float.NaN;
         private float _actualWidth = float.NaN;
@@ -145,12 +146,12 @@ namespace HtmlRenderer.Core.Dom
         private float _fontAscent = float.NaN;
         private float _fontDescent = float.NaN;
         private float _fontLineSpacing = float.NaN;
-        private Color _actualBackgroundGradient = System.Drawing.Color.Empty;
-        private Color _actualBorderTopColor = System.Drawing.Color.Empty;
-        private Color _actualBorderLeftColor = System.Drawing.Color.Empty;
-        private Color _actualBorderBottomColor = System.Drawing.Color.Empty;
-        private Color _actualBorderRightColor = System.Drawing.Color.Empty;
-        private Color _actualBackgroundColor = System.Drawing.Color.Empty;
+        private ColorInt _actualBackgroundGradient = SysEntities.ColorInt.Empty;
+        private ColorInt _actualBorderTopColor = SysEntities.ColorInt.Empty;
+        private ColorInt _actualBorderLeftColor = SysEntities.ColorInt.Empty;
+        private ColorInt _actualBorderBottomColor = SysEntities.ColorInt.Empty;
+        private ColorInt _actualBorderRightColor = SysEntities.ColorInt.Empty;
+        private ColorInt _actualBackgroundColor = SysEntities.ColorInt.Empty;
         private Font _actualFont;
 
         #endregion
@@ -228,7 +229,7 @@ namespace HtmlRenderer.Core.Dom
             set
             {
                 _borderBottomColor = value;
-                _actualBorderBottomColor = System.Drawing.Color.Empty;
+                _actualBorderBottomColor = SysEntities.ColorInt.Empty;
             }
         }
 
@@ -238,7 +239,7 @@ namespace HtmlRenderer.Core.Dom
             set
             {
                 _borderLeftColor = value;
-                _actualBorderLeftColor = System.Drawing.Color.Empty;
+                _actualBorderLeftColor = SysEntities.ColorInt.Empty;
             }
         }
 
@@ -248,7 +249,7 @@ namespace HtmlRenderer.Core.Dom
             set
             {
                 _borderRightColor = value;
-                _actualBorderRightColor = System.Drawing.Color.Empty;
+                _actualBorderRightColor = SysEntities.ColorInt.Empty;
             }
         }
 
@@ -258,7 +259,7 @@ namespace HtmlRenderer.Core.Dom
             set
             {
                 _borderTopColor = value;
-                _actualBorderTopColor = System.Drawing.Color.Empty;
+                _actualBorderTopColor = SysEntities.ColorInt.Empty;
             }
         }
 
@@ -453,7 +454,7 @@ namespace HtmlRenderer.Core.Dom
         public string Color
         {
             get { return _color; }
-            set { _color = value; _actualColor = System.Drawing.Color.Empty; }
+            set { _color = value; _actualColor = SysEntities.ColorInt.Empty; }
         }
 
         public string Display
@@ -634,7 +635,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets or sets the location of the box
         /// </summary>
-        public PointF Location
+        public PointInt Location
         {
             get { return _location; }
             set { _location = value; }
@@ -643,7 +644,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets or sets the size of the box
         /// </summary>
-        public SizeF Size
+        public SizeInt Size
         {
             get { return _size; }
             set { _size = value; }
@@ -652,9 +653,9 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the bounds of the box
         /// </summary>
-        public RectangleF Bounds
+        public RectangleInt Bounds
         {
-            get { return new RectangleF(Location, Size); }
+            get { return new RectangleInt(Location, Size); }
         }
 
         /// <summary>
@@ -671,7 +672,7 @@ namespace HtmlRenderer.Core.Dom
         public float ActualRight
         {
             get { return Location.X + Size.Width; }
-            set { Size = new SizeF(value - Location.X, Size.Height); }
+            set { Size = new SizeInt(value - Location.X, Size.Height); }
         }
 
         /// <summary>
@@ -681,7 +682,7 @@ namespace HtmlRenderer.Core.Dom
         public float ActualBottom
         {
             get { return Location.Y + Size.Height; }
-            set { Size = new SizeF(Size.Width, value - Location.Y); }
+            set { Size = new SizeInt(Size.Width, value - Location.Y); }
         }
 
         /// <summary>
@@ -719,9 +720,9 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the client rectangle
         /// </summary>
-        public RectangleF ClientRectangle
+        public RectangleInt ClientRectangle
         {
-            get { return RectangleF.FromLTRB(ClientLeft, ClientTop, ClientRight, ClientBottom); }
+            get { return RectangleInt.FromLTRB(ClientLeft, ClientTop, ClientRight, ClientBottom); }
         }
 
         /// <summary>
@@ -982,7 +983,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual top border Color
         /// </summary>
-        public Color ActualBorderTopColor
+        public ColorInt ActualBorderTopColor
         {
             get
             {
@@ -997,7 +998,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual Left border Color
         /// </summary>
-        public Color ActualBorderLeftColor
+        public ColorInt ActualBorderLeftColor
         {
             get
             {
@@ -1012,7 +1013,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual Bottom border Color
         /// </summary>
-        public Color ActualBorderBottomColor
+        public ColorInt ActualBorderBottomColor
         {
             get
             {
@@ -1027,7 +1028,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual Right border Color
         /// </summary>
-        public Color ActualBorderRightColor
+        public ColorInt ActualBorderRightColor
         {
             get
             {
@@ -1119,7 +1120,7 @@ namespace HtmlRenderer.Core.Dom
         /// 
         /// Gets the actual color for the text.
         /// </summary>
-        public Color ActualColor
+        public ColorInt ActualColor
         {
             get
             {
@@ -1137,7 +1138,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual background color of the box
         /// </summary>
-        public Color ActualBackgroundColor
+        public ColorInt ActualBackgroundColor
         {
             get
             {
@@ -1153,7 +1154,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the second color that creates a gradient for the background
         /// </summary>
-        public Color ActualBackgroundGradient
+        public ColorInt ActualBackgroundGradient
         {
             get
             {

@@ -16,6 +16,7 @@ using System.Globalization;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Parse
@@ -32,7 +33,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="htmlContainer">the html container to use for reference resolve</param>
         /// <param name="cssData">the css data to use</param>
         /// <returns>the root of the generated tree</returns>
-        public static CssBox GenerateCssTree(string html, HtmlContainerBase htmlContainer, ref CssData cssData)
+        public static CssBox GenerateCssTree(string html, HtmlContainerInt htmlContainer, ref CssData cssData)
         {
             var root = HtmlParser.ParseDocument(html);
             if (root != null)
@@ -74,7 +75,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="htmlContainer">the html container to use for reference resolve</param>
         /// <param name="cssData"> </param>
         /// <param name="cssDataChanged">check if the css data has been modified by the handled html not to change the base css data</param>
-        private static void CascadeStyles(CssBox box, HtmlContainerBase htmlContainer, ref CssData cssData, ref bool cssDataChanged)
+        private static void CascadeStyles(CssBox box, HtmlContainerInt htmlContainer, ref CssData cssData, ref bool cssDataChanged)
         {
             box.InheritStyle();
 
@@ -146,10 +147,10 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="htmlContainer"> </param>
         /// <param name="cssData">the style data</param>
-        private static void SetTextSelectionStyle(HtmlContainerBase htmlContainer, CssData cssData)
+        private static void SetTextSelectionStyle(HtmlContainerInt htmlContainer, CssData cssData)
         {
-            htmlContainer.SelectionForeColor = Color.Empty;
-            htmlContainer.SelectionBackColor = Color.Empty;
+            htmlContainer.SelectionForeColor = ColorInt.Empty;
+            htmlContainer.SelectionBackColor = ColorInt.Empty;
 
             if (cssData.ContainsCssBlock("::selection"))
             {
