@@ -65,9 +65,10 @@
   <ItemGroup>
     <Compile Include="Core\AssemblyInfo.cs" />
     <Compile Include="Core\CssData.cs" />
-    <Compile Include="Core\Entities\IContextMenu.cs" />
     <Compile Include="Core\Handlers\StylesheetLoadHandler.cs" />
     <Compile Include="Core\HtmlContainerBase.cs" />
+    <Compile Include="Core\IContextMenu.cs" />
+    <Compile Include="Core\IControl.cs" />
     <Compile Include="Core\IGraphics.cs" />
     <Compile Include="Core\Dom\CssRectWord.cs" />
     <Compile Include="Core\Dom\CssRectImage.cs" />
@@ -92,7 +93,6 @@
     <Compile Include="Core\Entities\HtmlRenderErrorType.cs" />
     <Compile Include="Core\Entities\HtmlScrollEventArgs.cs" />
     <Compile Include="Core\Entities\HtmlStylesheetLoadEventArgs.cs" />
-    <Compile Include="Core\Entities\IControl.cs" />
     <Compile Include="Core\Entities\KeyEvent.cs" />
     <Compile Include="Core\Entities\MouseEvent.cs" />
     <Compile Include="Core\Entities\SubString.cs" />

@@ -73,8 +73,6 @@
     <Compile Include="Core\Entities\HtmlRenderErrorType.cs" />
     <Compile Include="Core\Entities\HtmlScrollEventArgs.cs" />
     <Compile Include="Core\Entities\HtmlStylesheetLoadEventArgs.cs" />
-    <Compile Include="Core\Entities\IContextMenu.cs" />
-    <Compile Include="Core\Entities\IControl.cs" />
     <Compile Include="Core\Entities\KeyEvent.cs" />
     <Compile Include="Core\Entities\MouseEvent.cs" />
     <Compile Include="Core\Entities\SubString.cs" />
@@ -85,6 +83,8 @@
     <Compile Include="Core\Handlers\ImageLoadHandler.cs" />
     <Compile Include="Core\Handlers\SelectionHandler.cs" />
     <Compile Include="Core\Handlers\StylesheetLoadHandler.cs" />
+    <Compile Include="Core\IContextMenu.cs" />
+    <Compile Include="Core\IControl.cs" />
     <Compile Include="Core\Parse\CssParser.cs" />
     <Compile Include="Core\Parse\CssValueParser.cs" />
     <Compile Include="Core\Parse\DomParser.cs" />
