@@ -13,7 +13,7 @@
 using System;
 using System.IO;
 
-namespace HtmlRenderer.Utils
+namespace HtmlRenderer.Core.Utils
 {
     /// <summary>
     /// Static class that contains argument-checking methods

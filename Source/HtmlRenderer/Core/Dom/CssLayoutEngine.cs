@@ -13,10 +13,10 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Utils;
+using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Dom
+namespace HtmlRenderer.Core.Dom
 {
     /// <summary>
     /// Helps on CSS Layout.

@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace HtmlRenderer.Utils
+namespace HtmlRenderer.Core.Utils
 {
     /// <summary>
     /// Utils for fonts and fonts families handling.

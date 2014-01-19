@@ -1,9 +1,26 @@
+// "Therefore those skilled at the unorthodox
+// are infinite as heaven and earth,
+// inexhaustible as the great rivers.
+// When they come to an end,
+// they begin again,
+// like the days and months;
+// they die and are reborn,
+// like the four seasons."
+// 
+// - Sun Tsu,
+// "The Art of War"
+
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace HtmlRenderer
+namespace HtmlRenderer.Core
 {
+    /// <summary>
+    /// Interface for the graphics methods required for HTML rendering.<br/>
+    /// The core HTML Renderer components use this interface for rendering logic, implementing this
+    /// interface in different platform: WinForms, WPF, Silverlight, Mono, PdfSharp, etc.
+    /// </summary>
     public interface IGraphics : IDisposable
     {
         /// <summary>

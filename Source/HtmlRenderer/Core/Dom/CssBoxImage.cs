@@ -12,11 +12,11 @@
 
 using System;
 using System.Drawing;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Handlers;
-using HtmlRenderer.Utils;
+using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Handlers;
+using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Dom
+namespace HtmlRenderer.Core.Dom
 {
     /// <summary>
     /// CSS box for image element.

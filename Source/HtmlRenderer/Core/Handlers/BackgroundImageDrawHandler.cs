@@ -12,9 +12,9 @@
 
 using System;
 using System.Drawing;
-using HtmlRenderer.Dom;
+using HtmlRenderer.Core.Dom;
 
-namespace HtmlRenderer.Handlers
+namespace HtmlRenderer.Core.Handlers
 {
     /// <summary>
     /// Contains all the paint code to paint different background images.

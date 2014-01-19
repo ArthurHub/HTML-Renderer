@@ -15,7 +15,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
-using HtmlRenderer.Entities;
+using HtmlRenderer.Core;
+using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Utils;
 using HtmlRenderer.Utils;
 
 namespace HtmlRenderer

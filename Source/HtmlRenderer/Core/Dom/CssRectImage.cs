@@ -12,7 +12,7 @@
 
 using System.Drawing;
 
-namespace HtmlRenderer.Dom
+namespace HtmlRenderer.Core.Dom
 {
     /// <summary>
     /// Represents a word inside an inline box

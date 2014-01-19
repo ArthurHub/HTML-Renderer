@@ -13,7 +13,7 @@
 using System;
 using System.Drawing;
 
-namespace HtmlRenderer.Entities
+namespace HtmlRenderer.Core.Entities
 {
     /// <summary>
     /// Raised when Html Renderer request scroll to specific location.<br/>

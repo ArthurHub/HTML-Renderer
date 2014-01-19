@@ -13,8 +13,10 @@
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Parse;
+using HtmlRenderer.Core;
+using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Parse;
+using HtmlRenderer.Core.Utils;
 using HtmlRenderer.Utils;
 
 namespace HtmlRenderer

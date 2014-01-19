@@ -16,11 +16,11 @@ using System.Drawing.Drawing2D;
 using System.Net;
 using System.Text;
 using System.Threading;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Handlers;
-using HtmlRenderer.Utils;
+using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Handlers;
+using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Dom
+namespace HtmlRenderer.Core.Dom
 {
     /// <summary>
     /// CSS box for iframe element.<br/>

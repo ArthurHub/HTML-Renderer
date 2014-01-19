@@ -14,10 +14,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Reflection;
-using HtmlRenderer.Dom;
-using HtmlRenderer.Entities;
+using HtmlRenderer.Core.Dom;
+using HtmlRenderer.Core.Entities;
 
-namespace HtmlRenderer.Utils
+namespace HtmlRenderer.Core.Utils
 {
     /// <summary>
     /// Provides some drawing functionality

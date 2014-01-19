@@ -13,9 +13,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using HtmlRenderer.Utils;
+using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Entities
+namespace HtmlRenderer.Core.Entities
 {
     /// <summary>
     /// Callback used in <see cref="HtmlImageLoadEventArgs"/> to allow setting image externally and async.<br/>

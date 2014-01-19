@@ -13,7 +13,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace HtmlRenderer.Entities
+namespace HtmlRenderer.Core.Entities
 {
     /// <summary>
     /// Raised when the user clicks on a link in the html.

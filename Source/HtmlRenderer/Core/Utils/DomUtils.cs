@@ -16,11 +16,11 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
-using HtmlRenderer.Dom;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Parse;
+using HtmlRenderer.Core.Dom;
+using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Parse;
 
-namespace HtmlRenderer.Utils
+namespace HtmlRenderer.Core.Utils
 {
     /// <summary>
     /// Utility class for traversing DOM structure and execution stuff on it.

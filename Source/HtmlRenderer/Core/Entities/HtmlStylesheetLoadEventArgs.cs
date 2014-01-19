@@ -13,7 +13,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace HtmlRenderer.Entities
+namespace HtmlRenderer.Core.Entities
 {
     /// <summary>
     /// Invoked when a stylesheet is about to be loaded by file path or URL in 'link' element.<br/>

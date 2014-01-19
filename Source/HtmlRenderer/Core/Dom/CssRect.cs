@@ -11,10 +11,10 @@
 // "The Art of War"
 
 using System.Drawing;
-using HtmlRenderer.Handlers;
-using HtmlRenderer.Utils;
+using HtmlRenderer.Core.Handlers;
+using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Dom
+namespace HtmlRenderer.Core.Dom
 {
     /// <summary>
     /// Represents a word inside an inline box

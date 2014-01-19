@@ -14,11 +14,11 @@ using System;
 using System.Drawing;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Parse;
-using HtmlRenderer.Utils;
+using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Parse;
+using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Dom
+namespace HtmlRenderer.Core.Dom
 {
     /// <summary>
     /// Base class for css box to handle the css properties.<br/>

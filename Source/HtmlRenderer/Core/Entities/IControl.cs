@@ -11,9 +11,8 @@
 // "The Art of War"
 
 using System.Drawing;
-using HtmlRenderer.Core.Entities;
 
-namespace HtmlRenderer.Entities
+namespace HtmlRenderer.Core.Entities
 {
     /// <summary>
     /// aTODO: add doc

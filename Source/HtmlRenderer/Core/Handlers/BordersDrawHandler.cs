@@ -13,11 +13,11 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using HtmlRenderer.Dom;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Utils;
+using HtmlRenderer.Core.Dom;
+using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Handlers
+namespace HtmlRenderer.Core.Handlers
 {
     /// <summary>
     /// Contains all the complex paint code to paint different style borders.

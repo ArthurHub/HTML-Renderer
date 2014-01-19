@@ -18,15 +18,15 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Utils;
+using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Handlers
+namespace HtmlRenderer.Core.Handlers
 {
     /// <summary>
     /// Handler for all loading image logic.<br/>
     /// <p>
-    /// Loading by <see cref="HtmlRenderer.Entities.HtmlImageLoadEventArgs"/>.<br/>
+    /// Loading by <see cref="HtmlRenderer.Core.Entities.HtmlImageLoadEventArgs"/>.<br/>
     /// Loading by file path.<br/>
     /// Loading by URI.<br/>
     /// </p>

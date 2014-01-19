@@ -12,7 +12,7 @@
 
 using System;
 
-namespace HtmlRenderer.Entities
+namespace HtmlRenderer.Core.Entities
 {
     /// <summary>
     /// Exception thrown when client code subscribed to LinkClicked event thrown exception.

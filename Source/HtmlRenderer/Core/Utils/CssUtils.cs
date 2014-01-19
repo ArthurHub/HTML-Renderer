@@ -12,11 +12,11 @@
 
 using System;
 using System.Drawing;
-using HtmlRenderer.Dom;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Parse;
+using HtmlRenderer.Core.Dom;
+using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Parse;
 
-namespace HtmlRenderer.Utils
+namespace HtmlRenderer.Core.Utils
 {
     /// <summary>
     /// Utility method for handling CSS stuff.

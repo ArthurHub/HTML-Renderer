@@ -14,13 +14,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using HtmlRenderer.Dom;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Handlers;
-using HtmlRenderer.Parse;
-using HtmlRenderer.Utils;
+using HtmlRenderer.Core.Dom;
+using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Handlers;
+using HtmlRenderer.Core.Parse;
+using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer
+namespace HtmlRenderer.Core
 {
     /// <summary>
     /// Low level handling of Html Renderer logic.<br/>

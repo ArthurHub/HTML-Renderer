@@ -12,7 +12,7 @@
 
 using System;
 
-namespace HtmlRenderer.Entities
+namespace HtmlRenderer.Core.Entities
 {
     /// <summary>
     /// Raised when an error occurred during html rendering.

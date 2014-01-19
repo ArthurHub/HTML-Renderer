@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using HtmlRenderer.Entities;
+using HtmlRenderer.Core.Entities;
 
-namespace HtmlRenderer.Dom
+namespace HtmlRenderer.Core.Dom
 {
     /// <summary>
     /// Used to make space on vertical cell combination

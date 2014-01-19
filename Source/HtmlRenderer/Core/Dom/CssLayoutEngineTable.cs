@@ -13,11 +13,11 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Parse;
-using HtmlRenderer.Utils;
+using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Parse;
+using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Dom
+namespace HtmlRenderer.Core.Dom
 {
     /// <summary>
     /// Layout engine for tables executing the complex layout of tables with rows/columns/headers/etc.

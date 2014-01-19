@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace HtmlRenderer.Dom
+namespace HtmlRenderer.Core.Dom
 {
     /// <summary>
     /// Represents a line of text.

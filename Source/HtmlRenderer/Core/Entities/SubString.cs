@@ -11,9 +11,9 @@
 // "The Art of War"
 
 using System;
-using HtmlRenderer.Utils;
+using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Entities
+namespace HtmlRenderer.Core.Entities
 {
     /// <summary>
     /// Represents sub-string of a full string starting at specific location with a specific length.
