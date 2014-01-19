@@ -87,6 +87,14 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HtmlRenderer.Core\HtmlRenderer.Core.csproj">
+      <Project>{fe611685-391f-4e3e-b27e-d3150e51e49b}</Project>
+      <Name>HtmlRenderer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HtmlRenderer.WPF\HtmlRenderer.WPF.csproj">
+      <Project>{7e4e8db5-85ad-4388-bdcb-38c6f423b8b0}</Project>
+      <Name>HtmlRenderer.WPF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\HtmlRenderer.Demo.Common.csproj">
       <Project>{2390B71F-9400-47F4-B23A-7F2649C87D35}</Project>
       <Name>HtmlRenderer.Demo.Common</Name>

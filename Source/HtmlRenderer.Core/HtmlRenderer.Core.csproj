@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FE611685-391F-4E3E-B27E-D3150E51E49B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HtmlRenderer.Core</RootNamespace>
+    <AssemblyName>HtmlRenderer.Core</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Utils\ImageError.png" />
+    <EmbeddedResource Include="Utils\ImageLoad.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Dom\CssBox.cs" />
+    <Compile Include="Dom\CssBoxFrame.cs" />
+    <Compile Include="Dom\CssBoxHr.cs" />
+    <Compile Include="Dom\CssBoxImage.cs" />
+    <Compile Include="Dom\CssBoxProperties.cs" />
+    <Compile Include="Dom\CssLayoutEngine.cs" />
+    <Compile Include="Dom\CssLayoutEngineTable.cs" />
+    <Compile Include="Dom\CssLength.cs" />
+    <Compile Include="Dom\CssLineBox.cs" />
+    <Compile Include="Dom\CssRect.cs" />
+    <Compile Include="Dom\CssRectImage.cs" />
+    <Compile Include="Dom\CssRectWord.cs" />
+    <Compile Include="Dom\CssSpacingBox.cs" />
+    <Compile Include="Dom\HtmlTag.cs" />
+    <Compile Include="Entities\Border.cs" />
+    <Compile Include="Entities\CssBlock.cs" />
+    <Compile Include="Entities\CssBlockSelectorItem.cs" />
+    <Compile Include="Entities\CssConstants.cs" />
+    <Compile Include="Entities\CssDefaults.cs" />
+    <Compile Include="Entities\CssUnit.cs" />
+    <Compile Include="Entities\HtmlConstants.cs" />
+    <Compile Include="Entities\HtmlGenerationStyle.cs" />
+    <Compile Include="Entities\HtmlImageLoadEventArgs.cs" />
+    <Compile Include="Entities\HtmlLinkClickedEventArgs.cs" />
+    <Compile Include="Entities\HtmlLinkClickedException.cs" />
+    <Compile Include="Entities\HtmlRefreshEventArgs.cs" />
+    <Compile Include="Entities\HtmlRenderErrorEventArgs.cs" />
+    <Compile Include="Entities\HtmlRenderErrorType.cs" />
+    <Compile Include="Entities\HtmlScrollEventArgs.cs" />
+    <Compile Include="Entities\HtmlStylesheetLoadEventArgs.cs" />
+    <Compile Include="Entities\KeyEvent.cs" />
+    <Compile Include="Entities\MouseEvent.cs" />
+    <Compile Include="Entities\SubString.cs" />
+    <Compile Include="Entities\Tupler.cs" />
+    <Compile Include="Handlers\BackgroundImageDrawHandler.cs" />
+    <Compile Include="Handlers\BordersDrawHandler.cs" />
+    <Compile Include="Handlers\ContextMenuHandler.cs" />
+    <Compile Include="Handlers\ImageLoadHandler.cs" />
+    <Compile Include="Handlers\SelectionHandler.cs" />
+    <Compile Include="Handlers\StylesheetLoadHandler.cs" />
+    <Compile Include="IContextMenu.cs" />
+    <Compile Include="IControl.cs" />
+    <Compile Include="Parse\CssParser.cs" />
+    <Compile Include="Parse\CssValueParser.cs" />
+    <Compile Include="Parse\DomParser.cs" />
+    <Compile Include="Parse\HtmlParser.cs" />
+    <Compile Include="Parse\RegexParserUtils.cs" />
+    <Compile Include="Utils\ArgChecker.cs" />
+    <Compile Include="Utils\CommonUtils.cs" />
+    <Compile Include="Utils\CssUtils.cs" />
+    <Compile Include="Utils\DomUtils.cs" />
+    <Compile Include="Utils\FontsUtils.cs" />
+    <Compile Include="Utils\HtmlUtils.cs" />
+    <Compile Include="Utils\RenderUtils.cs" />
+    <Compile Include="HtmlContainerBase.cs" />
+    <Compile Include="CssData.cs" />
+    <Compile Include="IGraphics.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

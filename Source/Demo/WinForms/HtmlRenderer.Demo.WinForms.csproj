@@ -119,13 +119,17 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HtmlRenderer.Core\HtmlRenderer.Core.csproj">
+      <Project>{fe611685-391f-4e3e-b27e-d3150e51e49b}</Project>
+      <Name>HtmlRenderer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HtmlRenderer.WinForms\HtmlRenderer.WinForms.csproj">
+      <Project>{1b058920-24b4-4140-8ae7-c8c6c38ca52d}</Project>
+      <Name>HtmlRenderer.WinForms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\HtmlRenderer.Demo.Common.csproj">
       <Project>{2390b71f-9400-47f4-b23a-7f2649c87d35}</Project>
       <Name>HtmlRenderer.Demo.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HtmlRenderer\HtmlRenderer.WinForms.csproj">
-      <Project>{1B058920-24B4-4140-8AE7-C8C6C38CA52D}</Project>
-      <Name>HtmlRenderer.WinForms</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
