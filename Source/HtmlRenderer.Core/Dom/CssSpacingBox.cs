@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using HtmlRenderer.Core.DomEntities;
 using HtmlRenderer.Core.Entities;
 
 namespace HtmlRenderer.Core.Dom

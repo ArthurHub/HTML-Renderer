@@ -1,4 +1,4 @@
-﻿// "Therefore those skilled at the unorthodox
+// "Therefore those skilled at the unorthodox
 // are infinite as heaven and earth,
 // inexhaustible as the great rivers.
 // When they come to an end,
@@ -11,9 +11,8 @@
 // "The Art of War"
 
 using System;
-using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Core.Entities
+namespace HtmlRenderer.Core.Utils
 {
     /// <summary>
     /// Represents sub-string of a full string starting at specific location with a specific length.

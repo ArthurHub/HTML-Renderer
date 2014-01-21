@@ -12,6 +12,7 @@
 
 using System;
 using System.Drawing;
+using HtmlRenderer.Core.DomEntities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
 using HtmlRenderer.Core.SysEntities;

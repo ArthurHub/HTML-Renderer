@@ -10,7 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-namespace HtmlRenderer.Core.Entities
+namespace HtmlRenderer.Core.DomEntities
 {
     /// <summary>
     /// Represents the possible units of the CSS lengths

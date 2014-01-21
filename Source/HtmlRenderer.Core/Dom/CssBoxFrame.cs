@@ -16,6 +16,7 @@ using System.Drawing.Drawing2D;
 using System.Net;
 using System.Text;
 using System.Threading;
+using HtmlRenderer.Core.DomEntities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
 using HtmlRenderer.Core.SysEntities;

@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Reflection;
 using HtmlRenderer.Core.Dom;
+using HtmlRenderer.Core.DomEntities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.SysEntities;
 

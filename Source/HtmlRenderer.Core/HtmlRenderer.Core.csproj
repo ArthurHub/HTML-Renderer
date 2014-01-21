@@ -44,6 +44,11 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="DomEntities\Border.cs" />
+    <Compile Include="DomEntities\CssConstants.cs" />
+    <Compile Include="DomEntities\CssDefaults.cs" />
+    <Compile Include="DomEntities\CssUnit.cs" />
+    <Compile Include="DomEntities\HtmlConstants.cs" />
     <Compile Include="Dom\CssBox.cs" />
     <Compile Include="Dom\CssBoxFrame.cs" />
     <Compile Include="Dom\CssBoxHr.cs" />
@@ -58,13 +63,8 @@
     <Compile Include="Dom\CssRectWord.cs" />
     <Compile Include="Dom\CssSpacingBox.cs" />
     <Compile Include="Dom\HtmlTag.cs" />
-    <Compile Include="Entities\Border.cs" />
     <Compile Include="Entities\CssBlock.cs" />
     <Compile Include="Entities\CssBlockSelectorItem.cs" />
-    <Compile Include="Entities\CssConstants.cs" />
-    <Compile Include="Entities\CssDefaults.cs" />
-    <Compile Include="Entities\CssUnit.cs" />
-    <Compile Include="Entities\HtmlConstants.cs" />
     <Compile Include="Entities\HtmlGenerationStyle.cs" />
     <Compile Include="Entities\HtmlImageLoadEventArgs.cs" />
     <Compile Include="Entities\HtmlLinkClickedEventArgs.cs" />
@@ -74,10 +74,6 @@
     <Compile Include="Entities\HtmlRenderErrorType.cs" />
     <Compile Include="Entities\HtmlScrollEventArgs.cs" />
     <Compile Include="Entities\HtmlStylesheetLoadEventArgs.cs" />
-    <Compile Include="Entities\KeyEvent.cs" />
-    <Compile Include="Entities\MouseEvent.cs" />
-    <Compile Include="Entities\SubString.cs" />
-    <Compile Include="Entities\Tupler.cs" />
     <Compile Include="Handlers\BackgroundImageDrawHandler.cs" />
     <Compile Include="Handlers\BordersDrawHandler.cs" />
     <Compile Include="Handlers\ContextMenuHandler.cs" />
@@ -92,9 +88,12 @@
     <Compile Include="Parse\HtmlParser.cs" />
     <Compile Include="Parse\RegexParserUtils.cs" />
     <Compile Include="SysEntities\ColorInt.cs" />
+    <Compile Include="SysEntities\KeyEvent.cs" />
+    <Compile Include="SysEntities\MouseEvent.cs" />
     <Compile Include="SysEntities\SizeInt.cs" />
     <Compile Include="SysEntities\PointInt.cs" />
     <Compile Include="SysEntities\RectangleInt.cs" />
+    <Compile Include="SysEntities\Tupler.cs" />
     <Compile Include="Utils\ArgChecker.cs" />
     <Compile Include="Utils\CommonUtils.cs" />
     <Compile Include="Utils\CssUtils.cs" />
@@ -106,6 +105,7 @@
     <Compile Include="CssData.cs" />
     <Compile Include="IGraphics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\SubString.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

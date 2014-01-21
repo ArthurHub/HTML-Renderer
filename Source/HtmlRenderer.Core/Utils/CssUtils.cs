@@ -13,6 +13,7 @@
 using System;
 using System.Drawing;
 using HtmlRenderer.Core.Dom;
+using HtmlRenderer.Core.DomEntities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.SysEntities;

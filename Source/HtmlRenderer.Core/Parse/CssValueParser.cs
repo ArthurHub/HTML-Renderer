@@ -14,6 +14,7 @@ using System;
 using System.Drawing;
 using System.Globalization;
 using HtmlRenderer.Core.Dom;
+using HtmlRenderer.Core.DomEntities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
