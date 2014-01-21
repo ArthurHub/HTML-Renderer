@@ -10,7 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Drawing;
 using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core
@@ -67,7 +66,7 @@ namespace HtmlRenderer.Core
         /// Set the given image to clipboard.
         /// </summary>
         /// <param name="image"></param>
-        void SetToClipboard(Image image);
+        void SetToClipboard(IImage image);
 
         /// <summary>
         /// Get data object for the given html and plain text data.<br/>
@@ -107,6 +106,6 @@ namespace HtmlRenderer.Core
         /// <param name="image">the image to save</param>
         /// <param name="name">the name of the image for save dialog</param>
         /// <param name="extension">the extension of the image for save dialog</param>
-        void SaveToFile(Image image, string name, string extension);
+        void SaveToFile(IImage image, string name, string extension);
     }
 }

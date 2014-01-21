@@ -16,7 +16,6 @@ using System.Drawing.Drawing2D;
 using System.Reflection;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.DomEntities;
-using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core.Utils
@@ -41,12 +40,12 @@ namespace HtmlRenderer.Core.Utils
         /// <summary>
         /// image used to draw loading image icon
         /// </summary>
-        private static Image _loadImage;
+        private static IImage _loadImage;
 
         /// <summary>
         /// image used to draw error image icon
         /// </summary>
-        private static Image _errorImage;
+        private static IImage _errorImage;
 
         #endregion
 
@@ -213,9 +212,7 @@ namespace HtmlRenderer.Core.Utils
             //NE Arc
             if( neRadius > 0f )
             {
-                path.AddArc(
-                    RectangleInt.FromLTRB(rect.Right - neRadius, rect.Top, rect.Right, rect.Top + neRadius),
-                    -90, 90);
+                path.AddArc(RectangleInt.FromLTRB(rect.Right - neRadius, rect.Top, rect.Right, rect.Top + neRadius),-90, 90);
             }
 
             // NE
@@ -226,9 +223,7 @@ namespace HtmlRenderer.Core.Utils
             //SE Arc
             if( seRadius > 0f )
             {
-                path.AddArc(
-                    RectangleInt.FromLTRB(rect.Right - seRadius, rect.Bottom - seRadius, rect.Right, rect.Bottom),
-                    0, 90);
+                path.AddArc(RectangleInt.FromLTRB(rect.Right - seRadius, rect.Bottom - seRadius, rect.Right, rect.Bottom),0, 90);
             }
 
             // SW --- SE
@@ -237,9 +232,7 @@ namespace HtmlRenderer.Core.Utils
             //SW Arc
             if( swRadius > 0f )
             {
-                path.AddArc(
-                    RectangleInt.FromLTRB(rect.Left, rect.Bottom - swRadius, rect.Left + swRadius, rect.Bottom),
-                    90, 90);
+                path.AddArc(RectangleInt.FromLTRB(rect.Left, rect.Bottom - swRadius, rect.Left + swRadius, rect.Bottom),90, 90);
             }
 
             // NW
@@ -250,9 +243,7 @@ namespace HtmlRenderer.Core.Utils
             //NW Arc
             if( nwRadius > 0f )
             {
-                path.AddArc(
-                    RectangleInt.FromLTRB(rect.Left, rect.Top, rect.Left + nwRadius, rect.Top + nwRadius),
-                    180, 90);
+                path.AddArc(RectangleInt.FromLTRB(rect.Left, rect.Top, rect.Left + nwRadius, rect.Top + nwRadius),180, 90);
             }
 
             path.CloseFigure();
@@ -267,13 +258,13 @@ namespace HtmlRenderer.Core.Utils
         /// Get singleton instance of load image.
         /// </summary>
         /// <returns>image instance</returns>
-        private static Image GetLoadImage()
+        private static IImage GetLoadImage()
         {
             if( _loadImage == null )
             {
                 var stream = Assembly.GetCallingAssembly().GetManifestResourceStream("HtmlRenderer.Core.Utils.ImageLoad.png");
                 if( stream != null )
-                    _loadImage = Image.FromStream(stream);
+                    _loadImage = HtmlContainerInt.Global.FromStream(stream);
             }
             return _loadImage;
         }
@@ -282,13 +273,13 @@ namespace HtmlRenderer.Core.Utils
         /// Get singleton instance of error image.
         /// </summary>
         /// <returns>image instance</returns>
-        private static Image GetErrorImage()
+        private static IImage GetErrorImage()
         {
             if( _errorImage == null )
             {
                 var stream = Assembly.GetCallingAssembly().GetManifestResourceStream("HtmlRenderer.Core.Utils.ImageError.png");
                 if (stream != null)
-                    _errorImage = Image.FromStream(stream);
+                    _errorImage = HtmlContainerInt.Global.FromStream(stream);
             }
             return _errorImage;
         }

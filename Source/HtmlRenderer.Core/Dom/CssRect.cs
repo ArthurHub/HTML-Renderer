@@ -10,7 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Drawing;
 using HtmlRenderer.Core.Handlers;
 using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
@@ -172,7 +171,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the image this words represents (if one exists)
         /// </summary>
-        public virtual Image Image
+        public virtual IImage Image
         {
             get { return null; }
 // ReSharper disable ValueParameterNotUsed

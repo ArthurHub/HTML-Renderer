@@ -10,7 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Drawing;
 using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core.Dom
@@ -25,10 +24,10 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// the image object if it is image word (can be null if not loaded)
         /// </summary>
-        private Image _image;
+        private IImage _image;
 
         /// <summary>
-        /// the image rectange restriction as returned from image load event
+        /// the image rectangle restriction as returned from image load event
         /// </summary>
         private RectangleInt _imageRectangle;
 
@@ -46,7 +45,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the image this words represents (if one exists)
         /// </summary>
-        public override Image Image
+        public override IImage Image
         {
             get { return _image; }
             set { _image = value; }

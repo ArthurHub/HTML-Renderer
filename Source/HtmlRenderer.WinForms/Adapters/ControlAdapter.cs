@@ -1,4 +1,4 @@
-﻿// "Therefore those skilled at the unorthodox
+// "Therefore those skilled at the unorthodox
 // are infinite as heaven and earth,
 // inexhaustible as the great rivers.
 // When they come to an end,
@@ -10,17 +10,18 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Drawing;
 using System.Windows.Forms;
 using HtmlRenderer.Core;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
+using HtmlRenderer.WinForms.Utilities;
 
-namespace HtmlRenderer.WinForms.Utils
+namespace HtmlRenderer.WinForms.Adapters
 {
     /// <summary>
-    /// atodo: add doc
+    /// Adapter for WinForms Control for core.
     /// </summary>
-    internal sealed class WinFormsControl : IControl
+    internal sealed class ControlAdapter : IControl
     {
         /// <summary>
         /// the underline win forms control.
@@ -30,7 +31,7 @@ namespace HtmlRenderer.WinForms.Utils
         /// <summary>
         /// Init.
         /// </summary>
-        public WinFormsControl(Control control)
+        public ControlAdapter(Control control)
         {
             ArgChecker.AssertArgNotNull(control, "control");
 
@@ -40,9 +41,9 @@ namespace HtmlRenderer.WinForms.Utils
         /// <summary>
         /// Get the current location of the mouse relative to the control
         /// </summary>
-        public Point MouseLocation
+        public PointInt MouseLocation
         {
-            get { return _control.PointToClient(Control.MousePosition); }
+            get { return Utils.Convert(_control.PointToClient(Control.MousePosition)); }
         }
 
         /// <summary>
@@ -128,9 +129,9 @@ namespace HtmlRenderer.WinForms.Utils
         /// Set the given image to clipboard.
         /// </summary>
         /// <param name="image"></param>
-        public void SetToClipboard(Image image)
+        public void SetToClipboard(IImage image)
         {
-            Clipboard.SetImage(image);
+            Clipboard.SetImage(( (ImageAdapter)image ).Image);
         }
 
         /// <summary>
@@ -149,7 +150,7 @@ namespace HtmlRenderer.WinForms.Utils
         public IGraphics CreateGraphics()
         {
             // the win forms graphics object will be disposed by WinGraphics
-            return new WinFormsGraphics(_control.CreateGraphics(), false, true);
+            return new GraphicsAdapter(_control.CreateGraphics(), false, true);
         }
 
         /// <summary>
@@ -166,7 +167,7 @@ namespace HtmlRenderer.WinForms.Utils
         /// <returns>new context menu</returns>
         public IContextMenu CreateContextMenu()
         {
-            return new WinFormsContextMenu();
+            return new ContextMenuAdapter();
         }
 
         /// <summary>
@@ -175,7 +176,7 @@ namespace HtmlRenderer.WinForms.Utils
         /// <param name="image">the image to save</param>
         /// <param name="name">the name of the image for save dialog</param>
         /// <param name="extension">the extension of the image for save dialog</param>
-        public void SaveToFile(Image image, string name, string extension)
+        public void SaveToFile(IImage image, string name, string extension)
         {
             using (var saveDialog = new SaveFileDialog())
             {
@@ -185,7 +186,7 @@ namespace HtmlRenderer.WinForms.Utils
 
                 if (saveDialog.ShowDialog(_control) == DialogResult.OK)
                 {
-                    image.Save(saveDialog.FileName);
+                    ((ImageAdapter)image).Image.Save(saveDialog.FileName);
                 }
             }
         }

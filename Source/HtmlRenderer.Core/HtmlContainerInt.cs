@@ -79,6 +79,11 @@ namespace HtmlRenderer.Core
     public sealed class HtmlContainerInt : IDisposable
     {
         #region Fields and Consts
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        private static IGlobal _global;
 
         /// <summary>
         /// the root css box of the parsed html
@@ -160,6 +165,15 @@ namespace HtmlRenderer.Core
 
         #endregion
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static IGlobal Global
+        {
+            internal get { return _global; }
+            set { _global = value; }
+        }
 
         /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>

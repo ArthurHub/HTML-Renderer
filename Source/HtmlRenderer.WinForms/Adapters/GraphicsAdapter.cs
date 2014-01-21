@@ -1,4 +1,4 @@
-﻿// "Therefore those skilled at the unorthodox
+// "Therefore those skilled at the unorthodox
 // are infinite as heaven and earth,
 // inexhaustible as the great rivers.
 // When they come to an end,
@@ -14,14 +14,16 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using HtmlRenderer.Core;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
+using HtmlRenderer.WinForms.Utilities;
 
-namespace HtmlRenderer.WinForms.Utils
+namespace HtmlRenderer.WinForms.Adapters
 {
     /// <summary>
-    /// atodo: add doc
+    /// Adapter for WinForms Graphics for core.
     /// </summary>
-    internal sealed class WinFormsGraphics : IGraphics
+    internal sealed class GraphicsAdapter : IGraphics
     {
         #region Fields and Consts
 
@@ -70,7 +72,7 @@ namespace HtmlRenderer.WinForms.Utils
         /// <summary>
         /// Init static resources.
         /// </summary>
-        static WinFormsGraphics()
+        static GraphicsAdapter()
         {
             _stringFormat = new StringFormat(StringFormat.GenericDefault);
             _stringFormat.FormatFlags = StringFormatFlags.NoClip | StringFormatFlags.MeasureTrailingSpaces;
@@ -82,7 +84,7 @@ namespace HtmlRenderer.WinForms.Utils
         /// <param name="g">the win forms graphics object to use</param>
         /// <param name="useGdiPlusTextRendering">Use GDI+ text rendering to measure/draw text</param>
         /// <param name="releaseGraphics">optional: if to release the graphics object on dispose (default - false)</param>
-        public WinFormsGraphics(Graphics g, bool useGdiPlusTextRendering, bool releaseGraphics = false)
+        public GraphicsAdapter(Graphics g, bool useGdiPlusTextRendering, bool releaseGraphics = false)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
@@ -95,18 +97,20 @@ namespace HtmlRenderer.WinForms.Utils
         /// Gets the bounding clipping region of this graphics.
         /// </summary>
         /// <returns>The bounding rectangle for the clipping region</returns>
-        public RectangleF GetClip()
+        public RectangleInt GetClip()
         {
+            RectangleF clip;
             if( _hdc == IntPtr.Zero )
             {
-                return _g.ClipBounds;
+                clip = _g.ClipBounds;
             }
             else
             {
                 Rectangle lprc;
                 Win32Utils.GetClipBox(_hdc, out lprc);
-                return lprc;
-            } 
+                clip = lprc;
+            }
+            return Utils.Convert(clip);
         }
 
         /// <summary>
@@ -114,10 +118,10 @@ namespace HtmlRenderer.WinForms.Utils
         /// </summary>
         /// <param name="rect"><see cref="T:System.Drawing.RectangleF"/> structure to combine. </param>
         /// <param name="combineMode">Member of the <see cref="T:System.Drawing.Drawing2D.CombineMode"/> enumeration that specifies the combining operation to use. </param>
-        public void SetClip(RectangleF rect, CombineMode combineMode = CombineMode.Replace)
+        public void SetClip(RectangleInt rect, CombineMode combineMode = CombineMode.Replace)
         {
             ReleaseHdc();
-            _g.SetClip(rect, combineMode);
+            _g.SetClip(Utils.Convert(rect), combineMode);
         }
 
         /// <summary>
@@ -127,7 +131,7 @@ namespace HtmlRenderer.WinForms.Utils
         /// <param name="str">the string to measure</param>
         /// <param name="font">the font to measure string with</param>
         /// <returns>the size of the string</returns>
-        public Size MeasureString(string str, Font font)
+        public SizeInt MeasureString(string str, Font font)
         {
             if( _useGdiPlusTextRendering )
             {
@@ -135,16 +139,16 @@ namespace HtmlRenderer.WinForms.Utils
                 _characterRanges[0] = new CharacterRange(0, str.Length);
                 _stringFormat.SetMeasurableCharacterRanges(_characterRanges);
                 var size = _g.MeasureCharacterRanges(str, font, RectangleF.Empty, _stringFormat)[0].GetBounds(_g).Size;
-                return new Size((int)Math.Round(size.Width), (int)Math.Round(size.Height));
+                return Utils.Convert(size);
             }
             else
             {
-            SetFont(font);
+                SetFont(font);
 
-            var size = new Size();
-            Win32Utils.GetTextExtentPoint32(_hdc, str, str.Length, ref size);
-            return size;
-        }
+                var size = new Size();
+                Win32Utils.GetTextExtentPoint32(_hdc, str, str.Length, ref size);
+                return Utils.Convert(size);
+            }
         }
 
         /// <summary>
@@ -159,7 +163,7 @@ namespace HtmlRenderer.WinForms.Utils
         /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
         /// <param name="charFitWidth"></param>
         /// <returns>the size of the string</returns>
-        public Size MeasureString(string str, Font font, float maxWidth, out int charFit, out int charFitWidth)
+        public SizeInt MeasureString(string str, Font font, float maxWidth, out int charFit, out int charFitWidth)
         {
             if( _useGdiPlusTextRendering )
             {
@@ -168,14 +172,14 @@ namespace HtmlRenderer.WinForms.Utils
             }
             else
             {
-            SetFont(font);
+                SetFont(font);
 
-            var size = new Size();
-            Win32Utils.GetTextExtentExPoint(_hdc, str, str.Length, (int)Math.Round(maxWidth), _charFit, _charFitWidth, ref size);
-            charFit = _charFit[0];
+                var size = new Size();
+                Win32Utils.GetTextExtentExPoint(_hdc, str, str.Length, (int)Math.Round(maxWidth), _charFit, _charFitWidth, ref size);
+                charFit = _charFit[0];
                 charFitWidth = charFit > 0 ? _charFitWidth[charFit - 1] : 0;
-            return size;
-        }
+                return Utils.Convert(size);
+            }
         }
 
         /// <summary>
@@ -186,8 +190,11 @@ namespace HtmlRenderer.WinForms.Utils
         /// <param name="color">the text color to set</param>
         /// <param name="point">the location to start string draw (top-left)</param>
         /// <param name="size">used to know the size of the rendered text for transparent text support</param>
-        public void DrawString(String str, Font font, Color color, PointF point, SizeF size)
+        public void DrawString(String str, Font font, ColorInt color, PointInt point, SizeInt size)
         {
+            var pointConv = Utils.ConvertRound(point);
+            var colorConv = Utils.Convert(color);
+
             if( _useGdiPlusTextRendering )
             {
                 ReleaseHdc();
@@ -195,19 +202,19 @@ namespace HtmlRenderer.WinForms.Utils
             }
             else
             {
-                if (color.A == 255)
-            {
-                SetFont(font);
-                SetTextColor(color);
+                if( color.A == 255 )
+                {
+                    SetFont(font);
+                    SetTextColor(colorConv);
 
-                Win32Utils.TextOut(_hdc, (int)Math.Round(point.X), (int)Math.Round(point.Y), str, str.Length);
+                    Win32Utils.TextOut(_hdc, pointConv.X, pointConv.Y, str, str.Length);
+                }
+                else
+                {
+                    InitHdc();
+                    DrawTransparentText(_hdc, str, font, pointConv, Utils.ConvertRound(size), colorConv);
+                }
             }
-            else
-            {
-                InitHdc();
-                DrawTransparentText(_hdc, str, font, new Point((int)Math.Round(point.X), (int)Math.Round(point.Y)), Size.Round(size), color);
-            }
-        }
         }
 
         /// <summary>
@@ -229,7 +236,6 @@ namespace HtmlRenderer.WinForms.Utils
         /// <returns>
         /// One of the <see cref="T:System.Drawing.Drawing2D.SmoothingMode"/> values.
         /// </returns>
-        /// <PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
         public SmoothingMode SmoothingMode
         {
             get
@@ -247,7 +253,10 @@ namespace HtmlRenderer.WinForms.Utils
         /// <summary>
         /// Draws a line connecting the two points specified by the coordinate pairs.
         /// </summary>
-        /// <param name="pen"><see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the line. </param><param name="x1">The x-coordinate of the first point. </param><param name="y1">The y-coordinate of the first point. </param><param name="x2">The x-coordinate of the second point. </param><param name="y2">The y-coordinate of the second point. </param><exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
+        /// <param name="pen"><see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the line. </param>
+        /// <param name="x1">The x-coordinate of the first point. </param><param name="y1">The y-coordinate of the first point. </param>
+        /// <param name="x2">The x-coordinate of the second point. </param><param name="y2">The y-coordinate of the second point. </param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
         public void DrawLine(Pen pen, float x1, float y1, float x2, float y2)
         {
             ReleaseHdc();
@@ -277,20 +286,20 @@ namespace HtmlRenderer.WinForms.Utils
         /// <param name="destRect"><see cref="T:System.Drawing.RectangleF"/> structure that specifies the location and size of the drawn image. The image is scaled to fit the rectangle. </param>
         /// <param name="srcRect"><see cref="T:System.Drawing.RectangleF"/> structure that specifies the portion of the <paramref name="image"/> object to draw. </param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="image"/> is null.</exception>
-        public void DrawImage(Image image, RectangleF destRect, RectangleF srcRect)
+        public void DrawImage(IImage image, RectangleInt destRect, RectangleInt srcRect)
         {
             ReleaseHdc();
-            _g.DrawImage(image, destRect, srcRect, GraphicsUnit.Pixel);
+            _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect), Utils.Convert(srcRect), GraphicsUnit.Pixel);
         }
 
         /// <summary>
         /// Draws the specified <see cref="T:System.Drawing.Image"/> at the specified location and with the specified size.
         /// </summary>
         /// <param name="image"><see cref="T:System.Drawing.Image"/> to draw. </param><param name="destRect"><see cref="T:System.Drawing.Rectangle"/> structure that specifies the location and size of the drawn image. </param><exception cref="T:System.ArgumentNullException"><paramref name="image"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        public void DrawImage(Image image, RectangleF destRect)
+        public void DrawImage(IImage image, RectangleInt destRect)
         {
             ReleaseHdc();
-            _g.DrawImage(image, destRect);
+            _g.DrawImage(( (ImageAdapter)image ).Image, Utils.Convert(destRect));
         }
 
         /// <summary>
@@ -316,10 +325,13 @@ namespace HtmlRenderer.WinForms.Utils
         /// Fills the interior of a polygon defined by an array of points specified by <see cref="T:System.Drawing.PointF"/> structures.
         /// </summary>
         /// <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the characteristics of the fill. </param><param name="points">Array of <see cref="T:System.Drawing.PointF"/> structures that represent the vertices of the polygon to fill. </param><exception cref="T:System.ArgumentNullException"><paramref name="brush"/> is null.-or-<paramref name="points"/> is null.</exception>
-        public void FillPolygon(Brush brush, PointF[] points)
+        public void FillPolygon(Brush brush, PointInt[] points)
         {
-            ReleaseHdc();
-            _g.FillPolygon(brush, points);
+            if( points != null && points.Length > 0 )
+            {
+                ReleaseHdc();
+                _g.FillPolygon(brush, Utils.Convert(points));
+            }
         }
 
         #endregion

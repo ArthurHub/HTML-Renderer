@@ -18,7 +18,7 @@ namespace HtmlRenderer.Core
     /// <summary>
     /// atodo: add doc
     /// </summary>
-    internal interface IContextMenu : IDisposable
+    public interface IContextMenu : IDisposable
     {
         /// <summary>
         /// The total number of items in the context menu

@@ -463,14 +463,14 @@ namespace HtmlRenderer.Core.Dom
             if (_videoTitle != null && _imageWord.Width > 40 && _imageWord.Height > 40)
             {
                 var font = FontsUtils.GetCachedFont("Arial", 9f, System.Drawing.FontStyle.Regular);
-                g.FillRectangle(RenderUtils.GetSolidBrush(SysEntities.ColorInt.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, FontsUtils.GetFontHeight(font) + 7);
+                g.FillRectangle(RenderUtils.GetSolidBrush(ColorInt.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, FontsUtils.GetFontHeight(font) + 7);
 
                 using (var sf = new StringFormat(StringFormat.GenericTypographic))
                 {
                     sf.FormatFlags = StringFormatFlags.NoWrap;
                     sf.Trimming = StringTrimming.EllipsisCharacter;
                     var titleRect = new RectangleInt(rect.Left + 3, rect.Top + 3, rect.Width - 6, rect.Height - 6);
-                    g.DrawString(_videoTitle, font, SysEntities.ColorInt.WhiteSmoke, titleRect.Location, SizeInt.Empty);
+                    g.DrawString(_videoTitle, font, ColorInt.WhiteSmoke, titleRect.Location, SizeInt.Empty);
                 }
             }
         }
@@ -488,7 +488,7 @@ namespace HtmlRenderer.Core.Dom
                 var size = new SizeInt(60, 40);
                 var left = rect.Left + (rect.Width - size.Width)/2;
                 var top = rect.Top + (rect.Height - size.Height)/2;
-                g.FillRectangle(RenderUtils.GetSolidBrush(SysEntities.ColorInt.FromArgb(160, 0, 0, 0)), left, top, size.Width, size.Height);
+                g.FillRectangle(RenderUtils.GetSolidBrush(ColorInt.FromArgb(160, 0, 0, 0)), left, top, size.Width, size.Height);
 
                 using (var path = new GraphicsPath())
                 {
@@ -531,7 +531,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="image">the image loaded or null if failed</param>
         /// <param name="rectangle">the source rectangle to draw in the image (empty - draw everything)</param>
         /// <param name="async">is the callback was called async to load image call</param>
-        private void OnLoadImageComplete(Image image, RectangleInt rectangle, bool async)
+        private void OnLoadImageComplete(IImage image, RectangleInt rectangle, bool async)
         {
             _imageWord.Image = image;
             _imageWord.ImageRectangle = rectangle;

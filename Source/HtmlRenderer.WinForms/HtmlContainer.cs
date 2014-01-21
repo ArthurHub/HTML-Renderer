@@ -19,7 +19,7 @@ using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.WinForms.Utils;
+using HtmlRenderer.WinForms.Adapters;
 
 namespace HtmlRenderer.WinForms
 {
@@ -44,6 +44,14 @@ namespace HtmlRenderer.WinForms
 
         #endregion
 
+
+        /// <summary>
+        /// Init global adapter.
+        /// </summary>
+        static HtmlContainer()
+        {
+            HtmlContainerInt.Global = new GlobalAdapter();
+        }
 
         /// <summary>
         /// Init.
@@ -340,7 +348,7 @@ namespace HtmlRenderer.WinForms
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
-            using(var ig = new WinFormsGraphics(g,_useGdiPlusTextRendering))
+            using(var ig = new GraphicsAdapter(g,_useGdiPlusTextRendering))
             {
                 _htmlContainerInt.PerformLayout(ig);
             }
@@ -354,7 +362,7 @@ namespace HtmlRenderer.WinForms
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
-            using (var ig = new WinFormsGraphics(g, _useGdiPlusTextRendering))
+            using (var ig = new GraphicsAdapter(g, _useGdiPlusTextRendering))
             {
                 _htmlContainerInt.PerformPaint(ig);
             }
@@ -370,7 +378,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleMouseDown(new WinFormsControl(parent), new PointInt(e.Location.X, e.Location.Y));
+            _htmlContainerInt.HandleMouseDown(new ControlAdapter(parent), new PointInt(e.Location.X, e.Location.Y));
         }
 
         /// <summary>
@@ -383,7 +391,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleMouseUp(new WinFormsControl(parent), new PointInt(e.Location.X, e.Location.Y), CreateMouseEvent(e));
+            _htmlContainerInt.HandleMouseUp(new ControlAdapter(parent), new PointInt(e.Location.X, e.Location.Y), CreateMouseEvent(e));
         }
 
         /// <summary>
@@ -396,7 +404,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleMouseDoubleClick(new WinFormsControl(parent), new PointInt(e.Location.X, e.Location.Y));
+            _htmlContainerInt.HandleMouseDoubleClick(new ControlAdapter(parent), new PointInt(e.Location.X, e.Location.Y));
         }
 
         /// <summary>
@@ -409,7 +417,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleMouseMove(new WinFormsControl(parent), new PointInt(e.Location.X, e.Location.Y));
+            _htmlContainerInt.HandleMouseMove(new ControlAdapter(parent), new PointInt(e.Location.X, e.Location.Y));
         }
 
         /// <summary>
@@ -420,7 +428,7 @@ namespace HtmlRenderer.WinForms
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
 
-            _htmlContainerInt.HandleMouseLeave(new WinFormsControl(parent));
+            _htmlContainerInt.HandleMouseLeave(new ControlAdapter(parent));
         }
 
         /// <summary>
@@ -433,7 +441,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleKeyDown(new WinFormsControl(parent), CreateKeyEevent(e));
+            _htmlContainerInt.HandleKeyDown(new ControlAdapter(parent), CreateKeyEevent(e));
         }
 
         /// <summary>

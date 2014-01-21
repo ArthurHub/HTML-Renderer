@@ -18,7 +18,8 @@ using System.Drawing.Text;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.WinForms.Utils;
+using HtmlRenderer.WinForms.Adapters;
+using HtmlRenderer.WinForms.Utilities;
 
 namespace HtmlRenderer.WinForms
 {

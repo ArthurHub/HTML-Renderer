@@ -13,7 +13,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -54,7 +53,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// callback raised when image load process is complete with image or without
         /// </summary>
-        private readonly ActionInt<Image, RectangleInt, bool> _loadCompleteCallback;
+        private readonly ActionInt<IImage, RectangleInt, bool> _loadCompleteCallback;
 
         /// <summary>
         /// the web client used to download image from URL (to cancel on dispose)
@@ -69,7 +68,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// the image instance of the loaded image
         /// </summary>
-        private Image _image;
+        private IImage _image;
 
         /// <summary>
         /// the image rectangle restriction as returned from image load event
@@ -99,7 +98,7 @@ namespace HtmlRenderer.Core.Handlers
         /// </summary>
         /// <param name="htmlContainer">the container of the html to handle load image for</param>
         /// <param name="loadCompleteCallback">callback raised when image load process is complete with image or without</param>
-        public ImageLoadHandler(HtmlContainerInt htmlContainer, ActionInt<Image, RectangleInt, bool> loadCompleteCallback)
+        public ImageLoadHandler(HtmlContainerInt htmlContainer, ActionInt<IImage, RectangleInt, bool> loadCompleteCallback)
         {
             ArgChecker.AssertArgNotNull(htmlContainer, "htmlContainer");
             ArgChecker.AssertArgNotNull(loadCompleteCallback, "loadCompleteCallback");
@@ -111,7 +110,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// the image instance of the loaded image
         /// </summary>
-        public Image Image
+        public IImage Image
         {
             get { return _image; }
         }
@@ -190,7 +189,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="path">the path to the image to load (file path or uri)</param>
         /// <param name="image">the image to load</param>
         /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
-        private void OnHtmlImageLoadEventCallback(string path, Image image, RectangleInt imageRectangle)
+        private void OnHtmlImageLoadEventCallback(string path, IImage image, RectangleInt imageRectangle)
         {
             if (!_disposed)
             {
@@ -230,7 +229,7 @@ namespace HtmlRenderer.Core.Handlers
         /// </summary>
         /// <param name="src">the source that has the base64 encoded image</param>
         /// <returns>image from base64 data string or null if failed</returns>
-        private static Image GetImageFromData(string src)
+        private static IImage GetImageFromData(string src)
         {
             var s = src.Substring(src.IndexOf(':') + 1).Split(new[] { ',' }, 2);
             if (s.Length == 2)
@@ -248,7 +247,7 @@ namespace HtmlRenderer.Core.Handlers
                 if (imagePartsCount > 0)
                 {
                     byte[] imageData = base64PartsCount > 0 ? Convert.FromBase64String(s[1].Trim()) : new UTF8Encoding().GetBytes(Uri.UnescapeDataString(s[1].Trim()));
-                    return Image.FromStream(new MemoryStream(imageData));
+                    return HtmlContainerInt.Global.FromStream(new MemoryStream(imageData));
                 }
             }
             return null;
@@ -311,7 +310,7 @@ namespace HtmlRenderer.Core.Handlers
                 if (source.Exists)
                 {
                     _imageFileStream = File.Open(source.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    _image = Image.FromStream(_imageFileStream);
+                    _image = HtmlContainerInt.Global.FromStream(_imageFileStream);
                     _releaseImageObject = true;
                 }
                 ImageLoadComplete();

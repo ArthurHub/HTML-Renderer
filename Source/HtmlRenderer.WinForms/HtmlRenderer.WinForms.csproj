@@ -66,9 +66,12 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Adapters\GlobalAdapter.cs" />
+    <Compile Include="Adapters\ImageAdapter.cs" />
+    <Compile Include="Adapters\ContextMenuAdapter.cs" />
+    <Compile Include="Adapters\ControlAdapter.cs" />
+    <Compile Include="Adapters\GraphicsAdapter.cs" />
     <Compile Include="HtmlContainer.cs" />
-    <Compile Include="Utils\WinFormsContextMenu.cs" />
-    <Compile Include="Utils\HtmlClipboardUtils.cs" />
     <Compile Include="HtmlLabel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -79,9 +82,9 @@
     <Compile Include="HtmlToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Utils\WinFormsControl.cs" />
-    <Compile Include="Utils\WinFormsGraphics.cs" />
-    <Compile Include="Utils\Win32Utils.cs" />
+    <Compile Include="Utilities\HtmlClipboardUtils.cs" />
+    <Compile Include="Utilities\Utils.cs" />
+    <Compile Include="Utilities\Win32Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

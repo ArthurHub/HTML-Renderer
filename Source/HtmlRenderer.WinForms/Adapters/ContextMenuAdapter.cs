@@ -1,4 +1,4 @@
-﻿// "Therefore those skilled at the unorthodox
+// "Therefore those skilled at the unorthodox
 // are infinite as heaven and earth,
 // inexhaustible as the great rivers.
 // When they come to an end,
@@ -11,17 +11,18 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using HtmlRenderer.Core;
+using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
+using HtmlRenderer.WinForms.Utilities;
 
-namespace HtmlRenderer.WinForms.Utils
+namespace HtmlRenderer.WinForms.Adapters
 {
     /// <summary>
-    /// atodo: add doc
+    /// Adapter for WinForms context menu for core.
     /// </summary>
-    internal sealed class WinFormsContextMenu : IContextMenu
+    internal sealed class ContextMenuAdapter : IContextMenu
     {
         #region Fields and Consts
 
@@ -36,7 +37,7 @@ namespace HtmlRenderer.WinForms.Utils
         /// <summary>
         /// Init.
         /// </summary>
-        public WinFormsContextMenu()
+        public ContextMenuAdapter()
         {
             _contextMenu = new ContextMenuStrip();
             _contextMenu.ShowImageMargin = false;
@@ -88,9 +89,9 @@ namespace HtmlRenderer.WinForms.Utils
         /// </summary>
         /// <param name="parent">the parent control to show in</param>
         /// <param name="location">the location to show at relative to the parent control</param>
-        public void Show(IControl parent, Point location)
+        public void Show(IControl parent, PointInt location)
         {
-            _contextMenu.Show(((WinFormsControl)parent).Control, location);
+            _contextMenu.Show(( (ControlAdapter)parent ).Control, Utils.ConvertRound(location));
         }
 
         /// <summary>

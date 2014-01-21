@@ -1266,7 +1266,7 @@ namespace HtmlRenderer.Core.Dom
 
                     g.FillRectangle(GetSelectionBackBrush(false), rect.X, rect.Y, rect.Width, rect.Height);
 
-                    if (HtmlContainer.SelectionForeColor != SysEntities.ColorInt.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
+                    if (HtmlContainer.SelectionForeColor != ColorInt.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
                     {
                         var orgClip = g.GetClip();
                         g.SetClip(rect, CombineMode.Exclude);
@@ -1358,7 +1358,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="image">the image loaded or null if failed</param>
         /// <param name="rectangle">the source rectangle to draw in the image (empty - draw everything)</param>
         /// <param name="async">is the callback was called async to load image call</param>
-        private void OnImageLoadComplete(Image image, RectangleInt rectangle, bool async)
+        private void OnImageLoadComplete(IImage image, RectangleInt rectangle, bool async)
         {
             if (image != null && async)
                 HtmlContainer.RequestRefresh(false);
@@ -1369,7 +1369,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         protected ColorInt GetSelectionForeBrush()
         {
-            return HtmlContainer.SelectionForeColor != SysEntities.ColorInt.Empty ? HtmlContainer.SelectionForeColor : ActualColor;
+            return HtmlContainer.SelectionForeColor != ColorInt.Empty ? HtmlContainer.SelectionForeColor : ActualColor;
         }
 
         /// <summary>
@@ -1379,10 +1379,10 @@ namespace HtmlRenderer.Core.Dom
         protected Brush GetSelectionBackBrush(bool forceAlpha)
         {
             var backColor = HtmlContainer.SelectionBackColor;
-            if (backColor != SysEntities.ColorInt.Empty)
+            if (backColor != ColorInt.Empty)
             {
                 if (forceAlpha && backColor.A > 180)
-                    return RenderUtils.GetSolidBrush(SysEntities.ColorInt.FromArgb(180, backColor.R, backColor.G, backColor.B));
+                    return RenderUtils.GetSolidBrush(ColorInt.FromArgb(180, backColor.R, backColor.G, backColor.B));
                 else
                     return RenderUtils.GetSolidBrush(backColor);
             }

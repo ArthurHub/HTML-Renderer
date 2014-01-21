@@ -1,4 +1,4 @@
-﻿// Sample class for Copying and Pasting HTML fragments to and from the clipboard.
+// Sample class for Copying and Pasting HTML fragments to and from the clipboard.
 //
 // Mike Stall. http://blogs.msdn.com/jmstall
 // 
@@ -7,7 +7,7 @@ using System;
 using System.Text;
 using System.Windows.Forms;
 
-namespace HtmlRenderer.WinForms.Utils
+namespace HtmlRenderer.WinForms.Utilities
 {
     /// <summary>
     /// Helper class to decode HTML from the clipboard.

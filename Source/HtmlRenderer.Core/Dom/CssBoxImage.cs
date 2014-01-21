@@ -13,7 +13,6 @@
 using System;
 using System.Drawing;
 using HtmlRenderer.Core.DomEntities;
-using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
 using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
@@ -60,7 +59,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Get the image of this image box.
         /// </summary>
-        public Image Image
+        public IImage Image
         {
             get { return _imageWord.Image; }
         }
@@ -174,7 +173,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="image">the image loaded or null if failed</param>
         /// <param name="rectangle">the source rectangle to draw in the image (empty - draw everything)</param>
         /// <param name="async">is the callback was called async to load image call</param>
-        private void OnLoadImageComplete(Image image, RectangleInt rectangle, bool async)
+        private void OnLoadImageComplete(IImage image, RectangleInt rectangle, bool async)
         {
             _imageWord.Image = image;
             _imageWord.ImageRectangle = rectangle;
