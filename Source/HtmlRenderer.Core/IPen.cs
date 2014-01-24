@@ -10,30 +10,28 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System;
-using System.IO;
+using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core
 {
     /// <summary>
-    /// aTODO: add doc
+    /// atodo: add doc
     /// </summary>
-    public interface IImage : IDisposable
+    public interface IPen
     {
         /// <summary>
-        /// Get the width, in pixels, of the image.
+        /// Gets or sets the width of this Pen, in units of the Graphics object used for drawing.
         /// </summary>
-        float Width { get; }
+        float Width { get; set; }
 
         /// <summary>
-        /// Get the height, in pixels, of the image.
+        /// Gets or sets the style used for dashed lines drawn with this Pen.
         /// </summary>
-        float Height { get; }
+        DashStyleInt DashStyle { set; }
 
         /// <summary>
-        /// Saves this image to the specified stream in PNG format.
+        /// Gets or sets an array of custom dashes and spaces.
         /// </summary>
-        /// <param name="stream">The Stream where the image will be saved. </param>
-        void Save(MemoryStream stream);
+        float[] DashPattern { set; }
     }
 }

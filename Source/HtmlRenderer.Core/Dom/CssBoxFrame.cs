@@ -170,7 +170,7 @@ namespace HtmlRenderer.Core.Dom
         {
             try
             {
-                var idx = e.Result.IndexOf("\"media$title\"");
+                var idx = e.Result.IndexOf("\"media$title\"", StringComparison.Ordinal);
                 if (idx > -1)
                 {
                     idx = e.Result.IndexOf("\"$t\"", idx);
@@ -190,7 +190,7 @@ namespace HtmlRenderer.Core.Dom
                     }
                 }
 
-                idx = e.Result.IndexOf("\"media$thumbnail\"");
+                idx = e.Result.IndexOf("\"media$thumbnail\"", StringComparison.Ordinal);
                 if(idx > -1)
                 {
                     var iidx = e.Result.IndexOf("sddefault", idx);
@@ -224,7 +224,7 @@ namespace HtmlRenderer.Core.Dom
                         }
                     }
 
-                    iidx = e.Result.LastIndexOf("http:", iidx);
+                    iidx = e.Result.LastIndexOf("http:", iidx, StringComparison.Ordinal);
                     if(iidx > -1)
                     {
                         var endIdx = e.Result.IndexOf('"', iidx);
@@ -235,7 +235,7 @@ namespace HtmlRenderer.Core.Dom
                     }
                 }
 
-                idx = e.Result.IndexOf("\"link\"");
+                idx = e.Result.IndexOf("\"link\"", StringComparison.Ordinal);
                 if (idx > -1)
                 {
                     idx = e.Result.IndexOf("http:", idx);
@@ -292,7 +292,7 @@ namespace HtmlRenderer.Core.Dom
         {
             try
             {
-                var idx = e.Result.IndexOf("\"title\"");
+                var idx = e.Result.IndexOf("\"title\"", StringComparison.Ordinal);
                 if (idx > -1)
                 {
                     idx = e.Result.IndexOf('"', idx + 7);
@@ -308,7 +308,7 @@ namespace HtmlRenderer.Core.Dom
                     }
                 }
 
-                idx = e.Result.IndexOf("\"thumbnail_large\"");
+                idx = e.Result.IndexOf("\"thumbnail_large\"", StringComparison.Ordinal);
                 if (idx > -1)
                 {
                     if (string.IsNullOrEmpty(Width)) Width = "640";
@@ -342,7 +342,7 @@ namespace HtmlRenderer.Core.Dom
                     }
                 }
 
-                idx = e.Result.IndexOf("\"url\"");
+                idx = e.Result.IndexOf("\"url\"", StringComparison.Ordinal);
                 if (idx > -1)
                 {
                     idx = e.Result.IndexOf("http:", idx);
@@ -442,7 +442,7 @@ namespace HtmlRenderer.Core.Dom
 
                 if (_imageWord.Selected)
                 {
-                    g.FillRectangle(GetSelectionBackBrush(true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width + 2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
+                    g.FillRectangle(GetSelectionBackBrush(g,true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width + 2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
                 }
             }
             else if (_isVideo && !_imageLoadingComplete)
@@ -450,7 +450,7 @@ namespace HtmlRenderer.Core.Dom
                 RenderUtils.DrawImageLoadingIcon(g, rect);
                 if (rect.Width > 19 && rect.Height > 19)
                 {
-                    g.DrawRectangle(Pens.LightGray, rect.X, rect.Y, rect.Width, rect.Height);
+                    g.DrawRectangle(g.GetPen(ColorInt.LightGray), rect.X, rect.Y, rect.Width, rect.Height);
                 }
             }
         }
@@ -463,7 +463,7 @@ namespace HtmlRenderer.Core.Dom
             if (_videoTitle != null && _imageWord.Width > 40 && _imageWord.Height > 40)
             {
                 var font = FontsUtils.GetCachedFont("Arial", 9f, System.Drawing.FontStyle.Regular);
-                g.FillRectangle(RenderUtils.GetSolidBrush(ColorInt.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, FontsUtils.GetFontHeight(font) + 7);
+                g.FillRectangle(g.GetSolidBrush(ColorInt.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, FontsUtils.GetFontHeight(font) + 7);
 
                 using (var sf = new StringFormat(StringFormat.GenericTypographic))
                 {
@@ -488,14 +488,14 @@ namespace HtmlRenderer.Core.Dom
                 var size = new SizeInt(60, 40);
                 var left = rect.Left + (rect.Width - size.Width)/2;
                 var top = rect.Top + (rect.Height - size.Height)/2;
-                g.FillRectangle(RenderUtils.GetSolidBrush(ColorInt.FromArgb(160, 0, 0, 0)), left, top, size.Width, size.Height);
+                g.FillRectangle(g.GetSolidBrush(ColorInt.FromArgb(160, 0, 0, 0)), left, top, size.Width, size.Height);
 
                 using (var path = new GraphicsPath())
                 {
                     path.AddLine(left + size.Width/3f + 1, top + 3*size.Height/4f, left + size.Width/3f + 1, top + size.Height/4f);
                     path.AddLine(left + size.Width/3f + 1, top + size.Height/4f, left + 2*size.Width/3f + 1, top + size.Height/2f);
                     path.CloseFigure();
-                    g.FillPath(Brushes.White, path);
+                    g.FillPath(g.GetSolidBrush(ColorInt.White), path);
                 }
 
                 g.SmoothingMode = smooth;

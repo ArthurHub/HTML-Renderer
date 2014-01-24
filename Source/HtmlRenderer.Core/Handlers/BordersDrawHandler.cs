@@ -11,13 +11,10 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
 using System.Drawing.Drawing2D;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.DomEntities;
-using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.SysEntities;
-using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Handlers
 {
@@ -76,7 +73,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="brush">the brush to use</param>
         /// <param name="rectangle">the bounding rectangle to draw in</param>
         /// <returns>Beveled border path, null if there is no rounded corners</returns>
-        public static void DrawBorder(Border border, IGraphics g, CssBox box, Brush brush, RectangleInt rectangle)
+        public static void DrawBorder(Border border, IGraphics g, CssBox box, IBrush brush, RectangleInt rectangle)
         {
             SetInOutsetRectanglePoints(border, box, rectangle, true, true);
             g.FillPolygon(brush, _borderPts);
@@ -107,7 +104,7 @@ namespace HtmlRenderer.Core.Handlers
                 if (box.HtmlContainer != null && !box.HtmlContainer.AvoidGeometryAntialias && box.IsRounded)
                     g.SmoothingMode = SmoothingMode.AntiAlias;
 
-                var pen = GetPen(style, color, GetWidth(border, box));
+                var pen = GetPen(g, style, color, GetWidth(border, box));
                 using (borderPath)
                     g.DrawPath(pen, borderPath);
 
@@ -120,12 +117,12 @@ namespace HtmlRenderer.Core.Handlers
                 {
                     // inset/outset border needs special rectangle
                     SetInOutsetRectanglePoints(border, box, rect, isLineStart, isLineEnd);
-                    g.FillPolygon(RenderUtils.GetSolidBrush(color), _borderPts);
+                    g.FillPolygon(g.GetSolidBrush(color), _borderPts);
                 }
                 else
                 {
                     // solid/dotted/dashed border draw as simple line
-                    var pen = GetPen(style, color, GetWidth(border, box));
+                    var pen = GetPen(g, style, color, GetWidth(border, box));
                     switch (border)
                     {
                         case Border.Top:
@@ -280,21 +277,21 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// Get pen to be used for border draw respecting its style.
         /// </summary>
-        private static Pen GetPen(string style, ColorInt color, float width)
+        private static IPen GetPen(IGraphics g, string style, ColorInt color, float width)
         {
-            var p = RenderUtils.GetPen(color);
+            var p = g.GetPen(color);
             p.Width = width;
             switch (style)
             {
                 case "solid":
-                    p.DashStyle = DashStyle.Solid;
+                    p.DashStyle = DashStyleInt.Solid;
                     break;
                 case "dotted":
-                    p.DashStyle = DashStyle.Dot;
+                    p.DashStyle = DashStyleInt.Dot;
 
                     break;
                 case "dashed":
-                    p.DashStyle = DashStyle.Dash;
+                    p.DashStyle = DashStyleInt.Dash;
                     if (p.Width < 2)
                         p.DashPattern = new[] { 4, 4f }; // better looking
                     break;

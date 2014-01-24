@@ -12,7 +12,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using HtmlRenderer.Core.Dom;
@@ -671,7 +670,7 @@ namespace HtmlRenderer.Core.Utils
                         {
                             using (var buffer = new MemoryStream())
                             {
-                                img.Save(buffer, ImageFormat.Png);
+                                img.Save(buffer);
                                 var base64 = Convert.ToBase64String(buffer.ToArray());
                                 sb.AppendFormat("{0}=\"data:image/png;base64, {1}\" ", att.Key, base64);
                             }

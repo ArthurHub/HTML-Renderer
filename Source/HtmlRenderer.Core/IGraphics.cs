@@ -79,15 +79,15 @@ namespace HtmlRenderer.Core
         /// Draws a line connecting the two points specified by the coordinate pairs.
         /// </summary>
         /// <param name="pen"><see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the line. </param><param name="x1">The x-coordinate of the first point. </param><param name="y1">The y-coordinate of the first point. </param><param name="x2">The x-coordinate of the second point. </param><param name="y2">The y-coordinate of the second point. </param><exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
-        void DrawLine(Pen pen, float x1, float y1, float x2, float y2);
+        void DrawLine(IPen pen, float x1, float y1, float x2, float y2);
 
         /// <summary>
         /// Draws a rectangle specified by a coordinate pair, a width, and a height.
         /// </summary>
         /// <param name="pen">A <see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the rectangle. </param><param name="x">The x-coordinate of the upper-left corner of the rectangle to draw. </param><param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param><param name="width">The width of the rectangle to draw. </param><param name="height">The height of the rectangle to draw. </param><exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
-        void DrawRectangle(Pen pen, float x, float y, float width, float height);
+        void DrawRectangle(IPen pen, float x, float y, float width, float height);
 
-        void FillRectangle(Brush getSolidBrush, float left, float top, float width, float height);
+        void FillRectangle(IBrush getSolidBrush, float left, float top, float width, float height);
 
         /// <summary>
         /// Draws the specified portion of the specified <see cref="T:System.Drawing.Image"/> at the specified location and with the specified size.
@@ -108,13 +108,13 @@ namespace HtmlRenderer.Core
         /// Fills the interior of a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.
         /// </summary>
         /// <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the characteristics of the fill. </param><param name="path"><see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> that represents the path to fill. </param><exception cref="T:System.ArgumentNullException"><paramref name="brush"/> is null.-or-<paramref name="path"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        void FillPath(Brush brush, GraphicsPath path);
+        void FillPath(IBrush brush, GraphicsPath path);
 
         /// <summary>
         /// Fills the interior of a polygon defined by an array of points specified by <see cref="T:System.Drawing.PointF"/> structures.
         /// </summary>
         /// <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the characteristics of the fill. </param><param name="points">Array of <see cref="T:System.Drawing.PointF"/> structures that represent the vertices of the polygon to fill. </param><exception cref="T:System.ArgumentNullException"><paramref name="brush"/> is null.-or-<paramref name="points"/> is null.</exception>
-        void FillPolygon(Brush brush, PointInt[] points);
+        void FillPolygon(IBrush brush, PointInt[] points);
 
         /// <summary>
         /// Sets the clipping region of this <see cref="T:System.Drawing.Graphics"/> to the result of the specified operation combining the current clip region and the rectangle specified by a <see cref="T:System.Drawing.RectangleF"/> structure.
@@ -126,6 +126,30 @@ namespace HtmlRenderer.Core
         /// Draws a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.
         /// </summary>
         /// <param name="pen"><see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the path. </param><param name="path"><see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> to draw. </param><exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.-or-<paramref name="path"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        void DrawPath(Pen pen, GraphicsPath path);
+        void DrawPath(IPen pen, GraphicsPath path);
+
+        /// <summary>
+        /// Get color pen.
+        /// </summary>
+        /// <param name="color">the color to get the pen for</param>
+        /// <returns>pen instance</returns>
+        IPen GetPen(ColorInt color);
+
+        /// <summary>
+        /// Get solid color brush.
+        /// </summary>
+        /// <param name="color">the color to get the brush for</param>
+        /// <returns>solid color brush instance</returns>
+        IBrush GetSolidBrush(ColorInt color);
+
+        /// <summary>
+        /// Get linear gradient color brush from <paramref name="color1"/> to <paramref name="color2"/>.
+        /// </summary>
+        /// <param name="rect">the rectangle to get the brush for</param>
+        /// <param name="color1">the start color of the gradient</param>
+        /// <param name="color2">the end color of the gradient</param>
+        /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
+        /// <returns>linear gradient color brush instance</returns>
+        IBrush GetLinearGradientBrush(RectangleInt rect, ColorInt color1, ColorInt color2, float angle);
     }
 }

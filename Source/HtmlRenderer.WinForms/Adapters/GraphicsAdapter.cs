@@ -198,7 +198,8 @@ namespace HtmlRenderer.WinForms.Adapters
             if( _useGdiPlusTextRendering )
             {
                 ReleaseHdc();
-                _g.DrawString(str, font, RenderUtils.GetSolidBrush(color), point.X - FontsUtils.GetFontLeftPadding(font)*.8f, point.Y);
+                var brush = ((BrushAdapter)CacheUtils.GetSolidBrush(color)).Brush;
+                _g.DrawString(str, font, brush, point.X - FontsUtils.GetFontLeftPadding(font)*.8f, point.Y);
             }
             else
             {
@@ -215,6 +216,39 @@ namespace HtmlRenderer.WinForms.Adapters
                     DrawTransparentText(_hdc, str, font, pointConv, Utils.ConvertRound(size), colorConv);
                 }
             }
+        }
+
+        /// <summary>
+        /// Get color pen.
+        /// </summary>
+        /// <param name="color">the color to get the pen for</param>
+        /// <returns>pen instance</returns>
+        public IPen GetPen(ColorInt color)
+        {
+            return CacheUtils.GetPen(color);
+        }
+
+        /// <summary>
+        /// Get solid color brush.
+        /// </summary>
+        /// <param name="color">the color to get the brush for</param>
+        /// <returns>solid color brush instance</returns>
+        public IBrush GetSolidBrush(ColorInt color)
+        {
+            return CacheUtils.GetSolidBrush(color);
+        }
+
+        /// <summary>
+        /// Get linear gradient color brush from <paramref name="color1"/> to <paramref name="color2"/>.
+        /// </summary>
+        /// <param name="rect">the rectangle to get the brush for</param>
+        /// <param name="color1">the start color of the gradient</param>
+        /// <param name="color2">the end color of the gradient</param>
+        /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
+        /// <returns>linear gradient color brush instance</returns>
+        public IBrush GetLinearGradientBrush(RectangleInt rect, ColorInt color1, ColorInt color2, float angle)
+        {
+            return new BrushAdapter(new LinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), angle), true);
         }
 
         /// <summary>
@@ -257,26 +291,26 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="x1">The x-coordinate of the first point. </param><param name="y1">The y-coordinate of the first point. </param>
         /// <param name="x2">The x-coordinate of the second point. </param><param name="y2">The y-coordinate of the second point. </param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
-        public void DrawLine(Pen pen, float x1, float y1, float x2, float y2)
+        public void DrawLine(IPen pen, float x1, float y1, float x2, float y2)
         {
             ReleaseHdc();
-            _g.DrawLine(pen, x1, y1, x2, y2);
+            _g.DrawLine(((PenAdapter)pen).Pen, x1, y1, x2, y2);
         }
 
         /// <summary>
         /// Draws a rectangle specified by a coordinate pair, a width, and a height.
         /// </summary>
         /// <param name="pen">A <see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the rectangle. </param><param name="x">The x-coordinate of the upper-left corner of the rectangle to draw. </param><param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param><param name="width">The width of the rectangle to draw. </param><param name="height">The height of the rectangle to draw. </param><exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
-        public void DrawRectangle(Pen pen, float x, float y, float width, float height)
+        public void DrawRectangle(IPen pen, float x, float y, float width, float height)
         {
             ReleaseHdc();
-            _g.DrawRectangle(pen, x, y, width, height);
+            _g.DrawRectangle(((PenAdapter)pen).Pen, x, y, width, height);
         }
 
-        public void FillRectangle(Brush getSolidBrush, float left, float top, float width, float height)
+        public void FillRectangle(IBrush brush, float left, float top, float width, float height)
         {
             ReleaseHdc();
-            _g.FillRectangle(getSolidBrush, left, top, width, height);
+            _g.FillRectangle(((BrushAdapter)brush).Brush, left, top, width, height);
         }
 
         /// <summary>
@@ -306,31 +340,31 @@ namespace HtmlRenderer.WinForms.Adapters
         /// Draws a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.
         /// </summary>
         /// <param name="pen"><see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the path. </param><param name="path"><see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> to draw. </param><exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.-or-<paramref name="path"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        public void DrawPath(Pen pen, GraphicsPath path)
+        public void DrawPath(IPen pen, GraphicsPath path)
         {
-            _g.DrawPath(pen, path);
+            _g.DrawPath(((PenAdapter)pen).Pen, path);
         }
 
         /// <summary>
         /// Fills the interior of a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.
         /// </summary>
         /// <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the characteristics of the fill. </param><param name="path"><see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> that represents the path to fill. </param><exception cref="T:System.ArgumentNullException"><paramref name="brush"/> is null.-or-<paramref name="path"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        public void FillPath(Brush brush, GraphicsPath path)
+        public void FillPath(IBrush brush, GraphicsPath path)
         {
             ReleaseHdc();
-            _g.FillPath(brush, path);
+            _g.FillPath(((BrushAdapter)brush).Brush, path);
         }
 
         /// <summary>
         /// Fills the interior of a polygon defined by an array of points specified by <see cref="T:System.Drawing.PointF"/> structures.
         /// </summary>
         /// <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the characteristics of the fill. </param><param name="points">Array of <see cref="T:System.Drawing.PointF"/> structures that represent the vertices of the polygon to fill. </param><exception cref="T:System.ArgumentNullException"><paramref name="brush"/> is null.-or-<paramref name="points"/> is null.</exception>
-        public void FillPolygon(Brush brush, PointInt[] points)
+        public void FillPolygon(IBrush brush, PointInt[] points)
         {
             if( points != null && points.Length > 0 )
             {
                 ReleaseHdc();
-                _g.FillPolygon(brush, Utils.Convert(points));
+                _g.FillPolygon(((BrushAdapter)brush).Brush, Utils.Convert(points));
             }
         }
 

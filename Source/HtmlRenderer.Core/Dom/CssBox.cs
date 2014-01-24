@@ -12,7 +12,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
 using HtmlRenderer.Core.DomEntities;
@@ -1192,18 +1191,16 @@ namespace HtmlRenderer.Core.Dom
         {
             if (rect.Width > 0 && rect.Height > 0)
             {
-                Brush brush = null;
-                bool dispose = false;
+                IBrush brush = null;
                 SmoothingMode smooth = g.SmoothingMode;
 
                 if (BackgroundGradient != CssConstants.None)
                 {
-                    brush = new LinearGradientBrush(rect, ActualBackgroundColor, ActualBackgroundGradient, ActualBackgroundGradientAngle);
-                    dispose = true;
+                    brush = g.GetLinearGradientBrush(rect, ActualBackgroundColor, ActualBackgroundGradient, ActualBackgroundGradientAngle);
                 }
                 else if (RenderUtils.IsColorVisible(ActualBackgroundColor))
                 {
-                    brush = RenderUtils.GetSolidBrush(ActualBackgroundColor);
+                    brush = g.GetSolidBrush(ActualBackgroundColor);
                 }
 
                 if (brush != null)
@@ -1235,7 +1232,7 @@ namespace HtmlRenderer.Core.Dom
                     g.SmoothingMode = smooth;
 
                     if (roundrect != null) roundrect.Dispose();
-                    if (dispose) brush.Dispose();
+                    brush.Dispose();
                 }
 
                 if (_imageLoadHandler != null && _imageLoadHandler.Image != null && isFirst)
@@ -1264,7 +1261,7 @@ namespace HtmlRenderer.Core.Dom
                     var width = word.SelectedEndOffset > -1 ? word.SelectedEndOffset : word.Width + (padWordRight ? ActualWordSpacing : 0);
                     var rect = new RectangleInt(word.Left + offset.X + left, word.Top + offset.Y, width - left, wordLine.LineHeight);
 
-                    g.FillRectangle(GetSelectionBackBrush(false), rect.X, rect.Y, rect.Width, rect.Height);
+                    g.FillRectangle(GetSelectionBackBrush(g, false), rect.X, rect.Y, rect.Width, rect.Height);
 
                     if (HtmlContainer.SelectionForeColor != ColorInt.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
                     {
@@ -1376,19 +1373,19 @@ namespace HtmlRenderer.Core.Dom
         /// Get brush for selection background depending if it has external and if alpha is required for images.
         /// </summary>
         /// <param name="forceAlpha">used for images so they will have alpha effect</param>
-        protected Brush GetSelectionBackBrush(bool forceAlpha)
+        protected IBrush GetSelectionBackBrush(IGraphics g, bool forceAlpha)
         {
             var backColor = HtmlContainer.SelectionBackColor;
             if (backColor != ColorInt.Empty)
             {
                 if (forceAlpha && backColor.A > 180)
-                    return RenderUtils.GetSolidBrush(ColorInt.FromArgb(180, backColor.R, backColor.G, backColor.B));
+                    return g.GetSolidBrush(ColorInt.FromArgb(180, backColor.R, backColor.G, backColor.B));
                 else
-                    return RenderUtils.GetSolidBrush(backColor);
+                    return g.GetSolidBrush(backColor);
             }
             else
             {
-                return CssUtils.DefaultSelectionBackcolor;
+                return g.GetSolidBrush(CssUtils.DefaultSelectionBackcolor);
             }
         }
 

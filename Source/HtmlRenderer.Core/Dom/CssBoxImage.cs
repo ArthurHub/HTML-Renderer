@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
 using HtmlRenderer.Core.DomEntities;
 using HtmlRenderer.Core.Handlers;
 using HtmlRenderer.Core.SysEntities;
@@ -102,7 +101,7 @@ namespace HtmlRenderer.Core.Dom
 
                 if (_imageWord.Selected)
                 {
-                    g.FillRectangle(GetSelectionBackBrush(true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width+2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
+                    g.FillRectangle(GetSelectionBackBrush(g,true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width+2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
                 }
             }
             else if (_imageLoadingComplete)
@@ -117,7 +116,7 @@ namespace HtmlRenderer.Core.Dom
                 RenderUtils.DrawImageLoadingIcon(g, r);
                 if (r.Width > 19 && r.Height > 19)
                 {
-                    g.DrawRectangle(Pens.LightGray, r.X, r.Y, r.Width, r.Height);
+                    g.DrawRectangle(g.GetPen(ColorInt.LightGray), r.X, r.Y, r.Width, r.Height);
                 }
             }
 

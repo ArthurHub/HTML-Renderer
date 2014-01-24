@@ -11,6 +11,8 @@
 // "The Art of War"
 
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using HtmlRenderer.Core;
 
 namespace HtmlRenderer.WinForms.Adapters
@@ -55,6 +57,15 @@ namespace HtmlRenderer.WinForms.Adapters
         public float Height
         {
             get { return _image.Height; }
+        }
+
+        /// <summary>
+        /// Saves this image to the specified stream in PNG format.
+        /// </summary>
+        /// <param name="stream">The Stream where the image will be saved. </param>
+        public void Save(MemoryStream stream)
+        {
+            _image.Save(stream, ImageFormat.Png);
         }
 
         /// <summary>

@@ -10,8 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Collections.Generic;
-using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Reflection;
 using HtmlRenderer.Core.Dom;
@@ -26,16 +24,6 @@ namespace HtmlRenderer.Core.Utils
     internal static class RenderUtils
     {
         #region Fields and Consts
-
-        /// <summary>
-        /// cache of brush color to brush instance
-        /// </summary>
-        private static readonly Dictionary<ColorInt, Brush> _brushesCache = new Dictionary<ColorInt, Brush>();
-
-        /// <summary>
-        /// cache of pen color to pen instance
-        /// </summary>
-        private static readonly Dictionary<ColorInt, Pen> _penCache = new Dictionary<ColorInt, Pen>();
 
         /// <summary>
         /// image used to draw loading image icon
@@ -58,57 +46,6 @@ namespace HtmlRenderer.Core.Utils
         public static bool IsColorVisible(ColorInt color)
         {
             return color.A > 0;
-        }
-
-        /// <summary>
-        /// Get cached solid brush instance for the given color.
-        /// </summary>
-        /// <param name="color">the color to get brush for</param>
-        /// <returns>brush instance</returns>
-        public static Brush GetSolidBrush(ColorInt color)
-        {
-            if (color == ColorInt.White)
-            {
-                return Brushes.White;
-            }
-            else if (color == ColorInt.Black)
-            {
-                return Brushes.Black;
-            }
-            else if (!IsColorVisible(color))
-            {
-                return Brushes.Transparent;
-            }
-            else
-            {
-                Brush brush;
-                if (!_brushesCache.TryGetValue(color, out brush))
-                {
-                    brush = new SolidBrush(color);
-                    _brushesCache[color] = brush;
-                }
-                return brush;
-            }
-        }
-
-        /// <summary>
-        /// Get cached pen instance for the given color.
-        /// </summary>
-        /// <param name="color">the color to get pen for</param>
-        /// <returns>pen instance</returns>
-        public static Pen GetPen(ColorInt color)
-        {
-            Pen pen;
-            if (!_penCache.TryGetValue(color, out pen))
-            {
-                pen = new Pen(GetSolidBrush(color));
-                _penCache[color] = pen;
-            }
-            else
-            {
-                pen.Width = 1;                
-            }
-            return pen;
         }
 
         /// <summary>
@@ -166,7 +103,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="r">the rectangle to draw icon in</param>
         public static void DrawImageLoadingIcon(IGraphics g, RectangleInt r)
         {
-            g.DrawRectangle(Pens.LightGray, r.Left + 3, r.Top + 3, 13, 14);
+            g.DrawRectangle(g.GetPen(ColorInt.LightGray), r.Left + 3, r.Top + 3, 13, 14);
             var image = GetLoadImage();
             g.DrawImage(image, new RectangleInt(r.Left + 4, r.Top + 4, image.Width, image.Height));
         }
@@ -178,7 +115,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="r">the rectangle to draw icon in</param>
         public static void DrawImageErrorIcon(IGraphics g, RectangleInt r)
         {
-            g.DrawRectangle(Pens.LightGray, r.Left + 2, r.Top + 2, 15, 15);
+            g.DrawRectangle(g.GetPen(ColorInt.LightGray), r.Left + 2, r.Top + 2, 15, 15);
             var image = GetErrorImage();
             g.DrawImage(image, new RectangleInt(r.Left + 3, r.Top + 3, image.Width, image.Height));
         }
