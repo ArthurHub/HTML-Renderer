@@ -18,6 +18,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Interfaces;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Handlers

@@ -13,6 +13,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using HtmlRenderer.Core.Interfaces;
 
 namespace HtmlRenderer.Core.Utils
 {

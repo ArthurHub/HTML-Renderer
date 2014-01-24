@@ -14,7 +14,7 @@ using System;
 using System.Drawing;
 using HtmlRenderer.Core.Entities;
 
-namespace HtmlRenderer.Core
+namespace HtmlRenderer.Core.Interfaces
 {
     /// <summary>
     /// Interface for the graphics methods required for HTML rendering.<br/>

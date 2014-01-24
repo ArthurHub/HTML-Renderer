@@ -14,6 +14,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using HtmlRenderer.Core;
+using HtmlRenderer.Core.Interfaces;
 using HtmlRenderer.WinForms.Utilities;
 
 namespace HtmlRenderer.WinForms.Adapters

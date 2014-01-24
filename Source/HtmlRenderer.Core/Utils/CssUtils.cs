@@ -14,6 +14,7 @@ using System;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Dom.Entities;
 using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Interfaces;
 using HtmlRenderer.Core.Parse;
 
 namespace HtmlRenderer.Core.Utils

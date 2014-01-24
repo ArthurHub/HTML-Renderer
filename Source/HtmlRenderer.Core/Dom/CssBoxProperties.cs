@@ -16,6 +16,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using HtmlRenderer.Core.Dom.Entities;
 using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Interfaces;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
 

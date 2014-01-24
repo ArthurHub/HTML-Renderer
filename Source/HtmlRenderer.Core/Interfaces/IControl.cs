@@ -12,7 +12,7 @@
 
 using HtmlRenderer.Core.Entities;
 
-namespace HtmlRenderer.Core
+namespace HtmlRenderer.Core.Interfaces
 {
     /// <summary>
     /// aTODO: add doc

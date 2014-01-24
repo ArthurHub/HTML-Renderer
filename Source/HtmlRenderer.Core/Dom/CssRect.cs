@@ -12,6 +12,7 @@
 
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
+using HtmlRenderer.Core.Interfaces;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Dom

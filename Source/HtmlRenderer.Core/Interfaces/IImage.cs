@@ -1,4 +1,4 @@
-﻿// "Therefore those skilled at the unorthodox
+// "Therefore those skilled at the unorthodox
 // are infinite as heaven and earth,
 // inexhaustible as the great rivers.
 // When they come to an end,
@@ -13,7 +13,7 @@
 using System;
 using System.IO;
 
-namespace HtmlRenderer.Core
+namespace HtmlRenderer.Core.Interfaces
 {
     /// <summary>
     /// aTODO: add doc

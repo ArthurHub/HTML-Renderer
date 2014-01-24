@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using HtmlRenderer.Core.Interfaces;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Entities
