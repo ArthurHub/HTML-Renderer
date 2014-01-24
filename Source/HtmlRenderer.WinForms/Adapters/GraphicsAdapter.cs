@@ -252,6 +252,19 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
+        /// Get TextureBrush object that uses the specified image and bounding rectangle.
+        /// </summary>
+        /// <param name="image">The Image object with which this TextureBrush object fills interiors.</param>
+        /// <param name="dstRect">A Rectangle structure that represents the bounding rectangle for this TextureBrush object.</param>
+        /// <param name="translateTransformLocation">The dimension by which to translate the transformation</param>
+        public IBrush GetTextureBrush(IImage image, RectangleInt dstRect, PointInt translateTransformLocation)
+        {
+            var brush = new TextureBrush(((ImageAdapter)image).Image, Utils.Convert(dstRect));
+            brush.TranslateTransform(translateTransformLocation.X, translateTransformLocation.Y);
+            return new BrushAdapter(brush, true);
+        }
+
+        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()

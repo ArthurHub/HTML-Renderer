@@ -151,5 +151,13 @@ namespace HtmlRenderer.Core
         /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
         /// <returns>linear gradient color brush instance</returns>
         IBrush GetLinearGradientBrush(RectangleInt rect, ColorInt color1, ColorInt color2, float angle);
+
+        /// <summary>
+        /// Get TextureBrush object that uses the specified image and bounding rectangle.
+        /// </summary>
+        /// <param name="image">The Image object with which this TextureBrush object fills interiors.</param>
+        /// <param name="dstRect">A Rectangle structure that represents the bounding rectangle for this TextureBrush object.</param>
+        /// <param name="translateTransformLocation">The dimension by which to translate the transformation</param>
+        IBrush GetTextureBrush(IImage image, RectangleInt dstRect, PointInt translateTransformLocation);
     }
 }

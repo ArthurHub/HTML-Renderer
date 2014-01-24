@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.SysEntities;
 
@@ -83,32 +82,32 @@ namespace HtmlRenderer.Core.Handlers
         /// <returns>the top-left location</returns>
         private static PointInt GetLocation(string backgroundPosition, RectangleInt rectangle, SizeInt imgSize)
         {
-            int left = (int)rectangle.Left;
+            float left = rectangle.Left;
             if( backgroundPosition.IndexOf("left", StringComparison.OrdinalIgnoreCase) > -1 )
             {
-                left = (int)(rectangle.Left + .5f);
+                left = (rectangle.Left + .5f);
             }
             else if (backgroundPosition.IndexOf("right", StringComparison.OrdinalIgnoreCase) > -1)
             {
-                left = (int)rectangle.Right - imgSize.Width;                
+                left = rectangle.Right - imgSize.Width;                
             }
             else if (backgroundPosition.IndexOf("0", StringComparison.OrdinalIgnoreCase) < 0)
             {
-                left = (int)(rectangle.Left + (rectangle.Width - imgSize.Width) / 2 +.5f);
+                left = (rectangle.Left + (rectangle.Width - imgSize.Width) / 2 +.5f);
             }
 
-            int top = (int)rectangle.Top;
+            float top = rectangle.Top;
             if (backgroundPosition.IndexOf("top", StringComparison.OrdinalIgnoreCase) > -1)
             {
-                top = (int)rectangle.Top;
+                top = rectangle.Top;
             }
             else if (backgroundPosition.IndexOf("bottom", StringComparison.OrdinalIgnoreCase) > -1)
             {
-                top = (int)rectangle.Bottom - imgSize.Height;
+                top = rectangle.Bottom - imgSize.Height;
             }
             else if (backgroundPosition.IndexOf("0", StringComparison.OrdinalIgnoreCase) < 0)
             {
-                top = (int)(rectangle.Top + (rectangle.Height - imgSize.Height) / 2 + .5f);
+                top = (rectangle.Top + (rectangle.Height - imgSize.Height) / 2 + .5f);
             }
 
             return new PointInt(left, top);
@@ -123,9 +122,8 @@ namespace HtmlRenderer.Core.Handlers
             while (destRect.X > rectangle.X)
                 destRect.X -= imgSize.Width;
 
-            using (var brush = new TextureBrush(imageLoadHandler.Image, srcRect))
+            using (var brush = g.GetTextureBrush(imageLoadHandler.Image, srcRect, destRect.Location))
             {
-                brush.TranslateTransform(destRect.X, destRect.Y);
                 g.FillRectangle(brush, rectangle.X, destRect.Y, rectangle.Width, srcRect.Height);
             }
         }
@@ -139,9 +137,8 @@ namespace HtmlRenderer.Core.Handlers
             while (destRect.Y > rectangle.Y)
                 destRect.Y -= imgSize.Height;
 
-            using (var brush = new TextureBrush(imageLoadHandler.Image, srcRect))
+            using (var brush = g.GetTextureBrush(imageLoadHandler.Image, srcRect, destRect.Location))
             {
-                brush.TranslateTransform(destRect.X, destRect.Y);
                 g.FillRectangle(brush, destRect.X, rectangle.Y, srcRect.Width, rectangle.Height);
             }
         }
@@ -157,9 +154,8 @@ namespace HtmlRenderer.Core.Handlers
             while (destRect.Y > rectangle.Y)
                 destRect.Y -= imgSize.Height;
 
-            using (var brush = new TextureBrush(imageLoadHandler.Image, srcRect))
+            using (var brush = g.GetTextureBrush(imageLoadHandler.Image, srcRect, destRect.Location))
             {
-                brush.TranslateTransform(destRect.X, destRect.Y);
                 g.FillRectangle(brush, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
             }
         }
