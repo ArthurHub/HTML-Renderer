@@ -618,7 +618,7 @@ namespace HtmlRenderer.WinForms
         }
 
         /// <summary>
-        /// 
+        /// Measure the size of the html by performing layout under the given restrictions.
         /// </summary>
         /// <param name="htmlContainer">the html to calculate the layout for</param>
         /// <param name="minSize">the minimal size of the rendered html (zero - not limit the width/height)</param>
@@ -627,32 +627,12 @@ namespace HtmlRenderer.WinForms
         private static Size MeasureHtmlByRestrictions(HtmlContainer htmlContainer, Size minSize, Size maxSize)
         {
             // use desktop created graphics to measure the HTML
-            using(var measureGraphics = Graphics.FromHwnd(IntPtr.Zero))
+            using(var g = Graphics.FromHwnd(IntPtr.Zero))
+            using(var mg = new GraphicsAdapter(g, htmlContainer.UseGdiPlusTextRendering))
             {
-                // first layout without size restriction to know html actual size
-                htmlContainer.PerformLayout(measureGraphics);
-
-                if( maxSize.Width > 0 && maxSize.Width < htmlContainer.ActualSize.Width )
-                {
-                    // to allow the actual size be smaller than max we need to set max size only if it is really larger
-                    htmlContainer.MaxSize = new SizeF(maxSize.Width, 0);
-                    htmlContainer.PerformLayout(measureGraphics);
-                }
-
-            // restrict the final size by min/max
-            var finalWidth = Math.Max(maxSize.Width > 0 ? Math.Min(maxSize.Width, (int)htmlContainer.ActualSize.Width) : (int)htmlContainer.ActualSize.Width, minSize.Width);
-
-                // if the final width is larger than the actual we need to re-layout so the html can take the full given width.
-                if (finalWidth > htmlContainer.ActualSize.Width)
-                {
-                    htmlContainer.MaxSize = new SizeF(finalWidth, 0);
-                    htmlContainer.PerformLayout(measureGraphics);
-                }
-
-            var finalHeight = Math.Max(maxSize.Height > 0 ? Math.Min(maxSize.Height, (int)htmlContainer.ActualSize.Height) : (int)htmlContainer.ActualSize.Height, minSize.Height);
-
-            return new Size(finalWidth, finalHeight);
-        }
+                var sizeInt = HtmlRendererUtils.MeasureHtmlByRestrictions(mg, htmlContainer.HtmlContainerInt, Utils.Convert(minSize), Utils.Convert(maxSize));
+                return Utils.ConvertRound(sizeInt);
+            }
         }
 
         /// <summary>

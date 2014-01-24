@@ -24,13 +24,22 @@ namespace HtmlRenderer.Core
     public interface IGraphics : IDisposable
     {
         /// <summary>
-        /// Gets a <see cref="T:System.Drawing.RectangleF"/> structure that bounds the clipping region of this <see cref="T:System.Drawing.Graphics"/>.
+        /// Gets a Rectangle structure that bounds the clipping region of this Graphics.
         /// </summary>
-        /// <returns>
-        /// A <see cref="T:System.Drawing.RectangleF"/> structure that represents a bounding rectangle for the clipping region of this <see cref="T:System.Drawing.Graphics"/>.
-        /// </returns>
-        /// <PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
+        /// <returns>A rectangle structure that represents a bounding rectangle for the clipping region of this Graphics.</returns>
         RectangleInt GetClip();
+
+        /// <summary>
+        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
+        /// </summary>
+        /// <param name="rect">Rectangle structure to combine.</param>
+        void SetClipReplace(RectangleInt rect);
+
+        /// <summary>
+        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
+        /// </summary>
+        /// <param name="rect">Rectangle structure to combine.</param>
+        void SetClipExclude(RectangleInt rect);
 
         /// <summary>
         /// Set the graphics smooth mode to use anti-alias.<br/>
@@ -81,60 +90,67 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// Draws a line connecting the two points specified by the coordinate pairs.
         /// </summary>
-        /// <param name="pen"><see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the line. </param><param name="x1">The x-coordinate of the first point. </param><param name="y1">The y-coordinate of the first point. </param><param name="x2">The x-coordinate of the second point. </param><param name="y2">The y-coordinate of the second point. </param><exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
+        /// <param name="pen">Pen that determines the color, width, and style of the line. </param>
+        /// <param name="x1">The x-coordinate of the first point. </param>
+        /// <param name="y1">The y-coordinate of the first point. </param>
+        /// <param name="x2">The x-coordinate of the second point. </param>
+        /// <param name="y2">The y-coordinate of the second point. </param>
         void DrawLine(IPen pen, float x1, float y1, float x2, float y2);
 
         /// <summary>
         /// Draws a rectangle specified by a coordinate pair, a width, and a height.
         /// </summary>
-        /// <param name="pen">A <see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the rectangle. </param><param name="x">The x-coordinate of the upper-left corner of the rectangle to draw. </param><param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param><param name="width">The width of the rectangle to draw. </param><param name="height">The height of the rectangle to draw. </param><exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
+        /// <param name="pen">A Pen that determines the color, width, and style of the rectangle. </param>
+        /// <param name="x">The x-coordinate of the upper-left corner of the rectangle to draw. </param>
+        /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param>
+        /// <param name="width">The width of the rectangle to draw. </param>
+        /// <param name="height">The height of the rectangle to draw. </param>
         void DrawRectangle(IPen pen, float x, float y, float width, float height);
 
-        void FillRectangle(IBrush getSolidBrush, float left, float top, float width, float height);
+        /// <summary>
+        /// Fills the interior of a rectangle specified by a pair of coordinates, a width, and a height.
+        /// </summary>
+        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
+        /// <param name="x">The x-coordinate of the upper-left corner of the rectangle to fill. </param>
+        /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to fill. </param>
+        /// <param name="width">Width of the rectangle to fill. </param>
+        /// <param name="height">Height of the rectangle to fill. </param>
+        void FillRectangle(IBrush brush, float x, float y, float width, float height);
 
         /// <summary>
         /// Draws the specified portion of the specified <see cref="T:System.Drawing.Image"/> at the specified location and with the specified size.
         /// </summary>
-        /// <param name="image"><see cref="T:System.Drawing.Image"/> to draw. </param>
-        /// <param name="destRect"><see cref="T:System.Drawing.RectangleF"/> structure that specifies the location and size of the drawn image. The image is scaled to fit the rectangle. </param>
-        /// <param name="srcRect"><see cref="T:System.Drawing.RectangleF"/> structure that specifies the portion of the <paramref name="image"/> object to draw. </param>
-        /// <exception cref="T:System.ArgumentNullException"><paramref name="image"/> is null.</exception>
+        /// <param name="image">Image to draw. </param>
+        /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. The image is scaled to fit the rectangle. </param>
+        /// <param name="srcRect">Rectangle structure that specifies the portion of the <paramref name="image"/> object to draw. </param>
         void DrawImage(IImage image, RectangleInt destRect, RectangleInt srcRect);
 
         /// <summary>
-        /// Draws the specified <see cref="T:System.Drawing.Image"/> at the specified location and with the specified size.
+        /// Draws the specified Image at the specified location and with the specified size.
         /// </summary>
-        /// <param name="image"><see cref="T:System.Drawing.Image"/> to draw. </param><param name="destRect"><see cref="T:System.Drawing.Rectangle"/> structure that specifies the location and size of the drawn image. </param><exception cref="T:System.ArgumentNullException"><paramref name="image"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
+        /// <param name="image">Image to draw. </param>
+        /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. </param>
         void DrawImage(IImage image, RectangleInt destRect);
 
         /// <summary>
-        /// Fills the interior of a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.
+        /// Fills the interior of a GraphicsPath.
         /// </summary>
-        /// <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the characteristics of the fill. </param><param name="path"><see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> that represents the path to fill. </param><exception cref="T:System.ArgumentNullException"><paramref name="brush"/> is null.-or-<paramref name="path"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
+        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
+        /// <param name="path">GraphicsPath that represents the path to fill. </param>
         void FillPath(IBrush brush, IGraphicsPath path);
 
         /// <summary>
-        /// Fills the interior of a polygon defined by an array of points specified by <see cref="T:System.Drawing.PointF"/> structures.
+        /// Fills the interior of a polygon defined by an array of points specified by Point structures.
         /// </summary>
-        /// <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the characteristics of the fill. </param><param name="points">Array of <see cref="T:System.Drawing.PointF"/> structures that represent the vertices of the polygon to fill. </param><exception cref="T:System.ArgumentNullException"><paramref name="brush"/> is null.-or-<paramref name="points"/> is null.</exception>
+        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
+        /// <param name="points">Array of Point structures that represent the vertices of the polygon to fill. </param>
         void FillPolygon(IBrush brush, PointInt[] points);
 
         /// <summary>
-        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
+        /// Draws a GraphicsPath.
         /// </summary>
-        /// <param name="rect">Rectangle structure to combine.</param>
-        void SetClipReplace(RectangleInt rect);
-
-        /// <summary>
-        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
-        /// </summary>
-        /// <param name="rect">Rectangle structure to combine.</param>
-        void SetClipExclude(RectangleInt rect);
-
-        /// <summary>
-        /// Draws a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.
-        /// </summary>
-        /// <param name="pen"><see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the path. </param><param name="path"><see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> to draw. </param><exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.-or-<paramref name="path"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
+        /// <param name="pen">Pen that determines the color, width, and style of the path. </param>
+        /// <param name="path">GraphicsPath to draw. </param>
         void DrawPath(IPen pen, IGraphicsPath path);
 
         /// <summary>

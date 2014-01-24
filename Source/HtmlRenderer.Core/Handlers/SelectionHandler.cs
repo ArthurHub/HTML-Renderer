@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
@@ -297,15 +296,14 @@ namespace HtmlRenderer.Core.Handlers
         /// Copy the currently selected html segment to clipboard.<br/>
         /// Copy rich html text and plain text.
         /// </summary>
-        /// <param name="parent">the control hosting the html to use for clipboard access</param>
-        public void CopySelectedHtml(IControl parent)
+        public void CopySelectedHtml()
         {
             if (_root.HtmlContainer.IsSelectionEnabled)
             {
                 var html = DomUtils.GenerateHtml(_root, HtmlGenerationStyle.Inline, true);
                 var plainText = DomUtils.GetSelectedPlainText(_root);
                 if (!string.IsNullOrEmpty(plainText))
-                    parent.SetToClipboard(html, plainText);
+                    _root.HtmlContainer.Global2.SetToClipboard(html, plainText);
             }
         }
 

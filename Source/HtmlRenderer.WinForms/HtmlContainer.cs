@@ -126,6 +126,14 @@ namespace HtmlRenderer.WinForms
         }
 
         /// <summary>
+        /// The internal core html container
+        /// </summary>
+        internal HtmlContainerInt HtmlContainerInt
+        {
+            get { return _htmlContainerInt; }
+        }
+
+        /// <summary>
         /// Use GDI+ text rendering to measure/draw text.<br/>
         /// </summary>
         /// <remarks>

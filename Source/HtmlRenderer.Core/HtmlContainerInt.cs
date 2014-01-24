@@ -174,6 +174,14 @@ namespace HtmlRenderer.Core
             internal get { return _global; }
             set { _global = value; }
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        internal IGlobal Global2
+        {
+            get { return _global; }
+        }
 
         /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
@@ -465,22 +473,22 @@ namespace HtmlRenderer.Core
 
             if( _root != null )
             {
-                    _actualSize = SizeInt.Empty;
+                _actualSize = SizeInt.Empty;
 
-                    // if width is not restricted we set it to large value to get the actual later
-                    _root.Size = new SizeInt(_maxSize.Width > 0 ? _maxSize.Width : 99999, 0);
-                    _root.Location = _location;
+                // if width is not restricted we set it to large value to get the actual later
+                _root.Size = new SizeInt(_maxSize.Width > 0 ? _maxSize.Width : 99999, 0);
+                _root.Location = _location;
                 _root.PerformLayout(g);
 
-                    if( _maxSize.Width <= 0.1 )
-                    {
-                        // in case the width is not restricted we need to double layout, first will find the width so second can layout by it (center alignment)
-                        _root.Size = new SizeInt((int)Math.Ceiling(_actualSize.Width), 0);
-                        _actualSize = SizeInt.Empty;
+                if( _maxSize.Width <= 0.1 )
+                {
+                    // in case the width is not restricted we need to double layout, first will find the width so second can layout by it (center alignment)
+                    _root.Size = new SizeInt((int)Math.Ceiling(_actualSize.Width), 0);
+                    _actualSize = SizeInt.Empty;
                     _root.PerformLayout(g);
-                    }
                 }
             }
+        }
 
         /// <summary>
         /// Render the html using the given device.
@@ -668,7 +676,7 @@ namespace HtmlRenderer.Core
                     // copy currently selected text
                     if (e.CKeyCode)
                     {
-                        _selectionHandler.CopySelectedHtml(parent);
+                        _selectionHandler.CopySelectedHtml();
                     }
                 }
             }

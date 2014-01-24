@@ -12,6 +12,7 @@
 
 using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.WinForms.Utilities;
@@ -24,6 +25,17 @@ namespace HtmlRenderer.WinForms.Adapters
     internal sealed class GlobalAdapter : IGlobal
     {
         /// <summary>
+        /// Get color instance from given color name.
+        /// </summary>
+        /// <param name="colorName">the color name</param>
+        /// <returns>color instance</returns>
+        public ColorInt ColorFromName(string colorName)
+        {
+            var color = Color.FromName(colorName);
+            return Utils.Convert(color);
+        }
+        
+        /// <summary>
         /// Create an <see cref="IImage"/> object from the given stream.
         /// </summary>
         /// <param name="memoryStream">the stream to create image from</param>
@@ -34,14 +46,63 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
-        /// Get color instance from given color name.
+        /// Set the given text to the clipboard
         /// </summary>
-        /// <param name="colorName">the color name</param>
-        /// <returns>color instance</returns>
-        public ColorInt ColorFromName(string colorName)
+        /// <param name="text">the text to set</param>
+        public void SetToClipboard(string text)
         {
-            var color = Color.FromName(colorName);
-            return Utils.Convert(color);
+            Clipboard.SetText(text);
+        }
+
+        /// <summary>
+        /// Copy the given html and plain text data to clipboard.
+        /// </summary>
+        /// <param name="html">the html data</param>
+        /// <param name="plainText">the plain text data</param>
+        public void SetToClipboard(string html, string plainText)
+        {
+            HtmlClipboardUtils.CopyToClipboard(html, plainText);
+        }
+
+        /// <summary>
+        /// Set the given image to clipboard.
+        /// </summary>
+        /// <param name="image"></param>
+        public void SetToClipboard(IImage image)
+        {
+            Clipboard.SetImage(((ImageAdapter)image).Image);
+        }
+
+        /// <summary>
+        /// Create a context menu that can be used on the control
+        /// </summary>
+        /// <returns>new context menu</returns>
+        public IContextMenu CreateContextMenu()
+        {
+            return new ContextMenuAdapter();
+        }
+
+        /// <summary>
+        /// Save the given image to file by showing save dialog to the client.
+        /// </summary>
+        /// <param name="image">the image to save</param>
+        /// <param name="name">the name of the image for save dialog</param>
+        /// <param name="extension">the extension of the image for save dialog</param>
+        /// <param name="control">optional: the control to show the dialog on</param>
+        public void SaveToFile(IImage image, string name, string extension, IControl control = null)
+        {
+            using (var saveDialog = new SaveFileDialog())
+            {
+                saveDialog.Filter = "Images|*.png;*.bmp;*.jpg";
+                saveDialog.FileName = name;
+                saveDialog.DefaultExt = extension;
+
+                var dialogResult = control == null ? saveDialog.ShowDialog() : saveDialog.ShowDialog(( (ControlAdapter)control ).Control);
+                if (dialogResult == DialogResult.OK)
+                {
+                    ((ImageAdapter)image).Image.Save(saveDialog.FileName);
+                }
+            }
         }
     }
 }

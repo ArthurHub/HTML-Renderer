@@ -95,39 +95,13 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
-        /// Set the graphics smooth mode to use anti-alias.<br/>
-        /// Use <see cref="ReturnPreviousSmoothingMode"/> to return back the mode used.
-        /// </summary>
-        /// <returns>the previous smooth mode before the change</returns>
-        public Object SetAntiAliasSmoothingMode()
-        {
-            ReleaseHdc();
-            var prevMode = _g.SmoothingMode;
-            _g.SmoothingMode = SmoothingMode.AntiAlias;
-            return prevMode;
-        }
-
-        /// <summary>
-        /// Return to previous smooth mode before anti-alias was set as returned from <see cref="SetAntiAliasSmoothingMode"/>.
-        /// </summary>
-        /// <param name="prevMode">the previous mode to set</param>
-        public void ReturnPreviousSmoothingMode(Object prevMode)
-        {
-            if (prevMode != null)
-            {
-                ReleaseHdc();
-                _g.SmoothingMode = (SmoothingMode)prevMode;
-            }
-        }
-
-        /// <summary>
         /// Gets the bounding clipping region of this graphics.
         /// </summary>
         /// <returns>The bounding rectangle for the clipping region</returns>
         public RectangleInt GetClip()
         {
             RectangleF clip;
-            if( _hdc == IntPtr.Zero )
+            if (_hdc == IntPtr.Zero)
             {
                 clip = _g.ClipBounds;
             }
@@ -158,6 +132,32 @@ namespace HtmlRenderer.WinForms.Adapters
         {
             ReleaseHdc();
             _g.SetClip(Utils.Convert(rect), CombineMode.Exclude);
+        }
+
+        /// <summary>
+        /// Set the graphics smooth mode to use anti-alias.<br/>
+        /// Use <see cref="ReturnPreviousSmoothingMode"/> to return back the mode used.
+        /// </summary>
+        /// <returns>the previous smooth mode before the change</returns>
+        public Object SetAntiAliasSmoothingMode()
+        {
+            ReleaseHdc();
+            var prevMode = _g.SmoothingMode;
+            _g.SmoothingMode = SmoothingMode.AntiAlias;
+            return prevMode;
+        }
+
+        /// <summary>
+        /// Return to previous smooth mode before anti-alias was set as returned from <see cref="SetAntiAliasSmoothingMode"/>.
+        /// </summary>
+        /// <param name="prevMode">the previous mode to set</param>
+        public void ReturnPreviousSmoothingMode(Object prevMode)
+        {
+            if (prevMode != null)
+            {
+                ReleaseHdc();
+                _g.SmoothingMode = (SmoothingMode)prevMode;
+            }
         }
 
         /// <summary>
@@ -338,26 +338,37 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Draws a rectangle specified by a coordinate pair, a width, and a height.
         /// </summary>
-        /// <param name="pen">A <see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the rectangle. </param><param name="x">The x-coordinate of the upper-left corner of the rectangle to draw. </param><param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param><param name="width">The width of the rectangle to draw. </param><param name="height">The height of the rectangle to draw. </param><exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
+        /// <param name="pen">A Pen that determines the color, width, and style of the rectangle. </param>
+        /// <param name="x">The x-coordinate of the upper-left corner of the rectangle to draw. </param>
+        /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param>
+        /// <param name="width">The width of the rectangle to draw. </param>
+        /// <param name="height">The height of the rectangle to draw. </param>
         public void DrawRectangle(IPen pen, float x, float y, float width, float height)
         {
             ReleaseHdc();
             _g.DrawRectangle(((PenAdapter)pen).Pen, x, y, width, height);
         }
 
-        public void FillRectangle(IBrush brush, float left, float top, float width, float height)
+        /// <summary>
+        /// Fills the interior of a rectangle specified by a pair of coordinates, a width, and a height.
+        /// </summary>
+        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
+        /// <param name="x">The x-coordinate of the upper-left corner of the rectangle to fill. </param>
+        /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to fill. </param>
+        /// <param name="width">Width of the rectangle to fill. </param>
+        /// <param name="height">Height of the rectangle to fill. </param>
+        public void FillRectangle(IBrush brush, float x, float y, float width, float height)
         {
             ReleaseHdc();
-            _g.FillRectangle(((BrushAdapter)brush).Brush, left, top, width, height);
+            _g.FillRectangle(((BrushAdapter)brush).Brush, x, y, width, height);
         }
 
         /// <summary>
         /// Draws the specified portion of the specified <see cref="T:System.Drawing.Image"/> at the specified location and with the specified size.
         /// </summary>
-        /// <param name="image"><see cref="T:System.Drawing.Image"/> to draw. </param>
-        /// <param name="destRect"><see cref="T:System.Drawing.RectangleF"/> structure that specifies the location and size of the drawn image. The image is scaled to fit the rectangle. </param>
-        /// <param name="srcRect"><see cref="T:System.Drawing.RectangleF"/> structure that specifies the portion of the <paramref name="image"/> object to draw. </param>
-        /// <exception cref="T:System.ArgumentNullException"><paramref name="image"/> is null.</exception>
+        /// <param name="image">Image to draw. </param>
+        /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. The image is scaled to fit the rectangle. </param>
+        /// <param name="srcRect">Rectangle structure that specifies the portion of the <paramref name="image"/> object to draw. </param>
         public void DrawImage(IImage image, RectangleInt destRect, RectangleInt srcRect)
         {
             ReleaseHdc();
@@ -365,9 +376,10 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
-        /// Draws the specified <see cref="T:System.Drawing.Image"/> at the specified location and with the specified size.
+        /// Draws the specified Image at the specified location and with the specified size.
         /// </summary>
-        /// <param name="image"><see cref="T:System.Drawing.Image"/> to draw. </param><param name="destRect"><see cref="T:System.Drawing.Rectangle"/> structure that specifies the location and size of the drawn image. </param><exception cref="T:System.ArgumentNullException"><paramref name="image"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
+        /// <param name="image">Image to draw. </param>
+        /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. </param>
         public void DrawImage(IImage image, RectangleInt destRect)
         {
             ReleaseHdc();
@@ -375,18 +387,20 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
-        /// Draws a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.
+        /// Draws a GraphicsPath.
         /// </summary>
-        /// <param name="pen"><see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the path. </param><param name="path"><see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> to draw. </param><exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.-or-<paramref name="path"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
+        /// <param name="pen">Pen that determines the color, width, and style of the path. </param>
+        /// <param name="path">GraphicsPath to draw. </param>
         public void DrawPath(IPen pen, IGraphicsPath path)
         {
             _g.DrawPath(((PenAdapter)pen).Pen, ((GraphicsPathAdapter)path).GraphicsPath);
         }
 
         /// <summary>
-        /// Fills the interior of a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.
+        /// Fills the interior of a GraphicsPath.
         /// </summary>
-        /// <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the characteristics of the fill. </param><param name="path"><see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> that represents the path to fill. </param><exception cref="T:System.ArgumentNullException"><paramref name="brush"/> is null.-or-<paramref name="path"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
+        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
+        /// <param name="path">GraphicsPath that represents the path to fill. </param>
         public void FillPath(IBrush brush, IGraphicsPath path)
         {
             ReleaseHdc();
@@ -394,9 +408,10 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
-        /// Fills the interior of a polygon defined by an array of points specified by <see cref="T:System.Drawing.PointF"/> structures.
+        /// Fills the interior of a polygon defined by an array of points specified by Point structures.
         /// </summary>
-        /// <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the characteristics of the fill. </param><param name="points">Array of <see cref="T:System.Drawing.PointF"/> structures that represent the vertices of the polygon to fill. </param><exception cref="T:System.ArgumentNullException"><paramref name="brush"/> is null.-or-<paramref name="points"/> is null.</exception>
+        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
+        /// <param name="points">Array of Point structures that represent the vertices of the polygon to fill. </param>
         public void FillPolygon(IBrush brush, PointInt[] points)
         {
             if( points != null && points.Length > 0 )
