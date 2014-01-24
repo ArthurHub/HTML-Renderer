@@ -458,17 +458,17 @@ namespace HtmlRenderer.WinForms
         /// <summary>
         /// Create HtmlRenderer mouse event from win forms mouse event.
         /// </summary>
-        private static MouseEvent CreateMouseEvent(MouseEventArgs e)
+        private static MouseEventInt CreateMouseEvent(MouseEventArgs e)
         {
-            return new MouseEvent((e.Button & MouseButtons.Left) != 0);
+            return new MouseEventInt((e.Button & MouseButtons.Left) != 0);
         }
 
         /// <summary>
         /// Create HtmlRenderer key event from win forms key event.
         /// </summary>
-        private KeyEvent CreateKeyEevent(KeyEventArgs e)
+        private KeyEventInt CreateKeyEevent(KeyEventArgs e)
         {
-            return new KeyEvent(e.Control, e.KeyCode == Keys.A, e.KeyCode == Keys.C);
+            return new KeyEventInt(e.Control, e.KeyCode == Keys.A, e.KeyCode == Keys.C);
         }
 
         #endregion

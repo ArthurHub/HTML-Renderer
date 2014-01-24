@@ -15,7 +15,7 @@ namespace HtmlRenderer.Core.SysEntities
     /// <summary>
     /// aTODO: add doc
     /// </summary>
-    public sealed class MouseEvent
+    public sealed class MouseEventInt
     {
         /// <summary>
         /// Is the left mouse button participated in the event
@@ -25,7 +25,7 @@ namespace HtmlRenderer.Core.SysEntities
         /// <summary>
         /// Init.
         /// </summary>
-        public MouseEvent(bool leftButton)
+        public MouseEventInt(bool leftButton)
         {
             _leftButton = leftButton;
         }

@@ -330,7 +330,7 @@ namespace HtmlRenderer.Core
         public SizeInt ActualSize
         {
             get { return _actualSize; }
-            internal set { _actualSize = value; }
+            set { _actualSize = value; }
         }
 
         /// <summary>
@@ -534,7 +534,7 @@ namespace HtmlRenderer.Core
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="location">the location of the mouse</param>
         /// <param name="e">the mouse event data</param>
-        public void HandleMouseUp(IControl parent, PointInt location, MouseEvent e)
+        public void HandleMouseUp(IControl parent, PointInt location, MouseEventInt e)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
 
@@ -650,7 +650,7 @@ namespace HtmlRenderer.Core
         /// </summary>
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="e">the pressed key</param>
-        public void HandleKeyDown(IControl parent, KeyEvent e)
+        public void HandleKeyDown(IControl parent, KeyEventInt e)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
@@ -720,7 +720,7 @@ namespace HtmlRenderer.Core
         /// Request invalidation and re-layout of the control hosting the renderer.
         /// </summary>
         /// <param name="layout">is re-layout is required for the refresh</param>
-        internal void RequestRefresh(bool layout)
+        public void RequestRefresh(bool layout)
         {
             try
             {

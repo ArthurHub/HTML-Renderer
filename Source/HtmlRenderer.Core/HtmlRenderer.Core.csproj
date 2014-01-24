@@ -94,8 +94,8 @@
     <Compile Include="Parse\RegexParserUtils.cs" />
     <Compile Include="SysEntities\DashStyleInt.cs" />
     <Compile Include="SysEntities\ColorInt.cs" />
-    <Compile Include="SysEntities\KeyEvent.cs" />
-    <Compile Include="SysEntities\MouseEvent.cs" />
+    <Compile Include="SysEntities\KeyEventInt.cs" />
+    <Compile Include="SysEntities\MouseEventInt.cs" />
     <Compile Include="SysEntities\SizeInt.cs" />
     <Compile Include="SysEntities\PointInt.cs" />
     <Compile Include="SysEntities\RectangleInt.cs" />

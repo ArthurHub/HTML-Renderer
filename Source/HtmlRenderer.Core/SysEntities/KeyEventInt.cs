@@ -15,7 +15,7 @@ namespace HtmlRenderer.Core.SysEntities
     /// <summary>
     /// aTODO: add doc
     /// </summary>
-    public sealed class KeyEvent
+    public sealed class KeyEventInt
     {
         /// <summary>
         /// is control is pressed
@@ -35,7 +35,7 @@ namespace HtmlRenderer.Core.SysEntities
         /// <summary>
         /// Init.
         /// </summary>
-        public KeyEvent(bool control, bool aKeyCode, bool cKeyCode)
+        public KeyEventInt(bool control, bool aKeyCode, bool cKeyCode)
         {
             _control = control;
             _aKeyCode = aKeyCode;

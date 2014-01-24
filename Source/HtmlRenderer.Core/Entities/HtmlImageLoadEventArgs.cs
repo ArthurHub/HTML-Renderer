@@ -26,7 +26,7 @@ namespace HtmlRenderer.Core.Entities
     /// <param name="path">the path to the image to load (file path or URL)</param>
     /// <param name="image">the image to use</param>
     /// <param name="imageRectangle">optional: limit to specific rectangle in the loaded image</param>
-    internal delegate void HtmlImageLoadCallback(string path, IImage image, RectangleInt imageRectangle);
+    public delegate void HtmlImageLoadCallback(string path, IImage image, RectangleInt imageRectangle);
 
     /// <summary>
     /// Invoked when an image is about to be loaded by file path, URL or inline data in 'img' element or background-image CSS style.<br/>

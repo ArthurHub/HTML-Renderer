@@ -18,7 +18,7 @@ namespace HtmlRenderer.Core.Utils
     /// <summary>
     /// Static class that contains argument-checking methods
     /// </summary>
-    internal static class ArgChecker
+    public static class ArgChecker
     {
         /// <summary>
         /// Validate given <see cref="condition"/> is true, otherwise throw exception.
