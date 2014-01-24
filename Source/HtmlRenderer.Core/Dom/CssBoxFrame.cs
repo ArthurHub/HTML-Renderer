@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Net;
 using System.Text;
@@ -460,18 +459,13 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         private void DrawTitle(IGraphics g, RectangleInt rect)
         {
-            if (_videoTitle != null && _imageWord.Width > 40 && _imageWord.Height > 40)
+            if( _videoTitle != null && _imageWord.Width > 40 && _imageWord.Height > 40 )
             {
                 var font = FontsUtils.GetCachedFont("Arial", 9f, System.Drawing.FontStyle.Regular);
                 g.FillRectangle(g.GetSolidBrush(ColorInt.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, FontsUtils.GetFontHeight(font) + 7);
 
-                using (var sf = new StringFormat(StringFormat.GenericTypographic))
-                {
-                    sf.FormatFlags = StringFormatFlags.NoWrap;
-                    sf.Trimming = StringTrimming.EllipsisCharacter;
-                    var titleRect = new RectangleInt(rect.Left + 3, rect.Top + 3, rect.Width - 6, rect.Height - 6);
-                    g.DrawString(_videoTitle, font, ColorInt.WhiteSmoke, titleRect.Location, SizeInt.Empty);
-                }
+                var titleRect = new RectangleInt(rect.Left + 3, rect.Top + 3, rect.Width - 6, rect.Height - 6);
+                g.DrawString(_videoTitle, font, ColorInt.WhiteSmoke, titleRect.Location, SizeInt.Empty);
             }
         }
 
