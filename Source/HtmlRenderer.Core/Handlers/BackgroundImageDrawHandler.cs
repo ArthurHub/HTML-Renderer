@@ -12,7 +12,7 @@
 
 using System;
 using HtmlRenderer.Core.Dom;
-using HtmlRenderer.Core.SysEntities;
+using HtmlRenderer.Core.Entities;
 
 namespace HtmlRenderer.Core.Handlers
 {

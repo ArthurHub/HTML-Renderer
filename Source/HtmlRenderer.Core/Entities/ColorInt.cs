@@ -1,11 +1,11 @@
-﻿// Type: System.Drawing.Color
+// Type: System.Drawing.Color
 // Assembly: System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
 // Assembly location: C:\Windows\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll
 
 using System;
 using System.Text;
 
-namespace HtmlRenderer.Core.SysEntities
+namespace HtmlRenderer.Core.Entities
 {
     /// <summary>
     /// Represents an ARGB (alpha, red, green, blue) color.

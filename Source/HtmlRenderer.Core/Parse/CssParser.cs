@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using HtmlRenderer.Core.DomEntities;
+using HtmlRenderer.Core.Dom.Entities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
 

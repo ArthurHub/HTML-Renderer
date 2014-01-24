@@ -12,8 +12,8 @@
 
 using System.Reflection;
 using HtmlRenderer.Core.Dom;
-using HtmlRenderer.Core.DomEntities;
-using HtmlRenderer.Core.SysEntities;
+using HtmlRenderer.Core.Dom.Entities;
+using HtmlRenderer.Core.Entities;
 
 namespace HtmlRenderer.Core.Utils
 {

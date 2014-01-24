@@ -11,7 +11,7 @@
 // "The Art of War"
 
 using System.IO;
-using HtmlRenderer.Core.SysEntities;
+using HtmlRenderer.Core.Entities;
 
 namespace HtmlRenderer.Core
 {

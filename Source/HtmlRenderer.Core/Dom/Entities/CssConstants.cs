@@ -12,7 +12,7 @@
 
 using System.Drawing;
 
-namespace HtmlRenderer.Core.DomEntities
+namespace HtmlRenderer.Core.Dom.Entities
 {
     /// <summary>
     /// String constants to avoid typing errors.

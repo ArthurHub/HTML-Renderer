@@ -14,10 +14,9 @@ using System;
 using System.Drawing;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using HtmlRenderer.Core.DomEntities;
+using HtmlRenderer.Core.Dom.Entities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
-using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Dom
@@ -118,7 +117,7 @@ namespace HtmlRenderer.Core.Dom
         private float _actualCornerNE = float.NaN;
         private float _actualCornerSW = float.NaN;
         private float _actualCornerSE = float.NaN;
-        private ColorInt _actualColor = SysEntities.ColorInt.Empty;
+        private ColorInt _actualColor = ColorInt.Empty;
         private float _actualBackgroundGradientAngle = float.NaN;
         private float _actualHeight = float.NaN;
         private float _actualWidth = float.NaN;
@@ -147,12 +146,12 @@ namespace HtmlRenderer.Core.Dom
         private float _fontAscent = float.NaN;
         private float _fontDescent = float.NaN;
         private float _fontLineSpacing = float.NaN;
-        private ColorInt _actualBackgroundGradient = SysEntities.ColorInt.Empty;
-        private ColorInt _actualBorderTopColor = SysEntities.ColorInt.Empty;
-        private ColorInt _actualBorderLeftColor = SysEntities.ColorInt.Empty;
-        private ColorInt _actualBorderBottomColor = SysEntities.ColorInt.Empty;
-        private ColorInt _actualBorderRightColor = SysEntities.ColorInt.Empty;
-        private ColorInt _actualBackgroundColor = SysEntities.ColorInt.Empty;
+        private ColorInt _actualBackgroundGradient = ColorInt.Empty;
+        private ColorInt _actualBorderTopColor = ColorInt.Empty;
+        private ColorInt _actualBorderLeftColor = ColorInt.Empty;
+        private ColorInt _actualBorderBottomColor = ColorInt.Empty;
+        private ColorInt _actualBorderRightColor = ColorInt.Empty;
+        private ColorInt _actualBackgroundColor = ColorInt.Empty;
         private Font _actualFont;
 
         #endregion
@@ -230,7 +229,7 @@ namespace HtmlRenderer.Core.Dom
             set
             {
                 _borderBottomColor = value;
-                _actualBorderBottomColor = SysEntities.ColorInt.Empty;
+                _actualBorderBottomColor = ColorInt.Empty;
             }
         }
 
@@ -240,7 +239,7 @@ namespace HtmlRenderer.Core.Dom
             set
             {
                 _borderLeftColor = value;
-                _actualBorderLeftColor = SysEntities.ColorInt.Empty;
+                _actualBorderLeftColor = ColorInt.Empty;
             }
         }
 
@@ -250,7 +249,7 @@ namespace HtmlRenderer.Core.Dom
             set
             {
                 _borderRightColor = value;
-                _actualBorderRightColor = SysEntities.ColorInt.Empty;
+                _actualBorderRightColor = ColorInt.Empty;
             }
         }
 
@@ -260,7 +259,7 @@ namespace HtmlRenderer.Core.Dom
             set
             {
                 _borderTopColor = value;
-                _actualBorderTopColor = SysEntities.ColorInt.Empty;
+                _actualBorderTopColor = ColorInt.Empty;
             }
         }
 
@@ -455,7 +454,7 @@ namespace HtmlRenderer.Core.Dom
         public string Color
         {
             get { return _color; }
-            set { _color = value; _actualColor = SysEntities.ColorInt.Empty; }
+            set { _color = value; _actualColor = ColorInt.Empty; }
         }
 
         public string Display

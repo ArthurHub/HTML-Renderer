@@ -1,4 +1,4 @@
-﻿// "Therefore those skilled at the unorthodox
+// "Therefore those skilled at the unorthodox
 // are infinite as heaven and earth,
 // inexhaustible as the great rivers.
 // When they come to an end,
@@ -10,7 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-namespace HtmlRenderer.Core.SysEntities
+namespace HtmlRenderer.Core.Entities
 {
     /// <summary>
     /// Specifies the style of dashed lines drawn with a <see cref="IPen"/> object.

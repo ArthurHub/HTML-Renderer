@@ -12,7 +12,7 @@
 
 using System.Windows.Forms;
 using HtmlRenderer.Core;
-using HtmlRenderer.Core.SysEntities;
+using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
 using HtmlRenderer.WinForms.Utilities;
 

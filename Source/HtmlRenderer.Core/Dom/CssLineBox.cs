@@ -12,7 +12,7 @@
 
 using System;
 using System.Collections.Generic;
-using HtmlRenderer.Core.SysEntities;
+using HtmlRenderer.Core.Entities;
 
 namespace HtmlRenderer.Core.Dom
 {

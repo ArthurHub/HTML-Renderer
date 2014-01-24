@@ -1,4 +1,4 @@
-namespace HtmlRenderer.Core.DomEntities
+namespace HtmlRenderer.Core.Dom.Entities
 {
     /// <summary>
     /// Defines HTML strings

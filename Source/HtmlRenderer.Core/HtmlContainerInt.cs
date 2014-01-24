@@ -14,10 +14,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using HtmlRenderer.Core.Dom;
+using HtmlRenderer.Core.Dom.Entities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
 using HtmlRenderer.Core.Parse;
-using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core
@@ -91,9 +91,9 @@ namespace HtmlRenderer.Core
         private CssBox _root;
 
         /// <summary>
-        /// dictionary of all css boxes that have ":hover" selector on them
+        /// list of all css boxes that have ":hover" selector on them
         /// </summary>
-        private List<Tupler<CssBox, CssBlock>> _hoverBoxes;
+        private List<HoverBoxBlock> _hoverBoxes;
 
         /// <summary>
         /// Handler for text selection in the html. 
@@ -811,9 +811,9 @@ namespace HtmlRenderer.Core
             ArgChecker.AssertArgNotNull(block, "block");
 
             if( _hoverBoxes == null )
-                _hoverBoxes = new List<Tupler<CssBox, CssBlock>>();
+                _hoverBoxes = new List<HoverBoxBlock>();
 
-            _hoverBoxes.Add(new Tupler<CssBox, CssBlock>(box, block));
+            _hoverBoxes.Add(new HoverBoxBlock(box, block));
         }
 
         /// <summary>

@@ -15,10 +15,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using HtmlRenderer.Core.Dom;
-using HtmlRenderer.Core.DomEntities;
+using HtmlRenderer.Core.Dom.Entities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
-using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core.Utils
 {

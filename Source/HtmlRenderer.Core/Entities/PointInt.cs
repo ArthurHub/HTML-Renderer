@@ -1,4 +1,4 @@
-﻿// "Therefore those skilled at the unorthodox
+// "Therefore those skilled at the unorthodox
 // are infinite as heaven and earth,
 // inexhaustible as the great rivers.
 // When they come to an end,
@@ -12,7 +12,7 @@
 
 using System;
 
-namespace HtmlRenderer.Core.SysEntities
+namespace HtmlRenderer.Core.Entities
 {
     /// <summary>
     ///     Represents an ordered pair of floating-point x- and y-coordinates that defines a point in a two-dimensional plane.

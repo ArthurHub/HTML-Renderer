@@ -44,11 +44,6 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="DomEntities\Border.cs" />
-    <Compile Include="DomEntities\CssConstants.cs" />
-    <Compile Include="DomEntities\CssDefaults.cs" />
-    <Compile Include="DomEntities\CssUnit.cs" />
-    <Compile Include="DomEntities\HtmlConstants.cs" />
     <Compile Include="Dom\CssBox.cs" />
     <Compile Include="Dom\CssBoxFrame.cs" />
     <Compile Include="Dom\CssBoxHr.cs" />
@@ -62,9 +57,17 @@
     <Compile Include="Dom\CssRectImage.cs" />
     <Compile Include="Dom\CssRectWord.cs" />
     <Compile Include="Dom\CssSpacingBox.cs" />
+    <Compile Include="Dom\Entities\Border.cs" />
+    <Compile Include="Dom\Entities\CssConstants.cs" />
+    <Compile Include="Dom\Entities\CssDefaults.cs" />
+    <Compile Include="Dom\Entities\CssUnit.cs" />
+    <Compile Include="Dom\Entities\HoverBoxBlock.cs" />
+    <Compile Include="Dom\Entities\HtmlConstants.cs" />
     <Compile Include="Dom\HtmlTag.cs" />
+    <Compile Include="Entities\ColorInt.cs" />
     <Compile Include="Entities\CssBlock.cs" />
     <Compile Include="Entities\CssBlockSelectorItem.cs" />
+    <Compile Include="Entities\DashStyleInt.cs" />
     <Compile Include="Entities\HtmlGenerationStyle.cs" />
     <Compile Include="Entities\HtmlImageLoadEventArgs.cs" />
     <Compile Include="Entities\HtmlLinkClickedEventArgs.cs" />
@@ -74,6 +77,11 @@
     <Compile Include="Entities\HtmlRenderErrorType.cs" />
     <Compile Include="Entities\HtmlScrollEventArgs.cs" />
     <Compile Include="Entities\HtmlStylesheetLoadEventArgs.cs" />
+    <Compile Include="Entities\KeyEventInt.cs" />
+    <Compile Include="Entities\MouseEventInt.cs" />
+    <Compile Include="Entities\PointInt.cs" />
+    <Compile Include="Entities\RectangleInt.cs" />
+    <Compile Include="Entities\SizeInt.cs" />
     <Compile Include="Handlers\BackgroundImageDrawHandler.cs" />
     <Compile Include="Handlers\BordersDrawHandler.cs" />
     <Compile Include="Handlers\ContextMenuHandler.cs" />
@@ -92,14 +100,6 @@
     <Compile Include="Parse\DomParser.cs" />
     <Compile Include="Parse\HtmlParser.cs" />
     <Compile Include="Parse\RegexParserUtils.cs" />
-    <Compile Include="SysEntities\DashStyleInt.cs" />
-    <Compile Include="SysEntities\ColorInt.cs" />
-    <Compile Include="SysEntities\KeyEventInt.cs" />
-    <Compile Include="SysEntities\MouseEventInt.cs" />
-    <Compile Include="SysEntities\SizeInt.cs" />
-    <Compile Include="SysEntities\PointInt.cs" />
-    <Compile Include="SysEntities\RectangleInt.cs" />
-    <Compile Include="SysEntities\Tupler.cs" />
     <Compile Include="Utils\ArgChecker.cs" />
     <Compile Include="Utils\CommonUtils.cs" />
     <Compile Include="Utils\CssUtils.cs" />

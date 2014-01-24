@@ -13,7 +13,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using HtmlRenderer.Core;
-using HtmlRenderer.Core.SysEntities;
+using HtmlRenderer.Core.Entities;
 using HtmlRenderer.WinForms.Adapters;
 
 namespace HtmlRenderer.WinForms.Utilities

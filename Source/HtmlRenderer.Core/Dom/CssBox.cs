@@ -14,11 +14,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Globalization;
-using HtmlRenderer.Core.DomEntities;
+using HtmlRenderer.Core.Dom.Entities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
 using HtmlRenderer.Core.Parse;
-using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Dom

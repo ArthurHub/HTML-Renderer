@@ -13,8 +13,8 @@
 using System;
 using System.Globalization;
 using HtmlRenderer.Core.Dom;
-using HtmlRenderer.Core.DomEntities;
-using HtmlRenderer.Core.SysEntities;
+using HtmlRenderer.Core.Dom.Entities;
+using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Parse

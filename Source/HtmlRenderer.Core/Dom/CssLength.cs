@@ -1,6 +1,6 @@
 using System;
 using System.Globalization;
-using HtmlRenderer.Core.DomEntities;
+using HtmlRenderer.Core.Dom.Entities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
 

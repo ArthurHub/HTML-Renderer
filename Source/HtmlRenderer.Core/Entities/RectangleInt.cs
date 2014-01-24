@@ -1,4 +1,4 @@
-﻿// "Therefore those skilled at the unorthodox
+// "Therefore those skilled at the unorthodox
 // are infinite as heaven and earth,
 // inexhaustible as the great rivers.
 // When they come to an end,
@@ -12,7 +12,7 @@
 
 using System;
 
-namespace HtmlRenderer.Core.SysEntities
+namespace HtmlRenderer.Core.Entities
 {
     /// <summary>
     ///     Stores a set of four floating-point numbers that represent the location and size of a rectangle. For more advanced region functions, use a
@@ -562,7 +562,7 @@ namespace HtmlRenderer.Core.SysEntities
         ///     Converts the Location and <see cref="T:System.Drawing.Size" /> of this <see cref="RectangleInt" /> to a human-readable string.
         /// </summary>
         /// <returns>
-        ///     A string that contains the position, width, and height of this <see cref="RectangleInt" /> structure¾for example, "{X=20, Y=20, Width=100, Height=50}".
+        ///     A string that contains the position, width, and height of this <see cref="RectangleInt" /> structure�for example, "{X=20, Y=20, Width=100, Height=50}".
         /// </returns>
         /// <filterpriority>1</filterpriority>
         /// <PermissionSet>
