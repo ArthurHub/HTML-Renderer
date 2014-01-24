@@ -284,7 +284,7 @@ namespace HtmlRenderer.Core.Handlers
                 _parentControl = parent;
                 _currentRect = rect;
                 _currentLink = link;
-                _contextMenu = _htmlContainer.Global2.CreateContextMenu();
+                _contextMenu = _htmlContainer.Global.CreateContextMenu();
 
                 if(rect != null)
                 {
@@ -395,7 +395,7 @@ namespace HtmlRenderer.Core.Handlers
         {
             try
             {
-                _htmlContainer.Global2.SetToClipboard(_currentLink.HrefLink);
+                _htmlContainer.Global.SetToClipboard(_currentLink.HrefLink);
             }
             catch (Exception ex)
             {
@@ -415,7 +415,7 @@ namespace HtmlRenderer.Core.Handlers
             try
             {
                 var imageSrc = _currentRect.OwnerBox.GetAttribute("src");
-                _htmlContainer.Global2.SaveToFile(_currentRect.Image, Path.GetFileName(imageSrc) ?? "image", Path.GetExtension(imageSrc) ?? "png");
+                _htmlContainer.Global.SaveToFile(_currentRect.Image, Path.GetFileName(imageSrc) ?? "image", Path.GetExtension(imageSrc) ?? "png");
             }
             catch (Exception ex)
             {
@@ -434,7 +434,7 @@ namespace HtmlRenderer.Core.Handlers
         {
             try
             {
-                _htmlContainer.Global2.SetToClipboard(_currentRect.OwnerBox.GetAttribute("src"));
+                _htmlContainer.Global.SetToClipboard(_currentRect.OwnerBox.GetAttribute("src"));
             }
             catch (Exception ex)
             {
@@ -453,7 +453,7 @@ namespace HtmlRenderer.Core.Handlers
         {
             try
             {
-                _htmlContainer.Global2.SetToClipboard(_currentRect.Image);
+                _htmlContainer.Global.SetToClipboard(_currentRect.Image);
             }
             catch (Exception ex)
             {

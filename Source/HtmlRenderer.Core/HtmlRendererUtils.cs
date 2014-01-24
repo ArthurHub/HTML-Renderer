@@ -21,6 +21,34 @@ namespace HtmlRenderer.Core
     public static class HtmlRendererUtils
     {
         /// <summary>
+        /// Resolve color value from given color name.
+        /// </summary>
+        /// <param name="colorName">the color name</param>
+        /// <returns>color value</returns>
+        public delegate ColorInt ResolveColorFromNameDelegate(String colorName);
+
+        /// <summary>
+        /// The manifest resource name for embedded image used for image loading.
+        /// </summary>
+        public static string ManifestResourceNameForImageLoad
+        {
+            get { return "HtmlRenderer.Core.Utils.ImageLoad.png"; }
+        }
+
+        /// <summary>
+        /// The manifest resource name for embedded image used for image loading failed.
+        /// </summary>
+        public static string ManifestResourceNameForImageError
+        {
+            get { return "HtmlRenderer.Core.Utils.ImageError.png"; }
+        }
+
+        /// <summary>
+        /// Resolve color value from given color name.
+        /// </summary>
+        public static ResolveColorFromNameDelegate ResolveColorFromName { get; set; }
+
+        /// <summary>
         /// Measure the size of the html by performing layout under the given restrictions.
         /// </summary>
         /// <param name="g">the graphics to use</param>

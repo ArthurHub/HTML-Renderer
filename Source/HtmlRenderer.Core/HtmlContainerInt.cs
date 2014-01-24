@@ -83,7 +83,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// 
         /// </summary>
-        private static IGlobal _global;
+        private readonly IGlobal _global;
 
         /// <summary>
         /// the root css box of the parsed html
@@ -106,7 +106,7 @@ namespace HtmlRenderer.Core
         private ColorInt _selectionForeColor;
 
         /// <summary>
-        /// the backcolor to use for selected text
+        /// the back-color to use for selected text
         /// </summary>
         private ColorInt _selectionBackColor;
 
@@ -127,7 +127,7 @@ namespace HtmlRenderer.Core
         private bool _isContextMenuEnabled = true;
 
         /// <summary>
-        /// Gets or sets a value indicating if antialiasing should be avoided 
+        /// Gets or sets a value indicating if anti-aliasing should be avoided 
         /// for geometry like backgrounds and borders
         /// </summary>
         private bool _avoidGeometryAntialias;
@@ -167,18 +167,19 @@ namespace HtmlRenderer.Core
 
 
         /// <summary>
-        /// 
+        /// Init.
         /// </summary>
-        public static IGlobal Global
+        public HtmlContainerInt(IGlobal global)
         {
-            internal get { return _global; }
-            set { _global = value; }
+            ArgChecker.AssertArgNotNull(global, "global");
+
+            _global = global;
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
-        internal IGlobal Global2
+        internal IGlobal Global
         {
             get { return _global; }
         }

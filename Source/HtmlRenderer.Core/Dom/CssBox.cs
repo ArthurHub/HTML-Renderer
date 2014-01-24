@@ -12,7 +12,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing.Drawing2D;
 using System.Globalization;
 using HtmlRenderer.Core.Dom.Entities;
 using HtmlRenderer.Core.Entities;
@@ -128,7 +127,7 @@ namespace HtmlRenderer.Core.Dom
                 if (value != null && !value.Boxes.Contains(this))
                 {
                     _parentBox.Boxes.Add(this);
-                    _htmlContainer = value.HtmlContainer;
+                    HtmlContainer = value.HtmlContainer;
                 }
             }
         }
@@ -730,7 +729,7 @@ namespace HtmlRenderer.Core.Dom
                     _listItemBox = new CssBox(null, null);
                     _listItemBox.InheritStyle(this);
                     _listItemBox.Display = CssConstants.Inline;
-                    _listItemBox._htmlContainer = HtmlContainer;
+                    _listItemBox.HtmlContainer = HtmlContainer;
 
                     if (ListStyleType.Equals(CssConstants.Disc, StringComparison.InvariantCultureIgnoreCase))
                     {

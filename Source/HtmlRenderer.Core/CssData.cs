@@ -76,7 +76,7 @@ namespace HtmlRenderer.Core
         /// Check if there are css blocks for the given class selector.
         /// </summary>
         /// <param name="className">the class selector to check for css blocks by</param>
-        /// <param name="media">optinal: the css media type (default - all)</param>
+        /// <param name="media">optional: the css media type (default - all)</param>
         /// <returns>true - has css blocks for the class, false - otherwise</returns>
         public bool ContainsCssBlock(string className, string media = "all")
         {
@@ -92,7 +92,7 @@ namespace HtmlRenderer.Core
         /// selector or hierarchy selector.
         /// </summary>
         /// <param name="className">the class selector to get css blocks by</param>
-        /// <param name="media">optinal: the css media type (default - all)</param>
+        /// <param name="media">optional: the css media type (default - all)</param>
         /// <returns>collection of css blocks, empty collection if no blocks exists (never null)</returns>
         public IEnumerable<CssBlock> GetCssBlock(string className, string media = "all")
         {
@@ -113,7 +113,7 @@ namespace HtmlRenderer.Core
         /// If there is already css blocks for the same class it will check for each existing block
         /// if the hierarchical selectors match (or not exists). if do the two css blocks will be merged into
         /// one where the new block properties overwrite existing if needed. if the new block doesn't mach any
-        /// existing it will be added either to the beggining of the list if it has no  hierarchical selectors or at the end.<br/>
+        /// existing it will be added either to the beginning of the list if it has no  hierarchical selectors or at the end.<br/>
         /// Css block without hierarchical selectors must be added to the beginning of the list so more specific block
         /// can overwrite it when the style is applied.
         /// </remarks>

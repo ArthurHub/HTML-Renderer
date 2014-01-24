@@ -444,7 +444,7 @@ namespace HtmlRenderer.Core.Dom
             }
             else if (_isVideo && !_imageLoadingComplete)
             {
-                RenderUtils.DrawImageLoadingIcon(g, rect);
+                RenderUtils.DrawImageLoadingIcon(g, HtmlContainer, rect);
                 if (rect.Width > 19 && rect.Height > 19)
                 {
                     g.DrawRectangle(g.GetPen(ColorInt.LightGray), rect.X, rect.Y, rect.Width, rect.Height);

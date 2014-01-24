@@ -14,7 +14,6 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using HtmlRenderer.Core;
-using HtmlRenderer.Core.Entities;
 using HtmlRenderer.WinForms.Utilities;
 
 namespace HtmlRenderer.WinForms.Adapters
@@ -25,16 +24,21 @@ namespace HtmlRenderer.WinForms.Adapters
     internal sealed class GlobalAdapter : IGlobal
     {
         /// <summary>
-        /// Get color instance from given color name.
+        /// Get image to be used while HTML image is loading.
         /// </summary>
-        /// <param name="colorName">the color name</param>
-        /// <returns>color instance</returns>
-        public ColorInt ColorFromName(string colorName)
+        public IImage GetLoadImage()
         {
-            var color = Color.FromName(colorName);
-            return Utils.Convert(color);
+            return CacheUtils.GetLoadImage();
         }
-        
+
+        /// <summary>
+        /// Get image to be used if HTML image load failed.
+        /// </summary>
+        public IImage GetErrorImage()
+        {
+            return CacheUtils.GetErrorImage();
+        }
+
         /// <summary>
         /// Create an <see cref="IImage"/> object from the given stream.
         /// </summary>

@@ -19,6 +19,7 @@ using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
 using HtmlRenderer.WinForms.Adapters;
+using HtmlRenderer.WinForms.Utilities;
 
 namespace HtmlRenderer.WinForms
 {
@@ -45,11 +46,15 @@ namespace HtmlRenderer.WinForms
 
 
         /// <summary>
-        /// Init global adapter.
+        /// Init color resolve.
         /// </summary>
         static HtmlContainer()
         {
-            HtmlContainerInt.Global = new GlobalAdapter();
+            HtmlRendererUtils.ResolveColorFromName = colorName =>
+            {
+                var color = Color.FromName(colorName);
+                return Utils.Convert(color);
+            };
         }
 
         /// <summary>
@@ -57,7 +62,7 @@ namespace HtmlRenderer.WinForms
         /// </summary>
         public HtmlContainer()
         {
-            _htmlContainerInt = new HtmlContainerInt();
+            _htmlContainerInt = new HtmlContainerInt(new GlobalAdapter());
         }
 
         /// <summary>

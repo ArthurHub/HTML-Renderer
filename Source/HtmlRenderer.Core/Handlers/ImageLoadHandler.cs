@@ -228,7 +228,7 @@ namespace HtmlRenderer.Core.Handlers
         /// </summary>
         /// <param name="src">the source that has the base64 encoded image</param>
         /// <returns>image from base64 data string or null if failed</returns>
-        private static IImage GetImageFromData(string src)
+        private IImage GetImageFromData(string src)
         {
             var s = src.Substring(src.IndexOf(':') + 1).Split(new[] { ',' }, 2);
             if (s.Length == 2)
@@ -246,7 +246,7 @@ namespace HtmlRenderer.Core.Handlers
                 if (imagePartsCount > 0)
                 {
                     byte[] imageData = base64PartsCount > 0 ? Convert.FromBase64String(s[1].Trim()) : new UTF8Encoding().GetBytes(Uri.UnescapeDataString(s[1].Trim()));
-                    return HtmlContainerInt.Global.FromStream(new MemoryStream(imageData));
+                    return _htmlContainer.Global.FromStream(new MemoryStream(imageData));
                 }
             }
             return null;
@@ -309,7 +309,7 @@ namespace HtmlRenderer.Core.Handlers
                 if (source.Exists)
                 {
                     _imageFileStream = File.Open(source.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    _image = HtmlContainerInt.Global.FromStream(_imageFileStream);
+                    _image = _htmlContainer.Global.FromStream(_imageFileStream);
                     _releaseImageObject = true;
                 }
                 ImageLoadComplete();

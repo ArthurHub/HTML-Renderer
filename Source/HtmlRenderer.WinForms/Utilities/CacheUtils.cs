@@ -12,6 +12,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.WinForms.Adapters;
@@ -26,6 +27,16 @@ namespace HtmlRenderer.WinForms.Utilities
         #region Fields and Consts
 
         /// <summary>
+        /// image used to draw loading image icon
+        /// </summary>
+        private static IImage _loadImage;
+
+        /// <summary>
+        /// image used to draw error image icon
+        /// </summary>
+        private static IImage _errorImage;
+
+        /// <summary>
         /// cache of brush color to brush instance
         /// </summary>
         private static readonly Dictionary<ColorInt, IBrush> _brushesCache = new Dictionary<ColorInt, IBrush>();
@@ -38,6 +49,34 @@ namespace HtmlRenderer.WinForms.Utilities
         #endregion
 
 
+        /// <summary>
+        /// Get cached pen instance for the given color.
+        /// </summary>
+        /// <param name="color">the color to get pen for</param>
+        /// <returns>pen instance</returns>
+        public static IPen GetPen(ColorInt color)
+        {
+            IPen pen;
+            if (!_penCache.TryGetValue(color, out pen))
+            {
+                Pen solidPen;
+                if (color == ColorInt.White)
+                    solidPen = Pens.White;
+                else if (color == ColorInt.Black)
+                    solidPen = Pens.Black;
+                else if (color == ColorInt.WhiteSmoke)
+                    solidPen = Pens.WhiteSmoke;
+                else if (color.A < 1)
+                    solidPen = Pens.Transparent;
+                else
+                    solidPen = new Pen(Utils.Convert(color));
+
+                pen = new PenAdapter(solidPen);
+                _penCache[color] = pen;
+            }
+            return pen;
+        }
+        
         /// <summary>
         /// Get cached solid brush instance for the given color.
         /// </summary>
@@ -67,31 +106,33 @@ namespace HtmlRenderer.WinForms.Utilities
         }
 
         /// <summary>
-        /// Get cached pen instance for the given color.
+        /// Get singleton instance of load image.
         /// </summary>
-        /// <param name="color">the color to get pen for</param>
-        /// <returns>pen instance</returns>
-        public static IPen GetPen(ColorInt color)
+        /// <returns>image instance</returns>
+        public static IImage GetLoadImage()
         {
-            IPen pen;
-            if (!_penCache.TryGetValue(color, out pen))
+            if (_loadImage == null)
             {
-                Pen solidPen;
-                if (color == ColorInt.White)
-                    solidPen = Pens.White;
-                else if (color == ColorInt.Black)
-                    solidPen = Pens.Black;
-                else if (color == ColorInt.WhiteSmoke)
-                    solidPen = Pens.WhiteSmoke;
-                else if( color.A < 1 )
-                    solidPen = Pens.Transparent;
-                else
-                    solidPen = new Pen(Utils.Convert(color));
-
-                pen = new PenAdapter(solidPen);
-                _penCache[color] = pen;
+                var stream = typeof(HtmlRendererUtils).Assembly.GetManifestResourceStream(HtmlRendererUtils.ManifestResourceNameForImageLoad);
+                if( stream != null )
+                    _loadImage = new ImageAdapter(Image.FromStream(stream));
             }
-            return pen;
+            return _loadImage;
+        }
+
+        /// <summary>
+        /// Get singleton instance of error image.
+        /// </summary>
+        /// <returns>image instance</returns>
+        public static IImage GetErrorImage()
+        {
+            if (_errorImage == null)
+            {
+                var stream = typeof(HtmlRendererUtils).Assembly.GetManifestResourceStream(HtmlRendererUtils.ManifestResourceNameForImageError);
+                if( stream != null )
+                    _errorImage = new ImageAdapter(Image.FromStream(stream));
+            }
+            return _errorImage;
         }
     }
 }

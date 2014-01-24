@@ -10,7 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Reflection;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Dom.Entities;
 using HtmlRenderer.Core.Entities;
@@ -22,21 +21,6 @@ namespace HtmlRenderer.Core.Utils
     /// </summary>
     internal static class RenderUtils
     {
-        #region Fields and Consts
-
-        /// <summary>
-        /// image used to draw loading image icon
-        /// </summary>
-        private static IImage _loadImage;
-
-        /// <summary>
-        /// image used to draw error image icon
-        /// </summary>
-        private static IImage _errorImage;
-
-        #endregion
-
-
         /// <summary>
         /// Check if the given color is visible if painted (has alpha and color values)
         /// </summary>
@@ -54,7 +38,7 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         /// <param name="g">the graphics to clip</param>
         /// <param name="box">the box that is rendered to get containing blocks</param>
-        /// <returns>the prev region if clipped, otherwise null</returns>
+        /// <returns>the previous region if clipped, otherwise null</returns>
         public static RectangleInt ClipGraphicsByOverflow(IGraphics g, CssBox box)
         {
             var containingBlock = box.ContainingBlock;
@@ -94,16 +78,17 @@ namespace HtmlRenderer.Core.Utils
                 g.SetClipReplace(prevClip);
             }
         }
-        
+
         /// <summary>
         /// Draw image loading icon.
         /// </summary>
         /// <param name="g">the device to draw into</param>
+        /// <param name="htmlContainer"></param>
         /// <param name="r">the rectangle to draw icon in</param>
-        public static void DrawImageLoadingIcon(IGraphics g, RectangleInt r)
+        public static void DrawImageLoadingIcon(IGraphics g, HtmlContainerInt htmlContainer, RectangleInt r)
         {
             g.DrawRectangle(g.GetPen(ColorInt.LightGray), r.Left + 3, r.Top + 3, 13, 14);
-            var image = GetLoadImage();
+            var image = htmlContainer.Global.GetLoadImage();
             g.DrawImage(image, new RectangleInt(r.Left + 4, r.Top + 4, image.Width, image.Height));
         }
 
@@ -111,11 +96,12 @@ namespace HtmlRenderer.Core.Utils
         /// Draw image failed to load icon.
         /// </summary>
         /// <param name="g">the device to draw into</param>
+        /// <param name="htmlContainer"></param>
         /// <param name="r">the rectangle to draw icon in</param>
-        public static void DrawImageErrorIcon(IGraphics g, RectangleInt r)
+        public static void DrawImageErrorIcon(IGraphics g, HtmlContainerInt htmlContainer, RectangleInt r)
         {
             g.DrawRectangle(g.GetPen(ColorInt.LightGray), r.Left + 2, r.Top + 2, 15, 15);
-            var image = GetErrorImage();
+            var image = htmlContainer.Global.GetErrorImage();
             g.DrawImage(image, new RectangleInt(r.Left + 3, r.Top + 3, image.Width, image.Height));
         }
 
@@ -185,40 +171,5 @@ namespace HtmlRenderer.Core.Utils
 
             return path;
         }
-
-
-        #region Private methods
-
-        /// <summary>
-        /// Get singleton instance of load image.
-        /// </summary>
-        /// <returns>image instance</returns>
-        private static IImage GetLoadImage()
-        {
-            if( _loadImage == null )
-            {
-                var stream = Assembly.GetCallingAssembly().GetManifestResourceStream("HtmlRenderer.Core.Utils.ImageLoad.png");
-                if( stream != null )
-                    _loadImage = HtmlContainerInt.Global.FromStream(stream);
-            }
-            return _loadImage;
-        }
-
-        /// <summary>
-        /// Get singleton instance of error image.
-        /// </summary>
-        /// <returns>image instance</returns>
-        private static IImage GetErrorImage()
-        {
-            if( _errorImage == null )
-            {
-                var stream = Assembly.GetCallingAssembly().GetManifestResourceStream("HtmlRenderer.Core.Utils.ImageError.png");
-                if (stream != null)
-                    _errorImage = HtmlContainerInt.Global.FromStream(stream);
-            }
-            return _errorImage;
-        }
-
-        #endregion
     }
 }

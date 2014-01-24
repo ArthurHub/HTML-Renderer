@@ -108,12 +108,12 @@ namespace HtmlRenderer.Core.Dom
             {
                 if (_imageLoadingComplete && r.Width > 19 && r.Height > 19)
                 {
-                    RenderUtils.DrawImageErrorIcon(g, r);
+                    RenderUtils.DrawImageErrorIcon(g, HtmlContainer, r);
                 }
             }
             else
             {
-                RenderUtils.DrawImageLoadingIcon(g, r);
+                RenderUtils.DrawImageLoadingIcon(g, HtmlContainer, r);
                 if (r.Width > 19 && r.Height > 19)
                 {
                     g.DrawRectangle(g.GetPen(ColorInt.LightGray), r.X, r.Y, r.Width, r.Height);

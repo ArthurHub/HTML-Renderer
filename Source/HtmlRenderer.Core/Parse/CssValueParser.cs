@@ -515,7 +515,10 @@ namespace HtmlRenderer.Core.Parse
         /// <returns>true - valid color, false - otherwise</returns>
         private static bool GetColorByName(string str, int idx, int length, out ColorInt color)
         {
-            color = HtmlContainerInt.Global.ColorFromName(str.Substring(idx, length));
+            if( HtmlRendererUtils.ResolveColorFromName == null )
+                throw new InvalidProgramException("HtmlRendererUtils.ResolveColorFromName was not set, must be set for HTML Renderer to work");
+            
+            color = HtmlRendererUtils.ResolveColorFromName(str.Substring(idx, length));
             return color.A > 0;
         }
 

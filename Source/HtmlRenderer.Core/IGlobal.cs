@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System.IO;
-using HtmlRenderer.Core.Entities;
 
 namespace HtmlRenderer.Core
 {
@@ -21,12 +20,15 @@ namespace HtmlRenderer.Core
     public interface IGlobal
     {
         /// <summary>
-        /// Get color instance from given color name.
+        /// Get image to be used while HTML image is loading.
         /// </summary>
-        /// <param name="colorName">the color name</param>
-        /// <returns>color instance</returns>
-        ColorInt ColorFromName(string colorName);
-        
+        IImage GetLoadImage();
+
+        /// <summary>
+        /// Get image to be used if HTML image load failed.
+        /// </summary>
+        IImage GetErrorImage();
+
         /// <summary>
         /// Create an <see cref="IImage"/> object from the given stream.
         /// </summary>
