@@ -10,9 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Drawing;
 using HtmlRenderer.Core.DomEntities;
-using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.SysEntities;
@@ -102,21 +100,21 @@ namespace HtmlRenderer.Core.Dom
 
             if (rect.Height > 2 && RenderUtils.IsColorVisible(ActualBackgroundColor))
             {
-                g.FillRectangle(RenderUtils.GetSolidBrush(ActualBackgroundColor), rect.X, rect.Y, rect.Width, rect.Height);
+                g.FillRectangle(g.GetSolidBrush(ActualBackgroundColor), rect.X, rect.Y, rect.Width, rect.Height);
             }
 
-            var b1 = RenderUtils.GetSolidBrush(ActualBorderTopColor);
+            var b1 = g.GetSolidBrush(ActualBorderTopColor);
             BordersDrawHandler.DrawBorder(Border.Top, g, this, b1, rect);
 
             if (rect.Height > 1)
             {
-                var b2 = RenderUtils.GetSolidBrush(ActualBorderLeftColor);
+                var b2 = g.GetSolidBrush(ActualBorderLeftColor);
                 BordersDrawHandler.DrawBorder(Border.Left, g, this, b2, rect);
 
-                var b3 = RenderUtils.GetSolidBrush(ActualBorderRightColor);
+                var b3 = g.GetSolidBrush(ActualBorderRightColor);
                 BordersDrawHandler.DrawBorder(Border.Right, g, this, b3, rect);
 
-                var b4 = RenderUtils.GetSolidBrush(ActualBorderBottomColor);
+                var b4 = g.GetSolidBrush(ActualBorderBottomColor);
                 BordersDrawHandler.DrawBorder(Border.Bottom, g, this, b4, rect);
             }
         }

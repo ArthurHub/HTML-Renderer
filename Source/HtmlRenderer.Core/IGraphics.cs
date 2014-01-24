@@ -12,7 +12,6 @@
 
 using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core
@@ -121,10 +120,16 @@ namespace HtmlRenderer.Core
         void FillPolygon(IBrush brush, PointInt[] points);
 
         /// <summary>
-        /// Sets the clipping region of this <see cref="T:System.Drawing.Graphics"/> to the result of the specified operation combining the current clip region and the rectangle specified by a <see cref="T:System.Drawing.RectangleF"/> structure.
+        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
         /// </summary>
-        /// <param name="rect"><see cref="T:System.Drawing.RectangleF"/> structure to combine. </param><param name="combineMode">Member of the <see cref="T:System.Drawing.Drawing2D.CombineMode"/> enumeration that specifies the combining operation to use. </param><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        void SetClip(RectangleInt rect, CombineMode combineMode = CombineMode.Replace);
+        /// <param name="rect">Rectangle structure to combine.</param>
+        void SetClipReplace(RectangleInt rect);
+
+        /// <summary>
+        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
+        /// </summary>
+        /// <param name="rect">Rectangle structure to combine.</param>
+        void SetClipExclude(RectangleInt rect);
 
         /// <summary>
         /// Draws a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.

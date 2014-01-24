@@ -49,7 +49,7 @@ namespace HtmlRenderer.Core.Handlers
             var prevClip = g.GetClip();
             var lRectangle = rectangle;
             lRectangle.Intersect(prevClip);
-            g.SetClip(lRectangle);
+            g.SetClipReplace(lRectangle);
 
             switch( box.BackgroundRepeat )
             {
@@ -67,7 +67,7 @@ namespace HtmlRenderer.Core.Handlers
                     break;
             }
 
-            g.SetClip(prevClip);
+            g.SetClipReplace(prevClip);
         }
 
 

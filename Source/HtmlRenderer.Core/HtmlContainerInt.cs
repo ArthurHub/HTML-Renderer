@@ -494,7 +494,7 @@ namespace HtmlRenderer.Core
             if (MaxSize.Height > 0)
             {
                 prevClip = g.GetClip();
-                g.SetClip(new RectangleInt(_location, _maxSize));
+                g.SetClipReplace(new RectangleInt(_location, _maxSize));
             }
 
             if( _root != null )
@@ -504,7 +504,7 @@ namespace HtmlRenderer.Core
 
             if (prevClip != RectangleInt.Empty)
             {
-                g.SetClip(prevClip);
+                g.SetClipReplace(prevClip);
             }
         }
 

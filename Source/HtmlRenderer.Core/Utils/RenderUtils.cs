@@ -68,7 +68,7 @@ namespace HtmlRenderer.Core.Utils
                     rect.Width += 2;
                     rect.Offset(box.HtmlContainer.ScrollOffset);
                     rect.Intersect(prevClip);
-                    g.SetClip(rect);
+                    g.SetClipReplace(rect);
                     return prevClip;
                 }
                 else
@@ -91,7 +91,7 @@ namespace HtmlRenderer.Core.Utils
         {
             if (prevClip != RectangleInt.Empty)
             {
-                g.SetClip(prevClip);
+                g.SetClipReplace(prevClip);
             }
         }
         

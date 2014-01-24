@@ -1266,11 +1266,11 @@ namespace HtmlRenderer.Core.Dom
                     if (HtmlContainer.SelectionForeColor != ColorInt.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
                     {
                         var orgClip = g.GetClip();
-                        g.SetClip(rect, CombineMode.Exclude);
+                        g.SetClipExclude(rect);
                         g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new SizeInt(word.Width, word.Height));
-                        g.SetClip(rect);
+                        g.SetClipReplace(rect);
                         g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new SizeInt(word.Width, word.Height));
-                        g.SetClip(orgClip);
+                        g.SetClipReplace(orgClip);
                     }
                     else
                     {

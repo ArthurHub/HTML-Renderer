@@ -141,14 +141,23 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
-        /// Sets the clipping region of this <see cref="T:System.Drawing.Graphics"/> to the result of the specified operation combining the current clip region and the rectangle specified by a <see cref="T:System.Drawing.RectangleF"/> structure.
+        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
         /// </summary>
-        /// <param name="rect"><see cref="T:System.Drawing.RectangleF"/> structure to combine. </param>
-        /// <param name="combineMode">Member of the <see cref="T:System.Drawing.Drawing2D.CombineMode"/> enumeration that specifies the combining operation to use. </param>
-        public void SetClip(RectangleInt rect, CombineMode combineMode = CombineMode.Replace)
+        /// <param name="rect">Rectangle structure to combine.</param>
+        public void SetClipReplace(RectangleInt rect)
         {
             ReleaseHdc();
-            _g.SetClip(Utils.Convert(rect), combineMode);
+            _g.SetClip(Utils.Convert(rect), CombineMode.Replace);
+        }
+
+        /// <summary>
+        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
+        /// </summary>
+        /// <param name="rect">Rectangle structure to combine.</param>
+        public void SetClipExclude(RectangleInt rect)
+        {
+            ReleaseHdc();
+            _g.SetClip(Utils.Convert(rect), CombineMode.Exclude);
         }
 
         /// <summary>
