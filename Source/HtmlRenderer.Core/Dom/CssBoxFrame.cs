@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System;
-using System.Drawing.Drawing2D;
 using System.Net;
 using System.Text;
 using System.Threading;

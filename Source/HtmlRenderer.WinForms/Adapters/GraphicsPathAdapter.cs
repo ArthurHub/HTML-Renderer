@@ -36,17 +36,17 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Appends an elliptical arc to the current figure.
         /// </summary>
-        public void AddArc(float p0, float p1, float p2, float p3, float p4, float p5)
+        public void AddArc(float x, float y, float width, float height, float startAngle, float sweepAngle)
         {
-            _graphicsPath.AddArc(p0, p1, p2, p3, p4, p5);
+            _graphicsPath.AddArc(x, y, width, height, startAngle, sweepAngle);
         }
 
         /// <summary>
         /// Appends a line segment to this GraphicsPath.
         /// </summary>
-        public void AddLine(float p0, float p1, float p2, float p3)
+        public void AddLine(float x1, float y1, float x2, float y2)
         {
-            _graphicsPath.AddLine(p0, p1, p2, p3);
+            _graphicsPath.AddLine(x1, y1, x2, y2);
         }
 
         /// <summary>

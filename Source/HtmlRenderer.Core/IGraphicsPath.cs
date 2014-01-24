@@ -22,12 +22,12 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// Appends an elliptical arc to the current figure.
         /// </summary>
-        void AddArc(float p0, float p1, float p2, float p3, float p4, float p5);
+        void AddArc(float x, float y, float width, float height, float startAngle, float sweepAngle);
 
         /// <summary>
         /// Appends a line segment to this GraphicsPath.
         /// </summary>
-        void AddLine(float p0, float p1, float p2, float p3);
+        void AddLine(float x1, float y1, float x2, float y2);
 
         /// <summary>
         /// Closes the current figure and starts a new figure. If the current figure contains a sequence of connected 
