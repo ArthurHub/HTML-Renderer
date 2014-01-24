@@ -84,6 +84,7 @@
     <Compile Include="IContextMenu.cs" />
     <Compile Include="IControl.cs" />
     <Compile Include="IGlobal.cs" />
+    <Compile Include="IGraphicsPath.cs" />
     <Compile Include="IImage.cs" />
     <Compile Include="IPen.cs" />
     <Compile Include="Parse\CssParser.cs" />

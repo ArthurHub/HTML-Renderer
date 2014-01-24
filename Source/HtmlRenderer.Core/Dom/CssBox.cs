@@ -1192,8 +1192,7 @@ namespace HtmlRenderer.Core.Dom
             if (rect.Width > 0 && rect.Height > 0)
             {
                 IBrush brush = null;
-                SmoothingMode smooth = g.SmoothingMode;
-
+                
                 if (BackgroundGradient != CssConstants.None)
                 {
                     brush = g.GetLinearGradientBrush(rect, ActualBackgroundColor, ActualBackgroundGradient, ActualBackgroundGradientAngle);
@@ -1209,15 +1208,16 @@ namespace HtmlRenderer.Core.Dom
                     // if (isLast)
                     //  rectangle.Width -= ActualWordSpacing + CssUtils.GetWordEndWhitespace(ActualFont);
 
-                    GraphicsPath roundrect = null;
+                    IGraphicsPath roundrect = null;
                     if (IsRounded)
                     {
-                        roundrect = RenderUtils.GetRoundRect(rect, ActualCornerNW, ActualCornerNE, ActualCornerSE, ActualCornerSW);
+                        roundrect = RenderUtils.GetRoundRect(g, rect, ActualCornerNW, ActualCornerNE, ActualCornerSE, ActualCornerSW);
                     }
 
+                    Object prevMode = null;
                     if (HtmlContainer != null && !HtmlContainer.AvoidGeometryAntialias && IsRounded)
                     {
-                        g.SmoothingMode = SmoothingMode.AntiAlias;
+                        prevMode = g.SetAntiAliasSmoothingMode();
                     }
 
                     if (roundrect != null)
@@ -1229,7 +1229,7 @@ namespace HtmlRenderer.Core.Dom
                         g.FillRectangle(brush, (float)Math.Ceiling(rect.X), (float)Math.Ceiling(rect.Y), rect.Width, rect.Height);
                     }
 
-                    g.SmoothingMode = smooth;
+                    g.ReturnPreviousSmoothingMode(prevMode);
 
                     if (roundrect != null) roundrect.Dispose();
                     brush.Dispose();
@@ -1322,7 +1322,7 @@ namespace HtmlRenderer.Core.Dom
             if (isLast)
                 x2 -= ActualPaddingRight + ActualBorderRightWidth;
 
-            var pen = RenderUtils.GetPen(ActualColor);
+            var pen = g.GetPen(ActualColor);
             g.DrawLine(pen, x1, y, x2, y);
         }
 
@@ -1372,6 +1372,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Get brush for selection background depending if it has external and if alpha is required for images.
         /// </summary>
+        /// <param name="g"></param>
         /// <param name="forceAlpha">used for images so they will have alpha effect</param>
         protected IBrush GetSelectionBackBrush(IGraphics g, bool forceAlpha)
         {

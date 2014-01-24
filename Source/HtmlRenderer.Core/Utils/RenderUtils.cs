@@ -10,7 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Drawing.Drawing2D;
 using System.Reflection;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.DomEntities;
@@ -123,20 +122,21 @@ namespace HtmlRenderer.Core.Utils
         /// <summary>
         /// Creates a rounded rectangle using the specified corner radius
         /// </summary>
+        /// <param name="g">the device to draw into</param>
         /// <param name="rect">Rectangle to round</param>
         /// <param name="nwRadius">Radius of the north east corner</param>
         /// <param name="neRadius">Radius of the north west corner</param>
         /// <param name="seRadius">Radius of the south east corner</param>
         /// <param name="swRadius">Radius of the south west corner</param>
         /// <returns>GraphicsPath with the lines of the rounded rectangle ready to be painted</returns>
-        public static GraphicsPath GetRoundRect(RectangleInt rect, float nwRadius, float neRadius, float seRadius, float swRadius)
+        public static IGraphicsPath GetRoundRect(IGraphics g, RectangleInt rect, float nwRadius, float neRadius, float seRadius, float swRadius)
         {
             //  NW-----NE
             //  |       |
             //  |       |
             //  SW-----SE
 
-            var path = new GraphicsPath();
+            var path = g.GetGraphicsPath();
 
             nwRadius *= 2;
             neRadius *= 2;
@@ -149,7 +149,7 @@ namespace HtmlRenderer.Core.Utils
             //NE Arc
             if( neRadius > 0f )
             {
-                path.AddArc(RectangleInt.FromLTRB(rect.Right - neRadius, rect.Top, rect.Right, rect.Top + neRadius),-90, 90);
+                path.AddArc(rect.Right - neRadius, rect.Top, rect.Right, rect.Top + neRadius,-90, 90);
             }
 
             // NE
@@ -160,7 +160,7 @@ namespace HtmlRenderer.Core.Utils
             //SE Arc
             if( seRadius > 0f )
             {
-                path.AddArc(RectangleInt.FromLTRB(rect.Right - seRadius, rect.Bottom - seRadius, rect.Right, rect.Bottom),0, 90);
+                path.AddArc(rect.Right - seRadius, rect.Bottom - seRadius, rect.Right, rect.Bottom,0, 90);
             }
 
             // SW --- SE
@@ -169,7 +169,7 @@ namespace HtmlRenderer.Core.Utils
             //SW Arc
             if( swRadius > 0f )
             {
-                path.AddArc(RectangleInt.FromLTRB(rect.Left, rect.Bottom - swRadius, rect.Left + swRadius, rect.Bottom),90, 90);
+                path.AddArc(rect.Left, rect.Bottom - swRadius, rect.Left + swRadius, rect.Bottom,90, 90);
             }
 
             // NW
@@ -180,7 +180,7 @@ namespace HtmlRenderer.Core.Utils
             //NW Arc
             if( nwRadius > 0f )
             {
-                path.AddArc(RectangleInt.FromLTRB(rect.Left, rect.Top, rect.Left + nwRadius, rect.Top + nwRadius),180, 90);
+                path.AddArc(rect.Left, rect.Top, rect.Left + nwRadius, rect.Top + nwRadius,180, 90);
             }
 
             path.CloseFigure();

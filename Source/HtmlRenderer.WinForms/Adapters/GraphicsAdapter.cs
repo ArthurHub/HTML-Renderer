@@ -69,6 +69,7 @@ namespace HtmlRenderer.WinForms.Adapters
 
         #endregion
 
+
         /// <summary>
         /// Init static resources.
         /// </summary>
@@ -91,6 +92,32 @@ namespace HtmlRenderer.WinForms.Adapters
             _g = g;
             _useGdiPlusTextRendering = useGdiPlusTextRendering;
             _releaseGraphics = releaseGraphics;
+        }
+
+        /// <summary>
+        /// Set the graphics smooth mode to use anti-alias.<br/>
+        /// Use <see cref="ReturnPreviousSmoothingMode"/> to return back the mode used.
+        /// </summary>
+        /// <returns>the previous smooth mode before the change</returns>
+        public Object SetAntiAliasSmoothingMode()
+        {
+            ReleaseHdc();
+            var prevMode = _g.SmoothingMode;
+            _g.SmoothingMode = SmoothingMode.AntiAlias;
+            return prevMode;
+        }
+
+        /// <summary>
+        /// Return to previous smooth mode before anti-alias was set as returned from <see cref="SetAntiAliasSmoothingMode"/>.
+        /// </summary>
+        /// <param name="prevMode">the previous mode to set</param>
+        public void ReturnPreviousSmoothingMode(Object prevMode)
+        {
+            if (prevMode != null)
+            {
+                ReleaseHdc();
+                _g.SmoothingMode = (SmoothingMode)prevMode;
+            }
         }
 
         /// <summary>
@@ -265,6 +292,15 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
+        /// Get GraphicsPath object.
+        /// </summary>
+        /// <returns>graphics path instance</returns>
+        public IGraphicsPath GetGraphicsPath()
+        {
+            return new GraphicsPathAdapter();
+        }
+
+        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
@@ -276,26 +312,6 @@ namespace HtmlRenderer.WinForms.Adapters
         
 
         #region Delegate graphics methods
-
-        /// <summary>
-        /// Gets or sets the rendering quality for this <see cref="T:System.Drawing.Graphics"/>.
-        /// </summary>
-        /// <returns>
-        /// One of the <see cref="T:System.Drawing.Drawing2D.SmoothingMode"/> values.
-        /// </returns>
-        public SmoothingMode SmoothingMode
-        {
-            get
-            {
-                ReleaseHdc();
-                return _g.SmoothingMode;
-            }
-            set
-            {
-                ReleaseHdc();
-                _g.SmoothingMode = value;
-            }
-        }
 
         /// <summary>
         /// Draws a line connecting the two points specified by the coordinate pairs.
@@ -353,19 +369,19 @@ namespace HtmlRenderer.WinForms.Adapters
         /// Draws a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.
         /// </summary>
         /// <param name="pen"><see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the path. </param><param name="path"><see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> to draw. </param><exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.-or-<paramref name="path"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        public void DrawPath(IPen pen, GraphicsPath path)
+        public void DrawPath(IPen pen, IGraphicsPath path)
         {
-            _g.DrawPath(((PenAdapter)pen).Pen, path);
+            _g.DrawPath(((PenAdapter)pen).Pen, ((GraphicsPathAdapter)path).GraphicsPath);
         }
 
         /// <summary>
         /// Fills the interior of a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.
         /// </summary>
         /// <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the characteristics of the fill. </param><param name="path"><see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> that represents the path to fill. </param><exception cref="T:System.ArgumentNullException"><paramref name="brush"/> is null.-or-<paramref name="path"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        public void FillPath(IBrush brush, GraphicsPath path)
+        public void FillPath(IBrush brush, IGraphicsPath path)
         {
             ReleaseHdc();
-            _g.FillPath(((BrushAdapter)brush).Brush, path);
+            _g.FillPath(((BrushAdapter)brush).Brush, ((GraphicsPathAdapter)path).GraphicsPath);
         }
 
         /// <summary>

@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System;
-using System.Drawing.Drawing2D;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.DomEntities;
 using HtmlRenderer.Core.SysEntities;
@@ -96,19 +95,19 @@ namespace HtmlRenderer.Core.Handlers
             var style = GetStyle(border, box);
             var color = GetColor(border, box, style);
 
-            var borderPath = GetRoundedBorderPath(border, box, rect);
+            var borderPath = GetRoundedBorderPath(g, border, box, rect);
             if (borderPath != null)
             {
                 // rounded border need special path
-                var smooth = g.SmoothingMode;
+                Object prevMode = null;
                 if (box.HtmlContainer != null && !box.HtmlContainer.AvoidGeometryAntialias && box.IsRounded)
-                    g.SmoothingMode = SmoothingMode.AntiAlias;
+                    prevMode = g.SetAntiAliasSmoothingMode();
 
                 var pen = GetPen(g, style, color, GetWidth(border, box));
                 using (borderPath)
                     g.DrawPath(pen, borderPath);
 
-                g.SmoothingMode = smooth;
+                g.ReturnPreviousSmoothingMode(prevMode);
             }
             else
             {
@@ -195,20 +194,21 @@ namespace HtmlRenderer.Core.Handlers
         /// To support rounded dotted/dashed borders we need to use arc in the border path.<br/>
         /// Return null if the border is not rounded.<br/>
         /// </summary>
+        /// <param name="g">the device to draw into</param>
         /// <param name="border">Desired border</param>
         /// <param name="b">Box which the border corresponds</param>
         /// <param name="r">the rectangle the border is enclosing</param>
         /// <returns>Beveled border path, null if there is no rounded corners</returns>
-        private static GraphicsPath GetRoundedBorderPath(Border border, CssBox b, RectangleInt r)
+        private static IGraphicsPath GetRoundedBorderPath(IGraphics g, Border border, CssBox b, RectangleInt r)
         {
-            GraphicsPath path = null;
+            IGraphicsPath path = null;
 
             switch( border )
             {
                 case Border.Top:
                     if( b.ActualCornerNW > 0 || b.ActualCornerNE > 0 )
                     {
-                        path = new GraphicsPath();
+                        path = g.GetGraphicsPath();
 
                         if (b.ActualCornerNW > 0)
                             path.AddArc(r.Left + b.ActualBorderLeftWidth / 2, r.Top + b.ActualBorderTopWidth / 2, b.ActualCornerNW * 2, b.ActualCornerNW * 2, 180f, 90f);
@@ -224,7 +224,7 @@ namespace HtmlRenderer.Core.Handlers
                 case Border.Bottom:
                     if (b.ActualCornerSW > 0 || b.ActualCornerSE > 0)
                     {
-                        path = new GraphicsPath();
+                        path = g.GetGraphicsPath();
 
                         if (b.ActualCornerSE > 0)
                             path.AddArc(r.Right - b.ActualCornerNE * 2 - b.ActualBorderRightWidth / 2, r.Bottom - b.ActualCornerSE * 2 - b.ActualBorderBottomWidth / 2, b.ActualCornerSE * 2, b.ActualCornerSE * 2, 0f, 90f);
@@ -240,7 +240,7 @@ namespace HtmlRenderer.Core.Handlers
                 case Border.Right:
                     if( b.ActualCornerNE > 0 || b.ActualCornerSE > 0 )
                     {
-                        path = new GraphicsPath();
+                        path = g.GetGraphicsPath();
 
                         if (b.ActualCornerNE > 0 && (b.BorderTopStyle == CssConstants.None || b.BorderTopStyle == CssConstants.Hidden))
                             path.AddArc(r.Right - b.ActualCornerNE * 2 - b.ActualBorderRightWidth / 2, r.Top + b.ActualBorderTopWidth / 2, b.ActualCornerNE * 2, b.ActualCornerNE * 2, 270f, 90f);
@@ -256,7 +256,7 @@ namespace HtmlRenderer.Core.Handlers
                 case Border.Left:
                     if( b.ActualCornerNW > 0 || b.ActualCornerSW > 0 )
                     {
-                        path = new GraphicsPath();
+                        path = g.GetGraphicsPath();
 
                         if (b.ActualCornerSW > 0 && (b.BorderTopStyle == CssConstants.None || b.BorderTopStyle == CssConstants.Hidden))
                             path.AddArc(r.Left + b.ActualBorderLeftWidth / 2, r.Bottom - b.ActualCornerSW * 2 - b.ActualBorderBottomWidth / 2, b.ActualCornerSW * 2, b.ActualCornerSW * 2, 90f, 90f);

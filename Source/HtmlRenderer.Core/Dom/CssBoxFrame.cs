@@ -476,15 +476,14 @@ namespace HtmlRenderer.Core.Dom
         {
             if (_isVideo && _imageWord.Width > 70 && _imageWord.Height > 50)
             {
-                var smooth = g.SmoothingMode;
-                g.SmoothingMode = SmoothingMode.AntiAlias;
+                var prevMode = g.SetAntiAliasSmoothingMode();
 
                 var size = new SizeInt(60, 40);
                 var left = rect.Left + (rect.Width - size.Width)/2;
                 var top = rect.Top + (rect.Height - size.Height)/2;
                 g.FillRectangle(g.GetSolidBrush(ColorInt.FromArgb(160, 0, 0, 0)), left, top, size.Width, size.Height);
 
-                using (var path = new GraphicsPath())
+                using (var path = g.GetGraphicsPath())
                 {
                     path.AddLine(left + size.Width/3f + 1, top + 3*size.Height/4f, left + size.Width/3f + 1, top + size.Height/4f);
                     path.AddLine(left + size.Width/3f + 1, top + size.Height/4f, left + 2*size.Width/3f + 1, top + size.Height/2f);
@@ -492,7 +491,7 @@ namespace HtmlRenderer.Core.Dom
                     g.FillPath(g.GetSolidBrush(ColorInt.White), path);
                 }
 
-                g.SmoothingMode = smooth;
+                g.ReturnPreviousSmoothingMode(prevMode);
             }
         }
 

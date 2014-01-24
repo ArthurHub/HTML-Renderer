@@ -34,13 +34,17 @@ namespace HtmlRenderer.Core
         RectangleInt GetClip();
 
         /// <summary>
-        /// Gets or sets the rendering quality for this <see cref="T:System.Drawing.Graphics"/>.
+        /// Set the graphics smooth mode to use anti-alias.<br/>
+        /// Use <see cref="ReturnPreviousSmoothingMode"/> to return back the mode used.
         /// </summary>
-        /// <returns>
-        /// One of the <see cref="T:System.Drawing.Drawing2D.SmoothingMode"/> values.
-        /// </returns>
-        /// <PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        SmoothingMode SmoothingMode { get; set; }
+        /// <returns>the previous smooth mode before the change</returns>
+        Object SetAntiAliasSmoothingMode();
+
+        /// <summary>
+        /// Return to previous smooth mode before anti-alias was set as returned from <see cref="SetAntiAliasSmoothingMode"/>.
+        /// </summary>
+        /// <param name="prevMode">the previous mode to set</param>
+        void ReturnPreviousSmoothingMode(Object prevMode);
 
         /// <summary>
         /// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
@@ -108,7 +112,7 @@ namespace HtmlRenderer.Core
         /// Fills the interior of a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.
         /// </summary>
         /// <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the characteristics of the fill. </param><param name="path"><see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> that represents the path to fill. </param><exception cref="T:System.ArgumentNullException"><paramref name="brush"/> is null.-or-<paramref name="path"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        void FillPath(IBrush brush, GraphicsPath path);
+        void FillPath(IBrush brush, IGraphicsPath path);
 
         /// <summary>
         /// Fills the interior of a polygon defined by an array of points specified by <see cref="T:System.Drawing.PointF"/> structures.
@@ -126,7 +130,7 @@ namespace HtmlRenderer.Core
         /// Draws a <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/>.
         /// </summary>
         /// <param name="pen"><see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the path. </param><param name="path"><see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> to draw. </param><exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.-or-<paramref name="path"/> is null.</exception><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/></PermissionSet>
-        void DrawPath(IPen pen, GraphicsPath path);
+        void DrawPath(IPen pen, IGraphicsPath path);
 
         /// <summary>
         /// Get color pen.
@@ -159,5 +163,11 @@ namespace HtmlRenderer.Core
         /// <param name="dstRect">A Rectangle structure that represents the bounding rectangle for this TextureBrush object.</param>
         /// <param name="translateTransformLocation">The dimension by which to translate the transformation</param>
         IBrush GetTextureBrush(IImage image, RectangleInt dstRect, PointInt translateTransformLocation);
+
+        /// <summary>
+        /// Get GraphicsPath object.
+        /// </summary>
+        /// <returns>graphics path instance</returns>
+        IGraphicsPath GetGraphicsPath();
     }
 }
