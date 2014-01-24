@@ -13,6 +13,8 @@
 using System.Drawing;
 using System.IO;
 using HtmlRenderer.Core;
+using HtmlRenderer.Core.SysEntities;
+using HtmlRenderer.WinForms.Utilities;
 
 namespace HtmlRenderer.WinForms.Adapters
 {
@@ -29,6 +31,17 @@ namespace HtmlRenderer.WinForms.Adapters
         public IImage FromStream(Stream memoryStream)
         {
             return new ImageAdapter(Image.FromStream(memoryStream));
+        }
+
+        /// <summary>
+        /// Get color instance from given color name.
+        /// </summary>
+        /// <param name="colorName">the color name</param>
+        /// <returns>color instance</returns>
+        public ColorInt ColorFromName(string colorName)
+        {
+            var color = Color.FromName(colorName);
+            return Utils.Convert(color);
         }
     }
 }

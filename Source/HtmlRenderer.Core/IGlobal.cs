@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System.IO;
+using HtmlRenderer.Core.SysEntities;
 
 namespace HtmlRenderer.Core
 {
@@ -25,5 +26,12 @@ namespace HtmlRenderer.Core
         /// <param name="memoryStream">the stream to create image from</param>
         /// <returns>new image instance</returns>
         IImage FromStream(Stream memoryStream);
+
+        /// <summary>
+        /// Get color instance from given color name.
+        /// </summary>
+        /// <param name="colorName">the color name</param>
+        /// <returns>color instance</returns>
+        ColorInt ColorFromName(string colorName);
     }
 }

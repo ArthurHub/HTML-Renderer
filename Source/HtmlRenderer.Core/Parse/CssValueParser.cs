@@ -11,11 +11,9 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
 using System.Globalization;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.DomEntities;
-using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.SysEntities;
 using HtmlRenderer.Core.Utils;
 
@@ -517,7 +515,7 @@ namespace HtmlRenderer.Core.Parse
         /// <returns>true - valid color, false - otherwise</returns>
         private static bool GetColorByName(string str, int idx, int length, out ColorInt color)
         {
-            color = ColorInt.FromName(str.Substring(idx, length));
+            color = HtmlContainerInt.Global.ColorFromName(str.Substring(idx, length));
             return color.A > 0;
         }
 
