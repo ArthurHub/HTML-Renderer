@@ -87,6 +87,11 @@ namespace HtmlRenderer.Core
         private readonly IGlobal _global;
 
         /// <summary>
+        /// parser for CSS data
+        /// </summary>
+        private readonly CssParser _cssParser;
+
+        /// <summary>
         /// the root css box of the parsed html
         /// </summary>
         private CssBox _root;
@@ -175,6 +180,7 @@ namespace HtmlRenderer.Core
             ArgChecker.AssertArgNotNull(global, "global");
 
             _global = global;
+            _cssParser = new CssParser(global);
         }
 
         /// <summary>
@@ -183,6 +189,14 @@ namespace HtmlRenderer.Core
         internal IGlobal Global
         {
             get { return _global; }
+        }
+
+        /// <summary>
+        /// parser for CSS data
+        /// </summary>
+        internal CssParser CssParser
+        {
+            get { return _cssParser; }
         }
 
         /// <summary>
@@ -404,9 +418,10 @@ namespace HtmlRenderer.Core
 
             if( !string.IsNullOrEmpty(htmlSource) )
             {
-                _cssData = baseCssData ?? CssUtils.DefaultCssData;
+                _cssData = baseCssData ?? _global.GetDefaultCssData();
 
-                _root = DomParser.GenerateCssTree(htmlSource, this, ref _cssData);
+                DomParser parser = new DomParser(_cssParser);
+                _root = parser.GenerateCssTree(htmlSource, this, ref _cssData);
                 if( _root != null )
                 {
                     _selectionHandler = new SelectionHandler(_root);

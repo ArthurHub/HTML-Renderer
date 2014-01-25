@@ -54,10 +54,10 @@ namespace HtmlRenderer.Core.Dom
         private string _borderCollapse = "separate";
         private string _bottom;
         private string _color = "black";
-        private string _cornerNWRadius = "0";
-        private string _cornerNERadius = "0";
-        private string _cornerSERadius = "0";
-        private string _cornerSWRadius = "0";
+        private string _cornerNwRadius = "0";
+        private string _cornerNeRadius = "0";
+        private string _cornerSeRadius = "0";
+        private string _cornerSwRadius = "0";
         private string _cornerRadius = "0";
         private string _emptyCells = "show";
         private string _direction = "ltr";
@@ -113,10 +113,10 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         private SizeInt _size;
 
-        private float _actualCornerNW = float.NaN;
-        private float _actualCornerNE = float.NaN;
-        private float _actualCornerSW = float.NaN;
-        private float _actualCornerSE = float.NaN;
+        private float _actualCornerNw = float.NaN;
+        private float _actualCornerNe = float.NaN;
+        private float _actualCornerSw = float.NaN;
+        private float _actualCornerSe = float.NaN;
         private ColorInt _actualColor = ColorInt.Empty;
         private float _actualBackgroundGradientAngle = float.NaN;
         private float _actualHeight = float.NaN;
@@ -143,9 +143,6 @@ namespace HtmlRenderer.Core.Dom
         private float _actualTextIndent = float.NaN;
         private float _actualBorderSpacingHorizontal = float.NaN;
         private float _actualBorderSpacingVertical = float.NaN;
-        private float _fontAscent = float.NaN;
-        private float _fontDescent = float.NaN;
-        private float _fontLineSpacing = float.NaN;
         private ColorInt _actualBackgroundGradient = ColorInt.Empty;
         private ColorInt _actualBorderTopColor = ColorInt.Empty;
         private ColorInt _actualBorderLeftColor = ColorInt.Empty;
@@ -285,27 +282,27 @@ namespace HtmlRenderer.Core.Dom
                 switch (r.Count)
                 {
                     case 1:
-                        CornerNERadius = r[0].Value;
-                        CornerNWRadius = r[0].Value;
-                        CornerSERadius = r[0].Value;
-                        CornerSWRadius = r[0].Value;
+                        CornerNeRadius = r[0].Value;
+                        CornerNwRadius = r[0].Value;
+                        CornerSeRadius = r[0].Value;
+                        CornerSwRadius = r[0].Value;
                         break;
                     case 2:
-                        CornerNERadius = r[0].Value;
-                        CornerNWRadius = r[0].Value;
-                        CornerSERadius = r[1].Value;
-                        CornerSWRadius = r[1].Value;
+                        CornerNeRadius = r[0].Value;
+                        CornerNwRadius = r[0].Value;
+                        CornerSeRadius = r[1].Value;
+                        CornerSwRadius = r[1].Value;
                         break;
                     case 3:
-                        CornerNERadius = r[0].Value;
-                        CornerNWRadius = r[1].Value;
-                        CornerSERadius = r[2].Value;
+                        CornerNeRadius = r[0].Value;
+                        CornerNwRadius = r[1].Value;
+                        CornerSeRadius = r[2].Value;
                         break;
                     case 4:
-                        CornerNERadius = r[0].Value;
-                        CornerNWRadius = r[1].Value;
-                        CornerSERadius = r[2].Value;
-                        CornerSWRadius = r[3].Value;
+                        CornerNeRadius = r[0].Value;
+                        CornerNwRadius = r[1].Value;
+                        CornerSeRadius = r[2].Value;
+                        CornerSwRadius = r[3].Value;
                         break;
                 }
 
@@ -313,28 +310,28 @@ namespace HtmlRenderer.Core.Dom
             }
         }
 
-        public string CornerNWRadius
+        public string CornerNwRadius
         {
-            get { return _cornerNWRadius; }
-            set { _cornerNWRadius = value; }
+            get { return _cornerNwRadius; }
+            set { _cornerNwRadius = value; }
         }
 
-        public string CornerNERadius
+        public string CornerNeRadius
         {
-            get { return _cornerNERadius; }
-            set { _cornerNERadius = value; }
+            get { return _cornerNeRadius; }
+            set { _cornerNeRadius = value; }
         }
 
-        public string CornerSERadius
+        public string CornerSeRadius
         {
-            get { return _cornerSERadius; }
-            set { _cornerSERadius = value; }
+            get { return _cornerSeRadius; }
+            set { _cornerSeRadius = value; }
         }
 
-        public string CornerSWRadius
+        public string CornerSwRadius
         {
-            get { return _cornerSWRadius; }
-            set { _cornerSWRadius = value; }
+            get { return _cornerSwRadius; }
+            set { _cornerSwRadius = value; }
         }
 
         public string MarginBottom
@@ -989,11 +986,13 @@ namespace HtmlRenderer.Core.Dom
             {
                 if (_actualBorderTopColor.IsEmpty)
                 {
-                    _actualBorderTopColor = CssValueParser.GetActualColor(BorderTopColor);
+                    _actualBorderTopColor = GetActualColor(BorderTopColor);
                 }
                 return _actualBorderTopColor;
             }
         }
+
+        protected abstract ColorInt GetActualColor(string colorStr);
 
         /// <summary>
         /// Gets the actual Left border Color
@@ -1004,7 +1003,7 @@ namespace HtmlRenderer.Core.Dom
             {
                 if ((_actualBorderLeftColor.IsEmpty))
                 {
-                    _actualBorderLeftColor = CssValueParser.GetActualColor(BorderLeftColor);
+                    _actualBorderLeftColor = GetActualColor(BorderLeftColor);
                 }
                 return _actualBorderLeftColor;
             }
@@ -1019,7 +1018,7 @@ namespace HtmlRenderer.Core.Dom
             {
                 if ((_actualBorderBottomColor.IsEmpty))
                 {
-                    _actualBorderBottomColor = CssValueParser.GetActualColor(BorderBottomColor);
+                    _actualBorderBottomColor = GetActualColor(BorderBottomColor);
                 }
                 return _actualBorderBottomColor;
             }
@@ -1034,69 +1033,69 @@ namespace HtmlRenderer.Core.Dom
             {
                 if ((_actualBorderRightColor.IsEmpty))
                 {
-                    _actualBorderRightColor = CssValueParser.GetActualColor(BorderRightColor);
+                    _actualBorderRightColor = GetActualColor(BorderRightColor);
                 }
                 return _actualBorderRightColor;
             }
         }
 
         /// <summary>
-        /// Gets the actual lenght of the north west corner
+        /// Gets the actual length of the north west corner
         /// </summary>
-        public float ActualCornerNW
+        public float ActualCornerNw
         {
             get
             {
-                if (float.IsNaN(_actualCornerNW))
+                if (float.IsNaN(_actualCornerNw))
                 {
-                    _actualCornerNW = CssValueParser.ParseLength(CornerNWRadius, 0, this);
+                    _actualCornerNw = CssValueParser.ParseLength(CornerNwRadius, 0, this);
                 }
-                return _actualCornerNW;
+                return _actualCornerNw;
             }
         }
 
         /// <summary>
-        /// Gets the actual lenght of the north east corner
+        /// Gets the actual length of the north east corner
         /// </summary>
-        public float ActualCornerNE
+        public float ActualCornerNe
         {
             get
             {
-                if (float.IsNaN(_actualCornerNE))
+                if (float.IsNaN(_actualCornerNe))
                 {
-                    _actualCornerNE = CssValueParser.ParseLength(CornerNERadius, 0, this);
+                    _actualCornerNe = CssValueParser.ParseLength(CornerNeRadius, 0, this);
                 }
-                return _actualCornerNE;
+                return _actualCornerNe;
             }
         }
 
         /// <summary>
-        /// Gets the actual lenght of the south east corner
+        /// Gets the actual length of the south east corner
         /// </summary>
-        public float ActualCornerSE
+        public float ActualCornerSe
         {
             get
             {
-                if (float.IsNaN(_actualCornerSE))
+                if (float.IsNaN(_actualCornerSe))
                 {
-                    _actualCornerSE = CssValueParser.ParseLength(CornerSERadius, 0, this);
+                    _actualCornerSe = CssValueParser.ParseLength(CornerSeRadius, 0, this);
                 }
-                return _actualCornerSE;
+                return _actualCornerSe;
             }
         }
 
         /// <summary>
-        /// Gets the actual lenght of the south west corner
+        /// Gets the actual length of the south west corner
         /// </summary>
-        public float ActualCornerSW
+        public float ActualCornerSw
         {
             get
             {
-                if (float.IsNaN(_actualCornerSW))
+                if (float.IsNaN(_actualCornerSw))
                 {
-                    _actualCornerSW = CssValueParser.ParseLength(CornerSWRadius, 0, this);
+                    _actualCornerSw = CssValueParser.ParseLength(CornerSwRadius, 0, this);
                 }
-                return _actualCornerSW;
+                return _actualCornerSw;
             }
         }
 
@@ -1105,7 +1104,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         public bool IsRounded
         {
-            get { return ActualCornerNE > 0f || ActualCornerNW > 0f || ActualCornerSE > 0f || ActualCornerSW > 0f; }
+            get { return ActualCornerNe > 0f || ActualCornerNw > 0f || ActualCornerSe > 0f || ActualCornerSw > 0f; }
         }
 
         /// <summary>
@@ -1127,7 +1126,7 @@ namespace HtmlRenderer.Core.Dom
 
                 if (_actualColor.IsEmpty)
                 {
-                    _actualColor = CssValueParser.GetActualColor(Color);
+                    _actualColor = GetActualColor(Color);
                 }
 
                 return _actualColor;
@@ -1144,7 +1143,7 @@ namespace HtmlRenderer.Core.Dom
             {
                 if (_actualBackgroundColor.IsEmpty)
                 {
-                    _actualBackgroundColor = CssValueParser.GetActualColor(BackgroundColor);
+                    _actualBackgroundColor = GetActualColor(BackgroundColor);
                 }
 
                 return _actualBackgroundColor;
@@ -1160,7 +1159,7 @@ namespace HtmlRenderer.Core.Dom
             {
                 if (_actualBackgroundGradient.IsEmpty)
                 {
-                    _actualBackgroundGradient = CssValueParser.GetActualColor(BackgroundGradient);
+                    _actualBackgroundGradient = GetActualColor(BackgroundGradient);
                 }
                 return _actualBackgroundGradient;
             }
@@ -1457,10 +1456,10 @@ namespace HtmlRenderer.Core.Dom
                     _borderBottomStyle = p._borderBottomStyle;
                     _borderLeftStyle = p._borderLeftStyle;
                     _bottom = p._bottom;
-                    _cornerNWRadius = p._cornerNWRadius;
-                    _cornerNERadius = p._cornerNERadius;
-                    _cornerSERadius = p._cornerSERadius;
-                    _cornerSWRadius = p._cornerSWRadius;
+                    _cornerNwRadius = p._cornerNwRadius;
+                    _cornerNeRadius = p._cornerNeRadius;
+                    _cornerSeRadius = p._cornerSeRadius;
+                    _cornerSwRadius = p._cornerSwRadius;
                     _cornerRadius = p._cornerRadius;
                     _display = p._display;
                     _float = p._float;

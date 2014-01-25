@@ -31,29 +31,7 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         private static readonly ColorInt _defaultSelectionBackcolor = ColorInt.FromArgb(0xa9,0x33, 0x99, 0xFF);
 
-        /// <summary>
-        /// default CSS parsed data singleton
-        /// </summary>
-        private static CssData _defaultCssData ;
-
         #endregion
-
-
-        /// <summary>
-        /// default CSS parsed data singleton
-        /// </summary>
-        public static CssData DefaultCssData
-        {
-            get
-            {
-                if(_defaultCssData == null)
-                {
-                    _defaultCssData = new CssData();
-                    CssParser.ParseStyleSheet(_defaultCssData, CssDefaults.DefaultStyleSheet);
-                }
-                return _defaultCssData;
-            }
-        }
 
         /// <summary>
         /// Brush for selection background
@@ -121,13 +99,13 @@ namespace HtmlRenderer.Core.Utils
                 case "corner-radius":
                     return cssBox.CornerRadius;
                 case "corner-nw-radius":
-                    return cssBox.CornerNWRadius;
+                    return cssBox.CornerNwRadius;
                 case "corner-ne-radius":
-                    return cssBox.CornerNERadius;
+                    return cssBox.CornerNeRadius;
                 case "corner-se-radius":
-                    return cssBox.CornerSERadius;
+                    return cssBox.CornerSeRadius;
                 case "corner-sw-radius":
-                    return cssBox.CornerSWRadius;
+                    return cssBox.CornerSwRadius;
                 case "margin-bottom":
                     return cssBox.MarginBottom;
                 case "margin-left":
@@ -277,16 +255,16 @@ namespace HtmlRenderer.Core.Utils
                     cssBox.CornerRadius = value;
                     break;
                 case "corner-nw-radius":
-                    cssBox.CornerNWRadius = value;
+                    cssBox.CornerNwRadius = value;
                     break;
                 case "corner-ne-radius":
-                    cssBox.CornerNERadius = value;
+                    cssBox.CornerNeRadius = value;
                     break;
                 case "corner-se-radius":
-                    cssBox.CornerSERadius = value;
+                    cssBox.CornerSeRadius = value;
                     break;
                 case "corner-sw-radius":
-                    cssBox.CornerSWRadius = value;
+                    cssBox.CornerSwRadius = value;
                     break;
                 case "margin-bottom":
                     cssBox.MarginBottom = value;

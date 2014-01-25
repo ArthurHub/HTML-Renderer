@@ -23,8 +23,28 @@ namespace HtmlRenderer.Core.Parse
     /// <summary>
     /// Handle css DOM tree generation from raw html and stylesheet.
     /// </summary>
-    internal static class DomParser
+    internal sealed class DomParser
     {
+        #region Fields and Consts
+
+        /// <summary>
+        /// Parser for CSS
+        /// </summary>
+        private readonly CssParser _cssParser;
+
+        #endregion
+
+
+        /// <summary>
+        /// Init.
+        /// </summary>
+        public DomParser(CssParser cssParser)
+        {
+            ArgChecker.AssertArgNotNull(cssParser, "cssParser");
+
+            _cssParser = cssParser;
+        }
+
         /// <summary>
         /// Generate css tree by parsing the given html and applying the given css style data on it.
         /// </summary>
@@ -32,7 +52,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="htmlContainer">the html container to use for reference resolve</param>
         /// <param name="cssData">the css data to use</param>
         /// <returns>the root of the generated tree</returns>
-        public static CssBox GenerateCssTree(string html, HtmlContainerInt htmlContainer, ref CssData cssData)
+        public CssBox GenerateCssTree(string html, HtmlContainerInt htmlContainer, ref CssData cssData)
         {
             var root = HtmlParser.ParseDocument(html);
             if (root != null)
@@ -74,7 +94,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="htmlContainer">the html container to use for reference resolve</param>
         /// <param name="cssData"> </param>
         /// <param name="cssDataChanged">check if the css data has been modified by the handled html not to change the base css data</param>
-        private static void CascadeStyles(CssBox box, HtmlContainerInt htmlContainer, ref CssData cssData, ref bool cssDataChanged)
+        private void CascadeStyles(CssBox box, HtmlContainerInt htmlContainer, ref CssData cssData, ref bool cssDataChanged)
         {
             box.InheritStyle();
 
@@ -101,7 +121,7 @@ namespace HtmlRenderer.Core.Parse
                 // Check for the style="" attribute
                 if (box.HtmlTag.HasAttribute("style"))
                 {
-                    var block = CssParser.ParseCssBlock(box.HtmlTag.Name, box.HtmlTag.TryGetAttribute("style"));
+                    var block = _cssParser.ParseCssBlock(box.HtmlTag.Name, box.HtmlTag.TryGetAttribute("style"));
                     AssignCssBlock(box, block);
                 }
 
@@ -109,7 +129,7 @@ namespace HtmlRenderer.Core.Parse
                 if (box.HtmlTag.Name.Equals("style", StringComparison.CurrentCultureIgnoreCase) && box.Boxes.Count == 1)
                 {
                     CloneCssData(ref cssData, ref cssDataChanged);
-                    CssParser.ParseStyleSheet(cssData, box.Boxes[0].Text.CutSubstring());
+                    _cssParser.ParseStyleSheet(cssData, box.Boxes[0].Text.CutSubstring());
                 }
 
                 // Check for the <link rel=stylesheet> tag
@@ -121,7 +141,7 @@ namespace HtmlRenderer.Core.Parse
                     CssData stylesheetData;
                     StylesheetLoadHandler.LoadStylesheet(htmlContainer, box.GetAttribute("href", string.Empty), box.HtmlTag.Attributes,out stylesheet, out stylesheetData);
                     if (stylesheet != null)
-                        CssParser.ParseStyleSheet(cssData, stylesheet);
+                        _cssParser.ParseStyleSheet(cssData, stylesheet);
                     else if( stylesheetData != null )
                         cssData.Combine(stylesheetData);
                 }
@@ -146,7 +166,7 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="htmlContainer"> </param>
         /// <param name="cssData">the style data</param>
-        private static void SetTextSelectionStyle(HtmlContainerInt htmlContainer, CssData cssData)
+        private void SetTextSelectionStyle(HtmlContainerInt htmlContainer, CssData cssData)
         {
             htmlContainer.SelectionForeColor = ColorInt.Empty;
             htmlContainer.SelectionBackColor = ColorInt.Empty;
@@ -157,9 +177,9 @@ namespace HtmlRenderer.Core.Parse
                 foreach (var block in blocks)
                 {
                     if (block.Properties.ContainsKey("color"))
-                        htmlContainer.SelectionForeColor = CssValueParser.GetActualColor(block.Properties["color"]);
+                        htmlContainer.SelectionForeColor = _cssParser.ParseColor(block.Properties["color"]);
                     if (block.Properties.ContainsKey("background-color"))
-                        htmlContainer.SelectionBackColor = CssValueParser.GetActualColor(block.Properties["background-color"]);
+                        htmlContainer.SelectionBackColor = _cssParser.ParseColor(block.Properties["background-color"]);
                 }
             }
         }
@@ -364,7 +384,7 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="tag"></param>
         /// <param name="box"></param>
-        private static void TranslateAttributes(HtmlTag tag, CssBox box)
+        private void TranslateAttributes(HtmlTag tag, CssBox box)
         {
             if (tag.HasAttributes())
             {
@@ -417,7 +437,7 @@ namespace HtmlRenderer.Core.Parse
                             box.Direction = value.ToLower();
                             break;
                         case HtmlConstants.Face:
-                            box.FontFamily = CssParser.ParseFontFamily(value);
+                            box.FontFamily = _cssParser.ParseFontFamily(value);
                             break;
                         case HtmlConstants.Height:
                             box.Height = TranslateLength(value);

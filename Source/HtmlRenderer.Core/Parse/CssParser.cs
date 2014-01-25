@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using HtmlRenderer.Core.Dom.Entities;
 using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Interfaces;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Parse
@@ -23,7 +24,7 @@ namespace HtmlRenderer.Core.Parse
     /// <summary>
     /// Parser to parse CSS stylesheet source string into CSS objects.
     /// </summary>
-    internal static class CssParser
+    internal sealed class CssParser
     {
         #region Fields and Consts
 
@@ -32,7 +33,26 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         private static readonly char[] _cssBlockSplitters = new[] { '}', ';' };
 
+        private readonly IGlobal _global;
+
+        /// <summary>
+        /// Utility for value parsing.
+        /// </summary>
+        private readonly CssValueParser _valueParser;
+
         #endregion
+
+
+        /// <summary>
+        /// Init.
+        /// </summary>
+        public CssParser(IGlobal global)
+        {
+            ArgChecker.AssertArgNotNull(global, "global");
+
+            _valueParser = new CssValueParser(global);
+            _global = global;
+        }
 
         /// <summary>
         /// Parse the given stylesheet source to CSS blocks dictionary.<br/>
@@ -45,9 +65,9 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="stylesheet">raw css stylesheet to parse</param>
         /// <param name="combineWithDefault">true - combine the parsed css data with default css data, false - return only the parsed css data</param>
         /// <returns>the CSS data with parsed CSS objects (never null)</returns>
-        public static CssData ParseStyleSheet(string stylesheet, bool combineWithDefault)
+        public CssData ParseStyleSheet(string stylesheet, bool combineWithDefault)
         {
-            var cssData = combineWithDefault ? CssUtils.DefaultCssData.Clone() : new CssData();
+            var cssData = combineWithDefault ? _global.GetDefaultCssData().Clone() : new CssData();
             if (!string.IsNullOrEmpty(stylesheet))
             {
                 ParseStyleSheet(cssData, stylesheet);
@@ -63,7 +83,7 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="cssData">the CSS data to fill with parsed CSS objects</param>
         /// <param name="stylesheet">raw css stylesheet to parse</param>
-        public static void ParseStyleSheet(CssData cssData, string stylesheet)
+        public void ParseStyleSheet(CssData cssData, string stylesheet)
         {
             if (!String.IsNullOrEmpty(stylesheet))
             {
@@ -84,7 +104,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="className">the name of the css class of the block</param>
         /// <param name="blockSource">the CSS block to parse</param>
         /// <returns>the created CSS block instance</returns>
-        public static CssBlock ParseCssBlock(string className, string blockSource)
+        public CssBlock ParseCssBlock(string className, string blockSource)
         {
             // Convert everything to lower-case so not to handle case in code
             blockSource = blockSource.ToLower();
@@ -98,11 +118,20 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="value">the font-family value to parse</param>
         /// <returns>parsed font-family value</returns>
-        public static string ParseFontFamily(string value)
+        public string ParseFontFamily(string value)
         {
             return ParseFontFamilyProperty(value);
         }
-
+        
+        /// <summary>
+        /// Parses a color value in CSS style; e.g. #ff0000, red, rgb(255,0,0), rgb(100%, 0, 0) 
+        /// </summary>
+        /// <param name="colorStr">color string value to parse</param>
+        /// <returns>color value</returns>
+        public ColorInt ParseColor(string colorStr)
+        {
+            return _valueParser.GetActualColor(colorStr);
+        }
 
         #region Private methods
 
@@ -146,7 +175,7 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="cssData">the CSS data to fill with parsed CSS objects</param>
         /// <param name="stylesheet">the stylesheet to parse</param>
-        private static void ParseStyleBlocks(CssData cssData, string stylesheet)
+        private void ParseStyleBlocks(CssData cssData, string stylesheet)
         {
             var startIdx = 0;
             int endIdx = 0;
@@ -193,7 +222,7 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="cssData">the CSS data to fill with parsed CSS objects</param>
         /// <param name="stylesheet">the stylesheet to parse</param>
-        private static void ParseMediaStyleBlocks(CssData cssData, string stylesheet)
+        private void ParseMediaStyleBlocks(CssData cssData, string stylesheet)
         {
             int startIdx = 0;
             string atrule;
@@ -241,7 +270,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="cssData"> </param>
         /// <param name="block">the CSS block to handle</param>
         /// <param name="media">optional: the media (default - all)</param>
-        private static void FeedStyleBlock(CssData cssData, string block, string media = "all")
+        private void FeedStyleBlock(CssData cssData, string block, string media = "all")
         {
             int startIdx = block.IndexOf("{", StringComparison.Ordinal);
             int endIdx = startIdx > -1 ? block.IndexOf("}", startIdx) : -1;
@@ -271,7 +300,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="className">the name of the css class of the block</param>
         /// <param name="blockSource">the CSS block to parse</param>
         /// <returns>the created CSS block instance</returns>
-        private static CssBlock ParseCssBlockImp(string className, string blockSource)
+        private CssBlock ParseCssBlockImp(string className, string blockSource)
         {
             string psedoClass = null;
             var colonIdx = className.IndexOf(":", StringComparison.Ordinal);
@@ -354,7 +383,7 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="blockSource">the raw css block to parse</param>
         /// <returns>dictionary with parsed css block properties</returns>
-        private static Dictionary<string, string> ParseCssBlockProperties(string blockSource)
+        private Dictionary<string, string> ParseCssBlockProperties(string blockSource)
         {
             var properties = new Dictionary<string, string>();
             int startIdx = 0;
@@ -390,7 +419,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="propName">the name of the css property to add</param>
         /// <param name="propValue">the value of the css property to add</param>
         /// <param name="properties">the properties collection to add to</param>
-        private static void AddProperty(string propName, string propValue, Dictionary<string, string> properties)
+        private void AddProperty(string propName, string propValue, Dictionary<string, string> properties)
         {
             // remove !important css crap
             propValue = propValue.Replace("!important", string.Empty).Trim();
@@ -481,9 +510,9 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="propName">the name of the css property to add</param>
         /// <param name="propValue">the value of the css property to add</param>
         /// <param name="properties">the properties collection to add to</param>
-        private static void ParseColorProperty(string propName, string propValue, Dictionary<string, string> properties)
+        private void ParseColorProperty(string propName, string propValue, Dictionary<string, string> properties)
         {
-            if (CssValueParser.IsColorValid(propValue))
+            if (_valueParser.IsColorValid(propValue))
             {
                 properties[propName] = propValue;
             }
@@ -603,12 +632,12 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="propValue">the value of the property to parse to specific values</param>
         /// <param name="direction">the left, top, right or bottom direction of the border to parse</param>
         /// <param name="properties">the properties collection to add the specific properties to</param>
-        private static void ParseBorderProperty(string propValue, string direction, Dictionary<string, string> properties)
+        private void ParseBorderProperty(string propValue, string direction, Dictionary<string, string> properties)
         {
             string borderWidth;
             string borderStyle;
             string borderColor;
-            CssValueParser.ParseBorder(propValue, out borderWidth, out borderStyle, out borderColor);
+            ParseBorder(propValue, out borderWidth, out borderStyle, out borderColor);
 
             if (direction != null)
             {
@@ -766,6 +795,119 @@ namespace HtmlRenderer.Core.Parse
             }
 
             return new string[0];
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="width"> </param>
+        /// <param name="style"></param>
+        /// <param name="color"></param>
+        public void ParseBorder(string value, out string width, out string style, out string color)
+        {
+            width = style = color = null;
+            if (!string.IsNullOrEmpty(value))
+            {
+                int idx = 0;
+                int length;
+                while ((idx = CommonUtils.GetNextSubString(value, idx, out length)) > -1)
+                {
+                    if (width == null)
+                        width = ParseBorderWidth(value, idx, length);
+                    if (style == null)
+                        style = ParseBorderStyle(value, idx, length);
+                    if (color == null)
+                        color = ParseBorderColor(value, idx, length);
+                    idx = idx + length + 1;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Parse the given substring to extract border width substring.
+        /// Assume given substring is not empty and all indexes are valid!<br/>
+        /// </summary>
+        /// <returns>found border width value or null</returns>
+        private static string ParseBorderWidth(string str, int idx, int length)
+        {
+            if ((length > 2 && char.IsDigit(str[idx])) || (length > 3 && str[idx] == '.'))
+            {
+                string unit = null;
+                if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Px))
+                    unit = CssConstants.Px;
+                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Pt))
+                    unit = CssConstants.Pt;
+                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Em))
+                    unit = CssConstants.Em;
+                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Ex))
+                    unit = CssConstants.Ex;
+                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.In))
+                    unit = CssConstants.In;
+                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Cm))
+                    unit = CssConstants.Cm;
+                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Mm))
+                    unit = CssConstants.Mm;
+                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Pc))
+                    unit = CssConstants.Pc;
+
+                if (unit != null)
+                {
+                    if (CssValueParser.IsFloat(str, idx, length - 2))
+                        return str.Substring(idx, length);
+                }
+            }
+            else
+            {
+                if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Thin))
+                    return CssConstants.Thin;
+                if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Medium))
+                    return CssConstants.Medium;
+                if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Thick))
+                    return CssConstants.Thick;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Parse the given substring to extract border style substring.<br/>
+        /// Assume given substring is not empty and all indexes are valid!<br/>
+        /// </summary>
+        /// <returns>found border width value or null</returns>
+        private static string ParseBorderStyle(string str, int idx, int length)
+        {
+            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.None))
+                return CssConstants.None;
+            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Solid))
+                return CssConstants.Solid;
+            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Hidden))
+                return CssConstants.Hidden;
+            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Dotted))
+                return CssConstants.Dotted;
+            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Dashed))
+                return CssConstants.Dashed;
+            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Double))
+                return CssConstants.Double;
+            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Groove))
+                return CssConstants.Groove;
+            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Ridge))
+                return CssConstants.Ridge;
+            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Inset))
+                return CssConstants.Inset;
+            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Outset))
+                return CssConstants.Outset;
+            return null;
+        }
+
+        /// <summary>
+        /// Parse the given substring to extract border style substring.<br/>
+        /// Assume given substring is not empty and all indexes are valid!<br/>
+        /// </summary>
+        /// <returns>found border width value or null</returns>
+        private string ParseBorderColor(string str, int idx, int length)
+        {
+            ColorInt color;
+            return _valueParser.TryGetColor(str, idx, length, out color) ? str.Substring(idx, length) : null;
         }
 
         #endregion

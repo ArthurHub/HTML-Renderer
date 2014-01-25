@@ -19,7 +19,6 @@ using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
 using HtmlRenderer.WinForms.Adapters;
-using HtmlRenderer.WinForms.Utilities;
 
 namespace HtmlRenderer.WinForms
 {
@@ -46,31 +45,11 @@ namespace HtmlRenderer.WinForms
 
 
         /// <summary>
-        /// Init color resolve.
-        /// </summary>
-        static HtmlContainer()
-        {
-            FontsUtils.AddFontFamilyMapping("monospace", "Courier New");
-            FontsUtils.AddFontFamilyMapping("Helvetica", "Arial");
-
-            foreach (var family in FontFamily.Families)
-            {
-                FontsUtils.AddFontFamily(new FontFamilyAdapter(family));
-            }
-
-            HtmlRendererUtils.ResolveColorFromName = colorName =>
-            {
-                var color = Color.FromName(colorName);
-                return Utils.Convert(color);
-            };
-        }
-
-        /// <summary>
         /// Init.
         /// </summary>
         public HtmlContainer()
         {
-            _htmlContainerInt = new HtmlContainerInt(new GlobalAdapter());
+            _htmlContainerInt = new HtmlContainerInt(GlobalAdapter.Instance);
         }
 
         /// <summary>

@@ -1210,7 +1210,7 @@ namespace HtmlRenderer.Core.Dom
                     IGraphicsPath roundrect = null;
                     if (IsRounded)
                     {
-                        roundrect = RenderUtils.GetRoundRect(g, rect, ActualCornerNW, ActualCornerNE, ActualCornerSE, ActualCornerSW);
+                        roundrect = RenderUtils.GetRoundRect(g, rect, ActualCornerNw, ActualCornerNe, ActualCornerSe, ActualCornerSw);
                     }
 
                     Object prevMode = null;
@@ -1392,6 +1392,11 @@ namespace HtmlRenderer.Core.Dom
         protected override IFont GetCachedFont(string fontFamily, float fsize, FontStyleInt st)
         {
             return FontsUtils.GetCachedFont(_htmlContainer, fontFamily, fsize, st);
+        }
+
+        protected override ColorInt GetActualColor(string colorStr)
+        {
+            return HtmlContainer.CssParser.ParseColor(colorStr);
         }
 
         /// <summary>

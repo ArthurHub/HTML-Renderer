@@ -13,6 +13,7 @@
 using System;
 using System.Collections.Generic;
 using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Interfaces;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
 
@@ -56,12 +57,14 @@ namespace HtmlRenderer.Core
         /// default css data (as defined by W3), merged if class name already exists. If false only the data in the given stylesheet is returned.
         /// </summary>
         /// <seealso cref="http://www.w3.org/TR/CSS21/sample.html"/>
+        /// <param name="global">atodo: add doc</param>
         /// <param name="stylesheet">the stylesheet source to parse</param>
         /// <param name="combineWithDefault">true - combine the parsed css data with default css data, false - return only the parsed css data</param>
         /// <returns>the parsed css data</returns>
-        public static CssData Parse(string stylesheet, bool combineWithDefault = true)
+        public static CssData Parse(IGlobal global, string stylesheet, bool combineWithDefault = true)
         {
-            return CssParser.ParseStyleSheet(stylesheet, combineWithDefault);
+            CssParser parser = new CssParser(global);
+            return parser.ParseStyleSheet(stylesheet, combineWithDefault);
         }
 
         /// <summary>

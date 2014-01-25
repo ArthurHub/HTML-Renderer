@@ -20,6 +20,15 @@ namespace HtmlRenderer.Core.Interfaces
     /// </summary>
     public interface IGlobal
     {
+        CssData GetDefaultCssData();
+
+        /// <summary>
+        /// Resolve color value from given color name.
+        /// </summary>
+        /// <param name="colorName">the color name</param>
+        /// <returns>color value</returns>
+        ColorInt ResolveColorFromName(string colorName);
+
         /// <summary>
         /// Get image to be used while HTML image is loading.
         /// </summary>

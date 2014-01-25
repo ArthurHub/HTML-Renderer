@@ -421,7 +421,7 @@ namespace HtmlRenderer.Core.Utils
             var sb = new StringBuilder();
             if (root != null)
             {
-                WriteHtml(sb, root, 0, styleGen, onlySelected ? CollectSelectedHtmlTags(root) : null);
+                WriteHtml(root.HtmlContainer.CssParser, sb, root, 0, styleGen, onlySelected ? CollectSelectedHtmlTags(root) : null);
             }
             return sb.ToString();
         }
@@ -577,12 +577,13 @@ namespace HtmlRenderer.Core.Utils
         /// <summary>
         /// Write the given html dom subtree into the given string builder.
         /// </summary>
+        /// <param name="cssParser"></param>
         /// <param name="sb">the string builder to write html into</param>
         /// <param name="box">the html sub-tree to write</param>
         /// <param name="indent">the indent to use for nice formating</param>
         /// <param name="styleGen">Controls the way styles are generated when html is generated</param>
         /// <param name="selectedTags">Control if to generate only selected tags, if given only tags found in collection will be generated</param>
-        private static void WriteHtml(StringBuilder sb, CssBox box, int indent, HtmlGenerationStyle styleGen, Dictionary<HtmlTag, bool> selectedTags)
+        private static void WriteHtml(CssParser cssParser, StringBuilder sb, CssBox box, int indent, HtmlGenerationStyle styleGen, Dictionary<HtmlTag, bool> selectedTags)
         {
             if (box.HtmlTag != null && selectedTags != null && !selectedTags.ContainsKey(box.HtmlTag))
                 return;
@@ -592,7 +593,7 @@ namespace HtmlRenderer.Core.Utils
                 if (box.HtmlTag.Name != "link" || !box.HtmlTag.Attributes.ContainsKey("href") ||
                     (!box.HtmlTag.Attributes["href"].StartsWith("property") && !box.HtmlTag.Attributes["href"].StartsWith("method")))
                 {
-                    WriteHtmlTag(sb, box, indent, styleGen);
+                    WriteHtmlTag(cssParser, sb, box, indent, styleGen);
                     indent = indent + (box.HtmlTag.IsSingle ? 0 : 1);
                 }
 
@@ -622,7 +623,7 @@ namespace HtmlRenderer.Core.Utils
 
             foreach (var childBox in box.Boxes)
             {
-                WriteHtml(sb, childBox, indent, styleGen, selectedTags);
+                WriteHtml(cssParser, sb, childBox, indent, styleGen, selectedTags);
             }
 
             if (box.HtmlTag != null && !box.HtmlTag.IsSingle)
@@ -636,16 +637,17 @@ namespace HtmlRenderer.Core.Utils
         /// <summary>
         /// Write the given html tag with all its attributes and styles.
         /// </summary>
+        /// <param name="cssParser"></param>
         /// <param name="sb">the string builder to write html into</param>
         /// <param name="box">the css box with the html tag to write</param>
-        /// <param name="indent">the indent to use for nice formating</param>
+        /// <param name="indent">the indent to use for nice formatting</param>
         /// <param name="styleGen">Controls the way styles are generated when html is generated</param>
-        private static void WriteHtmlTag(StringBuilder sb, CssBox box, int indent, HtmlGenerationStyle styleGen)
+        private static void WriteHtmlTag(CssParser cssParser, StringBuilder sb, CssBox box, int indent, HtmlGenerationStyle styleGen)
         {
             sb.Append(new string(' ', indent * 4));
             sb.AppendFormat("<{0}", box.HtmlTag.Name);
 
-            // collect all element style properties incliding from stylesheet
+            // collect all element style properties including from stylesheet
             var tagStyles = new Dictionary<string, string>();
             var tagCssBlock = box.HtmlContainer.CssData.GetCssBlock(box.HtmlTag.Name);
             if (tagCssBlock != null)
@@ -678,7 +680,7 @@ namespace HtmlRenderer.Core.Utils
                     else if (styleGen == HtmlGenerationStyle.Inline && att.Key == HtmlConstants.Style)
                     {
                         // if inline style add the styles to the collection
-                        var block = CssParser.ParseCssBlock(box.HtmlTag.Name, box.HtmlTag.TryGetAttribute("style"));
+                        var block = cssParser.ParseCssBlock(box.HtmlTag.Name, box.HtmlTag.TryGetAttribute("style"));
                         foreach (var prop in block.Properties)
                             tagStyles[prop.Key] = prop.Value;
                     }

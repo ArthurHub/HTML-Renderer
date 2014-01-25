@@ -15,6 +15,7 @@ using System.Globalization;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Dom.Entities;
 using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Interfaces;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Parse
@@ -22,8 +23,73 @@ namespace HtmlRenderer.Core.Parse
     /// <summary>
     /// Parse CSS properties values like numbers, Urls, etc.
     /// </summary>
-    internal static class CssValueParser
+    internal sealed class CssValueParser
     {
+        #region Fields and Consts
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly IGlobal _global;
+
+        #endregion
+
+
+        /// <summary>
+        /// Init.
+        /// </summary>
+        public CssValueParser(IGlobal global)
+        {
+            ArgChecker.AssertArgNotNull(global, "global");
+
+            _global = global;
+        }
+
+        /// <summary>
+        /// Check if the given substring is a valid float number.
+        /// Assume given substring is not empty and all indexes are valid!<br/>
+        /// </summary>
+        /// <returns>true - valid float number, false - otherwise</returns>
+        public static bool IsFloat(string str, int idx, int length)
+        {
+            if (length < 1)
+                return false;
+
+            bool sawDot = false;
+            for (int i = 0; i < length; i++)
+            {
+                if (str[idx + i] == '.')
+                {
+                    if (sawDot)
+                        return false;
+                    sawDot = true;
+                }
+                else if (!char.IsDigit(str[idx + i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Check if the given substring is a valid float number.
+        /// Assume given substring is not empty and all indexes are valid!<br/>
+        /// </summary>
+        /// <returns>true - valid int number, false - otherwise</returns>
+        public static bool IsInt(string str, int idx, int length)
+        {
+            if (length < 1)
+                return false;
+
+            for (int i = 0; i < length; i++)
+            {
+                if (!char.IsDigit(str[idx + i]))
+                    return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Check if the given string is a valid length value.
         /// </summary>
@@ -206,7 +272,7 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="colorValue">color string value to parse</param>
         /// <returns>true - valid, false - invalid</returns>
-        public static bool IsColorValid(string colorValue)
+        public bool IsColorValid(string colorValue)
         {
             ColorInt color;
             return TryGetColor(colorValue, 0, colorValue.Length, out color);
@@ -217,11 +283,49 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="colorValue">color string value to parse</param>
         /// <returns>Color value</returns>
-        public static ColorInt GetActualColor(string colorValue)
+        public ColorInt GetActualColor(string colorValue)
         {
             ColorInt color;
             TryGetColor(colorValue, 0, colorValue.Length, out color);
             return color;
+        }
+
+        /// <summary>
+        /// Parses a color value in CSS style; e.g. #ff0000, RED, RGB(255,0,0), RGB(100%, 0, 0)
+        /// </summary>
+        /// <param name="str">color substring value to parse</param>
+        /// <param name="idx">substring start idx </param>
+        /// <param name="length">substring length</param>
+        /// <param name="color">return the parsed color</param>
+        /// <returns>true - valid color, false - otherwise</returns>
+        public bool TryGetColor(string str, int idx, int length, out ColorInt color)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(str))
+                {
+                    if (length > 1 && str[idx] == '#')
+                    {
+                        return GetColorByHex(str, idx, length, out color);
+                    }
+                    else if (length > 10 && CommonUtils.SubStringEquals(str, idx, 4, "rgb(") && str[length - 1] == ')')
+                    {
+                        return GetColorByRgb(str, idx, length, out color);
+                    }
+                    else if (length > 13 && CommonUtils.SubStringEquals(str, idx, 5, "rgba(") && str[length - 1] == ')')
+                    {
+                        return GetColorByRgba(str, idx, length, out color);
+                    }
+                    else
+                    {
+                        return GetColorByName(str, idx, length, out color);
+                    }
+                }
+            }
+            catch
+            { }
+            color = ColorInt.Black;
+            return false;
         }
 
         /// <summary>
@@ -250,159 +354,8 @@ namespace HtmlRenderer.Core.Parse
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="width"> </param>
-        /// <param name="style"></param>
-        /// <param name="color"></param>
-        public static void ParseBorder(string value, out string width, out string style, out string color)
-        {
-            width = style = color = null;
-            if (!string.IsNullOrEmpty(value))
-            {
-                int idx = 0;
-                int length;
-                while ((idx = CommonUtils.GetNextSubString(value,idx,out length)) > -1)
-                {
-                    if (width == null)
-                        width = ParseBorderWidth(value, idx, length);
-                    if (style == null)
-                        style = ParseBorderStyle(value, idx, length);
-                    if (color == null)
-                        color = ParseBorderColor(value, idx, length);
-                    idx = idx + length + 1;
-                }
-            }
-        }
-
 
         #region Private methods
-
-        /// <summary>
-        /// Parse the given substring to extract border width substring.
-        /// Assume given substring is not empty and all indexes are valid!<br/>
-        /// </summary>
-        /// <returns>found border width value or null</returns>
-        private static string ParseBorderWidth(string str, int idx, int length)
-        {
-            if ((length > 2 && char.IsDigit(str[idx])) || (length > 3 && str[idx] == '.'))
-            {
-                string unit = null;
-                if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Px))
-                    unit = CssConstants.Px;
-                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Pt))
-                    unit = CssConstants.Pt;
-                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Em))
-                    unit = CssConstants.Em;
-                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Ex))
-                    unit = CssConstants.Ex;
-                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.In))
-                    unit = CssConstants.In;
-                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Cm))
-                    unit = CssConstants.Cm;
-                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Mm))
-                    unit = CssConstants.Mm;
-                else if (CommonUtils.SubStringEquals(str, idx + length - 2, 2, CssConstants.Pc))
-                    unit = CssConstants.Pc;
-
-                if(unit != null)
-                {
-                    if (IsFloat(str, idx, length - 2))
-                        return str.Substring(idx, length);
-                }
-            }
-            else
-            {
-                if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Thin))
-                    return CssConstants.Thin;
-                if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Medium))
-                    return CssConstants.Medium;
-                if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Thick))
-                    return CssConstants.Thick;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Parse the given substring to extract border style substring.<br/>
-        /// Assume given substring is not empty and all indexes are valid!<br/>
-        /// </summary>
-        /// <returns>found border width value or null</returns>
-        private static string ParseBorderStyle(string str, int idx, int length)
-        {
-            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.None))
-                return CssConstants.None;
-            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Solid))
-                return CssConstants.Solid;
-            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Hidden))
-                return CssConstants.Hidden;
-            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Dotted))
-                return CssConstants.Dotted;
-            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Dashed))
-                return CssConstants.Dashed;
-            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Double))
-                return CssConstants.Double;
-            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Groove))
-                return CssConstants.Groove;
-            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Ridge))
-                return CssConstants.Ridge;
-            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Inset))
-                return CssConstants.Inset;
-            if (CommonUtils.SubStringEquals(str, idx, length, CssConstants.Outset))
-                return CssConstants.Outset;
-            return null;
-        }
-        
-        /// <summary>
-        /// Parse the given substring to extract border style substring.<br/>
-        /// Assume given substring is not empty and all indexes are valid!<br/>
-        /// </summary>
-        /// <returns>found border width value or null</returns>
-        private static string ParseBorderColor(string str, int idx, int length)
-        {
-            ColorInt color;
-            return TryGetColor(str, idx, length, out color) ? str.Substring(idx, length) : null;
-        }
-
-        /// <summary>
-        /// Parses a color value in CSS style; e.g. #ff0000, RED, RGB(255,0,0), RGB(100%, 0, 0)
-        /// </summary>
-        /// <param name="str">color substring value to parse</param>
-        /// <param name="idx">substring start idx </param>
-        /// <param name="length">substring length</param>
-        /// <param name="color">return the parsed color</param>
-        /// <returns>true - valid color, false - otherwise</returns>
-        private static bool TryGetColor(string str, int idx, int length, out ColorInt color)
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(str))
-                {
-                    if (length > 1 && str[idx] == '#')
-                    {
-                        return GetColorByHex(str, idx, length, out color);
-                    }
-                    else if (length > 10 && CommonUtils.SubStringEquals(str, idx, 4, "rgb(") && str[length-1] == ')')
-                    {
-                        return GetColorByRgb(str, idx, length, out color);
-                    }
-                    else if (length > 13 && CommonUtils.SubStringEquals(str, idx, 5, "rgba(") && str[length - 1] == ')')
-                    {
-                        return GetColorByRgba(str, idx, length, out color);
-                    }
-                    else
-                    {
-                        return GetColorByName(str, idx, length, out color);
-                    }
-                }
-            }
-            catch
-            {}
-            color = ColorInt.Black;
-            return false;
-        }
 
         /// <summary>
         /// Get color by parsing given hex value color string (#A28B34).
@@ -513,58 +466,10 @@ namespace HtmlRenderer.Core.Parse
         /// Get color by given name, including .NET name.
         /// </summary>
         /// <returns>true - valid color, false - otherwise</returns>
-        private static bool GetColorByName(string str, int idx, int length, out ColorInt color)
+        private bool GetColorByName(string str, int idx, int length, out ColorInt color)
         {
-            if( HtmlRendererUtils.ResolveColorFromName == null )
-                throw new InvalidProgramException("HtmlRendererUtils.ResolveColorFromName was not set, must be set for HTML Renderer to work");
-            
-            color = HtmlRendererUtils.ResolveColorFromName(str.Substring(idx, length));
+            color = _global.ResolveColorFromName(str.Substring(idx, length));
             return color.A > 0;
-        }
-
-        /// <summary>
-        /// Check if the given substring is a valid float number.
-        /// Assume given substring is not empty and all indexes are valid!<br/>
-        /// </summary>
-        /// <returns>true - valid float number, false - otherwise</returns>
-        private static bool IsFloat(string str, int idx, int length)
-        {
-            if (length < 1)
-                return false;
-
-            bool sawDot = false;
-            for (int i = 0; i < length; i++)
-            {
-                if (str[idx + i] == '.')
-                {
-                    if (sawDot)
-                        return false;
-                    sawDot = true;
-                }
-                else if (!char.IsDigit(str[idx + i]))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Check if the given substring is a valid float number.
-        /// Assume given substring is not empty and all indexes are valid!<br/>
-        /// </summary>
-        /// <returns>true - valid int number, false - otherwise</returns>
-        private static bool IsInt(string str, int idx, int length)
-        {
-            if (length < 1)
-                return false;
-
-            for (int i = 0; i < length; i++)
-            {
-                if (!char.IsDigit(str[idx + i]))
-                    return false;
-            }
-            return true;
         }
 
         /// <summary>

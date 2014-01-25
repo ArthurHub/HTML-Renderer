@@ -12,7 +12,6 @@
 
 using System.Collections.Generic;
 using System.Drawing;
-using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Interfaces;
 using HtmlRenderer.WinForms.Adapters;
@@ -27,16 +26,6 @@ namespace HtmlRenderer.WinForms.Utilities
         #region Fields and Consts
 
         /// <summary>
-        /// image used to draw loading image icon
-        /// </summary>
-        private static IImage _loadImage;
-
-        /// <summary>
-        /// image used to draw error image icon
-        /// </summary>
-        private static IImage _errorImage;
-
-        /// <summary>
         /// cache of brush color to brush instance
         /// </summary>
         private static readonly Dictionary<ColorInt, IBrush> _brushesCache = new Dictionary<ColorInt, IBrush>();
@@ -47,7 +36,6 @@ namespace HtmlRenderer.WinForms.Utilities
         private static readonly Dictionary<ColorInt, IPen> _penCache = new Dictionary<ColorInt, IPen>();
 
         #endregion
-
 
         /// <summary>
         /// Get cached pen instance for the given color.
@@ -92,36 +80,6 @@ namespace HtmlRenderer.WinForms.Utilities
                 _brushesCache[color] = brush;
             }
             return brush;
-        }
-
-        /// <summary>
-        /// Get singleton instance of load image.
-        /// </summary>
-        /// <returns>image instance</returns>
-        public static IImage GetLoadImage()
-        {
-            if (_loadImage == null)
-            {
-                var stream = typeof(HtmlRendererUtils).Assembly.GetManifestResourceStream(HtmlRendererUtils.ManifestResourceNameForImageLoad);
-                if( stream != null )
-                    _loadImage = new ImageAdapter(Image.FromStream(stream));
-            }
-            return _loadImage;
-        }
-
-        /// <summary>
-        /// Get singleton instance of error image.
-        /// </summary>
-        /// <returns>image instance</returns>
-        public static IImage GetErrorImage()
-        {
-            if (_errorImage == null)
-            {
-                var stream = typeof(HtmlRendererUtils).Assembly.GetManifestResourceStream(HtmlRendererUtils.ManifestResourceNameForImageError);
-                if( stream != null )
-                    _errorImage = new ImageAdapter(Image.FromStream(stream));
-            }
-            return _errorImage;
         }
     }
 }

@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System;
+using HtmlRenderer.Core.Dom.Entities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Interfaces;
 
@@ -21,13 +22,6 @@ namespace HtmlRenderer.Core
     /// </summary>
     public static class HtmlRendererUtils
     {
-        /// <summary>
-        /// Resolve color value from given color name.
-        /// </summary>
-        /// <param name="colorName">the color name</param>
-        /// <returns>color value</returns>
-        public delegate ColorInt ResolveColorFromNameDelegate(String colorName);
-
         /// <summary>
         /// The manifest resource name for embedded image used for image loading.
         /// </summary>
@@ -45,9 +39,12 @@ namespace HtmlRenderer.Core
         }
 
         /// <summary>
-        /// Resolve color value from given color name.
+        /// The default stylesheet.
         /// </summary>
-        public static ResolveColorFromNameDelegate ResolveColorFromName { get; set; }
+        public static string DefaultStyleSheet
+        {
+            get { return CssDefaults.DefaultStyleSheet; }
+        }
 
         /// <summary>
         /// Measure the size of the html by performing layout under the given restrictions.
