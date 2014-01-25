@@ -12,7 +12,6 @@
 
 using System.Collections.Generic;
 using System.Drawing;
-using System.Reflection;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Interfaces;
@@ -60,18 +59,7 @@ namespace HtmlRenderer.WinForms.Utilities
             IPen pen;
             if (!_penCache.TryGetValue(color, out pen))
             {
-                Pen solidPen;
-                if (color == ColorInt.White)
-                    solidPen = Pens.White;
-                else if (color == ColorInt.Black)
-                    solidPen = Pens.Black;
-                else if (color == ColorInt.WhiteSmoke)
-                    solidPen = Pens.WhiteSmoke;
-                else if (color.A < 1)
-                    solidPen = Pens.Transparent;
-                else
-                    solidPen = new Pen(Utils.Convert(color));
-
+                var solidPen = new Pen(Utils.Convert(color));
                 pen = new PenAdapter(solidPen);
                 _penCache[color] = pen;
             }
