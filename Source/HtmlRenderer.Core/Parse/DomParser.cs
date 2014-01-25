@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
 using System.Globalization;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Dom.Entities;

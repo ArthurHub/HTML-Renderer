@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System.IO;
+using HtmlRenderer.Core.Entities;
 
 namespace HtmlRenderer.Core.Interfaces
 {
@@ -28,6 +29,13 @@ namespace HtmlRenderer.Core.Interfaces
         /// Get image to be used if HTML image load failed.
         /// </summary>
         IImage GetErrorImage();
+
+        /// <summary>
+        /// Convert image object returned from <see cref="HtmlImageLoadEventArgs"/> to <see cref="IImage"/>.
+        /// </summary>
+        /// <param name="image">the image returned from load event</param>
+        /// <returns>converted image or null</returns>
+        IImage ConvertImage(object image);
 
         /// <summary>
         /// Create an <see cref="IImage"/> object from the given stream.
@@ -69,7 +77,5 @@ namespace HtmlRenderer.Core.Interfaces
         /// <param name="extension">the extension of the image for save dialog</param>
         /// <param name="control">optional: the control to show the dialog on</param>
         void SaveToFile(IImage image, string name, string extension, IControl control = null);
-
-        IImage ConvertImage(object image);
     }
 }

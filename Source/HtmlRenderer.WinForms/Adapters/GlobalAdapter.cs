@@ -13,7 +13,7 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using HtmlRenderer.Core;
+using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Interfaces;
 using HtmlRenderer.WinForms.Utilities;
 
@@ -40,6 +40,11 @@ namespace HtmlRenderer.WinForms.Adapters
             return CacheUtils.GetErrorImage();
         }
 
+        /// <summary>
+        /// Convert image object returned from <see cref="HtmlImageLoadEventArgs"/> to <see cref="IImage"/>.
+        /// </summary>
+        /// <param name="image">the image returned from load event</param>
+        /// <returns>converted image or null</returns>
         public IImage ConvertImage(object image)
         {
             return image != null ? new ImageAdapter((Image)image) : null;
