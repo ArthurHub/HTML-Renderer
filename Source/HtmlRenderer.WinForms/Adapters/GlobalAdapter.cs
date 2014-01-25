@@ -40,6 +40,11 @@ namespace HtmlRenderer.WinForms.Adapters
             return CacheUtils.GetErrorImage();
         }
 
+        public IImage ConvertImage(object image)
+        {
+            return image != null ? new ImageAdapter((Image)image) : null;
+        }
+
         /// <summary>
         /// Create an <see cref="IImage"/> object from the given stream.
         /// </summary>

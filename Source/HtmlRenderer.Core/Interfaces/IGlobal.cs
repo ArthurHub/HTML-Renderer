@@ -69,5 +69,7 @@ namespace HtmlRenderer.Core.Interfaces
         /// <param name="extension">the extension of the image for save dialog</param>
         /// <param name="control">optional: the control to show the dialog on</param>
         void SaveToFile(IImage image, string name, string extension, IControl control = null);
+
+        IImage ConvertImage(object image);
     }
 }

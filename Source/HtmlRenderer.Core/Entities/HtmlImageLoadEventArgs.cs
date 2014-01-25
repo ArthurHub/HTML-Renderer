@@ -12,7 +12,6 @@
 
 using System;
 using System.Collections.Generic;
-using HtmlRenderer.Core.Interfaces;
 using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Entities
@@ -26,7 +25,7 @@ namespace HtmlRenderer.Core.Entities
     /// <param name="path">the path to the image to load (file path or URL)</param>
     /// <param name="image">the image to use</param>
     /// <param name="imageRectangle">optional: limit to specific rectangle in the loaded image</param>
-    public delegate void HtmlImageLoadCallback(string path, IImage image, RectangleInt imageRectangle);
+    public delegate void HtmlImageLoadCallback(string path, Object image, RectangleInt imageRectangle);
 
     /// <summary>
     /// Invoked when an image is about to be loaded by file path, URL or inline data in 'img' element or background-image CSS style.<br/>
@@ -37,7 +36,7 @@ namespace HtmlRenderer.Core.Entities
     /// provide file path to load the image from. Can also use the asynchronous image overwrite not to block HTML rendering is applicable.<br/>
     /// If no alternative data is provided the original source will be used.<br/>
     /// </summary>
-    public sealed class HtmlImageLoadEventArgs : EventArgs
+    public sealed class HtmlImageLoadEventArgs : EventArgs 
     {
         #region Fields and Consts
 
@@ -116,17 +115,30 @@ namespace HtmlRenderer.Core.Entities
         /// <summary>
         /// Callback to overwrite the loaded image with image to load from given URI.<br/>
         /// Can be called directly from delegate handler or asynchronously after setting <see cref="Handled"/> to True.<br/>
-        /// If <paramref name="imageRectangle"/> is given (not <see cref="RectangleInt.Empty"/>) then only the specified rectangle will
-        /// be used from the loaded image and not all of it, also the rectangle will be used for size and not the actual image size.<br/> 
         /// </summary>
         /// <param name="path">the path to the image to load (file path or URL)</param>
-        /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
-        public void Callback(string path, RectangleInt imageRectangle = new RectangleInt())
+        public void Callback(string path)
         {
             ArgChecker.AssertArgNotNullOrEmpty(path, "path");
             
             _handled = true;
-            _callback(path, null, imageRectangle);
+            _callback(path, null, RectangleInt.Empty);
+        }
+
+        /// <summary>
+        /// Callback to overwrite the loaded image with image to load from given URI.<br/>
+        /// Can be called directly from delegate handler or asynchronously after setting <see cref="Handled"/> to True.<br/>
+        /// Only the specified rectangle (x,y,width,height) will be used from the loaded image and not all of it, also 
+        /// the rectangle will be used for size and not the actual image size.<br/> 
+        /// </summary>
+        /// <param name="path">the path to the image to load (file path or URL)</param>
+        /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
+        public void Callback(string path, float x, float y, float width, float height)
+        {
+            ArgChecker.AssertArgNotNullOrEmpty(path, "path");
+
+            _handled = true;
+            _callback(path, null, new RectangleInt(x, y, width, height));
         }
 
         /// <summary>
@@ -136,13 +148,28 @@ namespace HtmlRenderer.Core.Entities
         /// be used from the loaded image and not all of it, also the rectangle will be used for size and not the actual image size.<br/> 
         /// </summary>
         /// <param name="image">the image to load</param>
-        /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
-        public void Callback(IImage image, RectangleInt imageRectangle = new RectangleInt())
+        public void Callback(Object image)
         {
             ArgChecker.AssertArgNotNull(image, "image");
             
             _handled = true;
-            _callback(null, image, imageRectangle);
+            _callback(null, image, RectangleInt.Empty);
+        }
+
+        /// <summary>
+        /// Callback to overwrite the loaded image with given image object.<br/>
+        /// Can be called directly from delegate handler or asynchronously after setting <see cref="Handled"/> to True.<br/>
+        /// Only the specified rectangle (x,y,width,height) will be used from the loaded image and not all of it, also 
+        /// the rectangle will be used for size and not the actual image size.<br/> 
+        /// </summary>
+        /// <param name="image">the image to load</param>
+        /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
+        public void Callback(Object image, float x, float y, float width, float height)
+        {
+            ArgChecker.AssertArgNotNull(image, "image");
+
+            _handled = true;
+            _callback(null, image, new RectangleInt(x, y, width, height));
         }
     }
 }

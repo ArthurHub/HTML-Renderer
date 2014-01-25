@@ -189,7 +189,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="path">the path to the image to load (file path or uri)</param>
         /// <param name="image">the image to load</param>
         /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
-        private void OnHtmlImageLoadEventCallback(string path, IImage image, RectangleInt imageRectangle)
+        private void OnHtmlImageLoadEventCallback(string path, object image, RectangleInt imageRectangle)
         {
             if (!_disposed)
             {
@@ -197,7 +197,7 @@ namespace HtmlRenderer.Core.Handlers
 
                 if (image != null)
                 {
-                    _image = image;
+                    _image = _htmlContainer.Global.ConvertImage(image);
                     ImageLoadComplete(_asyncCallback);
             }
                 else if (!string.IsNullOrEmpty(path))

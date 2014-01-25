@@ -35,11 +35,19 @@ namespace HtmlRenderer.Core.Entities
         }
 
         /// <summary>
-        /// the location to scroll to
+        /// the x location to scroll to
         /// </summary>
-        public PointInt Location
+        public float X
         {
-            get { return _location; }
+            get { return _location.X; }
+        }
+
+        /// <summary>
+        /// the x location to scroll to
+        /// </summary>
+        public float Y
+        {
+            get { return _location.Y; }
         }
 
         public override string ToString()

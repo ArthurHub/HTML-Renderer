@@ -18,7 +18,6 @@ using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.WinForms.Utilities;
 
 namespace HtmlRenderer.WinForms
 {
@@ -504,7 +503,7 @@ namespace HtmlRenderer.WinForms
         /// </summary>
         private void OnScrollChange(object sender, HtmlScrollEventArgs e)
         {
-            UpdateScroll(Utils.ConvertRound(e.Location));
+            UpdateScroll(new Point((int)e.X, (int)e.Y));
         }
 
         /// <summary>

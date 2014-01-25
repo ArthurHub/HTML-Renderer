@@ -379,42 +379,40 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
         {
-            e.Handled = true;
+            var img = TryLoadResourceImage(e.Src);
 
-//            var img = TryLoadResourceImage(e.Src);
-//
-//            if(!e.Handled && e.Attributes != null)
-//            {
-//                if (e.Attributes.ContainsKey("byevent"))
-//                {
-//                    int delay;
-//                    if (int.TryParse(e.Attributes["byevent"], out delay))
-//                    {
-//                        e.Handled = true;
-//                        ThreadPool.QueueUserWorkItem(state =>
-//                            {
-//                                Thread.Sleep(delay);
-//                                e.Callback("https://fbcdn-sphotos-a-a.akamaihd.net/hphotos-ak-snc7/c0.44.403.403/p403x403/318890_10151195988833836_1081776452_n.jpg");
-//                            });
-//                        return;
-//                    }
-//                    else
-//                    {
-//                        e.Callback("http://sphotos-a.xx.fbcdn.net/hphotos-ash4/c22.0.403.403/p403x403/263440_10152243591765596_773620816_n.jpg");
-//                        return;
-//                    }
-//                }
-//                else if (e.Attributes.ContainsKey("byrect"))
-//                {
-//                    var split = e.Attributes["byrect"].Split(',');
-//                    var rect = new Rectangle(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]), int.Parse(split[3]));
-//                    e.Callback(img ?? TryLoadResourceImage("htmlicon"), rect);
-//                    return;
-//                }
-//            }
-//
-//            if (img != null)
-//                e.Callback(img);
+            if(!e.Handled && e.Attributes != null)
+            {
+                if (e.Attributes.ContainsKey("byevent"))
+                {
+                    int delay;
+                    if (int.TryParse(e.Attributes["byevent"], out delay))
+                    {
+                        e.Handled = true;
+                        ThreadPool.QueueUserWorkItem(state =>
+                            {
+                                Thread.Sleep(delay);
+                                e.Callback("https://fbcdn-sphotos-a-a.akamaihd.net/hphotos-ak-snc7/c0.44.403.403/p403x403/318890_10151195988833836_1081776452_n.jpg");
+                            });
+                        return;
+                    }
+                    else
+                    {
+                        e.Callback("http://sphotos-a.xx.fbcdn.net/hphotos-ash4/c22.0.403.403/p403x403/263440_10152243591765596_773620816_n.jpg");
+                        return;
+                    }
+                }
+                else if (e.Attributes.ContainsKey("byrect"))
+                {
+                    var split = e.Attributes["byrect"].Split(',');
+                    var rect = new Rectangle(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]), int.Parse(split[3]));
+                    e.Callback(img ?? TryLoadResourceImage("htmlicon"), rect.X, rect.Y, rect.Width, rect.Height);
+                    return;
+                }
+            }
+
+            if (img != null)
+                e.Callback(img);
         }
 
         /// <summary>
