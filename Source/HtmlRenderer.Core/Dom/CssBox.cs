@@ -662,8 +662,8 @@ namespace HtmlRenderer.Core.Dom
                 {
                     foreach (var boxWord in Words)
                     {
-                        boxWord.Width = boxWord.Text != "\n" ? FontsUtils.MeasureStringWidth(g, boxWord.Text, ActualFont) : 0;
-                        boxWord.Height = FontsUtils.GetFontHeight(ActualFont);
+                        boxWord.Width = boxWord.Text != "\n" ? g.MeasureString(boxWord.Text, ActualFont).Width : 0;
+                        boxWord.Height = ActualFont.Height;
                     }
                 }
 
@@ -1300,7 +1300,7 @@ namespace HtmlRenderer.Core.Dom
             if (TextDecoration == CssConstants.Underline)
             {
                 var h = g.MeasureString(" ", ActualFont).Height;
-                float desc = FontsUtils.GetDescent(ActualFont, g);
+                float desc = ActualFont.Descent;
                 y = (float)Math.Round(rectangle.Top + h - desc + 0.5);
             }
             else if (TextDecoration == CssConstants.LineThrough)
@@ -1387,6 +1387,11 @@ namespace HtmlRenderer.Core.Dom
             {
                 return g.GetSolidBrush(CssUtils.DefaultSelectionBackcolor);
             }
+        }
+
+        protected override IFont GetCachedFont(string fontFamily, float fsize, FontStyleInt st)
+        {
+            return FontsUtils.GetCachedFont(_htmlContainer, fontFamily, fsize, st);
         }
 
         /// <summary>

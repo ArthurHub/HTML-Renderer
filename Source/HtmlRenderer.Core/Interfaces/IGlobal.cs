@@ -45,6 +45,24 @@ namespace HtmlRenderer.Core.Interfaces
         IImage FromStream(Stream memoryStream);
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="family"></param>
+        /// <param name="size"></param>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        IFont CreateFont(string family, float size, FontStyleInt style);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="family"></param>
+        /// <param name="size"></param>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        IFont CreateFont(IFontFamily family, float size, FontStyleInt style);
+
+        /// <summary>
         /// Set the given text to the clipboard
         /// </summary>
         /// <param name="text">the text to set</param>

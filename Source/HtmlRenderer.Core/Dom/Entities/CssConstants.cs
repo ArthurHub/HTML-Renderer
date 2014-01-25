@@ -10,8 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Drawing;
-
 namespace HtmlRenderer.Core.Dom.Entities
 {
     /// <summary>
@@ -164,7 +162,7 @@ namespace HtmlRenderer.Core.Dom.Entities
         /// <summary>
         /// Default font used for the generic 'serif' family
         /// </summary>
-        public static string FontSerif = FontFamily.GenericSerif.Name;
+        public const string DefaultFont = "Times New Roman";
 
     }
 }

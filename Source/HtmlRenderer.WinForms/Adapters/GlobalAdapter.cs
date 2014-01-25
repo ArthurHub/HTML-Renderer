@@ -61,6 +61,32 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="family"></param>
+        /// <param name="size"></param>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        public IFont CreateFont(string family, float size, FontStyleInt style)
+        {
+            var fontStyle = (FontStyle)( (int)style );
+            return new FontAdapter(new Font(family, size, fontStyle));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="family"></param>
+        /// <param name="size"></param>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        public IFont CreateFont(IFontFamily family, float size, FontStyleInt style)
+        {
+            var fontStyle = (FontStyle)((int)style);
+            return new FontAdapter(new Font(( (FontFamilyAdapter)family ).FontFamily, size, fontStyle));
+        }
+
+        /// <summary>
         /// Set the given text to the clipboard
         /// </summary>
         /// <param name="text">the text to set</param>

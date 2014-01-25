@@ -13,7 +13,6 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Interfaces;
 using HtmlRenderer.Core.Utils;
@@ -29,12 +28,12 @@ namespace HtmlRenderer.WinForms.Adapters
         #region Fields and Consts
 
         /// <summary>
-        /// used for <see cref="MeasureString(string,System.Drawing.Font,float,out int,out int)"/> calculation.
+        /// used for <see cref="MeasureString(string,IFont,float,out int,out int)"/> calculation.
         /// </summary>
         private static readonly int[] _charFit = new int[1];
 
         /// <summary>
-        /// used for <see cref="MeasureString(string,System.Drawing.Font,float,out int,out int)"/> calculation.
+        /// used for <see cref="MeasureString(string,IFont,float,out int,out int)"/> calculation.
         /// </summary>
         private static readonly int[] _charFitWidth = new int[1000];
 
@@ -168,14 +167,14 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="str">the string to measure</param>
         /// <param name="font">the font to measure string with</param>
         /// <returns>the size of the string</returns>
-        public SizeInt MeasureString(string str, Font font)
+        public SizeInt MeasureString(string str, IFont font)
         {
-            if( _useGdiPlusTextRendering )
+            if (_useGdiPlusTextRendering)
             {
                 ReleaseHdc();
                 _characterRanges[0] = new CharacterRange(0, str.Length);
                 _stringFormat.SetMeasurableCharacterRanges(_characterRanges);
-                var size = _g.MeasureCharacterRanges(str, font, RectangleF.Empty, _stringFormat)[0].GetBounds(_g).Size;
+                var size = _g.MeasureCharacterRanges(str, ((FontAdapter)font).Font, RectangleF.Empty, _stringFormat)[0].GetBounds(_g).Size;
                 return Utils.Convert(size);
             }
             else
@@ -200,7 +199,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
         /// <param name="charFitWidth"></param>
         /// <returns>the size of the string</returns>
-        public SizeInt MeasureString(string str, Font font, float maxWidth, out int charFit, out int charFitWidth)
+        public SizeInt MeasureString(string str, IFont font, float maxWidth, out int charFit, out int charFitWidth)
         {
             if( _useGdiPlusTextRendering )
             {
@@ -227,7 +226,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="color">the text color to set</param>
         /// <param name="point">the location to start string draw (top-left)</param>
         /// <param name="size">used to know the size of the rendered text for transparent text support</param>
-        public void DrawString(String str, Font font, ColorInt color, PointInt point, SizeInt size)
+        public void DrawString(String str, IFont font, ColorInt color, PointInt point, SizeInt size)
         {
             var pointConv = Utils.ConvertRound(point);
             var colorConv = Utils.Convert(color);
@@ -236,7 +235,7 @@ namespace HtmlRenderer.WinForms.Adapters
             {
                 ReleaseHdc();
                 var brush = ((BrushAdapter)CacheUtils.GetSolidBrush(color)).Brush;
-                _g.DrawString(str, font, brush, point.X - FontsUtils.GetFontLeftPadding(font)*.8f, point.Y);
+                _g.DrawString(str, ((FontAdapter)font).Font, brush, point.X - font.LeftPadding*.8f, point.Y);
             }
             else
             {
@@ -462,10 +461,10 @@ namespace HtmlRenderer.WinForms.Adapters
         /// Set a resource (e.g. a font) for the specified device context.
         /// WARNING: Calling Font.ToHfont() many times without releasing the font handle crashes the app.
         /// </summary>
-        private void SetFont(Font font)
+        private void SetFont(IFont font)
         {
             InitHdc();
-            Win32Utils.SelectObject(_hdc, FontsUtils.GetCachedHFont(font));
+            Win32Utils.SelectObject(_hdc, ( (FontAdapter)font ).HFont);
         }
 
         /// <summary>
@@ -485,7 +484,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// 3. Draw the text to in-memory DC<br/>
         /// 4. Copy the in-memory DC to the proper location with alpha blend<br/>
         /// </summary>
-        private static void DrawTransparentText(IntPtr hdc, string str, Font font, Point point, Size size, Color color)
+        private static void DrawTransparentText(IntPtr hdc, string str, IFont font, Point point, Size size, Color color)
         {
             IntPtr dib;
             var memoryHdc = Win32Utils.CreateMemoryHdc(hdc, size.Width, size.Height, out dib);
@@ -496,7 +495,7 @@ namespace HtmlRenderer.WinForms.Adapters
                 Win32Utils.BitBlt(memoryHdc, 0, 0, size.Width, size.Height, hdc, point.X, point.Y, Win32Utils.BitBltCopy);
 
                 // Create and select font
-                Win32Utils.SelectObject(memoryHdc, FontsUtils.GetCachedHFont(font));
+                Win32Utils.SelectObject(memoryHdc, ( (FontAdapter)font ).HFont);
                 Win32Utils.SetTextColor(memoryHdc, (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R);
 
                 // Draw text to memory HDC

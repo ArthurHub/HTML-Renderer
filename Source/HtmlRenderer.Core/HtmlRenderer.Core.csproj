@@ -31,7 +31,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
@@ -64,6 +63,7 @@
     <Compile Include="Dom\Entities\HoverBoxBlock.cs" />
     <Compile Include="Dom\Entities\HtmlConstants.cs" />
     <Compile Include="Dom\HtmlTag.cs" />
+    <Compile Include="Entities\FontStyleInt.cs" />
     <Compile Include="Entities\ColorInt.cs" />
     <Compile Include="Entities\CssBlock.cs" />
     <Compile Include="Entities\CssBlockSelectorItem.cs" />
@@ -89,9 +89,11 @@
     <Compile Include="Handlers\SelectionHandler.cs" />
     <Compile Include="Handlers\StylesheetLoadHandler.cs" />
     <Compile Include="HtmlRendererUtils.cs" />
+    <Compile Include="Interfaces\IFontFamily.cs" />
     <Compile Include="Interfaces\IBrush.cs" />
     <Compile Include="Interfaces\IContextMenu.cs" />
     <Compile Include="Interfaces\IControl.cs" />
+    <Compile Include="Interfaces\IFont.cs" />
     <Compile Include="Interfaces\IGlobal.cs" />
     <Compile Include="Interfaces\IGraphics.cs" />
     <Compile Include="Interfaces\IGraphicsPath.cs" />

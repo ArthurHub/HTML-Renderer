@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using HtmlRenderer.Core.Dom.Entities;
@@ -153,7 +152,7 @@ namespace HtmlRenderer.Core.Dom
         private ColorInt _actualBorderBottomColor = ColorInt.Empty;
         private ColorInt _actualBorderRightColor = ColorInt.Empty;
         private ColorInt _actualBackgroundColor = ColorInt.Empty;
-        private Font _actualFont;
+        private IFont _actualFont;
 
         #endregion
 
@@ -1186,7 +1185,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual font of the parent
         /// </summary>
-        public Font ActualParentFont
+        public IFont ActualParentFont
         {
             get { return GetParent() == null ? ActualFont : GetParent().ActualFont; }
         }
@@ -1194,25 +1193,25 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the font that should be actually used to paint the text of the box
         /// </summary>
-        public Font ActualFont
+        public IFont ActualFont
         {
             get
             {
                 if (_actualFont == null)
                 {
-                    if (string.IsNullOrEmpty(FontFamily)) { FontFamily = CssConstants.FontSerif; }
+                    if (string.IsNullOrEmpty(FontFamily)) { FontFamily = CssConstants.DefaultFont; }
                     if (string.IsNullOrEmpty(FontSize)) { FontSize = CssConstants.FontSize.ToString(CultureInfo.InvariantCulture) + "pt"; }
 
-                    FontStyle st = System.Drawing.FontStyle.Regular;
+                    FontStyleInt st = FontStyleInt.Regular;
 
                     if (FontStyle == CssConstants.Italic || FontStyle == CssConstants.Oblique)
                     {
-                        st |= System.Drawing.FontStyle.Italic;
+                        st |= FontStyleInt.Italic;
                     }
 
                     if (FontWeight != CssConstants.Normal && FontWeight != CssConstants.Lighter && !string.IsNullOrEmpty(FontWeight) && FontWeight != CssConstants.Inherit)
                     {
-                        st |= System.Drawing.FontStyle.Bold;
+                        st |= FontStyleInt.Bold;
                     }
 
                     float fsize;
@@ -1251,11 +1250,13 @@ namespace HtmlRenderer.Core.Dom
                         fsize = CssConstants.FontSize;
                     }
 
-                    _actualFont = FontsUtils.GetCachedFont(FontFamily, fsize, st);
+                    _actualFont = GetCachedFont(FontFamily, fsize, st);
                 }
                 return _actualFont;
             }
         }
+
+        protected abstract IFont GetCachedFont(string fontFamily, float fsize, FontStyleInt st);
 
         /// <summary>
         /// Gets the line height
@@ -1354,7 +1355,7 @@ namespace HtmlRenderer.Core.Dom
         /// <returns></returns>
         public float GetEmHeight()
         {
-            return FontsUtils.GetFontHeight(ActualFont);
+            return ActualFont.Height;
         }
 
         /// <summary>

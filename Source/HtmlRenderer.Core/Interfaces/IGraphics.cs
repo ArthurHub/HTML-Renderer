@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
 using HtmlRenderer.Core.Entities;
 
 namespace HtmlRenderer.Core.Interfaces
@@ -61,7 +60,7 @@ namespace HtmlRenderer.Core.Interfaces
         /// <param name="str">the string to measure</param>
         /// <param name="font">the font to measure string with</param>
         /// <returns>the size of the string</returns>
-        SizeInt MeasureString(string str, Font font);
+        SizeInt MeasureString(string str, IFont font);
 
         /// <summary>
         /// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
@@ -75,7 +74,7 @@ namespace HtmlRenderer.Core.Interfaces
         /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
         /// <param name="charFitWidth"></param>
         /// <returns>the size of the string</returns>
-        SizeInt MeasureString(string str, Font font, float maxWidth, out int charFit, out int charFitWidth);
+        SizeInt MeasureString(string str, IFont font, float maxWidth, out int charFit, out int charFitWidth);
 
         /// <summary>
         /// Draw the given string using the given font and foreground color at given location.
@@ -85,7 +84,7 @@ namespace HtmlRenderer.Core.Interfaces
         /// <param name="color">the text color to set</param>
         /// <param name="point">the location to start string draw (top-left)</param>
         /// <param name="size">used to know the size of the rendered text for transparent text support</param>
-        void DrawString(String str, Font font, ColorInt color, PointInt point, SizeInt size);
+        void DrawString(String str, IFont font, ColorInt color, PointInt point, SizeInt size);
 
         /// <summary>
         /// Draws a line connecting the two points specified by the coordinate pairs.

@@ -67,6 +67,8 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Adapters\BrushAdapter.cs" />
+    <Compile Include="Adapters\FontFamilyAdapter.cs" />
+    <Compile Include="Adapters\FontAdapter.cs" />
     <Compile Include="Adapters\GlobalAdapter.cs" />
     <Compile Include="Adapters\GraphicsPathAdapter.cs" />
     <Compile Include="Adapters\ImageAdapter.cs" />

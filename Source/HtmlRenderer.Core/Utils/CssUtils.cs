@@ -71,7 +71,7 @@ namespace HtmlRenderer.Core.Utils
         /// <returns></returns>
         public static float WhiteSpace(IGraphics g, CssBoxProperties box)
         {
-            float w = FontsUtils.MeasureWhitespace(g, box.ActualFont);
+            float w = box.ActualFont.WhitespaceWidth;
             if (!(String.IsNullOrEmpty(box.WordSpacing) || box.WordSpacing == CssConstants.Normal))
             {
                 w += CssValueParser.ParseLength(box.WordSpacing, 0, box, true);

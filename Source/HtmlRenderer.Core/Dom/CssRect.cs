@@ -13,7 +13,6 @@
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
 using HtmlRenderer.Core.Interfaces;
-using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Dom
 {
@@ -258,7 +257,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         internal float LeftGlyphPadding
         {
-            get { return OwnerBox != null ? FontsUtils.GetFontLeftPadding(OwnerBox.ActualFont) : 0; }
+            get { return OwnerBox != null ? OwnerBox.ActualFont.LeftPadding : 0; }
         }
 
         /// <summary>

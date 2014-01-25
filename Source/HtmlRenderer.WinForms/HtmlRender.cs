@@ -99,7 +99,7 @@ namespace HtmlRenderer.WinForms
         {
             ArgChecker.AssertArgNotNull(fontFamily, "fontFamily");
 
-            FontsUtils.AddFontFamily(fontFamily);
+            FontsUtils.AddFontFamily(new FontFamilyAdapter(fontFamily));
         }
 
         /// <summary>

@@ -50,6 +50,14 @@ namespace HtmlRenderer.WinForms
         /// </summary>
         static HtmlContainer()
         {
+            FontsUtils.AddFontFamilyMapping("monospace", "Courier New");
+            FontsUtils.AddFontFamilyMapping("Helvetica", "Arial");
+
+            foreach (var family in FontFamily.Families)
+            {
+                FontsUtils.AddFontFamily(new FontFamilyAdapter(family));
+            }
+
             HtmlRendererUtils.ResolveColorFromName = colorName =>
             {
                 var color = Color.FromName(colorName);

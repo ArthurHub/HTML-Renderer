@@ -460,8 +460,8 @@ namespace HtmlRenderer.Core.Dom
         {
             if( _videoTitle != null && _imageWord.Width > 40 && _imageWord.Height > 40 )
             {
-                var font = FontsUtils.GetCachedFont("Arial", 9f, System.Drawing.FontStyle.Regular);
-                g.FillRectangle(g.GetSolidBrush(ColorInt.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, FontsUtils.GetFontHeight(font) + 7);
+                var font = FontsUtils.GetCachedFont(_htmlContainer, "Arial", 9f, FontStyleInt.Regular);
+                g.FillRectangle(g.GetSolidBrush(ColorInt.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, ActualFont.Height + 7);
 
                 var titleRect = new RectangleInt(rect.Left + 3, rect.Top + 3, rect.Width - 6, rect.Height - 6);
                 g.DrawString(_videoTitle, font, ColorInt.WhiteSmoke, titleRect.Location, SizeInt.Empty);
