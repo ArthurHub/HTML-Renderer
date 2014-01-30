@@ -30,17 +30,17 @@ namespace HtmlRenderer.WinForms
         /// <summary>
         /// the container to render and handle the html shown in the tooltip
         /// </summary>
-        private HtmlContainer _htmlContainer;
+        protected HtmlContainer _htmlContainer;
 
         /// <summary>
         /// the raw base stylesheet data used in the control
         /// </summary>
-        private string _baseRawCssData;
+        protected string _baseRawCssData;
 
         /// <summary>
         /// the base stylesheet data used in the panel
         /// </summary>
-        private CssData _baseCssData;
+        protected CssData _baseCssData;
 
         /// <summary>
         /// timer used to handle mouse move events when mouse is over the tooltip.<br/>

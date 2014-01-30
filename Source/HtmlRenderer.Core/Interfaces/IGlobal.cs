@@ -51,7 +51,7 @@ namespace HtmlRenderer.Core.Interfaces
         /// </summary>
         /// <param name="memoryStream">the stream to create image from</param>
         /// <returns>new image instance</returns>
-        IImage FromStream(Stream memoryStream);
+        IImage ImageFromStream(Stream memoryStream);
 
         /// <summary>
         /// 

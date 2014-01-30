@@ -61,7 +61,7 @@ namespace HtmlRenderer.WinForms
     /// </para>
     /// <para>
     /// <h4>RenderError event:</h4>
-    /// Raised when an error occured during html rendering.<br/>
+    /// Raised when an error occurred during html rendering.<br/>
     /// </para>
     /// </summary>
     public class HtmlLabel : Control
@@ -69,24 +69,24 @@ namespace HtmlRenderer.WinForms
         #region Fields and Consts
 
         /// <summary>
-        /// 
+        /// Underline html container instance.
         /// </summary>
-        private HtmlContainer _htmlContainer;
+        protected HtmlContainer _htmlContainer;
 
         /// <summary>
         /// the raw base stylesheet data used in the control
         /// </summary>
-        private string _baseRawCssData;
+        protected string _baseRawCssData;
 
         /// <summary>
         /// the base stylesheet data used in the panel
         /// </summary>
-        private CssData _baseCssData;
+        protected CssData _baseCssData;
 
         /// <summary>
         /// is to handle auto size of the control height only
         /// </summary>
-        private bool _autoSizeHight;
+        protected bool _autoSizeHight;
 
         #endregion
 

@@ -92,10 +92,10 @@ EndSelection:<<<<<<<3
             int endHtml = sb.Length;
 
             // Backpatch offsets
-        sb.Replace("<<<<<<<1", String.Format("{0,8}", startHtml));
-        sb.Replace("<<<<<<<2", String.Format("{0,8}", endHtml));
-        sb.Replace("<<<<<<<3", String.Format("{0,8}", fragmentStart));
-        sb.Replace("<<<<<<<4", String.Format("{0,8}", fragmentEnd));
+            sb.Replace("<<<<<<<1", String.Format("{0,8}", startHtml));
+            sb.Replace("<<<<<<<2", String.Format("{0,8}", endHtml));
+            sb.Replace("<<<<<<<3", String.Format("{0,8}", fragmentStart));
+            sb.Replace("<<<<<<<4", String.Format("{0,8}", fragmentEnd));
 
             return sb.ToString();
         }

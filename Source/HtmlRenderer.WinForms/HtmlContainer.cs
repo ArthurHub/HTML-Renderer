@@ -19,6 +19,7 @@ using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
 using HtmlRenderer.WinForms.Adapters;
+using HtmlRenderer.WinForms.Utilities;
 
 namespace HtmlRenderer.WinForms
 {
@@ -232,8 +233,8 @@ namespace HtmlRenderer.WinForms
         /// </example>
         public PointF ScrollOffset
         {
-            get { return new PointF(_htmlContainerInt.ScrollOffset.X, _htmlContainerInt.ScrollOffset.Y); }
-            set { _htmlContainerInt.ScrollOffset = new PointInt(value.X, value.Y); }
+            get { return Utils.Convert(_htmlContainerInt.ScrollOffset); }
+            set { _htmlContainerInt.ScrollOffset = Utils.Convert(value); }
         }
 
         /// <summary>
@@ -242,21 +243,21 @@ namespace HtmlRenderer.WinForms
         /// </summary>
         public PointF Location
         {
-            get { return new PointF(_htmlContainerInt.Location.X, _htmlContainerInt.Location.Y); }
-            set { _htmlContainerInt.Location = new PointInt(value.X, value.Y); }
+            get { return Utils.Convert(_htmlContainerInt.Location); }
+            set { _htmlContainerInt.Location = Utils.Convert(value); }
         }
 
         /// <summary>
         /// The max width and height of the rendered html.<br/>
         /// The max width will effect the html layout wrapping lines, resize images and tables where possible.<br/>
         /// The max height does NOT effect layout, but will not render outside it (clip).<br/>
-        /// <see cref="HtmlContainerInt.ActualSize"/> can be exceed the max size by layout restrictions (unwrappable line, set image size, etc.).<br/>
+        /// <see cref="ActualSize"/> can be exceed the max size by layout restrictions (unwrappable line, set image size, etc.).<br/>
         /// Set zero for unlimited (width\height separately).<br/>
         /// </summary>
         public SizeF MaxSize
         {
-            get { return new SizeF(_htmlContainerInt.MaxSize.Width, _htmlContainerInt.MaxSize.Height); }
-            set { _htmlContainerInt.MaxSize = new SizeInt(value.Width,value.Height); }
+            get { return Utils.Convert(_htmlContainerInt.MaxSize); }
+            set { _htmlContainerInt.MaxSize = Utils.Convert(value); }
         }
 
         /// <summary>
@@ -264,8 +265,8 @@ namespace HtmlRenderer.WinForms
         /// </summary>
         public SizeF ActualSize
         {
-            get { return new SizeF(_htmlContainerInt.ActualSize.Width, _htmlContainerInt.ActualSize.Height); }
-            internal set { _htmlContainerInt.ActualSize = new SizeInt(value.Width, value.Height); }
+            get { return Utils.Convert(_htmlContainerInt.ActualSize); }
+            internal set { _htmlContainerInt.ActualSize = Utils.Convert(value); }
         }
 
         /// <summary>
@@ -313,7 +314,7 @@ namespace HtmlRenderer.WinForms
         /// <returns>found attribute value or null if not found</returns>
         public string GetAttributeAt(Point location, string attribute)
         {
-            return _htmlContainerInt.GetAttributeAt(new PointInt(location.X, location.Y), attribute);
+            return _htmlContainerInt.GetAttributeAt(Utils.Convert(location), attribute);
         }
 
         /// <summary>
@@ -323,7 +324,7 @@ namespace HtmlRenderer.WinForms
         /// <returns>css link href if exists or null</returns>
         public string GetLinkAt(Point location)
         {
-            return _htmlContainerInt.GetLinkAt(new PointInt(location.X, location.Y));
+            return _htmlContainerInt.GetLinkAt(Utils.Convert(location));
         }
 
         /// <summary>
@@ -336,7 +337,7 @@ namespace HtmlRenderer.WinForms
         public RectangleF? GetElementRectangle(string elementId)
         {
             var r = _htmlContainerInt.GetElementRectangle(elementId);
-            return r.HasValue ? new RectangleF(r.Value.X, r.Value.Y, r.Value.Width, r.Value.Height) : (RectangleF?)null;
+            return r.HasValue ? Utils.Convert(r.Value) : (RectangleF?)null;
         }
 
         /// <summary>
@@ -377,7 +378,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleMouseDown(new ControlAdapter(parent), new PointInt(e.Location.X, e.Location.Y));
+            _htmlContainerInt.HandleMouseDown(new ControlAdapter(parent), Utils.Convert(e.Location));
         }
 
         /// <summary>
@@ -390,7 +391,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleMouseUp(new ControlAdapter(parent), new PointInt(e.Location.X, e.Location.Y), CreateMouseEvent(e));
+            _htmlContainerInt.HandleMouseUp(new ControlAdapter(parent), Utils.Convert(e.Location), CreateMouseEvent(e));
         }
 
         /// <summary>
@@ -403,7 +404,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleMouseDoubleClick(new ControlAdapter(parent), new PointInt(e.Location.X, e.Location.Y));
+            _htmlContainerInt.HandleMouseDoubleClick(new ControlAdapter(parent), Utils.Convert(e.Location));
         }
 
         /// <summary>
@@ -416,7 +417,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleMouseMove(new ControlAdapter(parent), new PointInt(e.Location.X, e.Location.Y));
+            _htmlContainerInt.HandleMouseMove(new ControlAdapter(parent), Utils.Convert(e.Location));
         }
 
         /// <summary>
@@ -465,7 +466,7 @@ namespace HtmlRenderer.WinForms
         /// <summary>
         /// Create HtmlRenderer key event from win forms key event.
         /// </summary>
-        private KeyEventInt CreateKeyEevent(KeyEventArgs e)
+        private static KeyEventInt CreateKeyEevent(KeyEventArgs e)
         {
             return new KeyEventInt(e.Control, e.KeyCode == Keys.A, e.KeyCode == Keys.C);
         }

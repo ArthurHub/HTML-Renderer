@@ -24,7 +24,7 @@ namespace HtmlRenderer.WinForms.Adapters
     /// <summary>
     /// Adapter for general stuff for core.
     /// </summary>
-    internal sealed class GlobalAdapter : IGlobal
+    internal sealed class GlobalAdapter : GlobalBase, IGlobal
     {
         #region Fields and Consts
 
@@ -32,21 +32,6 @@ namespace HtmlRenderer.WinForms.Adapters
         /// Singleton instance of global adapter.
         /// </summary>
         private static readonly GlobalAdapter _instance = new GlobalAdapter();
-
-        /// <summary>
-        /// default CSS parsed data singleton
-        /// </summary>
-        private CssData _defaultCssData;
-
-        /// <summary>
-        /// image used to draw loading image icon
-        /// </summary>
-        private static IImage _loadImage;
-
-        /// <summary>
-        /// image used to draw error image icon
-        /// </summary>
-        private static IImage _errorImage;
 
         #endregion
 
@@ -73,11 +58,6 @@ namespace HtmlRenderer.WinForms.Adapters
             get { return _instance; }
         }
 
-        public CssData GetDefaultCssData()
-        {
-            return _defaultCssData ?? ( _defaultCssData = CssData.Parse(this, HtmlRendererUtils.DefaultStyleSheet, false) );
-        }
-
         /// <summary>
         /// Resolve color value from given color name.
         /// </summary>
@@ -87,34 +67,6 @@ namespace HtmlRenderer.WinForms.Adapters
         {
             var color = Color.FromName(colorName);
             return Utils.Convert(color);
-        }
-
-        /// <summary>
-        /// Get image to be used while HTML image is loading.
-        /// </summary>
-        public IImage GetLoadImage()
-        {
-            if (_loadImage == null)
-            {
-                var stream = typeof(HtmlRendererUtils).Assembly.GetManifestResourceStream(HtmlRendererUtils.ManifestResourceNameForImageLoad);
-                if (stream != null)
-                    _loadImage = new ImageAdapter(Image.FromStream(stream));
-            }
-            return _loadImage;
-        }
-
-        /// <summary>
-        /// Get image to be used if HTML image load failed.
-        /// </summary>
-        public IImage GetErrorImage()
-        {
-            if (_errorImage == null)
-            {
-                var stream = typeof(HtmlRendererUtils).Assembly.GetManifestResourceStream(HtmlRendererUtils.ManifestResourceNameForImageError);
-                if (stream != null)
-                    _errorImage = new ImageAdapter(Image.FromStream(stream));
-            }
-            return _errorImage;
         }
 
         /// <summary>
@@ -132,7 +84,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         /// <param name="memoryStream">the stream to create image from</param>
         /// <returns>new image instance</returns>
-        public IImage FromStream(Stream memoryStream)
+        public override IImage ImageFromStream(Stream memoryStream)
         {
             return new ImageAdapter(Image.FromStream(memoryStream));
         }
@@ -221,6 +173,15 @@ namespace HtmlRenderer.WinForms.Adapters
                     ((ImageAdapter)image).Image.Save(saveDialog.FileName);
                 }
             }
+        }
+
+        /// <summary>
+        /// Create a default CSS data object that will be cached.
+        /// </summary>
+        /// <returns></returns>
+        protected override CssData CreateDefaultCssData()
+        {
+            return CssData.Parse(this, HtmlRendererUtils.DefaultStyleSheet, false);
         }
     }
 }

@@ -23,22 +23,6 @@ namespace HtmlRenderer.Core
     public static class HtmlRendererUtils
     {
         /// <summary>
-        /// The manifest resource name for embedded image used for image loading.
-        /// </summary>
-        public static string ManifestResourceNameForImageLoad
-        {
-            get { return "HtmlRenderer.Core.Utils.ImageLoad.png"; }
-        }
-
-        /// <summary>
-        /// The manifest resource name for embedded image used for image loading failed.
-        /// </summary>
-        public static string ManifestResourceNameForImageError
-        {
-            get { return "HtmlRenderer.Core.Utils.ImageError.png"; }
-        }
-
-        /// <summary>
         /// The default stylesheet.
         /// </summary>
         public static string DefaultStyleSheet

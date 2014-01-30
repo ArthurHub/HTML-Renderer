@@ -62,19 +62,19 @@ namespace HtmlRenderer.WinForms
         #region Fields and Consts
 
         /// <summary>
-        /// 
+        /// Underline html container instance.
         /// </summary>
-        private HtmlContainer _htmlContainer;
+        protected HtmlContainer _htmlContainer;
 
         /// <summary>
         /// the raw base stylesheet data used in the control
         /// </summary>
-        private string _baseRawCssData;
+        protected string _baseRawCssData;
 
         /// <summary>
         /// the base stylesheet data used in the control
         /// </summary>
-        private CssData _baseCssData;
+        protected CssData _baseCssData;
 
         #endregion
 

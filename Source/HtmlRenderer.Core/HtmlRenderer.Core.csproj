@@ -89,6 +89,7 @@
     <Compile Include="Handlers\SelectionHandler.cs" />
     <Compile Include="Handlers\StylesheetLoadHandler.cs" />
     <Compile Include="HtmlRendererUtils.cs" />
+    <Compile Include="Interfaces\GlobalBase.cs" />
     <Compile Include="Interfaces\IFontFamily.cs" />
     <Compile Include="Interfaces\IBrush.cs" />
     <Compile Include="Interfaces\IContextMenu.cs" />
