@@ -1391,7 +1391,7 @@ namespace HtmlRenderer.Core.Dom
 
         protected override IFont GetCachedFont(string fontFamily, float fsize, FontStyleInt st)
         {
-            return FontsUtils.GetCachedFont(_htmlContainer, fontFamily, fsize, st);
+            return FontsUtils.GetCachedFont(HtmlContainer, fontFamily, fsize, st);
         }
 
         protected override ColorInt GetActualColor(string colorStr)

@@ -149,21 +149,13 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
 
-        public float WhitespaceWidth
+        public float GetWhitespaceWidth(IGraphics graphics)
         {
-            get
+            if( _whitespaceWidth < 0 )
             {
-                if (_whitespaceWidth < 0)
-                {
-                    using (var g = Graphics.FromHdc(IntPtr.Zero))
-                    using (var mg = new GraphicsAdapter(g, false))
-                    {
-                        _whitespaceWidth = mg.MeasureString(" ", this).Width;
-                    }
-                }
-                return _whitespaceWidth;
+                _whitespaceWidth = graphics.MeasureString(" ", this).Width;
             }
+            return _whitespaceWidth;
         }
-
     }
 }
