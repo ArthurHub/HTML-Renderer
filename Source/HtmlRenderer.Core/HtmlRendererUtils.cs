@@ -119,7 +119,7 @@ namespace HtmlRenderer.Core
                     // make sure the height is not lower than min if given
                     newSize.Height = minSize.Height > 0 && minSize.Height > htmlContainer.ActualSize.Height
                                          ? minSize.Height
-                                         : (int)htmlContainer.ActualSize.Height;
+                                         : htmlContainer.ActualSize.Height;
 
                     // handle if changing the height of the label affects the desired width and those require re-layout
                     if( Math.Abs(prevWidth - size.Width) > 0.01 )
