@@ -13,10 +13,11 @@
 using System;
 using System.Drawing;
 using System.ComponentModel;
-using System.Drawing.Text;
 using System.Windows.Forms;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
+using HtmlRenderer.WinForms.Adapters;
+using HtmlRenderer.WinForms.Utilities;
 
 namespace HtmlRenderer.WinForms
 {
@@ -320,56 +321,13 @@ namespace HtmlRenderer.WinForms
         {
             if (_htmlContainer != null)
             {
-                if (AutoSize)
-                    _htmlContainer.MaxSize = SizeF.Empty;
-                else if (AutoSizeHeightOnly)
-                    _htmlContainer.MaxSize = new SizeF(Width, 0);
-                else
-                    _htmlContainer.MaxSize = Size;
-
                 using (Graphics g = CreateGraphics())
+                using(var ig = new GraphicsAdapter(g,_htmlContainer.UseGdiPlusTextRendering))
                 {
-                    _htmlContainer.PerformLayout(g);
-
-                    if (AutoSize || _autoSizeHight)
-                    {
-                        if (AutoSize)
-                        {
-                            Size = Size.Round(_htmlContainer.ActualSize);
-                            if (MaximumSize.Width > 0 && MaximumSize.Width < _htmlContainer.ActualSize.Width)
-                            {
-                                // to allow the actual size be smaller than max we need to set max size only if it is really larger
-                                _htmlContainer.MaxSize = MaximumSize;
-                                _htmlContainer.PerformLayout(g);
-
-                                Size = Size.Round(_htmlContainer.ActualSize);
-                            }
-                            else if (MinimumSize.Width > 0 && MinimumSize.Width > _htmlContainer.ActualSize.Width)
-                            {
-                                // if min size is larger than the actual we need to re-layout so all 100% layouts will be correct
-                                _htmlContainer.MaxSize = new SizeF(MinimumSize.Width, 0);
-                                _htmlContainer.PerformLayout(g);
-
-                                Size = Size.Round(_htmlContainer.ActualSize);
-                            }
-                        }
-                        else if( _autoSizeHight && Height != (int)_htmlContainer.ActualSize.Height )
-                        {
-                            var prevWidth = Width;
-
-                            // make sure the height is not lower than min if given
-                            Height = MinimumSize.Height > 0 && MinimumSize.Height > _htmlContainer.ActualSize.Height
-                                         ? MinimumSize.Height
-                                         : (int)_htmlContainer.ActualSize.Height;
-
-                            // handle if changing the height of the label affects the desired width and those require re-layout
-                            if( prevWidth != Width )
-                                OnLayout(levent);
-                        }
-                    }
+                    var newSize = HtmlRendererUtils.Layout(ig, _htmlContainer.HtmlContainerInt, Utils.Convert(Size), Utils.Convert(MinimumSize), Utils.Convert(MaximumSize), AutoSize, AutoSizeHeightOnly);
+                    Size = Utils.ConvertRound(newSize);
                 }
             }
-
             base.OnLayout(levent);
         }
 
@@ -382,7 +340,6 @@ namespace HtmlRenderer.WinForms
 
             if (_htmlContainer != null)
             {
-                e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
                 _htmlContainer.PerformPaint(e.Graphics);
             }
         }
@@ -438,7 +395,7 @@ namespace HtmlRenderer.WinForms
         }
 
         /// <summary>
-        /// Propogate the LinkClicked event from root container.
+        /// Propagate the LinkClicked event from root container.
         /// </summary>
         private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
         {

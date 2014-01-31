@@ -334,7 +334,7 @@ namespace HtmlRenderer.WinForms
         }
 
         /// <summary>
-        /// Set focus on the control for keyboard scrrollbars handling.
+        /// Set focus on the control for keyboard scrollbars handling.
         /// </summary>
         protected override void OnClick(EventArgs e)
         {
