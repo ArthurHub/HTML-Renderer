@@ -12,7 +12,7 @@
 
 using System;
 
-namespace HtmlRenderer.Core.Entities
+namespace HtmlRenderer.Entities
 {
     /// <summary>
     /// Raised when html renderer requires refresh of the control hosting (invalidation and re-layout).<br/>

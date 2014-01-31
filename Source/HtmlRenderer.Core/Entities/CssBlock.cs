@@ -13,7 +13,7 @@
 using System.Collections.Generic;
 using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Core.Entities
+namespace HtmlRenderer.Entities
 {
     /// <summary>
     /// Represents a block of CSS property values.<br/>

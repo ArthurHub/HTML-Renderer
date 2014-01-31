@@ -10,10 +10,12 @@
 // - Sun Tsu,
 // "The Art of War"
 
-namespace HtmlRenderer.Core.Entities
+using HtmlRenderer.Core;
+
+namespace HtmlRenderer.Entities
 {
     /// <summary>
-    /// aTODO: add doc
+    /// Even class for handling keyboard events in <see cref="HtmlContainerInt"/>.
     /// </summary>
     public sealed class MouseEventInt
     {

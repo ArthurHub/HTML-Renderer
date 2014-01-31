@@ -111,9 +111,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\HtmlRenderer.Core\HtmlRenderer.Core.csproj">
+    <ProjectReference Include="..\HtmlRenderer.Core\HtmlRenderer.csproj">
       <Project>{fe611685-391f-4e3e-b27e-d3150e51e49b}</Project>
-      <Name>HtmlRenderer.Core</Name>
+      <Name>HtmlRenderer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

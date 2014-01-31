@@ -11,12 +11,13 @@
 // "The Art of War"
 
 using System.IO;
-using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core;
+using HtmlRenderer.Entities;
 
-namespace HtmlRenderer.Core.Interfaces
+namespace HtmlRenderer.Interfaces
 {
     /// <summary>
-    /// 
+    /// atodo: add doc
     /// </summary>
     public interface IGlobal
     {

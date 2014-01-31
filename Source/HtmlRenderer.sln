@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Demo.WinForms"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Demo.WPF", "Demo\WPF\HtmlRenderer.Demo.WPF.csproj", "{F02E0216-4AE3-474F-9381-FCB93411CDB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Core", "HtmlRenderer.Core\HtmlRenderer.Core.csproj", "{FE611685-391F-4E3E-B27E-D3150E51E49B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer", "HtmlRenderer.Core\HtmlRenderer.csproj", "{FE611685-391F-4E3E-B27E-D3150E51E49B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.WinForms", "HtmlRenderer.WinForms\HtmlRenderer.WinForms.csproj", "{1B058920-24B4-4140-8AE7-C8C6C38CA52D}"
 EndProject

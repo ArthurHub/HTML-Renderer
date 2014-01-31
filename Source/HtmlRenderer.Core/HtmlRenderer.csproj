@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FE611685-391F-4E3E-B27E-D3150E51E49B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HtmlRenderer</RootNamespace>
+    <AssemblyName>HtmlRenderer</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Utils\ImageError.png" />
+    <EmbeddedResource Include="Core\Utils\ImageLoad.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Core\Dom\CssBox.cs" />
+    <Compile Include="Core\Dom\CssBoxFrame.cs" />
+    <Compile Include="Core\Dom\CssBoxHr.cs" />
+    <Compile Include="Core\Dom\CssBoxImage.cs" />
+    <Compile Include="Core\Dom\CssBoxProperties.cs" />
+    <Compile Include="Core\Dom\CssLayoutEngine.cs" />
+    <Compile Include="Core\Dom\CssLayoutEngineTable.cs" />
+    <Compile Include="Core\Dom\CssLength.cs" />
+    <Compile Include="Core\Dom\CssLineBox.cs" />
+    <Compile Include="Core\Dom\CssRect.cs" />
+    <Compile Include="Core\Dom\CssRectImage.cs" />
+    <Compile Include="Core\Dom\CssRectWord.cs" />
+    <Compile Include="Core\Dom\CssSpacingBox.cs" />
+    <Compile Include="Core\Dom\HtmlTag.cs" />
+    <Compile Include="Core\Entities\Border.cs" />
+    <Compile Include="Core\Entities\CssConstants.cs" />
+    <Compile Include="Core\Entities\CssDefaults.cs" />
+    <Compile Include="Core\Entities\CssUnit.cs" />
+    <Compile Include="Core\Entities\HoverBoxBlock.cs" />
+    <Compile Include="Core\Entities\HtmlConstants.cs" />
+    <Compile Include="Core\Handlers\BackgroundImageDrawHandler.cs" />
+    <Compile Include="Core\Handlers\BordersDrawHandler.cs" />
+    <Compile Include="Core\Handlers\ContextMenuHandler.cs" />
+    <Compile Include="Core\Handlers\ImageLoadHandler.cs" />
+    <Compile Include="Core\Handlers\SelectionHandler.cs" />
+    <Compile Include="Core\Handlers\StylesheetLoadHandler.cs" />
+    <Compile Include="Core\HtmlRendererUtils.cs" />
+    <Compile Include="Core\Parse\CssParser.cs" />
+    <Compile Include="Core\Parse\CssValueParser.cs" />
+    <Compile Include="Core\Parse\DomParser.cs" />
+    <Compile Include="Core\Parse\HtmlParser.cs" />
+    <Compile Include="Core\Parse\RegexParserUtils.cs" />
+    <Compile Include="Core\Utils\ArgChecker.cs" />
+    <Compile Include="Core\Utils\CommonUtils.cs" />
+    <Compile Include="Core\Utils\CssUtils.cs" />
+    <Compile Include="Core\Utils\DomUtils.cs" />
+    <Compile Include="Core\Utils\FontsUtils.cs" />
+    <Compile Include="Core\Utils\HtmlUtils.cs" />
+    <Compile Include="Core\Utils\RenderUtils.cs" />
+    <Compile Include="Core\HtmlContainerInt.cs" />
+    <Compile Include="Core\CssData.cs" />
+    <Compile Include="Entities\ColorInt.cs" />
+    <Compile Include="Entities\CssBlock.cs" />
+    <Compile Include="Entities\CssBlockSelectorItem.cs" />
+    <Compile Include="Entities\DashStyleInt.cs" />
+    <Compile Include="Entities\FontStyleInt.cs" />
+    <Compile Include="Entities\HtmlGenerationStyle.cs" />
+    <Compile Include="Entities\HtmlImageLoadEventArgs.cs" />
+    <Compile Include="Entities\HtmlLinkClickedEventArgs.cs" />
+    <Compile Include="Entities\HtmlLinkClickedException.cs" />
+    <Compile Include="Entities\HtmlRefreshEventArgs.cs" />
+    <Compile Include="Entities\HtmlRenderErrorEventArgs.cs" />
+    <Compile Include="Entities\HtmlRenderErrorType.cs" />
+    <Compile Include="Entities\HtmlScrollEventArgs.cs" />
+    <Compile Include="Entities\HtmlStylesheetLoadEventArgs.cs" />
+    <Compile Include="Entities\KeyEventInt.cs" />
+    <Compile Include="Entities\MouseEventInt.cs" />
+    <Compile Include="Entities\PointInt.cs" />
+    <Compile Include="Entities\RectangleInt.cs" />
+    <Compile Include="Entities\SizeInt.cs" />
+    <Compile Include="Interfaces\GlobalBase.cs" />
+    <Compile Include="Interfaces\IBrush.cs" />
+    <Compile Include="Interfaces\IContextMenu.cs" />
+    <Compile Include="Interfaces\IControl.cs" />
+    <Compile Include="Interfaces\IFont.cs" />
+    <Compile Include="Interfaces\IFontFamily.cs" />
+    <Compile Include="Interfaces\IGlobal.cs" />
+    <Compile Include="Interfaces\IGraphics.cs" />
+    <Compile Include="Interfaces\IGraphicsPath.cs" />
+    <Compile Include="Interfaces\IImage.cs" />
+    <Compile Include="Interfaces\IPen.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\Utils\SubString.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

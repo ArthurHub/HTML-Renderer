@@ -11,7 +11,7 @@
 // "The Art of War"
 
 using System.Drawing;
-using HtmlRenderer.Core.Interfaces;
+using HtmlRenderer.Interfaces;
 
 namespace HtmlRenderer.WinForms.Adapters
 {

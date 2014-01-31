@@ -12,7 +12,7 @@
 
 using System;
 
-namespace HtmlRenderer.Core.Interfaces
+namespace HtmlRenderer.Interfaces
 {
     /// <summary>
     /// atodo: add doc

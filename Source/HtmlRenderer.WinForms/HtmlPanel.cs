@@ -15,8 +15,8 @@ using System.Drawing;
 using System.ComponentModel;
 using System.Windows.Forms;
 using HtmlRenderer.Core;
-using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
+using HtmlRenderer.Entities;
 
 namespace HtmlRenderer.WinForms
 {

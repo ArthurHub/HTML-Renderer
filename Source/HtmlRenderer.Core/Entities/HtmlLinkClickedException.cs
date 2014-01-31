@@ -1,4 +1,4 @@
-﻿// "Therefore those skilled at the unorthodox
+// "Therefore those skilled at the unorthodox
 // are infinite as heaven and earth,
 // inexhaustible as the great rivers.
 // When they come to an end,
@@ -12,7 +12,7 @@
 
 using System;
 
-namespace HtmlRenderer.Core.Entities
+namespace HtmlRenderer.Entities
 {
     /// <summary>
     /// Exception thrown when client code subscribed to LinkClicked event thrown exception.

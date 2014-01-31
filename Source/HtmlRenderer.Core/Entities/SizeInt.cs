@@ -10,14 +10,17 @@
 // - Sun Tsu,
 // "The Art of War"
 
-namespace HtmlRenderer.Core.Entities
+using System;
+
+namespace HtmlRenderer.Entities
 {
     /// <summary>
-    ///     Stores an ordered pair of floating-point numbers, typically the width and height of a rectangle.
+    /// Stores an ordered pair of floating-point numbers, typically the width and height of a rectangle.
     /// </summary>
-    /// <filterpriority>1</filterpriority>
     public struct SizeInt
     {
+        #region Fields and Consts
+
         /// <summary>
         ///     Gets a <see cref="SizeInt" /> structure that has a
         ///     <see
@@ -42,8 +45,8 @@ namespace HtmlRenderer.Core.Entities
         private float _height;
         private float _width;
 
-        static SizeInt()
-        {}
+        #endregion
+
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SizeInt" /> structure from the specified existing
@@ -64,17 +67,9 @@ namespace HtmlRenderer.Core.Entities
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SizeInt" /> structure from the specified
-        ///     <see
-        ///         cref="T:System.Drawing.PointF" />
-        ///     structure.
+        /// Initializes a new instance of the <see cref="SizeInt" /> structure from the specified <see cref="PointInt" /> structure.
         /// </summary>
-        /// <param name="pt">
-        ///     The <see cref="T:System.Drawing.PointF" /> structure from which to initialize this
-        ///     <see
-        ///         cref="SizeInt" />
-        ///     structure.
-        /// </param>
+        /// <param name="pt">The <see cref="PointInt" /> structure from which to initialize this <see cref="SizeInt" /> structure.</param>
         public SizeInt(PointInt pt)
         {
             _width = pt.X;
@@ -142,17 +137,11 @@ namespace HtmlRenderer.Core.Entities
 
         /// <summary>
         ///     Converts the specified <see cref="SizeInt" /> structure to a
-        ///     <see
-        ///         cref="T:System.Drawing.PointF" />
-        ///     structure.
+        ///     <see cref="PointInt" /> structure.
         /// </summary>
-        /// <returns>
-        ///     The <see cref="T:System.Drawing.PointF" /> structure to which this operator converts.
-        /// </returns>
-        /// <param name="size">
-        ///     The <see cref="SizeInt" /> structure to be converted
+        /// <returns>The <see cref="PointInt" /> structure to which this operator converts.</returns>
+        /// <param name="size">The <see cref="SizeInt" /> structure to be converted
         /// </param>
-        /// <filterpriority>3</filterpriority>
         public static explicit operator PointInt(SizeInt size)
         {
             return new PointInt(size.Width, size.Height);
@@ -165,7 +154,7 @@ namespace HtmlRenderer.Core.Entities
         ///     structure.
         /// </summary>
         /// <returns>
-        ///     A <see cref="T:System.Drawing.Size" /> structure that is the result of the addition operation.
+        ///     A <see cref="SizeInt" /> structure that is the result of the addition operation.
         /// </returns>
         /// <param name="sz1">
         ///     The first <see cref="SizeInt" /> structure to add.
@@ -215,8 +204,8 @@ namespace HtmlRenderer.Core.Entities
         /// <filterpriority>3</filterpriority>
         public static bool operator ==(SizeInt sz1, SizeInt sz2)
         {
-            if( sz1.Width == (double)sz2.Width )
-                return sz1.Height == (double)sz2.Height;
+            if( Math.Abs(sz1.Width - (double)sz2.Width) < 0.001 )
+                return Math.Abs(sz1.Height - (double)sz2.Height) < 0.001;
             else
                 return false;
         }
@@ -303,17 +292,17 @@ namespace HtmlRenderer.Core.Entities
             if( !( obj is SizeInt ) )
                 return false;
             var sizeF = (SizeInt)obj;
-            if( sizeF.Width == (double)Width && sizeF.Height == (double)Height )
-                return sizeF.GetType().Equals(GetType());
+            if( Math.Abs(sizeF.Width - (double)Width) < 0.001 && Math.Abs(sizeF.Height - (double)Height) < 0.001 )
+                return sizeF.GetType() == GetType();
             else
                 return false;
         }
 
         /// <summary>
-        ///     Returns a hash code for this <see cref="T:System.Drawing.Size" /> structure.
+        ///     Returns a hash code for this <see cref="SizeInt" /> structure.
         /// </summary>
         /// <returns>
-        ///     An integer value that specifies a hash value for this <see cref="T:System.Drawing.Size" /> structure.
+        ///     An integer value that specifies a hash value for this <see cref="SizeInt" /> structure.
         /// </returns>
         /// <filterpriority>1</filterpriority>
         public override int GetHashCode()
@@ -322,12 +311,11 @@ namespace HtmlRenderer.Core.Entities
         }
 
         /// <summary>
-        ///     Converts a <see cref="SizeInt" /> structure to a <see cref="T:System.Drawing.PointF" /> structure.
+        ///     Converts a <see cref="SizeInt" /> structure to a <see cref="PointInt" /> structure.
         /// </summary>
         /// <returns>
-        ///     Returns a <see cref="T:System.Drawing.PointF" /> structure.
+        ///     Returns a <see cref="PointInt" /> structure.
         /// </returns>
-        /// <filterpriority>1</filterpriority>
         public PointInt ToPointF()
         {
             return (PointInt)this;

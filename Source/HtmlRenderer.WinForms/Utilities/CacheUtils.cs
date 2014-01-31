@@ -12,8 +12,8 @@
 
 using System.Collections.Generic;
 using System.Drawing;
-using HtmlRenderer.Core.Entities;
-using HtmlRenderer.Core.Interfaces;
+using HtmlRenderer.Entities;
+using HtmlRenderer.Interfaces;
 using HtmlRenderer.WinForms.Adapters;
 
 namespace HtmlRenderer.WinForms.Utilities

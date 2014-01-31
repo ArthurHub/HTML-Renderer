@@ -13,7 +13,7 @@
 using System;
 using System.IO;
 
-namespace HtmlRenderer.Core.Interfaces
+namespace HtmlRenderer.Interfaces
 {
     /// <summary>
     /// aTODO: add doc

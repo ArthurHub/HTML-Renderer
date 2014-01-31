@@ -5,13 +5,15 @@
 using System;
 using System.Text;
 
-namespace HtmlRenderer.Core.Entities
+namespace HtmlRenderer.Entities
 {
     /// <summary>
     /// Represents an ARGB (alpha, red, green, blue) color.
     /// </summary>
     public struct ColorInt
     {
+        #region Fields and Consts
+
         /// <summary>
         ///     Represents a color that is null.
         /// </summary>
@@ -20,8 +22,8 @@ namespace HtmlRenderer.Core.Entities
 
         private readonly long _value;
 
-        static ColorInt()
-        {}
+        #endregion
+
 
         private ColorInt(long value)
         {
@@ -148,31 +150,6 @@ namespace HtmlRenderer.Core.Entities
             return !( left == right );
         }
 
-        private static void CheckByte(int value)
-        {
-            if( value >= 0 && value <= byte.MaxValue )
-                return;
-            throw new ArgumentException("InvalidEx2BoundArgument");
-        }
-
-        private static long MakeArgb(byte alpha, byte red, byte green, byte blue)
-        {
-            return (uint)( red << 16 | green << 8 | blue | alpha << 24 ) & (long)uint.MaxValue;
-        }
-
-        /// <summary>
-        ///     Creates a <see cref="ColorInt" /> structure from a 32-bit ARGB value.
-        /// </summary>
-        /// <returns>
-        ///     The <see cref="ColorInt" /> structure that this method creates.
-        /// </returns>
-        /// <param name="argb">A value specifying the 32-bit ARGB value. </param>
-        /// <filterpriority>1</filterpriority>
-        public static ColorInt FromArgb(int argb)
-        {
-            return new ColorInt(argb & uint.MaxValue);
-        }
-
         /// <summary>
         ///     Creates a <see cref="ColorInt" /> structure from the four ARGB component (alpha, red, green, and blue) values. Although this method allows a 32-bit value to be passed for each component, the value of each component is limited to 8 bits.
         /// </summary>
@@ -193,35 +170,7 @@ namespace HtmlRenderer.Core.Entities
             CheckByte(red);
             CheckByte(green);
             CheckByte(blue);
-            return new ColorInt(MakeArgb((byte)alpha, (byte)red, (byte)green, (byte)blue));
-        }
-
-        /// <summary>
-        ///     Creates a <see cref="ColorInt" /> structure from the specified
-        ///     <see
-        ///         cref="ColorInt" />
-        ///     structure, but with the new specified alpha value. Although this method allows a 32-bit value to be passed for the alpha value, the value is limited to 8 bits.
-        /// </summary>
-        /// <returns>
-        ///     The <see cref="ColorInt" /> that this method creates.
-        /// </returns>
-        /// <param name="alpha">
-        ///     The alpha value for the new <see cref="ColorInt" />. Valid values are 0 through 255.
-        /// </param>
-        /// <param name="baseColor">
-        ///     The <see cref="ColorInt" /> from which to create the new
-        ///     <see
-        ///         cref="ColorInt" />
-        ///     .
-        /// </param>
-        /// <exception cref="T:System.ArgumentException">
-        ///     <paramref name="alpha" /> is less than 0 or greater than 255.
-        /// </exception>
-        /// <filterpriority>1</filterpriority>
-        public static ColorInt FromArgb(int alpha, ColorInt baseColor)
-        {
-            CheckByte(alpha);
-            return new ColorInt(MakeArgb((byte)alpha, baseColor.R, baseColor.G, baseColor.B));
+            return new ColorInt((uint)(red << 16 | green << 8 | blue | alpha << 24) & (long)uint.MaxValue);
         }
 
         /// <summary>
@@ -246,43 +195,6 @@ namespace HtmlRenderer.Core.Entities
         public static ColorInt FromArgb(int red, int green, int blue)
         {
             return FromArgb(byte.MaxValue, red, green, blue);
-        }
-
-        /// <summary>
-        ///     Gets the 32-bit ARGB value of this <see cref="ColorInt" /> structure.
-        /// </summary>
-        /// <returns>
-        ///     The 32-bit ARGB value of this <see cref="ColorInt" />.
-        /// </returns>
-        /// <filterpriority>1</filterpriority>
-        public int ToArgb()
-        {
-            return (int)_value;
-        }
-
-        /// <summary>
-        ///     Converts this <see cref="ColorInt" /> structure to a human-readable string.
-        /// </summary>
-        public override string ToString()
-        {
-            var stringBuilder = new StringBuilder(32);
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" [");
-            if( _value != 0 )
-            {
-                stringBuilder.Append("A=");
-                stringBuilder.Append(A);
-                stringBuilder.Append(", R=");
-                stringBuilder.Append(R);
-                stringBuilder.Append(", G=");
-                stringBuilder.Append(G);
-                stringBuilder.Append(", B=");
-                stringBuilder.Append(B);
-            }
-            else
-                stringBuilder.Append("Empty");
-            stringBuilder.Append("]");
-            return stringBuilder.ToString();
         }
 
         /// <summary>
@@ -320,5 +232,42 @@ namespace HtmlRenderer.Core.Entities
         {
             return _value.GetHashCode();
         }
+
+        /// <summary>
+        ///     Converts this <see cref="ColorInt" /> structure to a human-readable string.
+        /// </summary>
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder(32);
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" [");
+            if (_value != 0)
+            {
+                stringBuilder.Append("A=");
+                stringBuilder.Append(A);
+                stringBuilder.Append(", R=");
+                stringBuilder.Append(R);
+                stringBuilder.Append(", G=");
+                stringBuilder.Append(G);
+                stringBuilder.Append(", B=");
+                stringBuilder.Append(B);
+            }
+            else
+                stringBuilder.Append("Empty");
+            stringBuilder.Append("]");
+            return stringBuilder.ToString();
+        }
+
+
+        #region Private methods
+
+        private static void CheckByte(int value)
+        {
+            if( value >= 0 && value <= byte.MaxValue )
+                return;
+            throw new ArgumentException("InvalidEx2BoundArgument");
+        }
+
+        #endregion
     }
 }

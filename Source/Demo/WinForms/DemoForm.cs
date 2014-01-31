@@ -20,8 +20,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.IO;
-using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Demo.Common;
+using HtmlRenderer.Entities;
 using HtmlRenderer.WinForms;
 using Timer = System.Threading.Timer;
 

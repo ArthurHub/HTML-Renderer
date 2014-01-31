@@ -10,9 +10,9 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using HtmlRenderer.Core.Interfaces;
+using HtmlRenderer.Interfaces;
 
-namespace HtmlRenderer.Core.Entities
+namespace HtmlRenderer.Entities
 {
     /// <summary>
     /// Specifies the style of dashed lines drawn with a <see cref="IPen"/> object.

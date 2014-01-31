@@ -12,7 +12,7 @@
 
 using HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Core.Entities
+namespace HtmlRenderer.Entities
 {
     /// <summary>
     /// Holds single class selector in css block hierarchical selection (p class1 > div.class2)

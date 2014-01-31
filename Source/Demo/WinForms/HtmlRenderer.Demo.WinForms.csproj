@@ -119,9 +119,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HtmlRenderer.Core\HtmlRenderer.Core.csproj">
+    <ProjectReference Include="..\..\HtmlRenderer.Core\HtmlRenderer.csproj">
       <Project>{fe611685-391f-4e3e-b27e-d3150e51e49b}</Project>
-      <Name>HtmlRenderer.Core</Name>
+      <Name>HtmlRenderer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HtmlRenderer.WinForms\HtmlRenderer.WinForms.csproj">
       <Project>{1b058920-24b4-4140-8ae7-c8c6c38ca52d}</Project>

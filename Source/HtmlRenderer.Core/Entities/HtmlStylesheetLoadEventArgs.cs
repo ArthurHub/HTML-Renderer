@@ -12,8 +12,9 @@
 
 using System;
 using System.Collections.Generic;
+using HtmlRenderer.Core;
 
-namespace HtmlRenderer.Core.Entities
+namespace HtmlRenderer.Entities
 {
     /// <summary>
     /// Invoked when a stylesheet is about to be loaded by file path or URL in 'link' element.<br/>

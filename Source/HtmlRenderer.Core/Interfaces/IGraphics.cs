@@ -11,9 +11,9 @@
 // "The Art of War"
 
 using System;
-using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Entities;
 
-namespace HtmlRenderer.Core.Interfaces
+namespace HtmlRenderer.Interfaces
 {
     /// <summary>
     /// Interface for the graphics methods required for HTML rendering.<br/>

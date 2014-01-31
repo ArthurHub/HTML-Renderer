@@ -12,8 +12,8 @@
 
 using System.Drawing;
 using HtmlRenderer.Core;
-using HtmlRenderer.Core.Entities;
-using HtmlRenderer.Core.Interfaces;
+using HtmlRenderer.Entities;
+using HtmlRenderer.Interfaces;
 
 namespace HtmlRenderer.WinForms.Adapters
 {

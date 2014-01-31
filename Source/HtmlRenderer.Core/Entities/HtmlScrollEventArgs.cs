@@ -12,7 +12,7 @@
 
 using System;
 
-namespace HtmlRenderer.Core.Entities
+namespace HtmlRenderer.Entities
 {
     /// <summary>
     /// Raised when Html Renderer request scroll to specific location.<br/>

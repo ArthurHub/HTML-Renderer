@@ -12,7 +12,7 @@
 
 using System;
 
-namespace HtmlRenderer.Core.Entities
+namespace HtmlRenderer.Entities
 {
     /// <summary>
     ///     Represents an ordered pair of floating-point x- and y-coordinates that defines a point in a two-dimensional plane.

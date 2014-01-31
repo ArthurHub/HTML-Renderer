@@ -12,7 +12,7 @@
 
 using System.Drawing;
 using HtmlRenderer.Core;
-using HtmlRenderer.Core.Interfaces;
+using HtmlRenderer.Interfaces;
 
 namespace HtmlRenderer.WinForms.Adapters
 {

@@ -10,9 +10,9 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Entities;
 
-namespace HtmlRenderer.Core.Interfaces
+namespace HtmlRenderer.Interfaces
 {
     /// <summary>
     /// atodo: add doc

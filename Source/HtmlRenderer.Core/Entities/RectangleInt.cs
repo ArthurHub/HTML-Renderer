@@ -12,21 +12,18 @@
 
 using System;
 
-namespace HtmlRenderer.Core.Entities
+namespace HtmlRenderer.Entities
 {
     /// <summary>
-    ///     Stores a set of four floating-point numbers that represent the location and size of a rectangle. For more advanced region functions, use a
-    ///     <see
-    ///         cref="T:System.Drawing.Region" />
-    ///     object.
+    /// Stores a set of four floating-point numbers that represent the location and size of a rectangle. 
     /// </summary>
-    /// <filterpriority>1</filterpriority>
     public struct RectangleInt
     {
+        #region Fields and Consts
+
         /// <summary>
         ///     Represents an instance of the <see cref="RectangleInt" /> class with its members uninitialized.
         /// </summary>
-        /// <filterpriority>1</filterpriority>
         public static readonly RectangleInt Empty = new RectangleInt();
 
         private float _height;
@@ -35,8 +32,8 @@ namespace HtmlRenderer.Core.Entities
         private float _x;
         private float _y;
 
-        static RectangleInt()
-        {}
+        #endregion
+
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RectangleInt" /> class with the specified location and size.
@@ -54,14 +51,10 @@ namespace HtmlRenderer.Core.Entities
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="RectangleInt" /> class with the specified location and size.
+        /// Initializes a new instance of the <see cref="RectangleInt" /> class with the specified location and size.
         /// </summary>
-        /// <param name="location">
-        ///     A <see cref="T:System.Drawing.PointF" /> that represents the upper-left corner of the rectangular region.
-        /// </param>
-        /// <param name="size">
-        ///     A <see cref="T:System.Drawing.SizeF" /> that represents the width and height of the rectangular region.
-        /// </param>
+        /// <param name="location">A <see cref="PointInt" /> that represents the upper-left corner of the rectangular region.</param>
+        /// <param name="size">A <see cref="SizeInt" /> that represents the width and height of the rectangular region.</param>
         public RectangleInt(PointInt location, SizeInt size)
         {
             _x = location.X;
@@ -71,15 +64,9 @@ namespace HtmlRenderer.Core.Entities
         }
 
         /// <summary>
-        ///     Gets or sets the coordinates of the upper-left corner of this <see cref="RectangleInt" /> structure.
+        /// Gets or sets the coordinates of the upper-left corner of this <see cref="RectangleInt" /> structure.
         /// </summary>
-        /// <returns>
-        ///     A <see cref="T:System.Drawing.PointF" /> that represents the upper-left corner of this
-        ///     <see
-        ///         cref="RectangleInt" />
-        ///     structure.
-        /// </returns>
-        /// <filterpriority>1</filterpriority>
+        /// <returns>A <see cref="PointInt" /> that represents the upper-left corner of this <see cref="RectangleInt" /> structure.</returns>
         public PointInt Location
         {
             get { return new PointInt(X, Y); }
@@ -91,15 +78,9 @@ namespace HtmlRenderer.Core.Entities
         }
 
         /// <summary>
-        ///     Gets or sets the size of this <see cref="RectangleInt" />.
+        /// Gets or sets the size of this <see cref="RectangleInt" />.
         /// </summary>
-        /// <returns>
-        ///     A <see cref="T:System.Drawing.SizeF" /> that represents the width and height of this
-        ///     <see
-        ///         cref="RectangleInt" />
-        ///     structure.
-        /// </returns>
-        /// <filterpriority>1</filterpriority>
+        /// <returns>A <see cref="SizeInt" /> that represents the width and height of this <see cref="RectangleInt" /> structure.</returns>
         public SizeInt Size
         {
             get { return new SizeInt(Width, Height); }
@@ -116,7 +97,6 @@ namespace HtmlRenderer.Core.Entities
         /// <returns>
         ///     The x-coordinate of the upper-left corner of this <see cref="RectangleInt" /> structure.
         /// </returns>
-        /// <filterpriority>1</filterpriority>
         public float X
         {
             get { return _x; }
@@ -129,7 +109,6 @@ namespace HtmlRenderer.Core.Entities
         /// <returns>
         ///     The y-coordinate of the upper-left corner of this <see cref="RectangleInt" /> structure.
         /// </returns>
-        /// <filterpriority>1</filterpriority>
         public float Y
         {
             get { return _y; }
@@ -142,7 +121,6 @@ namespace HtmlRenderer.Core.Entities
         /// <returns>
         ///     The width of this <see cref="RectangleInt" /> structure.
         /// </returns>
-        /// <filterpriority>1</filterpriority>
         public float Width
         {
             get { return _width; }
@@ -155,7 +133,6 @@ namespace HtmlRenderer.Core.Entities
         /// <returns>
         ///     The height of this <see cref="RectangleInt" /> structure.
         /// </returns>
-        /// <filterpriority>1</filterpriority>
         public float Height
         {
             get { return _height; }
@@ -168,7 +145,6 @@ namespace HtmlRenderer.Core.Entities
         /// <returns>
         ///     The x-coordinate of the left edge of this <see cref="RectangleInt" /> structure.
         /// </returns>
-        /// <filterpriority>1</filterpriority>
         public float Left
         {
             get { return X; }
@@ -180,7 +156,6 @@ namespace HtmlRenderer.Core.Entities
         /// <returns>
         ///     The y-coordinate of the top edge of this <see cref="RectangleInt" /> structure.
         /// </returns>
-        /// <filterpriority>1</filterpriority>
         public float Top
         {
             get { return Y; }
@@ -198,7 +173,6 @@ namespace HtmlRenderer.Core.Entities
         ///         cref="RectangleInt.Width" />
         ///     of this <see cref="RectangleInt" /> structure.
         /// </returns>
-        /// <filterpriority>1</filterpriority>
         public float Right
         {
             get { return X + Width; }
@@ -216,7 +190,6 @@ namespace HtmlRenderer.Core.Entities
         ///         cref="RectangleInt.Height" />
         ///     of this <see cref="RectangleInt" /> structure.
         /// </returns>
-        /// <filterpriority>1</filterpriority>
         public float Bottom
         {
             get { return Y + Height; }
@@ -234,7 +207,6 @@ namespace HtmlRenderer.Core.Entities
         ///         cref="RectangleInt.Height" />
         ///     property of this <see cref="RectangleInt" /> has a value of zero; otherwise, false.
         /// </returns>
-        /// <filterpriority>1</filterpriority>
         public bool IsEmpty
         {
             get
@@ -251,12 +223,7 @@ namespace HtmlRenderer.Core.Entities
         /// </summary>
         /// <returns>
         ///     This operator returns true if the two specified <see cref="RectangleInt" /> structures have equal
-        ///     <see
-        ///         cref="RectangleInt.X" />
-        ///     , <see cref="RectangleInt.Y" />,
-        ///     <see
-        ///         cref="RectangleInt.Width" />
-        ///     , and <see cref="RectangleInt.Height" /> properties.
+        ///     <see cref="RectangleInt.X" />, <see cref="RectangleInt.Y" />, <see cref="RectangleInt.Width" />, and <see cref="RectangleInt.Height" /> properties.
         /// </returns>
         /// <param name="left">
         ///     The <see cref="RectangleInt" /> structure that is to the left of the equality operator.
@@ -264,11 +231,10 @@ namespace HtmlRenderer.Core.Entities
         /// <param name="right">
         ///     The <see cref="RectangleInt" /> structure that is to the right of the equality operator.
         /// </param>
-        /// <filterpriority>3</filterpriority>
         public static bool operator ==(RectangleInt left, RectangleInt right)
         {
-            if( left.X == (double)right.X && left.Y == (double)right.Y && left.Width == (double)right.Width )
-                return left.Height == (double)right.Height;
+            if( Math.Abs(left.X - (double)right.X) < 0.001 && Math.Abs(left.Y - (double)right.Y) < 0.001 && Math.Abs(left.Width - (double)right.Width) < 0.001 )
+                return Math.Abs(left.Height - (double)right.Height) < 0.001;
             else
                 return false;
         }
@@ -278,12 +244,8 @@ namespace HtmlRenderer.Core.Entities
         /// </summary>
         /// <returns>
         ///     This operator returns true if any of the <see cref="RectangleInt.X" /> ,
-        ///     <see
-        ///         cref="RectangleInt.Y" />
-        ///     , <see cref="RectangleInt.Width" />, or
-        ///     <see
-        ///         cref="RectangleInt.Height" />
-        ///     properties of the two <see cref="T:System.Drawing.Rectangle" /> structures are unequal; otherwise false.
+        ///     <see cref="RectangleInt.Y" />, <see cref="RectangleInt.Width" />, or <see cref="RectangleInt.Height" />
+        ///     properties of the two <see cref="RectangleInt" /> structures are unequal; otherwise false.
         /// </returns>
         /// <param name="left">
         ///     The <see cref="RectangleInt" /> structure that is to the left of the inequality operator.
@@ -291,7 +253,6 @@ namespace HtmlRenderer.Core.Entities
         /// <param name="right">
         ///     The <see cref="RectangleInt" /> structure that is to the right of the inequality operator.
         /// </param>
-        /// <filterpriority>3</filterpriority>
         public static bool operator !=(RectangleInt left, RectangleInt right)
         {
             return !( left == right );
@@ -307,7 +268,6 @@ namespace HtmlRenderer.Core.Entities
         /// <param name="top">The y-coordinate of the upper-left corner of the rectangular region. </param>
         /// <param name="right">The x-coordinate of the lower-right corner of the rectangular region. </param>
         /// <param name="bottom">The y-coordinate of the lower-right corner of the rectangular region. </param>
-        /// <filterpriority>1</filterpriority>
         public static RectangleInt FromLTRB(float left, float top, float right, float bottom)
         {
             return new RectangleInt(left, top, right - left, bottom - top);
@@ -315,27 +275,22 @@ namespace HtmlRenderer.Core.Entities
 
         /// <summary>
         ///     Tests whether <paramref name="obj" /> is a <see cref="RectangleInt" /> with the same location and size of this
-        ///     <see
-        ///         cref="RectangleInt" />
-        ///     .
+        ///     <see cref="RectangleInt" />.
         /// </summary>
         /// <returns>
         ///     This method returns true if <paramref name="obj" /> is a <see cref="RectangleInt" /> and its X, Y, Width, and Height properties are equal to the corresponding properties of this
-        ///     <see
-        ///         cref="RectangleInt" />
-        ///     ; otherwise, false.
+        ///     <see cref="RectangleInt" />; otherwise, false.
         /// </returns>
         /// <param name="obj">
         ///     The <see cref="T:System.Object" /> to test.
         /// </param>
-        /// <filterpriority>1</filterpriority>
         public override bool Equals(object obj)
         {
             if( !( obj is RectangleInt ) )
                 return false;
             var rectangleF = (RectangleInt)obj;
-            if( rectangleF.X == (double)X && rectangleF.Y == (double)Y && rectangleF.Width == (double)Width )
-                return rectangleF.Height == (double)Height;
+            if( Math.Abs(rectangleF.X - (double)X) < 0.001 && Math.Abs(rectangleF.Y - (double)Y) < 0.001 && Math.Abs(rectangleF.Width - (double)Width) < 0.001 )
+                return Math.Abs(rectangleF.Height - (double)Height) < 0.001;
             else
                 return false;
         }
@@ -345,13 +300,11 @@ namespace HtmlRenderer.Core.Entities
         /// </summary>
         /// <returns>
         ///     This method returns true if the point defined by <paramref name="x" /> and <paramref name="y" /> is contained within this
-        ///     <see
-        ///         cref="RectangleInt" />
+        ///     <see cref="RectangleInt" />
         ///     structure; otherwise false.
         /// </returns>
         /// <param name="x">The x-coordinate of the point to test. </param>
         /// <param name="y">The y-coordinate of the point to test. </param>
-        /// <filterpriority>1</filterpriority>
         public bool Contains(float x, float y)
         {
             if( X <= (double)x && x < X + (double)Width && Y <= (double)y )
@@ -365,14 +318,10 @@ namespace HtmlRenderer.Core.Entities
         /// </summary>
         /// <returns>
         ///     This method returns true if the point represented by the <paramref name="pt" /> parameter is contained within this
-        ///     <see
-        ///         cref="RectangleInt" />
+        ///     <see cref="RectangleInt" />
         ///     structure; otherwise false.
         /// </returns>
-        /// <param name="pt">
-        ///     The <see cref="T:System.Drawing.PointF" /> to test.
-        /// </param>
-        /// <filterpriority>1</filterpriority>
+        /// <param name="pt">The <see cref="PointInt" /> to test.</param>
         public bool Contains(PointInt pt)
         {
             return Contains(pt.X, pt.Y);
@@ -380,38 +329,23 @@ namespace HtmlRenderer.Core.Entities
 
         /// <summary>
         ///     Determines if the rectangular region represented by <paramref name="rect" /> is entirely contained within this
-        ///     <see
-        ///         cref="RectangleInt" />
+        ///     <see cref="RectangleInt" />
         ///     structure.
         /// </summary>
         /// <returns>
         ///     This method returns true if the rectangular region represented by <paramref name="rect" /> is entirely contained within the rectangular region represented by this
-        ///     <see
-        ///         cref="RectangleInt" />
+        ///     <see cref="RectangleInt" />
         ///     ; otherwise false.
         /// </returns>
         /// <param name="rect">
         ///     The <see cref="RectangleInt" /> to test.
         /// </param>
-        /// <filterpriority>1</filterpriority>
         public bool Contains(RectangleInt rect)
         {
             if( X <= (double)rect.X && rect.X + (double)rect.Width <= X + (double)Width && Y <= (double)rect.Y )
                 return rect.Y + (double)rect.Height <= Y + (double)Height;
             else
                 return false;
-        }
-
-        /// <summary>
-        ///     Gets the hash code for this <see cref="RectangleInt" /> structure. For information about the use of hash codes, see Object.GetHashCode.
-        /// </summary>
-        /// <returns>
-        ///     The hash code for this <see cref="RectangleInt" />.
-        /// </returns>
-        /// <filterpriority>1</filterpriority>
-        public override int GetHashCode()
-        {
-            return (int)(uint)X ^ ( (int)(uint)Y << 13 | (int)( (uint)Y >> 19 ) ) ^ ( (int)(uint)Width << 26 | (int)( (uint)Width >> 6 ) ) ^ ( (int)(uint)Height << 7 | (int)( (uint)Height >> 25 ) );
         }
 
         /// <summary>
@@ -423,7 +357,6 @@ namespace HtmlRenderer.Core.Entities
         /// <param name="y">
         ///     The amount to inflate this <see cref="RectangleInt" /> structure vertically.
         /// </param>
-        /// <filterpriority>1</filterpriority>
         public void Inflate(float x, float y)
         {
             X -= x;
@@ -436,7 +369,6 @@ namespace HtmlRenderer.Core.Entities
         ///     Inflates this <see cref="RectangleInt" /> by the specified amount.
         /// </summary>
         /// <param name="size">The amount to inflate this rectangle. </param>
-        /// <filterpriority>1</filterpriority>
         public void Inflate(SizeInt size)
         {
             Inflate(size.Width, size.Height);
@@ -453,7 +385,6 @@ namespace HtmlRenderer.Core.Entities
         /// </param>
         /// <param name="x">The amount to inflate the copy of the rectangle horizontally. </param>
         /// <param name="y">The amount to inflate the copy of the rectangle vertically. </param>
-        /// <filterpriority>1</filterpriority>
         public static RectangleInt Inflate(RectangleInt rect, float x, float y)
         {
             RectangleInt rectangleF = rect;
@@ -468,7 +399,6 @@ namespace HtmlRenderer.Core.Entities
         ///     structure.
         /// </summary>
         /// <param name="rect">The rectangle to intersect. </param>
-        /// <filterpriority>1</filterpriority>
         public void Intersect(RectangleInt rect)
         {
             RectangleInt rectangleF = Intersect(rect, this);
@@ -489,7 +419,6 @@ namespace HtmlRenderer.Core.Entities
         /// </returns>
         /// <param name="a">A rectangle to intersect. </param>
         /// <param name="b">A rectangle to intersect. </param>
-        /// <filterpriority>1</filterpriority>
         public static RectangleInt Intersect(RectangleInt a, RectangleInt b)
         {
             float x = Math.Max(a.X, b.X);
@@ -509,7 +438,6 @@ namespace HtmlRenderer.Core.Entities
         ///     This method returns true if there is any intersection.
         /// </returns>
         /// <param name="rect">The rectangle to test. </param>
-        /// <filterpriority>1</filterpriority>
         public bool IntersectsWith(RectangleInt rect)
         {
             if( rect.X < X + (double)Width && X < rect.X + (double)rect.Width && rect.Y < Y + (double)Height )
@@ -526,7 +454,6 @@ namespace HtmlRenderer.Core.Entities
         /// </returns>
         /// <param name="a">A rectangle to union. </param>
         /// <param name="b">A rectangle to union. </param>
-        /// <filterpriority>1</filterpriority>
         public static RectangleInt Union(RectangleInt a, RectangleInt b)
         {
             float x = Math.Min(a.X, b.X);
@@ -540,7 +467,6 @@ namespace HtmlRenderer.Core.Entities
         ///     Adjusts the location of this rectangle by the specified amount.
         /// </summary>
         /// <param name="pos">The amount to offset the location. </param>
-        /// <filterpriority>1</filterpriority>
         public void Offset(PointInt pos)
         {
             Offset(pos.X, pos.Y);
@@ -551,7 +477,6 @@ namespace HtmlRenderer.Core.Entities
         /// </summary>
         /// <param name="x">The amount to offset the location horizontally. </param>
         /// <param name="y">The amount to offset the location vertically. </param>
-        /// <filterpriority>1</filterpriority>
         public void Offset(float x, float y)
         {
             X += x;
@@ -559,17 +484,20 @@ namespace HtmlRenderer.Core.Entities
         }
 
         /// <summary>
-        ///     Converts the Location and <see cref="T:System.Drawing.Size" /> of this <see cref="RectangleInt" /> to a human-readable string.
+        ///     Gets the hash code for this <see cref="RectangleInt" /> structure. For information about the use of hash codes, see Object.GetHashCode.
+        /// </summary>
+        /// <returns>The hash code for this <see cref="RectangleInt" /></returns>
+        public override int GetHashCode()
+        {
+            return (int)(uint)X ^ ((int)(uint)Y << 13 | (int)((uint)Y >> 19)) ^ ((int)(uint)Width << 26 | (int)((uint)Width >> 6)) ^ ((int)(uint)Height << 7 | (int)((uint)Height >> 25));
+        }
+
+        /// <summary>
+        /// Converts the Location and Size of this <see cref="RectangleInt" /> to a human-readable string.
         /// </summary>
         /// <returns>
-        ///     A string that contains the position, width, and height of this <see cref="RectangleInt" /> structure¾for example, "{X=20, Y=20, Width=100, Height=50}".
+        /// A string that contains the position, width, and height of this <see cref="RectangleInt" /> structure for example, "{X=20, Y=20, Width=100, Height=50}".
         /// </returns>
-        /// <filterpriority>1</filterpriority>
-        /// <PermissionSet>
-        ///     <IPermission
-        ///         class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
-        ///         version="1" Flags="UnmanagedCode" />
-        /// </PermissionSet>
         public override string ToString()
         {
             return "{X=" + X + ",Y=" + Y + ",Width=" + Width + ",Height=" + Height + "}";
