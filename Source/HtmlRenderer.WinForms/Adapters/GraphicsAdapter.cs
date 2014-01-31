@@ -180,8 +180,6 @@ namespace HtmlRenderer.WinForms.Adapters
 
                 if (font.Height < 0)
                 {
-                    TextMetric lptm;
-                    Win32Utils.GetTextMetrics(_hdc, out lptm);
                     var height = realFont.Height;
                     var descent = realFont.Size * realFont.FontFamily.GetCellDescent(realFont.Style) / realFont.FontFamily.GetEmHeight(realFont.Style);
                     fontAdapter.SetMetrics(height, (int)Math.Round(( height - descent + .5f )));
