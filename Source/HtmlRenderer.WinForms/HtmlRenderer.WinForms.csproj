@@ -109,9 +109,8 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\HtmlRenderer.Core\HtmlRenderer.csproj">
+    <ProjectReference Include="..\HtmlRenderer\HtmlRenderer.csproj">
       <Project>{fe611685-391f-4e3e-b27e-d3150e51e49b}</Project>
       <Name>HtmlRenderer</Name>
     </ProjectReference>
