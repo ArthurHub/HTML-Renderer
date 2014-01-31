@@ -172,17 +172,36 @@ namespace HtmlRenderer.WinForms.Adapters
             if (_useGdiPlusTextRendering)
             {
                 ReleaseHdc();
+                var fontAdapter = (FontAdapter)font;
+                var realFont = fontAdapter.Font;
                 _characterRanges[0] = new CharacterRange(0, str.Length);
                 _stringFormat.SetMeasurableCharacterRanges(_characterRanges);
-                var size = _g.MeasureCharacterRanges(str, ((FontAdapter)font).Font, RectangleF.Empty, _stringFormat)[0].GetBounds(_g).Size;
+                var size = _g.MeasureCharacterRanges(str, realFont, RectangleF.Empty, _stringFormat)[0].GetBounds(_g).Size;
+
+                if (font.Height < 0)
+                {
+                    TextMetric lptm;
+                    Win32Utils.GetTextMetrics(_hdc, out lptm);
+                    var height = realFont.Height;
+                    var descent = realFont.Size * realFont.FontFamily.GetCellDescent(realFont.Style) / realFont.FontFamily.GetEmHeight(realFont.Style);
+                    fontAdapter.SetMetrics(height, (int)Math.Round(( height - descent + .5f )));
+                }
+
                 return Utils.Convert(size);
             }
             else
             {
                 SetFont(font);
-
                 var size = new Size();
                 Win32Utils.GetTextExtentPoint32(_hdc, str, str.Length, ref size);
+
+                if (font.Height < 0)
+                {
+                    TextMetric lptm;
+                    Win32Utils.GetTextMetrics(_hdc, out lptm);
+                    ((FontAdapter)font).SetMetrics(size.Height, lptm.tmHeight - lptm.tmDescent + lptm.tmUnderlined + 1);
+                }
+
                 return Utils.Convert(size);
             }
         }

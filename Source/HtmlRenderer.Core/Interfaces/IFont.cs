@@ -33,19 +33,9 @@ namespace HtmlRenderer.Core.Interfaces
         float Height { get; }
 
         /// <summary>
-        /// Gets the ascent of the font.
+        /// Get the vertical offset of the font underline location from the top of the font.
         /// </summary>
-        float Ascent { get; }
-
-        /// <summary>
-        /// Gets the descent of the font.
-        /// </summary>
-        float Descent { get; }
-
-        /// <summary>
-        /// Gets the line spacing of the font
-        /// </summary>
-        float LineSpacing { get; }
+        float UnderlineOffset { get; }
 
         /// <summary>
         /// Get the left padding, in pixels, of the font.

@@ -34,6 +34,11 @@ namespace HtmlRenderer.WinForms.Adapters
         private IntPtr _hFont;
 
         /// <summary>
+        /// the vertical offset of the font underline location from the top of the font.
+        /// </summary>
+        private float _underlineOffset = -1;
+
+        /// <summary>
         /// Cached font height.
         /// </summary>
         private float _height = -1;
@@ -93,36 +98,11 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
-        /// Gets the ascent of the font.
+        /// Get the vertical offset of the font underline location from the top of the font.
         /// </summary>
-        /// <remarks>
-        /// Font metrics from http://msdn.microsoft.com/en-us/library/xwf9s90b(VS.71).aspx
-        /// </remarks>
-        public float Ascent
+        public float UnderlineOffset
         {
-            get { return _font.Size * _font.FontFamily.GetCellAscent(_font.Style) / _font.FontFamily.GetEmHeight(_font.Style); }
-        }
-
-        /// <summary>
-        /// Gets the descent of the font.
-        /// </summary>
-        /// <remarks>
-        /// Font metrics from http://msdn.microsoft.com/en-us/library/xwf9s90b(VS.71).aspx
-        /// </remarks>
-        public float Descent
-        {
-            get { return _font.Size * _font.FontFamily.GetCellDescent(_font.Style) / _font.FontFamily.GetEmHeight(_font.Style); }
-        }
-
-        /// <summary>
-        /// Gets the line spacing of the font
-        /// </summary>
-        /// <remarks>
-        /// Font metrics from http://msdn.microsoft.com/en-us/library/xwf9s90b(VS.71).aspx
-        /// </remarks>
-        public float LineSpacing
-        {
-            get { return _font.Size * _font.FontFamily.GetLineSpacing(_font.Style) / _font.FontFamily.GetEmHeight(_font.Style); }
+            get { return _underlineOffset; }
         }
 
         /// <summary>
@@ -130,14 +110,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         public float Height
         {
-            get
-            {
-                if (_height < 0)
-                {
-                    _height = _font.GetHeight();
-                }
-                return _height;
-            }
+            get { return _height; }
         }
 
         /// <summary>
@@ -145,7 +118,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         public float LeftPadding
         {
-            get { return Height / 6f; }
+            get { return _height / 6f; }
         }
 
 
@@ -156,6 +129,17 @@ namespace HtmlRenderer.WinForms.Adapters
                 _whitespaceWidth = graphics.MeasureString(" ", this).Width;
             }
             return _whitespaceWidth;
+        }
+
+        /// <summary>
+        /// Set font metrics to be cached for the font for future use.
+        /// </summary>
+        /// <param name="height">the full height of the font</param>
+        /// <param name="underlineOffset">the vertical offset of the font underline location from the top of the font.</param>
+        internal void SetMetrics(int height, int underlineOffset)
+        {
+            _height = height;
+            _underlineOffset = underlineOffset;
         }
     }
 }

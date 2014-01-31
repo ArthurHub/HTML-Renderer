@@ -120,11 +120,14 @@ namespace HtmlRenderer.WinForms.Utilities
         [DllImport("gdi32.dll")]
         public static extern int SetTextColor(IntPtr hdc, int color);
 
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto)]
+        public static extern bool GetTextMetrics(IntPtr hdc, out TextMetric lptm);
+
         [DllImport("gdi32.dll", EntryPoint = "GetTextExtentPoint32W")]
         public static extern int GetTextExtentPoint32(IntPtr hdc, [MarshalAs(UnmanagedType.LPWStr)] string str, int len, ref Size size);
 
         [DllImport("gdi32.dll", EntryPoint = "GetTextExtentExPointW")]
-        public static extern bool GetTextExtentExPoint(IntPtr hDc, [MarshalAs(UnmanagedType.LPWStr)]string str, int nLength, int nMaxExtent, int[] lpnFit, int[] alpDx, ref Size size);
+        public static extern bool GetTextExtentExPoint(IntPtr hDc, [MarshalAs(UnmanagedType.LPWStr)] string str, int nLength, int nMaxExtent, int[] lpnFit, int[] alpDx, ref Size size);
 
         [DllImport("gdi32.dll", EntryPoint = "TextOutW")]
         public static extern bool TextOut(IntPtr hdc, int x, int y, [MarshalAs(UnmanagedType.LPWStr)] string str, int len);
@@ -193,5 +196,30 @@ namespace HtmlRenderer.WinForms.Utilities
         public byte bmiColors_rgbGreen;
         public byte bmiColors_rgbRed;
         public byte bmiColors_rgbReserved;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct TextMetric
+    {
+        public int tmHeight;
+        public int tmAscent;
+        public int tmDescent;
+        public int tmInternalLeading;
+        public int tmExternalLeading;
+        public int tmAveCharWidth;
+        public int tmMaxCharWidth;
+        public int tmWeight;
+        public int tmOverhang;
+        public int tmDigitizedAspectX;
+        public int tmDigitizedAspectY;
+        public char tmFirstChar;
+        public char tmLastChar;
+        public char tmDefaultChar;
+        public char tmBreakChar;
+        public byte tmItalic;
+        public byte tmUnderlined;
+        public byte tmStruckOut;
+        public byte tmPitchAndFamily;
+        public byte tmCharSet;
     }
 }
