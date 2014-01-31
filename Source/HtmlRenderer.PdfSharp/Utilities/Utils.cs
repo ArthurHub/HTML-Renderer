@@ -1,0 +1,98 @@
+// "Therefore those skilled at the unorthodox
+// are infinite as heaven and earth,
+// inexhaustible as the great rivers.
+// When they come to an end,
+// they begin again,
+// like the days and months;
+// they die and are reborn,
+// like the four seasons."
+// 
+// - Sun Tsu,
+// "The Art of War"
+
+using HtmlRenderer.Entities;
+using PdfSharp.Drawing;
+
+namespace HtmlRenderer.PdfSharp.Utilities
+{
+    /// <summary>
+    /// Utilities for converting WinForms entities to HtmlRenderer core entities.
+    /// </summary>
+    internal static class Utils
+    {
+        /// <summary>
+        /// Convert from WinForms point to core point.
+        /// </summary>
+        public static PointInt Convert(XPoint p)
+        {
+            return new PointInt((float)p.X, (float)p.Y);
+        }
+
+        /// <summary>
+        /// Convert from WinForms point to core point.
+        /// </summary>
+        public static XPoint[] Convert(PointInt[] points)
+        {
+            XPoint[] myPoints = new XPoint[points.Length];
+            for (int i = 0; i < points.Length; i++)
+                myPoints[i] = Convert(points[i]);
+            return myPoints;
+        }
+
+        /// <summary>
+        /// Convert from core point to WinForms point.
+        /// </summary>
+        public static XPoint Convert(PointInt p)
+        {
+            return new XPoint(p.X, p.Y);
+        }
+
+        /// <summary>
+        /// Convert from WinForms size to core size.
+        /// </summary>
+        public static SizeInt Convert(XSize s)
+        {
+            return new SizeInt((float)s.Width, (float)s.Height);
+        }
+
+        /// <summary>
+        /// Convert from core size to WinForms size.
+        /// </summary>
+        public static XSize Convert(SizeInt s)
+        {
+            return new XSize(s.Width, s.Height);
+        }
+
+        /// <summary>
+        /// Convert from WinForms rectangle to core rectangle.
+        /// </summary>
+        public static RectangleInt Convert(XRect r)
+        {
+            return new RectangleInt((float)r.X, (float)r.Y, (float)r.Width, (float)r.Height);
+        }
+
+        /// <summary>
+        /// Convert from core rectangle to WinForms rectangle.
+        /// </summary>
+        public static XRect Convert(RectangleInt r)
+        {
+            return new XRect(r.X, r.Y, r.Width, r.Height);
+        }
+
+        /// <summary>
+        /// Convert from WinForms color to core color.
+        /// </summary>
+        public static ColorInt Convert(XColor c)
+        {
+            return ColorInt.FromArgb((int)c.A, c.R, c.G, c.B);
+        }
+
+        /// <summary>
+        /// Convert from core color to WinForms color.
+        /// </summary>
+        public static XColor Convert(ColorInt c)
+        {
+            return XColor.FromArgb(c.A, c.R, c.G, c.B);
+        }
+    }
+}

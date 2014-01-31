@@ -10,11 +10,11 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Drawing;
 using HtmlRenderer.Entities;
 using HtmlRenderer.Interfaces;
+using PdfSharp.Drawing;
 
-namespace HtmlRenderer.WinForms.Adapters
+namespace HtmlRenderer.PdfSharp.Adapters
 {
     /// <summary>
     /// Adapter for WinForms pens objects for core.
@@ -24,12 +24,12 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// The actual WinForms brush instance.
         /// </summary>
-        private readonly Pen _pen;
+        private readonly XPen _pen;
 
         /// <summary>
         /// Init.
         /// </summary>
-        public PenAdapter(Pen pen)
+        public PenAdapter(XPen pen)
         {
             _pen = pen;
         }
@@ -37,7 +37,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// The actual WinForms brush instance.
         /// </summary>
-        public Pen Pen
+        public XPen Pen
         {
             get { return _pen; }
         }
@@ -47,7 +47,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         public float Width
         {
-            get { return _pen.Width; }
+            get { return (float)_pen.Width; }
             set { _pen.Width = value; }
         }
 
@@ -61,25 +61,25 @@ namespace HtmlRenderer.WinForms.Adapters
                 switch( value )
                 {
                     case DashStyleInt.Solid:
-                        _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+                        _pen.DashStyle = XDashStyle.Solid;
                         break;
                     case DashStyleInt.Dash:
-                        _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                        _pen.DashStyle = XDashStyle.Dash;
                         break;
                     case DashStyleInt.Dot:
-                        _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                        _pen.DashStyle = XDashStyle.Dot;
                         break;
                     case DashStyleInt.DashDot:
-                        _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDot;
+                        _pen.DashStyle = XDashStyle.DashDot;
                         break;
                     case DashStyleInt.DashDotDot:
-                        _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDotDot;
+                        _pen.DashStyle = XDashStyle.DashDotDot;
                         break;
                     case DashStyleInt.Custom:
-                        _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Custom;
+                        _pen.DashStyle = XDashStyle.Custom;
                         break;
                     default:
-                        _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+                        _pen.DashStyle = XDashStyle.Solid;
                         break;
                 }
             }
@@ -90,7 +90,14 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         public float[] DashPattern
         {
-            set { _pen.DashPattern = value; }
+            set
+            {
+                var dValues = new double[value.Length];
+                for(int i = 0; i < value.Length; i++)
+                    dValues[i] = value[i];
+                
+                _pen.DashPattern = dValues;
+            }
         }
     }
 }
