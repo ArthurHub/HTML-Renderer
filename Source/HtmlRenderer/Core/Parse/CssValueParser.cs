@@ -30,7 +30,7 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// 
         /// </summary>
-        private readonly IGlobal _global;
+        private readonly GlobalBase _global;
 
         #endregion
 
@@ -38,7 +38,7 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// Init.
         /// </summary>
-        public CssValueParser(IGlobal global)
+        public CssValueParser(GlobalBase global)
         {
             ArgChecker.AssertArgNotNull(global, "global");
 
@@ -468,7 +468,7 @@ namespace HtmlRenderer.Core.Parse
         /// <returns>true - valid color, false - otherwise</returns>
         private bool GetColorByName(string str, int idx, int length, out RColor color)
         {
-            color = _global.ResolveColorFromName(str.Substring(idx, length));
+            color = _global.GetColor(str.Substring(idx, length));
             return color.A > 0;
         }
 

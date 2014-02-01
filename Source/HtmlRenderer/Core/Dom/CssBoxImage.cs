@@ -102,7 +102,7 @@ namespace HtmlRenderer.Core.Dom
 
                 if (_imageWord.Selected)
                 {
-                    g.FillRectangle(GetSelectionBackBrush(g,true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width+2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
+                    g.DrawRectangle(GetSelectionBackBrush(g,true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width+2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
                 }
             }
             else if (_imageLoadingComplete)

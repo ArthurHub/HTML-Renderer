@@ -66,6 +66,7 @@
     <Compile Include="Core\Handlers\BackgroundImageDrawHandler.cs" />
     <Compile Include="Core\Handlers\BordersDrawHandler.cs" />
     <Compile Include="Core\Handlers\ContextMenuHandler.cs" />
+    <Compile Include="Core\Handlers\FontHandler.cs" />
     <Compile Include="Core\Handlers\ImageLoadHandler.cs" />
     <Compile Include="Core\Handlers\SelectionHandler.cs" />
     <Compile Include="Core\Handlers\StylesheetLoadHandler.cs" />
@@ -79,7 +80,6 @@
     <Compile Include="Core\Utils\CommonUtils.cs" />
     <Compile Include="Core\Utils\CssUtils.cs" />
     <Compile Include="Core\Utils\DomUtils.cs" />
-    <Compile Include="Core\Utils\FontsUtils.cs" />
     <Compile Include="Core\Utils\HtmlUtils.cs" />
     <Compile Include="Core\Utils\RenderUtils.cs" />
     <Compile Include="Core\HtmlContainerInt.cs" />
@@ -109,7 +109,6 @@
     <Compile Include="Interfaces\IControl.cs" />
     <Compile Include="Interfaces\IFont.cs" />
     <Compile Include="Interfaces\IFontFamily.cs" />
-    <Compile Include="Interfaces\IGlobal.cs" />
     <Compile Include="Interfaces\IGraphics.cs" />
     <Compile Include="Interfaces\IGraphicsPath.cs" />
     <Compile Include="Interfaces\IImage.cs" />

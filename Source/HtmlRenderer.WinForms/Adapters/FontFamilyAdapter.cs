@@ -16,7 +16,7 @@ using HtmlRenderer.Interfaces;
 namespace HtmlRenderer.WinForms.Adapters
 {
     /// <summary>
-    /// Adapter for WinForms Font object for core.
+    /// Adapter for WinForms Font family object for core.
     /// </summary>
     internal sealed class FontFamilyAdapter : IFontFamily
     {

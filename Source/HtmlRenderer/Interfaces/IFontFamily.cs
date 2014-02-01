@@ -14,11 +14,12 @@ namespace HtmlRenderer.Interfaces
 {
     /// <summary>
     /// atodo: add doc
+    /// Required for custom fonts handling: fonts that are not installed on the system.
     /// </summary>
     public interface IFontFamily
     {
         /// <summary>
-        /// Gets the name of this FontFamily.
+        /// Gets the name of this Font Family.
         /// </summary>
         string Name { get; }
     }

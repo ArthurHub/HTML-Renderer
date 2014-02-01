@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System;
-using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Entities;
 using HtmlRenderer.Interfaces;
 
@@ -22,14 +21,6 @@ namespace HtmlRenderer.Core
     /// </summary>
     public static class HtmlRendererUtils
     {
-        /// <summary>
-        /// The default stylesheet.
-        /// </summary>
-        public static string DefaultStyleSheet
-        {
-            get { return CssDefaults.DefaultStyleSheet; }
-        }
-
         /// <summary>
         /// Measure the size of the html by performing layout under the given restrictions.
         /// </summary>

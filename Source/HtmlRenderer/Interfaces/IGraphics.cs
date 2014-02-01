@@ -54,6 +54,44 @@ namespace HtmlRenderer.Interfaces
         void ReturnPreviousSmoothingMode(Object prevMode);
 
         /// <summary>
+        /// Get color pen.
+        /// </summary>
+        /// <param name="color">the color to get the pen for</param>
+        /// <returns>pen instance</returns>
+        IPen GetPen(RColor color);
+
+        /// <summary>
+        /// Get solid color brush.
+        /// </summary>
+        /// <param name="color">the color to get the brush for</param>
+        /// <returns>solid color brush instance</returns>
+        IBrush GetSolidBrush(RColor color);
+
+        /// <summary>
+        /// Get linear gradient color brush from <paramref name="color1"/> to <paramref name="color2"/>.
+        /// </summary>
+        /// <param name="rect">the rectangle to get the brush for</param>
+        /// <param name="color1">the start color of the gradient</param>
+        /// <param name="color2">the end color of the gradient</param>
+        /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
+        /// <returns>linear gradient color brush instance</returns>
+        IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, float angle);
+
+        /// <summary>
+        /// Get TextureBrush object that uses the specified image and bounding rectangle.
+        /// </summary>
+        /// <param name="image">The Image object with which this TextureBrush object fills interiors.</param>
+        /// <param name="dstRect">A Rectangle structure that represents the bounding rectangle for this TextureBrush object.</param>
+        /// <param name="translateTransformLocation">The dimension by which to translate the transformation</param>
+        IBrush GetTextureBrush(IImage image, RRect dstRect, RPoint translateTransformLocation);
+
+        /// <summary>
+        /// Get GraphicsPath object.
+        /// </summary>
+        /// <returns>graphics path instance</returns>
+        IGraphicsPath GetGraphicsPath();
+
+        /// <summary>
         /// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
         /// using the given font <paramref name="font"/>.
         /// </summary>
@@ -114,10 +152,10 @@ namespace HtmlRenderer.Interfaces
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to fill. </param>
         /// <param name="width">Width of the rectangle to fill. </param>
         /// <param name="height">Height of the rectangle to fill. </param>
-        void FillRectangle(IBrush brush, float x, float y, float width, float height);
+        void DrawRectangle(IBrush brush, float x, float y, float width, float height);
 
         /// <summary>
-        /// Draws the specified portion of the specified <see cref="T:System.Drawing.Image"/> at the specified location and with the specified size.
+        /// Draws the specified portion of the specified <see cref="IImage"/> at the specified location and with the specified size.
         /// </summary>
         /// <param name="image">Image to draw. </param>
         /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. The image is scaled to fit the rectangle. </param>
@@ -132,20 +170,6 @@ namespace HtmlRenderer.Interfaces
         void DrawImage(IImage image, RRect destRect);
 
         /// <summary>
-        /// Fills the interior of a GraphicsPath.
-        /// </summary>
-        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
-        /// <param name="path">GraphicsPath that represents the path to fill. </param>
-        void FillPath(IBrush brush, IGraphicsPath path);
-
-        /// <summary>
-        /// Fills the interior of a polygon defined by an array of points specified by Point structures.
-        /// </summary>
-        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
-        /// <param name="points">Array of Point structures that represent the vertices of the polygon to fill. </param>
-        void FillPolygon(IBrush brush, RPoint[] points);
-
-        /// <summary>
         /// Draws a GraphicsPath.
         /// </summary>
         /// <param name="pen">Pen that determines the color, width, and style of the path. </param>
@@ -153,41 +177,17 @@ namespace HtmlRenderer.Interfaces
         void DrawPath(IPen pen, IGraphicsPath path);
 
         /// <summary>
-        /// Get color pen.
+        /// Fills the interior of a GraphicsPath.
         /// </summary>
-        /// <param name="color">the color to get the pen for</param>
-        /// <returns>pen instance</returns>
-        IPen GetPen(RColor color);
+        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
+        /// <param name="path">GraphicsPath that represents the path to fill. </param>
+        void DrawPath(IBrush brush, IGraphicsPath path);
 
         /// <summary>
-        /// Get solid color brush.
+        /// Fills the interior of a polygon defined by an array of points specified by Point structures.
         /// </summary>
-        /// <param name="color">the color to get the brush for</param>
-        /// <returns>solid color brush instance</returns>
-        IBrush GetSolidBrush(RColor color);
-
-        /// <summary>
-        /// Get linear gradient color brush from <paramref name="color1"/> to <paramref name="color2"/>.
-        /// </summary>
-        /// <param name="rect">the rectangle to get the brush for</param>
-        /// <param name="color1">the start color of the gradient</param>
-        /// <param name="color2">the end color of the gradient</param>
-        /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
-        /// <returns>linear gradient color brush instance</returns>
-        IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, float angle);
-
-        /// <summary>
-        /// Get TextureBrush object that uses the specified image and bounding rectangle.
-        /// </summary>
-        /// <param name="image">The Image object with which this TextureBrush object fills interiors.</param>
-        /// <param name="dstRect">A Rectangle structure that represents the bounding rectangle for this TextureBrush object.</param>
-        /// <param name="translateTransformLocation">The dimension by which to translate the transformation</param>
-        IBrush GetTextureBrush(IImage image, RRect dstRect, RPoint translateTransformLocation);
-
-        /// <summary>
-        /// Get GraphicsPath object.
-        /// </summary>
-        /// <returns>graphics path instance</returns>
-        IGraphicsPath GetGraphicsPath();
+        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
+        /// <param name="points">Array of Point structures that represent the vertices of the polygon to fill. </param>
+        void DrawPolygon(IBrush brush, RPoint[] points);
     }
 }

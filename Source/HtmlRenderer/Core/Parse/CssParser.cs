@@ -33,7 +33,10 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         private static readonly char[] _cssBlockSplitters = new[] { '}', ';' };
 
-        private readonly IGlobal _global;
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly GlobalBase _global;
 
         /// <summary>
         /// Utility for value parsing.
@@ -46,7 +49,7 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// Init.
         /// </summary>
-        public CssParser(IGlobal global)
+        public CssParser(GlobalBase global)
         {
             ArgChecker.AssertArgNotNull(global, "global");
 
@@ -67,7 +70,7 @@ namespace HtmlRenderer.Core.Parse
         /// <returns>the CSS data with parsed CSS objects (never null)</returns>
         public CssData ParseStyleSheet(string stylesheet, bool combineWithDefault)
         {
-            var cssData = combineWithDefault ? _global.GetDefaultCssData().Clone() : new CssData();
+            var cssData = combineWithDefault ? _global.DefaultCssData.Clone() : new CssData();
             if (!string.IsNullOrEmpty(stylesheet))
             {
                 ParseStyleSheet(cssData, stylesheet);
@@ -523,7 +526,7 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="propValue">the value of the property to parse to specific values</param>
         /// <param name="properties">the properties collection to add the specific properties to</param>
-        private static void ParseFontProperty(string propValue, Dictionary<string, string> properties)
+        private void ParseFontProperty(string propValue, Dictionary<string, string> properties)
         {
             int mustBePos;
             string mustBe = RegexParserUtils.Search(RegexParserUtils.CssFontSizeAndLineHeight, propValue, out mustBePos);
@@ -599,7 +602,7 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="propValue">the value of the property to parse</param>
         /// <returns>parsed font-family value</returns>
-        private static string ParseFontFamilyProperty(string propValue)
+        private string ParseFontFamilyProperty(string propValue)
         {
             int start = 0;
             while(start > -1 && start < propValue.Length)
@@ -615,7 +618,7 @@ namespace HtmlRenderer.Core.Parse
 
                 var font = propValue.Substring(start, adjEnd - start + 1);
 
-                if (FontsUtils.IsFontExists(font))
+                if (_global.IsFontExists(font))
                 {
                     return font;
                 }

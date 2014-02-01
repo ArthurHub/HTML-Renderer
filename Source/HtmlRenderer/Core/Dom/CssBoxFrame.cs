@@ -440,7 +440,7 @@ namespace HtmlRenderer.Core.Dom
 
                 if (_imageWord.Selected)
                 {
-                    g.FillRectangle(GetSelectionBackBrush(g,true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width + 2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
+                    g.DrawRectangle(GetSelectionBackBrush(g,true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width + 2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
                 }
             }
             else if (_isVideo && !_imageLoadingComplete)
@@ -460,8 +460,8 @@ namespace HtmlRenderer.Core.Dom
         {
             if( _videoTitle != null && _imageWord.Width > 40 && _imageWord.Height > 40 )
             {
-                var font = FontsUtils.GetCachedFont(HtmlContainer, "Arial", 9f, RFontStyle.Regular);
-                g.FillRectangle(g.GetSolidBrush(RColor.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, ActualFont.Height + 7);
+                var font = HtmlContainer.Global.GetFont("Arial", 9f, RFontStyle.Regular);
+                g.DrawRectangle(g.GetSolidBrush(RColor.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, ActualFont.Height + 7);
 
                 var titleRect = new RRect(rect.Left + 3, rect.Top + 3, rect.Width - 6, rect.Height - 6);
                 g.DrawString(_videoTitle, font, RColor.WhiteSmoke, titleRect.Location, RSize.Empty);
@@ -480,14 +480,14 @@ namespace HtmlRenderer.Core.Dom
                 var size = new RSize(60, 40);
                 var left = rect.Left + (rect.Width - size.Width)/2;
                 var top = rect.Top + (rect.Height - size.Height)/2;
-                g.FillRectangle(g.GetSolidBrush(RColor.FromArgb(160, 0, 0, 0)), left, top, size.Width, size.Height);
+                g.DrawRectangle(g.GetSolidBrush(RColor.FromArgb(160, 0, 0, 0)), left, top, size.Width, size.Height);
 
                 using (var path = g.GetGraphicsPath())
                 {
                     path.AddLine(left + size.Width/3f + 1, top + 3*size.Height/4f, left + size.Width/3f + 1, top + size.Height/4f);
                     path.AddLine(left + size.Width/3f + 1, top + size.Height/4f, left + 2*size.Width/3f + 1, top + size.Height/2f);
                     path.CloseFigure();
-                    g.FillPath(g.GetSolidBrush(RColor.White), path);
+                    g.DrawPath(g.GetSolidBrush(RColor.White), path);
                 }
 
                 g.ReturnPreviousSmoothingMode(prevMode);

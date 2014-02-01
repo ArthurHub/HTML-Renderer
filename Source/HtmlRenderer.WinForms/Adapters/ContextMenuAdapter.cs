@@ -12,7 +12,6 @@
 
 using System;
 using System.Windows.Forms;
-using HtmlRenderer.Core;
 using HtmlRenderer.Core.Utils;
 using HtmlRenderer.Entities;
 using HtmlRenderer.Interfaces;

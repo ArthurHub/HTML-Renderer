@@ -272,7 +272,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to fill. </param>
         /// <param name="width">Width of the rectangle to fill. </param>
         /// <param name="height">Height of the rectangle to fill. </param>
-        public void FillRectangle(IBrush brush, float x, float y, float width, float height)
+        public void DrawRectangle(IBrush brush, float x, float y, float width, float height)
         {
             _g.DrawRectangle(((BrushAdapter)brush).Brush, x, y, width, height);
         }
@@ -313,7 +313,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         /// <param name="brush">Brush that determines the characteristics of the fill. </param>
         /// <param name="path">GraphicsPath that represents the path to fill. </param>
-        public void FillPath(IBrush brush, IGraphicsPath path)
+        public void DrawPath(IBrush brush, IGraphicsPath path)
         {
             _g.DrawPath(((BrushAdapter)brush).Brush, ((GraphicsPathAdapter)path).GraphicsPath);
         }
@@ -323,7 +323,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         /// <param name="brush">Brush that determines the characteristics of the fill. </param>
         /// <param name="points">Array of Point structures that represent the vertices of the polygon to fill. </param>
-        public void FillPolygon(IBrush brush, RPoint[] points)
+        public void DrawPolygon(IBrush brush, RPoint[] points)
         {
             if( points != null && points.Length > 0 )
             {

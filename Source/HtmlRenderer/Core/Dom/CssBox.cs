@@ -1221,11 +1221,11 @@ namespace HtmlRenderer.Core.Dom
 
                     if (roundrect != null)
                     {
-                        g.FillPath(brush, roundrect);
+                        g.DrawPath(brush, roundrect);
                     }
                     else
                     {
-                        g.FillRectangle(brush, (float)Math.Ceiling(rect.X), (float)Math.Ceiling(rect.Y), rect.Width, rect.Height);
+                        g.DrawRectangle(brush, (float)Math.Ceiling(rect.X), (float)Math.Ceiling(rect.Y), rect.Width, rect.Height);
                     }
 
                     g.ReturnPreviousSmoothingMode(prevMode);
@@ -1260,7 +1260,7 @@ namespace HtmlRenderer.Core.Dom
                     var width = word.SelectedEndOffset > -1 ? word.SelectedEndOffset : word.Width + (padWordRight ? ActualWordSpacing : 0);
                     var rect = new RRect(word.Left + offset.X + left, word.Top + offset.Y, width - left, wordLine.LineHeight);
 
-                    g.FillRectangle(GetSelectionBackBrush(g, false), rect.X, rect.Y, rect.Width, rect.Height);
+                    g.DrawRectangle(GetSelectionBackBrush(g, false), rect.X, rect.Y, rect.Width, rect.Height);
 
                     if (HtmlContainer.SelectionForeColor != RColor.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
                     {
@@ -1389,7 +1389,7 @@ namespace HtmlRenderer.Core.Dom
 
         protected override IFont GetCachedFont(string fontFamily, float fsize, RFontStyle st)
         {
-            return FontsUtils.GetCachedFont(HtmlContainer, fontFamily, fsize, st);
+            return HtmlContainer.Global.GetFont(fontFamily, fsize, st);
         }
 
         protected override RColor GetActualColor(string colorStr)

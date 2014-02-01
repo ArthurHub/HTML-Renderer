@@ -84,7 +84,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// 
         /// </summary>
-        private readonly IGlobal _global;
+        private readonly GlobalBase _global;
 
         /// <summary>
         /// parser for CSS data
@@ -175,7 +175,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// Init.
         /// </summary>
-        public HtmlContainerInt(IGlobal global)
+        public HtmlContainerInt(GlobalBase global)
         {
             ArgChecker.AssertArgNotNull(global, "global");
 
@@ -186,7 +186,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// 
         /// </summary>
-        internal IGlobal Global
+        internal GlobalBase Global
         {
             get { return _global; }
         }
@@ -418,7 +418,7 @@ namespace HtmlRenderer.Core
 
             if( !string.IsNullOrEmpty(htmlSource) )
             {
-                _cssData = baseCssData ?? _global.GetDefaultCssData();
+                _cssData = baseCssData ?? _global.DefaultCssData;
 
                 DomParser parser = new DomParser(_cssParser);
                 _root = parser.GenerateCssTree(htmlSource, this, ref _cssData);

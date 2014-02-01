@@ -125,7 +125,7 @@ namespace HtmlRenderer.Core.Handlers
 
             using (var brush = g.GetTextureBrush(imageLoadHandler.Image, srcRect, destRect.Location))
             {
-                g.FillRectangle(brush, rectangle.X, destRect.Y, rectangle.Width, srcRect.Height);
+                g.DrawRectangle(brush, rectangle.X, destRect.Y, rectangle.Width, srcRect.Height);
             }
         }
 
@@ -140,7 +140,7 @@ namespace HtmlRenderer.Core.Handlers
 
             using (var brush = g.GetTextureBrush(imageLoadHandler.Image, srcRect, destRect.Location))
             {
-                g.FillRectangle(brush, destRect.X, rectangle.Y, srcRect.Width, rectangle.Height);
+                g.DrawRectangle(brush, destRect.X, rectangle.Y, srcRect.Width, rectangle.Height);
             }
         }
 
@@ -157,7 +157,7 @@ namespace HtmlRenderer.Core.Handlers
 
             using (var brush = g.GetTextureBrush(imageLoadHandler.Image, srcRect, destRect.Location))
             {
-                g.FillRectangle(brush, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+                g.DrawRectangle(brush, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
             }
         }
 

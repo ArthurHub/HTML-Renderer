@@ -99,7 +99,7 @@ namespace HtmlRenderer.WinForms
         {
             ArgChecker.AssertArgNotNull(fontFamily, "fontFamily");
 
-            FontsUtils.AddFontFamily(new FontFamilyAdapter(fontFamily));
+            GlobalAdapter.Instance.AddFontFamily(new FontFamilyAdapter(fontFamily));
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNullOrEmpty(fromFamily, "fromFamily");
             ArgChecker.AssertArgNotNullOrEmpty(toFamily, "toFamily");
 
-            FontsUtils.AddFontFamilyMapping(fromFamily, toFamily);
+            GlobalAdapter.Instance.AddFontFamilyMapping(fromFamily, toFamily);
         }
 
         /// <summary>

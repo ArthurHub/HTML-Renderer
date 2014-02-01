@@ -14,7 +14,6 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using HtmlRenderer.Core;
-using HtmlRenderer.Core.Utils;
 using HtmlRenderer.Entities;
 using HtmlRenderer.Interfaces;
 using HtmlRenderer.WinForms.Utilities;
@@ -24,7 +23,7 @@ namespace HtmlRenderer.WinForms.Adapters
     /// <summary>
     /// Adapter for general stuff for core.
     /// </summary>
-    internal sealed class GlobalAdapter : GlobalBase, IGlobal
+    internal sealed class GlobalAdapter : GlobalBase
     {
         #region Fields and Consts
 
@@ -41,12 +40,12 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         private GlobalAdapter()
         {
-            FontsUtils.AddFontFamilyMapping("monospace", "Courier New");
-            FontsUtils.AddFontFamilyMapping("Helvetica", "Arial");
+            AddFontFamilyMapping("monospace", "Courier New");
+            AddFontFamilyMapping("Helvetica", "Arial");
 
             foreach (var family in FontFamily.Families)
             {
-                FontsUtils.AddFontFamily(new FontFamilyAdapter(family));
+                AddFontFamily(new FontFamilyAdapter(family));
             }
         }
 
@@ -63,7 +62,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         /// <param name="colorName">the color name</param>
         /// <returns>color value</returns>
-        public RColor ResolveColorFromName(string colorName)
+        public override RColor GetColor(string colorName)
         {
             var color = Color.FromName(colorName);
             return Utils.Convert(color);
@@ -74,7 +73,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         /// <param name="image">the image returned from load event</param>
         /// <returns>converted image or null</returns>
-        public IImage ConvertImage(object image)
+        public override IImage ConvertImage(object image)
         {
             return image != null ? new ImageAdapter((Image)image) : null;
         }
@@ -90,36 +89,10 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="family"></param>
-        /// <param name="size"></param>
-        /// <param name="style"></param>
-        /// <returns></returns>
-        public IFont CreateFont(string family, float size, RFontStyle style)
-        {
-            var fontStyle = (FontStyle)( (int)style );
-            return new FontAdapter(new Font(family, size, fontStyle));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="family"></param>
-        /// <param name="size"></param>
-        /// <param name="style"></param>
-        /// <returns></returns>
-        public IFont CreateFont(IFontFamily family, float size, RFontStyle style)
-        {
-            var fontStyle = (FontStyle)((int)style);
-            return new FontAdapter(new Font(( (FontFamilyAdapter)family ).FontFamily, size, fontStyle));
-        }
-
-        /// <summary>
         /// Set the given text to the clipboard
         /// </summary>
         /// <param name="text">the text to set</param>
-        public void SetToClipboard(string text)
+        public override void SetToClipboard(string text)
         {
             Clipboard.SetText(text);
         }
@@ -129,7 +102,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         /// <param name="html">the html data</param>
         /// <param name="plainText">the plain text data</param>
-        public void SetToClipboard(string html, string plainText)
+        public override void SetToClipboard(string html, string plainText)
         {
             HtmlClipboardUtils.CopyToClipboard(html, plainText);
         }
@@ -138,7 +111,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// Set the given image to clipboard.
         /// </summary>
         /// <param name="image"></param>
-        public void SetToClipboard(IImage image)
+        public override void SetToClipboard(IImage image)
         {
             Clipboard.SetImage(((ImageAdapter)image).Image);
         }
@@ -147,7 +120,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// Create a context menu that can be used on the control
         /// </summary>
         /// <returns>new context menu</returns>
-        public IContextMenu CreateContextMenu()
+        public override IContextMenu CreateContextMenu()
         {
             return new ContextMenuAdapter();
         }
@@ -159,7 +132,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="name">the name of the image for save dialog</param>
         /// <param name="extension">the extension of the image for save dialog</param>
         /// <param name="control">optional: the control to show the dialog on</param>
-        public void SaveToFile(IImage image, string name, string extension, IControl control = null)
+        public override void SaveToFile(IImage image, string name, string extension, IControl control = null)
         {
             using (var saveDialog = new SaveFileDialog())
             {
@@ -178,10 +151,36 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Create a default CSS data object that will be cached.
         /// </summary>
-        /// <returns></returns>
-        protected override CssData CreateDefaultCssData()
+        protected override CssData CreateDefaultCssData(string defaultStyleSheet)
         {
-            return CssData.Parse(this, HtmlRendererUtils.DefaultStyleSheet, false);
+            return CssData.Parse(this, defaultStyleSheet, false);
+        }
+
+        /// <summary>
+        /// Get font instance by given font family name, size and style.
+        /// </summary>
+        /// <param name="family">the font family name</param>
+        /// <param name="size">font size</param>
+        /// <param name="style">font style</param>
+        /// <returns>font instance</returns>
+        protected internal override IFont CreateFont(string family, float size, RFontStyle style)
+        {
+            var fontStyle = (FontStyle)((int)style);
+            return new FontAdapter(new Font(family, size, fontStyle));
+        }
+
+        /// <summary>
+        /// Get font instance by given font family instance, size and style.<br/>
+        /// Used to support custom fonts that require explicit font family instance to be created.
+        /// </summary>
+        /// <param name="family">the font family instance</param>
+        /// <param name="size">font size</param>
+        /// <param name="style">font style</param>
+        /// <returns>font instance</returns>
+        protected internal override IFont CreateFont(IFontFamily family, float size, RFontStyle style)
+        {
+            var fontStyle = (FontStyle)((int)style);
+            return new FontAdapter(new Font(( (FontFamilyAdapter)family ).FontFamily, size, fontStyle));
         }
     }
 }

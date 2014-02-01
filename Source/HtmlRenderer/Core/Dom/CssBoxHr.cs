@@ -101,7 +101,7 @@ namespace HtmlRenderer.Core.Dom
 
             if (rect.Height > 2 && RenderUtils.IsColorVisible(ActualBackgroundColor))
             {
-                g.FillRectangle(g.GetSolidBrush(ActualBackgroundColor), rect.X, rect.Y, rect.Width, rect.Height);
+                g.DrawRectangle(g.GetSolidBrush(ActualBackgroundColor), rect.X, rect.Y, rect.Width, rect.Height);
             }
 
             var b1 = g.GetSolidBrush(ActualBorderTopColor);

@@ -76,7 +76,7 @@ namespace HtmlRenderer.Core.Handlers
         public static void DrawBorder(Border border, IGraphics g, CssBox box, IBrush brush, RRect rectangle)
         {
             SetInOutsetRectanglePoints(border, box, rectangle, true, true);
-            g.FillPolygon(brush, _borderPts);
+            g.DrawPolygon(brush, _borderPts);
         }
 
 
@@ -117,7 +117,7 @@ namespace HtmlRenderer.Core.Handlers
                 {
                     // inset/outset border needs special rectangle
                     SetInOutsetRectanglePoints(border, box, rect, isLineStart, isLineEnd);
-                    g.FillPolygon(g.GetSolidBrush(color), _borderPts);
+                    g.DrawPolygon(g.GetSolidBrush(color), _borderPts);
                 }
                 else
                 {
