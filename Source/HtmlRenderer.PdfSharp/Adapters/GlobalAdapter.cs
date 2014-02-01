@@ -12,7 +12,6 @@
 
 using System.Drawing;
 using System.IO;
-using HtmlRenderer.Core;
 using HtmlRenderer.Entities;
 using HtmlRenderer.Interfaces;
 using HtmlRenderer.PdfSharp.Utilities;
@@ -55,14 +54,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
         public static GlobalAdapter Instance
         {
             get { return _instance; }
-        }
-
-        /// <summary>
-        /// Create a default CSS data object that will be cached.
-        /// </summary>
-        protected override CssData CreateDefaultCssData(string defaultStyleSheet)
-        {
-            return CssData.Parse(this, defaultStyleSheet, false);
         }
 
         /// <summary>

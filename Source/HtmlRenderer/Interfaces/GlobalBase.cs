@@ -23,9 +23,18 @@ namespace HtmlRenderer.Interfaces
     /// <summary>
     /// atodo: add doc
     /// </summary>
+    /// <remarks>
+    /// It is best to have a singleton instance of this class for concrete implementation!<br/>
+    /// This is because it holds caches of default CssData, Images, Fonts and Brushes.
+    /// </remarks>
     public abstract class GlobalBase
     {
         #region Fields and Consts
+
+        /// <summary>
+        /// cache of all the font used not to create same font again and again
+        /// </summary>
+        private readonly FontHandler _fontHandler;
 
         /// <summary>
         /// default CSS parsed data singleton
@@ -41,11 +50,6 @@ namespace HtmlRenderer.Interfaces
         /// image used to draw error image icon
         /// </summary>
         private IImage _errorImage;
-
-        /// <summary>
-        /// cache of all the font used not to create same font again and again
-        /// </summary>
-        private readonly FontHandler _fontHandler;
 
         #endregion
 
@@ -63,7 +67,7 @@ namespace HtmlRenderer.Interfaces
         /// </summary>
         public CssData DefaultCssData
         {
-            get { return _defaultCssData ?? ( _defaultCssData = CreateDefaultCssData(CssDefaults.DefaultStyleSheet) ); }
+            get { return _defaultCssData ?? ( _defaultCssData = CssData.Parse(this, CssDefaults.DefaultStyleSheet, false) ); }
         }
 
         /// <summary>
@@ -206,11 +210,6 @@ namespace HtmlRenderer.Interfaces
         {
             throw new NotImplementedException();            
         }
-
-        /// <summary>
-        /// Create a default CSS data object that will be cached.
-        /// </summary>
-        protected abstract CssData CreateDefaultCssData(string defaultStyleSheet);
 
         /// <summary>
         /// Get font instance by given font family name, size and style.
