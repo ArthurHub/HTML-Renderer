@@ -52,7 +52,7 @@ namespace HtmlRenderer.Core.Dom
             }
             else if (imageWord.Image != null)
             {
-                imageWord.Width = imageWord.ImageRectangle == RectangleInt.Empty ? imageWord.Image.Width : imageWord.ImageRectangle.Width;
+                imageWord.Width = imageWord.ImageRectangle == RRect.Empty ? imageWord.Image.Width : imageWord.ImageRectangle.Width;
             }
             else
             {
@@ -85,7 +85,7 @@ namespace HtmlRenderer.Core.Dom
             }
             else if (imageWord.Image != null)
             {
-                imageWord.Height = imageWord.ImageRectangle == RectangleInt.Empty ? imageWord.Image.Height : imageWord.ImageRectangle.Height;
+                imageWord.Height = imageWord.ImageRectangle == RRect.Empty ? imageWord.Image.Height : imageWord.ImageRectangle.Height;
             }
             else
             {
@@ -332,7 +332,7 @@ namespace HtmlRenderer.Core.Dom
             {
                 // hack for actual width handling
                 curx += box.ActualWidth - (curx - startX);
-                line.Rectangles.Add(box, new RectangleInt(startX, startY, box.ActualWidth, box.ActualHeight));
+                line.Rectangles.Add(box, new RRect(startX, startY, box.ActualWidth, box.ActualHeight));
             }
 
             // handle box that is only a whitespace
@@ -627,8 +627,8 @@ namespace HtmlRenderer.Core.Dom
 
                 foreach (CssBox b in line.Rectangles.Keys)
                 {
-                    RectangleInt r = b.Rectangles[line];
-                    b.Rectangles[line] = new RectangleInt(r.X + diff, r.Y, r.Width, r.Height);
+                    RRect r = b.Rectangles[line];
+                    b.Rectangles[line] = new RRect(r.X + diff, r.Y, r.Width, r.Height);
                 }
             }
         }
@@ -656,8 +656,8 @@ namespace HtmlRenderer.Core.Dom
 
                 foreach (CssBox b in line.Rectangles.Keys)
                 {
-                    RectangleInt r = b.Rectangles[line];
-                    b.Rectangles[line] = new RectangleInt(r.X + diff, r.Y, r.Width, r.Height);
+                    RRect r = b.Rectangles[line];
+                    b.Rectangles[line] = new RRect(r.X + diff, r.Y, r.Width, r.Height);
                 }
             }
         }

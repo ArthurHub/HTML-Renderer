@@ -64,7 +64,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         /// <param name="colorName">the color name</param>
         /// <returns>color value</returns>
-        public ColorInt ResolveColorFromName(string colorName)
+        public RColor ResolveColorFromName(string colorName)
         {
             var color = XColor.FromName(colorName);
             return Utils.Convert(color);
@@ -97,7 +97,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="size"></param>
         /// <param name="style"></param>
         /// <returns></returns>
-        public IFont CreateFont(string family, float size, FontStyleInt style)
+        public IFont CreateFont(string family, float size, RFontStyle style)
         {
             var fontStyle = (XFontStyle)( (int)style );
             return new FontAdapter(new XFont(family, size, fontStyle));
@@ -110,7 +110,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="size"></param>
         /// <param name="style"></param>
         /// <returns></returns>
-        public IFont CreateFont(IFontFamily family, float size, FontStyleInt style)
+        public IFont CreateFont(IFontFamily family, float size, RFontStyle style)
         {
             var fontStyle = (XFontStyle)((int)style);
             return new FontAdapter(new XFont(( (FontFamilyAdapter)family ).FontFamily.Name, size, fontStyle));

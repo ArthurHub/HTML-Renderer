@@ -185,7 +185,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="location">the location to find the box by</param>
         /// <param name="visible">Optional: if to get only visible boxes (default - true)</param>
         /// <returns>css link box if exists or null</returns>
-        public static CssBox GetCssBox(CssBox box, PointInt location, bool visible = true)
+        public static CssBox GetCssBox(CssBox box, RPoint location, bool visible = true)
         {
             if( box != null )
             {
@@ -211,7 +211,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="box">the box to start search from</param>
         /// <param name="location">the location to find the box by</param>
         /// <returns>css link box if exists or null</returns>
-        public static CssBox GetLinkBox(CssBox box, PointInt location)
+        public static CssBox GetLinkBox(CssBox box, RPoint location)
         {
             if(box != null)
             {
@@ -273,7 +273,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="box">the box to start search from</param>
         /// <param name="location">the location to find the box at</param>
         /// <returns>css word box if exists or null</returns>
-        public static CssLineBox GetCssLineBox(CssBox box, PointInt location)
+        public static CssLineBox GetCssLineBox(CssBox box, RPoint location)
         {
             CssLineBox line = null;
             if (box != null)
@@ -316,7 +316,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="box">the box to start search from</param>
         /// <param name="location">the location to find the box at</param>
         /// <returns>css word box if exists or null</returns>
-        public static CssRect GetCssBoxWord(CssBox box, PointInt location)
+        public static CssRect GetCssBoxWord(CssBox box, RPoint location)
         {
             if (box != null && box.Visibility == CssConstants.Visible)
             {
@@ -353,7 +353,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="lineBox">the line box to search in</param>
         /// <param name="location">the location to find the box at</param>
         /// <returns>css word box if exists or null</returns>
-        public static CssRect GetCssBoxWord(CssLineBox lineBox, PointInt location)
+        public static CssRect GetCssBoxWord(CssLineBox lineBox, RPoint location)
         {
             foreach (var rects in lineBox.Rectangles)
             {

@@ -17,7 +17,7 @@ namespace HtmlRenderer.Entities
     /// <summary>
     /// Even class for handling keyboard events in <see cref="HtmlContainerInt"/>.
     /// </summary>
-    public sealed class KeyEventInt
+    public sealed class RKeyEvent
     {
         /// <summary>
         /// is control is pressed
@@ -37,7 +37,7 @@ namespace HtmlRenderer.Entities
         /// <summary>
         /// Init.
         /// </summary>
-        public KeyEventInt(bool control, bool aKeyCode, bool cKeyCode)
+        public RKeyEvent(bool control, bool aKeyCode, bool cKeyCode)
         {
             _control = control;
             _aKeyCode = aKeyCode;

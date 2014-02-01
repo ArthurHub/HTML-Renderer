@@ -30,7 +30,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// the image rectangle restriction as returned from image load event
         /// </summary>
-        private RectangleInt _imageRectangle;
+        private RRect _imageRectangle;
 
         #endregion
 
@@ -63,7 +63,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// the image rectange restriction as returned from image load event
         /// </summary>
-        public RectangleInt ImageRectangle
+        public RRect ImageRectangle
         {
             get { return _imageRectangle; }
             set { _imageRectangle = value; }

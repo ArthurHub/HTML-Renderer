@@ -629,8 +629,8 @@ namespace HtmlRenderer.Core.Dom
                     int rowspan = GetRowSpan(cell);
                     var columnIndex = GetCellRealColumnIndex(row, cell);
                     float width = GetCellWidth(columnIndex, cell);
-                    cell.Location = new PointInt(curx, cury);
-                    cell.Size = new SizeInt(width, 0f);
+                    cell.Location = new RPoint(curx, cury);
+                    cell.Size = new RSize(width, 0f);
                     cell.PerformLayout(g); //That will automatically set the bottom of the cell
                     
                     //Alter max bottom only if row is cell's row + cell's rowspan - 1

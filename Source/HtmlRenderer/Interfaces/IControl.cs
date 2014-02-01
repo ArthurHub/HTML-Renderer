@@ -32,7 +32,7 @@ namespace HtmlRenderer.Interfaces
         /// <summary>
         /// Get the current location of the mouse relative to the control
         /// </summary>
-        PointInt MouseLocation { get; }
+        RPoint MouseLocation { get; }
 
         /// <summary>
         /// Set the cursor over the control to default cursor

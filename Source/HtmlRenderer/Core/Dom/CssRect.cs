@@ -37,7 +37,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Rectangle
         /// </summary>
-        private RectangleInt _rect;
+        private RRect _rect;
 
         /// <summary>
         /// If the word is selected this points to the selection handler for more data
@@ -67,7 +67,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets or sets the bounds of the rectangle
         /// </summary>
-        public RectangleInt Rectangle
+        public RRect Rectangle
         {
             get { return _rect; }
             set { _rect = value; }

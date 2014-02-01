@@ -54,28 +54,28 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Gets or sets the style used for dashed lines drawn with this Pen.
         /// </summary>
-        public DashStyleInt DashStyle
+        public RDashStyle DashStyle
         {
             set
             {
                 switch( value )
                 {
-                    case DashStyleInt.Solid:
+                    case RDashStyle.Solid:
                         _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
                         break;
-                    case DashStyleInt.Dash:
+                    case RDashStyle.Dash:
                         _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                         break;
-                    case DashStyleInt.Dot:
+                    case RDashStyle.Dot:
                         _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
                         break;
-                    case DashStyleInt.DashDot:
+                    case RDashStyle.DashDot:
                         _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDot;
                         break;
-                    case DashStyleInt.DashDotDot:
+                    case RDashStyle.DashDotDot:
                         _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDotDot;
                         break;
-                    case DashStyleInt.Custom:
+                    case RDashStyle.Custom:
                         _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Custom;
                         break;
                     default:

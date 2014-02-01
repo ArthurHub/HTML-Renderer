@@ -27,7 +27,7 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         /// <param name="color">the color to check</param>
         /// <returns>true - visible, false - not visible</returns>
-        public static bool IsColorVisible(ColorInt color)
+        public static bool IsColorVisible(RColor color)
         {
             return color.A > 0;
         }
@@ -40,7 +40,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="g">the graphics to clip</param>
         /// <param name="box">the box that is rendered to get containing blocks</param>
         /// <returns>the previous region if clipped, otherwise null</returns>
-        public static RectangleInt ClipGraphicsByOverflow(IGraphics g, CssBox box)
+        public static RRect ClipGraphicsByOverflow(IGraphics g, CssBox box)
         {
             var containingBlock = box.ContainingBlock;
             while (true)
@@ -60,7 +60,7 @@ namespace HtmlRenderer.Core.Utils
                 {
                     var cBlock = containingBlock.ContainingBlock;
                     if (cBlock == containingBlock)
-                        return RectangleInt.Empty;
+                        return RRect.Empty;
                     containingBlock = cBlock;
                 }
             }
@@ -72,9 +72,9 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         /// <param name="g">the graphics to clip</param>
         /// <param name="prevClip">the region to set on the graphics (null - ignore)</param>
-        public static void ReturnClip(IGraphics g, RectangleInt prevClip)
+        public static void ReturnClip(IGraphics g, RRect prevClip)
         {
-            if (prevClip != RectangleInt.Empty)
+            if (prevClip != RRect.Empty)
             {
                 g.SetClipReplace(prevClip);
             }
@@ -86,11 +86,11 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="g">the device to draw into</param>
         /// <param name="htmlContainer"></param>
         /// <param name="r">the rectangle to draw icon in</param>
-        public static void DrawImageLoadingIcon(IGraphics g, HtmlContainerInt htmlContainer, RectangleInt r)
+        public static void DrawImageLoadingIcon(IGraphics g, HtmlContainerInt htmlContainer, RRect r)
         {
-            g.DrawRectangle(g.GetPen(ColorInt.LightGray), r.Left + 3, r.Top + 3, 13, 14);
+            g.DrawRectangle(g.GetPen(RColor.LightGray), r.Left + 3, r.Top + 3, 13, 14);
             var image = htmlContainer.Global.GetLoadImage();
-            g.DrawImage(image, new RectangleInt(r.Left + 4, r.Top + 4, image.Width, image.Height));
+            g.DrawImage(image, new RRect(r.Left + 4, r.Top + 4, image.Width, image.Height));
         }
 
         /// <summary>
@@ -99,11 +99,11 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="g">the device to draw into</param>
         /// <param name="htmlContainer"></param>
         /// <param name="r">the rectangle to draw icon in</param>
-        public static void DrawImageErrorIcon(IGraphics g, HtmlContainerInt htmlContainer, RectangleInt r)
+        public static void DrawImageErrorIcon(IGraphics g, HtmlContainerInt htmlContainer, RRect r)
         {
-            g.DrawRectangle(g.GetPen(ColorInt.LightGray), r.Left + 2, r.Top + 2, 15, 15);
+            g.DrawRectangle(g.GetPen(RColor.LightGray), r.Left + 2, r.Top + 2, 15, 15);
             var image = htmlContainer.Global.GetErrorImage();
-            g.DrawImage(image, new RectangleInt(r.Left + 3, r.Top + 3, image.Width, image.Height));
+            g.DrawImage(image, new RRect(r.Left + 3, r.Top + 3, image.Width, image.Height));
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="seRadius">Radius of the south east corner</param>
         /// <param name="swRadius">Radius of the south west corner</param>
         /// <returns>GraphicsPath with the lines of the rounded rectangle ready to be painted</returns>
-        public static IGraphicsPath GetRoundRect(IGraphics g, RectangleInt rect, float nwRadius, float neRadius, float seRadius, float swRadius)
+        public static IGraphicsPath GetRoundRect(IGraphics g, RRect rect, float nwRadius, float neRadius, float seRadius, float swRadius)
         {
             //  NW-----NE
             //  |       |

@@ -90,7 +90,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         /// <param name="parent">the parent control to show in</param>
         /// <param name="location">the location to show at relative to the parent control</param>
-        public void Show(IControl parent, PointInt location)
+        public void Show(IControl parent, RPoint location)
         {
             _contextMenu.Show(( (ControlAdapter)parent ).Control, Utils.ConvertRound(location));
         }

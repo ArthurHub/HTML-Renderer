@@ -49,6 +49,6 @@ namespace HtmlRenderer.Interfaces
         /// </summary>
         /// <param name="parent">the parent control to show in</param>
         /// <param name="location">the location to show at relative to the parent control</param>
-        void Show(IControl parent, PointInt location);
+        void Show(IControl parent, RPoint location);
     }
 }

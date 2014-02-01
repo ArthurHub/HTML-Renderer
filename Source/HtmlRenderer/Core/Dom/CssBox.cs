@@ -55,7 +55,7 @@ namespace HtmlRenderer.Core.Dom
         private readonly List<CssBox> _boxes = new List<CssBox>();
         private readonly List<CssLineBox> _lineBoxes = new List<CssLineBox>();
         private readonly List<CssLineBox> _parentLineBoxes = new List<CssLineBox>();
-        private readonly Dictionary<CssLineBox, RectangleInt> _rectangles = new Dictionary<CssLineBox, RectangleInt>();
+        private readonly Dictionary<CssLineBox, RRect> _rectangles = new Dictionary<CssLineBox, RRect>();
 
         /// <summary>
         /// the inner text of the box
@@ -280,7 +280,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the rectangles where this box should be painted
         /// </summary>
-        internal Dictionary<CssLineBox, RectangleInt> Rectangles
+        internal Dictionary<CssLineBox, RRect> Rectangles
         {
             get { return _rectangles; }
         }
@@ -447,7 +447,7 @@ namespace HtmlRenderer.Core.Dom
                         rect.Offset(HtmlContainer.ScrollOffset);
                         clip.Intersect(rect);
 
-                        if (clip != RectangleInt.Empty)
+                        if (clip != RRect.Empty)
                             visible = true;
                     }
 
@@ -585,10 +585,10 @@ namespace HtmlRenderer.Core.Dom
                         width = CssValueParser.ParseLength(Width, width, this);
                     }
 
-                    Size = new SizeInt(width, Size.Height);
+                    Size = new RSize(width, Size.Height);
 
                     // must be separate because the margin can be calculated by percentage of the width
-                    Size = new SizeInt(width - ActualMarginLeft - ActualMarginRight, Size.Height);
+                    Size = new RSize(width - ActualMarginLeft - ActualMarginRight, Size.Height);
                 }
 
                 if( Display != CssConstants.TableCell )
@@ -596,7 +596,7 @@ namespace HtmlRenderer.Core.Dom
                     var prevSibling = DomUtils.GetPreviousSibling(this);
                     float left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
                     float top = ( prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0 ) + MarginTopCollapse(prevSibling) + ( prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0 );
-                    Location = new PointInt(left, top);
+                    Location = new RPoint(left, top);
                     ActualBottom = top;
                 }
 
@@ -629,7 +629,7 @@ namespace HtmlRenderer.Core.Dom
                 var prevSibling = DomUtils.GetPreviousSibling(this);
                 if( prevSibling != null )
                 {
-                    if( Location == PointInt.Empty )
+                    if( Location == RPoint.Empty )
                         Location = prevSibling.Location;
                     ActualBottom = prevSibling.ActualBottom;
                 }
@@ -639,7 +639,7 @@ namespace HtmlRenderer.Core.Dom
             CreateListItemBox(g);
 
             var actualWidth = Math.Max(GetMinimumWidth() + GetWidthMarginDeep(this), Size.Width < 90999 ? ActualRight : 0);
-            HtmlContainer.ActualSize = CommonUtils.Max(HtmlContainer.ActualSize, new SizeInt(actualWidth, ActualBottom - HtmlContainer.Root.Location.Y));
+            HtmlContainer.ActualSize = CommonUtils.Max(HtmlContainer.ActualSize, new RSize(actualWidth, ActualBottom - HtmlContainer.Root.Location.Y));
         }
 
         /// <summary>
@@ -760,7 +760,7 @@ namespace HtmlRenderer.Core.Dom
                     _listItemBox.ParseToWords();
 
                     _listItemBox.PerformLayoutImp(g);
-                    _listItemBox.Size = new SizeInt(_listItemBox.Words[0].Width, _listItemBox.Words[0].Height);
+                    _listItemBox.Size = new RSize(_listItemBox.Words[0].Width, _listItemBox.Words[0].Height);
                 }
                 _listItemBox.Words[0].Left = Location.X - _listItemBox.Size.Width - 5;
                 _listItemBox.Words[0].Top = Location.Y + ActualPaddingTop;// +FontAscent;
@@ -1105,8 +1105,8 @@ namespace HtmlRenderer.Core.Dom
 
             foreach (CssLineBox line in lines)
             {
-                RectangleInt r = Rectangles[line];
-                Rectangles[line] = new RectangleInt(r.X, r.Y + amount, r.Width, r.Height);
+                RRect r = Rectangles[line];
+                Rectangles[line] = new RRect(r.X, r.Y + amount, r.Width, r.Height);
             }
 
             foreach (CssRect word in Words)
@@ -1122,7 +1122,7 @@ namespace HtmlRenderer.Core.Dom
             if (_listItemBox != null)
                 _listItemBox.OffsetTop(amount);
 
-            Location = new PointInt(Location.X, Location.Y + amount);
+            Location = new RPoint(Location.X, Location.Y + amount);
         }
 
         /// <summary>
@@ -1135,10 +1135,10 @@ namespace HtmlRenderer.Core.Dom
             {
                 var prevClip = RenderUtils.ClipGraphicsByOverflow(g, this);
 
-                var areas = Rectangles.Count == 0 ? new List<RectangleInt>(new[] { Bounds }) : new List<RectangleInt>(Rectangles.Values);
+                var areas = Rectangles.Count == 0 ? new List<RRect>(new[] { Bounds }) : new List<RRect>(Rectangles.Values);
 
-                RectangleInt[] rects = areas.ToArray();
-                PointInt offset = HtmlContainer.ScrollOffset;
+                RRect[] rects = areas.ToArray();
+                RPoint offset = HtmlContainer.ScrollOffset;
 
                 for (int i = 0; i < rects.Length; i++)
                 {
@@ -1186,7 +1186,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="rect">the bounding rectangle to draw in</param>
         /// <param name="isFirst">is it the first rectangle of the element</param>
         /// <param name="isLast">is it the last rectangle of the element</param>
-        protected void PaintBackground(IGraphics g, RectangleInt rect, bool isFirst, bool isLast)
+        protected void PaintBackground(IGraphics g, RRect rect, bool isFirst, bool isLast)
         {
             if (rect.Width > 0 && rect.Height > 0)
             {
@@ -1246,11 +1246,11 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g">the device to draw into</param>
         /// <param name="offset">the current scroll offset to offset the words</param>
-        private void PaintWords(IGraphics g, PointInt offset)
+        private void PaintWords(IGraphics g, RPoint offset)
         {
             foreach (var word in Words)
             {
-                var wordPoint = new PointInt(word.Left + offset.X, word.Top + offset.Y);
+                var wordPoint = new RPoint(word.Left + offset.X, word.Top + offset.Y);
                 if (word.Selected)
                 {
                     // handle paint selected word background and with partial word selection
@@ -1258,28 +1258,28 @@ namespace HtmlRenderer.Core.Dom
                     var left = word.SelectedStartOffset > -1 ? word.SelectedStartOffset : (wordLine.Words[0] != word && word.HasSpaceBefore ? -ActualWordSpacing : 0);
                     var padWordRight = word.HasSpaceAfter && !wordLine.IsLastSelectedWord(word);
                     var width = word.SelectedEndOffset > -1 ? word.SelectedEndOffset : word.Width + (padWordRight ? ActualWordSpacing : 0);
-                    var rect = new RectangleInt(word.Left + offset.X + left, word.Top + offset.Y, width - left, wordLine.LineHeight);
+                    var rect = new RRect(word.Left + offset.X + left, word.Top + offset.Y, width - left, wordLine.LineHeight);
 
                     g.FillRectangle(GetSelectionBackBrush(g, false), rect.X, rect.Y, rect.Width, rect.Height);
 
-                    if (HtmlContainer.SelectionForeColor != ColorInt.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
+                    if (HtmlContainer.SelectionForeColor != RColor.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
                     {
                         var orgClip = g.GetClip();
                         g.SetClipExclude(rect);
-                        g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new SizeInt(word.Width, word.Height));
+                        g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height));
                         g.SetClipReplace(rect);
-                        g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new SizeInt(word.Width, word.Height));
+                        g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height));
                         g.SetClipReplace(orgClip);
                     }
                     else
                     {
-                        g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new SizeInt(word.Width, word.Height));
+                        g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height));
                     }
                 }
                 else
                 {
                     //g.DrawRectangle(Pens.Red, wordPoint.X, wordPoint.Y, word.Width - 1, word.Height - 1);
-                    g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new SizeInt(word.Width, word.Height));
+                    g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height));
                 }
             }
         }
@@ -1291,7 +1291,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="rectangle"> </param>
         /// <param name="isFirst"> </param>
         /// <param name="isLast"> </param>
-        protected void PaintDecoration(IGraphics g, RectangleInt rectangle, bool isFirst, bool isLast)
+        protected void PaintDecoration(IGraphics g, RRect rectangle, bool isFirst, bool isLast)
         {
             if (string.IsNullOrEmpty(TextDecoration) || TextDecoration == CssConstants.None)
                 return;
@@ -1334,7 +1334,7 @@ namespace HtmlRenderer.Core.Dom
             if (Rectangles.ContainsKey(lineBox))
             {
                 var r = Rectangles[lineBox];
-                Rectangles[lineBox] = new RectangleInt(r.X, r.Y + gap, r.Width, r.Height);
+                Rectangles[lineBox] = new RRect(r.X, r.Y + gap, r.Width, r.Height);
             }
         }
 
@@ -1352,7 +1352,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="image">the image loaded or null if failed</param>
         /// <param name="rectangle">the source rectangle to draw in the image (empty - draw everything)</param>
         /// <param name="async">is the callback was called async to load image call</param>
-        private void OnImageLoadComplete(IImage image, RectangleInt rectangle, bool async)
+        private void OnImageLoadComplete(IImage image, RRect rectangle, bool async)
         {
             if (image != null && async)
                 HtmlContainer.RequestRefresh(false);
@@ -1361,9 +1361,9 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Get brush for the text depending if there is selected text color set.
         /// </summary>
-        protected ColorInt GetSelectionForeBrush()
+        protected RColor GetSelectionForeBrush()
         {
-            return HtmlContainer.SelectionForeColor != ColorInt.Empty ? HtmlContainer.SelectionForeColor : ActualColor;
+            return HtmlContainer.SelectionForeColor != RColor.Empty ? HtmlContainer.SelectionForeColor : ActualColor;
         }
 
         /// <summary>
@@ -1374,10 +1374,10 @@ namespace HtmlRenderer.Core.Dom
         protected IBrush GetSelectionBackBrush(IGraphics g, bool forceAlpha)
         {
             var backColor = HtmlContainer.SelectionBackColor;
-            if (backColor != ColorInt.Empty)
+            if (backColor != RColor.Empty)
             {
                 if (forceAlpha && backColor.A > 180)
-                    return g.GetSolidBrush(ColorInt.FromArgb(180, backColor.R, backColor.G, backColor.B));
+                    return g.GetSolidBrush(RColor.FromArgb(180, backColor.R, backColor.G, backColor.B));
                 else
                     return g.GetSolidBrush(backColor);
             }
@@ -1387,12 +1387,12 @@ namespace HtmlRenderer.Core.Dom
             }
         }
 
-        protected override IFont GetCachedFont(string fontFamily, float fsize, FontStyleInt st)
+        protected override IFont GetCachedFont(string fontFamily, float fsize, RFontStyle st)
         {
             return FontsUtils.GetCachedFont(HtmlContainer, fontFamily, fsize, st);
         }
 
-        protected override ColorInt GetActualColor(string colorStr)
+        protected override RColor GetActualColor(string colorStr)
         {
             return HtmlContainer.CssParser.ParseColor(colorStr);
         }

@@ -17,7 +17,7 @@ namespace HtmlRenderer.Entities
     /// <summary>
     /// Even class for handling keyboard events in <see cref="HtmlContainerInt"/>.
     /// </summary>
-    public sealed class MouseEventInt
+    public sealed class RMouseEvent
     {
         /// <summary>
         /// Is the left mouse button participated in the event
@@ -27,7 +27,7 @@ namespace HtmlRenderer.Entities
         /// <summary>
         /// Init.
         /// </summary>
-        public MouseEventInt(bool leftButton)
+        public RMouseEvent(bool leftButton)
         {
             _leftButton = leftButton;
         }

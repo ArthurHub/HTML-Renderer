@@ -38,7 +38,7 @@ namespace HtmlRenderer.Core
         /// <param name="minSize">the minimal size of the rendered html (zero - not limit the width/height)</param>
         /// <param name="maxSize">the maximum size of the rendered html, if not zero and html cannot be layout within the limit it will be clipped (zero - not limit the width/height)</param>
         /// <returns>return: the size of the html to be rendered within the min/max limits</returns>
-        public static SizeInt MeasureHtmlByRestrictions(IGraphics g, HtmlContainerInt htmlContainer, SizeInt minSize, SizeInt maxSize)
+        public static RSize MeasureHtmlByRestrictions(IGraphics g, HtmlContainerInt htmlContainer, RSize minSize, RSize maxSize)
         {
             // first layout without size restriction to know html actual size
             htmlContainer.PerformLayout(g);
@@ -46,7 +46,7 @@ namespace HtmlRenderer.Core
             if (maxSize.Width > 0 && maxSize.Width < htmlContainer.ActualSize.Width)
             {
                 // to allow the actual size be smaller than max we need to set max size only if it is really larger
-                htmlContainer.MaxSize = new SizeInt(maxSize.Width, 0);
+                htmlContainer.MaxSize = new RSize(maxSize.Width, 0);
                 htmlContainer.PerformLayout(g);
             }
 
@@ -56,13 +56,13 @@ namespace HtmlRenderer.Core
             // if the final width is larger than the actual we need to re-layout so the html can take the full given width.
             if (finalWidth > htmlContainer.ActualSize.Width)
             {
-                htmlContainer.MaxSize = new SizeInt(finalWidth, 0);
+                htmlContainer.MaxSize = new RSize(finalWidth, 0);
                 htmlContainer.PerformLayout(g);
             }
 
             var finalHeight = Math.Max(maxSize.Height > 0 ? Math.Min(maxSize.Height, (int)htmlContainer.ActualSize.Height) : (int)htmlContainer.ActualSize.Height, minSize.Height);
 
-            return new SizeInt(finalWidth, finalHeight);
+            return new RSize(finalWidth, finalHeight);
         }
 
 
@@ -81,18 +81,18 @@ namespace HtmlRenderer.Core
         /// <param name="maxSize">the max size restriction - can be empty for no restriction</param>
         /// <param name="autoSize">if to modify the size (width and height) by html content layout</param>
         /// <param name="autoSizeHeightOnly">if to modify the height by html content layout</param>
-        public static SizeInt Layout(IGraphics g, HtmlContainerInt htmlContainer, SizeInt size, SizeInt minSize, SizeInt maxSize, bool autoSize, bool autoSizeHeightOnly)
+        public static RSize Layout(IGraphics g, HtmlContainerInt htmlContainer, RSize size, RSize minSize, RSize maxSize, bool autoSize, bool autoSizeHeightOnly)
         {
             if( autoSize )
-                htmlContainer.MaxSize = new SizeInt(0, 0);
+                htmlContainer.MaxSize = new RSize(0, 0);
             else if (autoSizeHeightOnly)
-                htmlContainer.MaxSize = new SizeInt(size.Width, 0);
+                htmlContainer.MaxSize = new RSize(size.Width, 0);
             else
                 htmlContainer.MaxSize = size;
 
             htmlContainer.PerformLayout(g);
 
-            SizeInt newSize = size;
+            RSize newSize = size;
             if( autoSize || autoSizeHeightOnly )
             {
                 if( autoSize )
@@ -106,7 +106,7 @@ namespace HtmlRenderer.Core
                     else if (minSize.Width > 0 && minSize.Width > htmlContainer.ActualSize.Width)
                     {
                         // if min size is larger than the actual we need to re-layout so all 100% layouts will be correct
-                        htmlContainer.MaxSize = new SizeInt(minSize.Width, 0);
+                        htmlContainer.MaxSize = new RSize(minSize.Width, 0);
                         htmlContainer.PerformLayout(g);
 
                     }

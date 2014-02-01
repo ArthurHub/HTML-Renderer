@@ -53,7 +53,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// callback raised when image load process is complete with image or without
         /// </summary>
-        private readonly ActionInt<IImage, RectangleInt, bool> _loadCompleteCallback;
+        private readonly ActionInt<IImage, RRect, bool> _loadCompleteCallback;
 
         /// <summary>
         /// the web client used to download image from URL (to cancel on dispose)
@@ -73,7 +73,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// the image rectangle restriction as returned from image load event
         /// </summary>
-        private RectangleInt _imageRectangle;
+        private RRect _imageRectangle;
 
         /// <summary>
         /// to know if image load event callback was sync or async raised
@@ -98,7 +98,7 @@ namespace HtmlRenderer.Core.Handlers
         /// </summary>
         /// <param name="htmlContainer">the container of the html to handle load image for</param>
         /// <param name="loadCompleteCallback">callback raised when image load process is complete with image or without</param>
-        public ImageLoadHandler(HtmlContainerInt htmlContainer, ActionInt<IImage, RectangleInt, bool> loadCompleteCallback)
+        public ImageLoadHandler(HtmlContainerInt htmlContainer, ActionInt<IImage, RRect, bool> loadCompleteCallback)
         {
             ArgChecker.AssertArgNotNull(htmlContainer, "htmlContainer");
             ArgChecker.AssertArgNotNull(loadCompleteCallback, "loadCompleteCallback");
@@ -118,7 +118,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// the image rectangle restriction as returned from image load event
         /// </summary>
-        public RectangleInt Rectangle
+        public RRect Rectangle
         {
             get { return _imageRectangle; }
         }
@@ -189,7 +189,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="path">the path to the image to load (file path or uri)</param>
         /// <param name="image">the image to load</param>
         /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
-        private void OnHtmlImageLoadEventCallback(string path, object image, RectangleInt imageRectangle)
+        private void OnHtmlImageLoadEventCallback(string path, object image, RRect imageRectangle)
         {
             if (!_disposed)
             {

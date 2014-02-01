@@ -29,14 +29,14 @@ namespace HtmlRenderer.Core.Utils
         /// <summary>
         /// Brush for selection background
         /// </summary>
-        private static readonly ColorInt _defaultSelectionBackcolor = ColorInt.FromArgb(0xa9,0x33, 0x99, 0xFF);
+        private static readonly RColor _defaultSelectionBackcolor = RColor.FromArgb(0xa9,0x33, 0x99, 0xFF);
 
         #endregion
 
         /// <summary>
         /// Brush for selection background
         /// </summary>
-        public static ColorInt DefaultSelectionBackcolor
+        public static RColor DefaultSelectionBackcolor
         {
             get { return _defaultSelectionBackcolor; }
         }

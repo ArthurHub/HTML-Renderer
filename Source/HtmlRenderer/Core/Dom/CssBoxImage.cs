@@ -78,7 +78,7 @@ namespace HtmlRenderer.Core.Dom
             }
 
             var rect = CommonUtils.GetFirstValueOrDefault(Rectangles);
-            PointInt offset = HtmlContainer.ScrollOffset;
+            RPoint offset = HtmlContainer.ScrollOffset;
             rect.Offset(offset);
 
             var prevClip = RenderUtils.ClipGraphicsByOverflow(g, this);
@@ -86,7 +86,7 @@ namespace HtmlRenderer.Core.Dom
             PaintBackground(g, rect, true, true);
             BordersDrawHandler.DrawBoxBorders(g, this, rect, true, true);
 
-            RectangleInt r = _imageWord.Rectangle;
+            RRect r = _imageWord.Rectangle;
             r.Offset(offset);
             r.Height -= ActualBorderTopWidth + ActualBorderBottomWidth + ActualPaddingTop + ActualPaddingBottom;
             r.Y += ActualBorderTopWidth + ActualPaddingTop;
@@ -95,7 +95,7 @@ namespace HtmlRenderer.Core.Dom
             
             if (_imageWord.Image != null)
             {
-                if (_imageWord.ImageRectangle == RectangleInt.Empty)
+                if (_imageWord.ImageRectangle == RRect.Empty)
                     g.DrawImage(_imageWord.Image, r);
                 else
                     g.DrawImage(_imageWord.Image, r, _imageWord.ImageRectangle);
@@ -117,7 +117,7 @@ namespace HtmlRenderer.Core.Dom
                 RenderUtils.DrawImageLoadingIcon(g, HtmlContainer, r);
                 if (r.Width > 19 && r.Height > 19)
                 {
-                    g.DrawRectangle(g.GetPen(ColorInt.LightGray), r.X, r.Y, r.Width, r.Height);
+                    g.DrawRectangle(g.GetPen(RColor.LightGray), r.X, r.Y, r.Width, r.Height);
                 }
             }
 
@@ -173,7 +173,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="image">the image loaded or null if failed</param>
         /// <param name="rectangle">the source rectangle to draw in the image (empty - draw everything)</param>
         /// <param name="async">is the callback was called async to load image call</param>
-        private void OnLoadImageComplete(IImage image, RectangleInt rectangle, bool async)
+        private void OnLoadImageComplete(IImage image, RRect rectangle, bool async)
         {
             _imageWord.Image = image;
             _imageWord.ImageRectangle = rectangle;

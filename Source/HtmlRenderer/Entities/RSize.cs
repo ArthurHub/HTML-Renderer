@@ -17,30 +17,30 @@ namespace HtmlRenderer.Entities
     /// <summary>
     /// Stores an ordered pair of floating-point numbers, typically the width and height of a rectangle.
     /// </summary>
-    public struct SizeInt
+    public struct RSize
     {
         #region Fields and Consts
 
         /// <summary>
-        ///     Gets a <see cref="SizeInt" /> structure that has a
+        ///     Gets a <see cref="RSize" /> structure that has a
         ///     <see
-        ///         cref="SizeInt.Height" />
+        ///         cref="RSize.Height" />
         ///     and
         ///     <see
-        ///         cref="SizeInt.Width" />
+        ///         cref="RSize.Width" />
         ///     value of 0.
         /// </summary>
         /// <returns>
-        ///     A <see cref="SizeInt" /> structure that has a
+        ///     A <see cref="RSize" /> structure that has a
         ///     <see
-        ///         cref="SizeInt.Height" />
+        ///         cref="RSize.Height" />
         ///     and
         ///     <see
-        ///         cref="SizeInt.Width" />
+        ///         cref="RSize.Width" />
         ///     value of 0.
         /// </returns>
         /// <filterpriority>1</filterpriority>
-        public static readonly SizeInt Empty = new SizeInt();
+        public static readonly RSize Empty = new RSize();
 
         private float _height;
         private float _width;
@@ -49,53 +49,53 @@ namespace HtmlRenderer.Entities
 
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SizeInt" /> structure from the specified existing
+        ///     Initializes a new instance of the <see cref="RSize" /> structure from the specified existing
         ///     <see
-        ///         cref="SizeInt" />
+        ///         cref="RSize" />
         ///     structure.
         /// </summary>
         /// <param name="size">
-        ///     The <see cref="SizeInt" /> structure from which to create the new
+        ///     The <see cref="RSize" /> structure from which to create the new
         ///     <see
-        ///         cref="SizeInt" />
+        ///         cref="RSize" />
         ///     structure.
         /// </param>
-        public SizeInt(SizeInt size)
+        public RSize(RSize size)
         {
             _width = size._width;
             _height = size._height;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SizeInt" /> structure from the specified <see cref="PointInt" /> structure.
+        /// Initializes a new instance of the <see cref="RSize" /> structure from the specified <see cref="RPoint" /> structure.
         /// </summary>
-        /// <param name="pt">The <see cref="PointInt" /> structure from which to initialize this <see cref="SizeInt" /> structure.</param>
-        public SizeInt(PointInt pt)
+        /// <param name="pt">The <see cref="RPoint" /> structure from which to initialize this <see cref="RSize" /> structure.</param>
+        public RSize(RPoint pt)
         {
             _width = pt.X;
             _height = pt.Y;
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SizeInt" /> structure from the specified dimensions.
+        ///     Initializes a new instance of the <see cref="RSize" /> structure from the specified dimensions.
         /// </summary>
         /// <param name="width">
-        ///     The width component of the new <see cref="SizeInt" /> structure.
+        ///     The width component of the new <see cref="RSize" /> structure.
         /// </param>
         /// <param name="height">
-        ///     The height component of the new <see cref="SizeInt" /> structure.
+        ///     The height component of the new <see cref="RSize" /> structure.
         /// </param>
-        public SizeInt(float width, float height)
+        public RSize(float width, float height)
         {
             _width = width;
             _height = height;
         }
 
         /// <summary>
-        ///     Gets a value that indicates whether this <see cref="SizeInt" /> structure has zero width and height.
+        ///     Gets a value that indicates whether this <see cref="RSize" /> structure has zero width and height.
         /// </summary>
         /// <returns>
-        ///     This property returns true when this <see cref="SizeInt" /> structure has both a width and height of zero; otherwise, false.
+        ///     This property returns true when this <see cref="RSize" /> structure has both a width and height of zero; otherwise, false.
         /// </returns>
         /// <filterpriority>1</filterpriority>
         public bool IsEmpty
@@ -110,10 +110,10 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        ///     Gets or sets the horizontal component of this <see cref="SizeInt" /> structure.
+        ///     Gets or sets the horizontal component of this <see cref="RSize" /> structure.
         /// </summary>
         /// <returns>
-        ///     The horizontal component of this <see cref="SizeInt" /> structure, typically measured in pixels.
+        ///     The horizontal component of this <see cref="RSize" /> structure, typically measured in pixels.
         /// </returns>
         /// <filterpriority>1</filterpriority>
         public float Width
@@ -123,10 +123,10 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        ///     Gets or sets the vertical component of this <see cref="SizeInt" /> structure.
+        ///     Gets or sets the vertical component of this <see cref="RSize" /> structure.
         /// </summary>
         /// <returns>
-        ///     The vertical component of this <see cref="SizeInt" /> structure, typically measured in pixels.
+        ///     The vertical component of this <see cref="RSize" /> structure, typically measured in pixels.
         /// </returns>
         /// <filterpriority>1</filterpriority>
         public float Height
@@ -136,73 +136,73 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        ///     Converts the specified <see cref="SizeInt" /> structure to a
-        ///     <see cref="PointInt" /> structure.
+        ///     Converts the specified <see cref="RSize" /> structure to a
+        ///     <see cref="RPoint" /> structure.
         /// </summary>
-        /// <returns>The <see cref="PointInt" /> structure to which this operator converts.</returns>
-        /// <param name="size">The <see cref="SizeInt" /> structure to be converted
+        /// <returns>The <see cref="RPoint" /> structure to which this operator converts.</returns>
+        /// <param name="size">The <see cref="RSize" /> structure to be converted
         /// </param>
-        public static explicit operator PointInt(SizeInt size)
+        public static explicit operator RPoint(RSize size)
         {
-            return new PointInt(size.Width, size.Height);
+            return new RPoint(size.Width, size.Height);
         }
 
         /// <summary>
-        ///     Adds the width and height of one <see cref="SizeInt" /> structure to the width and height of another
+        ///     Adds the width and height of one <see cref="RSize" /> structure to the width and height of another
         ///     <see
-        ///         cref="SizeInt" />
+        ///         cref="RSize" />
         ///     structure.
         /// </summary>
         /// <returns>
-        ///     A <see cref="SizeInt" /> structure that is the result of the addition operation.
+        ///     A <see cref="RSize" /> structure that is the result of the addition operation.
         /// </returns>
         /// <param name="sz1">
-        ///     The first <see cref="SizeInt" /> structure to add.
+        ///     The first <see cref="RSize" /> structure to add.
         /// </param>
         /// <param name="sz2">
-        ///     The second <see cref="SizeInt" /> structure to add.
+        ///     The second <see cref="RSize" /> structure to add.
         /// </param>
         /// <filterpriority>3</filterpriority>
-        public static SizeInt operator +(SizeInt sz1, SizeInt sz2)
+        public static RSize operator +(RSize sz1, RSize sz2)
         {
             return Add(sz1, sz2);
         }
 
         /// <summary>
-        ///     Subtracts the width and height of one <see cref="SizeInt" /> structure from the width and height of another
+        ///     Subtracts the width and height of one <see cref="RSize" /> structure from the width and height of another
         ///     <see
-        ///         cref="SizeInt" />
+        ///         cref="RSize" />
         ///     structure.
         /// </summary>
         /// <returns>
-        ///     A <see cref="SizeInt" /> that is the result of the subtraction operation.
+        ///     A <see cref="RSize" /> that is the result of the subtraction operation.
         /// </returns>
         /// <param name="sz1">
-        ///     The <see cref="SizeInt" /> structure on the left side of the subtraction operator.
+        ///     The <see cref="RSize" /> structure on the left side of the subtraction operator.
         /// </param>
         /// <param name="sz2">
-        ///     The <see cref="SizeInt" /> structure on the right side of the subtraction operator.
+        ///     The <see cref="RSize" /> structure on the right side of the subtraction operator.
         /// </param>
         /// <filterpriority>3</filterpriority>
-        public static SizeInt operator -(SizeInt sz1, SizeInt sz2)
+        public static RSize operator -(RSize sz1, RSize sz2)
         {
             return Subtract(sz1, sz2);
         }
 
         /// <summary>
-        ///     Tests whether two <see cref="SizeInt" /> structures are equal.
+        ///     Tests whether two <see cref="RSize" /> structures are equal.
         /// </summary>
         /// <returns>
         ///     This operator returns true if <paramref name="sz1" /> and <paramref name="sz2" /> have equal width and height; otherwise, false.
         /// </returns>
         /// <param name="sz1">
-        ///     The <see cref="SizeInt" /> structure on the left side of the equality operator.
+        ///     The <see cref="RSize" /> structure on the left side of the equality operator.
         /// </param>
         /// <param name="sz2">
-        ///     The <see cref="SizeInt" /> structure on the right of the equality operator.
+        ///     The <see cref="RSize" /> structure on the right of the equality operator.
         /// </param>
         /// <filterpriority>3</filterpriority>
-        public static bool operator ==(SizeInt sz1, SizeInt sz2)
+        public static bool operator ==(RSize sz1, RSize sz2)
         {
             if( Math.Abs(sz1.Width - (double)sz2.Width) < 0.001 )
                 return Math.Abs(sz1.Height - (double)sz2.Height) < 0.001;
@@ -211,7 +211,7 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        ///     Tests whether two <see cref="SizeInt" /> structures are different.
+        ///     Tests whether two <see cref="RSize" /> structures are different.
         /// </summary>
         /// <returns>
         ///     This operator returns true if <paramref name="sz1" /> and <paramref name="sz2" /> differ either in width or height; false if
@@ -220,67 +220,67 @@ namespace HtmlRenderer.Entities
         ///     and <paramref name="sz2" /> are equal.
         /// </returns>
         /// <param name="sz1">
-        ///     The <see cref="SizeInt" /> structure on the left of the inequality operator.
+        ///     The <see cref="RSize" /> structure on the left of the inequality operator.
         /// </param>
         /// <param name="sz2">
-        ///     The <see cref="SizeInt" /> structure on the right of the inequality operator.
+        ///     The <see cref="RSize" /> structure on the right of the inequality operator.
         /// </param>
         /// <filterpriority>3</filterpriority>
-        public static bool operator !=(SizeInt sz1, SizeInt sz2)
+        public static bool operator !=(RSize sz1, RSize sz2)
         {
             return !( sz1 == sz2 );
         }
 
         /// <summary>
-        ///     Adds the width and height of one <see cref="SizeInt" /> structure to the width and height of another
+        ///     Adds the width and height of one <see cref="RSize" /> structure to the width and height of another
         ///     <see
-        ///         cref="SizeInt" />
+        ///         cref="RSize" />
         ///     structure.
         /// </summary>
         /// <returns>
-        ///     A <see cref="SizeInt" /> structure that is the result of the addition operation.
+        ///     A <see cref="RSize" /> structure that is the result of the addition operation.
         /// </returns>
         /// <param name="sz1">
-        ///     The first <see cref="SizeInt" /> structure to add.
+        ///     The first <see cref="RSize" /> structure to add.
         /// </param>
         /// <param name="sz2">
-        ///     The second <see cref="SizeInt" /> structure to add.
+        ///     The second <see cref="RSize" /> structure to add.
         /// </param>
-        public static SizeInt Add(SizeInt sz1, SizeInt sz2)
+        public static RSize Add(RSize sz1, RSize sz2)
         {
-            return new SizeInt(sz1.Width + sz2.Width, sz1.Height + sz2.Height);
+            return new RSize(sz1.Width + sz2.Width, sz1.Height + sz2.Height);
         }
 
         /// <summary>
-        ///     Subtracts the width and height of one <see cref="SizeInt" /> structure from the width and height of another
+        ///     Subtracts the width and height of one <see cref="RSize" /> structure from the width and height of another
         ///     <see
-        ///         cref="SizeInt" />
+        ///         cref="RSize" />
         ///     structure.
         /// </summary>
         /// <returns>
-        ///     A <see cref="SizeInt" /> structure that is a result of the subtraction operation.
+        ///     A <see cref="RSize" /> structure that is a result of the subtraction operation.
         /// </returns>
         /// <param name="sz1">
-        ///     The <see cref="SizeInt" /> structure on the left side of the subtraction operator.
+        ///     The <see cref="RSize" /> structure on the left side of the subtraction operator.
         /// </param>
         /// <param name="sz2">
-        ///     The <see cref="SizeInt" /> structure on the right side of the subtraction operator.
+        ///     The <see cref="RSize" /> structure on the right side of the subtraction operator.
         /// </param>
-        public static SizeInt Subtract(SizeInt sz1, SizeInt sz2)
+        public static RSize Subtract(RSize sz1, RSize sz2)
         {
-            return new SizeInt(sz1.Width - sz2.Width, sz1.Height - sz2.Height);
+            return new RSize(sz1.Width - sz2.Width, sz1.Height - sz2.Height);
         }
 
         /// <summary>
-        ///     Tests to see whether the specified object is a <see cref="SizeInt" /> structure with the same dimensions as this
+        ///     Tests to see whether the specified object is a <see cref="RSize" /> structure with the same dimensions as this
         ///     <see
-        ///         cref="SizeInt" />
+        ///         cref="RSize" />
         ///     structure.
         /// </summary>
         /// <returns>
-        ///     This method returns true if <paramref name="obj" /> is a <see cref="SizeInt" /> and has the same width and height as this
+        ///     This method returns true if <paramref name="obj" /> is a <see cref="RSize" /> and has the same width and height as this
         ///     <see
-        ///         cref="SizeInt" />
+        ///         cref="RSize" />
         ///     ; otherwise, false.
         /// </returns>
         /// <param name="obj">
@@ -289,9 +289,9 @@ namespace HtmlRenderer.Entities
         /// <filterpriority>1</filterpriority>
         public override bool Equals(object obj)
         {
-            if( !( obj is SizeInt ) )
+            if( !( obj is RSize ) )
                 return false;
-            var sizeF = (SizeInt)obj;
+            var sizeF = (RSize)obj;
             if( Math.Abs(sizeF.Width - (double)Width) < 0.001 && Math.Abs(sizeF.Height - (double)Height) < 0.001 )
                 return sizeF.GetType() == GetType();
             else
@@ -299,10 +299,10 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        ///     Returns a hash code for this <see cref="SizeInt" /> structure.
+        ///     Returns a hash code for this <see cref="RSize" /> structure.
         /// </summary>
         /// <returns>
-        ///     An integer value that specifies a hash value for this <see cref="SizeInt" /> structure.
+        ///     An integer value that specifies a hash value for this <see cref="RSize" /> structure.
         /// </returns>
         /// <filterpriority>1</filterpriority>
         public override int GetHashCode()
@@ -311,21 +311,21 @@ namespace HtmlRenderer.Entities
         }
 
         /// <summary>
-        ///     Converts a <see cref="SizeInt" /> structure to a <see cref="PointInt" /> structure.
+        ///     Converts a <see cref="RSize" /> structure to a <see cref="RPoint" /> structure.
         /// </summary>
         /// <returns>
-        ///     Returns a <see cref="PointInt" /> structure.
+        ///     Returns a <see cref="RPoint" /> structure.
         /// </returns>
-        public PointInt ToPointF()
+        public RPoint ToPointF()
         {
-            return (PointInt)this;
+            return (RPoint)this;
         }
 
         /// <summary>
-        ///     Creates a human-readable string that represents this <see cref="SizeInt" /> structure.
+        ///     Creates a human-readable string that represents this <see cref="RSize" /> structure.
         /// </summary>
         /// <returns>
-        ///     A string that represents this <see cref="SizeInt" /> structure.
+        ///     A string that represents this <see cref="RSize" /> structure.
         /// </returns>
         /// <filterpriority>1</filterpriority>
         /// <PermissionSet>

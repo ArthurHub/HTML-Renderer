@@ -168,8 +168,8 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="cssData">the style data</param>
         private void SetTextSelectionStyle(HtmlContainerInt htmlContainer, CssData cssData)
         {
-            htmlContainer.SelectionForeColor = ColorInt.Empty;
-            htmlContainer.SelectionBackColor = ColorInt.Empty;
+            htmlContainer.SelectionForeColor = RColor.Empty;
+            htmlContainer.SelectionBackColor = RColor.Empty;
 
             if (cssData.ContainsCssBlock("::selection"))
             {

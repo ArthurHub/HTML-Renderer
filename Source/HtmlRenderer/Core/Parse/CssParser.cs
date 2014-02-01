@@ -128,7 +128,7 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="colorStr">color string value to parse</param>
         /// <returns>color value</returns>
-        public ColorInt ParseColor(string colorStr)
+        public RColor ParseColor(string colorStr)
         {
             return _valueParser.GetActualColor(colorStr);
         }
@@ -906,7 +906,7 @@ namespace HtmlRenderer.Core.Parse
         /// <returns>found border width value or null</returns>
         private string ParseBorderColor(string str, int idx, int length)
         {
-            ColorInt color;
+            RColor color;
             return _valueParser.TryGetColor(str, idx, length, out color) ? str.Substring(idx, length) : null;
         }
 

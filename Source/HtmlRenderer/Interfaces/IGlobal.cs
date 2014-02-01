@@ -28,7 +28,7 @@ namespace HtmlRenderer.Interfaces
         /// </summary>
         /// <param name="colorName">the color name</param>
         /// <returns>color value</returns>
-        ColorInt ResolveColorFromName(string colorName);
+        RColor ResolveColorFromName(string colorName);
 
         /// <summary>
         /// Get image to be used while HTML image is loading.
@@ -61,7 +61,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="size"></param>
         /// <param name="style"></param>
         /// <returns></returns>
-        IFont CreateFont(string family, float size, FontStyleInt style);
+        IFont CreateFont(string family, float size, RFontStyle style);
 
         /// <summary>
         /// 
@@ -70,7 +70,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="size"></param>
         /// <param name="style"></param>
         /// <returns></returns>
-        IFont CreateFont(IFontFamily family, float size, FontStyleInt style);
+        IFont CreateFont(IFontFamily family, float size, RFontStyle style);
 
         /// <summary>
         /// Set the given text to the clipboard

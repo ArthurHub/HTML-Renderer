@@ -30,7 +30,7 @@ namespace HtmlRenderer.Core.Dom
 
         private readonly List<CssRect> _words;
         private readonly CssBox _ownerBox;
-        private readonly Dictionary<CssBox, RectangleInt> _rects;
+        private readonly Dictionary<CssBox, RRect> _rects;
         private readonly List<CssBox> _relatedBoxes;
 
         #endregion
@@ -41,7 +41,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         public CssLineBox(CssBox ownerBox)
         {
-            _rects = new Dictionary<CssBox, RectangleInt>();
+            _rects = new Dictionary<CssBox, RRect>();
             _relatedBoxes = new List<CssBox>();
             _words = new List<CssRect>();
             _ownerBox = ownerBox;
@@ -76,7 +76,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets a List of rectangles that are to be painted on this linebox
         /// </summary>
-        public Dictionary<CssBox, RectangleInt> Rectangles
+        public Dictionary<CssBox, RRect> Rectangles
         {
             get { return _rects; }
         }
@@ -172,12 +172,12 @@ namespace HtmlRenderer.Core.Dom
 
             if (!Rectangles.ContainsKey(box))
             {
-                Rectangles.Add(box, RectangleInt.FromLTRB(x, y, r, b));
+                Rectangles.Add(box, RRect.FromLTRB(x, y, r, b));
             }
             else
             {
-                RectangleInt f = Rectangles[box];
-                Rectangles[box] = RectangleInt.FromLTRB(
+                RRect f = Rectangles[box];
+                Rectangles[box] = RRect.FromLTRB(
                     Math.Min(f.X, x), Math.Min(f.Y, y),
                     Math.Max(f.Right, r), Math.Max(f.Bottom, b));
             }
@@ -212,7 +212,7 @@ namespace HtmlRenderer.Core.Dom
 
             if (!Rectangles.ContainsKey(b)) return;
 
-            RectangleInt r = Rectangles[b];
+            RRect r = Rectangles[b];
 
             //Save top of words related to the top of rectangle
             float gap = 0f;
@@ -241,7 +241,7 @@ namespace HtmlRenderer.Core.Dom
             {
                 //Do this only if rectangle is shorter than parent's
                 float recttop = newtop - gap;
-                RectangleInt newr = new RectangleInt(r.X, recttop, r.Width, r.Height);
+                RRect newr = new RRect(r.X, recttop, r.Width, r.Height);
                 Rectangles[b] = newr;
                 b.OffsetRectangle(this, gap);
             }

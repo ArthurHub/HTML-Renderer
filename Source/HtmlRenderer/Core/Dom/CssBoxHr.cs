@@ -50,7 +50,7 @@ namespace HtmlRenderer.Core.Dom
             var prevSibling = DomUtils.GetPreviousSibling(this);
             float left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
             float top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
-            Location = new PointInt(left, top);
+            Location = new RPoint(left, top);
             ActualBottom = top;
 
             //width at 100% (or auto)
@@ -85,7 +85,7 @@ namespace HtmlRenderer.Core.Dom
                 BorderBottomWidth = "1px";
             }
 
-            Size = new SizeInt(width, height);
+            Size = new RSize(width, height);
 
             ActualBottom = Location.Y + ActualPaddingTop + ActualPaddingBottom + height;
         }
@@ -96,8 +96,8 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="g">the device to draw to</param>
         protected override void PaintImp(IGraphics g)
         {
-            var offset = HtmlContainer != null ? HtmlContainer.ScrollOffset : PointInt.Empty;
-            var rect = new RectangleInt(Bounds.X + offset.X, Bounds.Y + offset.Y, Bounds.Width, Bounds.Height);
+            var offset = HtmlContainer != null ? HtmlContainer.ScrollOffset : RPoint.Empty;
+            var rect = new RRect(Bounds.X + offset.X, Bounds.Y + offset.Y, Bounds.Width, Bounds.Height);
 
             if (rect.Height > 2 && RenderUtils.IsColorVisible(ActualBackgroundColor))
             {

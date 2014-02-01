@@ -23,15 +23,15 @@ namespace HtmlRenderer.PdfSharp.Utilities
         /// <summary>
         /// Convert from WinForms point to core point.
         /// </summary>
-        public static PointInt Convert(XPoint p)
+        public static RPoint Convert(XPoint p)
         {
-            return new PointInt((float)p.X, (float)p.Y);
+            return new RPoint((float)p.X, (float)p.Y);
         }
 
         /// <summary>
         /// Convert from WinForms point to core point.
         /// </summary>
-        public static XPoint[] Convert(PointInt[] points)
+        public static XPoint[] Convert(RPoint[] points)
         {
             XPoint[] myPoints = new XPoint[points.Length];
             for (int i = 0; i < points.Length; i++)
@@ -42,7 +42,7 @@ namespace HtmlRenderer.PdfSharp.Utilities
         /// <summary>
         /// Convert from core point to WinForms point.
         /// </summary>
-        public static XPoint Convert(PointInt p)
+        public static XPoint Convert(RPoint p)
         {
             return new XPoint(p.X, p.Y);
         }
@@ -50,15 +50,15 @@ namespace HtmlRenderer.PdfSharp.Utilities
         /// <summary>
         /// Convert from WinForms size to core size.
         /// </summary>
-        public static SizeInt Convert(XSize s)
+        public static RSize Convert(XSize s)
         {
-            return new SizeInt((float)s.Width, (float)s.Height);
+            return new RSize((float)s.Width, (float)s.Height);
         }
 
         /// <summary>
         /// Convert from core size to WinForms size.
         /// </summary>
-        public static XSize Convert(SizeInt s)
+        public static XSize Convert(RSize s)
         {
             return new XSize(s.Width, s.Height);
         }
@@ -66,15 +66,15 @@ namespace HtmlRenderer.PdfSharp.Utilities
         /// <summary>
         /// Convert from WinForms rectangle to core rectangle.
         /// </summary>
-        public static RectangleInt Convert(XRect r)
+        public static RRect Convert(XRect r)
         {
-            return new RectangleInt((float)r.X, (float)r.Y, (float)r.Width, (float)r.Height);
+            return new RRect((float)r.X, (float)r.Y, (float)r.Width, (float)r.Height);
         }
 
         /// <summary>
         /// Convert from core rectangle to WinForms rectangle.
         /// </summary>
-        public static XRect Convert(RectangleInt r)
+        public static XRect Convert(RRect r)
         {
             return new XRect(r.X, r.Y, r.Width, r.Height);
         }
@@ -82,15 +82,15 @@ namespace HtmlRenderer.PdfSharp.Utilities
         /// <summary>
         /// Convert from WinForms color to core color.
         /// </summary>
-        public static ColorInt Convert(XColor c)
+        public static RColor Convert(XColor c)
         {
-            return ColorInt.FromArgb((int)c.A, c.R, c.G, c.B);
+            return RColor.FromArgb((int)c.A, c.R, c.G, c.B);
         }
 
         /// <summary>
         /// Convert from core color to WinForms color.
         /// </summary>
-        public static XColor Convert(ColorInt c)
+        public static XColor Convert(RColor c)
         {
             return XColor.FromArgb(c.A, c.R, c.G, c.B);
         }

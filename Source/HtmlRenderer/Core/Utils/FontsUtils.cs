@@ -37,7 +37,7 @@ namespace HtmlRenderer.Core.Utils
         /// <summary>
         /// cache of all the font used not to create same font again and again
         /// </summary>
-        private static readonly Dictionary<string, Dictionary<float, Dictionary<FontStyleInt, IFont>>> _fontsCache = new Dictionary<string, Dictionary<float, Dictionary<FontStyleInt, IFont>>>(StringComparer.InvariantCultureIgnoreCase);
+        private static readonly Dictionary<string, Dictionary<float, Dictionary<RFontStyle, IFont>>> _fontsCache = new Dictionary<string, Dictionary<float, Dictionary<RFontStyle, IFont>>>(StringComparer.InvariantCultureIgnoreCase);
 
         #endregion
 
@@ -66,7 +66,7 @@ namespace HtmlRenderer.Core.Utils
         /// Improve performance not to create same font multiple times.
         /// </summary>
         /// <returns>cached font instance</returns>
-        public static IFont GetCachedFont(HtmlContainerInt htmlContainer, string family, float size, FontStyleInt style)
+        public static IFont GetCachedFont(HtmlContainerInt htmlContainer, string family, float size, RFontStyle style)
         {
             var font = TryGetFont(family, size, style);
             if (font == null)
@@ -127,7 +127,7 @@ namespace HtmlRenderer.Core.Utils
         /// <summary>
         /// Get cached font if it exists in cache or null if it is not.
         /// </summary>
-        private static IFont TryGetFont(string family, float size, FontStyleInt style)
+        private static IFont TryGetFont(string family, float size, RFontStyle style)
         {
             IFont font = null;
             if (_fontsCache.ContainsKey(family))
@@ -143,13 +143,13 @@ namespace HtmlRenderer.Core.Utils
                 }
                 else
                 {
-                    _fontsCache[family][size] = new Dictionary<FontStyleInt, IFont>();
+                    _fontsCache[family][size] = new Dictionary<RFontStyle, IFont>();
                 }
             }
             else
             {
-                _fontsCache[family] = new Dictionary<float, Dictionary<FontStyleInt, IFont>>();
-                _fontsCache[family][size] = new Dictionary<FontStyleInt, IFont>();
+                _fontsCache[family] = new Dictionary<float, Dictionary<RFontStyle, IFont>>();
+                _fontsCache[family][size] = new Dictionary<RFontStyle, IFont>();
             }
             return font;
         }
@@ -157,7 +157,7 @@ namespace HtmlRenderer.Core.Utils
         /// <summary>
         // create font (try using existing font family to support custom fonts)
         /// </summary>
-        private static IFont CreateFont(HtmlContainerInt htmlContainer, string family, float size, FontStyleInt style)
+        private static IFont CreateFont(HtmlContainerInt htmlContainer, string family, float size, RFontStyle style)
         {
             IFontFamily fontFamily;
             var g = htmlContainer.Global;

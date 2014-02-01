@@ -27,7 +27,7 @@ namespace HtmlRenderer.Interfaces
         /// <summary>
         /// Gets or sets the style used for dashed lines drawn with this Pen.
         /// </summary>
-        DashStyleInt DashStyle { set; }
+        RDashStyle DashStyle { set; }
 
         /// <summary>
         /// Gets or sets an array of custom dashes and spaces.

@@ -10,20 +10,20 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using HtmlRenderer.Interfaces;
+using System;
 
 namespace HtmlRenderer.Entities
 {
     /// <summary>
-    /// Specifies the style of dashed lines drawn with a <see cref="IPen"/> object.
+    /// Specifies style information applied to text.
     /// </summary>
-    public enum DashStyleInt
+    [Flags]
+    public enum RFontStyle
     {
-        Solid,
-        Dash,
-        Dot,
-        DashDot,
-        DashDotDot,
-        Custom,
+        Regular = 0,
+        Bold = 1,
+        Italic = 2,
+        Underline = 4,
+        Strikeout = 8,
     }
 }

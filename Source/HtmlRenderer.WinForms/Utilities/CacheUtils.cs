@@ -28,12 +28,12 @@ namespace HtmlRenderer.WinForms.Utilities
         /// <summary>
         /// cache of brush color to brush instance
         /// </summary>
-        private static readonly Dictionary<ColorInt, IBrush> _brushesCache = new Dictionary<ColorInt, IBrush>();
+        private static readonly Dictionary<RColor, IBrush> _brushesCache = new Dictionary<RColor, IBrush>();
 
         /// <summary>
         /// cache of pen color to pen instance
         /// </summary>
-        private static readonly Dictionary<ColorInt, IPen> _penCache = new Dictionary<ColorInt, IPen>();
+        private static readonly Dictionary<RColor, IPen> _penCache = new Dictionary<RColor, IPen>();
 
         #endregion
 
@@ -42,7 +42,7 @@ namespace HtmlRenderer.WinForms.Utilities
         /// </summary>
         /// <param name="color">the color to get pen for</param>
         /// <returns>pen instance</returns>
-        public static IPen GetPen(ColorInt color)
+        public static IPen GetPen(RColor color)
         {
             IPen pen;
             if (!_penCache.TryGetValue(color, out pen))
@@ -59,17 +59,17 @@ namespace HtmlRenderer.WinForms.Utilities
         /// </summary>
         /// <param name="color">the color to get brush for</param>
         /// <returns>brush instance</returns>
-        public static IBrush GetSolidBrush(ColorInt color)
+        public static IBrush GetSolidBrush(RColor color)
         {
             IBrush brush;
             if( !_brushesCache.TryGetValue(color, out brush) )
             {
                 Brush solidBrush;
-                if( color == ColorInt.White )
+                if( color == RColor.White )
                     solidBrush = Brushes.White;
-                else if( color == ColorInt.Black )
+                else if( color == RColor.Black )
                     solidBrush = Brushes.Black;
-                else if (color == ColorInt.WhiteSmoke)
+                else if (color == RColor.WhiteSmoke)
                     solidBrush = Brushes.WhiteSmoke;
                 else if( color.A < 1 )
                     solidBrush = Brushes.Transparent;

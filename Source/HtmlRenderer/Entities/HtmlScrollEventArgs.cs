@@ -23,13 +23,13 @@ namespace HtmlRenderer.Entities
         /// <summary>
         /// the location to scroll to
         /// </summary>
-        private readonly PointInt _location;
+        private readonly RPoint _location;
 
         /// <summary>
         /// Init.
         /// </summary>
         /// <param name="location">the location to scroll to</param>
-        public HtmlScrollEventArgs(PointInt location)
+        public HtmlScrollEventArgs(RPoint location)
         {
             _location = location;
         }

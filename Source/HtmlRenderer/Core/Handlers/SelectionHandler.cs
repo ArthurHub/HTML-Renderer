@@ -38,7 +38,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// the mouse location when selection started used to ignore small selections
         /// </summary>
-        private PointInt _selectionStartPoint;
+        private RPoint _selectionStartPoint;
 
         /// <summary>
         /// the starting word of html selection<br/>
@@ -146,7 +146,7 @@ namespace HtmlRenderer.Core.Handlers
         /// </summary>
         /// <param name="control">the control hosting the html to invalidate</param>
         /// <param name="loc">the location to select word at</param>
-        public void SelectWord(IControl control, PointInt loc)
+        public void SelectWord(IControl control, RPoint loc)
         {
             if (_root.HtmlContainer.IsSelectionEnabled)
             {
@@ -167,7 +167,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="loc">the location of the mouse on the html</param>
         /// <param name="isMouseInContainer"> </param>
-        public void HandleMouseDown(IControl parent, PointInt loc, bool isMouseInContainer)
+        public void HandleMouseDown(IControl parent, RPoint loc, bool isMouseInContainer)
         {
             bool clear = !isMouseInContainer;
             if (isMouseInContainer)
@@ -239,7 +239,7 @@ namespace HtmlRenderer.Core.Handlers
         /// </summary>
         /// <param name="parent">the control hosting the html to set cursor and invalidate</param>
         /// <param name="loc">the location of the mouse on the html</param>
-        public void HandleMouseMove(IControl parent, PointInt loc)
+        public void HandleMouseMove(IControl parent, RPoint loc)
         {
             if (_root.HtmlContainer.IsSelectionEnabled && _mouseDownInControl && parent.LeftMouseButton)
             {
@@ -396,7 +396,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="control">the control hosting the html to invalidate</param>
         /// <param name="loc">the mouse location</param>
         /// <param name="allowPartialSelect">true - partial word selection allowed, false - only full words selection</param>
-        private void HandleSelection(IControl control, PointInt loc, bool allowPartialSelect)
+        private void HandleSelection(IControl control, RPoint loc, bool allowPartialSelect)
         {
             // get the line under the mouse or nearest from the top
             var lineBox = DomUtils.GetCssLineBox(_root, loc);
@@ -475,7 +475,7 @@ namespace HtmlRenderer.Core.Handlers
             _selectionEndOffset = -1;
             _selectionEndIndex = -1;
 
-            _selectionStartPoint = PointInt.Empty;
+            _selectionStartPoint = RPoint.Empty;
             _selectionStart = null;
             _selectionEnd = null;
         }
@@ -534,7 +534,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="loc"></param>
         /// <param name="allowPartialSelect">true - partial word selection allowed, false - only full words selection</param>
         /// <returns>true - is non empty selection, false - empty selection</returns>
-        private bool CheckNonEmptySelection(PointInt loc, bool allowPartialSelect)
+        private bool CheckNonEmptySelection(RPoint loc, bool allowPartialSelect)
         {
             // full word selection is never empty
             if (!allowPartialSelect)
@@ -600,13 +600,13 @@ namespace HtmlRenderer.Core.Handlers
 
         /// <summary>
         /// Calculate the character index and offset by characters for the given word and given offset.<br/>
-        /// <seealso cref="CalculateWordCharIndexAndOffset(IControl, CssRect, PointInt, bool, out int, out float)"/>.
+        /// <seealso cref="CalculateWordCharIndexAndOffset(IControl, CssRect, RPoint, bool, out int, out float)"/>.
         /// </summary>
         /// <param name="control">used to create graphics to measure string</param>
         /// <param name="word">the word to calculate its index and offset</param>
         /// <param name="loc">the location to calculate for</param>
         /// <param name="selectionStart">to set the starting or ending char and offset data</param>
-        private void CalculateWordCharIndexAndOffset(IControl control, CssRect word, PointInt loc, bool selectionStart)
+        private void CalculateWordCharIndexAndOffset(IControl control, CssRect word, RPoint loc, bool selectionStart)
         {
             int selectionIndex;
             float selectionOffset;
@@ -637,7 +637,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="selectionIndex">return the index of the char under the location</param>
         /// <param name="selectionOffset">return the offset of the char under the location</param>
         /// <param name="inclusive">is to include the first character in the calculation</param>
-        private static void CalculateWordCharIndexAndOffset(IControl control, CssRect word, PointInt loc, bool inclusive, out int selectionIndex, out float selectionOffset)
+        private static void CalculateWordCharIndexAndOffset(IControl control, CssRect word, RPoint loc, bool inclusive, out int selectionIndex, out float selectionOffset)
         {
             selectionIndex = 0;
             selectionOffset = 0f;

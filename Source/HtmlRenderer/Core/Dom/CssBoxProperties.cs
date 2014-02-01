@@ -106,18 +106,18 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets or sets the location of the box
         /// </summary>
-        private PointInt _location;
+        private RPoint _location;
         
         /// <summary>
         /// Gets or sets the size of the box
         /// </summary>
-        private SizeInt _size;
+        private RSize _size;
 
         private float _actualCornerNw = float.NaN;
         private float _actualCornerNe = float.NaN;
         private float _actualCornerSw = float.NaN;
         private float _actualCornerSe = float.NaN;
-        private ColorInt _actualColor = ColorInt.Empty;
+        private RColor _actualColor = RColor.Empty;
         private float _actualBackgroundGradientAngle = float.NaN;
         private float _actualHeight = float.NaN;
         private float _actualWidth = float.NaN;
@@ -143,12 +143,12 @@ namespace HtmlRenderer.Core.Dom
         private float _actualTextIndent = float.NaN;
         private float _actualBorderSpacingHorizontal = float.NaN;
         private float _actualBorderSpacingVertical = float.NaN;
-        private ColorInt _actualBackgroundGradient = ColorInt.Empty;
-        private ColorInt _actualBorderTopColor = ColorInt.Empty;
-        private ColorInt _actualBorderLeftColor = ColorInt.Empty;
-        private ColorInt _actualBorderBottomColor = ColorInt.Empty;
-        private ColorInt _actualBorderRightColor = ColorInt.Empty;
-        private ColorInt _actualBackgroundColor = ColorInt.Empty;
+        private RColor _actualBackgroundGradient = RColor.Empty;
+        private RColor _actualBorderTopColor = RColor.Empty;
+        private RColor _actualBorderLeftColor = RColor.Empty;
+        private RColor _actualBorderBottomColor = RColor.Empty;
+        private RColor _actualBorderRightColor = RColor.Empty;
+        private RColor _actualBackgroundColor = RColor.Empty;
         private IFont _actualFont;
 
         #endregion
@@ -226,7 +226,7 @@ namespace HtmlRenderer.Core.Dom
             set
             {
                 _borderBottomColor = value;
-                _actualBorderBottomColor = ColorInt.Empty;
+                _actualBorderBottomColor = RColor.Empty;
             }
         }
 
@@ -236,7 +236,7 @@ namespace HtmlRenderer.Core.Dom
             set
             {
                 _borderLeftColor = value;
-                _actualBorderLeftColor = ColorInt.Empty;
+                _actualBorderLeftColor = RColor.Empty;
             }
         }
 
@@ -246,7 +246,7 @@ namespace HtmlRenderer.Core.Dom
             set
             {
                 _borderRightColor = value;
-                _actualBorderRightColor = ColorInt.Empty;
+                _actualBorderRightColor = RColor.Empty;
             }
         }
 
@@ -256,7 +256,7 @@ namespace HtmlRenderer.Core.Dom
             set
             {
                 _borderTopColor = value;
-                _actualBorderTopColor = ColorInt.Empty;
+                _actualBorderTopColor = RColor.Empty;
             }
         }
 
@@ -451,7 +451,7 @@ namespace HtmlRenderer.Core.Dom
         public string Color
         {
             get { return _color; }
-            set { _color = value; _actualColor = ColorInt.Empty; }
+            set { _color = value; _actualColor = RColor.Empty; }
         }
 
         public string Display
@@ -632,7 +632,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets or sets the location of the box
         /// </summary>
-        public PointInt Location
+        public RPoint Location
         {
             get { return _location; }
             set { _location = value; }
@@ -641,7 +641,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets or sets the size of the box
         /// </summary>
-        public SizeInt Size
+        public RSize Size
         {
             get { return _size; }
             set { _size = value; }
@@ -650,9 +650,9 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the bounds of the box
         /// </summary>
-        public RectangleInt Bounds
+        public RRect Bounds
         {
-            get { return new RectangleInt(Location, Size); }
+            get { return new RRect(Location, Size); }
         }
 
         /// <summary>
@@ -669,7 +669,7 @@ namespace HtmlRenderer.Core.Dom
         public float ActualRight
         {
             get { return Location.X + Size.Width; }
-            set { Size = new SizeInt(value - Location.X, Size.Height); }
+            set { Size = new RSize(value - Location.X, Size.Height); }
         }
 
         /// <summary>
@@ -679,7 +679,7 @@ namespace HtmlRenderer.Core.Dom
         public float ActualBottom
         {
             get { return Location.Y + Size.Height; }
-            set { Size = new SizeInt(Size.Width, value - Location.Y); }
+            set { Size = new RSize(Size.Width, value - Location.Y); }
         }
 
         /// <summary>
@@ -717,9 +717,9 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the client rectangle
         /// </summary>
-        public RectangleInt ClientRectangle
+        public RRect ClientRectangle
         {
-            get { return RectangleInt.FromLTRB(ClientLeft, ClientTop, ClientRight, ClientBottom); }
+            get { return RRect.FromLTRB(ClientLeft, ClientTop, ClientRight, ClientBottom); }
         }
 
         /// <summary>
@@ -980,7 +980,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual top border Color
         /// </summary>
-        public ColorInt ActualBorderTopColor
+        public RColor ActualBorderTopColor
         {
             get
             {
@@ -992,12 +992,12 @@ namespace HtmlRenderer.Core.Dom
             }
         }
 
-        protected abstract ColorInt GetActualColor(string colorStr);
+        protected abstract RColor GetActualColor(string colorStr);
 
         /// <summary>
         /// Gets the actual Left border Color
         /// </summary>
-        public ColorInt ActualBorderLeftColor
+        public RColor ActualBorderLeftColor
         {
             get
             {
@@ -1012,7 +1012,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual Bottom border Color
         /// </summary>
-        public ColorInt ActualBorderBottomColor
+        public RColor ActualBorderBottomColor
         {
             get
             {
@@ -1027,7 +1027,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual Right border Color
         /// </summary>
-        public ColorInt ActualBorderRightColor
+        public RColor ActualBorderRightColor
         {
             get
             {
@@ -1119,7 +1119,7 @@ namespace HtmlRenderer.Core.Dom
         /// 
         /// Gets the actual color for the text.
         /// </summary>
-        public ColorInt ActualColor
+        public RColor ActualColor
         {
             get
             {
@@ -1137,7 +1137,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual background color of the box
         /// </summary>
-        public ColorInt ActualBackgroundColor
+        public RColor ActualBackgroundColor
         {
             get
             {
@@ -1153,7 +1153,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the second color that creates a gradient for the background
         /// </summary>
-        public ColorInt ActualBackgroundGradient
+        public RColor ActualBackgroundGradient
         {
             get
             {
@@ -1201,16 +1201,16 @@ namespace HtmlRenderer.Core.Dom
                     if (string.IsNullOrEmpty(FontFamily)) { FontFamily = CssConstants.DefaultFont; }
                     if (string.IsNullOrEmpty(FontSize)) { FontSize = CssConstants.FontSize.ToString(CultureInfo.InvariantCulture) + "pt"; }
 
-                    FontStyleInt st = FontStyleInt.Regular;
+                    RFontStyle st = RFontStyle.Regular;
 
                     if (FontStyle == CssConstants.Italic || FontStyle == CssConstants.Oblique)
                     {
-                        st |= FontStyleInt.Italic;
+                        st |= RFontStyle.Italic;
                     }
 
                     if (FontWeight != CssConstants.Normal && FontWeight != CssConstants.Lighter && !string.IsNullOrEmpty(FontWeight) && FontWeight != CssConstants.Inherit)
                     {
-                        st |= FontStyleInt.Bold;
+                        st |= RFontStyle.Bold;
                     }
 
                     float fsize;
@@ -1255,7 +1255,7 @@ namespace HtmlRenderer.Core.Dom
             }
         }
 
-        protected abstract IFont GetCachedFont(string fontFamily, float fsize, FontStyleInt st);
+        protected abstract IFont GetCachedFont(string fontFamily, float fsize, RFontStyle st);
 
         /// <summary>
         /// Gets the line height

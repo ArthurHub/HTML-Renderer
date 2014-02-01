@@ -63,7 +63,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         /// <param name="colorName">the color name</param>
         /// <returns>color value</returns>
-        public ColorInt ResolveColorFromName(string colorName)
+        public RColor ResolveColorFromName(string colorName)
         {
             var color = Color.FromName(colorName);
             return Utils.Convert(color);
@@ -96,7 +96,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="size"></param>
         /// <param name="style"></param>
         /// <returns></returns>
-        public IFont CreateFont(string family, float size, FontStyleInt style)
+        public IFont CreateFont(string family, float size, RFontStyle style)
         {
             var fontStyle = (FontStyle)( (int)style );
             return new FontAdapter(new Font(family, size, fontStyle));
@@ -109,7 +109,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="size"></param>
         /// <param name="style"></param>
         /// <returns></returns>
-        public IFont CreateFont(IFontFamily family, float size, FontStyleInt style)
+        public IFont CreateFont(IFontFamily family, float size, RFontStyle style)
         {
             var fontStyle = (FontStyle)((int)style);
             return new FontAdapter(new Font(( (FontFamilyAdapter)family ).FontFamily, size, fontStyle));

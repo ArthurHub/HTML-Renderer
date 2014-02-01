@@ -41,7 +41,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Get the current location of the mouse relative to the control
         /// </summary>
-        public PointInt MouseLocation
+        public RPoint MouseLocation
         {
             get { return Utils.Convert(_control.PointToClient(Control.MousePosition)); }
         }

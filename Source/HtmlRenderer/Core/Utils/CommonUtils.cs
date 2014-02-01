@@ -127,9 +127,9 @@ namespace HtmlRenderer.Core.Utils
         /// <summary>
         /// Get size that is max of <paramref name="size"/> and <paramref name="other"/> for width and height separately.
         /// </summary>
-        public static SizeInt Max(SizeInt size, SizeInt other)
+        public static RSize Max(RSize size, RSize other)
         {
-            return new SizeInt(Math.Max(size.Width, other.Width), Math.Max(size.Height, other.Height));
+            return new RSize(Math.Max(size.Width, other.Width), Math.Max(size.Height, other.Height));
         }
 
         /// <summary>
