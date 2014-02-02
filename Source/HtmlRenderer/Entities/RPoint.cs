@@ -162,8 +162,8 @@ namespace HtmlRenderer.Entities
         /// <filterpriority>3</filterpriority>
         public static bool operator ==(RPoint left, RPoint right)
         {
-            if( left.X == (double)right.X )
-                return left.Y == (double)right.Y;
+            if( left.X == right.X )
+                return left.Y == right.Y;
             else
                 return false;
         }
@@ -256,7 +256,7 @@ namespace HtmlRenderer.Entities
             if( !( obj is RPoint ) )
                 return false;
             var pointF = (RPoint)obj;
-            if( pointF.X == (double)X && pointF.Y == (double)Y )
+            if( pointF.X == X && pointF.Y == Y )
                 return pointF.GetType().Equals(GetType());
             else
                 return false;

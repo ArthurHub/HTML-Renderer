@@ -25,7 +25,7 @@ namespace HtmlRenderer.PdfSharp.Utilities
         /// </summary>
         public static RPoint Convert(XPoint p)
         {
-            return new RPoint((float)p.X, (float)p.Y);
+            return new RPoint(p.X, p.Y);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace HtmlRenderer.PdfSharp.Utilities
         /// </summary>
         public static RSize Convert(XSize s)
         {
-            return new RSize((float)s.Width, (float)s.Height);
+            return new RSize(s.Width, s.Height);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace HtmlRenderer.PdfSharp.Utilities
         /// </summary>
         public static RRect Convert(XRect r)
         {
-            return new RRect((float)r.X, (float)r.Y, (float)r.Width, (float)r.Height);
+            return new RRect(r.X, r.Y, r.Width, r.Height);
         }
 
         /// <summary>

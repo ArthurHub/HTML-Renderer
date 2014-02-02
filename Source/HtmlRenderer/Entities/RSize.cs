@@ -204,8 +204,8 @@ namespace HtmlRenderer.Entities
         /// <filterpriority>3</filterpriority>
         public static bool operator ==(RSize sz1, RSize sz2)
         {
-            if( Math.Abs(sz1.Width - (double)sz2.Width) < 0.001 )
-                return Math.Abs(sz1.Height - (double)sz2.Height) < 0.001;
+            if( Math.Abs(sz1.Width - sz2.Width) < 0.001 )
+                return Math.Abs(sz1.Height - sz2.Height) < 0.001;
             else
                 return false;
         }
@@ -292,7 +292,7 @@ namespace HtmlRenderer.Entities
             if( !( obj is RSize ) )
                 return false;
             var sizeF = (RSize)obj;
-            if( Math.Abs(sizeF.Width - (double)Width) < 0.001 && Math.Abs(sizeF.Height - (double)Height) < 0.001 )
+            if( Math.Abs(sizeF.Width - Width) < 0.001 && Math.Abs(sizeF.Height - Height) < 0.001 )
                 return sizeF.GetType() == GetType();
             else
                 return false;
