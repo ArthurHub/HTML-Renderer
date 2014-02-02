@@ -1225,7 +1225,7 @@ namespace HtmlRenderer.Core.Dom
                     }
                     else
                     {
-                        g.DrawRectangle(brush, (double)Math.Ceiling(rect.X), (double)Math.Ceiling(rect.Y), rect.Width, rect.Height);
+                        g.DrawRectangle(brush, Math.Ceiling(rect.X), Math.Ceiling(rect.Y), rect.Width, rect.Height);
                     }
 
                     g.ReturnPreviousSmoothingMode(prevMode);
@@ -1299,7 +1299,7 @@ namespace HtmlRenderer.Core.Dom
             double y = 0f;
             if (TextDecoration == CssConstants.Underline)
             {
-                y = (double)Math.Round(rectangle.Top + ActualFont.UnderlineOffset);
+                y = Math.Round(rectangle.Top + ActualFont.UnderlineOffset);
             }
             else if (TextDecoration == CssConstants.LineThrough)
             {
@@ -1320,6 +1320,8 @@ namespace HtmlRenderer.Core.Dom
                 x2 -= ActualPaddingRight + ActualBorderRightWidth;
 
             var pen = g.GetPen(ActualColor);
+            pen.Width = 1;
+            pen.DashStyle = RDashStyle.Solid;
             g.DrawLine(pen, x1, y, x2, y);
         }
 
