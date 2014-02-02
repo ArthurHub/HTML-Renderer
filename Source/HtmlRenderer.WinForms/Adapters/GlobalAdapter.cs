@@ -154,10 +154,10 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="size">font size</param>
         /// <param name="style">font style</param>
         /// <returns>font instance</returns>
-        protected internal override IFont CreateFont(string family, float size, RFontStyle style)
+        protected internal override IFont CreateFont(string family, double size, RFontStyle style)
         {
             var fontStyle = (FontStyle)((int)style);
-            return new FontAdapter(new Font(family, size, fontStyle));
+            return new FontAdapter(new Font(family, (float)size, fontStyle));
         }
 
         /// <summary>
@@ -168,10 +168,10 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="size">font size</param>
         /// <param name="style">font style</param>
         /// <returns>font instance</returns>
-        protected internal override IFont CreateFont(IFontFamily family, float size, RFontStyle style)
+        protected internal override IFont CreateFont(IFontFamily family, double size, RFontStyle style)
         {
             var fontStyle = (FontStyle)((int)style);
-            return new FontAdapter(new Font(( (FontFamilyAdapter)family ).FontFamily, size, fontStyle));
+            return new FontAdapter(new Font(( (FontFamilyAdapter)family ).FontFamily, (float)size, fontStyle));
         }
     }
 }

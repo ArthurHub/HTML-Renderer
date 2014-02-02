@@ -23,12 +23,12 @@ namespace HtmlRenderer.Interfaces
         /// <summary>
         /// Get the width, in pixels, of the image.
         /// </summary>
-        float Width { get; }
+        double Width { get; }
 
         /// <summary>
         /// Get the height, in pixels, of the image.
         /// </summary>
-        float Height { get; }
+        double Height { get; }
 
         /// <summary>
         /// Saves this image to the specified stream in PNG format.

@@ -43,7 +43,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// cache of all the font used not to create same font again and again
         /// </summary>
-        private readonly Dictionary<string, Dictionary<float, Dictionary<RFontStyle, IFont>>> _fontsCache = new Dictionary<string, Dictionary<float, Dictionary<RFontStyle, IFont>>>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<string, Dictionary<double, Dictionary<RFontStyle, IFont>>> _fontsCache = new Dictionary<string, Dictionary<double, Dictionary<RFontStyle, IFont>>>(StringComparer.InvariantCultureIgnoreCase);
 
         #endregion
 
@@ -108,7 +108,7 @@ namespace HtmlRenderer.Core.Handlers
         /// Improve performance not to create same font multiple times.
         /// </summary>
         /// <returns>cached font instance</returns>
-        public IFont GetCachedFont(string family, float size, RFontStyle style)
+        public IFont GetCachedFont(string family, double size, RFontStyle style)
         {
             var font = TryGetFont(family, size, style);
             if( font == null )
@@ -143,7 +143,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// Get cached font if it exists in cache or null if it is not.
         /// </summary>
-        private IFont TryGetFont(string family, float size, RFontStyle style)
+        private IFont TryGetFont(string family, double size, RFontStyle style)
         {
             IFont font = null;
             if( _fontsCache.ContainsKey(family) )
@@ -164,7 +164,7 @@ namespace HtmlRenderer.Core.Handlers
             }
             else
             {
-                _fontsCache[family] = new Dictionary<float, Dictionary<RFontStyle, IFont>>();
+                _fontsCache[family] = new Dictionary<double, Dictionary<RFontStyle, IFont>>();
                 _fontsCache[family][size] = new Dictionary<RFontStyle, IFont>();
             }
             return font;
@@ -173,7 +173,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         // create font (try using existing font family to support custom fonts)
         /// </summary>
-        private IFont CreateFont(string family, float size, RFontStyle style)
+        private IFont CreateFont(string family, double size, RFontStyle style)
         {
             IFontFamily fontFamily;
             return _existingFontFamilies.TryGetValue(family, out fontFamily)

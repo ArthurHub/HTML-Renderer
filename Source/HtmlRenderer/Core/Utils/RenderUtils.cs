@@ -116,7 +116,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="seRadius">Radius of the south east corner</param>
         /// <param name="swRadius">Radius of the south west corner</param>
         /// <returns>GraphicsPath with the lines of the rounded rectangle ready to be painted</returns>
-        public static IGraphicsPath GetRoundRect(IGraphics g, RRect rect, float nwRadius, float neRadius, float seRadius, float swRadius)
+        public static IGraphicsPath GetRoundRect(IGraphics g, RRect rect, double nwRadius, double neRadius, double seRadius, double swRadius)
         {
             //  NW-----NE
             //  |       |

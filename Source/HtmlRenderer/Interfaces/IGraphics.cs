@@ -75,7 +75,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="color2">the end color of the gradient</param>
         /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
         /// <returns>linear gradient color brush instance</returns>
-        IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, float angle);
+        IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle);
 
         /// <summary>
         /// Get TextureBrush object that uses the specified image and bounding rectangle.
@@ -112,7 +112,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
         /// <param name="charFitWidth"></param>
         /// <returns>the size of the string</returns>
-        RSize MeasureString(string str, IFont font, float maxWidth, out int charFit, out int charFitWidth);
+        RSize MeasureString(string str, IFont font, double maxWidth, out int charFit, out int charFitWidth);
 
         /// <summary>
         /// Draw the given string using the given font and foreground color at given location.
@@ -132,7 +132,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="y1">The y-coordinate of the first point. </param>
         /// <param name="x2">The x-coordinate of the second point. </param>
         /// <param name="y2">The y-coordinate of the second point. </param>
-        void DrawLine(IPen pen, float x1, float y1, float x2, float y2);
+        void DrawLine(IPen pen, double x1, double y1, double x2, double y2);
 
         /// <summary>
         /// Draws a rectangle specified by a coordinate pair, a width, and a height.
@@ -142,7 +142,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param>
         /// <param name="width">The width of the rectangle to draw. </param>
         /// <param name="height">The height of the rectangle to draw. </param>
-        void DrawRectangle(IPen pen, float x, float y, float width, float height);
+        void DrawRectangle(IPen pen, double x, double y, double width, double height);
 
         /// <summary>
         /// Fills the interior of a rectangle specified by a pair of coordinates, a width, and a height.
@@ -152,7 +152,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to fill. </param>
         /// <param name="width">Width of the rectangle to fill. </param>
         /// <param name="height">Height of the rectangle to fill. </param>
-        void DrawRectangle(IBrush brush, float x, float y, float width, float height);
+        void DrawRectangle(IBrush brush, double x, double y, double width, double height);
 
         /// <summary>
         /// Draws the specified portion of the specified <see cref="IImage"/> at the specified location and with the specified size.

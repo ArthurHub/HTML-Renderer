@@ -133,7 +133,7 @@ namespace HtmlRenderer.Entities
         /// </summary>
         /// <param name="path">the path to the image to load (file path or URL)</param>
         /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
-        public void Callback(string path, float x, float y, float width, float height)
+        public void Callback(string path, double x, double y, double width, double height)
         {
             ArgChecker.AssertArgNotNullOrEmpty(path, "path");
 
@@ -164,7 +164,7 @@ namespace HtmlRenderer.Entities
         /// </summary>
         /// <param name="image">the image to load</param>
         /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
-        public void Callback(Object image, float x, float y, float width, float height)
+        public void Callback(Object image, double x, double y, double width, double height)
         {
             ArgChecker.AssertArgNotNull(image, "image");
 

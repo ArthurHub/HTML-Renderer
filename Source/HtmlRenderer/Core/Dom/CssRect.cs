@@ -76,7 +76,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Left of the rectangle
         /// </summary>
-        public float Left
+        public double Left
         {
             get { return _rect.X; }
             set { _rect.X = value; }
@@ -85,7 +85,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Top of the rectangle
         /// </summary>
-        public float Top
+        public double Top
         {
             get { return _rect.Y; }
             set { _rect.Y = value; }
@@ -94,7 +94,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Width of the rectangle
         /// </summary>
-        public float Width
+        public double Width
         {
             get { return _rect.Width; }
             set { _rect.Width = value; }
@@ -103,7 +103,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Get the full width of the word including the spacing.
         /// </summary>
-        public float FullWidth
+        public double FullWidth
         {
             get { return _rect.Width + ActualWordSpacing; }
         }
@@ -111,7 +111,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual width of whitespace between words.
         /// </summary>
-        public float ActualWordSpacing
+        public double ActualWordSpacing
         {
             get { return (OwnerBox != null ? (HasSpaceAfter ? OwnerBox.ActualWordSpacing : 0) + (IsImage ? OwnerBox.ActualWordSpacing : 0) : 0); }
         }
@@ -119,7 +119,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Height of the rectangle
         /// </summary>
-        public float Height
+        public double Height
         {
             get { return _rect.Height; }
             set { _rect.Height = value; }
@@ -128,7 +128,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets or sets the right of the rectangle. When setting, it only affects the Width of the rectangle.
         /// </summary>
-        public float Right
+        public double Right
         {
             get { return Rectangle.Right; }
             set { Width = value - Left; }
@@ -137,7 +137,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets or sets the bottom of the rectangle. When setting, it only affects the Height of the rectangle.
         /// </summary>
-        public float Bottom
+        public double Bottom
         {
             get { return Rectangle.Bottom; }
             set { Height = value - Top; }
@@ -239,7 +239,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// the selection start offset if the word is partially selected (-1 if not selected or fully selected)
         /// </summary>
-        public float SelectedStartOffset
+        public double SelectedStartOffset
         {
             get { return _selection != null ? _selection.GetSelectedStartOffset(this) : -1; }
         }
@@ -247,7 +247,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// the selection end offset if the word is partially selected (-1 if not selected or fully selected)
         /// </summary>
-        public float SelectedEndOffset
+        public double SelectedEndOffset
         {
             get { return _selection != null ? _selection.GetSelectedEndOffset(this) : -1; }
         }
@@ -255,7 +255,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets or sets an offset to be considered in measurements
         /// </summary>
-        internal float LeftGlyphPadding
+        internal double LeftGlyphPadding
         {
             get { return OwnerBox != null ? OwnerBox.ActualFont.LeftPadding : 0; }
         }

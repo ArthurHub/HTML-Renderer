@@ -65,12 +65,12 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// the selection start offset if the first selected word is partially selected (-1 if not selected or fully selected)
         /// </summary>
-        private float _selectionStartOffset = -1;
+        private double _selectionStartOffset = -1;
 
         /// <summary>
         /// the selection end offset if the last selected word is partially selected (-1 if not selected or fully selected)
         /// </summary>
-        private float _selectionEndOffset = -1;
+        private double _selectionEndOffset = -1;
 
         /// <summary>
         /// is the selection goes backward in the html, the starting word comes after the ending word in DFS traversing.<br/>
@@ -359,7 +359,7 @@ namespace HtmlRenderer.Core.Handlers
         /// Handles backward selecting by returning the selection end data instead of start.
         /// </remarks>
         /// <param name="word">the word to return the selection start offset for</param>
-        public float GetSelectedStartOffset(CssRect word)
+        public double GetSelectedStartOffset(CssRect word)
         {
             return word == (_backwardSelection ? _selectionEnd : _selectionStart) ? (_backwardSelection ? _selectionEndOffset : _selectionStartOffset) : -1;
         }
@@ -372,7 +372,7 @@ namespace HtmlRenderer.Core.Handlers
         /// Handles backward selecting by returning the selection end data instead of start.
         /// </remarks>
         /// <param name="word">the word to return the selection end offset for</param>
-        public float GetSelectedEndOffset(CssRect word)
+        public double GetSelectedEndOffset(CssRect word)
         {
             return word == (_backwardSelection ? _selectionStart : _selectionEnd) ? (_backwardSelection ? _selectionStartOffset : _selectionEndOffset) : -1;
         }
@@ -609,7 +609,7 @@ namespace HtmlRenderer.Core.Handlers
         private void CalculateWordCharIndexAndOffset(IControl control, CssRect word, RPoint loc, bool selectionStart)
         {
             int selectionIndex;
-            float selectionOffset;
+            double selectionOffset;
             CalculateWordCharIndexAndOffset(control, word, loc, selectionStart, out selectionIndex, out selectionOffset);
 
             if (selectionStart)
@@ -637,7 +637,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="selectionIndex">return the index of the char under the location</param>
         /// <param name="selectionOffset">return the offset of the char under the location</param>
         /// <param name="inclusive">is to include the first character in the calculation</param>
-        private static void CalculateWordCharIndexAndOffset(IControl control, CssRect word, RPoint loc, bool inclusive, out int selectionIndex, out float selectionOffset)
+        private static void CalculateWordCharIndexAndOffset(IControl control, CssRect word, RPoint loc, bool inclusive, out int selectionIndex, out double selectionOffset)
         {
             selectionIndex = 0;
             selectionOffset = 0f;

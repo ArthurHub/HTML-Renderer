@@ -22,7 +22,7 @@ namespace HtmlRenderer.Interfaces
         /// <summary>
         /// Gets or sets the width of this Pen, in units of the Graphics object used for drawing.
         /// </summary>
-        float Width { get; set; }
+        double Width { get; set; }
 
         /// <summary>
         /// Gets or sets the style used for dashed lines drawn with this Pen.
@@ -32,6 +32,6 @@ namespace HtmlRenderer.Interfaces
         /// <summary>
         /// Gets or sets an array of custom dashes and spaces.
         /// </summary>
-        float[] DashPattern { set; }
+        double[] DashPattern { set; }
     }
 }

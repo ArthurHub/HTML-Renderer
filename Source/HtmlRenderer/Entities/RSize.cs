@@ -42,8 +42,8 @@ namespace HtmlRenderer.Entities
         /// <filterpriority>1</filterpriority>
         public static readonly RSize Empty = new RSize();
 
-        private float _height;
-        private float _width;
+        private double _height;
+        private double _width;
 
         #endregion
 
@@ -85,7 +85,7 @@ namespace HtmlRenderer.Entities
         /// <param name="height">
         ///     The height component of the new <see cref="RSize" /> structure.
         /// </param>
-        public RSize(float width, float height)
+        public RSize(double width, double height)
         {
             _width = width;
             _height = height;
@@ -116,7 +116,7 @@ namespace HtmlRenderer.Entities
         ///     The horizontal component of this <see cref="RSize" /> structure, typically measured in pixels.
         /// </returns>
         /// <filterpriority>1</filterpriority>
-        public float Width
+        public double Width
         {
             get { return _width; }
             set { _width = value; }
@@ -129,7 +129,7 @@ namespace HtmlRenderer.Entities
         ///     The vertical component of this <see cref="RSize" /> structure, typically measured in pixels.
         /// </returns>
         /// <filterpriority>1</filterpriority>
-        public float Height
+        public double Height
         {
             get { return _height; }
             set { _height = value; }

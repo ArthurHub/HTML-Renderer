@@ -62,7 +62,7 @@ namespace HtmlRenderer.Core.Dom
             var maxWidth = new CssLength(imageWord.OwnerBox.MaxWidth);
             if (maxWidth.Number > 0)
             {
-                float maxWidthVal = -1;
+                double maxWidthVal = -1;
                 if (maxWidth.Unit == CssUnit.Pixels)
                 {
                     maxWidthVal = maxWidth.Number;
@@ -98,14 +98,14 @@ namespace HtmlRenderer.Core.Dom
                 if ((hasImageTagWidth && !hasImageTagHeight) || scaleImageHeight)
                 {
                     // Divide the given tag width with the actual image width, to get the ratio.
-                    float ratio = imageWord.Width / imageWord.Image.Width;
+                    double ratio = imageWord.Width / imageWord.Image.Width;
                     imageWord.Height = imageWord.Image.Height * ratio;
                 }
                 // If only the height was set in the html tag, ratio the width.
                 else if (hasImageTagHeight && !hasImageTagWidth)
                 {
                     // Divide the given tag height with the actual image height, to get the ratio.
-                    float ratio = imageWord.Height / imageWord.Image.Height;
+                    double ratio = imageWord.Height / imageWord.Image.Height;
                     imageWord.Width = imageWord.Image.Width * ratio;
                 }
             }
@@ -125,17 +125,17 @@ namespace HtmlRenderer.Core.Dom
 
             blockBox.LineBoxes.Clear();
 
-            float limitRight = blockBox.ActualRight - blockBox.ActualPaddingRight - blockBox.ActualBorderRightWidth;
+            double limitRight = blockBox.ActualRight - blockBox.ActualPaddingRight - blockBox.ActualBorderRightWidth;
 
             //Get the start x and y of the blockBox
-            float startx = blockBox.Location.X + blockBox.ActualPaddingLeft - 0 + blockBox.ActualBorderLeftWidth;
-            float starty = blockBox.Location.Y + blockBox.ActualPaddingTop - 0 + blockBox.ActualBorderTopWidth;
-            float curx = startx + blockBox.ActualTextIndent;
-            float cury = starty;
+            double startx = blockBox.Location.X + blockBox.ActualPaddingLeft - 0 + blockBox.ActualBorderLeftWidth;
+            double starty = blockBox.Location.Y + blockBox.ActualPaddingTop - 0 + blockBox.ActualBorderTopWidth;
+            double curx = startx + blockBox.ActualTextIndent;
+            double cury = starty;
 
             //Reminds the maximum bottom reached
-            float maxRight = startx;
-            float maxBottom = starty;
+            double maxRight = startx;
+            double maxBottom = starty;
 
             //First line box
             CssLineBox line = new CssLineBox(blockBox);
@@ -179,9 +179,9 @@ namespace HtmlRenderer.Core.Dom
 
             if (cell.VerticalAlign == CssConstants.Top || cell.VerticalAlign == CssConstants.Baseline) return;
 
-            float cellbot = cell.ClientBottom;
-            float bottom = cell.GetMaximumBottom(cell, 0f);
-            float dist = 0f;
+            double cellbot = cell.ClientBottom;
+            double bottom = cell.GetMaximumBottom(cell, 0f);
+            double dist = 0f;
 
             if (cell.VerticalAlign == CssConstants.Bottom)
             {
@@ -206,7 +206,7 @@ namespace HtmlRenderer.Core.Dom
             //    for (int i = 0; i < line.RelatedBoxes.Count; i++)
             //    {
 
-            //        float diff = bottom - line.RelatedBoxes[i].Rectangles[line].Bottom;
+            //        double diff = bottom - line.RelatedBoxes[i].Rectangles[line].Bottom;
             //        if (middle) diff /= 2f;
             //        RectangleF r = line.RelatedBoxes[i].Rectangles[line];
             //        line.RelatedBoxes[i].Rectangles[line] = new RectangleF(r.X, r.Y + diff, r.Width, r.Height);
@@ -215,7 +215,7 @@ namespace HtmlRenderer.Core.Dom
 
             //    foreach (BoxWord word in line.Words)
             //    {
-            //        float gap = word.Top - top;
+            //        double gap = word.Top - top;
             //        word.Top = bottom - gap - word.Height;
             //    }
             //}
@@ -238,7 +238,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="cury">Current y coordinate that will be the top of the next word</param>
         /// <param name="maxRight">Maximum right reached so far</param>
         /// <param name="maxbottom">Maximum bottom reached so far</param>
-        private static void FlowBox(IGraphics g, CssBox blockbox, CssBox box, float limitRight, float linespacing, float startx, ref CssLineBox line, ref float curx, ref float cury, ref float maxRight, ref float maxbottom)
+        private static void FlowBox(IGraphics g, CssBox blockbox, CssBox box, double limitRight, double linespacing, double startx, ref CssLineBox line, ref double curx, ref double cury, ref double maxRight, ref double maxbottom)
         {
             var startX = curx;
             var startY = cury;
@@ -249,8 +249,8 @@ namespace HtmlRenderer.Core.Dom
                 
             foreach (CssBox b in box.Boxes)
             {
-                float leftspacing = b.Position != CssConstants.Absolute ? b.ActualMarginLeft + b.ActualBorderLeftWidth + b.ActualPaddingLeft : 0;
-                float rightspacing = b.Position != CssConstants.Absolute ? b.ActualMarginRight + b.ActualBorderRightWidth + b.ActualPaddingRight : 0;
+                double leftspacing = b.Position != CssConstants.Absolute ? b.ActualMarginLeft + b.ActualBorderLeftWidth + b.ActualPaddingLeft : 0;
+                double rightspacing = b.Position != CssConstants.Absolute ? b.ActualMarginRight + b.ActualBorderRightWidth + b.ActualPaddingRight : 0;
 
                 b.RectanglesReset();
                 b.MeasureWordsSize(g);
@@ -356,7 +356,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Adjust the position of absolute elements by letf and top margins.
         /// </summary>
-        private static void AdjustAbsolutePosition(CssBox box, float left, float top)
+        private static void AdjustAbsolutePosition(CssBox box, double left, double top)
         {
             left += box.ActualMarginLeft;
             top += box.ActualMarginTop;
@@ -383,7 +383,7 @@ namespace HtmlRenderer.Core.Dom
         {
             if (box.Words.Count > 0)
             {
-                float x = Single.MaxValue, y = Single.MaxValue, r = Single.MinValue, b = Single.MinValue;
+                double x = Single.MaxValue, y = Single.MaxValue, r = Single.MinValue, b = Single.MinValue;
                 List<CssRect> words = line.WordsOf(box);
 
                 if (words.Count > 0)
@@ -474,13 +474,13 @@ namespace HtmlRenderer.Core.Dom
         {
             if (line.Words.Count > 0)
             {
-                float left = line.Words[0].Left;
-                float right = line.Words[line.Words.Count - 1].Right;
+                double left = line.Words[0].Left;
+                double right = line.Words[line.Words.Count - 1].Right;
 
                 foreach (CssRect word in line.Words)
                 {
-                    float diff = word.Left - left;
-                    float wright = right - diff;
+                    double diff = word.Left - left;
+                    double wright = right - diff;
                     word.Left = wright - word.Width;
                 }
             }
@@ -507,13 +507,13 @@ namespace HtmlRenderer.Core.Dom
 
             if (leftWordIdx > -1 && rightWordIdx > leftWordIdx)
             {
-                float left = lineBox.Words[leftWordIdx].Left;
-                float right = lineBox.Words[rightWordIdx].Right;
+                double left = lineBox.Words[leftWordIdx].Left;
+                double right = lineBox.Words[rightWordIdx].Right;
 
                 for (int i = leftWordIdx; i <= rightWordIdx; i++)
                 {
-                    float diff = lineBox.Words[i].Left - left;
-                    float wright = right - diff;
+                    double diff = lineBox.Words[i].Left - left;
+                    double wright = right - diff;
                     lineBox.Words[i].Left = wright - lineBox.Words[i].Width;
                 }
             }
@@ -526,7 +526,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="lineBox"></param>
         private static void ApplyVerticalAlignment(IGraphics g, CssLineBox lineBox)
         {
-            float baseline = Single.MinValue;
+            double baseline = Single.MinValue;
             foreach (var box in lineBox.Rectangles.Keys)
             {
                 baseline = Math.Max(baseline, lineBox.Rectangles[box].Top);
@@ -576,10 +576,10 @@ namespace HtmlRenderer.Core.Dom
         {
             if (lineBox.Equals(lineBox.OwnerBox.LineBoxes[lineBox.OwnerBox.LineBoxes.Count - 1])) return;
 
-            float indent = lineBox.Equals(lineBox.OwnerBox.LineBoxes[0]) ? lineBox.OwnerBox.ActualTextIndent : 0f;
-            float textSum = 0f;
-            float words = 0f;
-            float availWidth = lineBox.OwnerBox.ClientRectangle.Width - indent;
+            double indent = lineBox.Equals(lineBox.OwnerBox.LineBoxes[0]) ? lineBox.OwnerBox.ActualTextIndent : 0f;
+            double textSum = 0f;
+            double words = 0f;
+            double availWidth = lineBox.OwnerBox.ClientRectangle.Width - indent;
 
             // Gather text sum
             foreach (CssRect w in lineBox.Words)
@@ -589,8 +589,8 @@ namespace HtmlRenderer.Core.Dom
             }
 
             if (words <= 0f) return; //Avoid Zero division
-            float spacing = (availWidth - textSum)/words; //Spacing that will be used
-            float curx = lineBox.OwnerBox.ClientLeft + indent;
+            double spacing = (availWidth - textSum)/words; //Spacing that will be used
+            double curx = lineBox.OwnerBox.ClientLeft + indent;
 
             foreach (CssRect word in lineBox.Words)
             {
@@ -614,8 +614,8 @@ namespace HtmlRenderer.Core.Dom
             if (line.Words.Count == 0) return;
 
             CssRect lastWord = line.Words[line.Words.Count - 1];
-            float right = line.OwnerBox.ActualRight - line.OwnerBox.ActualPaddingRight - line.OwnerBox.ActualBorderRightWidth;
-            float diff = right - lastWord.Right - lastWord.OwnerBox.ActualBorderRightWidth - lastWord.OwnerBox.ActualPaddingRight;
+            double right = line.OwnerBox.ActualRight - line.OwnerBox.ActualPaddingRight - line.OwnerBox.ActualBorderRightWidth;
+            double diff = right - lastWord.Right - lastWord.OwnerBox.ActualBorderRightWidth - lastWord.OwnerBox.ActualPaddingRight;
             diff /= 2;
 
             if (diff > 0)
@@ -644,8 +644,8 @@ namespace HtmlRenderer.Core.Dom
 
 
             CssRect lastWord = line.Words[line.Words.Count - 1];
-            float right = line.OwnerBox.ActualRight - line.OwnerBox.ActualPaddingRight - line.OwnerBox.ActualBorderRightWidth;
-            float diff = right - lastWord.Right - lastWord.OwnerBox.ActualBorderRightWidth - lastWord.OwnerBox.ActualPaddingRight;
+            double right = line.OwnerBox.ActualRight - line.OwnerBox.ActualPaddingRight - line.OwnerBox.ActualBorderRightWidth;
+            double diff = right - lastWord.Right - lastWord.OwnerBox.ActualBorderRightWidth - lastWord.OwnerBox.ActualPaddingRight;
 
             if (diff > 0)
             {
@@ -673,7 +673,7 @@ namespace HtmlRenderer.Core.Dom
 
             //foreach (LineBoxRectangle r in line.Rectangles)
             //{
-            //    float curx = r.Left + (r.Index == 0 ? r.OwnerBox.ActualPaddingLeft + r.OwnerBox.ActualBorderLeftWidth / 2 : 0);
+            //    double curx = r.Left + (r.Index == 0 ? r.OwnerBox.ActualPaddingLeft + r.OwnerBox.ActualBorderLeftWidth / 2 : 0);
 
             //    if (r.SpaceBefore) curx += r.OwnerBox.ActualWordSpacing;
 

@@ -113,36 +113,36 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         private RSize _size;
 
-        private float _actualCornerNw = float.NaN;
-        private float _actualCornerNe = float.NaN;
-        private float _actualCornerSw = float.NaN;
-        private float _actualCornerSe = float.NaN;
+        private double _actualCornerNw = double.NaN;
+        private double _actualCornerNe = double.NaN;
+        private double _actualCornerSw = double.NaN;
+        private double _actualCornerSe = double.NaN;
         private RColor _actualColor = RColor.Empty;
-        private float _actualBackgroundGradientAngle = float.NaN;
-        private float _actualHeight = float.NaN;
-        private float _actualWidth = float.NaN;
-        private float _actualPaddingTop = float.NaN;
-        private float _actualPaddingBottom = float.NaN;
-        private float _actualPaddingRight = float.NaN;
-        private float _actualPaddingLeft = float.NaN;
-        private float _actualMarginTop = float.NaN;
-        private float _collapsedMarginTop = float.NaN;
-        private float _actualMarginBottom = float.NaN;
-        private float _actualMarginRight = float.NaN;
-        private float _actualMarginLeft = float.NaN;
-        private float _actualBorderTopWidth = float.NaN;
-        private float _actualBorderLeftWidth = float.NaN;
-        private float _actualBorderBottomWidth = float.NaN;
-        private float _actualBorderRightWidth = float.NaN;
+        private double _actualBackgroundGradientAngle = double.NaN;
+        private double _actualHeight = double.NaN;
+        private double _actualWidth = double.NaN;
+        private double _actualPaddingTop = double.NaN;
+        private double _actualPaddingBottom = double.NaN;
+        private double _actualPaddingRight = double.NaN;
+        private double _actualPaddingLeft = double.NaN;
+        private double _actualMarginTop = double.NaN;
+        private double _collapsedMarginTop = double.NaN;
+        private double _actualMarginBottom = double.NaN;
+        private double _actualMarginRight = double.NaN;
+        private double _actualMarginLeft = double.NaN;
+        private double _actualBorderTopWidth = double.NaN;
+        private double _actualBorderLeftWidth = double.NaN;
+        private double _actualBorderBottomWidth = double.NaN;
+        private double _actualBorderRightWidth = double.NaN;
         
         /// <summary>
         /// the width of whitespace between words
         /// </summary>
-        private float _actualLineHeight = float.NaN;
-        private float _actualWordSpacing = float.NaN;
-        private float _actualTextIndent = float.NaN;
-        private float _actualBorderSpacingHorizontal = float.NaN;
-        private float _actualBorderSpacingVertical = float.NaN;
+        private double _actualLineHeight = double.NaN;
+        private double _actualWordSpacing = double.NaN;
+        private double _actualTextIndent = double.NaN;
+        private double _actualBorderSpacingHorizontal = double.NaN;
+        private double _actualBorderSpacingVertical = double.NaN;
         private RColor _actualBackgroundGradient = RColor.Empty;
         private RColor _actualBorderTopColor = RColor.Empty;
         private RColor _actualBorderLeftColor = RColor.Empty;
@@ -361,25 +361,25 @@ namespace HtmlRenderer.Core.Dom
         public string PaddingBottom
         {
             get { return _paddingBottom; }
-            set { _paddingBottom = value; _actualPaddingBottom = float.NaN; }
+            set { _paddingBottom = value; _actualPaddingBottom = double.NaN; }
         }
 
         public string PaddingLeft
         {
             get { return _paddingLeft; }
-            set { _paddingLeft = value; _actualPaddingLeft = float.NaN; }
+            set { _paddingLeft = value; _actualPaddingLeft = double.NaN; }
         }
 
         public string PaddingRight
         {
             get { return _paddingRight; }
-            set { _paddingRight = value; _actualPaddingRight = float.NaN; }
+            set { _paddingRight = value; _actualPaddingRight = double.NaN; }
         }
 
         public string PaddingTop
         {
             get { return _paddingTop; }
-            set { _paddingTop = value; _actualPaddingTop = float.NaN; }
+            set { _paddingTop = value; _actualPaddingTop = double.NaN; }
         }
 
         public string Left
@@ -658,7 +658,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the width available on the box, counting padding and margin.
         /// </summary>
-        public float AvailableWidth
+        public double AvailableWidth
         {
             get { return Size.Width - ActualBorderLeftWidth - ActualPaddingLeft - ActualPaddingRight - ActualBorderRightWidth; }
         }
@@ -666,7 +666,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the right of the box. When setting, it will affect only the width of the box.
         /// </summary>
-        public float ActualRight
+        public double ActualRight
         {
             get { return Location.X + Size.Width; }
             set { Size = new RSize(value - Location.X, Size.Height); }
@@ -676,7 +676,7 @@ namespace HtmlRenderer.Core.Dom
         /// Gets or sets the bottom of the box. 
         /// (When setting, alters only the Size.Height of the box)
         /// </summary>
-        public float ActualBottom
+        public double ActualBottom
         {
             get { return Location.Y + Size.Height; }
             set { Size = new RSize(Size.Width, value - Location.Y); }
@@ -685,7 +685,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the left of the client rectangle (Where content starts rendering)
         /// </summary>
-        public float ClientLeft
+        public double ClientLeft
         {
             get { return Location.X + ActualBorderLeftWidth + ActualPaddingLeft; }
         }
@@ -693,7 +693,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the top of the client rectangle (Where content starts rendering)
         /// </summary>
-        public float ClientTop
+        public double ClientTop
         {
             get { return Location.Y + ActualBorderTopWidth + ActualPaddingTop; }
         }
@@ -701,7 +701,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the right of the client rectangle
         /// </summary>
-        public float ClientRight
+        public double ClientRight
         {
             get { return ActualRight - ActualPaddingRight - ActualBorderRightWidth; }
         }
@@ -709,7 +709,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the bottom of the client rectangle
         /// </summary>
-        public float ClientBottom
+        public double ClientBottom
         {
             get { return ActualBottom - ActualPaddingBottom - ActualBorderBottomWidth; }
         }
@@ -725,11 +725,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual height
         /// </summary>
-        public float ActualHeight
+        public double ActualHeight
         {
             get
             {
-                if (float.IsNaN(_actualHeight))
+                if (double.IsNaN(_actualHeight))
                 {
                     _actualHeight = CssValueParser.ParseLength(Height, Size.Height, this);
                 }
@@ -740,11 +740,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual height
         /// </summary>
-        public float ActualWidth
+        public double ActualWidth
         {
             get
             {
-                if (float.IsNaN(_actualWidth))
+                if (double.IsNaN(_actualWidth))
                 {
                     _actualWidth = CssValueParser.ParseLength(Width, Size.Width, this);
                 }
@@ -755,11 +755,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual top's padding
         /// </summary>
-        public float ActualPaddingTop
+        public double ActualPaddingTop
         {
             get
             {
-                if (float.IsNaN(_actualPaddingTop))
+                if (double.IsNaN(_actualPaddingTop))
                 {
                     _actualPaddingTop = CssValueParser.ParseLength(PaddingTop, Size.Width, this);
                 }
@@ -770,11 +770,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual padding on the left
         /// </summary>
-        public float ActualPaddingLeft
+        public double ActualPaddingLeft
         {
             get
             {
-                if (float.IsNaN(_actualPaddingLeft))
+                if (double.IsNaN(_actualPaddingLeft))
                 {
                     _actualPaddingLeft = CssValueParser.ParseLength(PaddingLeft, Size.Width, this);
                 }
@@ -785,11 +785,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual Padding of the bottom
         /// </summary>
-        public float ActualPaddingBottom
+        public double ActualPaddingBottom
         {
             get
             {
-                if (float.IsNaN(_actualPaddingBottom))
+                if (double.IsNaN(_actualPaddingBottom))
                 {
                     _actualPaddingBottom = CssValueParser.ParseLength(PaddingBottom, Size.Width, this);
                 }
@@ -800,11 +800,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual padding on the right
         /// </summary>
-        public float ActualPaddingRight
+        public double ActualPaddingRight
         {
             get
             {
-                if (float.IsNaN(_actualPaddingRight))
+                if (double.IsNaN(_actualPaddingRight))
                 {
                     _actualPaddingRight = CssValueParser.ParseLength(PaddingRight, Size.Width, this);
                 }
@@ -815,11 +815,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual top's Margin
         /// </summary>
-        public float ActualMarginTop
+        public double ActualMarginTop
         {
             get
             {
-                if (float.IsNaN(_actualMarginTop))
+                if (double.IsNaN(_actualMarginTop))
                 {
                     if (MarginTop == CssConstants.Auto)
                         MarginTop = "0";
@@ -835,20 +835,20 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// The margin top value if was effected by margin collapse.
         /// </summary>
-        public float CollapsedMarginTop
+        public double CollapsedMarginTop
         {
-            get { return float.IsNaN(_collapsedMarginTop) ? 0 : _collapsedMarginTop; }
+            get { return double.IsNaN(_collapsedMarginTop) ? 0 : _collapsedMarginTop; }
             set { _collapsedMarginTop = value; }
         }
 
         /// <summary>
         /// Gets the actual Margin on the left
         /// </summary>
-        public float ActualMarginLeft
+        public double ActualMarginLeft
         {
             get
             {
-                if (float.IsNaN(_actualMarginLeft))
+                if (double.IsNaN(_actualMarginLeft))
                 {
                     if (MarginLeft == CssConstants.Auto) 
                         MarginLeft = "0";
@@ -864,11 +864,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual Margin of the bottom
         /// </summary>
-        public float ActualMarginBottom
+        public double ActualMarginBottom
         {
             get
             {
-                if (float.IsNaN(_actualMarginBottom))
+                if (double.IsNaN(_actualMarginBottom))
                 {
                     if (MarginBottom == CssConstants.Auto) 
                         MarginBottom = "0";
@@ -884,11 +884,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual Margin on the right
         /// </summary>
-        public float ActualMarginRight
+        public double ActualMarginRight
         {
             get
             {
-                if (float.IsNaN(_actualMarginRight))
+                if (double.IsNaN(_actualMarginRight))
                 {
                     if (MarginRight == CssConstants.Auto) 
                         MarginRight = "0";
@@ -904,11 +904,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual top border width
         /// </summary>
-        public float ActualBorderTopWidth
+        public double ActualBorderTopWidth
         {
             get
             {
-                if (float.IsNaN(_actualBorderTopWidth))
+                if (double.IsNaN(_actualBorderTopWidth))
                 {
                     _actualBorderTopWidth = CssValueParser.GetActualBorderWidth(BorderTopWidth, this);
                     if (string.IsNullOrEmpty(BorderTopStyle) || BorderTopStyle == CssConstants.None)
@@ -923,11 +923,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual Left border width
         /// </summary>
-        public float ActualBorderLeftWidth
+        public double ActualBorderLeftWidth
         {
             get
             {
-                if (float.IsNaN(_actualBorderLeftWidth))
+                if (double.IsNaN(_actualBorderLeftWidth))
                 {
                     _actualBorderLeftWidth = CssValueParser.GetActualBorderWidth(BorderLeftWidth, this);
                     if (string.IsNullOrEmpty(BorderLeftStyle) || BorderLeftStyle == CssConstants.None)
@@ -942,11 +942,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual Bottom border width
         /// </summary>
-        public float ActualBorderBottomWidth
+        public double ActualBorderBottomWidth
         {
             get
             {
-                if (float.IsNaN(_actualBorderBottomWidth))
+                if (double.IsNaN(_actualBorderBottomWidth))
                 {
                     _actualBorderBottomWidth = CssValueParser.GetActualBorderWidth(BorderBottomWidth, this);
                     if (string.IsNullOrEmpty(BorderBottomStyle) || BorderBottomStyle == CssConstants.None)
@@ -961,11 +961,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual Right border width
         /// </summary>
-        public float ActualBorderRightWidth
+        public double ActualBorderRightWidth
         {
             get
             {
-                if (float.IsNaN(_actualBorderRightWidth))
+                if (double.IsNaN(_actualBorderRightWidth))
                 {
                     _actualBorderRightWidth = CssValueParser.GetActualBorderWidth(BorderRightWidth, this);
                     if (string.IsNullOrEmpty(BorderRightStyle) || BorderRightStyle == CssConstants.None)
@@ -1042,11 +1042,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual length of the north west corner
         /// </summary>
-        public float ActualCornerNw
+        public double ActualCornerNw
         {
             get
             {
-                if (float.IsNaN(_actualCornerNw))
+                if (double.IsNaN(_actualCornerNw))
                 {
                     _actualCornerNw = CssValueParser.ParseLength(CornerNwRadius, 0, this);
                 }
@@ -1057,11 +1057,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual length of the north east corner
         /// </summary>
-        public float ActualCornerNe
+        public double ActualCornerNe
         {
             get
             {
-                if (float.IsNaN(_actualCornerNe))
+                if (double.IsNaN(_actualCornerNe))
                 {
                     _actualCornerNe = CssValueParser.ParseLength(CornerNeRadius, 0, this);
                 }
@@ -1072,11 +1072,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual length of the south east corner
         /// </summary>
-        public float ActualCornerSe
+        public double ActualCornerSe
         {
             get
             {
-                if (float.IsNaN(_actualCornerSe))
+                if (double.IsNaN(_actualCornerSe))
                 {
                     _actualCornerSe = CssValueParser.ParseLength(CornerSeRadius, 0, this);
                 }
@@ -1087,11 +1087,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual length of the south west corner
         /// </summary>
-        public float ActualCornerSw
+        public double ActualCornerSw
         {
             get
             {
-                if (float.IsNaN(_actualCornerSw))
+                if (double.IsNaN(_actualCornerSw))
                 {
                     _actualCornerSw = CssValueParser.ParseLength(CornerSwRadius, 0, this);
                 }
@@ -1110,7 +1110,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual width of whitespace between words.
         /// </summary>
-        public float ActualWordSpacing
+        public double ActualWordSpacing
         {
             get { return _actualWordSpacing; }
         }
@@ -1168,11 +1168,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual angle specified for the background gradient
         /// </summary>
-        public float ActualBackgroundGradientAngle
+        public double ActualBackgroundGradientAngle
         {
             get
             {
-                if (float.IsNaN(_actualBackgroundGradientAngle))
+                if (double.IsNaN(_actualBackgroundGradientAngle))
                 {
                     _actualBackgroundGradientAngle = CssValueParser.ParseNumber(BackgroundGradientAngle, 360f);
                 }
@@ -1213,8 +1213,8 @@ namespace HtmlRenderer.Core.Dom
                         st |= RFontStyle.Bold;
                     }
 
-                    float fsize;
-                    float parentSize = CssConstants.FontSize;
+                    double fsize;
+                    double parentSize = CssConstants.FontSize;
 
                     if (GetParent() != null)
                         parentSize = GetParent().ActualFont.Size;
@@ -1255,16 +1255,16 @@ namespace HtmlRenderer.Core.Dom
             }
         }
 
-        protected abstract IFont GetCachedFont(string fontFamily, float fsize, RFontStyle st);
+        protected abstract IFont GetCachedFont(string fontFamily, double fsize, RFontStyle st);
 
         /// <summary>
         /// Gets the line height
         /// </summary>
-        public float ActualLineHeight
+        public double ActualLineHeight
         {
             get
             {
-                if (float.IsNaN(_actualLineHeight))
+                if (double.IsNaN(_actualLineHeight))
                 {
                     _actualLineHeight = .9f*CssValueParser.ParseLength(LineHeight, Size.Height, this);
                 }
@@ -1275,11 +1275,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the text indentation (on first line only)
         /// </summary>
-        public float ActualTextIndent
+        public double ActualTextIndent
         {
             get
             {
-                if (float.IsNaN(_actualTextIndent))
+                if (double.IsNaN(_actualTextIndent))
                 {
                     _actualTextIndent = CssValueParser.ParseLength(TextIndent, Size.Width, this);
                 }
@@ -1291,11 +1291,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual horizontal border spacing for tables
         /// </summary>
-        public float ActualBorderSpacingHorizontal
+        public double ActualBorderSpacingHorizontal
         {
             get
             {
-                if (float.IsNaN(_actualBorderSpacingHorizontal))
+                if (double.IsNaN(_actualBorderSpacingHorizontal))
                 {
                     MatchCollection matches = RegexParserUtils.Match(RegexParserUtils.CssLength, BorderSpacing);
 
@@ -1317,11 +1317,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual vertical border spacing for tables
         /// </summary>
-        public float ActualBorderSpacingVertical
+        public double ActualBorderSpacingVertical
         {
             get
             {
-                if (float.IsNaN(_actualBorderSpacingVertical))
+                if (double.IsNaN(_actualBorderSpacingVertical))
                 {
                     MatchCollection matches = RegexParserUtils.Match(RegexParserUtils.CssLength, BorderSpacing);
 
@@ -1352,7 +1352,7 @@ namespace HtmlRenderer.Core.Dom
         /// Gets the height of the font in the specified units
         /// </summary>
         /// <returns></returns>
-        public float GetEmHeight()
+        public double GetEmHeight()
         {
             return ActualFont.Height;
         }
@@ -1393,7 +1393,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         protected void MeasureWordSpacing(IGraphics g)
         {
-            if (float.IsNaN(ActualWordSpacing))
+            if (double.IsNaN(ActualWordSpacing))
             {
                 _actualWordSpacing = CssUtils.WhiteSpace(g, this);
                 if (WordSpacing != CssConstants.Normal)

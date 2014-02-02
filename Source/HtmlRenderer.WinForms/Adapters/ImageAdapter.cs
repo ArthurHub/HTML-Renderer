@@ -46,7 +46,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Get the width, in pixels, of the image.
         /// </summary>
-        public float Width
+        public double Width
         {
             get { return _image.Width; }
         }
@@ -54,7 +54,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Get the height, in pixels, of the image.
         /// </summary>
-        public float Height
+        public double Height
         {
             get { return _image.Height; }
         }

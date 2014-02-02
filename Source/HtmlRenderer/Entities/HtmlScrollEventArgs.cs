@@ -37,7 +37,7 @@ namespace HtmlRenderer.Entities
         /// <summary>
         /// the x location to scroll to
         /// </summary>
-        public float X
+        public double X
         {
             get { return _location.X; }
         }
@@ -45,7 +45,7 @@ namespace HtmlRenderer.Entities
         /// <summary>
         /// the x location to scroll to
         /// </summary>
-        public float Y
+        public double Y
         {
             get { return _location.Y; }
         }

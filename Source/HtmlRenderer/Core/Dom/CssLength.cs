@@ -14,7 +14,7 @@ namespace HtmlRenderer.Core.Dom
     internal sealed class CssLength
     {
         #region Fields
-        private readonly float _number;
+        private readonly double _number;
         private readonly bool _isRelative;
         private readonly CssUnit _unit;
         private readonly string _length;
@@ -50,7 +50,7 @@ namespace HtmlRenderer.Core.Dom
             //If no units, has error
             if (length.Length < 3)
             {
-                float.TryParse(length, out _number);
+                double.TryParse(length, out _number);
                 _hasError = true;
                 return;
             }
@@ -96,7 +96,7 @@ namespace HtmlRenderer.Core.Dom
                     return;
             }
 
-            if (!float.TryParse(number,  System.Globalization.NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _number))
+            if (!double.TryParse(number,  System.Globalization.NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _number))
             {
                 _hasError = true;
             }
@@ -110,7 +110,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the number in the length
         /// </summary>
-        public float Number
+        public double Number
         {
             get { return _number; }
         }
@@ -168,7 +168,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="emSize">Em size factor to multiply</param>
         /// <returns>Points size of this em</returns>
         /// <exception cref="InvalidOperationException">If length has an error or isn't in ems</exception>
-        public CssLength ConvertEmToPoints(float emSize)
+        public CssLength ConvertEmToPoints(double emSize)
         {
             if (HasError) throw new InvalidOperationException("Invalid length");
             if (Unit != CssUnit.Ems) throw new InvalidOperationException("Length is not in ems");
@@ -182,7 +182,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="pixelFactor">Pixel size factor to multiply</param>
         /// <returns>Pixels size of this em</returns>
         /// <exception cref="InvalidOperationException">If length has an error or isn't in ems</exception>
-        public CssLength ConvertEmToPixels(float pixelFactor)
+        public CssLength ConvertEmToPixels(double pixelFactor)
         {
             if (HasError) throw new InvalidOperationException("Invalid length");
             if (Unit != CssUnit.Ems) throw new InvalidOperationException("Length is not in ems");

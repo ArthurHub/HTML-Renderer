@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System.Drawing.Drawing2D;
-using HtmlRenderer.Core;
 using HtmlRenderer.Interfaces;
 
 namespace HtmlRenderer.WinForms.Adapters
@@ -37,17 +36,17 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Appends an elliptical arc to the current figure.
         /// </summary>
-        public void AddArc(float x, float y, float width, float height, float startAngle, float sweepAngle)
+        public void AddArc(double x, double y, double width, double height, double startAngle, double sweepAngle)
         {
-            _graphicsPath.AddArc(x, y, width, height, startAngle, sweepAngle);
+            _graphicsPath.AddArc((float)x, (float)y, (float)width, (float)height, (float)startAngle, (float)sweepAngle);
         }
 
         /// <summary>
         /// Appends a line segment to this GraphicsPath.
         /// </summary>
-        public void AddLine(float x1, float y1, float x2, float y2)
+        public void AddLine(double x1, double y1, double x2, double y2)
         {
-            _graphicsPath.AddLine(x1, y1, x2, y2);
+            _graphicsPath.AddLine((float)x1, (float)y1, (float)x2, (float)y2);
         }
 
         /// <summary>

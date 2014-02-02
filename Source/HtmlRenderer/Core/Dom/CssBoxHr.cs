@@ -48,14 +48,14 @@ namespace HtmlRenderer.Core.Dom
             RectanglesReset();
 
             var prevSibling = DomUtils.GetPreviousSibling(this);
-            float left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
-            float top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+            double left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
+            double top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
             Location = new RPoint(left, top);
             ActualBottom = top;
 
             //width at 100% (or auto)
-            float minwidth = GetMinimumWidth();
-            float width = ContainingBlock.Size.Width
+            double minwidth = GetMinimumWidth();
+            double width = ContainingBlock.Size.Width
                           - ContainingBlock.ActualPaddingLeft - ContainingBlock.ActualPaddingRight
                           - ContainingBlock.ActualBorderLeftWidth - ContainingBlock.ActualBorderRightWidth
                           - ActualMarginLeft - ActualMarginRight - ActualBorderLeftWidth - ActualBorderRightWidth;
@@ -69,7 +69,7 @@ namespace HtmlRenderer.Core.Dom
             if (width < minwidth || width >= 9999)
                 width = minwidth;
 
-            float height = ActualHeight;
+            double height = ActualHeight;
             if(height < 1)
             {
                 height = Size.Height + ActualBorderTopWidth + ActualBorderBottomWidth;

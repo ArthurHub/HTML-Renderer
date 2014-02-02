@@ -45,9 +45,9 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Gets or sets the width of this Pen, in units of the Graphics object used for drawing.
         /// </summary>
-        public float Width
+        public double Width
         {
-            get { return (float)_pen.Width; }
+            get { return _pen.Width; }
             set { _pen.Width = value; }
         }
 
@@ -88,7 +88,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Gets or sets an array of custom dashes and spaces.
         /// </summary>
-        public float[] DashPattern
+        public double[] DashPattern
         {
             set
             {
@@ -96,7 +96,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
                 for(int i = 0; i < value.Length; i++)
                     dValues[i] = value[i];
                 
-                _pen.DashPattern = dValues;
+                _pen.DashPattern = value;
             }
         }
     }

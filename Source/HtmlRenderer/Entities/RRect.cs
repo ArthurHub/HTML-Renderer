@@ -26,11 +26,11 @@ namespace HtmlRenderer.Entities
         /// </summary>
         public static readonly RRect Empty = new RRect();
 
-        private float _height;
-        private float _width;
+        private double _height;
+        private double _width;
 
-        private float _x;
-        private float _y;
+        private double _x;
+        private double _y;
 
         #endregion
 
@@ -42,7 +42,7 @@ namespace HtmlRenderer.Entities
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle. </param>
         /// <param name="width">The width of the rectangle. </param>
         /// <param name="height">The height of the rectangle. </param>
-        public RRect(float x, float y, float width, float height)
+        public RRect(double x, double y, double width, double height)
         {
             _x = x;
             _y = y;
@@ -97,7 +97,7 @@ namespace HtmlRenderer.Entities
         /// <returns>
         ///     The x-coordinate of the upper-left corner of this <see cref="RRect" /> structure.
         /// </returns>
-        public float X
+        public double X
         {
             get { return _x; }
             set { _x = value; }
@@ -109,7 +109,7 @@ namespace HtmlRenderer.Entities
         /// <returns>
         ///     The y-coordinate of the upper-left corner of this <see cref="RRect" /> structure.
         /// </returns>
-        public float Y
+        public double Y
         {
             get { return _y; }
             set { _y = value; }
@@ -121,7 +121,7 @@ namespace HtmlRenderer.Entities
         /// <returns>
         ///     The width of this <see cref="RRect" /> structure.
         /// </returns>
-        public float Width
+        public double Width
         {
             get { return _width; }
             set { _width = value; }
@@ -133,7 +133,7 @@ namespace HtmlRenderer.Entities
         /// <returns>
         ///     The height of this <see cref="RRect" /> structure.
         /// </returns>
-        public float Height
+        public double Height
         {
             get { return _height; }
             set { _height = value; }
@@ -145,7 +145,7 @@ namespace HtmlRenderer.Entities
         /// <returns>
         ///     The x-coordinate of the left edge of this <see cref="RRect" /> structure.
         /// </returns>
-        public float Left
+        public double Left
         {
             get { return X; }
         }
@@ -156,7 +156,7 @@ namespace HtmlRenderer.Entities
         /// <returns>
         ///     The y-coordinate of the top edge of this <see cref="RRect" /> structure.
         /// </returns>
-        public float Top
+        public double Top
         {
             get { return Y; }
         }
@@ -173,7 +173,7 @@ namespace HtmlRenderer.Entities
         ///         cref="RRect.Width" />
         ///     of this <see cref="RRect" /> structure.
         /// </returns>
-        public float Right
+        public double Right
         {
             get { return X + Width; }
         }
@@ -190,7 +190,7 @@ namespace HtmlRenderer.Entities
         ///         cref="RRect.Height" />
         ///     of this <see cref="RRect" /> structure.
         /// </returns>
-        public float Bottom
+        public double Bottom
         {
             get { return Y + Height; }
         }
@@ -268,7 +268,7 @@ namespace HtmlRenderer.Entities
         /// <param name="top">The y-coordinate of the upper-left corner of the rectangular region. </param>
         /// <param name="right">The x-coordinate of the lower-right corner of the rectangular region. </param>
         /// <param name="bottom">The y-coordinate of the lower-right corner of the rectangular region. </param>
-        public static RRect FromLTRB(float left, float top, float right, float bottom)
+        public static RRect FromLTRB(double left, double top, double right, double bottom)
         {
             return new RRect(left, top, right - left, bottom - top);
         }
@@ -305,7 +305,7 @@ namespace HtmlRenderer.Entities
         /// </returns>
         /// <param name="x">The x-coordinate of the point to test. </param>
         /// <param name="y">The y-coordinate of the point to test. </param>
-        public bool Contains(float x, float y)
+        public bool Contains(double x, double y)
         {
             if( X <= (double)x && x < X + (double)Width && Y <= (double)y )
                 return y < Y + (double)Height;
@@ -357,7 +357,7 @@ namespace HtmlRenderer.Entities
         /// <param name="y">
         ///     The amount to inflate this <see cref="RRect" /> structure vertically.
         /// </param>
-        public void Inflate(float x, float y)
+        public void Inflate(double x, double y)
         {
             X -= x;
             Y -= y;
@@ -385,7 +385,7 @@ namespace HtmlRenderer.Entities
         /// </param>
         /// <param name="x">The amount to inflate the copy of the rectangle horizontally. </param>
         /// <param name="y">The amount to inflate the copy of the rectangle vertically. </param>
-        public static RRect Inflate(RRect rect, float x, float y)
+        public static RRect Inflate(RRect rect, double x, double y)
         {
             RRect rectangleF = rect;
             rectangleF.Inflate(x, y);
@@ -421,10 +421,10 @@ namespace HtmlRenderer.Entities
         /// <param name="b">A rectangle to intersect. </param>
         public static RRect Intersect(RRect a, RRect b)
         {
-            float x = Math.Max(a.X, b.X);
-            float num1 = Math.Min(a.X + a.Width, b.X + b.Width);
-            float y = Math.Max(a.Y, b.Y);
-            float num2 = Math.Min(a.Y + a.Height, b.Y + b.Height);
+            double x = Math.Max(a.X, b.X);
+            double num1 = Math.Min(a.X + a.Width, b.X + b.Width);
+            double y = Math.Max(a.Y, b.Y);
+            double num2 = Math.Min(a.Y + a.Height, b.Y + b.Height);
             if( num1 >= (double)x && num2 >= (double)y )
                 return new RRect(x, y, num1 - x, num2 - y);
             else
@@ -456,10 +456,10 @@ namespace HtmlRenderer.Entities
         /// <param name="b">A rectangle to union. </param>
         public static RRect Union(RRect a, RRect b)
         {
-            float x = Math.Min(a.X, b.X);
-            float num1 = Math.Max(a.X + a.Width, b.X + b.Width);
-            float y = Math.Min(a.Y, b.Y);
-            float num2 = Math.Max(a.Y + a.Height, b.Y + b.Height);
+            double x = Math.Min(a.X, b.X);
+            double num1 = Math.Max(a.X + a.Width, b.X + b.Width);
+            double y = Math.Min(a.Y, b.Y);
+            double num2 = Math.Max(a.Y + a.Height, b.Y + b.Height);
             return new RRect(x, y, num1 - x, num2 - y);
         }
 
@@ -477,7 +477,7 @@ namespace HtmlRenderer.Entities
         /// </summary>
         /// <param name="x">The amount to offset the location horizontally. </param>
         /// <param name="y">The amount to offset the location vertically. </param>
-        public void Offset(float x, float y)
+        public void Offset(double x, double y)
         {
             X += x;
             Y += y;

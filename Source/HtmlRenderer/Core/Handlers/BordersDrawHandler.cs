@@ -126,16 +126,16 @@ namespace HtmlRenderer.Core.Handlers
                     switch (border)
                     {
                         case Border.Top:
-                            g.DrawLine(pen, (float)Math.Ceiling(rect.Left), rect.Top + box.ActualBorderTopWidth / 2, rect.Right - 1, rect.Top + box.ActualBorderTopWidth / 2);
+                            g.DrawLine(pen, (double)Math.Ceiling(rect.Left), rect.Top + box.ActualBorderTopWidth / 2, rect.Right - 1, rect.Top + box.ActualBorderTopWidth / 2);
                             break;
                         case Border.Left:
-                            g.DrawLine(pen, rect.Left + box.ActualBorderLeftWidth / 2, (float)Math.Ceiling(rect.Top), rect.Left + box.ActualBorderLeftWidth / 2, (float)Math.Floor(rect.Bottom));
+                            g.DrawLine(pen, rect.Left + box.ActualBorderLeftWidth / 2, (double)Math.Ceiling(rect.Top), rect.Left + box.ActualBorderLeftWidth / 2, (double)Math.Floor(rect.Bottom));
                             break;
                         case Border.Bottom:
-                            g.DrawLine(pen, (float)Math.Ceiling(rect.Left), rect.Bottom - box.ActualBorderBottomWidth / 2, rect.Right - 1, rect.Bottom - box.ActualBorderBottomWidth / 2);
+                            g.DrawLine(pen, (double)Math.Ceiling(rect.Left), rect.Bottom - box.ActualBorderBottomWidth / 2, rect.Right - 1, rect.Bottom - box.ActualBorderBottomWidth / 2);
                             break;
                         case Border.Right:
-                            g.DrawLine(pen, rect.Right - box.ActualBorderRightWidth / 2, (float)Math.Ceiling(rect.Top), rect.Right - box.ActualBorderRightWidth / 2, (float)Math.Floor(rect.Bottom));
+                            g.DrawLine(pen, rect.Right - box.ActualBorderRightWidth / 2, (double)Math.Ceiling(rect.Top), rect.Right - box.ActualBorderRightWidth / 2, (double)Math.Floor(rect.Bottom));
                             break;
                     }
                 }
@@ -278,7 +278,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// Get pen to be used for border draw respecting its style.
         /// </summary>
-        private static IPen GetPen(IGraphics g, string style, RColor color, float width)
+        private static IPen GetPen(IGraphics g, string style, RColor color, double width)
         {
             var p = g.GetPen(color);
             p.Width = width;
@@ -294,7 +294,7 @@ namespace HtmlRenderer.Core.Handlers
                 case "dashed":
                     p.DashStyle = RDashStyle.Dash;
                     if (p.Width < 2)
-                        p.DashPattern = new[] { 4, 4f }; // better looking
+                        p.DashPattern = new[] { 4, 4d }; // better looking
                     break;
             }
             return p;
@@ -323,7 +323,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// Get the border width for the given box border.
         /// </summary>
-        private static float GetWidth(Border border, CssBoxProperties box)
+        private static double GetWidth(Border border, CssBoxProperties box)
         {
             switch (border)
             {

@@ -70,7 +70,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="rect">Rectangle structure to combine.</param>
         public void SetClipReplace(RRect rect)
         {
-            _g.Graphics.SetClip(new RectangleF(rect.X, rect.Y, rect.Width, rect.Height), CombineMode.Replace);
+            _g.Graphics.SetClip(new RectangleF((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height), CombineMode.Replace);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="rect">Rectangle structure to combine.</param>
         public void SetClipExclude(RRect rect)
         {
-            _g.Graphics.SetClip(new RectangleF(rect.X, rect.Y, rect.Width, rect.Height), CombineMode.Exclude);
+            _g.Graphics.SetClip(new RectangleF((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height), CombineMode.Exclude);
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
         /// <param name="charFitWidth"></param>
         /// <returns>the size of the string</returns>
-        public RSize MeasureString(string str, IFont font, float maxWidth, out int charFit, out int charFitWidth)
+        public RSize MeasureString(string str, IFont font, double maxWidth, out int charFit, out int charFitWidth)
         {
             throw new NotSupportedException();
         }
@@ -189,7 +189,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="color2">the end color of the gradient</param>
         /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
         /// <returns>linear gradient color brush instance</returns>
-        public IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, float angle)
+        public IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
         {
             XLinearGradientMode mode;
             if(angle < 45)
@@ -246,7 +246,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="x1">The x-coordinate of the first point. </param><param name="y1">The y-coordinate of the first point. </param>
         /// <param name="x2">The x-coordinate of the second point. </param><param name="y2">The y-coordinate of the second point. </param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
-        public void DrawLine(IPen pen, float x1, float y1, float x2, float y2)
+        public void DrawLine(IPen pen, double x1, double y1, double x2, double y2)
         {
             _g.DrawLine(((PenAdapter)pen).Pen, x1, y1, x2, y2);
         }
@@ -259,7 +259,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param>
         /// <param name="width">The width of the rectangle to draw. </param>
         /// <param name="height">The height of the rectangle to draw. </param>
-        public void DrawRectangle(IPen pen, float x, float y, float width, float height)
+        public void DrawRectangle(IPen pen, double x, double y, double width, double height)
         {
             _g.DrawRectangle(((PenAdapter)pen).Pen, x, y, width, height);
         }
@@ -272,7 +272,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to fill. </param>
         /// <param name="width">Width of the rectangle to fill. </param>
         /// <param name="height">Height of the rectangle to fill. </param>
-        public void DrawRectangle(IBrush brush, float x, float y, float width, float height)
+        public void DrawRectangle(IBrush brush, double x, double y, double width, double height)
         {
             _g.DrawRectangle(((BrushAdapter)brush).Brush, x, y, width, height);
         }

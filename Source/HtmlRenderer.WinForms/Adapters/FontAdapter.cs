@@ -46,7 +46,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Cached font whitespace width.
         /// </summary>
-        private float _whitespaceWidth = -1;
+        private double _whitespaceWidth = -1;
 
 
         #endregion
@@ -84,7 +84,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Gets the em-size of this Font measured in the units specified by the Unit property.
         /// </summary>
-        public float Size
+        public double Size
         {
             get { return _font.Size; }
         }
@@ -92,7 +92,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Gets the em-size, in points, of this Font.
         /// </summary>
-        public float SizeInPoints
+        public double SizeInPoints
         {
             get { return _font.SizeInPoints; }
         }
@@ -100,7 +100,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Get the vertical offset of the font underline location from the top of the font.
         /// </summary>
-        public float UnderlineOffset
+        public double UnderlineOffset
         {
             get { return _underlineOffset; }
         }
@@ -108,7 +108,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// The line spacing, in pixels, of this font.
         /// </summary>
-        public float Height
+        public double Height
         {
             get { return _height; }
         }
@@ -116,13 +116,13 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Get the left padding, in pixels, of the font.
         /// </summary>
-        public float LeftPadding
+        public double LeftPadding
         {
             get { return _height / 6f; }
         }
 
 
-        public float GetWhitespaceWidth(IGraphics graphics)
+        public double GetWhitespaceWidth(IGraphics graphics)
         {
             if( _whitespaceWidth < 0 )
             {

@@ -84,11 +84,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Get the height of this box line (the max height of all the words)
         /// </summary>
-        public float LineHeight
+        public double LineHeight
         {
             get
             {
-                float height = 0;
+                double height = 0;
                 foreach (var rect in _rects)
                 {
                     height = Math.Max(height, rect.Value.Height);
@@ -100,11 +100,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Get the bottom of this box line (the max bottom of all the words)
         /// </summary>
-        public float LineBottom
+        public double LineBottom
         {
             get
             {
-                float bottom = 0;
+                double bottom = 0;
                 foreach (var rect in _rects)
                 {
                     bottom = Math.Max(bottom, rect.Value.Bottom);
@@ -153,12 +153,12 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="y"></param>
         /// <param name="r"></param>
         /// <param name="b"></param>
-        internal void UpdateRectangle(CssBox box, float x, float y, float r, float b)
+        internal void UpdateRectangle(CssBox box, double x, double y, double r, double b)
         {
-            float leftspacing = box.ActualBorderLeftWidth + box.ActualPaddingLeft;
-            float rightspacing = box.ActualBorderRightWidth + box.ActualPaddingRight;
-            float topspacing = box.ActualBorderTopWidth + box.ActualPaddingTop;
-            float bottomspacing = box.ActualBorderBottomWidth + box.ActualPaddingTop;
+            double leftspacing = box.ActualBorderLeftWidth + box.ActualPaddingLeft;
+            double rightspacing = box.ActualBorderRightWidth + box.ActualPaddingRight;
+            double topspacing = box.ActualBorderTopWidth + box.ActualPaddingTop;
+            double bottomspacing = box.ActualBorderBottomWidth + box.ActualPaddingTop;
 
             if ((box.FirstHostingLineBox != null && box.FirstHostingLineBox.Equals(this)) || box.IsImage) x -= leftspacing;
             if ((box.LastHostingLineBox != null && box.LastHostingLineBox.Equals(this)) || box.IsImage) r += rightspacing;
@@ -205,7 +205,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="g">Device info</param>
         /// <param name="b">box to check words</param>
         /// <param name="baseline">baseline</param>
-        internal void SetBaseLine(IGraphics g, CssBox b, float baseline)
+        internal void SetBaseLine(IGraphics g, CssBox b, double baseline)
         {
             //TODO: Aqui me quede, checar poniendo "by the" con un font-size de 3em
             List<CssRect> ws = WordsOf(b);
@@ -215,7 +215,7 @@ namespace HtmlRenderer.Core.Dom
             RRect r = Rectangles[b];
 
             //Save top of words related to the top of rectangle
-            float gap = 0f;
+            double gap = 0f;
 
             if (ws.Count > 0)
             {
@@ -233,14 +233,14 @@ namespace HtmlRenderer.Core.Dom
 
             //New top that words will have
             //float newtop = baseline - (Height - OwnerBox.FontDescent - 3); //OLD
-            float newtop = baseline;// -GetBaseLineHeight(b, g); //OLD
+            double newtop = baseline;// -GetBaseLineHeight(b, g); //OLD
 
             if (b.ParentBox != null &&
                 b.ParentBox.Rectangles.ContainsKey(this) &&
                 r.Height < b.ParentBox.Rectangles[this].Height)
             {
                 //Do this only if rectangle is shorter than parent's
-                float recttop = newtop - gap;
+                double recttop = newtop - gap;
                 RRect newr = new RRect(r.X, recttop, r.Width, r.Height);
                 Rectangles[b] = newr;
                 b.OffsetRectangle(this, gap);

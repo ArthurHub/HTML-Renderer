@@ -83,7 +83,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <returns>the top-left location</returns>
         private static RPoint GetLocation(string backgroundPosition, RRect rectangle, RSize imgSize)
         {
-            float left = rectangle.Left;
+            double left = rectangle.Left;
             if( backgroundPosition.IndexOf("left", StringComparison.OrdinalIgnoreCase) > -1 )
             {
                 left = (rectangle.Left + .5f);
@@ -97,7 +97,7 @@ namespace HtmlRenderer.Core.Handlers
                 left = (rectangle.Left + (rectangle.Width - imgSize.Width) / 2 +.5f);
             }
 
-            float top = rectangle.Top;
+            double top = rectangle.Top;
             if (backgroundPosition.IndexOf("top", StringComparison.OrdinalIgnoreCase) > -1)
             {
                 top = rectangle.Top;

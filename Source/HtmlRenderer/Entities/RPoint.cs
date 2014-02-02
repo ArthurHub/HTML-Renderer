@@ -25,8 +25,8 @@ namespace HtmlRenderer.Entities
         /// <filterpriority>1</filterpriority>
         public static readonly RPoint Empty = new RPoint();
 
-        private float _x;
-        private float _y;
+        private double _x;
+        private double _y;
 
         static RPoint()
         {}
@@ -36,7 +36,7 @@ namespace HtmlRenderer.Entities
         /// </summary>
         /// <param name="x">The horizontal position of the point. </param>
         /// <param name="y">The vertical position of the point. </param>
-        public RPoint(float x, float y)
+        public RPoint(double x, double y)
         {
             _x = x;
             _y = y;
@@ -70,7 +70,7 @@ namespace HtmlRenderer.Entities
         ///     The x-coordinate of this <see cref="RPoint" />.
         /// </returns>
         /// <filterpriority>1</filterpriority>
-        public float X
+        public double X
         {
             get { return _x; }
             set { _x = value; }
@@ -83,7 +83,7 @@ namespace HtmlRenderer.Entities
         ///     The y-coordinate of this <see cref="RPoint" />.
         /// </returns>
         /// <filterpriority>1</filterpriority>
-        public float Y
+        public double Y
         {
             get { return _y; }
             set { _y = value; }

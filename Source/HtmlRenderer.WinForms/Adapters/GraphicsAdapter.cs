@@ -28,12 +28,12 @@ namespace HtmlRenderer.WinForms.Adapters
         #region Fields and Consts
 
         /// <summary>
-        /// used for <see cref="MeasureString(string,IFont,float,out int,out int)"/> calculation.
+        /// used for <see cref="MeasureString(string,IFont,double,out int,out int)"/> calculation.
         /// </summary>
         private static readonly int[] _charFit = new int[1];
 
         /// <summary>
-        /// used for <see cref="MeasureString(string,IFont,float,out int,out int)"/> calculation.
+        /// used for <see cref="MeasureString(string,IFont,double,out int,out int)"/> calculation.
         /// </summary>
         private static readonly int[] _charFitWidth = new int[1000];
 
@@ -216,7 +216,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
         /// <param name="charFitWidth"></param>
         /// <returns>the size of the string</returns>
-        public RSize MeasureString(string str, IFont font, float maxWidth, out int charFit, out int charFitWidth)
+        public RSize MeasureString(string str, IFont font, double maxWidth, out int charFit, out int charFitWidth)
         {
             if( _useGdiPlusTextRendering )
             {
@@ -252,7 +252,7 @@ namespace HtmlRenderer.WinForms.Adapters
             {
                 ReleaseHdc();
                 var brush = ((BrushAdapter)CacheUtils.GetSolidBrush(color)).Brush;
-                _g.DrawString(str, ((FontAdapter)font).Font, brush, point.X - font.LeftPadding*.8f, point.Y);
+                _g.DrawString(str, ((FontAdapter)font).Font, brush, (float)(point.X - font.LeftPadding * .8d), (float)point.Y);
             }
             else
             {
@@ -299,9 +299,9 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="color2">the end color of the gradient</param>
         /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
         /// <returns>linear gradient color brush instance</returns>
-        public IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, float angle)
+        public IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
         {
-            return new BrushAdapter(new LinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), angle), true);
+            return new BrushAdapter(new LinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), (float)angle), true);
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace HtmlRenderer.WinForms.Adapters
         public IBrush GetTextureBrush(IImage image, RRect dstRect, RPoint translateTransformLocation)
         {
             var brush = new TextureBrush(((ImageAdapter)image).Image, Utils.Convert(dstRect));
-            brush.TranslateTransform(translateTransformLocation.X, translateTransformLocation.Y);
+            brush.TranslateTransform((float)translateTransformLocation.X, (float)translateTransformLocation.Y);
             return new BrushAdapter(brush, true);
         }
 
@@ -346,10 +346,10 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="x1">The x-coordinate of the first point. </param><param name="y1">The y-coordinate of the first point. </param>
         /// <param name="x2">The x-coordinate of the second point. </param><param name="y2">The y-coordinate of the second point. </param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
-        public void DrawLine(IPen pen, float x1, float y1, float x2, float y2)
+        public void DrawLine(IPen pen, double x1, double y1, double x2, double y2)
         {
             ReleaseHdc();
-            _g.DrawLine(((PenAdapter)pen).Pen, x1, y1, x2, y2);
+            _g.DrawLine(((PenAdapter)pen).Pen, (float)x1, (float)y1, (float)x2, (float)y2);
         }
 
         /// <summary>
@@ -360,10 +360,10 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param>
         /// <param name="width">The width of the rectangle to draw. </param>
         /// <param name="height">The height of the rectangle to draw. </param>
-        public void DrawRectangle(IPen pen, float x, float y, float width, float height)
+        public void DrawRectangle(IPen pen, double x, double y, double width, double height)
         {
             ReleaseHdc();
-            _g.DrawRectangle(((PenAdapter)pen).Pen, x, y, width, height);
+            _g.DrawRectangle(((PenAdapter)pen).Pen, (float)x, (float)y, (float)width, (float)height);
         }
 
         /// <summary>
@@ -374,10 +374,10 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to fill. </param>
         /// <param name="width">Width of the rectangle to fill. </param>
         /// <param name="height">Height of the rectangle to fill. </param>
-        public void DrawRectangle(IBrush brush, float x, float y, float width, float height)
+        public void DrawRectangle(IBrush brush, double x, double y, double width, double height)
         {
             ReleaseHdc();
-            _g.FillRectangle(((BrushAdapter)brush).Brush, x, y, width, height);
+            _g.FillRectangle(((BrushAdapter)brush).Brush, (float)x, (float)y, (float)width, (float)height);
         }
 
         /// <summary>

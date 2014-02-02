@@ -46,10 +46,10 @@ namespace HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Check if the given substring is a valid float number.
+        /// Check if the given substring is a valid double number.
         /// Assume given substring is not empty and all indexes are valid!<br/>
         /// </summary>
-        /// <returns>true - valid float number, false - otherwise</returns>
+        /// <returns>true - valid double number, false - otherwise</returns>
         public static bool IsFloat(string str, int idx, int length)
         {
             if (length < 1)
@@ -73,7 +73,7 @@ namespace HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Check if the given substring is a valid float number.
+        /// Check if the given substring is a valid double number.
         /// Assume given substring is not empty and all indexes are valid!<br/>
         /// </summary>
         /// <returns>true - valid int number, false - otherwise</returns>
@@ -108,8 +108,8 @@ namespace HtmlRenderer.Core.Parse
                 {
                     number = value.Substring(0, value.Length - 2);
                 }
-                float stub;
-                return float.TryParse(number, out stub);
+                double stub;
+                return double.TryParse(number, out stub);
             }
             return false;
         }
@@ -120,7 +120,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="number">Number to be parsed</param>
         /// <param name="hundredPercent">Number that represents the 100% if parsed number is a percentage</param>
         /// <returns>Parsed number. Zero if error while parsing.</returns>
-        public static float ParseNumber(string number, float hundredPercent)
+        public static double ParseNumber(string number, double hundredPercent)
         {
             if (string.IsNullOrEmpty(number))
             {
@@ -129,11 +129,11 @@ namespace HtmlRenderer.Core.Parse
 
             string toParse = number;
             bool isPercent = number.EndsWith("%");
-            float result;
+            double result;
 
             if (isPercent) toParse = number.Substring(0, number.Length - 1);
 
-            if (!float.TryParse(toParse, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out result))
+            if (!double.TryParse(toParse, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out result))
             {
                 return 0f;
             }
@@ -154,7 +154,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="fontAdjust">if the length is in pixels and the length is font related it needs to use 72/96 factor</param>
         /// <param name="box"></param>
         /// <returns>the parsed length value with adjustments</returns>
-        public static float ParseLength(string length, float hundredPercent, CssBoxProperties box, bool fontAdjust = false)
+        public static double ParseLength(string length, double hundredPercent, CssBoxProperties box, bool fontAdjust = false)
         {
             return ParseLength(length, hundredPercent, box.GetEmHeight(), null, fontAdjust, false);
         }
@@ -167,7 +167,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="box"></param>
         /// <param name="defaultUnit"></param>
         /// <returns>the parsed length value with adjustments</returns>
-        public static float ParseLength(string length, float hundredPercent, CssBoxProperties box, string defaultUnit)
+        public static double ParseLength(string length, double hundredPercent, CssBoxProperties box, string defaultUnit)
         {
             return ParseLength(length, hundredPercent, box.GetEmHeight(), defaultUnit, false, false);
         }
@@ -180,9 +180,9 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="emFactor"></param>
         /// <param name="defaultUnit"></param>
         /// <param name="fontAdjust">if the length is in pixels and the length is font related it needs to use 72/96 factor</param>
-        /// <param name="returnPoints">Allows the return float to be in points. If false, result will be pixels</param>
+        /// <param name="returnPoints">Allows the return double to be in points. If false, result will be pixels</param>
         /// <returns>the parsed length value with adjustments</returns>
-        public static float ParseLength(string length, float hundredPercent, float emFactor, string defaultUnit, bool fontAdjust, bool returnPoints)
+        public static double ParseLength(string length, double hundredPercent, double emFactor, string defaultUnit, bool fontAdjust, bool returnPoints)
         {
             //Return zero if no length specified, zero specified
             if (string.IsNullOrEmpty(length) || length == "0") return 0f;
@@ -195,7 +195,7 @@ namespace HtmlRenderer.Core.Parse
             string unit = GetUnit(length, defaultUnit, out hasUnit);
 
             //Factor will depend on the unit
-            float factor;
+            double factor;
 
             //Number of the length
             string number = hasUnit ? length.Substring(0, length.Length - 2) : length;
@@ -334,7 +334,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="borderValue"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static float GetActualBorderWidth(string borderValue, CssBoxProperties b)
+        public static double GetActualBorderWidth(string borderValue, CssBoxProperties b)
         {
             if (string.IsNullOrEmpty(borderValue))
             {

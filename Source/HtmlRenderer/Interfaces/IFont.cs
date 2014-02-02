@@ -20,28 +20,28 @@ namespace HtmlRenderer.Interfaces
         /// <summary>
         /// Gets the em-size of this Font measured in the units specified by the Unit property.
         /// </summary>
-        float Size { get; }
+        double Size { get; }
 
         /// <summary>
         /// Gets the em-size, in points, of this Font.
         /// </summary>
-        float SizeInPoints { get; }
+        double SizeInPoints { get; }
 
         /// <summary>
         /// The line spacing, in pixels, of this font.
         /// </summary>
-        float Height { get; }
+        double Height { get; }
 
         /// <summary>
         /// Get the vertical offset of the font underline location from the top of the font.
         /// </summary>
-        float UnderlineOffset { get; }
+        double UnderlineOffset { get; }
 
         /// <summary>
         /// Get the left padding, in pixels, of the font.
         /// </summary>
-        float LeftPadding { get; }
+        double LeftPadding { get; }
 
-        float GetWhitespaceWidth(IGraphics graphics);
+        double GetWhitespaceWidth(IGraphics graphics);
     }
 }

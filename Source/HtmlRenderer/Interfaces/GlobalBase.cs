@@ -129,7 +129,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="size">font size</param>
         /// <param name="style">font style</param>
         /// <returns>font instance</returns>
-        public IFont GetFont(string family, float size, RFontStyle style)
+        public IFont GetFont(string family, double size, RFontStyle style)
         {
             return _fontHandler.GetCachedFont(family, size, style);
         }
@@ -218,7 +218,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="size">font size</param>
         /// <param name="style">font style</param>
         /// <returns>font instance</returns>
-        protected internal abstract IFont CreateFont(string family, float size, RFontStyle style);
+        protected internal abstract IFont CreateFont(string family, double size, RFontStyle style);
 
         /// <summary>
         /// Get font instance by given font family instance, size and style.<br/>
@@ -228,6 +228,6 @@ namespace HtmlRenderer.Interfaces
         /// <param name="size">font size</param>
         /// <param name="style">font style</param>
         /// <returns>font instance</returns>
-        protected internal abstract IFont CreateFont(IFontFamily family, float size, RFontStyle style);
+        protected internal abstract IFont CreateFont(IFontFamily family, double size, RFontStyle style);
     }
 }

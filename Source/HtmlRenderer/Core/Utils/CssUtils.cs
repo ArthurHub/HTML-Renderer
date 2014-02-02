@@ -47,9 +47,9 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="g"></param>
         /// <param name="box"></param>
         /// <returns></returns>
-        public static float WhiteSpace(IGraphics g, CssBoxProperties box)
+        public static double WhiteSpace(IGraphics g, CssBoxProperties box)
         {
-            float w = box.ActualFont.GetWhitespaceWidth(g);
+            double w = box.ActualFont.GetWhitespaceWidth(g);
             if (!(String.IsNullOrEmpty(box.WordSpacing) || box.WordSpacing == CssConstants.Normal))
             {
                 w += CssValueParser.ParseLength(box.WordSpacing, 0, box, true);

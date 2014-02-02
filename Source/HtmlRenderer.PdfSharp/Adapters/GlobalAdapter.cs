@@ -94,7 +94,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="size">font size</param>
         /// <param name="style">font style</param>
         /// <returns>font instance</returns>
-        protected override IFont CreateFont(string family, float size, RFontStyle style)
+        protected override IFont CreateFont(string family, double size, RFontStyle style)
         {
             var fontStyle = (XFontStyle)((int)style);
             return new FontAdapter(new XFont(family, size, fontStyle));
@@ -108,7 +108,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="size">font size</param>
         /// <param name="style">font style</param>
         /// <returns>font instance</returns>
-        protected override IFont CreateFont(IFontFamily family, float size, RFontStyle style)
+        protected override IFont CreateFont(IFontFamily family, double size, RFontStyle style)
         {
             var fontStyle = (XFontStyle)((int)style);
             return new FontAdapter(new XFont(((FontFamilyAdapter)family).FontFamily.Name, size, fontStyle));

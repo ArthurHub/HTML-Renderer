@@ -45,10 +45,10 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Gets or sets the width of this Pen, in units of the Graphics object used for drawing.
         /// </summary>
-        public float Width
+        public double Width
         {
             get { return _pen.Width; }
-            set { _pen.Width = value; }
+            set { _pen.Width = (float)value; }
         }
 
         /// <summary>
@@ -88,9 +88,15 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Gets or sets an array of custom dashes and spaces.
         /// </summary>
-        public float[] DashPattern
+        public double[] DashPattern
         {
-            set { _pen.DashPattern = value; }
+            set
+            {
+                var fValues = new float[value.Length];
+                for (int i = 0; i < value.Length; i++)
+                    fValues[i] = (float)value[i];
+                _pen.DashPattern = fValues;
+            }
         }
     }
 }

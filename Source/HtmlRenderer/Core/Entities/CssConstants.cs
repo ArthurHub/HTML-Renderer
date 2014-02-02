@@ -157,7 +157,7 @@ namespace HtmlRenderer.Core.Entities
         /// <summary>
         /// Default font size in points. Change this value to modify the default font size.
         /// </summary>
-        public const float FontSize = 11f;
+        public const double FontSize = 11f;
 
         /// <summary>
         /// Default font used for the generic 'serif' family

@@ -576,7 +576,7 @@ namespace HtmlRenderer.Core.Dom
                 // Because their width and height are set by CssTable
                 if( Display != CssConstants.TableCell && Display != CssConstants.Table )
                 {
-                    float width = ContainingBlock.Size.Width
+                    double width = ContainingBlock.Size.Width
                                   - ContainingBlock.ActualPaddingLeft - ContainingBlock.ActualPaddingRight
                                   - ContainingBlock.ActualBorderLeftWidth - ContainingBlock.ActualBorderRightWidth;
 
@@ -594,8 +594,8 @@ namespace HtmlRenderer.Core.Dom
                 if( Display != CssConstants.TableCell )
                 {
                     var prevSibling = DomUtils.GetPreviousSibling(this);
-                    float left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
-                    float top = ( prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0 ) + MarginTopCollapse(prevSibling) + ( prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0 );
+                    double left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
+                    double top = ( prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0 ) + MarginTopCollapse(prevSibling) + ( prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0 );
                     Location = new RPoint(left, top);
                     ActualBottom = top;
                 }
@@ -834,13 +834,13 @@ namespace HtmlRenderer.Core.Dom
         /// The check is deep thru box tree.<br/>
         /// </summary>
         /// <returns>the min width of the box</returns>
-        internal float GetMinimumWidth()
+        internal double GetMinimumWidth()
         {
-            float maxWidth = 0;
+            double maxWidth = 0;
             CssRect maxWidthWord = null;
             GetMinimumWidth_LongestWord(this, ref maxWidth, ref maxWidthWord);
 
-            float padding = 0f;
+            double padding = 0f;
             if (maxWidthWord != null)
             {
                 var box = maxWidthWord.OwnerBox;
@@ -861,7 +861,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="maxWidth"> </param>
         /// <param name="maxWidthWord"> </param>
         /// <returns></returns>
-        private static void GetMinimumWidth_LongestWord(CssBox box, ref float maxWidth, ref CssRect maxWidthWord)
+        private static void GetMinimumWidth_LongestWord(CssBox box, ref double maxWidth, ref CssRect maxWidthWord)
         {
             if (box.Words.Count > 0)
             {
@@ -886,9 +886,9 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="box">the box to start calculation from.</param>
         /// <returns>the total margin</returns>
-        private static float GetWidthMarginDeep(CssBox box)
+        private static double GetWidthMarginDeep(CssBox box)
         {
-            float sum = 0f;
+            double sum = 0f;
             if (box.Size.Width > 90999 || (box.ParentBox != null && box.ParentBox.Size.Width > 90999))
             {
                 while (box != null)
@@ -906,7 +906,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="startBox"></param>
         /// <param name="currentMaxBottom"></param>
         /// <returns></returns>
-        internal float GetMaximumBottom(CssBox startBox, float currentMaxBottom)
+        internal double GetMaximumBottom(CssBox startBox, double currentMaxBottom)
         {
             foreach (var line in startBox.Rectangles.Keys)
             {
@@ -926,12 +926,12 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="minWidth">The minimum width the content must be so it won't overflow (largest word + padding).</param>
         /// <param name="maxWidth">The total width the content can take without line wrapping (with padding).</param>
-        internal void GetMinMaxWidth(out float minWidth, out float maxWidth)
+        internal void GetMinMaxWidth(out double minWidth, out double maxWidth)
         {
-            float min = 0f;
-            float maxSum = 0f;
-            float paddingSum = 0f;
-            float marginSum = 0f;
+            double min = 0f;
+            double maxSum = 0f;
+            double paddingSum = 0f;
+            double marginSum = 0f;
             GetMinMaxSumWords(this, ref min, ref maxSum, ref paddingSum, ref marginSum);
 
             maxWidth = paddingSum + maxSum;
@@ -947,9 +947,9 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="paddingSum">the total amount of padding the content has </param>
         /// <param name="marginSum"></param>
         /// <returns></returns>
-        private static void GetMinMaxSumWords(CssBox box, ref float min, ref float maxSum, ref float paddingSum, ref float marginSum)
+        private static void GetMinMaxSumWords(CssBox box, ref double min, ref double maxSum, ref double paddingSum, ref double marginSum)
         {
-            float? oldSum = null;
+            double? oldSum = null;
             
             // not inline (block) boxes start a new line so we need to reset the max sum
             if (box.Display != CssConstants.Inline && box.Display != CssConstants.TableCell && box.WhiteSpace != CssConstants.NoWrap)
@@ -1031,9 +1031,9 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="prevSibling">the previous box under the same parent</param>
         /// <returns>Resulting top margin</returns>
-        protected float MarginTopCollapse(CssBoxProperties prevSibling)
+        protected double MarginTopCollapse(CssBoxProperties prevSibling)
         {
-            float value;
+            double value;
             if (prevSibling != null)
             {
                 value = Math.Max(prevSibling.ActualMarginBottom, ActualMarginTop);
@@ -1061,11 +1061,11 @@ namespace HtmlRenderer.Core.Dom
         /// Calculate the actual right of the box by the actual right of the child boxes if this box actual right is not set.
         /// </summary>
         /// <returns>the calculated actual right value</returns>
-        private float CalculateActualRight()
+        private double CalculateActualRight()
         {
             if (ActualRight > 90999)
             {
-                var maxRight = 0f;
+                var maxRight = 0d;
                 foreach (var box in Boxes)
                 {
                     maxRight = Math.Max(maxRight, box.ActualRight + box.ActualMarginRight);
@@ -1082,9 +1082,9 @@ namespace HtmlRenderer.Core.Dom
         /// Gets the result of collapsing the vertical margins of the two boxes
         /// </summary>
         /// <returns>Resulting bottom margin</returns>
-        private float MarginBottomCollapse()
+        private double MarginBottomCollapse()
         {
-            float margin = 0;
+            double margin = 0;
             if (ParentBox != null && ParentBox.Boxes.IndexOf(this) == ParentBox.Boxes.Count - 1 && _parentBox.ActualMarginBottom < 0.1)
             {
                 var lastChildBottomMargin = _boxes[_boxes.Count - 1].ActualMarginBottom;
@@ -1097,7 +1097,7 @@ namespace HtmlRenderer.Core.Dom
         /// Deeply offsets the top of the box and its contents
         /// </summary>
         /// <param name="amount"></param>
-        internal void OffsetTop(float amount)
+        internal void OffsetTop(double amount)
         {
             List<CssLineBox> lines = new List<CssLineBox>();
             foreach (CssLineBox line in Rectangles.Keys)
@@ -1225,7 +1225,7 @@ namespace HtmlRenderer.Core.Dom
                     }
                     else
                     {
-                        g.DrawRectangle(brush, (float)Math.Ceiling(rect.X), (float)Math.Ceiling(rect.Y), rect.Width, rect.Height);
+                        g.DrawRectangle(brush, (double)Math.Ceiling(rect.X), (double)Math.Ceiling(rect.Y), rect.Width, rect.Height);
                     }
 
                     g.ReturnPreviousSmoothingMode(prevMode);
@@ -1296,10 +1296,10 @@ namespace HtmlRenderer.Core.Dom
             if (string.IsNullOrEmpty(TextDecoration) || TextDecoration == CssConstants.None)
                 return;
 
-            float y = 0f;
+            double y = 0f;
             if (TextDecoration == CssConstants.Underline)
             {
-                y = (float)Math.Round(rectangle.Top + ActualFont.UnderlineOffset);
+                y = (double)Math.Round(rectangle.Top + ActualFont.UnderlineOffset);
             }
             else if (TextDecoration == CssConstants.LineThrough)
             {
@@ -1311,11 +1311,11 @@ namespace HtmlRenderer.Core.Dom
             }
             y -= ActualPaddingBottom - ActualBorderBottomWidth;
 
-            float x1 = rectangle.X;
+            double x1 = rectangle.X;
             if (isFirst)
                 x1 += ActualPaddingLeft + ActualBorderLeftWidth;
 
-            float x2 = rectangle.Right;
+            double x2 = rectangle.Right;
             if (isLast)
                 x2 -= ActualPaddingRight + ActualBorderRightWidth;
 
@@ -1329,7 +1329,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="lineBox"></param>
         /// <param name="gap"></param>
-        internal void OffsetRectangle(CssLineBox lineBox, float gap)
+        internal void OffsetRectangle(CssLineBox lineBox, double gap)
         {
             if (Rectangles.ContainsKey(lineBox))
             {
@@ -1387,7 +1387,7 @@ namespace HtmlRenderer.Core.Dom
             }
         }
 
-        protected override IFont GetCachedFont(string fontFamily, float fsize, RFontStyle st)
+        protected override IFont GetCachedFont(string fontFamily, double fsize, RFontStyle st)
         {
             return HtmlContainer.Global.GetFont(fontFamily, fsize, st);
         }

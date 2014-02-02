@@ -45,7 +45,7 @@ namespace HtmlRenderer.WinForms.Utilities
         /// </summary>
         public static PointF Convert(RPoint p)
         {
-            return new PointF(p.X, p.Y);
+            return new PointF((float)p.X, (float)p.Y);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace HtmlRenderer.WinForms.Utilities
         /// </summary>
         public static SizeF Convert(RSize s)
         {
-            return new SizeF(s.Width, s.Height);
+            return new SizeF((float)s.Width, (float)s.Height);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace HtmlRenderer.WinForms.Utilities
         /// </summary>
         public static RectangleF Convert(RRect r)
         {
-            return new RectangleF(r.X, r.Y, r.Width, r.Height);
+            return new RectangleF((float)r.X, (float)r.Y, (float)r.Width, (float)r.Height);
         }
 
         /// <summary>

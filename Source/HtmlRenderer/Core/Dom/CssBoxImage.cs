@@ -90,8 +90,8 @@ namespace HtmlRenderer.Core.Dom
             r.Offset(offset);
             r.Height -= ActualBorderTopWidth + ActualBorderBottomWidth + ActualPaddingTop + ActualPaddingBottom;
             r.Y += ActualBorderTopWidth + ActualPaddingTop;
-            r.X = (float) Math.Floor(r.X);
-            r.Y = (float)Math.Floor(r.Y);
+            r.X = (double) Math.Floor(r.X);
+            r.Y = (double)Math.Floor(r.Y);
             
             if (_imageWord.Image != null)
             {
