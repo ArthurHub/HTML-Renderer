@@ -181,11 +181,11 @@ namespace HtmlRenderer
             if( _useGdiPlusTextRendering )
             {
                 ReleaseHdc();
-                _g.DrawString(str, font, RenderUtils.GetSolidBrush(color), point.X - FontsUtils.GetFontLeftPadding(font)*.8f, point.Y);
+                _g.DrawString(str, font, RenderUtils.GetSolidBrush(color), (int)Math.Round(point.X - FontsUtils.GetFontLeftPadding(font)*.8f), (int)Math.Round(point.Y));
             }
             else
             {
-                if (color.A == 255)
+                if( color.A == 255 )
                 {
                     SetFont(font);
                     SetTextColor(color);
