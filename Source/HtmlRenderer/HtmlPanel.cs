@@ -258,6 +258,18 @@ namespace HtmlRenderer
         }
 
         /// <summary>
+        /// Get the rectangle of html element as calculated by html layout.<br/>
+        /// Element if found by id (id attribute on the html element).<br/>
+        /// Note: to get the screen rectangle you need to adjust by the hosting control.<br/>
+        /// </summary>
+        /// <param name="elementId">the id of the element to get its rectangle</param>
+        /// <returns>the rectangle of the element or null if not found</returns>
+        public RectangleF? GetElementRectangle(string elementId)
+        {
+            return _htmlContainer != null ? _htmlContainer.GetElementRectangle(elementId) : null;
+        }
+
+        /// <summary>
         /// Adjust the scrollbar of the panel on html element by the given id.<br/>
         /// The top of the html element rectangle will be at the top of the panel, if there
         /// is not enough height to scroll to the top the scroll will be at maximum.<br/>

@@ -310,6 +310,18 @@ namespace HtmlRenderer
             return _htmlContainer != null ? _htmlContainer.GetHtml() : null;
         }
 
+        /// <summary>
+        /// Get the rectangle of html element as calculated by html layout.<br/>
+        /// Element if found by id (id attribute on the html element).<br/>
+        /// Note: to get the screen rectangle you need to adjust by the hosting control.<br/>
+        /// </summary>
+        /// <param name="elementId">the id of the element to get its rectangle</param>
+        /// <returns>the rectangle of the element or null if not found</returns>
+        public RectangleF? GetElementRectangle(string elementId)
+        {
+            return _htmlContainer != null ? _htmlContainer.GetElementRectangle(elementId) : null;
+        }
+
 
         #region Private methods
 
