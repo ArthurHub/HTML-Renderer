@@ -74,7 +74,15 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         public override bool IsSpaces
         {
-            get { return string.IsNullOrEmpty(Text.Trim()); }
+            get
+            {
+                foreach(var c in Text)
+                {
+                    if( !char.IsWhiteSpace(c) )
+                        return false;
+                }
+                return true;
+            }
         }
 
         /// <summary>

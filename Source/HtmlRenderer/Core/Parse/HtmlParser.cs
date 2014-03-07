@@ -43,9 +43,18 @@ namespace HtmlRenderer.Core.Parse
 
                     if (source[tagIdx + 1] == '!')
                     {
-                        // skip the html crap elements (<!-- bla -->) (<!crap bla>)
-                        startIdx = source.IndexOf(">", tagIdx + 2);
-                        endIdx = startIdx > 0 ? startIdx + 1 : tagIdx + 2;
+                        if( source[tagIdx + 2] == '-' )
+                        {
+                            // skip the html comment elements (<!-- bla -->)
+                            startIdx = source.IndexOf("-->", tagIdx + 2);
+                            endIdx = startIdx > 0 ? startIdx + 3 : tagIdx + 2;
+                        }
+                        else
+                        {
+                            // skip the html crap elements (<!crap bla>)
+                            startIdx = source.IndexOf(">", tagIdx + 2);
+                            endIdx = startIdx > 0 ? startIdx + 1 : tagIdx + 2;
+                        }
                     }
                     else
                     {

@@ -153,17 +153,19 @@ namespace HtmlRenderer.Core.Handlers
         private static string CorrectRelativeUrls(string stylesheet, Uri baseUri)
         {
             int idx = 0;
-            while( idx != -1 && idx < stylesheet.Length )
+            while (idx != -1 && idx < stylesheet.Length)
             {
                 idx = stylesheet.IndexOf("url", idx, StringComparison.OrdinalIgnoreCase);
-                if( idx > 0 )
+                if (idx > 0)
                 {
                     int endIdx = stylesheet.IndexOf(")", idx, StringComparison.OrdinalIgnoreCase);
-                    if( endIdx > 0 )
+                    if (endIdx > 0)
                     {
-                        var urlStr = stylesheet.Substring(idx + 4, endIdx - idx - 4);
+                        var offset1 = 4 + (stylesheet[idx + 4] == '\'' ? 1 : 0);
+                        var offset2 = (stylesheet[endIdx - 1] == '\'' ? 1 : 0);
+                        var urlStr = stylesheet.Substring(idx + offset1, endIdx - idx - offset1 - offset2);
                         Uri url;
-                        if( Uri.TryCreate(urlStr, UriKind.Relative, out url) )
+                        if (Uri.TryCreate(urlStr, UriKind.Relative, out url))
                         {
                             url = new Uri(baseUri, url);
                             stylesheet = stylesheet.Remove(idx + 4, endIdx - idx - 4);

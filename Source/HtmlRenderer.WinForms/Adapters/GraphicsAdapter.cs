@@ -252,7 +252,7 @@ namespace HtmlRenderer.WinForms.Adapters
             {
                 ReleaseHdc();
                 var brush = ((BrushAdapter)CacheUtils.GetSolidBrush(color)).Brush;
-                _g.DrawString(str, ((FontAdapter)font).Font, brush, (float)(point.X - font.LeftPadding * .8d), (float)point.Y);
+                _g.DrawString(str, ( (FontAdapter)font ).Font, brush, (int)Math.Round(point.X - font.LeftPadding*.8f), (int)Math.Round(point.Y));
             }
             else
             {

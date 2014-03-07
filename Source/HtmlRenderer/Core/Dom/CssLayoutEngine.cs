@@ -277,7 +277,9 @@ namespace HtmlRenderer.Core.Dom
                         if (maxbottom - cury < box.ActualLineHeight)
                             maxbottom += box.ActualLineHeight - (maxbottom - cury);
 
-                        if ((b.WhiteSpace != CssConstants.NoWrap && b.WhiteSpace != CssConstants.Pre && curx + word.Width + rightspacing > limitRight) || word.IsLineBreak || wrapNoWrapBox)
+                        if ((b.WhiteSpace != CssConstants.NoWrap && b.WhiteSpace != CssConstants.Pre && curx + word.Width + rightspacing > limitRight
+                            && (b.WhiteSpace != CssConstants.PreWrap || !word.IsSpaces)) 
+                            || word.IsLineBreak || wrapNoWrapBox)
                         {
                             wrapNoWrapBox = false;
                             curx = startx;

@@ -482,61 +482,51 @@ namespace HtmlRenderer.Core.Dom
         {
             _boxWords.Clear();
 
-            if (WhiteSpace == CssConstants.Pre)
+            int startIdx = 0;
+            bool preserveSpaces = WhiteSpace == CssConstants.Pre || WhiteSpace == CssConstants.PreWrap;
+            bool respoctNewline = preserveSpaces || WhiteSpace == CssConstants.PreLine;
+            while (startIdx < _text.Length)
             {
-                // pre-formatted text needs to preserve white-spaces splitting by new-line and create a word for the new-lines.
-                int startIdx = 0;
-                while (startIdx < _text.Length)
-                {
-                    while (startIdx < _text.Length && _text[startIdx] == '\r')
-                        startIdx++;
+                while (startIdx < _text.Length && _text[startIdx] == '\r')
+                    startIdx++;
 
+                if (startIdx < _text.Length)
+                {
                     var endIdx = startIdx;
-                    while (endIdx < _text.Length && _text[endIdx] != '\n')
+                    while (endIdx < _text.Length && char.IsWhiteSpace(_text[endIdx]) && _text[endIdx] != '\n')
                         endIdx++;
 
-                    if (startIdx < _text.Length)
+                    if (endIdx > startIdx)
                     {
-                        if (endIdx > startIdx)
-                        {
-                            var word = HtmlUtils.DecodeHtml(_text.Substring(startIdx, endIdx - startIdx));
-                            _boxWords.Add(new CssRectWord(this, word, false, false));
-                        }
+                        if (preserveSpaces)
+                            _boxWords.Add(new CssRectWord(this, HtmlUtils.DecodeHtml(_text.Substring(startIdx, endIdx - startIdx)), false, false));
+                    }
+                    else
+                    {
+                        endIdx = startIdx;
+                        while (endIdx < _text.Length && !char.IsWhiteSpace(_text[endIdx]) && _text[endIdx] != '-' && WordBreak != CssConstants.BreakAll && !CommonUtils.IsAsianCharecter(_text[endIdx]))
+                            endIdx++;
 
-                        // create new-line word so it will effect the layout
-                        if (endIdx < _text.Length)
+                        if (endIdx < _text.Length && (_text[endIdx] == '-' || WordBreak == CssConstants.BreakAll || CommonUtils.IsAsianCharecter(_text[endIdx])))
+                            endIdx++;
+
+                        if( endIdx > startIdx )
+                        {
+                            var hasSpaceBefore = !preserveSpaces && ( startIdx > 0 && _boxWords.Count == 0 && char.IsWhiteSpace(_text[startIdx - 1]) );
+                            var hasSpaceAfter = !preserveSpaces && ( endIdx < _text.Length && char.IsWhiteSpace(_text[endIdx]) );
+                            _boxWords.Add(new CssRectWord(this, HtmlUtils.DecodeHtml(_text.Substring(startIdx, endIdx - startIdx)), hasSpaceBefore, hasSpaceAfter));
+                        }
+                    }
+
+                    // create new-line word so it will effect the layout
+                    if (endIdx < _text.Length && _text[endIdx] == '\n')
+                    {
+                        endIdx++;
+                        if (respoctNewline)
                             _boxWords.Add(new CssRectWord(this, "\n", false, false));
                     }
-                    startIdx = endIdx + 1;
-                }
-            }
-            else
-            {
-                // regular text ignores all white-space characters (including new-lines) and split by them.
-                int startIdx = 0;
-                while (startIdx < _text.Length)
-                {
-                    while (startIdx < _text.Length && char.IsWhiteSpace(_text[startIdx]))
-                        startIdx++;
 
-                    var endIdx = startIdx + 1;
-                    while (endIdx < _text.Length && !char.IsWhiteSpace(_text[endIdx]) && _text[endIdx] != '-' && WordBreak != CssConstants.BreakAll && !CommonUtils.IsAsianCharecter(_text[endIdx]))
-                        endIdx++;
-
-                    int idxInc = 0;
-                    if (endIdx < _text.Length && (_text[endIdx] == '-' || WordBreak == CssConstants.BreakAll || CommonUtils.IsAsianCharecter(_text[endIdx])))
-                        endIdx++;
-                    else
-                        idxInc = 1;
-
-                    if (startIdx < _text.Length)
-                    {
-                        var hasSpaceBefore = startIdx > 0 && _boxWords.Count == 0 && char.IsWhiteSpace(_text[startIdx - 1]);
-                        var hasSpaceAfter = endIdx < _text.Length && char.IsWhiteSpace(_text[endIdx]);
-                        var word = HtmlUtils.DecodeHtml(_text.Substring(startIdx, endIdx - startIdx));
-                        _boxWords.Add(new CssRectWord(this, word, hasSpaceBefore, hasSpaceAfter));
-                    }
-                    startIdx = endIdx + idxInc;
+                    startIdx = endIdx;
                 }
             }
         }

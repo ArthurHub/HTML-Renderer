@@ -554,7 +554,7 @@ namespace HtmlRenderer.Core.Parse
                     var keepBox = !childBox.Text.IsEmptyOrWhitespace();
 
                     // is the box is pre-formatted
-                    keepBox = keepBox || childBox.WhiteSpace == CssConstants.Pre;
+                    keepBox = keepBox || childBox.WhiteSpace == CssConstants.Pre || childBox.WhiteSpace == CssConstants.PreWrap;
 
                     // is the box is only one in the parent
                     keepBox = keepBox || box.Boxes.Count == 1;

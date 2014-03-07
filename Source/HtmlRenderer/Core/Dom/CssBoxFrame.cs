@@ -168,13 +168,17 @@ namespace HtmlRenderer.Core.Dom
         {
             try
             {
-                var idx = e.Result.IndexOf("\"media$title\"", StringComparison.Ordinal);
+                if( !e.Cancelled )
+                {
+                    if( e.Error == null )
+                    {
+                        var idx = e.Result.IndexOf("\"media$title\"", StringComparison.Ordinal);
                 if (idx > -1)
                 {
                     idx = e.Result.IndexOf("\"$t\"", idx);
                     if (idx > -1)
                     {
-                        idx = e.Result.IndexOf('"', idx+4);
+                                idx = e.Result.IndexOf('"', idx + 4);
                         if (idx > -1)
                         {
                             var endIdx = e.Result.IndexOf('"', idx + 1);
@@ -182,7 +186,7 @@ namespace HtmlRenderer.Core.Dom
                                 endIdx = e.Result.IndexOf('"', endIdx + 1);
                             if (endIdx > -1)
                             {
-                                _videoTitle = e.Result.Substring(idx + 1, endIdx - idx - 1).Replace("\\\"","\"");
+                                        _videoTitle = e.Result.Substring(idx + 1, endIdx - idx - 1).Replace("\\\"", "\"");
                             }
                         }
                     }
@@ -226,14 +230,14 @@ namespace HtmlRenderer.Core.Dom
                     if(iidx > -1)
                     {
                         var endIdx = e.Result.IndexOf('"', iidx);
-                        if(endIdx > -1)
+                                if (endIdx > -1)
                         {
                             _videoImageUrl = e.Result.Substring(iidx, endIdx - iidx).Replace("\\\"", "\"").Replace("\\", "");
                         }
                     }
                 }
 
-                idx = e.Result.IndexOf("\"link\"", StringComparison.Ordinal);
+                        idx = e.Result.IndexOf("\"link\"", StringComparison.Ordinal);
                 if (idx > -1)
                 {
                     idx = e.Result.IndexOf("http:", idx);
@@ -247,11 +251,15 @@ namespace HtmlRenderer.Core.Dom
                     }
                 }
             }
+                    else
+                    {
+                        HandleDataLoadFailure(e.Error, "YouTube");
+                    }
+                }
+            }
             catch (Exception ex)
             {
-                _imageLoadingComplete = true;
-                SetErrorBorder();
-                HtmlContainer.ReportError(HtmlRenderErrorType.Iframe, "Failed to parse youtube video response", ex);
+                HtmlContainer.ReportError(HtmlRenderErrorType.Iframe, "Failed to parse YouTube video response", ex);
             }
 
             HandlePostApiCall(sender);
@@ -290,16 +298,20 @@ namespace HtmlRenderer.Core.Dom
         {
             try
             {
-                var idx = e.Result.IndexOf("\"title\"", StringComparison.Ordinal);
-                if (idx > -1)
+                if( !e.Cancelled )
                 {
+                    if( e.Error == null )
+                    {
+                        var idx = e.Result.IndexOf("\"title\"", StringComparison.Ordinal);
+                        if( idx > -1 )
+                        {
                     idx = e.Result.IndexOf('"', idx + 7);
-                    if (idx > -1)
+                            if( idx > -1 )
                     {
                         var endIdx = e.Result.IndexOf('"', idx + 1);
-                        while (e.Result[endIdx - 1] == '\\')
+                                while( e.Result[endIdx - 1] == '\\' )
                             endIdx = e.Result.IndexOf('"', endIdx + 1);
-                        if (endIdx > -1)
+                                if( endIdx > -1 )
                         {
                             _videoTitle = e.Result.Substring(idx + 1, endIdx - idx - 1).Replace("\\\"", "\"");
                         }
@@ -309,31 +321,37 @@ namespace HtmlRenderer.Core.Dom
                 idx = e.Result.IndexOf("\"thumbnail_large\"", StringComparison.Ordinal);
                 if (idx > -1)
                 {
-                    if (string.IsNullOrEmpty(Width)) Width = "640";
-                    if (string.IsNullOrEmpty(Height)) Height = "360";
+                            if( string.IsNullOrEmpty(Width) )
+                                Width = "640";
+                            if( string.IsNullOrEmpty(Height) )
+                                Height = "360";
                 }
                 else
                 {
                     idx = e.Result.IndexOf("thumbnail_medium", idx);
-                    if (idx > -1)
+                            if( idx > -1 )
                     {
-                        if (string.IsNullOrEmpty(Width)) Width = "200";
-                        if (string.IsNullOrEmpty(Height)) Height = "150";
+                                if( string.IsNullOrEmpty(Width) )
+                                    Width = "200";
+                                if( string.IsNullOrEmpty(Height) )
+                                    Height = "150";
                     }
                     else
                     {
                         idx = e.Result.IndexOf("thumbnail_small", idx);
-                        if (string.IsNullOrEmpty(Width)) Width = "100";
-                        if (string.IsNullOrEmpty(Height)) Height = "75";
+                                if( string.IsNullOrEmpty(Width) )
+                                    Width = "100";
+                                if( string.IsNullOrEmpty(Height) )
+                                    Height = "75";
                     }
                 }
-                if(idx > -1)
+                        if( idx > -1 )
                 {
                     idx = e.Result.IndexOf("http:", idx);
-                    if (idx > -1)
+                            if( idx > -1 )
                     {
                         var endIdx = e.Result.IndexOf('"', idx);
-                        if (endIdx > -1)
+                                if( endIdx > -1 )
                         {
                             _videoImageUrl = e.Result.Substring(idx, endIdx - idx).Replace("\\\"", "\"").Replace("\\", "");
                         }
@@ -344,22 +362,47 @@ namespace HtmlRenderer.Core.Dom
                 if (idx > -1)
                 {
                     idx = e.Result.IndexOf("http:", idx);
-                    if (idx > -1)
+                            if( idx > -1 )
                     {
                         var endIdx = e.Result.IndexOf('"', idx);
-                        if (endIdx > -1)
+                                if( endIdx > -1 )
                         {
                             _videoLinkUrl = e.Result.Substring(idx, endIdx - idx).Replace("\\\"", "\"").Replace("\\", "");
                         }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        HandleDataLoadFailure(e.Error, "Vimeo");
                     }
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                HtmlContainer.ReportError(HtmlRenderErrorType.Iframe, "Failed to parse vimeo video response", ex);
+                HtmlContainer.ReportError(HtmlRenderErrorType.Iframe, "Failed to parse Vimeo video response", ex);
             }
 
             HandlePostApiCall(sender);
+        }
+
+        /// <summary>
+        /// Handle error occurred during video data load to handle if the video was not found.
+        /// </summary>
+        /// <param name="ex">the exception that occurred during data load web request</param>
+        /// <param name="source">the name of the video source (YouTube/Vimeo/Etc.)</param>
+        private void HandleDataLoadFailure(Exception ex, string source)
+        {
+            var webError = ex as WebException;
+            var webResponse = webError != null ? webError.Response as HttpWebResponse : null;
+            if( webResponse != null && webResponse.StatusCode == HttpStatusCode.NotFound )
+            {
+                _videoTitle = "The video is not found, possibly removed by the user.";
+            }
+            else
+            {
+                HtmlContainer.ReportError(HtmlRenderErrorType.Iframe, "Failed to load " + source + " video data", ex);
+            }
         }
 
         /// <summary>
