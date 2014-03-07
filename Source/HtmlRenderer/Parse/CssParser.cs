@@ -66,9 +66,6 @@ namespace HtmlRenderer.Parse
         {
             if (!String.IsNullOrEmpty(stylesheet))
             {
-                // Convert everything to lower-case so not to handle case in code
-                stylesheet = stylesheet.ToLower();
-
                 stylesheet = RemoveStylesheetComments(stylesheet);
 
                 ParseStyleBlocks(cssData, stylesheet);
@@ -85,9 +82,6 @@ namespace HtmlRenderer.Parse
         /// <returns>the created CSS block instance</returns>
         public static CssBlock ParseCssBlock(string className, string blockSource)
         {
-            // Convert everything to lower-case so not to handle case in code
-            blockSource = blockSource.ToLower();
-            
             return ParseCssBlockImp(className, blockSource);
         }
 
@@ -199,7 +193,7 @@ namespace HtmlRenderer.Parse
             while ((atrule = RegexParserUtils.GetCssAtRules(stylesheet, ref startIdx)) != null)
             {
                 //Just processs @media rules
-                if (!atrule.StartsWith("@media")) continue;
+                if (!atrule.StartsWith("@media",StringComparison.InvariantCultureIgnoreCase)) continue;
 
                 //Extract specified media types
                 MatchCollection types = RegexParserUtils.Match(RegexParserUtils.CssMediaTypes, atrule);
@@ -208,7 +202,7 @@ namespace HtmlRenderer.Parse
                 {
                     string line = types[0].Value;
 
-                    if (line.StartsWith("@media") && line.EndsWith("{"))
+                    if (line.StartsWith("@media", StringComparison.InvariantCultureIgnoreCase) && line.EndsWith("{"))
                     {
                         //Get specified media types in the at-rule
                         string[] media = line.Substring(6, line.Length - 7).Split(' ');
@@ -272,6 +266,7 @@ namespace HtmlRenderer.Parse
         /// <returns>the created CSS block instance</returns>
         private static CssBlock ParseCssBlockImp(string className, string blockSource)
         {
+            className = className.ToLower();
             string psedoClass = null;
             var colonIdx = className.IndexOf(":", StringComparison.Ordinal);
             if (colonIdx > -1 && !className.StartsWith("::"))
@@ -369,11 +364,13 @@ namespace HtmlRenderer.Parse
                     //Extract property name and value
                     startIdx = startIdx + (blockSource[startIdx] == ' ' ? 1 : 0);
                     var adjEndIdx = endIdx - (blockSource[endIdx] == ' ' || blockSource[endIdx] == ';' ? 1 : 0);
-                    string propName = blockSource.Substring(startIdx, splitIdx - startIdx).Trim();
+                    string propName = blockSource.Substring(startIdx, splitIdx - startIdx).Trim().ToLower();
                     splitIdx = splitIdx + (blockSource[splitIdx + 1] == ' ' ? 2 : 1);
                     if (adjEndIdx >= splitIdx)
                     {
-                        string propValue = blockSource.Substring(splitIdx, adjEndIdx - splitIdx + 1);
+                        string propValue = blockSource.Substring(splitIdx, adjEndIdx - splitIdx + 1).Trim();
+                        if(!propValue.StartsWith("url",StringComparison.InvariantCultureIgnoreCase))
+                            propValue = propValue.ToLower();
                         AddProperty(propName, propValue, properties);
                     }
                 }
@@ -543,7 +540,7 @@ namespace HtmlRenderer.Parse
         /// <returns>parsed value</returns>
         private static string ParseBackgroundImageProperty(string propValue)
         {
-            int startIdx = propValue.IndexOf("url(", StringComparison.Ordinal);
+            int startIdx = propValue.IndexOf("url(", StringComparison.InvariantCultureIgnoreCase);
             if(startIdx > -1)
             {
                 startIdx += 4;
