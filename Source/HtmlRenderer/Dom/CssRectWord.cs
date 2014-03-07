@@ -10,8 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Drawing;
-using HtmlRenderer.Utils;
 
 namespace HtmlRenderer.Dom
 {
@@ -77,7 +75,15 @@ namespace HtmlRenderer.Dom
         /// </summary>
         public override bool IsSpaces
         {
-            get { return string.IsNullOrEmpty(Text.Trim()); }
+            get
+            {
+                foreach(var c in Text)
+                {
+                    if( !char.IsWhiteSpace(c) )
+                        return false;
+                }
+                return true;
+            }
         }
 
         /// <summary>
