@@ -61,13 +61,21 @@ namespace HtmlRenderer.Parse
                     {
                         // parse element tag to css box structure
                         endIdx = ParseHtmlTag(source, tagIdx, ref curBox) + 1;
+
+                        if( curBox.HtmlTag != null && curBox.HtmlTag.Name.Equals(HtmlConstants.Style, StringComparison.OrdinalIgnoreCase) )
+                        {
+                            var endIdxS = endIdx;
+                            endIdx = source.IndexOf("</style>", endIdx, StringComparison.OrdinalIgnoreCase);
+                            if(endIdx > -1)
+                                AddTextBox(source, endIdxS, endIdx, ref curBox);
+                        }
                     }
                 }
                 startIdx = tagIdx > -1 && endIdx > 0 ? endIdx : -1;
             }
 
-            // handle pices of html without proper structure
-            if (endIdx < source.Length)
+            // handle pieces of html without proper structure
+            if (endIdx > -1 && endIdx < source.Length)
             {
                 // there is text after the end of last element
                 var endText = new SubString(source, endIdx, source.Length - endIdx);

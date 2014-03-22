@@ -106,10 +106,11 @@ namespace HtmlRenderer.Parse
                 }
 
                 // Check for the <style> tag
-                if (box.HtmlTag.Name.Equals("style", StringComparison.CurrentCultureIgnoreCase) && box.Boxes.Count == 1)
+                if (box.HtmlTag.Name.Equals("style", StringComparison.CurrentCultureIgnoreCase) && box.Boxes.Count > 0)
                 {
                     CloneCssData(ref cssData, ref cssDataChanged);
-                    CssParser.ParseStyleSheet(cssData, box.Boxes[0].Text.CutSubstring());
+                    foreach (var child in box.Boxes)
+                        CssParser.ParseStyleSheet(cssData, child.Text.CutSubstring());
                 }
 
                 // Check for the <link rel=stylesheet> tag

@@ -31,6 +31,11 @@ namespace HtmlRenderer.Parse
         /// </summary>
         private static readonly char[] _cssBlockSplitters = new[] { '}', ';' };
 
+        /// <summary>
+        /// The chars to trim the css class name by
+        /// </summary>
+        private static readonly char[] _cssClassTrimChars = new[] {'\r', '\n', '\t', ' ', '-', '!', '<', '>'};
+
         #endregion
 
         /// <summary>
@@ -192,7 +197,7 @@ namespace HtmlRenderer.Parse
             string atrule;
             while ((atrule = RegexParserUtils.GetCssAtRules(stylesheet, ref startIdx)) != null)
             {
-                //Just processs @media rules
+                //Just process @media rules
                 if (!atrule.StartsWith("@media",StringComparison.InvariantCultureIgnoreCase)) continue;
 
                 //Extract specified media types
@@ -245,7 +250,7 @@ namespace HtmlRenderer.Parse
 
                 foreach (string cls in classes)
                 {
-                    string className = cls.Trim();
+                    string className = cls.Trim(_cssClassTrimChars);
                     if (!String.IsNullOrEmpty(className))
                     {
                         var newblock = ParseCssBlockImp(className, blockSource);
