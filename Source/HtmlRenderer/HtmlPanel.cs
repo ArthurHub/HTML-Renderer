@@ -76,6 +76,11 @@ namespace HtmlRenderer
         /// </summary>
         private CssData _baseCssData;
 
+        /// <summary>
+        /// the current html text set in the control
+        /// </summary>
+        private string _text;
+
         #endregion
 
 
@@ -216,14 +221,14 @@ namespace HtmlRenderer
         [Description("Sets the html of this control.")]
         public override string Text
         {
-            get { return base.Text; }
+            get { return _text; }
             set
             {
-                base.Text = value;
+                _text = value;
                 if (!IsDisposed)
                 {
                     VerticalScroll.Value = VerticalScroll.Minimum;
-                    _htmlContainer.SetHtml(Text, _baseCssData);
+                    _htmlContainer.SetHtml(_text, _baseCssData);
                     PerformLayout();
                     Invalidate();
                 }

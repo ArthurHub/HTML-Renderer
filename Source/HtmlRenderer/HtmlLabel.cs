@@ -84,6 +84,11 @@ namespace HtmlRenderer
         private CssData _baseCssData;
 
         /// <summary>
+        /// the current html text set in the control
+        /// </summary>
+        private string _text;
+
+        /// <summary>
         /// is to handle auto size of the control height only
         /// </summary>
         private bool _autoSizeHight;
@@ -270,13 +275,13 @@ namespace HtmlRenderer
         [Description("Sets the html of this control.")]
         public override string Text
         {
-            get { return base.Text; }
+            get { return _text; }
             set
             {
-                base.Text = value;
+                _text = value;
                 if (!IsDisposed)
                 {
-                    _htmlContainer.SetHtml(Text, _baseCssData);
+                    _htmlContainer.SetHtml(_text, _baseCssData);
                     PerformLayout();
                     Invalidate();
                 }
