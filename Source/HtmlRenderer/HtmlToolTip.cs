@@ -204,7 +204,8 @@ namespace HtmlRenderer
             }
 
             //Set the size of the tooltip
-            e.ToolTipSize = new Size((int)Math.Ceiling(_htmlContainer.ActualSize.Width), (int)Math.Ceiling(_htmlContainer.ActualSize.Height));
+            e.ToolTipSize = new Size((int)Math.Ceiling(Math.Min(_htmlContainer.ActualSize.Width, MaximumSize.Width)),
+                                     (int)Math.Ceiling(Math.Min(_htmlContainer.ActualSize.Height, MaximumSize.Height)));
             
             // start mouse handle timer
             if( _allowLinksHandling )
