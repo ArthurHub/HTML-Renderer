@@ -21,6 +21,10 @@ namespace HtmlRenderer.Utils
     /// </summary>
     internal static class Win32Utils
     {
+        public const int WS_BORDER = 0x00800000;
+
+        public const int WS_EX_CLIENTEDGE = 0x200;
+
         /// <summary>
         /// Const for BitBlt copy raster-operation code.
         /// </summary>
