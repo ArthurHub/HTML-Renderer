@@ -61,6 +61,8 @@ namespace HtmlRenderer
     {
         #region Fields and Consts
 
+        private BorderStyle _borderStyle;
+
         /// <summary>
         /// 
         /// </summary>
@@ -103,6 +105,12 @@ namespace HtmlRenderer
             _htmlContainer.StylesheetLoad += OnStylesheetLoad;
             _htmlContainer.ImageLoad += OnImageLoad;
         }
+
+        /// <summary>
+        ///   Occurs when the BorderStyle property value changes
+        /// </summary>
+        [Category("Property Changed")]
+        public event EventHandler BorderStyleChanged;
 
         /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
@@ -154,6 +162,76 @@ namespace HtmlRenderer
         {
             get { return _htmlContainer.AvoidImagesLateLoading; }
             set { _htmlContainer.AvoidImagesLateLoading = value; }
+        }
+
+        /// <summary>
+        ///   Gets the required creation parameters when the control handle is created.
+        /// </summary>
+        /// <value>The create params.</value>
+        /// <returns>
+        ///   A <see cref="T:System.Windows.Forms.CreateParams" /> that contains the required creation parameters when the handle to the control is created.
+        /// </returns>
+        protected override CreateParams CreateParams
+        {
+          get
+          {
+            CreateParams createParams;
+
+            createParams = base.CreateParams;
+
+            switch (_borderStyle)
+            {
+              case BorderStyle.FixedSingle:
+                createParams.Style |= Win32Utils.WS_BORDER;
+                break;
+
+              case BorderStyle.Fixed3D:
+                createParams.ExStyle |= Win32Utils.WS_EX_CLIENTEDGE;
+                break;
+            }
+
+            return createParams;
+          }
+        }
+
+        /// <summary>
+        /// Gets or sets the border style.
+        /// </summary>
+        /// <value>The border style.</value>
+        [Category("Appearance")]
+        [DefaultValue(typeof(BorderStyle), "None")]
+        public virtual BorderStyle BorderStyle
+        {
+          get { return _borderStyle; }
+          set
+          {
+            if (this.BorderStyle != value)
+            {
+              _borderStyle = value;
+
+              this.OnBorderStyleChanged(EventArgs.Empty);
+            }
+          }
+        }
+
+        /// <summary>
+        ///   Raises the <see cref="BorderStyleChanged" /> event.
+        /// </summary>
+        /// <param name="e">
+        ///   The <see cref="EventArgs" /> instance containing the event data.
+        /// </param>
+        protected virtual void OnBorderStyleChanged(EventArgs e)
+        {
+          EventHandler handler;
+
+          base.UpdateStyles();
+
+          handler = this.BorderStyleChanged;
+
+          if (handler != null)
+          {
+            handler(this, e);
+          }
         }
 
         /// <summary>
