@@ -653,7 +653,7 @@ namespace HtmlRenderer
         }
 
         /// <param name="m">The Windows <see cref="T:System.Windows.Forms.Message"/> to process. </param>
-        //[DebuggerStepThrough]
+        [DebuggerStepThrough]
         protected override void WndProc(ref Message m)
         {
           if (m.Msg == Win32Utils.WM_SETCURSOR && this.Cursor == Cursors.Hand)
