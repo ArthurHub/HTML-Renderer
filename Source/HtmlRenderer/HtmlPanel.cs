@@ -65,27 +65,27 @@ namespace HtmlRenderer
         /// <summary>
         /// 
         /// </summary>
-        private HtmlContainer _htmlContainer;
+        protected HtmlContainer _htmlContainer;
 
         /// <summary>
         /// The current border style of the control
         /// </summary>
-        private BorderStyle _borderStyle;
+        protected BorderStyle _borderStyle;
 
         /// <summary>
         /// the raw base stylesheet data used in the control
         /// </summary>
-        private string _baseRawCssData;
+        protected string _baseRawCssData;
 
         /// <summary>
         /// the base stylesheet data used in the control
         /// </summary>
-        private CssData _baseCssData;
+        protected CssData _baseCssData;
 
         /// <summary>
         /// the current html text set in the control
         /// </summary>
-        private string _text;
+        protected string _text;
 
         #endregion
 
@@ -143,7 +143,7 @@ namespace HtmlRenderer
         /// <summary>
         /// Gets or sets a value indicating if anti-aliasing should be avoided for geometry like backgrounds and borders (default - false).
         /// </summary>
-        public bool AvoidGeometryAntialias
+        public virtual bool AvoidGeometryAntialias
         {
             get { return _htmlContainer.AvoidGeometryAntialias; }
             set { _htmlContainer.AvoidGeometryAntialias = value; }
@@ -162,38 +162,10 @@ namespace HtmlRenderer
         /// Early image loading may also effect the layout if image without known size above the current scroll location are loaded as they
         /// will push the html elements down.
         /// </remarks>
-        public bool AvoidImagesLateLoading
+        public virtual bool AvoidImagesLateLoading
         {
             get { return _htmlContainer.AvoidImagesLateLoading; }
             set { _htmlContainer.AvoidImagesLateLoading = value; }
-        }
-
-        /// <summary>
-        ///   Gets the required creation parameters when the control handle is created.
-        /// </summary>
-        /// <value>The create params.</value>
-        /// <returns>
-        ///   A <see cref="T:System.Windows.Forms.CreateParams" /> that contains the required creation parameters when the handle to the control is created.
-        /// </returns>
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams createParams = base.CreateParams;
-
-                switch( _borderStyle )
-                {
-                    case BorderStyle.FixedSingle:
-                        createParams.Style |= Win32Utils.WS_BORDER;
-                        break;
-
-                    case BorderStyle.Fixed3D:
-                        createParams.ExStyle |= Win32Utils.WS_EX_CLIENTEDGE;
-                        break;
-                }
-
-                return createParams;
-            }
         }
 
         /// <summary>
@@ -225,7 +197,7 @@ namespace HtmlRenderer
         [EditorBrowsable(EditorBrowsableState.Always)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Description("Is content selection is enabled for the rendered html.")]
-        public bool IsSelectionEnabled
+        public virtual bool IsSelectionEnabled
         {
             get { return _htmlContainer.IsSelectionEnabled; }
             set { _htmlContainer.IsSelectionEnabled = value; }
@@ -240,7 +212,7 @@ namespace HtmlRenderer
         [EditorBrowsable(EditorBrowsableState.Always)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Description("Is the build-in context menu enabled and will be shown on mouse right click.")]
-        public bool IsContextMenuEnabled
+        public virtual bool IsContextMenuEnabled
         {
             get { return _htmlContainer.IsContextMenuEnabled; }
             set { _htmlContainer.IsContextMenuEnabled = value; }
@@ -253,7 +225,7 @@ namespace HtmlRenderer
         [Category("Appearance")]
         [Description("Set base stylesheet to be used by html rendered in the control.")]
         [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        public string BaseStylesheet
+        public virtual string BaseStylesheet
         {
             get { return _baseRawCssData; }
             set
@@ -285,6 +257,7 @@ namespace HtmlRenderer
             set
             {
                 _text = value;
+                base.Text = value;
                 if (!IsDisposed)
                 {
                     VerticalScroll.Value = VerticalScroll.Minimum;
@@ -299,7 +272,7 @@ namespace HtmlRenderer
         /// Get the currently selected text segment in the html.
         /// </summary>
         [Browsable(false)]
-        public string SelectedText
+        public virtual string SelectedText
         {
             get { return _htmlContainer.SelectedText; }
         }
@@ -308,7 +281,7 @@ namespace HtmlRenderer
         /// Copy the currently selected html segment with style.
         /// </summary>
         [Browsable(false)]
-        public string SelectedHtml
+        public virtual string SelectedHtml
         {
             get { return _htmlContainer.SelectedHtml; }
         }
@@ -317,7 +290,7 @@ namespace HtmlRenderer
         /// Get html from the current DOM tree with inline style.
         /// </summary>
         /// <returns>generated html</returns>
-        public string GetHtml()
+        public virtual string GetHtml()
         {
             return _htmlContainer != null ? _htmlContainer.GetHtml() : null;
         }
@@ -329,7 +302,7 @@ namespace HtmlRenderer
         /// </summary>
         /// <param name="elementId">the id of the element to get its rectangle</param>
         /// <returns>the rectangle of the element or null if not found</returns>
-        public RectangleF? GetElementRectangle(string elementId)
+        public virtual RectangleF? GetElementRectangle(string elementId)
         {
             return _htmlContainer != null ? _htmlContainer.GetElementRectangle(elementId) : null;
         }
@@ -340,7 +313,7 @@ namespace HtmlRenderer
         /// is not enough height to scroll to the top the scroll will be at maximum.<br/>
         /// </summary>
         /// <param name="elementId">the id of the element to scroll to</param>
-        public void ScrollToElement(string elementId)
+        public virtual void ScrollToElement(string elementId)
         {
             ArgChecker.AssertArgNotNullOrEmpty(elementId, "elementId");
 
@@ -359,16 +332,26 @@ namespace HtmlRenderer
         #region Private methods
 
         /// <summary>
-        ///   Raises the <see cref="BorderStyleChanged" /> event.
+        /// Override to support border for the control.
         /// </summary>
-        protected virtual void OnBorderStyleChanged(EventArgs e)
+        protected override CreateParams CreateParams
         {
-            UpdateStyles();
-
-            EventHandler handler = BorderStyleChanged;
-            if (handler != null)
+            get
             {
-                handler(this, e);
+                CreateParams createParams = base.CreateParams;
+
+                switch (_borderStyle)
+                {
+                    case BorderStyle.FixedSingle:
+                        createParams.Style |= Win32Utils.WS_BORDER;
+                        break;
+
+                    case BorderStyle.Fixed3D:
+                        createParams.ExStyle |= Win32Utils.WS_EX_CLIENTEDGE;
+                        break;
+                }
+
+                return createParams;
             }
         }
 
@@ -392,7 +375,7 @@ namespace HtmlRenderer
         /// <summary>
         /// Perform html container layout by the current panel client size.
         /// </summary>
-        private void PerformHtmlLayout()
+        protected void PerformHtmlLayout()
         {
             if (_htmlContainer != null)
             {
@@ -525,56 +508,68 @@ namespace HtmlRenderer
         }
 
         /// <summary>
+        ///   Raises the <see cref="BorderStyleChanged" /> event.
+        /// </summary>
+        protected virtual void OnBorderStyleChanged(EventArgs e)
+        {
+            UpdateStyles();
+
+            var handler = BorderStyleChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        /// <summary>
         /// Propagate the LinkClicked event from root container.
         /// </summary>
-        private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
+        protected virtual void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
         {
-            if (LinkClicked != null)
-            {
-                LinkClicked(this, e);
-            }
+            var handler = LinkClicked;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
         /// Propagate the Render Error event from root container.
         /// </summary>
-        private void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
+        protected virtual void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
         {
-            if(RenderError != null)
+            var handler = RenderError;
+            if (handler != null)
             {
                 if (InvokeRequired)
-                    Invoke(RenderError, this, e);
+                    Invoke(handler, this, e);
                 else
-                    RenderError(this, e);
+                    handler(this, e);
             }
         }
 
         /// <summary>
         /// Propagate the stylesheet load event from root container.
         /// </summary>
-        private void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
+        protected virtual void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
         {
-            if (StylesheetLoad != null)
-            {
-                StylesheetLoad(this, e);
-            }
+            var handler = StylesheetLoad;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
         /// Propagate the image load event from root container.
         /// </summary>
-        private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
+        protected virtual void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
         {
-            if (ImageLoad != null)
-            {
-                ImageLoad(this, e);
-            }
+            var handler = ImageLoad;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
         /// Handle html renderer invalidate and re-layout as requested.
         /// </summary>
-        private void OnRefresh(object sender, HtmlRefreshEventArgs e)
+        protected virtual void OnRefresh(object sender, HtmlRefreshEventArgs e)
         {
             if(e.Layout)
             {
@@ -592,7 +587,7 @@ namespace HtmlRenderer
         /// <summary>
         /// On html renderer scroll request adjust the scrolling of the panel to the requested location.
         /// </summary>
-        private void OnScrollChange(object sender, HtmlScrollEventArgs e)
+        protected virtual void OnScrollChange(object sender, HtmlScrollEventArgs e)
         {
             UpdateScroll(e.Location);
         }
@@ -601,7 +596,7 @@ namespace HtmlRenderer
         /// Adjust the scrolling of the panel to the requested location.
         /// </summary>
         /// <param name="location">the location to adjust the scroll to</param>
-        private void UpdateScroll(Point location)
+        protected virtual void UpdateScroll(Point location)
         {
             AutoScrollPosition = location;
             _htmlContainer.ScrollOffset = AutoScrollPosition;

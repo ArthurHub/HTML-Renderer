@@ -73,32 +73,32 @@ namespace HtmlRenderer
         /// <summary>
         /// 
         /// </summary>
-        private HtmlContainer _htmlContainer;
+        protected HtmlContainer _htmlContainer;
 
         /// <summary>
         /// The current border style of the control
         /// </summary>
-        private BorderStyle _borderStyle;
+        protected BorderStyle _borderStyle;
 
         /// <summary>
         /// the raw base stylesheet data used in the control
         /// </summary>
-        private string _baseRawCssData;
+        protected string _baseRawCssData;
 
         /// <summary>
         /// the base stylesheet data used in the panel
         /// </summary>
-        private CssData _baseCssData;
+        protected CssData _baseCssData;
 
         /// <summary>
         /// the current html text set in the control
         /// </summary>
-        private string _text;
+        protected string _text;
 
         /// <summary>
         /// is to handle auto size of the control height only
         /// </summary>
-        private bool _autoSizeHight;
+        protected bool _autoSizeHight;
 
         #endregion
 
@@ -188,7 +188,7 @@ namespace HtmlRenderer
         [EditorBrowsable(EditorBrowsableState.Always)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Description("Is content selection is enabled for the rendered html.")]
-        public bool IsSelectionEnabled
+        public virtual bool IsSelectionEnabled
         {
             get { return _htmlContainer.IsSelectionEnabled; }
             set { _htmlContainer.IsSelectionEnabled = value; }
@@ -203,7 +203,7 @@ namespace HtmlRenderer
         [EditorBrowsable(EditorBrowsableState.Always)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Description("Is the build-in context menu enabled and will be shown on mouse right click.")]
-        public bool IsContextMenuEnabled
+        public virtual bool IsContextMenuEnabled
         {
             get { return _htmlContainer.IsContextMenuEnabled; }
             set { _htmlContainer.IsContextMenuEnabled = value; }
@@ -216,7 +216,7 @@ namespace HtmlRenderer
         [Description("Set base stylesheet to be used by html rendered in the control.")]
         [Category("Appearance")]
         [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        public string BaseStylesheet
+        public virtual string BaseStylesheet
         {
             get { return _baseRawCssData; }
             set
@@ -256,7 +256,7 @@ namespace HtmlRenderer
         [DefaultValue(false)]
         [Category("Layout")]
         [Description("Automatically sets the height of the label by content height (width is not effected)")]
-        public bool AutoSizeHeightOnly
+        public virtual bool AutoSizeHeightOnly
         {
             get { return _autoSizeHight; }
             set
@@ -312,6 +312,7 @@ namespace HtmlRenderer
             set
             {
                 _text = value;
+                base.Text = value;
                 if (!IsDisposed)
                 {
                     _htmlContainer.SetHtml(_text, _baseCssData);
@@ -325,7 +326,7 @@ namespace HtmlRenderer
         /// Get the currently selected text segment in the html.
         /// </summary>
         [Browsable(false)]
-        public string SelectedText
+        public virtual string SelectedText
         {
             get { return _htmlContainer.SelectedText; }
         }
@@ -334,7 +335,7 @@ namespace HtmlRenderer
         /// Copy the currently selected html segment with style.
         /// </summary>
         [Browsable(false)]
-        public string SelectedHtml
+        public virtual string SelectedHtml
         {
             get { return _htmlContainer.SelectedHtml; }
         }
@@ -343,7 +344,7 @@ namespace HtmlRenderer
         /// Get html from the current DOM tree with inline style.
         /// </summary>
         /// <returns>generated html</returns>
-        public string GetHtml()
+        public virtual string GetHtml()
         {
             return _htmlContainer != null ? _htmlContainer.GetHtml() : null;
         }
@@ -355,7 +356,7 @@ namespace HtmlRenderer
         /// </summary>
         /// <param name="elementId">the id of the element to get its rectangle</param>
         /// <returns>the rectangle of the element or null if not found</returns>
-        public RectangleF? GetElementRectangle(string elementId)
+        public virtual RectangleF? GetElementRectangle(string elementId)
         {
             return _htmlContainer != null ? _htmlContainer.GetElementRectangle(elementId) : null;
         }
@@ -364,16 +365,26 @@ namespace HtmlRenderer
         #region Private methods
 
         /// <summary>
-        ///   Raises the <see cref="BorderStyleChanged" /> event.
+        /// Override to support border for the control.
         /// </summary>
-        protected virtual void OnBorderStyleChanged(EventArgs e)
+        protected override CreateParams CreateParams
         {
-            UpdateStyles();
-
-            EventHandler handler = BorderStyleChanged;
-            if (handler != null)
+            get
             {
-                handler(this, e);
+                CreateParams createParams = base.CreateParams;
+
+                switch (_borderStyle)
+                {
+                    case BorderStyle.FixedSingle:
+                        createParams.Style |= Win32Utils.WS_BORDER;
+                        break;
+
+                    case BorderStyle.Fixed3D:
+                        createParams.ExStyle |= Win32Utils.WS_EX_CLIENTEDGE;
+                        break;
+                }
+
+                return createParams;
             }
         }
 
@@ -502,56 +513,66 @@ namespace HtmlRenderer
         }
 
         /// <summary>
-        /// Propogate the LinkClicked event from root container.
+        ///   Raises the <see cref="BorderStyleChanged" /> event.
         /// </summary>
-        private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
+        protected virtual void OnBorderStyleChanged(EventArgs e)
         {
-            if (LinkClicked != null)
-            {
-                LinkClicked(this, e);
-            }
+            UpdateStyles();
+
+            var handler = BorderStyleChanged;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        /// <summary>
+        /// Propagate the LinkClicked event from root container.
+        /// </summary>
+        protected virtual void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
+        {
+            var handler = LinkClicked;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
         /// Propagate the Render Error event from root container.
         /// </summary>
-        private void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
+        protected virtual void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
         {
-            if (RenderError != null)
+            var handler = RenderError;
+            if (handler != null)
             {
                 if (InvokeRequired)
-                    Invoke(RenderError);
+                    Invoke(handler);
                 else
-                    RenderError(this, e);
+                    handler(this, e);
             }
         }
 
         /// <summary>
         /// Propagate the stylesheet load event from root container.
         /// </summary>
-        private void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
+        protected virtual void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
         {
-            if (StylesheetLoad != null)
-            {
-                StylesheetLoad(this, e);
-            }
+            var handler = StylesheetLoad;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
         /// Propagate the image load event from root container.
         /// </summary>
-        private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
+        protected virtual void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
         {
-            if (ImageLoad != null)
-            {
-                ImageLoad(this, e);
-            }
+            var handler = ImageLoad;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
         /// Handle html renderer invalidate and re-layout as requested.
         /// </summary>
-        private void OnRefresh(object sender, HtmlRefreshEventArgs e)
+        protected virtual void OnRefresh(object sender, HtmlRefreshEventArgs e)
         {
             if (e.Layout)
             {
@@ -671,7 +692,6 @@ namespace HtmlRenderer
         }
 
         #endregion
-
 
         #endregion
     }
