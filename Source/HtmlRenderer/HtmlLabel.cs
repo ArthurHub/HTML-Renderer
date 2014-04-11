@@ -76,6 +76,11 @@ namespace HtmlRenderer
         private HtmlContainer _htmlContainer;
 
         /// <summary>
+        /// The current border style of the control
+        /// </summary>
+        private BorderStyle _borderStyle;
+
+        /// <summary>
         /// the raw base stylesheet data used in the control
         /// </summary>
         private string _baseRawCssData;
@@ -125,6 +130,12 @@ namespace HtmlRenderer
         }
 
         /// <summary>
+        ///   Raised when the BorderStyle property value changes.
+        /// </summary>
+        [Category("Property Changed")]
+        public event EventHandler BorderStyleChanged;
+
+        /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
         /// Allows canceling the execution of the link.
         /// </summary>
@@ -147,6 +158,25 @@ namespace HtmlRenderer
         /// This event allows to provide the image manually, if not handled the image will be loaded from file or download from URI.
         /// </summary>
         public event EventHandler<HtmlImageLoadEventArgs> ImageLoad;
+
+        /// <summary>
+        /// Gets or sets the border style.
+        /// </summary>
+        /// <value>The border style.</value>
+        [Category("Appearance")]
+        [DefaultValue(typeof(BorderStyle), "None")]
+        public virtual BorderStyle BorderStyle
+        {
+            get { return _borderStyle; }
+            set
+            {
+                if (BorderStyle != value)
+                {
+                    _borderStyle = value;
+                    OnBorderStyleChanged(EventArgs.Empty);
+                }
+            }
+        }
 
         /// <summary>
         /// Is content selection is enabled for the rendered html (default - true).<br/>
@@ -332,6 +362,20 @@ namespace HtmlRenderer
 
 
         #region Private methods
+
+        /// <summary>
+        ///   Raises the <see cref="BorderStyleChanged" /> event.
+        /// </summary>
+        protected virtual void OnBorderStyleChanged(EventArgs e)
+        {
+            UpdateStyles();
+
+            EventHandler handler = BorderStyleChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
 
         /// <summary>
         /// Perform the layout of the html in the control.
@@ -523,6 +567,30 @@ namespace HtmlRenderer
         }
 
         /// <summary>
+        /// Override the proc processing method to set OS specific hand cursor.
+        /// </summary>
+        /// <param name="m">The Windows <see cref="T:System.Windows.Forms.Message"/> to process. </param>
+        [DebuggerStepThrough]
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == Win32Utils.WM_SETCURSOR && Cursor == Cursors.Hand)
+            {
+                try
+                {
+                    // Replace .NET's hand cursor with the OS cursor
+                    Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IDC_HAND));
+                    m.Result = IntPtr.Zero;
+                    return;
+                }
+                catch(Exception ex)
+                {
+                    OnRenderError(this,new HtmlRenderErrorEventArgs(HtmlRenderErrorType.General, "Failed to set OS hand cursor", ex));
+                }
+            }
+            base.WndProc(ref m);
+        }
+
+        /// <summary>
         /// Release the html container resources.
         /// </summary>
         protected override void Dispose(bool disposing)
@@ -538,22 +606,6 @@ namespace HtmlRenderer
                 _htmlContainer = null;
             }
             base.Dispose(disposing);
-        }
-
-        /// <param name="m">The Windows <see cref="T:System.Windows.Forms.Message"/> to process. </param>
-        [DebuggerStepThrough]
-        protected override void WndProc(ref Message m)
-        {
-          if (m.Msg == Win32Utils.WM_SETCURSOR && this.Cursor == Cursors.Hand)
-          {
-            // Replace .NET's hand cursor with the OS cursor
-            Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IDC_HAND));
-            m.Result = IntPtr.Zero;
-          }
-          else
-          {
-            base.WndProc(ref m);
-          }
         }
 
         #region Hide not relevant properties from designer
