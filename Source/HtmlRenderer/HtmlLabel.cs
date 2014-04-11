@@ -397,10 +397,10 @@ namespace HtmlRenderer
             {
                 if (AutoSize)
                     _htmlContainer.MaxSize = SizeF.Empty;
-                else if (AutoSizeHeightOnly)
-                    _htmlContainer.MaxSize = new SizeF(Width, 0);
+                else if( AutoSizeHeightOnly )
+                    _htmlContainer.MaxSize = new SizeF(ClientSize.Width, 0);
                 else
-                    _htmlContainer.MaxSize = Size;
+                    _htmlContainer.MaxSize = ClientSize;
 
                 using (Graphics g = CreateGraphics())
                 {
@@ -410,14 +410,14 @@ namespace HtmlRenderer
                     {
                         if (AutoSize)
                         {
-                            Size = Size.Round(_htmlContainer.ActualSize);
+                            ClientSize = Size.Round(_htmlContainer.ActualSize);
                             if (MaximumSize.Width > 0 && MaximumSize.Width < _htmlContainer.ActualSize.Width)
                             {
                                 // to allow the actual size be smaller than max we need to set max size only if it is really larger
                                 _htmlContainer.MaxSize = MaximumSize;
                                 _htmlContainer.PerformLayout(g);
 
-                                Size = Size.Round(_htmlContainer.ActualSize);
+                                ClientSize = Size.Round(_htmlContainer.ActualSize);
                             }
                             else if (MinimumSize.Width > 0 && MinimumSize.Width > _htmlContainer.ActualSize.Width)
                             {
@@ -425,20 +425,19 @@ namespace HtmlRenderer
                                 _htmlContainer.MaxSize = new SizeF(MinimumSize.Width, 0);
                                 _htmlContainer.PerformLayout(g);
 
-                                Size = Size.Round(_htmlContainer.ActualSize);
+                                ClientSize = Size.Round(_htmlContainer.ActualSize);
                             }
                         }
-                        else if( _autoSizeHight && Height != (int)_htmlContainer.ActualSize.Height )
+                        else if (_autoSizeHight && ClientSize.Height != (int)Math.Round(_htmlContainer.ActualSize.Height))
                         {
-                            var prevWidth = Width;
+                            var prevWidth = ClientSize.Width;
 
                             // make sure the height is not lower than min if given
-                            Height = MinimumSize.Height > 0 && MinimumSize.Height > _htmlContainer.ActualSize.Height
-                                         ? MinimumSize.Height
-                                         : (int)_htmlContainer.ActualSize.Height;
+                            var newHeight = MinimumSize.Height > 0 && MinimumSize.Height > _htmlContainer.ActualSize.Height ? MinimumSize.Height : (int)Math.Round(_htmlContainer.ActualSize.Height);
+                            ClientSize = new Size(ClientSize.Width, newHeight);
 
                             // handle if changing the height of the label affects the desired width and those require re-layout
-                            if( prevWidth != Width )
+                            if (prevWidth != ClientSize.Width)
                                 OnLayout(levent);
                         }
                     }
