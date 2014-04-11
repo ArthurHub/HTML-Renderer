@@ -13,6 +13,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Windows.Forms;
 using HtmlRenderer.Entities;
 using HtmlRenderer.Parse;
@@ -124,6 +125,28 @@ namespace HtmlRenderer
         /// This event allows to provide the image manually, if not handled the image will be loaded from file or download from URI.
         /// </summary>
         public event EventHandler<HtmlImageLoadEventArgs> ImageLoad;
+
+        /// <summary>
+        /// Use GDI+ text rendering to measure/draw text.<br/>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// GDI+ text rendering is less smooth than GDI text rendering but it natively supports alpha channel
+        /// thus allows creating transparent images.
+        /// </para>
+        /// <para>
+        /// While using GDI+ text rendering you can control the text rendering using <see cref="Graphics.TextRenderingHint"/>, note that
+        /// using <see cref="TextRenderingHint.ClearTypeGridFit"/> doesn't work well with transparent background.
+        /// </para>
+        /// </remarks>
+        [Category("Behavior")]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [Description("If to use GDI+ text rendering to measure/draw text, false - use GDI")]
+        public bool UseGdiPlusTextRendering
+        {
+            get { return _htmlContainer.UseGdiPlusTextRendering; }
+            set { _htmlContainer.UseGdiPlusTextRendering = value; }
+        }
 
         /// <summary>
         /// Set base stylesheet to be used by html rendered in the panel.

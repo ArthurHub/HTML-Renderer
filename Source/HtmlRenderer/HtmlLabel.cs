@@ -160,6 +160,28 @@ namespace HtmlRenderer
         public event EventHandler<HtmlImageLoadEventArgs> ImageLoad;
 
         /// <summary>
+        /// Use GDI+ text rendering to measure/draw text.<br/>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// GDI+ text rendering is less smooth than GDI text rendering but it natively supports alpha channel
+        /// thus allows creating transparent images.
+        /// </para>
+        /// <para>
+        /// While using GDI+ text rendering you can control the text rendering using <see cref="Graphics.TextRenderingHint"/>, note that
+        /// using <see cref="TextRenderingHint.ClearTypeGridFit"/> doesn't work well with transparent background.
+        /// </para>
+        /// </remarks>
+        [Category("Behavior")]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [Description("If to use GDI+ text rendering to measure/draw text, false - use GDI")]
+        public bool UseGdiPlusTextRendering
+        {
+            get { return _htmlContainer.UseGdiPlusTextRendering; }
+            set { _htmlContainer.UseGdiPlusTextRendering = value; }
+        }
+
+        /// <summary>
         /// Gets or sets the border style.
         /// </summary>
         /// <value>The border style.</value>

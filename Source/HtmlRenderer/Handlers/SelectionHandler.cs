@@ -598,7 +598,7 @@ namespace HtmlRenderer.Handlers
 
         /// <summary>
         /// Calculate the character index and offset by characters for the given word and given offset.<br/>
-        /// <seealso cref="CalculateWordCharIndexAndOffset(Control, CssRect, Point, bool, out int, out float)"/>.
+        /// <seealso cref="CalculateWordCharIndexAndOffset(Control, CssRect, Point, bool, bool, out int, out float)"/>.
         /// </summary>
         /// <param name="control">used to create graphics to measure string</param>
         /// <param name="word">the word to calculate its index and offset</param>
@@ -608,7 +608,7 @@ namespace HtmlRenderer.Handlers
         {
             int selectionIndex;
             float selectionOffset;
-            CalculateWordCharIndexAndOffset(control, word, loc, selectionStart, out selectionIndex, out selectionOffset);
+            CalculateWordCharIndexAndOffset(control, word, loc, selectionStart, _root.HtmlContainer.UseGdiPlusTextRendering, out selectionIndex, out selectionOffset);
 
             if(selectionStart)
             {
@@ -632,10 +632,11 @@ namespace HtmlRenderer.Handlers
         /// <param name="control">used to create graphics to measure string</param>
         /// <param name="word">the word to calculate its index and offset</param>
         /// <param name="loc">the location to calculate for</param>
+        /// <param name="inclusive">is to include the first character in the calculation</param>
+        /// <param name="useGdiPlusTextRendering">if to use GDI+ text rendering</param>
         /// <param name="selectionIndex">return the index of the char under the location</param>
         /// <param name="selectionOffset">return the offset of the char under the location</param>
-        /// <param name="inclusive">is to include the first character in the calculation</param>
-        private static void CalculateWordCharIndexAndOffset(Control control, CssRect word, Point loc, bool inclusive, out int selectionIndex, out float selectionOffset)
+        private static void CalculateWordCharIndexAndOffset(Control control, CssRect word, Point loc, bool inclusive, bool useGdiPlusTextRendering, out int selectionIndex, out float selectionOffset)
         {
             selectionIndex = 0;
             selectionOffset = 0f;
@@ -656,7 +657,7 @@ namespace HtmlRenderer.Handlers
             {
                 // calculate partial word selection
                 var font = word.OwnerBox.ActualFont;
-                using (var g = new WinGraphics(control.CreateGraphics(),false))
+                using (var g = new WinGraphics(control.CreateGraphics(), useGdiPlusTextRendering))
                 {
                     int charFit;
                     int charFitWidth;
