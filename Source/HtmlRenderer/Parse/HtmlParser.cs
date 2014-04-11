@@ -125,7 +125,8 @@ namespace HtmlRenderer.Parse
             {
                 string tagName;
                 Dictionary<string, string> tagAttributes;
-                if (ParseHtmlTag(source, tagIdx, endIdx - tagIdx + 1, out tagName, out tagAttributes))
+                var length = endIdx - tagIdx + 1 - (source[endIdx - 1] == '/' ? 1 : 0);
+                if (ParseHtmlTag(source, tagIdx, length, out tagName, out tagAttributes))
                 {
                     if (!HtmlUtils.IsSingleTag(tagName) && curBox.ParentBox != null)
                     {
@@ -219,35 +220,38 @@ namespace HtmlRenderer.Parse
                 while (endIdx < idx + length && !char.IsWhiteSpace(source, endIdx) && source[endIdx] != '=')
                     endIdx++;
 
-                var key = source.Substring(startIdx, endIdx - startIdx);
-
-                startIdx = endIdx + 1;
-                while (startIdx < idx + length && (char.IsWhiteSpace(source, startIdx) || source[startIdx] == '='))
-                    startIdx++;
-
-                bool hasPChar = false;
-                char pChar = source[startIdx];
-                if (pChar == '"' || pChar == '\'')
+                if (startIdx < idx + length)
                 {
-                    hasPChar = true;
-                    startIdx++;
+                    var key = source.Substring(startIdx, endIdx - startIdx);
+
+                    startIdx = endIdx + 1;
+                    while (startIdx < idx + length && (char.IsWhiteSpace(source, startIdx) || source[startIdx] == '='))
+                        startIdx++;
+
+                    bool hasPChar = false;
+                    char pChar = source[startIdx];
+                    if (pChar == '"' || pChar == '\'')
+                    {
+                        hasPChar = true;
+                        startIdx++;
+                    }
+
+                    endIdx = startIdx + (hasPChar ? 0 : 1);
+                    while (endIdx < idx + length && (hasPChar ? source[endIdx] != pChar : !char.IsWhiteSpace(source, endIdx)))
+                        endIdx++;
+
+                    var value = source.Substring(startIdx, endIdx - startIdx);
+                    value = HtmlUtils.DecodeHtml(value);
+
+                    if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+                    {
+                        if (attributes == null)
+                            attributes = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+                        attributes[key.ToLower()] = value;
+                    }
+
+                    startIdx = endIdx + (hasPChar ? 2 : 1);
                 }
-
-                endIdx = startIdx + (hasPChar ? 0 : 1);
-                while (endIdx < idx + length && ( hasPChar ? source[endIdx] != pChar : !char.IsWhiteSpace(source, endIdx) ))
-                    endIdx++;
-                
-                var value = source.Substring(startIdx, endIdx - startIdx);
-                value = HtmlUtils.DecodeHtml(value);
-
-                if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
-                {
-                    if (attributes == null)
-                        attributes = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-                    attributes[key.ToLower()] = value;
-                }
-
-                startIdx = endIdx + (hasPChar ? 2 : 1);
             }
         }
 
