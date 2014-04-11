@@ -136,9 +136,10 @@ namespace HtmlRenderer.Parse
                 else if (!string.IsNullOrEmpty(tagName))
                 {
                     //new SubString(source, lastEnd + 1, tagmatch.Index - lastEnd - 1)
-                    var tag = new HtmlTag(tagName, tagAttributes);
+                    var isSingle = HtmlUtils.IsSingleTag(tagName) || source[endIdx - 1] == '/';
+                    var tag = new HtmlTag(tagName, isSingle, tagAttributes);
 
-                    if (tag.IsSingle)
+                    if (isSingle)
                     {
                         // the current box is not changed
                         CssBox.CreateBox(tag, curBox);
