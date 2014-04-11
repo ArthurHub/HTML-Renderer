@@ -35,6 +35,16 @@ namespace HtmlRenderer.Utils
         /// </summary>
         public const int BitBltPaint = 0x00EE0086;
 
+        public const int WM_SETCURSOR = 0x20;
+
+        public const int IDC_HAND = 32649;
+
+        [DllImport("user32.dll")]
+        public static extern int SetCursor(int hCursor);
+
+        [DllImport("user32.dll")]
+        public static extern int LoadCursor(int hInstance, int lpCursorName);
+
         /// <summary>
         /// Create a compatible memory HDC from the given HDC.<br/>
         /// The memory HDC can be rendered into without effecting the original HDC.<br/>
