@@ -102,7 +102,8 @@ namespace HtmlRenderer.Parse
                 if (box.HtmlTag.HasAttribute("style"))
                 {
                     var block = CssParser.ParseCssBlock(box.HtmlTag.Name, box.HtmlTag.TryGetAttribute("style"));
-                    AssignCssBlock(box, block);
+                    if(block != null)
+                        AssignCssBlock(box, block);
                 }
 
                 // Check for the <style> tag
