@@ -66,7 +66,7 @@ namespace HtmlRenderer
         /// </summary>
         static WinGraphics()
         {
-            _stringFormat = new StringFormat(StringFormat.GenericDefault);
+            _stringFormat = new StringFormat(StringFormat.GenericTypographic);
             _stringFormat.FormatFlags = StringFormatFlags.NoClip | StringFormatFlags.MeasureTrailingSpaces;
         }
 
@@ -181,7 +181,7 @@ namespace HtmlRenderer
             if( _useGdiPlusTextRendering )
             {
                 ReleaseHdc();
-                _g.DrawString(str, font, RenderUtils.GetSolidBrush(color), (int)Math.Round(point.X - FontsUtils.GetFontLeftPadding(font)*.8f), (int)Math.Round(point.Y));
+                _g.DrawString(str, font, RenderUtils.GetSolidBrush(color), (int)Math.Round(point.X), (int)Math.Round(point.Y), StringFormat.GenericTypographic);
             }
             else
             {
