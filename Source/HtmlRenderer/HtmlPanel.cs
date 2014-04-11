@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -61,6 +62,8 @@ namespace HtmlRenderer
     {
         #region Fields and Consts
 
+        private BorderStyle _borderStyle;
+
         /// <summary>
         /// 
         /// </summary>
@@ -103,6 +106,12 @@ namespace HtmlRenderer
             _htmlContainer.StylesheetLoad += OnStylesheetLoad;
             _htmlContainer.ImageLoad += OnImageLoad;
         }
+
+        /// <summary>
+        ///   Occurs when the BorderStyle property value changes
+        /// </summary>
+        [Category("Property Changed")]
+        public event EventHandler BorderStyleChanged;
 
         /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
@@ -157,6 +166,76 @@ namespace HtmlRenderer
         }
 
         /// <summary>
+        ///   Gets the required creation parameters when the control handle is created.
+        /// </summary>
+        /// <value>The create params.</value>
+        /// <returns>
+        ///   A <see cref="T:System.Windows.Forms.CreateParams" /> that contains the required creation parameters when the handle to the control is created.
+        /// </returns>
+        protected override CreateParams CreateParams
+        {
+          get
+          {
+            CreateParams createParams;
+
+            createParams = base.CreateParams;
+
+            switch (_borderStyle)
+            {
+              case BorderStyle.FixedSingle:
+                createParams.Style |= Win32Utils.WS_BORDER;
+                break;
+
+              case BorderStyle.Fixed3D:
+                createParams.ExStyle |= Win32Utils.WS_EX_CLIENTEDGE;
+                break;
+            }
+
+            return createParams;
+          }
+        }
+
+        /// <summary>
+        /// Gets or sets the border style.
+        /// </summary>
+        /// <value>The border style.</value>
+        [Category("Appearance")]
+        [DefaultValue(typeof(BorderStyle), "None")]
+        public virtual BorderStyle BorderStyle
+        {
+          get { return _borderStyle; }
+          set
+          {
+            if (this.BorderStyle != value)
+            {
+              _borderStyle = value;
+
+              this.OnBorderStyleChanged(EventArgs.Empty);
+            }
+          }
+        }
+
+        /// <summary>
+        ///   Raises the <see cref="BorderStyleChanged" /> event.
+        /// </summary>
+        /// <param name="e">
+        ///   The <see cref="EventArgs" /> instance containing the event data.
+        /// </param>
+        protected virtual void OnBorderStyleChanged(EventArgs e)
+        {
+          EventHandler handler;
+
+          base.UpdateStyles();
+
+          handler = this.BorderStyleChanged;
+
+          if (handler != null)
+          {
+            handler(this, e);
+          }
+        }
+
+        /// <summary>
         /// Is content selection is enabled for the rendered html (default - true).<br/>
         /// If set to 'false' the rendered html will be static only with ability to click on links.
         /// </summary>
@@ -193,6 +272,7 @@ namespace HtmlRenderer
         [Browsable(true)]
         [Category("Appearance")]
         [Description("Set base stylesheet to be used by html rendered in the control.")]
+        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public string BaseStylesheet
         {
             get { return _baseRawCssData; }
@@ -570,6 +650,22 @@ namespace HtmlRenderer
                 _htmlContainer = null;
             }
             base.Dispose(disposing);
+        }
+
+        /// <param name="m">The Windows <see cref="T:System.Windows.Forms.Message"/> to process. </param>
+        [DebuggerStepThrough]
+        protected override void WndProc(ref Message m)
+        {
+          if (m.Msg == Win32Utils.WM_SETCURSOR && this.Cursor == Cursors.Hand)
+          {
+            // Replace .NET's hand cursor with the OS cursor
+            Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IDC_HAND));
+            m.Result = IntPtr.Zero;
+          }
+          else
+          {
+            base.WndProc(ref m);
+          }
         }
 
         #region Hide not relevant properties from designer

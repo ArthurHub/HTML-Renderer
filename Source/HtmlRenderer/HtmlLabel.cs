@@ -11,12 +11,14 @@
 // "The Art of War"
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.ComponentModel;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using HtmlRenderer.Entities;
 using HtmlRenderer.Parse;
+using HtmlRenderer.Utils;
 
 namespace HtmlRenderer
 {
@@ -183,6 +185,7 @@ namespace HtmlRenderer
         [Browsable(true)]
         [Description("Set base stylesheet to be used by html rendered in the control.")]
         [Category("Appearance")]
+        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public string BaseStylesheet
         {
             get { return _baseRawCssData; }
@@ -535,6 +538,22 @@ namespace HtmlRenderer
                 _htmlContainer = null;
             }
             base.Dispose(disposing);
+        }
+
+        /// <param name="m">The Windows <see cref="T:System.Windows.Forms.Message"/> to process. </param>
+        [DebuggerStepThrough]
+        protected override void WndProc(ref Message m)
+        {
+          if (m.Msg == Win32Utils.WM_SETCURSOR && this.Cursor == Cursors.Hand)
+          {
+            // Replace .NET's hand cursor with the OS cursor
+            Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IDC_HAND));
+            m.Result = IntPtr.Zero;
+          }
+          else
+          {
+            base.WndProc(ref m);
+          }
         }
 
         #region Hide not relevant properties from designer
