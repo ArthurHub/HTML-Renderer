@@ -686,12 +686,24 @@ namespace HtmlRenderer.Parse
 
                 CorrectBlockSplitBadBox(box, splitBox, leftBlock);
 
-                if (box.Boxes.Count > 2)
+                if( box.Boxes.Count > 2 )
                 {
-                    var rightBox = CssBox.CreateBox(box, null, box.Boxes[2]);
-                    while (box.Boxes.Count > 3)
-                        box.Boxes[3].ParentBox = rightBox;
+                    // create temp box to handle the tail elements and then get them back so no deep hierarchy is created
+                    var tempRightBox = CssBox.CreateBox(box, null, box.Boxes[2]);
+                    while( box.Boxes.Count > 3 )
+                        box.Boxes[3].ParentBox = tempRightBox;
+
+                    if( DomUtils.ContainsInlinesOnly(tempRightBox) && !ContainsInlinesOnlyDeep(tempRightBox) )
+                        CorrectBlockInsideInlineImp(tempRightBox);
+
+                    while( tempRightBox.Boxes.Count > 0 )
+                        tempRightBox.Boxes[0].ParentBox = tempRightBox.ParentBox;
+                    tempRightBox.ParentBox = null;
                 }
+
+                // remove block that did not get any inner elements
+                if (leftBlock.Boxes.Count < 1)
+                    leftBlock.ParentBox = null;
             }
             else if (box.Boxes[0].Display == CssConstants.Inline)
             {
@@ -710,13 +722,15 @@ namespace HtmlRenderer.Parse
         /// <param name="leftBlock">the left block box that is created for the split</param>
         private static void CorrectBlockSplitBadBox(CssBox parentBox, CssBox badBox, CssBox leftBlock)
         {
-            var leftbox = CssBox.CreateBox(leftBlock, badBox.HtmlTag);
-            leftbox.InheritStyle(badBox, true);
-
-            bool hadLeft = false;
+            CssBox leftbox = null;
             while (badBox.Boxes[0].IsInline && ContainsInlinesOnlyDeep(badBox.Boxes[0]))
             {
-                hadLeft = true;
+                if(leftbox == null)
+                {
+                    // if there is no elements in the left box there is no reason to keep it
+                    leftbox = CssBox.CreateBox(leftBlock, badBox.HtmlTag);
+                    leftbox.InheritStyle(badBox, true);
+                }
                 badBox.Boxes[0].ParentBox = leftbox;
             }
 
@@ -756,7 +770,7 @@ namespace HtmlRenderer.Parse
             else if (splitBox.ParentBox != null && parentBox.Boxes.Count > 1)
             {
                 splitBox.SetBeforeBox(parentBox.Boxes[1]);
-                if (splitBox.HtmlTag != null && splitBox.HtmlTag.Name == "br" && (hadLeft || leftBlock.Boxes.Count > 1))
+                if (splitBox.HtmlTag != null && splitBox.HtmlTag.Name == "br" && (leftbox != null || leftBlock.Boxes.Count > 1))
                     splitBox.Display = CssConstants.Inline;
             }
         }
