@@ -88,6 +88,11 @@ namespace HtmlRenderer
         /// </summary>
         protected string _text;
 
+        /// <summary>
+        /// If to use cursors defined by the operating system or .NET cursors
+        /// </summary>
+        protected bool _useSystemCursors;
+
         #endregion
 
 
@@ -144,6 +149,8 @@ namespace HtmlRenderer
         /// <summary>
         /// Gets or sets a value indicating if anti-aliasing should be avoided for geometry like backgrounds and borders (default - false).
         /// </summary>
+        [Category("Behavior")]
+        [Description("If anti-aliasing should be avoided for geometry like backgrounds and borders")]
         public virtual bool AvoidGeometryAntialias
         {
             get { return _htmlContainer.AvoidGeometryAntialias; }
@@ -163,6 +170,8 @@ namespace HtmlRenderer
         /// Early image loading may also effect the layout if image without known size above the current scroll location are loaded as they
         /// will push the html elements down.
         /// </remarks>
+        [Category("Behavior")]
+        [Description("If image loading only when visible should be avoided")]
         public virtual bool AvoidImagesLateLoading
         {
             get { return _htmlContainer.AvoidImagesLateLoading; }
@@ -189,6 +198,19 @@ namespace HtmlRenderer
         {
             get { return _htmlContainer.UseGdiPlusTextRendering; }
             set { _htmlContainer.UseGdiPlusTextRendering = value; }
+        }
+
+        /// <summary>
+        /// If to use cursors defined by the operating system or .NET cursors
+        /// </summary>
+        [Category("Behavior")]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [DefaultValue(false)]
+        [Description("If to use cursors defined by the operating system or .NET cursors")]
+        public bool UseSystemCursors
+        {
+            get { return _useSystemCursors; }
+            set { _useSystemCursors = value; }
         }
 
         /// <summary>
@@ -653,7 +675,7 @@ namespace HtmlRenderer
         [DebuggerStepThrough]
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == Win32Utils.WM_SETCURSOR && Cursor == Cursors.Hand)
+            if (_useSystemCursors && m.Msg == Win32Utils.WM_SETCURSOR && Cursor == Cursors.Hand)
             {
                 try
                 {

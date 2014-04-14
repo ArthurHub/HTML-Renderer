@@ -48,7 +48,12 @@ namespace HtmlRenderer.Demo
             // 
             // _htmlToolTip
             // 
+            this._htmlToolTip.AllowLinksHandling = true;
+            this._htmlToolTip.BaseStylesheet = null;
+            this._htmlToolTip.MaximumSize = new System.Drawing.Size(0, 0);
             this._htmlToolTip.OwnerDraw = true;
+            this._htmlToolTip.TooltipCssClass = "htmltooltip";
+            this._htmlToolTip.UseGdiPlusTextRendering = false;
             // 
             // _changeTooltipButton
             // 
@@ -92,6 +97,8 @@ namespace HtmlRenderer.Demo
             | System.Windows.Forms.AnchorStyles.Right)));
             this._htmlPanel.AutoScroll = true;
             this._htmlPanel.AutoScrollMinSize = new System.Drawing.Size(407, 99);
+            this._htmlPanel.AvoidGeometryAntialias = false;
+            this._htmlPanel.AvoidImagesLateLoading = false;
             this._htmlPanel.BackColor = System.Drawing.SystemColors.Window;
             this._htmlPanel.BaseStylesheet = null;
             this._htmlPanel.Location = new System.Drawing.Point(7, 221);
@@ -99,6 +106,8 @@ namespace HtmlRenderer.Demo
             this._htmlPanel.Size = new System.Drawing.Size(407, 225);
             this._htmlPanel.TabIndex = 10;
             this._htmlPanel.Text = resources.GetString("_htmlPanel.Text");
+            this._htmlPanel.UseGdiPlusTextRendering = false;
+            this._htmlPanel.UseSystemCursors = true;
             this._htmlPanel.Click += new System.EventHandler(this.OnHtmlPanelClick);
             // 
             // label2
@@ -128,15 +137,17 @@ namespace HtmlRenderer.Demo
             | System.Windows.Forms.AnchorStyles.Right)));
             this._htmlLabel.AutoSize = false;
             this._htmlLabel.AutoSizeHeightOnly = true;
+            this._htmlLabel.AvoidGeometryAntialias = false;
             this._htmlLabel.BackColor = System.Drawing.Color.Transparent;
             this._htmlLabel.BaseStylesheet = null;
             this._htmlLabel.Location = new System.Drawing.Point(10, 11);
             this._htmlLabel.Name = "_htmlLabel";
-            this._htmlLabel.Size = new System.Drawing.Size(385, 34);
+            this._htmlLabel.Size = new System.Drawing.Size(385, 33);
             this._htmlLabel.TabIndex = 0;
             this._htmlLabel.Text = "This is an <b>HtmlLabel</b> on transparent background with <span style=\"color: re" +
     "d\">colors</span> and links: <a href=\"http://htmlrenderer.codeplex.com/\">HTML Ren" +
     "derer</a>";
+            this._htmlLabel.UseGdiPlusTextRendering = false;
             this._htmlLabel.Click += new System.EventHandler(this.OnHtmlLabelClick);
             // 
             // label1
