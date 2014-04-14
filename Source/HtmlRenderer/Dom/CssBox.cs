@@ -117,16 +117,14 @@ namespace HtmlRenderer.Dom
             set
             {
                 //Remove from last parent
-                if (_parentBox != null)
+                if( _parentBox != null )
                     _parentBox.Boxes.Remove(this);
 
                 _parentBox = value;
 
                 //Add to new parent
-                if (value != null && !value.Boxes.Contains(this))
-                {
+                if( value != null )
                     _parentBox.Boxes.Add(this);
-                }
             }
         }
 
