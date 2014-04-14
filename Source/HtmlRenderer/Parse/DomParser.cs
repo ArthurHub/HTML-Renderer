@@ -630,10 +630,9 @@ namespace HtmlRenderer.Parse
 
                 if (brBox != null)
                 {
-                    var anonBlock = CssBox.CreateBlock(box, new HtmlTag("br", true), brBox);
+                    brBox.Display = CssConstants.Block;
                     if (followingBlock)
-                        anonBlock.Height = ".95em"; // atodo: check the height to min-height when it is supported
-                    brBox.ParentBox = null;
+                        brBox.Height = ".95em"; // atodo: check the height to min-height when it is supported
                 }
 
             } while (brBox != null);
