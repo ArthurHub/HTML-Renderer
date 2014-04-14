@@ -104,7 +104,7 @@ namespace HtmlRenderer.Dom
         /// </summary>
         public HtmlContainer HtmlContainer
         {
-            get { return _htmlContainer ?? (_parentBox != null ? _parentBox.HtmlContainer : null); }
+            get { return _htmlContainer ?? ( _htmlContainer = _parentBox != null ? _parentBox.HtmlContainer : null ); }
             set { _htmlContainer = value; }
         }
 
@@ -117,10 +117,8 @@ namespace HtmlRenderer.Dom
             set
             {
                 //Remove from last parent
-                if (_parentBox != null && _parentBox.Boxes.Contains(this))
-                {
+                if (_parentBox != null)
                     _parentBox.Boxes.Remove(this);
-                }
 
                 _parentBox = value;
 
@@ -128,13 +126,12 @@ namespace HtmlRenderer.Dom
                 if (value != null && !value.Boxes.Contains(this))
                 {
                     _parentBox.Boxes.Add(this);
-                    _htmlContainer = value.HtmlContainer;
                 }
             }
         }
 
         /// <summary>
-        /// Gets the childrenn boxes of this box
+        /// Gets the children boxes of this box
         /// </summary>
         public List<CssBox> Boxes
         {
