@@ -471,6 +471,19 @@ namespace HtmlRenderer.Dom
         }
 
         /// <summary>
+        /// Move all child boxes from <paramref name="fromBox"/> to this box.
+        /// </summary>
+        /// <param name="fromBox">the box to move all its child boxes from</param>
+        public void SetAllBoxes(CssBox fromBox)
+        {
+            foreach(var childBox in fromBox._boxes)
+                childBox._parentBox = this;
+
+            _boxes.AddRange(fromBox._boxes);
+            fromBox._boxes.Clear();
+        }
+
+        /// <summary>
         /// Splits the text into words and saves the result
         /// </summary>
         public void ParseToWords()

@@ -695,8 +695,7 @@ namespace HtmlRenderer.Parse
                     if( DomUtils.ContainsInlinesOnly(tempRightBox) && !ContainsInlinesOnlyDeep(tempRightBox) )
                         CorrectBlockInsideInlineImp(tempRightBox);
 
-                    while( tempRightBox.Boxes.Count > 0 )
-                        tempRightBox.Boxes[0].ParentBox = tempRightBox.ParentBox;
+                    tempRightBox.ParentBox.SetAllBoxes(tempRightBox);
                     tempRightBox.ParentBox = null;
                 }
 
@@ -763,8 +762,7 @@ namespace HtmlRenderer.Parse
                     rightBox = parentBox.Boxes[2];
                 }
 
-                while (badBox.Boxes.Count > 0)
-                    badBox.Boxes[0].ParentBox = rightBox;
+                rightBox.SetAllBoxes(badBox);
             }
             else if (splitBox.ParentBox != null && parentBox.Boxes.Count > 1)
             {
