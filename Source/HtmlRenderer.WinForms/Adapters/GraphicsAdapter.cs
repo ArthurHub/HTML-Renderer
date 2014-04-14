@@ -75,7 +75,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         static GraphicsAdapter()
         {
-            _stringFormat = new StringFormat(StringFormat.GenericDefault);
+            _stringFormat = new StringFormat(StringFormat.GenericTypographic);
             _stringFormat.FormatFlags = StringFormatFlags.NoClip | StringFormatFlags.MeasureTrailingSpaces;
         }
 
@@ -214,14 +214,29 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="font">the font to measure string with</param>
         /// <param name="maxWidth">the max width to render the string in</param>
         /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
-        /// <param name="charFitWidth"></param>
+        /// <param name="charFitWidth">the width that only the fitted characters take</param>
         /// <returns>the size of the string</returns>
         public RSize MeasureString(string str, IFont font, double maxWidth, out int charFit, out int charFitWidth)
         {
-            if( _useGdiPlusTextRendering )
+            charFit = 0;
+            charFitWidth = 0;
+            if (_useGdiPlusTextRendering)
             {
                 ReleaseHdc();
-                throw new NotSupportedException("Char fit string measuring is not supported for GDI+ text rendering");
+
+                var size = MeasureString(str, font);
+
+                for (int i = 1; i <= str.Length; i++)
+                {
+                    charFit = i - 1;
+                    RSize pSize = MeasureString(str.Substring(0, i), font);
+                    if (pSize.Height <= size.Height && pSize.Width < maxWidth)
+                        charFitWidth = (int)pSize.Width;
+                    else
+                        break;
+                }
+
+                return size;
             }
             else
             {
@@ -252,7 +267,7 @@ namespace HtmlRenderer.WinForms.Adapters
             {
                 ReleaseHdc();
                 var brush = ((BrushAdapter)CacheUtils.GetSolidBrush(color)).Brush;
-                _g.DrawString(str, ( (FontAdapter)font ).Font, brush, (int)Math.Round(point.X - font.LeftPadding*.8f), (int)Math.Round(point.Y));
+                _g.DrawString(str, ((FontAdapter)font).Font, brush, (int)Math.Round(point.X), (int)Math.Round(point.Y), StringFormat.GenericTypographic);
             }
             else
             {

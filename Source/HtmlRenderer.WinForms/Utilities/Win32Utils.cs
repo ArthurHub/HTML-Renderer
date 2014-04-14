@@ -21,6 +21,10 @@ namespace HtmlRenderer.WinForms.Utilities
     /// </summary>
     internal static class Win32Utils
     {
+        public const int WS_BORDER = 0x00800000;
+
+        public const int WS_EX_CLIENTEDGE = 0x200;
+
         /// <summary>
         /// Const for BitBlt copy raster-operation code.
         /// </summary>
@@ -30,6 +34,16 @@ namespace HtmlRenderer.WinForms.Utilities
         /// Const for BitBlt paint raster-operation code.
         /// </summary>
         public const int BitBltPaint = 0x00EE0086;
+
+        public const int WM_SETCURSOR = 0x20;
+
+        public const int IDC_HAND = 32649;
+
+        [DllImport("user32.dll")]
+        public static extern int SetCursor(int hCursor);
+
+        [DllImport("user32.dll")]
+        public static extern int LoadCursor(int hInstance, int lpCursorName);
 
         /// <summary>
         /// Create a compatible memory HDC from the given HDC.<br/>

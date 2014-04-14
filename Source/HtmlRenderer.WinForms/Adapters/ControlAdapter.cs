@@ -29,13 +29,19 @@ namespace HtmlRenderer.WinForms.Adapters
         private readonly Control _control;
 
         /// <summary>
+        /// Use GDI+ text rendering to measure/draw text.
+        /// </summary>
+        private bool _useGdiPlusTextRendering;
+
+        /// <summary>
         /// Init.
         /// </summary>
-        public ControlAdapter(Control control)
+        public ControlAdapter(Control control, bool useGdiPlusTextRendering)
         {
             ArgChecker.AssertArgNotNull(control, "control");
 
             _control = control;
+            _useGdiPlusTextRendering = useGdiPlusTextRendering;
         }
 
         /// <summary>
@@ -122,7 +128,7 @@ namespace HtmlRenderer.WinForms.Adapters
         public IGraphics CreateGraphics()
         {
             // the win forms graphics object will be disposed by WinGraphics
-            return new GraphicsAdapter(_control.CreateGraphics(), false, true);
+            return new GraphicsAdapter(_control.CreateGraphics(), _useGdiPlusTextRendering, true);
         }
 
         /// <summary>

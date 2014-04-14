@@ -600,7 +600,7 @@ namespace HtmlRenderer.Core.Handlers
 
         /// <summary>
         /// Calculate the character index and offset by characters for the given word and given offset.<br/>
-        /// <seealso cref="CalculateWordCharIndexAndOffset(IControl, CssRect, RPoint, bool, out int, out float)"/>.
+        /// <seealso cref="CalculateWordCharIndexAndOffset(HtmlRenderer.Interfaces.IControl,HtmlRenderer.Core.Dom.CssRect,HtmlRenderer.Entities.RPoint,bool)"/>.
         /// </summary>
         /// <param name="control">used to create graphics to measure string</param>
         /// <param name="word">the word to calculate its index and offset</param>
@@ -634,9 +634,9 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="control">used to create graphics to measure string</param>
         /// <param name="word">the word to calculate its index and offset</param>
         /// <param name="loc">the location to calculate for</param>
+        /// <param name="inclusive">is to include the first character in the calculation</param>
         /// <param name="selectionIndex">return the index of the char under the location</param>
         /// <param name="selectionOffset">return the offset of the char under the location</param>
-        /// <param name="inclusive">is to include the first character in the calculation</param>
         private static void CalculateWordCharIndexAndOffset(IControl control, CssRect word, RPoint loc, bool inclusive, out int selectionIndex, out double selectionOffset)
         {
             selectionIndex = 0;

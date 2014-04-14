@@ -11,12 +11,15 @@
 // "The Art of War"
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.ComponentModel;
+using System.Drawing.Text;
 using System.Windows.Forms;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Utils;
 using HtmlRenderer.Entities;
+using HtmlRenderer.WinForms.Utilities;
 
 namespace HtmlRenderer.WinForms
 {
@@ -67,6 +70,11 @@ namespace HtmlRenderer.WinForms
         protected HtmlContainer _htmlContainer;
 
         /// <summary>
+        /// The current border style of the control
+        /// </summary>
+        protected BorderStyle _borderStyle;
+
+        /// <summary>
         /// the raw base stylesheet data used in the control
         /// </summary>
         protected string _baseRawCssData;
@@ -75,6 +83,16 @@ namespace HtmlRenderer.WinForms
         /// the base stylesheet data used in the control
         /// </summary>
         protected CssData _baseCssData;
+
+        /// <summary>
+        /// the current html text set in the control
+        /// </summary>
+        protected string _text;
+
+        /// <summary>
+        /// If to use cursors defined by the operating system or .NET cursors
+        /// </summary>
+        protected bool _useSystemCursors;
 
         #endregion
 
@@ -98,6 +116,12 @@ namespace HtmlRenderer.WinForms
             _htmlContainer.StylesheetLoad += OnStylesheetLoad;
             _htmlContainer.ImageLoad += OnImageLoad;
         }
+
+        /// <summary>
+        ///   Raised when the BorderStyle property value changes.
+        /// </summary>
+        [Category("Property Changed")]
+        public event EventHandler BorderStyleChanged;
 
         /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
@@ -126,7 +150,9 @@ namespace HtmlRenderer.WinForms
         /// <summary>
         /// Gets or sets a value indicating if anti-aliasing should be avoided for geometry like backgrounds and borders (default - false).
         /// </summary>
-        public bool AvoidGeometryAntialias
+        [Category("Behavior")]
+        [Description("If anti-aliasing should be avoided for geometry like backgrounds and borders")]
+        public virtual bool AvoidGeometryAntialias
         {
             get { return _htmlContainer.AvoidGeometryAntialias; }
             set { _htmlContainer.AvoidGeometryAntialias = value; }
@@ -145,10 +171,66 @@ namespace HtmlRenderer.WinForms
         /// Early image loading may also effect the layout if image without known size above the current scroll location are loaded as they
         /// will push the html elements down.
         /// </remarks>
-        public bool AvoidImagesLateLoading
+        [Category("Behavior")]
+        [Description("If image loading only when visible should be avoided")]
+        public virtual bool AvoidImagesLateLoading
         {
             get { return _htmlContainer.AvoidImagesLateLoading; }
             set { _htmlContainer.AvoidImagesLateLoading = value; }
+        }
+
+        /// <summary>
+        /// Use GDI+ text rendering to measure/draw text.<br/>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// GDI+ text rendering is less smooth than GDI text rendering but it natively supports alpha channel
+        /// thus allows creating transparent images.
+        /// </para>
+        /// <para>
+        /// While using GDI+ text rendering you can control the text rendering using <see cref="Graphics.TextRenderingHint"/>, note that
+        /// using <see cref="TextRenderingHint.ClearTypeGridFit"/> doesn't work well with transparent background.
+        /// </para>
+        /// </remarks>
+        [Category("Behavior")]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [Description("If to use GDI+ text rendering to measure/draw text, false - use GDI")]
+        public bool UseGdiPlusTextRendering
+        {
+            get { return _htmlContainer.UseGdiPlusTextRendering; }
+            set { _htmlContainer.UseGdiPlusTextRendering = value; }
+        }
+
+        /// <summary>
+        /// If to use cursors defined by the operating system or .NET cursors
+        /// </summary>
+        [Category("Behavior")]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [DefaultValue(false)]
+        [Description("If to use cursors defined by the operating system or .NET cursors")]
+        public bool UseSystemCursors
+        {
+            get { return _useSystemCursors; }
+            set { _useSystemCursors = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the border style.
+        /// </summary>
+        /// <value>The border style.</value>
+        [Category("Appearance")]
+        [DefaultValue(typeof(BorderStyle), "None")]
+        public virtual BorderStyle BorderStyle
+        {
+            get { return _borderStyle; }
+            set
+            {
+                if( BorderStyle != value )
+                {
+                    _borderStyle = value;
+                    OnBorderStyleChanged(EventArgs.Empty);
+                }
+            }
         }
 
         /// <summary>
@@ -161,7 +243,7 @@ namespace HtmlRenderer.WinForms
         [EditorBrowsable(EditorBrowsableState.Always)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Description("Is content selection is enabled for the rendered html.")]
-        public bool IsSelectionEnabled
+        public virtual bool IsSelectionEnabled
         {
             get { return _htmlContainer.IsSelectionEnabled; }
             set { _htmlContainer.IsSelectionEnabled = value; }
@@ -176,7 +258,7 @@ namespace HtmlRenderer.WinForms
         [EditorBrowsable(EditorBrowsableState.Always)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Description("Is the build-in context menu enabled and will be shown on mouse right click.")]
-        public bool IsContextMenuEnabled
+        public virtual bool IsContextMenuEnabled
         {
             get { return _htmlContainer.IsContextMenuEnabled; }
             set { _htmlContainer.IsContextMenuEnabled = value; }
@@ -188,7 +270,8 @@ namespace HtmlRenderer.WinForms
         [Browsable(true)]
         [Category("Appearance")]
         [Description("Set base stylesheet to be used by html rendered in the control.")]
-        public string BaseStylesheet
+        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+        public virtual string BaseStylesheet
         {
             get { return _baseRawCssData; }
             set
@@ -216,14 +299,15 @@ namespace HtmlRenderer.WinForms
         [Description("Sets the html of this control.")]
         public override string Text
         {
-            get { return base.Text; }
+            get { return _text; }
             set
             {
+                _text = value;
                 base.Text = value;
                 if (!IsDisposed)
                 {
                     VerticalScroll.Value = VerticalScroll.Minimum;
-                    _htmlContainer.SetHtml(Text, _baseCssData);
+                    _htmlContainer.SetHtml(_text, _baseCssData);
                     PerformLayout();
                     Invalidate();
                 }
@@ -234,7 +318,7 @@ namespace HtmlRenderer.WinForms
         /// Get the currently selected text segment in the html.
         /// </summary>
         [Browsable(false)]
-        public string SelectedText
+        public virtual string SelectedText
         {
             get { return _htmlContainer.SelectedText; }
         }
@@ -243,7 +327,7 @@ namespace HtmlRenderer.WinForms
         /// Copy the currently selected html segment with style.
         /// </summary>
         [Browsable(false)]
-        public string SelectedHtml
+        public virtual string SelectedHtml
         {
             get { return _htmlContainer.SelectedHtml; }
         }
@@ -252,7 +336,7 @@ namespace HtmlRenderer.WinForms
         /// Get html from the current DOM tree with inline style.
         /// </summary>
         /// <returns>generated html</returns>
-        public string GetHtml()
+        public virtual string GetHtml()
         {
             return _htmlContainer != null ? _htmlContainer.GetHtml() : null;
         }
@@ -264,7 +348,7 @@ namespace HtmlRenderer.WinForms
         /// </summary>
         /// <param name="elementId">the id of the element to get its rectangle</param>
         /// <returns>the rectangle of the element or null if not found</returns>
-        public RectangleF? GetElementRectangle(string elementId)
+        public virtual RectangleF? GetElementRectangle(string elementId)
         {
             return _htmlContainer != null ? _htmlContainer.GetElementRectangle(elementId) : null;
         }
@@ -275,7 +359,7 @@ namespace HtmlRenderer.WinForms
         /// is not enough height to scroll to the top the scroll will be at maximum.<br/>
         /// </summary>
         /// <param name="elementId">the id of the element to scroll to</param>
-        public void ScrollToElement(string elementId)
+        public virtual void ScrollToElement(string elementId)
         {
             ArgChecker.AssertArgNotNullOrEmpty(elementId, "elementId");
 
@@ -290,7 +374,32 @@ namespace HtmlRenderer.WinForms
             }
         }
 
+
         #region Private methods
+
+        /// <summary>
+        /// Override to support border for the control.
+        /// </summary>
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams createParams = base.CreateParams;
+
+                switch (_borderStyle)
+                {
+                    case BorderStyle.FixedSingle:
+                        createParams.Style |= Win32Utils.WS_BORDER;
+                        break;
+
+                    case BorderStyle.Fixed3D:
+                        createParams.ExStyle |= Win32Utils.WS_EX_CLIENTEDGE;
+                        break;
+                }
+
+                return createParams;
+            }
+        }
 
         /// <summary>
         /// Perform the layout of the html in the control.
@@ -312,7 +421,7 @@ namespace HtmlRenderer.WinForms
         /// <summary>
         /// Perform html container layout by the current panel client size.
         /// </summary>
-        private void PerformHtmlLayout()
+        protected void PerformHtmlLayout()
         {
             if (_htmlContainer != null)
             {
@@ -445,56 +554,68 @@ namespace HtmlRenderer.WinForms
         }
 
         /// <summary>
+        ///   Raises the <see cref="BorderStyleChanged" /> event.
+        /// </summary>
+        protected virtual void OnBorderStyleChanged(EventArgs e)
+        {
+            UpdateStyles();
+
+            var handler = BorderStyleChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+            }
+
+        /// <summary>
         /// Propagate the LinkClicked event from root container.
         /// </summary>
-        private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
+        protected virtual void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
         {
-            if (LinkClicked != null)
-            {
-                LinkClicked(this, e);
-            }
+            var handler = LinkClicked;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
         /// Propagate the Render Error event from root container.
         /// </summary>
-        private void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
+        protected virtual void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
         {
-            if(RenderError != null)
+            var handler = RenderError;
+            if (handler != null)
             {
                 if (InvokeRequired)
-                    Invoke(RenderError, this, e);
+                    Invoke(handler, this, e);
                 else
-                    RenderError(this, e);
+                    handler(this, e);
             }
         }
 
         /// <summary>
         /// Propagate the stylesheet load event from root container.
         /// </summary>
-        private void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
-        {
-            if (StylesheetLoad != null)
+        protected virtual void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
             {
-                StylesheetLoad(this, e);
-            }
+            var handler = StylesheetLoad;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
         /// Propagate the image load event from root container.
         /// </summary>
-        private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
-        {
-            if (ImageLoad != null)
+        protected virtual void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
             {
-                ImageLoad(this, e);
-            }
+            var handler = ImageLoad;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
         /// Handle html renderer invalidate and re-layout as requested.
         /// </summary>
-        private void OnRefresh(object sender, HtmlRefreshEventArgs e)
+        protected virtual void OnRefresh(object sender, HtmlRefreshEventArgs e)
         {
             if(e.Layout)
             {
@@ -512,7 +633,7 @@ namespace HtmlRenderer.WinForms
         /// <summary>
         /// On html renderer scroll request adjust the scrolling of the panel to the requested location.
         /// </summary>
-        private void OnScrollChange(object sender, HtmlScrollEventArgs e)
+        protected virtual void OnScrollChange(object sender, HtmlScrollEventArgs e)
         {
             UpdateScroll(new Point((int)e.X, (int)e.Y));
         }
@@ -521,7 +642,7 @@ namespace HtmlRenderer.WinForms
         /// Adjust the scrolling of the panel to the requested location.
         /// </summary>
         /// <param name="location">the location to adjust the scroll to</param>
-        private void UpdateScroll(Point location)
+        protected virtual void UpdateScroll(Point location)
         {
             AutoScrollPosition = location;
             _htmlContainer.ScrollOffset = AutoScrollPosition;
@@ -546,6 +667,30 @@ namespace HtmlRenderer.WinForms
                     return true;
             }
             return base.IsInputKey(keyData);
+        }
+
+        /// <summary>
+        /// Override the proc processing method to set OS specific hand cursor.
+        /// </summary>
+        /// <param name="m">The Windows <see cref="T:System.Windows.Forms.Message"/> to process. </param>
+        [DebuggerStepThrough]
+        protected override void WndProc(ref Message m)
+        {
+            if (_useSystemCursors && m.Msg == Win32Utils.WM_SETCURSOR && Cursor == Cursors.Hand)
+            {
+                try
+                {
+                    // Replace .NET's hand cursor with the OS cursor
+                    Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IDC_HAND));
+                    m.Result = IntPtr.Zero;
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    OnRenderError(this, new HtmlRenderErrorEventArgs(HtmlRenderErrorType.General, "Failed to set OS hand cursor", ex));
+                }
+            }
+            base.WndProc(ref m);
         }
 
         /// <summary>

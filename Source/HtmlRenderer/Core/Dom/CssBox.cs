@@ -104,7 +104,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         public HtmlContainerInt HtmlContainer
         {
-            get { return _htmlContainer ?? (_parentBox != null ? _parentBox.HtmlContainer : null); }
+            get { return _htmlContainer ?? ( _htmlContainer = _parentBox != null ? _parentBox.HtmlContainer : null ); }
             set { _htmlContainer = value; }
         }
 
@@ -117,24 +117,19 @@ namespace HtmlRenderer.Core.Dom
             set
             {
                 //Remove from last parent
-                if (_parentBox != null && _parentBox.Boxes.Contains(this))
-                {
+                if( _parentBox != null )
                     _parentBox.Boxes.Remove(this);
-                }
 
                 _parentBox = value;
 
                 //Add to new parent
-                if (value != null && !value.Boxes.Contains(this))
-                {
+                if( value != null )
                     _parentBox.Boxes.Add(this);
-                    HtmlContainer = value.HtmlContainer;
                 }
             }
-        }
 
         /// <summary>
-        /// Gets the childrenn boxes of this box
+        /// Gets the children boxes of this box
         /// </summary>
         public List<CssBox> Boxes
         {
@@ -473,6 +468,19 @@ namespace HtmlRenderer.Core.Dom
 
             _parentBox.Boxes.Remove(this);
             _parentBox.Boxes.Insert(index, this);
+        }
+
+        /// <summary>
+        /// Move all child boxes from <paramref name="fromBox"/> to this box.
+        /// </summary>
+        /// <param name="fromBox">the box to move all its child boxes from</param>
+        public void SetAllBoxes(CssBox fromBox)
+        {
+            foreach(var childBox in fromBox._boxes)
+                childBox._parentBox = this;
+
+            _boxes.AddRange(fromBox._boxes);
+            fromBox._boxes.Clear();
         }
 
         /// <summary>
@@ -1181,7 +1189,7 @@ namespace HtmlRenderer.Core.Dom
             if (rect.Width > 0 && rect.Height > 0)
             {
                 IBrush brush = null;
-                
+
                 if (BackgroundGradient != CssConstants.None)
                 {
                     brush = g.GetLinearGradientBrush(rect, ActualBackgroundColor, ActualBackgroundGradient, ActualBackgroundGradientAngle);
@@ -1382,7 +1390,7 @@ namespace HtmlRenderer.Core.Dom
         protected override IFont GetCachedFont(string fontFamily, double fsize, RFontStyle st)
         {
             return HtmlContainer.Global.GetFont(fontFamily, fsize, st);
-        }
+            }
 
         protected override RColor GetActualColor(string colorStr)
         {

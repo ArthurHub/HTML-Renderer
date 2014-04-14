@@ -27,7 +27,7 @@ namespace HtmlRenderer.Core.Dom
 
 
         public CssSpacingBox(CssBox tableBox, ref CssBox extendedBox, int startRow)
-            : base(tableBox, new HtmlTag("none",new Dictionary<string, string>{{"colspan","1"}} ))
+            : base(tableBox, new HtmlTag("none", false, new Dictionary<string, string> {{"colspan", "1"}}))
         {
             _extendedBox = extendedBox;
             Display = CssConstants.None;

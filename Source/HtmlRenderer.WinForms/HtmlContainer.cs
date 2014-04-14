@@ -378,7 +378,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleMouseDown(new ControlAdapter(parent), Utils.Convert(e.Location));
+            _htmlContainerInt.HandleMouseDown(new ControlAdapter(parent, _useGdiPlusTextRendering), Utils.Convert(e.Location));
         }
 
         /// <summary>
@@ -391,7 +391,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleMouseUp(new ControlAdapter(parent), Utils.Convert(e.Location), CreateMouseEvent(e));
+            _htmlContainerInt.HandleMouseUp(new ControlAdapter(parent, _useGdiPlusTextRendering), Utils.Convert(e.Location), CreateMouseEvent(e));
         }
 
         /// <summary>
@@ -404,7 +404,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleMouseDoubleClick(new ControlAdapter(parent), Utils.Convert(e.Location));
+            _htmlContainerInt.HandleMouseDoubleClick(new ControlAdapter(parent, _useGdiPlusTextRendering), Utils.Convert(e.Location));
         }
 
         /// <summary>
@@ -417,7 +417,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleMouseMove(new ControlAdapter(parent), Utils.Convert(e.Location));
+            _htmlContainerInt.HandleMouseMove(new ControlAdapter(parent, _useGdiPlusTextRendering), Utils.Convert(e.Location));
         }
 
         /// <summary>
@@ -428,7 +428,7 @@ namespace HtmlRenderer.WinForms
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
 
-            _htmlContainerInt.HandleMouseLeave(new ControlAdapter(parent));
+            _htmlContainerInt.HandleMouseLeave(new ControlAdapter(parent, _useGdiPlusTextRendering));
         }
 
         /// <summary>
@@ -441,7 +441,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleKeyDown(new ControlAdapter(parent), CreateKeyEevent(e));
+            _htmlContainerInt.HandleKeyDown(new ControlAdapter(parent, _useGdiPlusTextRendering), CreateKeyEevent(e));
         }
 
         /// <summary>

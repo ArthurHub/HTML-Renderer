@@ -13,6 +13,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Windows.Forms;
 using HtmlRenderer.Core;
 using HtmlRenderer.Entities;
@@ -126,12 +127,35 @@ namespace HtmlRenderer.WinForms
         public event EventHandler<HtmlImageLoadEventArgs> ImageLoad;
 
         /// <summary>
+        /// Use GDI+ text rendering to measure/draw text.<br/>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// GDI+ text rendering is less smooth than GDI text rendering but it natively supports alpha channel
+        /// thus allows creating transparent images.
+        /// </para>
+        /// <para>
+        /// While using GDI+ text rendering you can control the text rendering using <see cref="Graphics.TextRenderingHint"/>, note that
+        /// using <see cref="TextRenderingHint.ClearTypeGridFit"/> doesn't work well with transparent background.
+        /// </para>
+        /// </remarks>
+        [Category("Behavior")]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [Description("If to use GDI+ text rendering to measure/draw text, false - use GDI")]
+        public bool UseGdiPlusTextRendering
+        {
+            get { return _htmlContainer.UseGdiPlusTextRendering; }
+            set { _htmlContainer.UseGdiPlusTextRendering = value; }
+        }
+
+        /// <summary>
         /// Set base stylesheet to be used by html rendered in the panel.
         /// </summary>
         [Browsable(true)]
         [Description("Set base stylesheet to be used by html rendered in the tooltip.")]
         [Category("Appearance")]
-        public string BaseStylesheet
+        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+        public virtual string BaseStylesheet
         {
             get { return _baseRawCssData; }
             set
@@ -149,7 +173,7 @@ namespace HtmlRenderer.WinForms
         [Browsable(true)]
         [Description("The CSS class used for tooltip html root div.")]
         [Category("Appearance")]
-        public string TooltipCssClass
+        public virtual string TooltipCssClass
         {
             get { return _tooltipCssClass; }
             set { _tooltipCssClass = value; }
@@ -164,7 +188,7 @@ namespace HtmlRenderer.WinForms
         [DefaultValue(false)]
         [Description("If to handle links in the tooltip.")]
         [Category("Behavior")]
-        public bool AllowLinksHandling
+        public virtual bool AllowLinksHandling
         {
             get { return _allowLinksHandling; }
             set { _allowLinksHandling = value; }
@@ -177,7 +201,7 @@ namespace HtmlRenderer.WinForms
         [Browsable(true)]
         [Category("Layout")]
         [Description("Restrict the max size of the shown tooltip (0 is not restricted)")]
-        public Size MaximumSize
+        public virtual Size MaximumSize
         {
             get { return Size.Round(_htmlContainer.MaxSize); }
             set { _htmlContainer.MaxSize = value; }
@@ -189,7 +213,7 @@ namespace HtmlRenderer.WinForms
         /// <summary>
         /// On tooltip appear set the html by the associated control, layout and set the tooltip size by the html size.
         /// </summary>
-        private void OnToolTipPopup(object sender, PopupEventArgs e)
+        protected virtual void OnToolTipPopup(object sender, PopupEventArgs e)
         {
             //Create fragment container
             var cssClass = string.IsNullOrEmpty(_tooltipCssClass) ? null : string.Format(" class=\"{0}\"", _tooltipCssClass);
@@ -204,7 +228,9 @@ namespace HtmlRenderer.WinForms
             }
 
             //Set the size of the tooltip
-            e.ToolTipSize = new Size((int)Math.Ceiling(_htmlContainer.ActualSize.Width), (int)Math.Ceiling(_htmlContainer.ActualSize.Height));
+            var desiredWidth = (int)Math.Ceiling(MaximumSize.Width > 0 ? Math.Min(_htmlContainer.ActualSize.Width, MaximumSize.Width) : _htmlContainer.ActualSize.Width);
+            var desiredHeight = (int)Math.Ceiling(MaximumSize.Height > 0 ? Math.Min(_htmlContainer.ActualSize.Height, MaximumSize.Height) : _htmlContainer.ActualSize.Height);
+            e.ToolTipSize = new Size(desiredWidth, desiredHeight);
             
             // start mouse handle timer
             if( _allowLinksHandling )
@@ -217,7 +243,7 @@ namespace HtmlRenderer.WinForms
         /// <summary>
         /// Draw the html using the tooltip graphics.
         /// </summary>
-        private void OnToolTipDraw(object sender, DrawToolTipEventArgs e)
+        protected virtual void OnToolTipDraw(object sender, DrawToolTipEventArgs e)
         {
             if(_tooltipHandle == IntPtr.Zero)
             {
@@ -239,7 +265,7 @@ namespace HtmlRenderer.WinForms
         /// </summary>
         /// <param name="associatedControl">the control the tooltip is appearing on</param>
         /// <param name="size">the size of the tooltip window</param>
-        private void AdjustTooltipPosition(Control associatedControl, Size size)
+        protected virtual void AdjustTooltipPosition(Control associatedControl, Size size)
         {
             var mousePos = Control.MousePosition;
             var screenBounds = Screen.FromControl(associatedControl).WorkingArea;
@@ -259,45 +285,41 @@ namespace HtmlRenderer.WinForms
         /// <summary>
         /// Propagate the LinkClicked event from root container.
         /// </summary>
-        private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
-        {
-            if (LinkClicked != null)
+        protected virtual void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
             {
-                LinkClicked(this, e);
-            }
+            var handler = LinkClicked;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
         /// Propagate the Render Error event from root container.
         /// </summary>
-        private void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
-        {
-            if (RenderError != null)
+        protected virtual void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
             {
-                RenderError(this, e);
-            }
+            var handler = RenderError;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
         /// Propagate the stylesheet load event from root container.
         /// </summary>
-        private void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
-        {
-            if (StylesheetLoad != null)
+        protected virtual void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
             {
-                StylesheetLoad(this, e);
-            }
+            var handler = StylesheetLoad;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
         /// Propagate the image load event from root container.
         /// </summary>
-        private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
-        {
-            if (ImageLoad != null)
+        protected virtual void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
             {
-                ImageLoad(this, e);
-            }
+            var handler = ImageLoad;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
@@ -306,7 +328,7 @@ namespace HtmlRenderer.WinForms
         /// 2. Call HandleMouseMove so the mouse cursor will react if over a link element.
         /// 3. Call HandleMouseDown and HandleMouseUp to simulate click on a link if one was clicked.
         /// </summary>
-        private void OnLinkHandlingTimerTick(object sender, EventArgs eventArgs)
+        protected virtual void OnLinkHandlingTimerTick(object sender, EventArgs eventArgs)
         {
             try
             {
@@ -349,7 +371,7 @@ namespace HtmlRenderer.WinForms
         /// <summary>
         /// Unsubscribe from events and dispose of <see cref="_htmlContainer"/>.
         /// </summary>
-        private void OnToolTipDisposed(object sender, EventArgs eventArgs)
+        protected virtual void OnToolTipDisposed(object sender, EventArgs eventArgs)
         {
             Popup -= OnToolTipPopup;
             Draw -= OnToolTipDraw;

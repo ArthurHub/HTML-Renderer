@@ -788,7 +788,7 @@ namespace HtmlRenderer.Core.Utils
         {
             builder.AppendFormat("{0}<{1}", new string(' ', 2 * indent), box.Display);
             if (box.HtmlTag != null)
-                builder.AppendFormat(" elm=\"{0}\"", box.HtmlTag != null ? box.HtmlTag.Name : string.Empty);
+                builder.AppendFormat(" element=\"{0}\"", box.HtmlTag != null ? box.HtmlTag.Name : string.Empty);
             if (box.Words.Count > 0)
                 builder.AppendFormat(" words=\"{0}\"", box.Words.Count);
             builder.AppendFormat("{0}>\r\n", box.Boxes.Count > 0 ? "" : "/");

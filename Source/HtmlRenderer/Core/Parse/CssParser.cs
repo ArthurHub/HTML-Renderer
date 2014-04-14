@@ -43,6 +43,11 @@ namespace HtmlRenderer.Core.Parse
         /// </summary>
         private readonly CssValueParser _valueParser;
 
+        /// <summary>
+        /// The chars to trim the css class name by
+        /// </summary>
+        private static readonly char[] _cssClassTrimChars = new[] {'\r', '\n', '\t', ' ', '-', '!', '<', '>'};
+
         #endregion
 
 
@@ -119,7 +124,7 @@ namespace HtmlRenderer.Core.Parse
         {
             return ParseFontFamilyProperty(value);
         }
-        
+
         /// <summary>
         /// Parses a color value in CSS style; e.g. #ff0000, red, rgb(255,0,0), rgb(100%, 0, 0) 
         /// </summary>
@@ -225,7 +230,7 @@ namespace HtmlRenderer.Core.Parse
             string atrule;
             while ((atrule = RegexParserUtils.GetCssAtRules(stylesheet, ref startIdx)) != null)
             {
-                //Just processs @media rules
+                //Just process @media rules
                 if (!atrule.StartsWith("@media",StringComparison.InvariantCultureIgnoreCase)) continue;
 
                 //Extract specified media types
@@ -278,7 +283,7 @@ namespace HtmlRenderer.Core.Parse
 
                 foreach (string cls in classes)
                 {
-                    string className = cls.Trim();
+                    string className = cls.Trim(_cssClassTrimChars);
                     if (!String.IsNullOrEmpty(className))
                     {
                         var newblock = ParseCssBlockImp(className, blockSource);

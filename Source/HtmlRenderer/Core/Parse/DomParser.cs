@@ -39,7 +39,7 @@ namespace HtmlRenderer.Core.Parse
         /// Init.
         /// </summary>
         public DomParser(CssParser cssParser)
-        {
+    {
             ArgChecker.AssertArgNotNull(cssParser, "cssParser");
 
             _cssParser = cssParser;
@@ -122,14 +122,16 @@ namespace HtmlRenderer.Core.Parse
                 if (box.HtmlTag.HasAttribute("style"))
                 {
                     var block = _cssParser.ParseCssBlock(box.HtmlTag.Name, box.HtmlTag.TryGetAttribute("style"));
-                    AssignCssBlock(box, block);
+                    if(block != null)
+                        AssignCssBlock(box, block);
                 }
 
                 // Check for the <style> tag
-                if (box.HtmlTag.Name.Equals("style", StringComparison.CurrentCultureIgnoreCase) && box.Boxes.Count == 1)
+                if (box.HtmlTag.Name.Equals("style", StringComparison.CurrentCultureIgnoreCase) && box.Boxes.Count > 0)
                 {
                     CloneCssData(ref cssData, ref cssDataChanged);
-                    _cssParser.ParseStyleSheet(cssData, box.Boxes[0].Text.CutSubstring());
+                    foreach (var child in box.Boxes)
+                        _cssParser.ParseStyleSheet(cssData, child.Text.CutSubstring());
                 }
 
                 // Check for the <link rel=stylesheet> tag
@@ -648,10 +650,9 @@ namespace HtmlRenderer.Core.Parse
 
                 if (brBox != null)
                 {
-                    var anonBlock = CssBox.CreateBlock(box, new HtmlTag("br"), brBox);
+                    brBox.Display = CssConstants.Block;
                     if (followingBlock)
-                        anonBlock.Height = ".95em"; // atodo: check the height to min-height when it is supported
-                    brBox.ParentBox = null;
+                        brBox.Height = ".95em"; // atodo: check the height to min-height when it is supported
                 }
 
             } while (brBox != null);
@@ -668,7 +669,18 @@ namespace HtmlRenderer.Core.Parse
             {
                 if (DomUtils.ContainsInlinesOnly(box) && !ContainsInlinesOnlyDeep(box))
                 {
-                    CorrectBlockInsideInlineImp(box);
+                    var tempRightBox = CorrectBlockInsideInlineImp(box);
+                    while( tempRightBox != null )
+                    {
+                        // loop on the created temp right box for the fixed box until no more need (optimization remove recursion)
+                        CssBox newTempRightBox = null;
+                        if (DomUtils.ContainsInlinesOnly(tempRightBox) && !ContainsInlinesOnlyDeep(tempRightBox))
+                            newTempRightBox = CorrectBlockInsideInlineImp(tempRightBox);
+
+                        tempRightBox.ParentBox.SetAllBoxes(tempRightBox);
+                        tempRightBox.ParentBox = null;
+                        tempRightBox = newTempRightBox;
+                    }
                 }
 
                 if (!DomUtils.ContainsInlinesOnly(box))
@@ -689,13 +701,16 @@ namespace HtmlRenderer.Core.Parse
         /// Rearrange the DOM of the box to have block box with boxes before the inner block box and after.
         /// </summary>
         /// <param name="box">the box that has the problem</param>
-        private static void CorrectBlockInsideInlineImp(CssBox box)
+        private static CssBox CorrectBlockInsideInlineImp(CssBox box)
         {
-            if (box.Boxes.Count > 1 || box.Boxes[0].Boxes.Count > 1)
+            if( box.Display == CssConstants.Inline )
+                box.Display = CssConstants.Block;
+
+            if( box.Boxes.Count > 1 || box.Boxes[0].Boxes.Count > 1 )
             {
                 var leftBlock = CssBox.CreateBlock(box);
 
-                while (ContainsInlinesOnlyDeep(box.Boxes[0]))
+                while( ContainsInlinesOnlyDeep(box.Boxes[0]) )
                     box.Boxes[0].ParentBox = leftBlock;
                 leftBlock.SetBeforeBox(box.Boxes[0]);
 
@@ -704,19 +719,27 @@ namespace HtmlRenderer.Core.Parse
 
                 CorrectBlockSplitBadBox(box, splitBox, leftBlock);
 
-                if (box.Boxes.Count > 2)
+                // remove block that did not get any inner elements
+                if( leftBlock.Boxes.Count < 1 )
+                    leftBlock.ParentBox = null;
+
+                int minBoxes = leftBlock.ParentBox != null ? 2 : 1;
+                if( box.Boxes.Count > minBoxes )
                 {
-                    var rightBox = CssBox.CreateBox(box, null, box.Boxes[2]);
-                    while (box.Boxes.Count > 3)
-                        box.Boxes[3].ParentBox = rightBox;
+                    // create temp box to handle the tail elements and then get them back so no deep hierarchy is created
+                    var tempRightBox = CssBox.CreateBox(box, null, box.Boxes[minBoxes]);
+                    while( box.Boxes.Count > minBoxes + 1 )
+                        box.Boxes[minBoxes + 1].ParentBox = tempRightBox;
+
+                    return tempRightBox;
                 }
             }
-            else if (box.Boxes[0].Display == CssConstants.Inline)
+            else if( box.Boxes[0].Display == CssConstants.Inline )
             {
                 box.Boxes[0].Display = CssConstants.Block;
             }
-            if (box.Display == CssConstants.Inline)
-                box.Display = CssConstants.Block;
+
+            return null;
         }
 
         /// <summary>
@@ -728,13 +751,15 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="leftBlock">the left block box that is created for the split</param>
         private static void CorrectBlockSplitBadBox(CssBox parentBox, CssBox badBox, CssBox leftBlock)
         {
-            var leftbox = CssBox.CreateBox(leftBlock, badBox.HtmlTag);
-            leftbox.InheritStyle(badBox, true);
-
-            bool hadLeft = false;
+            CssBox leftbox = null;
             while (badBox.Boxes[0].IsInline && ContainsInlinesOnlyDeep(badBox.Boxes[0]))
             {
-                hadLeft = true;
+                if(leftbox == null)
+                {
+                    // if there is no elements in the left box there is no reason to keep it
+                    leftbox = CssBox.CreateBox(leftBlock, badBox.HtmlTag);
+                    leftbox.InheritStyle(badBox, true);
+                }
                 badBox.Boxes[0].ParentBox = leftbox;
             }
 
@@ -768,13 +793,12 @@ namespace HtmlRenderer.Core.Parse
                     rightBox = parentBox.Boxes[2];
                 }
 
-                while (badBox.Boxes.Count > 0)
-                    badBox.Boxes[0].ParentBox = rightBox;
+                rightBox.SetAllBoxes(badBox);
             }
             else if (splitBox.ParentBox != null && parentBox.Boxes.Count > 1)
             {
                 splitBox.SetBeforeBox(parentBox.Boxes[1]);
-                if (splitBox.HtmlTag != null && splitBox.HtmlTag.Name == "br" && (hadLeft || leftBlock.Boxes.Count > 1))
+                if (splitBox.HtmlTag != null && splitBox.HtmlTag.Name == "br" && (leftbox != null || leftBlock.Boxes.Count > 1))
                     splitBox.Display = CssConstants.Inline;
             }
         }

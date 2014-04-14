@@ -290,7 +290,7 @@ namespace HtmlRenderer.Core.Utils
         }
         
         /// <summary>
-        /// Compare that the substring of <paramref name="str"/> is equal to <paramref name="str"/>
+        /// Compare that the substring of <paramref name="str"/> is equal to <paramref name="str2"/>
         /// Assume given substring is not empty and all indexes are valid!<br/>
         /// </summary>
         /// <returns>true - equals, false - not equals</returns>

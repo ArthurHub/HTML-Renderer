@@ -25,7 +25,12 @@ namespace HtmlRenderer.Core.Dom
         private readonly string _name;
         
         /// <summary>
-        /// collection of attributes and thier value the html tag has
+        /// if the tag is single placed; in other words it doesn't have a separate closing tag;
+        /// </summary>
+        private readonly bool _isSingle;
+
+        /// <summary>
+        /// collection of attributes and their value the html tag has
         /// </summary>
         private readonly Dictionary<string, string> _attributes;
 
@@ -36,12 +41,14 @@ namespace HtmlRenderer.Core.Dom
         /// Init.
         /// </summary>
         /// <param name="name">the name of the html tag</param>
+        /// <param name="isSingle">if the tag is single placed; in other words it doesn't have a separate closing tag;</param>
         /// <param name="attributes">collection of attributes and their value the html tag has</param>
-        public HtmlTag(string name, Dictionary<string, string> attributes = null)
+        public HtmlTag(string name, bool isSingle, Dictionary<string, string> attributes = null)
         {
             ArgChecker.AssertArgNotNullOrEmpty(name, "name");
 
             _name = name;
+            _isSingle = isSingle;
             _attributes = attributes;
         }
 
@@ -54,7 +61,7 @@ namespace HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Gets collection of attributes and thier value the html tag has
+        /// Gets collection of attributes and their value the html tag has
         /// </summary>
         public Dictionary<string, string> Attributes
         {
@@ -62,12 +69,12 @@ namespace HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Gets if the tag is single placed; in other words it doesn't need a closing tag; 
+        /// Gets if the tag is single placed; in other words it doesn't have a separate closing tag; <br/>
         /// e.g. &lt;br&gt;
         /// </summary>
         public bool IsSingle
         {
-            get { return HtmlUtils.IsSingleTag(Name); }
+            get { return _isSingle; }
         }
 
         /// <summary>
