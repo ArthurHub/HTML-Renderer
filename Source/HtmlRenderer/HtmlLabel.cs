@@ -168,6 +168,7 @@ namespace HtmlRenderer
         /// Gets or sets a value indicating if anti-aliasing should be avoided for geometry like backgrounds and borders (default - false).
         /// </summary>
         [Category("Behavior")]
+        [DefaultValue(false)]
         [Description("If anti-aliasing should be avoided for geometry like backgrounds and borders")]
         public virtual bool AvoidGeometryAntialias
         {
@@ -190,6 +191,7 @@ namespace HtmlRenderer
         /// </remarks>
         [Category("Behavior")]
         [EditorBrowsable(EditorBrowsableState.Always)]
+        [DefaultValue(false)]
         [Description("If to use GDI+ text rendering to measure/draw text, false - use GDI")]
         public bool UseGdiPlusTextRendering
         {

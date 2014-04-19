@@ -150,6 +150,7 @@ namespace HtmlRenderer
         /// Gets or sets a value indicating if anti-aliasing should be avoided for geometry like backgrounds and borders (default - false).
         /// </summary>
         [Category("Behavior")]
+        [DefaultValue(false)]
         [Description("If anti-aliasing should be avoided for geometry like backgrounds and borders")]
         public virtual bool AvoidGeometryAntialias
         {
@@ -171,6 +172,7 @@ namespace HtmlRenderer
         /// will push the html elements down.
         /// </remarks>
         [Category("Behavior")]
+        [DefaultValue(false)]
         [Description("If image loading only when visible should be avoided")]
         public virtual bool AvoidImagesLateLoading
         {
@@ -192,6 +194,7 @@ namespace HtmlRenderer
         /// </para>
         /// </remarks>
         [Category("Behavior")]
+        [DefaultValue(false)]
         [EditorBrowsable(EditorBrowsableState.Always)]
         [Description("If to use GDI+ text rendering to measure/draw text, false - use GDI")]
         public bool UseGdiPlusTextRendering

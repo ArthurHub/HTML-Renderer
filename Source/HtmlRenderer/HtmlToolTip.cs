@@ -140,6 +140,7 @@ namespace HtmlRenderer
         /// </para>
         /// </remarks>
         [Category("Behavior")]
+        [DefaultValue(false)]
         [EditorBrowsable(EditorBrowsableState.Always)]
         [Description("If to use GDI+ text rendering to measure/draw text, false - use GDI")]
         public bool UseGdiPlusTextRendering
