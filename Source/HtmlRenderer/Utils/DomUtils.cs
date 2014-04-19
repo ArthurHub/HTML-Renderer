@@ -28,6 +28,28 @@ namespace HtmlRenderer.Utils
     internal sealed class DomUtils
     {
         /// <summary>
+        /// Check if the given location is inside the given box deep.<br/>
+        /// Check inner boxes and all lines that the given box spans to.
+        /// </summary>
+        /// <param name="box">the box to check</param>
+        /// <param name="location">the location to check</param>
+        /// <returns>true - location inside the box, false - otherwise</returns>
+        public static bool IsInBox(CssBox box, Point location)
+        {
+            foreach (var line in box.Rectangles)
+            {
+                if (line.Value.Contains(location))
+                    return true;
+            }
+            foreach (var childBox in box.Boxes)
+            {
+                if (IsInBox(childBox, location))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Check if the given box contains only inline child boxes.
         /// </summary>
         /// <param name="box">the box to check</param>
@@ -218,13 +240,8 @@ namespace HtmlRenderer.Utils
             {
                 if(box.IsClickable && box.Visibility == CssConstants.Visible)
                 {
-                    foreach (var line in box.Rectangles)
-                    {
-                        if (line.Value.Contains(location))
-                        {
-                            return box;                        
-                        }
-                    }
+                    if( IsInBox(box, location) )
+                        return box;
                 }
 
                 if (box.ClientRectangle.IsEmpty || box.ClientRectangle.Contains(location))
