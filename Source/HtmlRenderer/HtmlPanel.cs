@@ -569,7 +569,7 @@ namespace HtmlRenderer
         /// <summary>
         /// Propagate the LinkClicked event from root container.
         /// </summary>
-        protected virtual void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
+        protected virtual void OnLinkClicked(HtmlLinkClickedEventArgs e)
         {
             var handler = LinkClicked;
             if (handler != null)
@@ -579,22 +579,17 @@ namespace HtmlRenderer
         /// <summary>
         /// Propagate the Render Error event from root container.
         /// </summary>
-        protected virtual void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
+        protected virtual void OnRenderError(HtmlRenderErrorEventArgs e)
         {
             var handler = RenderError;
             if (handler != null)
-            {
-                if (InvokeRequired)
-                    Invoke(handler, this, e);
-                else
-                    handler(this, e);
-            }
+                handler(this, e);
         }
 
         /// <summary>
         /// Propagate the stylesheet load event from root container.
         /// </summary>
-        protected virtual void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
+        protected virtual void OnStylesheetLoad(HtmlStylesheetLoadEventArgs e)
         {
             var handler = StylesheetLoad;
             if (handler != null)
@@ -604,7 +599,7 @@ namespace HtmlRenderer
         /// <summary>
         /// Propagate the image load event from root container.
         /// </summary>
-        protected virtual void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
+        protected virtual void OnImageLoad(HtmlImageLoadEventArgs e)
         {
             var handler = ImageLoad;
             if (handler != null)
@@ -614,25 +609,17 @@ namespace HtmlRenderer
         /// <summary>
         /// Handle html renderer invalidate and re-layout as requested.
         /// </summary>
-        protected virtual void OnRefresh(object sender, HtmlRefreshEventArgs e)
+        protected virtual void OnRefresh(HtmlRefreshEventArgs e)
         {
-            if(e.Layout)
-            {
-                if (InvokeRequired)
-                    Invoke(new MethodInvoker(PerformLayout));
-                else
-                    PerformLayout();
-            }
-            if (InvokeRequired)
-                    Invoke(new MethodInvoker(Invalidate));
-                else
-                    Invalidate();
+            if (e.Layout)
+                PerformLayout();
+            Invalidate();
         }
-        
+
         /// <summary>
         /// On html renderer scroll request adjust the scrolling of the panel to the requested location.
         /// </summary>
-        protected virtual void OnScrollChange(object sender, HtmlScrollEventArgs e)
+        protected virtual void OnScrollChange(HtmlScrollEventArgs e)
         {
             UpdateScroll(e.Location);
         }
@@ -710,6 +697,47 @@ namespace HtmlRenderer
             }
             base.Dispose(disposing);
         }
+
+
+        #region Private event handlers
+
+        private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
+        {
+            OnLinkClicked(e);
+        }
+
+        private void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
+        {
+            if( InvokeRequired )
+                Invoke(new MethodInvoker(() => OnRenderError(e)));
+            else
+                OnRenderError(e);
+        }
+
+        private void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
+        {
+            OnStylesheetLoad(e);
+        }
+
+        private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
+        {
+            OnImageLoad(e);
+        }
+
+        private void OnRefresh(object sender, HtmlRefreshEventArgs e)
+        {
+            if( InvokeRequired )
+                Invoke(new MethodInvoker(() => OnRefresh(e)));
+            else
+                OnRefresh(e);
+        }
+
+        private void OnScrollChange(object sender, HtmlScrollEventArgs e)
+        {
+            OnScrollChange(e);
+        }
+
+        #endregion
 
         #region Hide not relevant properties from designer
 

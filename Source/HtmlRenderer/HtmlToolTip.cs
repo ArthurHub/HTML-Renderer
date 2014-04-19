@@ -213,7 +213,7 @@ namespace HtmlRenderer
         /// <summary>
         /// On tooltip appear set the html by the associated control, layout and set the tooltip size by the html size.
         /// </summary>
-        protected virtual void OnToolTipPopup(object sender, PopupEventArgs e)
+        protected virtual void OnToolTipPopup(PopupEventArgs e)
         {
             //Create fragment container
             var cssClass = string.IsNullOrEmpty(_tooltipCssClass) ? null : string.Format(" class=\"{0}\"", _tooltipCssClass);
@@ -243,7 +243,7 @@ namespace HtmlRenderer
         /// <summary>
         /// Draw the html using the tooltip graphics.
         /// </summary>
-        protected virtual void OnToolTipDraw(object sender, DrawToolTipEventArgs e)
+        protected virtual void OnToolTipDraw(DrawToolTipEventArgs e)
         {
             if(_tooltipHandle == IntPtr.Zero)
             {
@@ -285,7 +285,7 @@ namespace HtmlRenderer
         /// <summary>
         /// Propagate the LinkClicked event from root container.
         /// </summary>
-        protected virtual void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
+        protected virtual void OnLinkClicked(HtmlLinkClickedEventArgs e)
         {
             var handler = LinkClicked;
             if (handler != null)
@@ -295,7 +295,7 @@ namespace HtmlRenderer
         /// <summary>
         /// Propagate the Render Error event from root container.
         /// </summary>
-        protected virtual void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
+        protected virtual void OnRenderError(HtmlRenderErrorEventArgs e)
         {
             var handler = RenderError;
             if (handler != null)
@@ -305,7 +305,7 @@ namespace HtmlRenderer
         /// <summary>
         /// Propagate the stylesheet load event from root container.
         /// </summary>
-        protected virtual void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
+        protected virtual void OnStylesheetLoad(HtmlStylesheetLoadEventArgs e)
         {
             var handler = StylesheetLoad;
             if (handler != null)
@@ -315,7 +315,7 @@ namespace HtmlRenderer
         /// <summary>
         /// Propagate the image load event from root container.
         /// </summary>
-        protected virtual void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
+        protected virtual void OnImageLoad(HtmlImageLoadEventArgs e)
         {
             var handler = ImageLoad;
             if (handler != null)
@@ -328,7 +328,7 @@ namespace HtmlRenderer
         /// 2. Call HandleMouseMove so the mouse cursor will react if over a link element.
         /// 3. Call HandleMouseDown and HandleMouseUp to simulate click on a link if one was clicked.
         /// </summary>
-        protected virtual void OnLinkHandlingTimerTick(object sender, EventArgs eventArgs)
+        protected virtual void OnLinkHandlingTimerTick(EventArgs e)
         {
             try
             {
@@ -371,7 +371,7 @@ namespace HtmlRenderer
         /// <summary>
         /// Unsubscribe from events and dispose of <see cref="_htmlContainer"/>.
         /// </summary>
-        protected virtual void OnToolTipDisposed(object sender, EventArgs eventArgs)
+        protected virtual void OnToolTipDisposed(EventArgs e)
         {
             Popup -= OnToolTipPopup;
             Draw -= OnToolTipDraw;
@@ -393,6 +393,51 @@ namespace HtmlRenderer
                 _linkHandlingTimer = null;
             }
         }
+
+
+        #region Private event handlers
+
+        private void OnToolTipPopup(object sender, PopupEventArgs e)
+        {
+            OnToolTipPopup(e);
+        }
+
+        private void OnToolTipDraw(object sender, DrawToolTipEventArgs e)
+        {
+            OnToolTipDraw(e);
+        }
+
+        private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
+        {
+            OnLinkClicked(e);
+        }
+
+        private void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
+        {
+            OnRenderError(e);
+        }
+
+        private void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
+        {
+            OnStylesheetLoad(e);
+        }
+
+        private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
+        {
+            OnImageLoad(e);
+        }
+
+        private void OnLinkHandlingTimerTick(object sender, EventArgs e)
+        {
+            OnLinkHandlingTimerTick(e);
+        }
+
+        private void OnToolTipDisposed(object sender, EventArgs e)
+        {
+            OnToolTipDisposed(e);
+        }
+
+        #endregion
 
         #endregion
     }
