@@ -511,7 +511,7 @@ namespace HtmlRenderer.Dom
                     sf.FormatFlags = StringFormatFlags.NoWrap;
                     sf.Trimming = StringTrimming.EllipsisCharacter;
                     var titleRect = new RectangleF(rect.Left + 3, rect.Top + 3, rect.Width - 6, rect.Height - 6);
-                    g.DrawString(_videoTitle, font, System.Drawing.Color.WhiteSmoke, titleRect.Location, SizeF.Empty);
+                    g.DrawString(_videoTitle, font, System.Drawing.Color.WhiteSmoke, titleRect.Location, SizeF.Empty, false);
                 }
             }
         }

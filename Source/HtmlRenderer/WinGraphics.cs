@@ -45,6 +45,11 @@ namespace HtmlRenderer
         private static readonly StringFormat _stringFormat;
 
         /// <summary>
+        /// The string format to use for rendering strings for GDI+ text rendering
+        /// </summary>
+        private static readonly StringFormat _stringFormat2;
+
+        /// <summary>
         /// The wrapped WinForms graphics object
         /// </summary>
         private readonly Graphics _g;
@@ -59,7 +64,13 @@ namespace HtmlRenderer
         /// </summary>
         private IntPtr _hdc;
 
+        /// <summary>
+        /// If text alignment was set to RTL
+        /// </summary>
+        private bool _setRtl;
+
         #endregion
+
 
         /// <summary>
         /// Init static resources.
@@ -68,6 +79,8 @@ namespace HtmlRenderer
         {
             _stringFormat = new StringFormat(StringFormat.GenericTypographic);
             _stringFormat.FormatFlags = StringFormatFlags.NoClip | StringFormatFlags.MeasureTrailingSpaces;
+
+            _stringFormat2 = new StringFormat(StringFormat.GenericTypographic);
         }
 
         /// <summary>
@@ -191,12 +204,14 @@ namespace HtmlRenderer
         /// <param name="color">the text color to set</param>
         /// <param name="point">the location to start string draw (top-left)</param>
         /// <param name="size">used to know the size of the rendered text for transparent text support</param>
-        public void DrawString(String str, Font font, Color color, PointF point, SizeF size)
+        /// <param name="rtl">is to render the string right-to-left (true - RTL, false - LTR)</param>
+        public void DrawString(String str, Font font, Color color, PointF point, SizeF size, bool rtl)
         {
             if( _useGdiPlusTextRendering )
             {
                 ReleaseHdc();
-                _g.DrawString(str, font, RenderUtils.GetSolidBrush(color), (int)Math.Round(point.X), (int)Math.Round(point.Y), StringFormat.GenericTypographic);
+                SetRtlAlign(rtl);
+                _g.DrawString(str, font, RenderUtils.GetSolidBrush(color), (int)Math.Round(point.X) + ( rtl ? size.Width : 0 ), (int)Math.Round(point.Y), _stringFormat2);
             }
             else
             {
@@ -204,12 +219,14 @@ namespace HtmlRenderer
                 {
                     SetFont(font);
                     SetTextColor(color);
+                    SetRtlAlign(rtl);
 
                     Win32Utils.TextOut(_hdc, (int)Math.Round(point.X), (int)Math.Round(point.Y), str, str.Length);
                 }
                 else
                 {
                     InitHdc();
+                    SetRtlAlign(rtl);
                     DrawTransparentText(_hdc, str, font, new Point((int)Math.Round(point.X), (int)Math.Round(point.Y)), Size.Round(size), color);
                 }
             }
@@ -221,6 +238,9 @@ namespace HtmlRenderer
         public void Dispose()
         {
             ReleaseHdc();
+
+            if(_useGdiPlusTextRendering && _setRtl)
+                _stringFormat2.FormatFlags ^= StringFormatFlags.DirectionRightToLeft;
         }
         
 
@@ -340,6 +360,7 @@ namespace HtmlRenderer
                 var clip = _g.Clip.GetHrgn(_g);
 
                 _hdc = _g.GetHdc();
+                _setRtl = false;
                 Win32Utils.SetBkMode(_hdc, 1);
 
                 Win32Utils.SelectClipRgn(_hdc, clip);
@@ -379,6 +400,31 @@ namespace HtmlRenderer
             InitHdc();
             int rgb = ( color.B & 0xFF ) << 16 | ( color.G & 0xFF ) << 8 | color.R;
             Win32Utils.SetTextColor(_hdc, rgb);
+        }
+
+        /// <summary>
+        /// Change text align to Left-to-Right or Right-to-Left if required.
+        /// </summary>
+        private void SetRtlAlign(bool rtl)
+        {
+            if( _setRtl )
+            {
+                if( !rtl )
+                {
+                    if( _useGdiPlusTextRendering )
+                        _stringFormat2.FormatFlags ^= StringFormatFlags.DirectionRightToLeft;
+                    else
+                        Win32Utils.SetTextAlign(_hdc, Win32Utils.TextAlignDefault);
+                }
+            }
+            else if( rtl )
+            {
+                if( _useGdiPlusTextRendering )
+                    _stringFormat2.FormatFlags |= StringFormatFlags.DirectionRightToLeft;
+                else
+                    Win32Utils.SetTextAlign(_hdc, Win32Utils.TextAlignRtl);
+            }
+            _setRtl = rtl;
         }
 
         /// <summary>

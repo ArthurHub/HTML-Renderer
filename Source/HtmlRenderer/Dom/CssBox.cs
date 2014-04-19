@@ -1248,38 +1248,42 @@ namespace HtmlRenderer.Dom
         /// <param name="offset">the current scroll offset to offset the words</param>
         private void PaintWords(IGraphics g, PointF offset)
         {
-            foreach (var word in Words)
+            if( Width.Length > 0 )
             {
-                var wordPoint = new PointF(word.Left + offset.X, word.Top + offset.Y);
-                if (word.Selected)
+                var isRtl = Direction == CssConstants.Rtl;
+                foreach (var word in Words)
                 {
-                    // handle paint selected word background and with partial word selection
-                    var wordLine = DomUtils.GetCssLineBoxByWord(word);
-                    var left = word.SelectedStartOffset > -1 ? word.SelectedStartOffset : (wordLine.Words[0] != word && word.HasSpaceBefore ? -ActualWordSpacing : 0);
-                    var padWordRight = word.HasSpaceAfter && !wordLine.IsLastSelectedWord(word);
-                    var width = word.SelectedEndOffset > -1 ? word.SelectedEndOffset : word.Width + (padWordRight ? ActualWordSpacing : 0);
-                    var rect = new RectangleF(word.Left + offset.X + left, word.Top + offset.Y, width - left, wordLine.LineHeight);
-
-                    g.FillRectangle(GetSelectionBackBrush(false), rect.X, rect.Y, rect.Width, rect.Height);
-
-                    if (HtmlContainer.SelectionForeColor != System.Drawing.Color.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
+                    var wordPoint = new PointF(word.Left + offset.X, word.Top + offset.Y);
+                    if (word.Selected)
                     {
-                        var orgClip = g.GetClip();
-                        g.SetClip(rect, CombineMode.Exclude);
-                        g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new SizeF(word.Width, word.Height));
-                        g.SetClip(rect);
-                        g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new SizeF(word.Width, word.Height));
-                        g.SetClip(orgClip);
+                        // handle paint selected word background and with partial word selection
+                        var wordLine = DomUtils.GetCssLineBoxByWord(word);
+                        var left = word.SelectedStartOffset > -1 ? word.SelectedStartOffset : (wordLine.Words[0] != word && word.HasSpaceBefore ? -ActualWordSpacing : 0);
+                        var padWordRight = word.HasSpaceAfter && !wordLine.IsLastSelectedWord(word);
+                        var width = word.SelectedEndOffset > -1 ? word.SelectedEndOffset : word.Width + (padWordRight ? ActualWordSpacing : 0);
+                        var rect = new RectangleF(word.Left + offset.X + left, word.Top + offset.Y, width - left, wordLine.LineHeight);
+
+                        g.FillRectangle(GetSelectionBackBrush(false), rect.X, rect.Y, rect.Width, rect.Height);
+
+                        if (HtmlContainer.SelectionForeColor != System.Drawing.Color.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
+                        {
+                            var orgClip = g.GetClip();
+                            g.SetClip(rect, CombineMode.Exclude);
+                            g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new SizeF(word.Width, word.Height), isRtl);
+                            g.SetClip(rect);
+                            g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new SizeF(word.Width, word.Height), isRtl);
+                            g.SetClip(orgClip);
+                        }
+                        else
+                        {
+                            g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new SizeF(word.Width, word.Height), isRtl);
+                        }
                     }
                     else
                     {
-                        g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new SizeF(word.Width, word.Height));
+                        //g.DrawRectangle(Pens.Red, wordPoint.X, wordPoint.Y, word.Width - 1, word.Height - 1);
+                        g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new SizeF(word.Width, word.Height), isRtl);
                     }
-                }
-                else
-                {
-                    //g.DrawRectangle(Pens.Red, wordPoint.X, wordPoint.Y, word.Width - 1, word.Height - 1);
-                    g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new SizeF(word.Width, word.Height));
                 }
             }
         }

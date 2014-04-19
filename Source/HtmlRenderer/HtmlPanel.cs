@@ -391,11 +391,11 @@ namespace HtmlRenderer
                 switch (_borderStyle)
                 {
                     case BorderStyle.FixedSingle:
-                        createParams.Style |= Win32Utils.WS_BORDER;
+                        createParams.Style |= Win32Utils.WsBorder;
                         break;
 
                     case BorderStyle.Fixed3D:
-                        createParams.ExStyle |= Win32Utils.WS_EX_CLIENTEDGE;
+                        createParams.ExStyle |= Win32Utils.WsExClientEdge;
                         break;
                 }
 
@@ -665,12 +665,12 @@ namespace HtmlRenderer
         [DebuggerStepThrough]
         protected override void WndProc(ref Message m)
         {
-            if (_useSystemCursors && m.Msg == Win32Utils.WM_SETCURSOR && Cursor == Cursors.Hand)
+            if (_useSystemCursors && m.Msg == Win32Utils.WmSetCursor && Cursor == Cursors.Hand)
             {
                 try
                 {
                     // Replace .NET's hand cursor with the OS cursor
-                    Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IDC_HAND));
+                    Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IdcHand));
                     m.Result = IntPtr.Zero;
                     return;
                 }
