@@ -225,6 +225,7 @@
     <EmbeddedResource Include="Samples\08.Tooltip.htm" />
     <EmbeddedResource Include="TestSamples\16.Borders.htm" />
     <EmbeddedResource Include="PerfSamples\1.Big table.htm" />
+    <EmbeddedResource Include="PerfSamples\2.Lots blocks in inline.htm" />
     <Content Include="Resources\Event16.png" />
     <Content Include="Resources\html.ico" />
     <Content Include="Resources\html32.png" />
