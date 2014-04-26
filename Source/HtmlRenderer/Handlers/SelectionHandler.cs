@@ -171,7 +171,7 @@ namespace HtmlRenderer.Handlers
         public void HandleMouseDown(Control parent, Point loc, bool isMouseInContainer)
         {
             bool clear = !isMouseInContainer;
-            if(isMouseInContainer)
+            if (isMouseInContainer)
             {
                 _mouseDownInControl = true;
                 _isDoubleClickSelect = (DateTime.Now - _lastMouseDown).TotalMilliseconds < 400;
@@ -194,7 +194,7 @@ namespace HtmlRenderer.Handlers
                 {
                     var rect = DomUtils.GetCssBoxWord(_root, loc);
                     var link = DomUtils.GetLinkBox(_root, loc);
-                    if(_root.HtmlContainer.IsContextMenuEnabled)
+                    if (_root.HtmlContainer.IsContextMenuEnabled)
                     {
                         _contextMenuHandler.ShowContextMenu(parent, rect, link);
                     }
@@ -234,7 +234,7 @@ namespace HtmlRenderer.Handlers
             ignore = ignore || (DateTime.Now - _lastMouseDown > TimeSpan.FromSeconds(1));
             return ignore;
         }
-        
+
         /// <summary>
         /// Handle mouse move to handle hover cursor and text selection.
         /// </summary>
@@ -268,23 +268,23 @@ namespace HtmlRenderer.Handlers
                 else if (_root.HtmlContainer.IsSelectionEnabled)
                 {
                     var word = DomUtils.GetCssBoxWord(_root, loc);
-                    _cursorChanged = word != null && !word.IsImage && !( word.Selected && ( word.SelectedStartIndex < 0 || word.Left + word.SelectedStartOffset <= loc.X ) && ( word.SelectedEndOffset < 0 || word.Left + word.SelectedEndOffset >= loc.X ) );
+                    _cursorChanged = word != null && !word.IsImage && !(word.Selected && (word.SelectedStartIndex < 0 || word.Left + word.SelectedStartOffset <= loc.X) && (word.SelectedEndOffset < 0 || word.Left + word.SelectedEndOffset >= loc.X));
                     parent.Cursor = _cursorChanged ? Cursors.IBeam : Cursors.Default;
                 }
-                else if(_cursorChanged)
+                else if (_cursorChanged)
                 {
-                    parent.Cursor = Cursors.Default;                    
+                    parent.Cursor = Cursors.Default;
                 }
             }
         }
-        
+
         /// <summary>
         /// On mouse leave change the cursor back to default.
         /// </summary>
         /// <param name="parent">the control hosting the html to set cursor and invalidate</param>
         public void HandleMouseLeave(Control parent)
         {
-            if(_cursorChanged)
+            if (_cursorChanged)
             {
                 _cursorChanged = false;
                 parent.Cursor = Cursors.Default;
@@ -297,12 +297,12 @@ namespace HtmlRenderer.Handlers
         /// </summary>
         public void CopySelectedHtml()
         {
-            if(_root.HtmlContainer.IsSelectionEnabled)
+            if (_root.HtmlContainer.IsSelectionEnabled)
             {
                 var html = DomUtils.GenerateHtml(_root, HtmlGenerationStyle.Inline, true);
                 var plainText = DomUtils.GetSelectedPlainText(_root);
                 if (!string.IsNullOrEmpty(plainText))
-                    HtmlClipboardUtils.CopyToClipboard(html, plainText);
+                    ClipboardHelper.CopyToClipboard(html, plainText);
             }
         }
 
@@ -504,7 +504,7 @@ namespace HtmlRenderer.Handlers
             {
                 var html = DomUtils.GenerateHtml(_root, HtmlGenerationStyle.Inline, true);
                 var plainText = DomUtils.GetSelectedPlainText(_root);
-                _dragDropData = HtmlClipboardUtils.GetDataObject(html, plainText);
+                _dragDropData = ClipboardHelper.CreateDataObject(html, plainText);
             }
             control.DoDragDrop(_dragDropData, DragDropEffects.Copy);
         }
@@ -610,7 +610,7 @@ namespace HtmlRenderer.Handlers
             float selectionOffset;
             CalculateWordCharIndexAndOffset(control, word, loc, selectionStart, _root.HtmlContainer.UseGdiPlusTextRendering, out selectionIndex, out selectionOffset);
 
-            if(selectionStart)
+            if (selectionStart)
             {
                 _selectionStartIndex = selectionIndex;
                 _selectionStartOffset = selectionOffset;
@@ -661,7 +661,7 @@ namespace HtmlRenderer.Handlers
                 {
                     int charFit;
                     int charFitWidth;
-                    var maxWidth = offset + ( inclusive ? 0 : 1.5f*word.LeftGlyphPadding );
+                    var maxWidth = offset + (inclusive ? 0 : 1.5f * word.LeftGlyphPadding);
                     g.MeasureString(word.Text, font, maxWidth, out charFit, out charFitWidth);
 
                     selectionIndex = charFit;
