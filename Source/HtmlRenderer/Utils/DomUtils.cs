@@ -638,8 +638,6 @@ namespace HtmlRenderer.Utils
                 if (box.HtmlTag != null && !box.HtmlTag.IsSingle)
                 {
                     sb.AppendFormat("</{0}>", box.HtmlTag.Name);
-                    if (!box.IsInline && !box.IsBrElement)
-                        sb.AppendLine();
                 }
             }
         }

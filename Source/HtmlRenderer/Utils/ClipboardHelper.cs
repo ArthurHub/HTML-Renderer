@@ -24,14 +24,14 @@ namespace HtmlRenderer.Utils
         /// The string layout (<![CDATA[<<<]]>) also ensures that it can't appear in the body of the html because the <![CDATA[<]]> <br/>
         /// character must be escaped. <br/>
         /// </summary>
-        private const string Header = @"Format:HTML Format
-  Version:1.0
-  StartHTML:<<<<<<<1
-  EndHTML:<<<<<<<2
-  StartFragment:<<<<<<<3
-  EndFragment:<<<<<<<4
-  StartSelection:<<<<<<<3
-  EndSelection:<<<<<<<3";
+        private const string Header = @"Version:1.0
+StartHTML:<<<<<<<<1
+EndHTML:<<<<<<<<2
+StartFragment:<<<<<<<<3
+EndFragment:<<<<<<<<4
+StartSelection:<<<<<<<<3
+EndSelection:<<<<<<<<3
+SourceURL:about:blank";
 
         /// <summary>
         /// html comment to point the beginning of html fragment
@@ -60,18 +60,15 @@ namespace HtmlRenderer.Utils
         /// In all cases creating a proper CF_HTML header:<br/>
         /// <code>
         /// <![CDATA[
-        /// Format:HTML Format
         /// Version:1.0
-        /// StartHTML:     177
-        /// EndHTML:     329
-        /// StartFragment:     277
-        /// EndFragment:     295
-        /// StartSelection:     277
-        /// EndSelection:     277
+        /// StartHTML:000000177
+        /// EndHTML:000000329
+        /// StartFragment:000000277
+        /// EndFragment:000000295
+        /// StartSelection:000000277
+        /// EndSelection:000000277
         /// <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-        /// <html><body>
-        /// <!--StartFragment-->hello <b>world</b><!--EndFragment-->
-        /// </body></html>
+        /// <html><body><!--StartFragment-->hello <b>world</b><!--EndFragment--></body></html>
         /// ]]>
         /// </code>
         /// See format specification here: http://msdn.microsoft.com/library/default.asp?url=/workshop/networking/clipboard/htmlclipboard.asp
@@ -128,13 +125,11 @@ namespace HtmlRenderer.Utils
                 {
                     // the given html doesn't contain html or body tags so we need to add them and place start/end fragments around the given html only
                     sb.Append("<html><body>");
-                    sb.AppendLine();
                     sb.Append(StartFragment);
                     fragmentStart = sb.Length;
                     sb.Append(html);
                     fragmentEnd = sb.Length;
                     sb.Append(EndFragment);
-                    sb.AppendLine();
                     sb.Append("</body></html>");
                 }
                 else
@@ -152,7 +147,6 @@ namespace HtmlRenderer.Utils
                     if (bodyOpenEndIdx > -1)
                         sb.Append(html, htmlOpenEndIdx > -1 ? htmlOpenEndIdx : 0, bodyOpenEndIdx - (htmlOpenEndIdx > -1 ? htmlOpenEndIdx : 0));
 
-                    sb.AppendLine();
                     sb.Append(StartFragment);
                     fragmentStart = sb.Length;
 
@@ -162,7 +156,6 @@ namespace HtmlRenderer.Utils
 
                     fragmentEnd = sb.Length;
                     sb.Append(EndFragment);
-                    sb.AppendLine();
 
                     if (innerHtmlEnd < html.Length)
                         sb.Append(html, innerHtmlEnd, html.Length - innerHtmlEnd);
@@ -179,10 +172,10 @@ namespace HtmlRenderer.Utils
             }
 
             // Back-patch offsets (scan only the header part for performance)
-            sb.Replace("<<<<<<<4", String.Format("{0,8}", fragmentEnd), 0, Header.Length);
-            sb.Replace("<<<<<<<3", String.Format("{0,8}", fragmentStart), 0, Header.Length);
-            sb.Replace("<<<<<<<2", String.Format("{0,8}", sb.Length), 0, Header.Length);
-            sb.Replace("<<<<<<<1", String.Format("{0,8}", Header.Length), 0, Header.Length);
+            sb.Replace("<<<<<<<<4", fragmentEnd.ToString("D9"), 0, Header.Length);
+            sb.Replace("<<<<<<<<3", fragmentStart.ToString("D9"), 0, Header.Length);
+            sb.Replace("<<<<<<<<2", sb.Length.ToString("D9"), 0, Header.Length);
+            sb.Replace("<<<<<<<<1", Header.Length.ToString("D9"), 0, Header.Length);
 
             return sb.ToString();
         }
