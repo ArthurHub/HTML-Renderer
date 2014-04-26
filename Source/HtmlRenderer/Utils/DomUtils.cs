@@ -13,8 +13,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Text;
 using HtmlRenderer.Dom;
 using HtmlRenderer.Entities;
@@ -616,17 +614,16 @@ namespace HtmlRenderer.Utils
 
                     if (styleGen == HtmlGenerationStyle.InHeader && box.HtmlTag.Name == "html" && box.HtmlContainer.CssData != null)
                     {
-                        sb.Append(new string(' ', indent * 4));
+                        sb.Append(new string(' ', indent * 2));
                         sb.AppendLine("<head>");
                         WriteStylesheet(sb, box.HtmlContainer.CssData, indent + 1);
-                        sb.Append(new string(' ', indent * 4));
+                        sb.Append(new string(' ', indent * 2));
                         sb.AppendLine("</head>");
                     }
                 }
 
                 if (box.Words.Count > 0)
                 {
-                    sb.Append(new string(' ', indent * 4));
                     foreach (var word in box.Words)
                     {
                         if (selectedTags == null || word.Selected)
@@ -635,7 +632,6 @@ namespace HtmlRenderer.Utils
                             sb.Append(HtmlUtils.EncodeHtml(wordText));
                         }
                     }
-                    sb.AppendLine();
                 }
 
                 foreach (var childBox in box.Boxes)
@@ -645,9 +641,9 @@ namespace HtmlRenderer.Utils
 
                 if (box.HtmlTag != null && !box.HtmlTag.IsSingle)
                 {
-                    sb.Append(new string(' ', Math.Max((indent - 1) * 4, 0)));
                     sb.AppendFormat("</{0}>", box.HtmlTag.Name);
-                    sb.AppendLine();
+                    if (!box.IsInline && !box.IsBrElement)
+                        sb.AppendLine();
                 }
             }
         }
@@ -661,7 +657,8 @@ namespace HtmlRenderer.Utils
         /// <param name="styleGen">Controls the way styles are generated when html is generated</param>
         private static void WriteHtmlTag(StringBuilder sb, CssBox box, int indent, HtmlGenerationStyle styleGen)
         {
-            sb.Append(new string(' ', indent * 4));
+            if (!box.IsInline && !box.IsBrElement)
+                sb.Append(new string(' ', indent * 2));
             sb.AppendFormat("<{0}", box.HtmlTag.Name);
 
             // collect all element style properties including from stylesheet
@@ -725,7 +722,8 @@ namespace HtmlRenderer.Utils
             }
 
             sb.AppendFormat("{0}>", box.HtmlTag.IsSingle ? "/" : "");
-            sb.AppendLine();
+            if (!box.IsInline && !box.IsBrElement)
+                sb.AppendLine();
         }
 
         /// <summary>
@@ -768,11 +766,11 @@ namespace HtmlRenderer.Utils
         /// <param name="indent">the indent to use for nice formatting</param>
         private static void WriteStylesheet(StringBuilder sb, CssData cssData, int indent)
         {
-            sb.Append(new string(' ', indent * 4));
+            sb.Append(new string(' ', indent * 2));
             sb.AppendLine("<style type=\"text/css\">");
             foreach (var cssBlocks in cssData.MediaBlocks["all"])
             {
-                sb.Append(new string(' ', (indent + 1) * 4));
+                sb.Append(new string(' ', (indent + 1) * 2));
                 sb.Append(cssBlocks.Key);
                 sb.Append(" { ");
                 foreach (var cssBlock in cssBlocks.Value)
@@ -786,7 +784,7 @@ namespace HtmlRenderer.Utils
                 sb.Append(" }");
                 sb.AppendLine();
             }
-            sb.Append(new string(' ', indent * 4));
+            sb.Append(new string(' ', indent * 2));
             sb.AppendLine("</style>");
         }
 
