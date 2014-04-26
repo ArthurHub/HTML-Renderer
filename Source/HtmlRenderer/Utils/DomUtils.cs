@@ -437,8 +437,8 @@ namespace HtmlRenderer.Utils
             var sb = new StringBuilder();
             if (root != null)
             {
-                CssBox selectionRoot = null;
-                var selectedBoxes = onlySelected ? CollectSelectedBoxes(root, out selectionRoot) : null;
+                var selectedBoxes = onlySelected ? CollectSelectedBoxes(root) : null;
+                var selectionRoot = onlySelected ? GetSelectionRoot(root, selectedBoxes) : null;
                 WriteHtml(sb, root, styleGen, selectedBoxes, selectionRoot);
             }
             return sb.ToString();
@@ -537,39 +537,12 @@ namespace HtmlRenderer.Utils
         /// Collect the boxes that have at least one word down the hierarchy that is selected recursively.<br/>
         /// </summary>
         /// <param name="root">the box to check its sub-tree</param>
-        /// <param name="selectionRoot">return the box the is the root of selected boxes (the first box to contain multiple selected boxes)</param>
         /// <returns>the collection to add the selected tags to</returns>
-        private static Dictionary<CssBox, bool> CollectSelectedBoxes(CssBox root, out CssBox selectionRoot)
+        private static Dictionary<CssBox, bool> CollectSelectedBoxes(CssBox root)
         {
             var selectedBoxes = new Dictionary<CssBox, bool>();
             var maybeBoxes = new Dictionary<CssBox, bool>();
             CollectSelectedBoxes(root, selectedBoxes, maybeBoxes);
-
-            // find the box the is the root of selected boxes (the first box to contain multiple selected boxes)
-            selectionRoot = root;
-            while (true)
-            {
-                bool foundRoot = false;
-                CssBox selectedChild = null;
-                foreach (var childBox in selectionRoot.Boxes)
-                {
-                    if (selectedBoxes.ContainsKey(childBox))
-                    {
-                        if (selectedChild != null)
-                        {
-                            foundRoot = true;
-                            break;
-                        }
-                        selectedChild = childBox;
-                    }
-                }
-
-                if (foundRoot || selectedChild == null)
-                    break;
-
-                selectionRoot = selectedChild;
-            }
-
             return selectedBoxes;
         }
 
@@ -615,6 +588,72 @@ namespace HtmlRenderer.Utils
         }
 
         /// <summary>
+        /// find the box the is the root of selected boxes (the first box to contain multiple selected boxes)
+        /// </summary>
+        /// <param name="root">the root of the boxes tree</param>
+        /// <param name="selectedBoxes">the selected boxes to find selection root in</param>
+        /// <returns>the box that is the root of selected boxes</returns>
+        private static CssBox GetSelectionRoot(CssBox root, Dictionary<CssBox, bool> selectedBoxes)
+        {
+            var selectionRoot = root;
+            var selectionRootRun = root;
+            while (true)
+            {
+                bool foundRoot = false;
+                CssBox selectedChild = null;
+                foreach (var childBox in selectionRootRun.Boxes)
+                {
+                    if (selectedBoxes.ContainsKey(childBox))
+                    {
+                        if (selectedChild != null)
+                        {
+                            foundRoot = true;
+                            break;
+                        }
+                        selectedChild = childBox;
+                    }
+                }
+
+                if (foundRoot || selectedChild == null)
+                    break;
+
+                selectionRootRun = selectedChild;
+
+                // the actual selection root must be a box with html tag
+                if (selectionRootRun.HtmlTag != null)
+                    selectionRoot = selectionRootRun;
+            }
+
+            // if the selection root doesn't contained any named boxes in it then we must go one level up, otherwise we will miss the selection root box formatting
+            if (!ContainsNamedBox(selectionRoot))
+            {
+                selectionRootRun = selectionRoot.ParentBox;
+                while (selectionRootRun.ParentBox != null && selectionRootRun.HtmlTag == null)
+                    selectionRootRun = selectionRootRun.ParentBox;
+
+                if (selectionRootRun.HtmlTag != null)
+                    selectionRoot = selectionRootRun;
+            }
+
+            return selectionRoot;
+        }
+
+        /// <summary>
+        /// Check if the given box has a names child box (has html tag) recursively.
+        /// </summary>
+        /// <param name="box">the box to check</param>
+        /// <returns>true - in sub-tree there is a named box, false - otherwise</returns>
+        private static bool ContainsNamedBox(CssBox box)
+        {
+            foreach (var childBox in box.Boxes)
+            {
+                if (childBox.HtmlTag != null || ContainsNamedBox(childBox))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Write the given html DOM sub-tree into the given string builder.<br/>
         /// If <paramref name="selectedBoxes"/> are given write html only from those tags.
         /// </summary>
@@ -633,7 +672,7 @@ namespace HtmlRenderer.Utils
                         (!box.HtmlTag.Attributes["href"].StartsWith("property") && !box.HtmlTag.Attributes["href"].StartsWith("method")))
                     {
                         WriteHtmlTag(sb, box, styleGen);
-                        if( box == selectionRoot )
+                        if (box == selectionRoot)
                             sb.Append("<!--StartFragment-->");
                     }
 
