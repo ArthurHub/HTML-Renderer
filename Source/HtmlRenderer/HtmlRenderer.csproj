@@ -111,7 +111,7 @@
     </Compile>
     <Compile Include="Utils\ArgChecker.cs" />
     <Compile Include="Utils\FontsUtils.cs" />
-    <Compile Include="Utils\HtmlClipboardUtils.cs" />
+    <Compile Include="Utils\ClipboardHelper.cs" />
     <Compile Include="Utils\RenderUtils.cs" />
     <Compile Include="Entities\CssConstants.cs" />
     <Compile Include="Entities\CssUnit.cs" />
