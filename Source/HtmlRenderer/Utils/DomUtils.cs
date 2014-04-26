@@ -437,7 +437,7 @@ namespace HtmlRenderer.Utils
             var sb = new StringBuilder();
             if (root != null)
             {
-                WriteHtml(sb, root, styleGen, onlySelected ? CollectSelectedHtmlTags(root) : null);
+                WriteHtml(sb, root, styleGen, onlySelected ? CollectSelectedBoxes(root) : null);
             }
             return sb.ToString();
         }
@@ -536,22 +536,23 @@ namespace HtmlRenderer.Utils
         /// </summary>
         /// <param name="root">the box to check its sub-tree</param>
         /// <returns>the collection to add the selected tags to</returns>
-        private static Dictionary<HtmlTag, bool> CollectSelectedHtmlTags(CssBox root)
+        private static Dictionary<CssBox, bool> CollectSelectedBoxes(CssBox root)
         {
-            var selectedTags = new Dictionary<HtmlTag, bool>();
-            var maybeTags = new Dictionary<HtmlTag, bool>();
-            CollectSelectedHtmlTags(root, selectedTags, maybeTags);
+            var selectedTags = new Dictionary<CssBox, bool>();
+            var maybeTags = new Dictionary<CssBox, bool>();
+            CollectSelectedBoxes(root, selectedTags, maybeTags);
             return selectedTags;
         }
 
         /// <summary>
         /// Collect the html tags that have at least one word down the hierarchy that is selected recursively.<br/>
+        /// Use <paramref name="maybeBoxes"/> to handle boxes that are between selected words but don't have selected word inside.<br/>
         /// </summary>
         /// <param name="box">the box to check its sub-tree</param>
-        /// <param name="selectedTags">the collection to add the selected tags to</param>
-        /// <param name="maybeTags">used to handle tags that are between selected words but don't have selected word inside</param>
+        /// <param name="selectedBoxes">the hash to add the selected boxes to</param>
+        /// <param name="maybeBoxes">used to handle boxes that are between selected words but don't have selected word inside</param>
         /// <returns>is the current box is in selected sub-tree</returns>
-        private static bool CollectSelectedHtmlTags(CssBox box, Dictionary<HtmlTag, bool> selectedTags, Dictionary<HtmlTag, bool> maybeTags)
+        private static bool CollectSelectedBoxes(CssBox box, Dictionary<CssBox, bool> selectedBoxes, Dictionary<CssBox, bool> maybeBoxes)
         {
             bool isInSelection = false;
             foreach (var word in box.Words)
@@ -560,31 +561,31 @@ namespace HtmlRenderer.Utils
                 {
                     if (box.HtmlTag != null)
                     {
-                        selectedTags.Add(box.HtmlTag, true);
+                        selectedBoxes.Add(box, true);
                     }
-                    foreach (var maybeTag in maybeTags)
-                        selectedTags[maybeTag.Key] = maybeTag.Value;
-                    maybeTags.Clear();
+                    foreach (var maybeTag in maybeBoxes)
+                        selectedBoxes[maybeTag.Key] = maybeTag.Value;
+                    maybeBoxes.Clear();
                     isInSelection = true;
                 }
             }
 
             foreach (var childBox in box.Boxes)
             {
-                var childInSelection = CollectSelectedHtmlTags(childBox, selectedTags, maybeTags);
+                var childInSelection = CollectSelectedBoxes(childBox, selectedBoxes, maybeBoxes);
                 if (childInSelection)
                 {
                     if (box.HtmlTag != null)
                     {
-                        selectedTags[box.HtmlTag] = true;
+                        selectedBoxes[box] = true;
                     }
                     isInSelection = true;
                 }
             }
 
-            if (box.HtmlTag != null && selectedTags.Count > 0)
+            if (box.HtmlTag != null && selectedBoxes.Count > 0)
             {
-                maybeTags[box.HtmlTag] = true;
+                maybeBoxes[box] = true;
             }
 
             return isInSelection;
@@ -592,15 +593,15 @@ namespace HtmlRenderer.Utils
 
         /// <summary>
         /// Write the given html DOM sub-tree into the given string builder.<br/>
-        /// If <paramref name="selectedTags"/> are given write html only from those tags.
+        /// If <paramref name="selectedBoxes"/> are given write html only from those tags.
         /// </summary>
         /// <param name="sb">the string builder to write html into</param>
         /// <param name="box">the html sub-tree to write</param>
         /// <param name="styleGen">Controls the way styles are generated when html is generated</param>
-        /// <param name="selectedTags">Control if to generate only selected tags, if given only tags found in collection will be generated</param>
-        private static void WriteHtml(StringBuilder sb, CssBox box, HtmlGenerationStyle styleGen, Dictionary<HtmlTag, bool> selectedTags)
+        /// <param name="selectedBoxes">Control if to generate only selected boxes, if given only boxes found in hash will be generated</param>
+        private static void WriteHtml(StringBuilder sb, CssBox box, HtmlGenerationStyle styleGen, Dictionary<CssBox, bool> selectedBoxes)
         {
-            if (box.HtmlTag == null || selectedTags == null || selectedTags.ContainsKey(box.HtmlTag))
+            if (box.HtmlTag == null || selectedBoxes == null || selectedBoxes.ContainsKey(box))
             {
                 if (box.HtmlTag != null)
                 {
@@ -622,9 +623,9 @@ namespace HtmlRenderer.Utils
                 {
                     foreach (var word in box.Words)
                     {
-                        if (selectedTags == null || word.Selected)
+                        if (selectedBoxes == null || word.Selected)
                         {
-                            var wordText = GetSelectedWord(word, selectedTags != null);
+                            var wordText = GetSelectedWord(word, selectedBoxes != null);
                             sb.Append(HtmlUtils.EncodeHtml(wordText));
                         }
                     }
@@ -632,7 +633,7 @@ namespace HtmlRenderer.Utils
 
                 foreach (var childBox in box.Boxes)
                 {
-                    WriteHtml(sb, childBox, styleGen, selectedTags);
+                    WriteHtml(sb, childBox, styleGen, selectedBoxes);
                 }
 
                 if (box.HtmlTag != null && !box.HtmlTag.IsSingle)
