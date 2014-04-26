@@ -81,7 +81,8 @@ namespace HtmlRenderer.Utils
         public static DataObject CreateDataObject(string html, string plainText)
         {
             var dataObject = new DataObject();
-            dataObject.SetData(DataFormats.Html, !string.IsNullOrEmpty(html) ? GetHtmlDataString(html) : html);
+            var htmlFragment = !string.IsNullOrEmpty(html) ? GetHtmlDataString(html) : html;
+            dataObject.SetData(DataFormats.Html, htmlFragment);
             dataObject.SetData(DataFormats.Text, plainText);
             return dataObject;
         }

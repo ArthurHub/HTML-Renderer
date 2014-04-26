@@ -437,7 +437,7 @@ namespace HtmlRenderer.Utils
             var sb = new StringBuilder();
             if (root != null)
             {
-                WriteHtml(sb, root, 0, styleGen, onlySelected ? CollectSelectedHtmlTags(root) : null);
+                WriteHtml(sb, root, styleGen, onlySelected ? CollectSelectedHtmlTags(root) : null);
             }
             return sb.ToString();
         }
@@ -596,10 +596,9 @@ namespace HtmlRenderer.Utils
         /// </summary>
         /// <param name="sb">the string builder to write html into</param>
         /// <param name="box">the html sub-tree to write</param>
-        /// <param name="indent">the indent to use for nice formatting</param>
         /// <param name="styleGen">Controls the way styles are generated when html is generated</param>
         /// <param name="selectedTags">Control if to generate only selected tags, if given only tags found in collection will be generated</param>
-        private static void WriteHtml(StringBuilder sb, CssBox box, int indent, HtmlGenerationStyle styleGen, Dictionary<HtmlTag, bool> selectedTags)
+        private static void WriteHtml(StringBuilder sb, CssBox box, HtmlGenerationStyle styleGen, Dictionary<HtmlTag, bool> selectedTags)
         {
             if (box.HtmlTag == null || selectedTags == null || selectedTags.ContainsKey(box.HtmlTag))
             {
@@ -608,16 +607,13 @@ namespace HtmlRenderer.Utils
                     if (box.HtmlTag.Name != "link" || !box.HtmlTag.Attributes.ContainsKey("href") ||
                         (!box.HtmlTag.Attributes["href"].StartsWith("property") && !box.HtmlTag.Attributes["href"].StartsWith("method")))
                     {
-                        WriteHtmlTag(sb, box, indent, styleGen);
-                        indent = indent + (box.HtmlTag.IsSingle ? 0 : 1);
+                        WriteHtmlTag(sb, box, styleGen);
                     }
 
                     if (styleGen == HtmlGenerationStyle.InHeader && box.HtmlTag.Name == "html" && box.HtmlContainer.CssData != null)
                     {
-                        sb.Append(new string(' ', indent * 2));
                         sb.AppendLine("<head>");
-                        WriteStylesheet(sb, box.HtmlContainer.CssData, indent + 1);
-                        sb.Append(new string(' ', indent * 2));
+                        WriteStylesheet(sb, box.HtmlContainer.CssData);
                         sb.AppendLine("</head>");
                     }
                 }
@@ -636,7 +632,7 @@ namespace HtmlRenderer.Utils
 
                 foreach (var childBox in box.Boxes)
                 {
-                    WriteHtml(sb, childBox, indent, styleGen, selectedTags);
+                    WriteHtml(sb, childBox, styleGen, selectedTags);
                 }
 
                 if (box.HtmlTag != null && !box.HtmlTag.IsSingle)
@@ -653,12 +649,9 @@ namespace HtmlRenderer.Utils
         /// </summary>
         /// <param name="sb">the string builder to write html into</param>
         /// <param name="box">the css box with the html tag to write</param>
-        /// <param name="indent">the indent to use for nice formatting</param>
         /// <param name="styleGen">Controls the way styles are generated when html is generated</param>
-        private static void WriteHtmlTag(StringBuilder sb, CssBox box, int indent, HtmlGenerationStyle styleGen)
+        private static void WriteHtmlTag(StringBuilder sb, CssBox box, HtmlGenerationStyle styleGen)
         {
-            if (!box.IsInline && !box.IsBrElement)
-                sb.Append(new string(' ', indent * 2));
             sb.AppendFormat("<{0}", box.HtmlTag.Name);
 
             // collect all element style properties including from stylesheet
@@ -722,8 +715,6 @@ namespace HtmlRenderer.Utils
             }
 
             sb.AppendFormat("{0}>", box.HtmlTag.IsSingle ? "/" : "");
-            if (!box.IsInline && !box.IsBrElement)
-                sb.AppendLine();
         }
 
         /// <summary>
@@ -763,14 +754,11 @@ namespace HtmlRenderer.Utils
         /// </summary>
         /// <param name="sb">the string builder to write stylesheet into</param>
         /// <param name="cssData">the css data to write to the head</param>
-        /// <param name="indent">the indent to use for nice formatting</param>
-        private static void WriteStylesheet(StringBuilder sb, CssData cssData, int indent)
+        private static void WriteStylesheet(StringBuilder sb, CssData cssData)
         {
-            sb.Append(new string(' ', indent * 2));
             sb.AppendLine("<style type=\"text/css\">");
             foreach (var cssBlocks in cssData.MediaBlocks["all"])
             {
-                sb.Append(new string(' ', (indent + 1) * 2));
                 sb.Append(cssBlocks.Key);
                 sb.Append(" { ");
                 foreach (var cssBlock in cssBlocks.Value)
@@ -784,7 +772,6 @@ namespace HtmlRenderer.Utils
                 sb.Append(" }");
                 sb.AppendLine();
             }
-            sb.Append(new string(' ', indent * 2));
             sb.AppendLine("</style>");
         }
 
