@@ -24,14 +24,13 @@ namespace HtmlRenderer.Utils
         /// The string layout (<![CDATA[<<<]]>) also ensures that it can't appear in the body of the html because the <![CDATA[<]]> <br/>
         /// character must be escaped. <br/>
         /// </summary>
-        private const string Header = @"Version:1.0
+        private const string Header = @"Version:0.9
 StartHTML:<<<<<<<<1
 EndHTML:<<<<<<<<2
 StartFragment:<<<<<<<<3
 EndFragment:<<<<<<<<4
 StartSelection:<<<<<<<<3
-EndSelection:<<<<<<<<3
-SourceURL:about:blank";
+EndSelection:<<<<<<<<4";
 
         /// <summary>
         /// html comment to point the beginning of html fragment
@@ -43,13 +42,24 @@ SourceURL:about:blank";
         /// </summary>
         public const string EndFragment = @"<!--EndFragment-->";
 
+        /// <summary>
+        /// Used to calculate characters byte count in UTF-8
+        /// </summary>
+        private static readonly char[] _byteCount = new char[1];
+
         #endregion
 
 
         /// <summary>
-        /// Create <see cref="DataObject"/> with given html and plain-text ready to be used for clipboard or drag and drop.
+        /// Create <see cref="DataObject"/> with given html and plain-text ready to be used for clipboard or drag and drop.<br/>
+        /// Handle missing <![CDATA[<html>]]> tags, specified start\end segments and Unicode characters.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// Windows Clipboard works with UTF-8 Unicode encoding while .NET strings use with UTF-16 so for clipboard to correctly
+        /// decode Unicode string added to it from .NET we needs to be re-encoded it using UTF-8 encoding.
+        /// </para>
+        /// <para>
         /// Builds the CF_HTML header correctly for all possible HTMLs<br/>
         /// If given html contains start/end fragments then it will use them in the header:
         /// <code><![CDATA[<html><body><!--StartFragment-->hello <b>world</b><!--EndFragment--></body></html>]]></code>
@@ -72,15 +82,23 @@ SourceURL:about:blank";
         /// ]]>
         /// </code>
         /// See format specification here: http://msdn.microsoft.com/library/default.asp?url=/workshop/networking/clipboard/htmlclipboard.asp
+        /// </para>
         /// </remarks>
         /// <param name="html">a html fragment</param>
         /// <param name="plainText">the plain text</param>
         public static DataObject CreateDataObject(string html, string plainText)
         {
+            html = html ?? String.Empty;
+            var htmlFragment = GetHtmlDataString(html);
+            
+            // re-encode the string so it will work correctly
+            if (html.Length != Encoding.UTF8.GetByteCount(html))
+                htmlFragment = Encoding.Default.GetString(Encoding.UTF8.GetBytes(htmlFragment));
+
             var dataObject = new DataObject();
-            var htmlFragment = !string.IsNullOrEmpty(html) ? GetHtmlDataString(html) : html;
             dataObject.SetData(DataFormats.Html, htmlFragment);
             dataObject.SetData(DataFormats.Text, plainText);
+            dataObject.SetData(DataFormats.UnicodeText, plainText);
             return dataObject;
         }
 
@@ -96,7 +114,7 @@ SourceURL:about:blank";
         public static void CopyToClipboard(string html, string plainText)
         {
             var dataObject = CreateDataObject(html, plainText);
-            Clipboard.SetDataObject(dataObject);
+            Clipboard.SetDataObject(dataObject, true);
         }
 
         /// <summary>
@@ -114,11 +132,15 @@ SourceURL:about:blank";
             int fragmentStart, fragmentEnd;
             int fragmentStartIdx = html.IndexOf(StartFragment, StringComparison.OrdinalIgnoreCase);
             int fragmentEndIdx = html.LastIndexOf(EndFragment, StringComparison.OrdinalIgnoreCase);
+
+            // if html tag is missing add it surrounding the given html (critical)
+            int htmlOpenIdx = html.IndexOf("<html", StringComparison.OrdinalIgnoreCase);
+            int htmlOpenEndIdx = htmlOpenIdx > -1 ? html.IndexOf('>', htmlOpenIdx) + 1 : -1;
+            int htmlCloseIdx = html.LastIndexOf("</html", StringComparison.OrdinalIgnoreCase);
+
             if (fragmentStartIdx < 0 && fragmentEndIdx < 0)
             {
-                int htmlOpenIdx = html.IndexOf("<html", StringComparison.OrdinalIgnoreCase);
                 int bodyOpenIdx = html.IndexOf("<body", StringComparison.OrdinalIgnoreCase);
-                int htmlOpenEndIdx = htmlOpenIdx > -1 ? html.IndexOf('>', htmlOpenIdx) + 1 : -1;
                 int bodyOpenEndIdx = bodyOpenIdx > -1 ? html.IndexOf('>', bodyOpenIdx) + 1 : -1;
 
                 if (htmlOpenEndIdx < 0 && bodyOpenEndIdx < 0)
@@ -126,17 +148,15 @@ SourceURL:about:blank";
                     // the given html doesn't contain html or body tags so we need to add them and place start/end fragments around the given html only
                     sb.Append("<html><body>");
                     sb.Append(StartFragment);
-                    fragmentStart = sb.Length;
+                    fragmentStart = GetByteCount(sb);
                     sb.Append(html);
-                    fragmentEnd = sb.Length;
+                    fragmentEnd = GetByteCount(sb);
                     sb.Append(EndFragment);
                     sb.Append("</body></html>");
                 }
                 else
                 {
-                    // if html tag is missing add it surrounding the given html (critical)
                     // insert start/end fragments in the proper place (related to html/body tags if exists) so the paste will work correctly
-                    int htmlCloseIdx = html.LastIndexOf("</html", StringComparison.OrdinalIgnoreCase);
                     int bodyCloseIdx = html.LastIndexOf("</body", StringComparison.OrdinalIgnoreCase);
 
                     if (htmlOpenEndIdx < 0)
@@ -148,13 +168,13 @@ SourceURL:about:blank";
                         sb.Append(html, htmlOpenEndIdx > -1 ? htmlOpenEndIdx : 0, bodyOpenEndIdx - (htmlOpenEndIdx > -1 ? htmlOpenEndIdx : 0));
 
                     sb.Append(StartFragment);
-                    fragmentStart = sb.Length;
+                    fragmentStart = GetByteCount(sb);
 
                     var innerHtmlStart = bodyOpenEndIdx > -1 ? bodyOpenEndIdx : (htmlOpenEndIdx > -1 ? htmlOpenEndIdx : 0);
                     var innerHtmlEnd = bodyCloseIdx > -1 ? bodyCloseIdx : (htmlCloseIdx > -1 ? htmlCloseIdx : html.Length);
                     sb.Append(html, innerHtmlStart, innerHtmlEnd - innerHtmlStart);
 
-                    fragmentEnd = sb.Length;
+                    fragmentEnd = GetByteCount(sb);
                     sb.Append(EndFragment);
 
                     if (innerHtmlEnd < html.Length)
@@ -166,18 +186,43 @@ SourceURL:about:blank";
             }
             else
             {
-                fragmentStart = sb.Length + fragmentStartIdx + StartFragment.Length;
-                fragmentEnd = sb.Length + fragmentEndIdx;
+                // handle html with existing start\end fragments just need to calculate the correct bytes offset (surround with html tag if missing)
+                if (htmlOpenEndIdx < 0)
+                    sb.Append("<html>");
+                int start = GetByteCount(sb);
                 sb.Append(html);
+                fragmentStart = start + GetByteCount(sb, start, start + fragmentStartIdx) + StartFragment.Length;
+                fragmentEnd = start + GetByteCount(sb, start, start + fragmentEndIdx);
+                if (htmlCloseIdx < 0)
+                    sb.Append("</html>");
             }
 
             // Back-patch offsets (scan only the header part for performance)
-            sb.Replace("<<<<<<<<4", fragmentEnd.ToString("D9"), 0, Header.Length);
-            sb.Replace("<<<<<<<<3", fragmentStart.ToString("D9"), 0, Header.Length);
-            sb.Replace("<<<<<<<<2", sb.Length.ToString("D9"), 0, Header.Length);
             sb.Replace("<<<<<<<<1", Header.Length.ToString("D9"), 0, Header.Length);
+            sb.Replace("<<<<<<<<2", GetByteCount(sb).ToString("D9"), 0, Header.Length);
+            sb.Replace("<<<<<<<<3", fragmentStart.ToString("D9"), 0, Header.Length);
+            sb.Replace("<<<<<<<<4", fragmentEnd.ToString("D9"), 0, Header.Length);
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Calculates the number of bytes produced by encoding the string in the string builder in UTF-8 and not .NET default string encoding.
+        /// </summary>
+        /// <param name="sb">the string builder to count its string</param>
+        /// <param name="start">optional: the start index to calculate from (default - start of string)</param>
+        /// <param name="end">optional: the end index to calculate to (default - end of string)</param>
+        /// <returns>the number of bytes required to encode the string in UTF-8</returns>
+        private static int GetByteCount(StringBuilder sb, int start = 0, int end = -1)
+        {
+            int count = 0;
+            end = end > -1 ? end : sb.Length;
+            for (int i = start; i < end; i++)
+            {
+                _byteCount[0] = sb[i];
+                count += Encoding.UTF8.GetByteCount(_byteCount);
+            }
+            return count;
         }
     }
 }
