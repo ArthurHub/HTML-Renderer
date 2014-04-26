@@ -437,7 +437,9 @@ namespace HtmlRenderer.Utils
             var sb = new StringBuilder();
             if (root != null)
             {
-                WriteHtml(sb, root, styleGen, onlySelected ? CollectSelectedBoxes(root) : null);
+                CssBox selectionRoot = null;
+                var selectedBoxes = onlySelected ? CollectSelectedBoxes(root, out selectionRoot) : null;
+                WriteHtml(sb, root, styleGen, selectedBoxes, selectionRoot);
             }
             return sb.ToString();
         }
@@ -532,20 +534,47 @@ namespace HtmlRenderer.Utils
         }
 
         /// <summary>
-        /// Collect the html tags that have at least one word down the hierarchy that is selected recursively.<br/>
+        /// Collect the boxes that have at least one word down the hierarchy that is selected recursively.<br/>
         /// </summary>
         /// <param name="root">the box to check its sub-tree</param>
+        /// <param name="selectionRoot">return the box the is the root of selected boxes (the first box to contain multiple selected boxes)</param>
         /// <returns>the collection to add the selected tags to</returns>
-        private static Dictionary<CssBox, bool> CollectSelectedBoxes(CssBox root)
+        private static Dictionary<CssBox, bool> CollectSelectedBoxes(CssBox root, out CssBox selectionRoot)
         {
-            var selectedTags = new Dictionary<CssBox, bool>();
-            var maybeTags = new Dictionary<CssBox, bool>();
-            CollectSelectedBoxes(root, selectedTags, maybeTags);
-            return selectedTags;
+            var selectedBoxes = new Dictionary<CssBox, bool>();
+            var maybeBoxes = new Dictionary<CssBox, bool>();
+            CollectSelectedBoxes(root, selectedBoxes, maybeBoxes);
+
+            // find the box the is the root of selected boxes (the first box to contain multiple selected boxes)
+            selectionRoot = root;
+            while (true)
+            {
+                bool foundRoot = false;
+                CssBox selectedChild = null;
+                foreach (var childBox in selectionRoot.Boxes)
+                {
+                    if (selectedBoxes.ContainsKey(childBox))
+                    {
+                        if (selectedChild != null)
+                        {
+                            foundRoot = true;
+                            break;
+                        }
+                        selectedChild = childBox;
+                    }
+                }
+
+                if (foundRoot || selectedChild == null)
+                    break;
+
+                selectionRoot = selectedChild;
+            }
+
+            return selectedBoxes;
         }
 
         /// <summary>
-        /// Collect the html tags that have at least one word down the hierarchy that is selected recursively.<br/>
+        /// Collect the boxes that have at least one word down the hierarchy that is selected recursively.<br/>
         /// Use <paramref name="maybeBoxes"/> to handle boxes that are between selected words but don't have selected word inside.<br/>
         /// </summary>
         /// <param name="box">the box to check its sub-tree</param>
@@ -559,10 +588,7 @@ namespace HtmlRenderer.Utils
             {
                 if (word.Selected)
                 {
-                    if (box.HtmlTag != null)
-                    {
-                        selectedBoxes.Add(box, true);
-                    }
+                    selectedBoxes[box] = true;
                     foreach (var maybeTag in maybeBoxes)
                         selectedBoxes[maybeTag.Key] = maybeTag.Value;
                     maybeBoxes.Clear();
@@ -575,10 +601,7 @@ namespace HtmlRenderer.Utils
                 var childInSelection = CollectSelectedBoxes(childBox, selectedBoxes, maybeBoxes);
                 if (childInSelection)
                 {
-                    if (box.HtmlTag != null)
-                    {
-                        selectedBoxes[box] = true;
-                    }
+                    selectedBoxes[box] = true;
                     isInSelection = true;
                 }
             }
@@ -599,7 +622,8 @@ namespace HtmlRenderer.Utils
         /// <param name="box">the html sub-tree to write</param>
         /// <param name="styleGen">Controls the way styles are generated when html is generated</param>
         /// <param name="selectedBoxes">Control if to generate only selected boxes, if given only boxes found in hash will be generated</param>
-        private static void WriteHtml(StringBuilder sb, CssBox box, HtmlGenerationStyle styleGen, Dictionary<CssBox, bool> selectedBoxes)
+        /// <param name="selectionRoot">the box the is the root of selected boxes (the first box to contain multiple selected boxes)</param>
+        private static void WriteHtml(StringBuilder sb, CssBox box, HtmlGenerationStyle styleGen, Dictionary<CssBox, bool> selectedBoxes, CssBox selectionRoot)
         {
             if (box.HtmlTag == null || selectedBoxes == null || selectedBoxes.ContainsKey(box))
             {
@@ -609,6 +633,8 @@ namespace HtmlRenderer.Utils
                         (!box.HtmlTag.Attributes["href"].StartsWith("property") && !box.HtmlTag.Attributes["href"].StartsWith("method")))
                     {
                         WriteHtmlTag(sb, box, styleGen);
+                        if( box == selectionRoot )
+                            sb.Append("<!--StartFragment-->");
                     }
 
                     if (styleGen == HtmlGenerationStyle.InHeader && box.HtmlTag.Name == "html" && box.HtmlContainer.CssData != null)
@@ -633,11 +659,13 @@ namespace HtmlRenderer.Utils
 
                 foreach (var childBox in box.Boxes)
                 {
-                    WriteHtml(sb, childBox, styleGen, selectedBoxes);
+                    WriteHtml(sb, childBox, styleGen, selectedBoxes, selectionRoot);
                 }
 
                 if (box.HtmlTag != null && !box.HtmlTag.IsSingle)
                 {
+                    if (box == selectionRoot)
+                        sb.Append("<!--EndFragment-->");
                     sb.AppendFormat("</{0}>", box.HtmlTag.Name);
                 }
             }
