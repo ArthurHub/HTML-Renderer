@@ -21,9 +21,9 @@ namespace HtmlRenderer.WinForms.Utilities
     /// </summary>
     internal static class Win32Utils
     {
-        public const int WS_BORDER = 0x00800000;
+        public const int WsBorder = 0x00800000;
 
-        public const int WS_EX_CLIENTEDGE = 0x200;
+        public const int WsExClientEdge = 0x200;
 
         /// <summary>
         /// Const for BitBlt copy raster-operation code.
@@ -35,9 +35,17 @@ namespace HtmlRenderer.WinForms.Utilities
         /// </summary>
         public const int BitBltPaint = 0x00EE0086;
 
-        public const int WM_SETCURSOR = 0x20;
+        public const int WmSetCursor = 0x20;
 
-        public const int IDC_HAND = 32649;
+        public const int IdcHand = 32649;
+
+        public const int TextAlignDefault = 0;
+        
+        public const int TextAlignRtl = 256;
+        
+        public const int TextAlignBaseline = 24;
+        
+        public const int TextAlignBaselineRtl = 256 + 24;
 
         [DllImport("user32.dll")]
         public static extern int SetCursor(int hCursor);
@@ -124,6 +132,9 @@ namespace HtmlRenderer.WinForms.Utilities
 
         [DllImport("User32.dll")]
         public static extern bool MoveWindow(IntPtr handle, int x, int y, int width, int height, bool redraw);
+
+        [DllImport("gdi32.dll")]
+        public static extern int SetTextAlign(IntPtr hdc, uint fMode);
 
         [DllImport("gdi32.dll")]
         public static extern int SetBkMode(IntPtr hdc, int mode);

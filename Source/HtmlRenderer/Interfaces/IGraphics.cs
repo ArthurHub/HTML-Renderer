@@ -122,7 +122,8 @@ namespace HtmlRenderer.Interfaces
         /// <param name="color">the text color to set</param>
         /// <param name="point">the location to start string draw (top-left)</param>
         /// <param name="size">used to know the size of the rendered text for transparent text support</param>
-        void DrawString(String str, IFont font, RColor color, RPoint point, RSize size);
+        /// <param name="rtl">is to render the string right-to-left (true - RTL, false - LTR)</param>
+        void DrawString(String str, IFont font, RColor color, RPoint point, RSize size, bool rtl);
 
         /// <summary>
         /// Draws a line connecting the two points specified by the coordinate pairs.

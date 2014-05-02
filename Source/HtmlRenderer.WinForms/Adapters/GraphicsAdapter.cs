@@ -48,6 +48,11 @@ namespace HtmlRenderer.WinForms.Adapters
         private static readonly StringFormat _stringFormat;
 
         /// <summary>
+        /// The string format to use for rendering strings for GDI+ text rendering
+        /// </summary>
+        private static readonly StringFormat _stringFormat2;
+
+        /// <summary>
         /// The wrapped WinForms graphics object
         /// </summary>
         private readonly Graphics _g;
@@ -67,6 +72,11 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         private IntPtr _hdc;
 
+        /// <summary>
+        /// If text alignment was set to RTL
+        /// </summary>
+        private bool _setRtl;
+
         #endregion
 
 
@@ -77,6 +87,8 @@ namespace HtmlRenderer.WinForms.Adapters
         {
             _stringFormat = new StringFormat(StringFormat.GenericTypographic);
             _stringFormat.FormatFlags = StringFormatFlags.NoClip | StringFormatFlags.MeasureTrailingSpaces;
+
+            _stringFormat2 = new StringFormat(StringFormat.GenericTypographic);
         }
 
         /// <summary>
@@ -182,7 +194,7 @@ namespace HtmlRenderer.WinForms.Adapters
                 {
                     var height = realFont.Height;
                     var descent = realFont.Size * realFont.FontFamily.GetCellDescent(realFont.Style) / realFont.FontFamily.GetEmHeight(realFont.Style);
-                    fontAdapter.SetMetrics(height, (int)Math.Round(( height - descent + .5f )));
+                    fontAdapter.SetMetrics(height, (int)Math.Round((height - descent + .5f)));
                 }
 
                 return Utils.Convert(size);
@@ -258,29 +270,33 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="color">the text color to set</param>
         /// <param name="point">the location to start string draw (top-left)</param>
         /// <param name="size">used to know the size of the rendered text for transparent text support</param>
-        public void DrawString(String str, IFont font, RColor color, RPoint point, RSize size)
+        /// <param name="rtl">is to render the string right-to-left (true - RTL, false - LTR)</param>
+        public void DrawString(string str, IFont font, RColor color, RPoint point, RSize size, bool rtl)
         {
             var pointConv = Utils.ConvertRound(point);
             var colorConv = Utils.Convert(color);
 
-            if( _useGdiPlusTextRendering )
+            if (_useGdiPlusTextRendering)
             {
                 ReleaseHdc();
+                SetRtlAlign(rtl);
                 var brush = ((BrushAdapter)CacheUtils.GetSolidBrush(color)).Brush;
-                _g.DrawString(str, ((FontAdapter)font).Font, brush, (int)Math.Round(point.X), (int)Math.Round(point.Y), StringFormat.GenericTypographic);
+                _g.DrawString(str, ((FontAdapter)font).Font, brush, (int)(Math.Round(point.X) + (rtl ? size.Width : 0)), (int)Math.Round(point.Y), _stringFormat2);
             }
             else
             {
-                if( color.A == 255 )
+                if (color.A == 255)
                 {
                     SetFont(font);
                     SetTextColor(colorConv);
+                    SetRtlAlign(rtl);
 
                     Win32Utils.TextOut(_hdc, pointConv.X, pointConv.Y, str, str.Length);
                 }
                 else
                 {
                     InitHdc();
+                    SetRtlAlign(rtl);
                     DrawTransparentText(_hdc, str, font, pointConv, Utils.ConvertRound(size), colorConv);
                 }
             }
@@ -347,10 +363,13 @@ namespace HtmlRenderer.WinForms.Adapters
         public void Dispose()
         {
             ReleaseHdc();
-            if(_releaseGraphics)
+            if (_releaseGraphics)
                 _g.Dispose();
+
+            if (_useGdiPlusTextRendering && _setRtl)
+                _stringFormat2.FormatFlags ^= StringFormatFlags.DirectionRightToLeft;
         }
-        
+
 
         #region Delegate graphics methods
 
@@ -415,7 +434,7 @@ namespace HtmlRenderer.WinForms.Adapters
         public void DrawImage(IImage image, RRect destRect)
         {
             ReleaseHdc();
-            _g.DrawImage(( (ImageAdapter)image ).Image, Utils.Convert(destRect));
+            _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect));
         }
 
         /// <summary>
@@ -446,7 +465,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="points">Array of Point structures that represent the vertices of the polygon to fill. </param>
         public void DrawPolygon(IBrush brush, RPoint[] points)
         {
-            if( points != null && points.Length > 0 )
+            if (points != null && points.Length > 0)
             {
                 ReleaseHdc();
                 _g.FillPolygon(((BrushAdapter)brush).Brush, Utils.Convert(points));
@@ -463,11 +482,12 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         private void InitHdc()
         {
-            if(_hdc == IntPtr.Zero)
+            if (_hdc == IntPtr.Zero)
             {
                 var clip = _g.Clip.GetHrgn(_g);
 
                 _hdc = _g.GetHdc();
+                _setRtl = false;
                 Win32Utils.SetBkMode(_hdc, 1);
 
                 Win32Utils.SelectClipRgn(_hdc, clip);
@@ -496,7 +516,7 @@ namespace HtmlRenderer.WinForms.Adapters
         private void SetFont(IFont font)
         {
             InitHdc();
-            Win32Utils.SelectObject(_hdc, ( (FontAdapter)font ).HFont);
+            Win32Utils.SelectObject(_hdc, ((FontAdapter)font).HFont);
         }
 
         /// <summary>
@@ -505,8 +525,33 @@ namespace HtmlRenderer.WinForms.Adapters
         private void SetTextColor(Color color)
         {
             InitHdc();
-            int rgb = ( color.B & 0xFF ) << 16 | ( color.G & 0xFF ) << 8 | color.R;
+            int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
             Win32Utils.SetTextColor(_hdc, rgb);
+        }
+
+        /// <summary>
+        /// Change text align to Left-to-Right or Right-to-Left if required.
+        /// </summary>
+        private void SetRtlAlign(bool rtl)
+        {
+            if (_setRtl)
+            {
+                if (!rtl)
+                {
+                    if (_useGdiPlusTextRendering)
+                        _stringFormat2.FormatFlags ^= StringFormatFlags.DirectionRightToLeft;
+                    else
+                        Win32Utils.SetTextAlign(_hdc, Win32Utils.TextAlignDefault);
+                }
+            }
+            else if (rtl)
+            {
+                if (_useGdiPlusTextRendering)
+                    _stringFormat2.FormatFlags |= StringFormatFlags.DirectionRightToLeft;
+                else
+                    Win32Utils.SetTextAlign(_hdc, Win32Utils.TextAlignRtl);
+            }
+            _setRtl = rtl;
         }
 
         /// <summary>
@@ -527,7 +572,7 @@ namespace HtmlRenderer.WinForms.Adapters
                 Win32Utils.BitBlt(memoryHdc, 0, 0, size.Width, size.Height, hdc, point.X, point.Y, Win32Utils.BitBltCopy);
 
                 // Create and select font
-                Win32Utils.SelectObject(memoryHdc, ( (FontAdapter)font ).HFont);
+                Win32Utils.SelectObject(memoryHdc, ((FontAdapter)font).HFont);
                 Win32Utils.SetTextColor(memoryHdc, (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R);
 
                 // Draw text to memory HDC
@@ -538,7 +583,7 @@ namespace HtmlRenderer.WinForms.Adapters
             }
             finally
             {
-                Win32Utils.ReleaseMemoryHdc(memoryHdc, dib);                
+                Win32Utils.ReleaseMemoryHdc(memoryHdc, dib);
             }
         }
 

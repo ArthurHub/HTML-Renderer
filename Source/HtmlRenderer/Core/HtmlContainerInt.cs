@@ -80,7 +80,7 @@ namespace HtmlRenderer.Core
     public sealed class HtmlContainerInt : IDisposable
     {
         #region Fields and Consts
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -406,17 +406,16 @@ namespace HtmlRenderer.Core
         /// <param name="baseCssData">optional: the stylesheet to init with, init default if not given</param>
         public void SetHtml(string htmlSource, CssData baseCssData = null)
         {
-
-            if( _root != null )
+            if (_root != null)
             {
                 _root.Dispose();
                 _root = null;
-                if( _selectionHandler != null )
+                if (_selectionHandler != null)
                     _selectionHandler.Dispose();
                 _selectionHandler = null;
             }
 
-            if( !string.IsNullOrEmpty(htmlSource) )
+            if (!string.IsNullOrEmpty(htmlSource))
             {
                 _cssData = baseCssData ?? _global.DefaultCssData;
 
@@ -488,18 +487,18 @@ namespace HtmlRenderer.Core
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
-            if( _root != null )
+            if (_root != null)
             {
                 _actualSize = RSize.Empty;
 
-                // if width is not restricted we set it to large value to get the actual later
+                    // if width is not restricted we set it to large value to get the actual later
                 _root.Size = new RSize(_maxSize.Width > 0 ? _maxSize.Width : 99999, 0);
-                _root.Location = _location;
+                    _root.Location = _location;
                 _root.PerformLayout(g);
 
-                if( _maxSize.Width <= 0.1 )
-                {
-                    // in case the width is not restricted we need to double layout, first will find the width so second can layout by it (center alignment)
+                    if (_maxSize.Width <= 0.1)
+                    {
+                        // in case the width is not restricted we need to double layout, first will find the width so second can layout by it (center alignment)
                     _root.Size = new RSize((int)Math.Ceiling(_actualSize.Width), 0);
                     _actualSize = RSize.Empty;
                     _root.PerformLayout(g);
@@ -522,10 +521,10 @@ namespace HtmlRenderer.Core
                 g.SetClipReplace(new RRect(_location, _maxSize));
             }
 
-            if( _root != null )
+            if (_root != null)
             {
                 _root.Paint(g);
-                }
+            }
 
             if (prevClip != RRect.Empty)
             {
@@ -547,7 +546,7 @@ namespace HtmlRenderer.Core
                 if (_selectionHandler != null)
                     _selectionHandler.HandleMouseDown(parent, OffsetByScroll(location), IsMouseInContainer(location));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse down handle", ex);
             }
@@ -572,18 +571,18 @@ namespace HtmlRenderer.Core
                     {
                         var loc = OffsetByScroll(location);
                         var link = DomUtils.GetLinkBox(_root, loc);
-                        if( link != null )
+                        if (link != null)
                         {
                             HandleLinkClicked(parent, location, link);
                         }
                     }
                 }
             }
-            catch(HtmlLinkClickedException)
+            catch (HtmlLinkClickedException)
             {
                 throw;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse up handle", ex);
             }
@@ -603,7 +602,7 @@ namespace HtmlRenderer.Core
                 if (_selectionHandler != null && IsMouseInContainer(location))
                     _selectionHandler.SelectWord(parent, OffsetByScroll(location));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse double click handle", ex);
             }
@@ -645,7 +644,7 @@ namespace HtmlRenderer.Core
                 }
                  */
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse move handle", ex);
             }
@@ -661,10 +660,10 @@ namespace HtmlRenderer.Core
 
             try
             {
-                if( _selectionHandler != null )
+                if (_selectionHandler != null)
                     _selectionHandler.HandleMouseLeave(parent);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed mouse leave handle", ex);
             }
@@ -682,7 +681,7 @@ namespace HtmlRenderer.Core
 
             try
             {
-                if( e.Control && _selectionHandler != null )
+                if (e.Control && _selectionHandler != null)
                 {
                     // select all
                     if (e.AKeyCode)
@@ -697,7 +696,7 @@ namespace HtmlRenderer.Core
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ReportError(HtmlRenderErrorType.KeyboardMouse, "Failed key down handle", ex);
             }
@@ -711,12 +710,12 @@ namespace HtmlRenderer.Core
         {
             try
             {
-                if( StylesheetLoad != null )
+                if (StylesheetLoad != null)
                 {
                     StylesheetLoad(this, args);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ReportError(HtmlRenderErrorType.CssParsing, "Failed stylesheet load event", ex);
             }
@@ -730,12 +729,12 @@ namespace HtmlRenderer.Core
         {
             try
             {
-                if( ImageLoad != null )
+                if (ImageLoad != null)
                 {
                     ImageLoad(this, args);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ReportError(HtmlRenderErrorType.Image, "Failed image load event", ex);
             }
@@ -749,12 +748,12 @@ namespace HtmlRenderer.Core
         {
             try
             {
-                if( Refresh != null )
+                if (Refresh != null)
                 {
                     Refresh(this, new HtmlRefreshEventArgs(layout));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ReportError(HtmlRenderErrorType.General, "Failed refresh request", ex);
             }
@@ -770,13 +769,13 @@ namespace HtmlRenderer.Core
         {
             try
             {
-                if( RenderError != null )
+                if (RenderError != null)
                 {
                     RenderError(this, new HtmlRenderErrorEventArgs(type, message, exception));
                 }
             }
             catch
-            {}
+            { }
         }
 
         /// <summary>
@@ -787,29 +786,29 @@ namespace HtmlRenderer.Core
         /// <param name="link">the link that was clicked</param>
         internal void HandleLinkClicked(IControl parent, RPoint location, CssBox link)
         {
-            if( LinkClicked != null )
+            if (LinkClicked != null)
             {
                 var args = new HtmlLinkClickedEventArgs(link.HrefLink, link.HtmlTag.Attributes);
                 try
                 {
                     LinkClicked(this, args);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     throw new HtmlLinkClickedException("Error in link clicked intercept", ex);
                 }
-                if( args.Handled )
+                if (args.Handled)
                     return;
-                }
+            }
 
-            if( !string.IsNullOrEmpty(link.HrefLink) )
+            if (!string.IsNullOrEmpty(link.HrefLink))
             {
-                if( link.HrefLink.StartsWith("#") && link.HrefLink.Length > 1 )
+                if (link.HrefLink.StartsWith("#") && link.HrefLink.Length > 1)
                 {
-                    if( ScrollChange != null )
+                    if (ScrollChange != null)
                     {
                         var rect = GetElementRectangle(link.HrefLink.Substring(1));
-                        if( rect.HasValue )
+                        if (rect.HasValue)
                         {
                             ScrollChange(this, new HtmlScrollEventArgs(rect.Value.Location));
                             HandleMouseMove(parent, location);
@@ -879,7 +878,7 @@ namespace HtmlRenderer.Core
         {
             try
             {
-                if( all )
+                if (all)
                 {
                     LinkClicked = null;
                     Refresh = null;
@@ -889,15 +888,15 @@ namespace HtmlRenderer.Core
                 }
 
                 _cssData = null;
-                if( _root != null )
+                if (_root != null)
                     _root.Dispose();
                 _root = null;
-                if( _selectionHandler != null )
+                if (_selectionHandler != null)
                     _selectionHandler.Dispose();
                 _selectionHandler = null;
             }
             catch
-            {}
+            { }
         }
 
         #endregion

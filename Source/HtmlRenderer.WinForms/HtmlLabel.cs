@@ -169,6 +169,7 @@ namespace HtmlRenderer.WinForms
         /// Gets or sets a value indicating if anti-aliasing should be avoided for geometry like backgrounds and borders (default - false).
         /// </summary>
         [Category("Behavior")]
+        [DefaultValue(false)]
         [Description("If anti-aliasing should be avoided for geometry like backgrounds and borders")]
         public virtual bool AvoidGeometryAntialias
         {
@@ -191,6 +192,7 @@ namespace HtmlRenderer.WinForms
         /// </remarks>
         [Category("Behavior")]
         [EditorBrowsable(EditorBrowsableState.Always)]
+        [DefaultValue(false)]
         [Description("If to use GDI+ text rendering to measure/draw text, false - use GDI")]
         public bool UseGdiPlusTextRendering
         {
@@ -222,7 +224,7 @@ namespace HtmlRenderer.WinForms
             get { return _borderStyle; }
             set
             {
-                if (BorderStyle != value)
+                if( BorderStyle != value )
                 {
                     _borderStyle = value;
                     OnBorderStyleChanged(EventArgs.Empty);
@@ -292,7 +294,7 @@ namespace HtmlRenderer.WinForms
             set
             {
                 base.AutoSize = value;
-                if (value)
+                if( value )
                 {
                     _autoSizeHight = false;
                     PerformLayout();
@@ -314,7 +316,7 @@ namespace HtmlRenderer.WinForms
             set
             {
                 _autoSizeHight = value;
-                if (value)
+                if( value )
                 {
                     AutoSize = false;
                     PerformLayout();
@@ -334,7 +336,7 @@ namespace HtmlRenderer.WinForms
             set
             {
                 base.MaximumSize = value;
-                if (_htmlContainer != null)
+                if( _htmlContainer != null )
                 {
                     _htmlContainer.MaxSize = value;
                     PerformLayout();
@@ -365,7 +367,7 @@ namespace HtmlRenderer.WinForms
             {
                 _text = value;
                 base.Text = value;
-                if (!IsDisposed)
+                if( !IsDisposed )
                 {
                     _htmlContainer.SetHtml(_text, _baseCssData);
                     PerformLayout();
@@ -425,14 +427,14 @@ namespace HtmlRenderer.WinForms
             {
                 CreateParams createParams = base.CreateParams;
 
-                switch (_borderStyle)
+                switch( _borderStyle )
                 {
                     case BorderStyle.FixedSingle:
-                        createParams.Style |= Win32Utils.WS_BORDER;
+                        createParams.Style |= Win32Utils.WsBorder;
                         break;
 
                     case BorderStyle.Fixed3D:
-                        createParams.ExStyle |= Win32Utils.WS_EX_CLIENTEDGE;
+                        createParams.ExStyle |= Win32Utils.WsExClientEdge;
                         break;
                 }
 
@@ -445,7 +447,7 @@ namespace HtmlRenderer.WinForms
         /// </summary>
         protected override void OnLayout(LayoutEventArgs levent)
         {
-            if (_htmlContainer != null)
+            if( _htmlContainer != null )
             {
                 using (Graphics g = CreateGraphics())
                 using(var ig = new GraphicsAdapter(g,_htmlContainer.UseGdiPlusTextRendering))
@@ -464,7 +466,7 @@ namespace HtmlRenderer.WinForms
         {
             base.OnPaint(e);
 
-            if (_htmlContainer != null)
+            if( _htmlContainer != null )
             {
                 _htmlContainer.PerformPaint(e.Graphics);
             }
@@ -476,7 +478,7 @@ namespace HtmlRenderer.WinForms
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (_htmlContainer != null)
+            if( _htmlContainer != null )
                 _htmlContainer.HandleMouseMove(this, e);
         }
 
@@ -486,7 +488,7 @@ namespace HtmlRenderer.WinForms
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (_htmlContainer != null)
+            if( _htmlContainer != null )
                 _htmlContainer.HandleMouseDown(this, e);
         }
 
@@ -496,7 +498,7 @@ namespace HtmlRenderer.WinForms
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            if (_htmlContainer != null)
+            if( _htmlContainer != null )
                 _htmlContainer.HandleMouseLeave(this);
         }
 
@@ -506,7 +508,7 @@ namespace HtmlRenderer.WinForms
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseClick(e);
-            if (_htmlContainer != null)
+            if( _htmlContainer != null )
                 _htmlContainer.HandleMouseUp(this, e);
         }
 
@@ -516,7 +518,7 @@ namespace HtmlRenderer.WinForms
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
             base.OnMouseDoubleClick(e);
-            if (_htmlContainer != null)
+            if( _htmlContainer != null )
                 _htmlContainer.HandleMouseDoubleClick(this, e);
         }
 
@@ -528,70 +530,57 @@ namespace HtmlRenderer.WinForms
             UpdateStyles();
 
             var handler = BorderStyleChanged;
-            if (handler != null)
+            if( handler != null )
                 handler(this, e);
         }
 
         /// <summary>
         /// Propagate the LinkClicked event from root container.
         /// </summary>
-        protected virtual void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
-            {
+        protected virtual void OnLinkClicked(HtmlLinkClickedEventArgs e)
+        {
             var handler = LinkClicked;
-            if (handler != null)
+            if( handler != null )
                 handler(this, e);
         }
 
         /// <summary>
         /// Propagate the Render Error event from root container.
         /// </summary>
-        protected virtual void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
+        protected virtual void OnRenderError(HtmlRenderErrorEventArgs e)
         {
             var handler = RenderError;
-            if (handler != null)
-            {
-                if (InvokeRequired)
-                    Invoke(handler);
-                else
+            if( handler != null )
                     handler(this, e);
             }
-        }
 
         /// <summary>
         /// Propagate the stylesheet load event from root container.
         /// </summary>
-        protected virtual void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
-            {
+        protected virtual void OnStylesheetLoad(HtmlStylesheetLoadEventArgs e)
+        {
             var handler = StylesheetLoad;
-            if (handler != null)
+            if( handler != null )
                 handler(this, e);
         }
 
         /// <summary>
         /// Propagate the image load event from root container.
         /// </summary>
-        protected virtual void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
-            {
+        protected virtual void OnImageLoad(HtmlImageLoadEventArgs e)
+        {
             var handler = ImageLoad;
-            if (handler != null)
+            if( handler != null )
                 handler(this, e);
         }
 
         /// <summary>
         /// Handle html renderer invalidate and re-layout as requested.
         /// </summary>
-        protected virtual void OnRefresh(object sender, HtmlRefreshEventArgs e)
-        {
-            if (e.Layout)
+        protected virtual void OnRefresh(HtmlRefreshEventArgs e)
             {
-                if (InvokeRequired)
-                    Invoke(new MethodInvoker(PerformLayout));
-                else
+            if( e.Layout )
                     PerformLayout();
-            }
-            if (InvokeRequired)
-                Invoke(new MethodInvoker(Invalidate));
-            else
                 Invalidate();
         }
 
@@ -602,18 +591,18 @@ namespace HtmlRenderer.WinForms
         [DebuggerStepThrough]
         protected override void WndProc(ref Message m)
         {
-            if (_useSystemCursors && m.Msg == Win32Utils.WM_SETCURSOR && Cursor == Cursors.Hand)
+            if( _useSystemCursors && m.Msg == Win32Utils.WmSetCursor && Cursor == Cursors.Hand )
             {
                 try
                 {
                     // Replace .NET's hand cursor with the OS cursor
-                    Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IDC_HAND));
+                    Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IdcHand));
                     m.Result = IntPtr.Zero;
                     return;
                 }
                 catch(Exception ex)
                 {
-                    OnRenderError(this,new HtmlRenderErrorEventArgs(HtmlRenderErrorType.General, "Failed to set OS hand cursor", ex));
+                    OnRenderError(this, new HtmlRenderErrorEventArgs(HtmlRenderErrorType.General, "Failed to set OS hand cursor", ex));
                 }
             }
             base.WndProc(ref m);
@@ -624,7 +613,7 @@ namespace HtmlRenderer.WinForms
         /// </summary>
         protected override void Dispose(bool disposing)
         {
-            if (_htmlContainer != null)
+            if( _htmlContainer != null )
             {
                 _htmlContainer.LinkClicked -= OnLinkClicked;
                 _htmlContainer.RenderError -= OnRenderError;
@@ -636,6 +625,43 @@ namespace HtmlRenderer.WinForms
             }
             base.Dispose(disposing);
         }
+
+
+        #region Private event handlers
+
+        private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
+        {
+            OnLinkClicked(e);
+        }
+
+        private void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
+        {
+            if( InvokeRequired )
+                Invoke(new MethodInvoker(() => OnRenderError(e)));
+            else
+                OnRenderError(e);
+        }
+
+        private void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
+        {
+            OnStylesheetLoad(e);
+        }
+
+        private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
+        {
+            OnImageLoad(e);
+        }
+
+        private void OnRefresh(object sender, HtmlRefreshEventArgs e)
+        {
+            if( InvokeRequired )
+                Invoke(new MethodInvoker(() => OnRefresh(e)));
+            else
+                OnRefresh(e);
+        }
+
+        #endregion
+
 
         #region Hide not relevant properties from designer
 
@@ -700,6 +726,7 @@ namespace HtmlRenderer.WinForms
         }
 
         #endregion
+
 
         #endregion
     }

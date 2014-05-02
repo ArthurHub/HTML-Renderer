@@ -151,6 +151,7 @@ namespace HtmlRenderer.WinForms
         /// Gets or sets a value indicating if anti-aliasing should be avoided for geometry like backgrounds and borders (default - false).
         /// </summary>
         [Category("Behavior")]
+        [DefaultValue(false)]
         [Description("If anti-aliasing should be avoided for geometry like backgrounds and borders")]
         public virtual bool AvoidGeometryAntialias
         {
@@ -172,6 +173,7 @@ namespace HtmlRenderer.WinForms
         /// will push the html elements down.
         /// </remarks>
         [Category("Behavior")]
+        [DefaultValue(false)]
         [Description("If image loading only when visible should be avoided")]
         public virtual bool AvoidImagesLateLoading
         {
@@ -193,6 +195,7 @@ namespace HtmlRenderer.WinForms
         /// </para>
         /// </remarks>
         [Category("Behavior")]
+        [DefaultValue(false)]
         [EditorBrowsable(EditorBrowsableState.Always)]
         [Description("If to use GDI+ text rendering to measure/draw text, false - use GDI")]
         public bool UseGdiPlusTextRendering
@@ -389,11 +392,11 @@ namespace HtmlRenderer.WinForms
                 switch (_borderStyle)
                 {
                     case BorderStyle.FixedSingle:
-                        createParams.Style |= Win32Utils.WS_BORDER;
+                        createParams.Style |= Win32Utils.WsBorder;
                         break;
 
                     case BorderStyle.Fixed3D:
-                        createParams.ExStyle |= Win32Utils.WS_EX_CLIENTEDGE;
+                        createParams.ExStyle |= Win32Utils.WsExClientEdge;
                         break;
                 }
 
@@ -565,12 +568,12 @@ namespace HtmlRenderer.WinForms
             {
                 handler(this, e);
             }
-            }
+        }
 
         /// <summary>
         /// Propagate the LinkClicked event from root container.
         /// </summary>
-        protected virtual void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
+        protected virtual void OnLinkClicked(HtmlLinkClickedEventArgs e)
         {
             var handler = LinkClicked;
             if (handler != null)
@@ -580,23 +583,18 @@ namespace HtmlRenderer.WinForms
         /// <summary>
         /// Propagate the Render Error event from root container.
         /// </summary>
-        protected virtual void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
+        protected virtual void OnRenderError(HtmlRenderErrorEventArgs e)
         {
             var handler = RenderError;
             if (handler != null)
-            {
-                if (InvokeRequired)
-                    Invoke(handler, this, e);
-                else
                     handler(this, e);
             }
-        }
 
         /// <summary>
         /// Propagate the stylesheet load event from root container.
         /// </summary>
-        protected virtual void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
-            {
+        protected virtual void OnStylesheetLoad(HtmlStylesheetLoadEventArgs e)
+        {
             var handler = StylesheetLoad;
             if (handler != null)
                 handler(this, e);
@@ -605,8 +603,8 @@ namespace HtmlRenderer.WinForms
         /// <summary>
         /// Propagate the image load event from root container.
         /// </summary>
-        protected virtual void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
-            {
+        protected virtual void OnImageLoad(HtmlImageLoadEventArgs e)
+        {
             var handler = ImageLoad;
             if (handler != null)
                 handler(this, e);
@@ -615,25 +613,17 @@ namespace HtmlRenderer.WinForms
         /// <summary>
         /// Handle html renderer invalidate and re-layout as requested.
         /// </summary>
-        protected virtual void OnRefresh(object sender, HtmlRefreshEventArgs e)
-        {
-            if(e.Layout)
+        protected virtual void OnRefresh(HtmlRefreshEventArgs e)
             {
-                if (InvokeRequired)
-                    Invoke(new MethodInvoker(PerformLayout));
-                else
+            if (e.Layout)
                     PerformLayout();
-            }
-            if (InvokeRequired)
-                    Invoke(new MethodInvoker(Invalidate));
-                else
                     Invalidate();
         }
         
         /// <summary>
         /// On html renderer scroll request adjust the scrolling of the panel to the requested location.
         /// </summary>
-        protected virtual void OnScrollChange(object sender, HtmlScrollEventArgs e)
+        protected virtual void OnScrollChange(HtmlScrollEventArgs e)
         {
             UpdateScroll(new Point((int)e.X, (int)e.Y));
         }
@@ -676,12 +666,12 @@ namespace HtmlRenderer.WinForms
         [DebuggerStepThrough]
         protected override void WndProc(ref Message m)
         {
-            if (_useSystemCursors && m.Msg == Win32Utils.WM_SETCURSOR && Cursor == Cursors.Hand)
+            if (_useSystemCursors && m.Msg == Win32Utils.WmSetCursor && Cursor == Cursors.Hand)
             {
                 try
                 {
                     // Replace .NET's hand cursor with the OS cursor
-                    Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IDC_HAND));
+                    Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IdcHand));
                     m.Result = IntPtr.Zero;
                     return;
                 }
@@ -711,6 +701,47 @@ namespace HtmlRenderer.WinForms
             }
             base.Dispose(disposing);
         }
+
+
+        #region Private event handlers
+
+        private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
+        {
+            OnLinkClicked(e);
+        }
+
+        private void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
+        {
+            if( InvokeRequired )
+                Invoke(new MethodInvoker(() => OnRenderError(e)));
+            else
+                OnRenderError(e);
+        }
+
+        private void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
+        {
+            OnStylesheetLoad(e);
+        }
+
+        private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
+        {
+            OnImageLoad(e);
+        }
+
+        private void OnRefresh(object sender, HtmlRefreshEventArgs e)
+        {
+            if( InvokeRequired )
+                Invoke(new MethodInvoker(() => OnRefresh(e)));
+            else
+                OnRefresh(e);
+        }
+
+        private void OnScrollChange(object sender, HtmlScrollEventArgs e)
+        {
+            OnScrollChange(e);
+        }
+
+        #endregion
 
         #region Hide not relevant properties from designer
 

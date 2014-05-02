@@ -73,24 +73,24 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="parent">the parent box of this box</param>
         /// <param name="tag">the html tag data of this box</param>
-        public CssBoxFrame(CssBox parent, HtmlTag tag) 
+        public CssBoxFrame(CssBox parent, HtmlTag tag)
             : base(parent, tag)
         {
             _imageWord = new CssRectImage(this);
             Words.Add(_imageWord);
 
             Uri uri;
-            if (Uri.TryCreate(GetAttribute("src"),UriKind.Absolute, out uri))
+            if (Uri.TryCreate(GetAttribute("src"), UriKind.Absolute, out uri))
             {
-                if(uri.Host.IndexOf("youtube.com",StringComparison.InvariantCultureIgnoreCase) > -1)
+                if (uri.Host.IndexOf("youtube.com", StringComparison.InvariantCultureIgnoreCase) > -1)
                 {
                     _isVideo = true;
                     LoadYoutubeDataAsync(uri);
                 }
-                else if (uri.Host.IndexOf("vimeo.com",StringComparison.InvariantCultureIgnoreCase) > -1)
+                else if (uri.Host.IndexOf("vimeo.com", StringComparison.InvariantCultureIgnoreCase) > -1)
                 {
                     _isVideo = true;
-                    LoadVimeoDataAsync(uri);                    
+                    LoadVimeoDataAsync(uri);
                 }
             }
 
@@ -129,7 +129,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         public override void Dispose()
         {
-            if(_imageLoadHandler != null)
+            if (_imageLoadHandler != null)
                 _imageLoadHandler.Dispose();
             base.Dispose();
         }
@@ -168,89 +168,89 @@ namespace HtmlRenderer.Core.Dom
         {
             try
             {
-                if( !e.Cancelled )
+                if (!e.Cancelled)
                 {
-                    if( e.Error == null )
+                    if (e.Error == null)
                     {
                         var idx = e.Result.IndexOf("\"media$title\"", StringComparison.Ordinal);
-                if (idx > -1)
-                {
-                    idx = e.Result.IndexOf("\"$t\"", idx);
-                    if (idx > -1)
-                    {
-                                idx = e.Result.IndexOf('"', idx + 4);
                         if (idx > -1)
                         {
-                            var endIdx = e.Result.IndexOf('"', idx + 1);
-                            while (e.Result[endIdx - 1] == '\\')
-                                endIdx = e.Result.IndexOf('"', endIdx + 1);
-                            if (endIdx > -1)
+                            idx = e.Result.IndexOf("\"$t\"", idx);
+                            if (idx > -1)
                             {
+                                idx = e.Result.IndexOf('"', idx + 4);
+                                if (idx > -1)
+                                {
+                                    var endIdx = e.Result.IndexOf('"', idx + 1);
+                                    while (e.Result[endIdx - 1] == '\\')
+                                        endIdx = e.Result.IndexOf('"', endIdx + 1);
+                                    if (endIdx > -1)
+                                    {
                                         _videoTitle = e.Result.Substring(idx + 1, endIdx - idx - 1).Replace("\\\"", "\"");
+                                    }
+                                }
                             }
                         }
-                    }
-                }
 
-                idx = e.Result.IndexOf("\"media$thumbnail\"", StringComparison.Ordinal);
-                if(idx > -1)
-                {
-                    var iidx = e.Result.IndexOf("sddefault", idx);
-                    if (iidx > -1)
-                    {
-                        if (string.IsNullOrEmpty(Width)) Width = "640px";
-                        if (string.IsNullOrEmpty(Height)) Height = "480px";
-                    }
-                    else
-                    {
-                        iidx = e.Result.IndexOf("hqdefault", idx);
-                        if (iidx > -1)
+                        idx = e.Result.IndexOf("\"media$thumbnail\"", StringComparison.Ordinal);
+                        if (idx > -1)
                         {
-                            if (string.IsNullOrEmpty(Width)) Width = "480px";
-                            if (string.IsNullOrEmpty(Height)) Height = "360px";
-                        }
-                        else
-                        {
-                            iidx = e.Result.IndexOf("mqdefault", idx);
+                            var iidx = e.Result.IndexOf("sddefault", idx);
                             if (iidx > -1)
                             {
-                                if (string.IsNullOrEmpty(Width)) Width = "320px";
-                                if (string.IsNullOrEmpty(Height)) Height = "180px";
+                                if (string.IsNullOrEmpty(Width)) Width = "640px";
+                                if (string.IsNullOrEmpty(Height)) Height = "480px";
                             }
                             else
                             {
-                                iidx = e.Result.IndexOf("default", idx);
-                                if (string.IsNullOrEmpty(Width)) Width = "120px";
-                                if (string.IsNullOrEmpty(Height)) Height = "90px";
+                                iidx = e.Result.IndexOf("hqdefault", idx);
+                                if (iidx > -1)
+                                {
+                                    if (string.IsNullOrEmpty(Width)) Width = "480px";
+                                    if (string.IsNullOrEmpty(Height)) Height = "360px";
+                                }
+                                else
+                                {
+                                    iidx = e.Result.IndexOf("mqdefault", idx);
+                                    if (iidx > -1)
+                                    {
+                                        if (string.IsNullOrEmpty(Width)) Width = "320px";
+                                        if (string.IsNullOrEmpty(Height)) Height = "180px";
+                                    }
+                                    else
+                                    {
+                                        iidx = e.Result.IndexOf("default", idx);
+                                        if (string.IsNullOrEmpty(Width)) Width = "120px";
+                                        if (string.IsNullOrEmpty(Height)) Height = "90px";
+                                    }
+                                }
+                            }
+
+                            iidx = e.Result.LastIndexOf("http:", iidx, StringComparison.Ordinal);
+                            if (iidx > -1)
+                            {
+                                var endIdx = e.Result.IndexOf('"', iidx);
+                                if (endIdx > -1)
+                                {
+                                    _videoImageUrl = e.Result.Substring(iidx, endIdx - iidx).Replace("\\\"", "\"").Replace("\\", "");
+                                }
+                            }
+                        }
+
+                        idx = e.Result.IndexOf("\"link\"", StringComparison.Ordinal);
+                        if (idx > -1)
+                        {
+                            idx = e.Result.IndexOf("http:", idx);
+                            if (idx > -1)
+                            {
+                                var endIdx = e.Result.IndexOf('"', idx);
+                                if (endIdx > -1)
+                                {
+                                    _videoLinkUrl = e.Result.Substring(idx, endIdx - idx).Replace("\\\"", "\"").Replace("\\", "");
+                                }
                             }
                         }
                     }
-
-                    iidx = e.Result.LastIndexOf("http:", iidx, StringComparison.Ordinal);
-                    if(iidx > -1)
-                    {
-                        var endIdx = e.Result.IndexOf('"', iidx);
-                                if (endIdx > -1)
-                        {
-                            _videoImageUrl = e.Result.Substring(iidx, endIdx - iidx).Replace("\\\"", "\"").Replace("\\", "");
-                        }
-                    }
-                }
-
-                        idx = e.Result.IndexOf("\"link\"", StringComparison.Ordinal);
-                if (idx > -1)
-                {
-                    idx = e.Result.IndexOf("http:", idx);
-                    if (idx > -1)
-                    {
-                        var endIdx = e.Result.IndexOf('"', idx);
-                        if (endIdx > -1)
-                        {
-                            _videoLinkUrl = e.Result.Substring(idx, endIdx - idx).Replace("\\\"", "\"").Replace("\\", "");
-                        }
-                    }
-                }
-            }
                     else
                     {
                         HandleDataLoadFailure(e.Error, "YouTube");
@@ -298,77 +298,77 @@ namespace HtmlRenderer.Core.Dom
         {
             try
             {
-                if( !e.Cancelled )
+                if (!e.Cancelled)
                 {
-                    if( e.Error == null )
+                    if (e.Error == null)
                     {
                         var idx = e.Result.IndexOf("\"title\"", StringComparison.Ordinal);
-                        if( idx > -1 )
+                        if (idx > -1)
                         {
-                    idx = e.Result.IndexOf('"', idx + 7);
-                            if( idx > -1 )
-                    {
-                        var endIdx = e.Result.IndexOf('"', idx + 1);
-                                while( e.Result[endIdx - 1] == '\\' )
-                            endIdx = e.Result.IndexOf('"', endIdx + 1);
-                                if( endIdx > -1 )
-                        {
-                            _videoTitle = e.Result.Substring(idx + 1, endIdx - idx - 1).Replace("\\\"", "\"");
+                            idx = e.Result.IndexOf('"', idx + 7);
+                            if (idx > -1)
+                            {
+                                var endIdx = e.Result.IndexOf('"', idx + 1);
+                                while (e.Result[endIdx - 1] == '\\')
+                                    endIdx = e.Result.IndexOf('"', endIdx + 1);
+                                if (endIdx > -1)
+                                {
+                                    _videoTitle = e.Result.Substring(idx + 1, endIdx - idx - 1).Replace("\\\"", "\"");
+                                }
+                            }
                         }
-                    }
-                }
 
-                idx = e.Result.IndexOf("\"thumbnail_large\"", StringComparison.Ordinal);
-                if (idx > -1)
-                {
-                            if( string.IsNullOrEmpty(Width) )
+                        idx = e.Result.IndexOf("\"thumbnail_large\"", StringComparison.Ordinal);
+                        if (idx > -1)
+                        {
+                            if (string.IsNullOrEmpty(Width))
                                 Width = "640";
-                            if( string.IsNullOrEmpty(Height) )
+                            if (string.IsNullOrEmpty(Height))
                                 Height = "360";
-                }
-                else
-                {
-                    idx = e.Result.IndexOf("thumbnail_medium", idx);
-                            if( idx > -1 )
-                    {
-                                if( string.IsNullOrEmpty(Width) )
+                        }
+                        else
+                        {
+                            idx = e.Result.IndexOf("thumbnail_medium", idx);
+                            if (idx > -1)
+                            {
+                                if (string.IsNullOrEmpty(Width))
                                     Width = "200";
-                                if( string.IsNullOrEmpty(Height) )
+                                if (string.IsNullOrEmpty(Height))
                                     Height = "150";
-                    }
-                    else
-                    {
-                        idx = e.Result.IndexOf("thumbnail_small", idx);
-                                if( string.IsNullOrEmpty(Width) )
+                            }
+                            else
+                            {
+                                idx = e.Result.IndexOf("thumbnail_small", idx);
+                                if (string.IsNullOrEmpty(Width))
                                     Width = "100";
-                                if( string.IsNullOrEmpty(Height) )
+                                if (string.IsNullOrEmpty(Height))
                                     Height = "75";
-                    }
-                }
-                        if( idx > -1 )
-                {
-                    idx = e.Result.IndexOf("http:", idx);
-                            if( idx > -1 )
-                    {
-                        var endIdx = e.Result.IndexOf('"', idx);
-                                if( endIdx > -1 )
-                        {
-                            _videoImageUrl = e.Result.Substring(idx, endIdx - idx).Replace("\\\"", "\"").Replace("\\", "");
+                            }
                         }
-                    }
-                }
+                        if (idx > -1)
+                        {
+                            idx = e.Result.IndexOf("http:", idx);
+                            if (idx > -1)
+                            {
+                                var endIdx = e.Result.IndexOf('"', idx);
+                                if (endIdx > -1)
+                                {
+                                    _videoImageUrl = e.Result.Substring(idx, endIdx - idx).Replace("\\\"", "\"").Replace("\\", "");
+                                }
+                            }
+                        }
 
-                idx = e.Result.IndexOf("\"url\"", StringComparison.Ordinal);
-                if (idx > -1)
-                {
-                    idx = e.Result.IndexOf("http:", idx);
-                            if( idx > -1 )
-                    {
-                        var endIdx = e.Result.IndexOf('"', idx);
-                                if( endIdx > -1 )
+                        idx = e.Result.IndexOf("\"url\"", StringComparison.Ordinal);
+                        if (idx > -1)
                         {
-                            _videoLinkUrl = e.Result.Substring(idx, endIdx - idx).Replace("\\\"", "\"").Replace("\\", "");
-                        }
+                            idx = e.Result.IndexOf("http:", idx);
+                            if (idx > -1)
+                            {
+                                var endIdx = e.Result.IndexOf('"', idx);
+                                if (endIdx > -1)
+                                {
+                                    _videoLinkUrl = e.Result.Substring(idx, endIdx - idx).Replace("\\\"", "\"").Replace("\\", "");
+                                }
                             }
                         }
                     }
@@ -378,7 +378,7 @@ namespace HtmlRenderer.Core.Dom
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 HtmlContainer.ReportError(HtmlRenderErrorType.Iframe, "Failed to parse Vimeo video response", ex);
             }
@@ -395,7 +395,7 @@ namespace HtmlRenderer.Core.Dom
         {
             var webError = ex as WebException;
             var webResponse = webError != null ? webError.Response as HttpWebResponse : null;
-            if( webResponse != null && webResponse.StatusCode == HttpStatusCode.NotFound )
+            if (webResponse != null && webResponse.StatusCode == HttpStatusCode.NotFound)
             {
                 _videoTitle = "The video is not found, possibly removed by the user.";
             }
@@ -420,7 +420,7 @@ namespace HtmlRenderer.Core.Dom
                 else
                 {
                     _imageLoadingComplete = true;
-                    SetErrorBorder();                    
+                    SetErrorBorder();
                 }
 
                 var webClient = (WebClient)sender;
@@ -431,7 +431,7 @@ namespace HtmlRenderer.Core.Dom
                 HtmlContainer.RequestRefresh(IsLayoutRequired());
             }
             catch
-            {}
+            { }
         }
 
         /// <summary>
@@ -465,7 +465,7 @@ namespace HtmlRenderer.Core.Dom
             DrawTitle(g, rect);
 
             DrawPlay(g, rect);
-            
+
             RenderUtils.ReturnClip(g, prevClip);
         }
 
@@ -483,7 +483,7 @@ namespace HtmlRenderer.Core.Dom
 
                 if (_imageWord.Selected)
                 {
-                    g.DrawRectangle(GetSelectionBackBrush(g,true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width + 2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
+                    g.DrawRectangle(GetSelectionBackBrush(g, true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width + 2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
                 }
             }
             else if (_isVideo && !_imageLoadingComplete)
@@ -501,13 +501,13 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         private void DrawTitle(IGraphics g, RRect rect)
         {
-            if( _videoTitle != null && _imageWord.Width > 40 && _imageWord.Height > 40 )
+            if (_videoTitle != null && _imageWord.Width > 40 && _imageWord.Height > 40)
             {
                 var font = HtmlContainer.Global.GetFont("Arial", 9f, RFontStyle.Regular);
                 g.DrawRectangle(g.GetSolidBrush(RColor.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, ActualFont.Height + 7);
 
                 var titleRect = new RRect(rect.Left + 3, rect.Top + 3, rect.Width - 6, rect.Height - 6);
-                g.DrawString(_videoTitle, font, RColor.WhiteSmoke, titleRect.Location, RSize.Empty);
+                g.DrawString(_videoTitle, font, RColor.WhiteSmoke, titleRect.Location, RSize.Empty, false);
             }
         }
 
@@ -521,14 +521,14 @@ namespace HtmlRenderer.Core.Dom
                 var prevMode = g.SetAntiAliasSmoothingMode();
 
                 var size = new RSize(60, 40);
-                var left = rect.Left + (rect.Width - size.Width)/2;
-                var top = rect.Top + (rect.Height - size.Height)/2;
+                var left = rect.Left + (rect.Width - size.Width) / 2;
+                var top = rect.Top + (rect.Height - size.Height) / 2;
                 g.DrawRectangle(g.GetSolidBrush(RColor.FromArgb(160, 0, 0, 0)), left, top, size.Width, size.Height);
 
                 using (var path = g.GetGraphicsPath())
                 {
-                    path.AddLine(left + size.Width/3f + 1, top + 3*size.Height/4f, left + size.Width/3f + 1, top + size.Height/4f);
-                    path.AddLine(left + size.Width/3f + 1, top + size.Height/4f, left + 2*size.Width/3f + 1, top + size.Height/2f);
+                    path.AddLine(left + size.Width / 3f + 1, top + 3 * size.Height / 4f, left + size.Width / 3f + 1, top + size.Height / 4f);
+                    path.AddLine(left + size.Width / 3f + 1, top + size.Height / 4f, left + 2 * size.Width / 3f + 1, top + size.Height / 2f);
                     path.CloseFigure();
                     g.DrawPath(g.GetSolidBrush(RColor.White), path);
                 }

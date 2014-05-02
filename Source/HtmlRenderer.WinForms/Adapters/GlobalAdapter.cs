@@ -103,7 +103,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="plainText">the plain text data</param>
         public override void SetToClipboard(string html, string plainText)
         {
-            HtmlClipboardUtils.CopyToClipboard(html, plainText);
+            ClipboardHelper.CopyToClipboard(html, plainText);
         }
 
         /// <summary>

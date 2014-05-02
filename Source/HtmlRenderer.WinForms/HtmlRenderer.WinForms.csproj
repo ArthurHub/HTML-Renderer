@@ -88,7 +88,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Utilities\CacheUtils.cs" />
-    <Compile Include="Utilities\HtmlClipboardUtils.cs" />
+    <Compile Include="Utilities\ClipboardHelper.cs" />
     <Compile Include="Utilities\Utils.cs" />
     <Compile Include="Utilities\Win32Utils.cs" />
   </ItemGroup>

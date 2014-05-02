@@ -12,7 +12,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Entities;
@@ -26,6 +25,28 @@ namespace HtmlRenderer.Core.Utils
     /// </summary>
     internal sealed class DomUtils
     {
+        /// <summary>
+        /// Check if the given location is inside the given box deep.<br/>
+        /// Check inner boxes and all lines that the given box spans to.
+        /// </summary>
+        /// <param name="box">the box to check</param>
+        /// <param name="location">the location to check</param>
+        /// <returns>true - location inside the box, false - otherwise</returns>
+        public static bool IsInBox(CssBox box, RPoint location)
+        {
+            foreach (var line in box.Rectangles)
+            {
+                if (line.Value.Contains(location))
+                    return true;
+            }
+            foreach (var childBox in box.Boxes)
+            {
+                if (IsInBox(childBox, location))
+                    return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// Check if the given box contains only inline child boxes.
         /// </summary>
@@ -169,7 +190,7 @@ namespace HtmlRenderer.Core.Utils
         public static string GetAttribute(CssBox box, string attribute)
         {
             string value = null;
-            while( box != null && value == null )
+            while (box != null && value == null)
             {
                 value = box.GetAttribute(attribute, null);
                 box = box.ParentBox;
@@ -187,13 +208,13 @@ namespace HtmlRenderer.Core.Utils
         /// <returns>css link box if exists or null</returns>
         public static CssBox GetCssBox(CssBox box, RPoint location, bool visible = true)
         {
-            if( box != null )
+            if (box != null)
             {
-                if( ( !visible || box.Visibility == CssConstants.Visible ) && ( box.Bounds.IsEmpty || box.Bounds.Contains(location) ) )
+                if ((!visible || box.Visibility == CssConstants.Visible) && (box.Bounds.IsEmpty || box.Bounds.Contains(location)))
                 {
-                    foreach(var childBox in box.Boxes)
+                    foreach (var childBox in box.Boxes)
                     {
-                        if( CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds).Contains(location) )
+                        if (CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds).Contains(location))
                         {
                             return GetCssBox(childBox, location) ?? childBox;
                         }
@@ -213,18 +234,13 @@ namespace HtmlRenderer.Core.Utils
         /// <returns>css link box if exists or null</returns>
         public static CssBox GetLinkBox(CssBox box, RPoint location)
         {
-            if(box != null)
+            if (box != null)
             {
-                if(box.IsClickable && box.Visibility == CssConstants.Visible)
+                if (box.IsClickable && box.Visibility == CssConstants.Visible)
                 {
-                    foreach (var line in box.Rectangles)
-                    {
-                        if (line.Value.Contains(location))
-                        {
+                    if (IsInBox(box, location))
                             return box;                        
                         }
-                    }
-                }
 
                 if (box.ClientRectangle.IsEmpty || box.ClientRectangle.Contains(location))
                 {
@@ -248,17 +264,17 @@ namespace HtmlRenderer.Core.Utils
         /// <returns>css box if exists or null</returns>
         public static CssBox GetBoxById(CssBox box, string id)
         {
-            if( box != null && !string.IsNullOrEmpty(id) )
+            if (box != null && !string.IsNullOrEmpty(id))
             {
-                if( box.HtmlTag != null && id.Equals(box.HtmlTag.TryGetAttribute("id"), StringComparison.OrdinalIgnoreCase) )
+                if (box.HtmlTag != null && id.Equals(box.HtmlTag.TryGetAttribute("id"), StringComparison.OrdinalIgnoreCase))
                 {
                     return box;
                 }
 
-                foreach(var childBox in box.Boxes)
+                foreach (var childBox in box.Boxes)
                 {
                     var foundBox = GetBoxById(childBox, id);
-                    if( foundBox != null )
+                    if (foundBox != null)
                         return foundBox;
                 }
             }
@@ -280,7 +296,7 @@ namespace HtmlRenderer.Core.Utils
             {
                 if (box.LineBoxes.Count > 0)
                 {
-                    if(box.HtmlTag == null || box.HtmlTag.Name != "td" || box.Bounds.Contains(location))
+                    if (box.HtmlTag == null || box.HtmlTag.Name != "td" || box.Bounds.Contains(location))
                     {
                         foreach (var lineBox in box.LineBoxes)
                         {
@@ -387,7 +403,7 @@ namespace HtmlRenderer.Core.Utils
             {
                 foreach (var lineWord in lineBox.Words)
                 {
-                    if(lineWord == word)
+                    if (lineWord == word)
                     {
                         return lineBox;
                     }
@@ -405,12 +421,12 @@ namespace HtmlRenderer.Core.Utils
         {
             var sb = new StringBuilder();
             var lastWordIndex = GetSelectedPlainText(sb, root);
-            return sb.ToString(0,lastWordIndex).Trim();
+            return sb.ToString(0, lastWordIndex).Trim();
         }
 
         /// <summary>
-        /// Generate html from the given dom tree.<br/>
-        /// Generate all the tyle inside the html.
+        /// Generate html from the given DOM tree.<br/>
+        /// Generate all the style inside the html, in header or for every tag depending on <paramref name="styleGen"/> value.
         /// </summary>
         /// <param name="root">the box of the html generate html from</param>
         /// <param name="styleGen">Optional: controls the way styles are generated when html is generated</param>
@@ -421,7 +437,9 @@ namespace HtmlRenderer.Core.Utils
             var sb = new StringBuilder();
             if (root != null)
             {
-                WriteHtml(root.HtmlContainer.CssParser, sb, root, 0, styleGen, onlySelected ? CollectSelectedHtmlTags(root) : null);
+                var selectedBoxes = onlySelected ? CollectSelectedBoxes(root) : null;
+                var selectionRoot = onlySelected ? GetSelectionRoot(root, selectedBoxes) : null;
+                WriteHtml(root.HtmlContainer.CssParser, sb, root, styleGen, selectedBoxes, selectionRoot);
             }
             return sb.ToString();
         }
@@ -483,7 +501,7 @@ namespace HtmlRenderer.Core.Utils
                 // convert hr to line of dashes
                 if (box.HtmlTag != null && box.HtmlTag.Name == "hr")
                 {
-                    if(sb.Length > 1 && sb[sb.Length-1] != '\n')
+                    if (sb.Length > 1 && sb[sb.Length - 1] != '\n')
                         sb.AppendLine();
                     sb.AppendLine(new string('-', 80));
                 }
@@ -507,7 +525,7 @@ namespace HtmlRenderer.Core.Utils
                     int newlines = 0;
                     for (int i = sb.Length - 1; i >= 0 && char.IsWhiteSpace(sb[i]); i--)
                         newlines += sb[i] == '\n' ? 1 : 0;
-                    if(newlines < 2)
+                    if (newlines < 2)
                         sb.AppendLine();
                 }
             }
@@ -516,135 +534,192 @@ namespace HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Collect the html tags that have at least one word down the heirarchy that is selected recursevly.<br/>
+        /// Collect the boxes that have at least one word down the hierarchy that is selected recursively.<br/>
         /// </summary>
         /// <param name="root">the box to check its sub-tree</param>
         /// <returns>the collection to add the selected tags to</returns>
-        private static Dictionary<HtmlTag,bool> CollectSelectedHtmlTags(CssBox root)
+        private static Dictionary<CssBox, bool> CollectSelectedBoxes(CssBox root)
         {
-            var selectedTags = new Dictionary<HtmlTag, bool>();
-            var maybeTags = new Dictionary<HtmlTag, bool>();
-            CollectSelectedHtmlTags(root, selectedTags, maybeTags);
-            return selectedTags;
+            var selectedBoxes = new Dictionary<CssBox, bool>();
+            var maybeBoxes = new Dictionary<CssBox, bool>();
+            CollectSelectedBoxes(root, selectedBoxes, maybeBoxes);
+            return selectedBoxes;
         }
 
         /// <summary>
-        /// Collect the html tags that have at least one word down the heirarchy that is selected recursevly.<br/>
+        /// Collect the boxes that have at least one word down the hierarchy that is selected recursively.<br/>
+        /// Use <paramref name="maybeBoxes"/> to handle boxes that are between selected words but don't have selected word inside.<br/>
         /// </summary>
         /// <param name="box">the box to check its sub-tree</param>
-        /// <param name="selectedTags">the collection to add the selected tags to</param>
-        /// <param name="maybeTags">used to handle tags that are between selected words but don't have selected word inside</param>
+        /// <param name="selectedBoxes">the hash to add the selected boxes to</param>
+        /// <param name="maybeBoxes">used to handle boxes that are between selected words but don't have selected word inside</param>
         /// <returns>is the current box is in selected sub-tree</returns>
-        private static bool CollectSelectedHtmlTags(CssBox box, Dictionary<HtmlTag, bool> selectedTags, Dictionary<HtmlTag, bool> maybeTags)
+        private static bool CollectSelectedBoxes(CssBox box, Dictionary<CssBox, bool> selectedBoxes, Dictionary<CssBox, bool> maybeBoxes)
         {
             bool isInSelection = false;
             foreach (var word in box.Words)
             {
                 if (word.Selected)
                 {
-                    if (box.HtmlTag != null)
-                    {
-                        selectedTags.Add(box.HtmlTag, true);
-                    }
-                    foreach (var maybeTag in maybeTags)
-                        selectedTags[maybeTag.Key] = maybeTag.Value;
-                    maybeTags.Clear();
+                    selectedBoxes[box] = true;
+                    foreach (var maybeTag in maybeBoxes)
+                        selectedBoxes[maybeTag.Key] = maybeTag.Value;
+                    maybeBoxes.Clear();
                     isInSelection = true;
                 }
             }
 
             foreach (var childBox in box.Boxes)
             {
-                var childInSelection = CollectSelectedHtmlTags(childBox, selectedTags, maybeTags);
+                var childInSelection = CollectSelectedBoxes(childBox, selectedBoxes, maybeBoxes);
                 if (childInSelection)
                 {
-                    if (box.HtmlTag != null)
-                    {
-                        selectedTags[box.HtmlTag] = true;
-                    }
+                    selectedBoxes[box] = true;
                     isInSelection = true;
                 }
             }
 
-            if (box.HtmlTag != null && selectedTags.Count > 0)
+            if (box.HtmlTag != null && selectedBoxes.Count > 0)
             {
-                maybeTags[box.HtmlTag] = true;
+                maybeBoxes[box] = true;
             }
 
             return isInSelection;
         }
 
         /// <summary>
-        /// Write the given html dom subtree into the given string builder.
+        /// find the box the is the root of selected boxes (the first box to contain multiple selected boxes)
         /// </summary>
-        /// <param name="cssParser"></param>
+        /// <param name="root">the root of the boxes tree</param>
+        /// <param name="selectedBoxes">the selected boxes to find selection root in</param>
+        /// <returns>the box that is the root of selected boxes</returns>
+        private static CssBox GetSelectionRoot(CssBox root, Dictionary<CssBox, bool> selectedBoxes)
+        {
+            var selectionRoot = root;
+            var selectionRootRun = root;
+            while (true)
+            {
+                bool foundRoot = false;
+                CssBox selectedChild = null;
+                foreach (var childBox in selectionRootRun.Boxes)
+                {
+                    if (selectedBoxes.ContainsKey(childBox))
+                    {
+                        if (selectedChild != null)
+                    {
+                            foundRoot = true;
+                            break;
+                        }
+                        selectedChild = childBox;
+                    }
+                }
+
+                if (foundRoot || selectedChild == null)
+                    break;
+
+                selectionRootRun = selectedChild;
+
+                // the actual selection root must be a box with html tag
+                if (selectionRootRun.HtmlTag != null)
+                    selectionRoot = selectionRootRun;
+            }
+
+            // if the selection root doesn't contained any named boxes in it then we must go one level up, otherwise we will miss the selection root box formatting
+            if (!ContainsNamedBox(selectionRoot))
+            {
+                selectionRootRun = selectionRoot.ParentBox;
+                while (selectionRootRun.ParentBox != null && selectionRootRun.HtmlTag == null)
+                    selectionRootRun = selectionRootRun.ParentBox;
+
+                if (selectionRootRun.HtmlTag != null)
+                    selectionRoot = selectionRootRun;
+            }
+
+            return selectionRoot;
+        }
+
+        /// <summary>
+        /// Check if the given box has a names child box (has html tag) recursively.
+        /// </summary>
+        /// <param name="box">the box to check</param>
+        /// <returns>true - in sub-tree there is a named box, false - otherwise</returns>
+        private static bool ContainsNamedBox(CssBox box)
+        {
+            foreach (var childBox in box.Boxes)
+            {
+                if (childBox.HtmlTag != null || ContainsNamedBox(childBox))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Write the given html DOM sub-tree into the given string builder.<br/>
+        /// If <paramref name="selectedBoxes"/> are given write html only from those tags.
+        /// </summary>
+        /// <param name="cssParser">used to parse CSS data</param>
         /// <param name="sb">the string builder to write html into</param>
         /// <param name="box">the html sub-tree to write</param>
-        /// <param name="indent">the indent to use for nice formating</param>
         /// <param name="styleGen">Controls the way styles are generated when html is generated</param>
-        /// <param name="selectedTags">Control if to generate only selected tags, if given only tags found in collection will be generated</param>
-        private static void WriteHtml(CssParser cssParser, StringBuilder sb, CssBox box, int indent, HtmlGenerationStyle styleGen, Dictionary<HtmlTag, bool> selectedTags)
+        /// <param name="selectedBoxes">Control if to generate only selected boxes, if given only boxes found in hash will be generated</param>
+        /// <param name="selectionRoot">the box the is the root of selected boxes (the first box to contain multiple selected boxes)</param>
+        private static void WriteHtml(CssParser cssParser, StringBuilder sb, CssBox box, HtmlGenerationStyle styleGen, Dictionary<CssBox, bool> selectedBoxes, CssBox selectionRoot)
         {
-            if (box.HtmlTag != null && selectedTags != null && !selectedTags.ContainsKey(box.HtmlTag))
-                return;
-
+            if (box.HtmlTag == null || selectedBoxes == null || selectedBoxes.ContainsKey(box))
+            {
             if (box.HtmlTag != null)
             {
                 if (box.HtmlTag.Name != "link" || !box.HtmlTag.Attributes.ContainsKey("href") ||
                     (!box.HtmlTag.Attributes["href"].StartsWith("property") && !box.HtmlTag.Attributes["href"].StartsWith("method")))
                 {
-                    WriteHtmlTag(cssParser, sb, box, indent, styleGen);
-                    indent = indent + (box.HtmlTag.IsSingle ? 0 : 1);
+                        WriteHtmlTag(cssParser, sb, box, styleGen);
+                        if (box == selectionRoot)
+                            sb.Append("<!--StartFragment-->");
                 }
 
                 if (styleGen == HtmlGenerationStyle.InHeader && box.HtmlTag.Name == "html" && box.HtmlContainer.CssData != null)
                 {
-                    sb.Append(new string(' ', indent * 4));
                     sb.AppendLine("<head>");
-                    WriteStylesheet(sb, box.HtmlContainer.CssData, indent + 1);
-                    sb.Append(new string(' ', indent * 4));
+                        WriteStylesheet(sb, box.HtmlContainer.CssData);
                     sb.AppendLine("</head>");
                 }
             }
 
             if (box.Words.Count > 0)
             {
-                sb.Append(new string(' ', indent * 4));
                 foreach (var word in box.Words)
                 {
-                    if (selectedTags == null || word.Selected)
+                        if (selectedBoxes == null || word.Selected)
                     {
-                        var wordText = GetSelectedWord(word, selectedTags != null);
+                            var wordText = GetSelectedWord(word, selectedBoxes != null);
                         sb.Append(HtmlUtils.EncodeHtml(wordText));
                     }
                 }
-                sb.AppendLine();
             }
 
             foreach (var childBox in box.Boxes)
             {
-                WriteHtml(cssParser, sb, childBox, indent, styleGen, selectedTags);
+                WriteHtml(cssParser,sb, childBox, styleGen, selectedBoxes, selectionRoot);
             }
 
             if (box.HtmlTag != null && !box.HtmlTag.IsSingle)
             {
-                sb.Append(new string(' ', Math.Max((indent - 1) * 4, 0)));
+                    if (box == selectionRoot)
+                        sb.Append("<!--EndFragment-->");
                 sb.AppendFormat("</{0}>", box.HtmlTag.Name);
-                sb.AppendLine();
+                }
             }
         }
 
         /// <summary>
         /// Write the given html tag with all its attributes and styles.
         /// </summary>
-        /// <param name="cssParser"></param>
+        /// <param name="cssParser">used to parse CSS data</param>
         /// <param name="sb">the string builder to write html into</param>
         /// <param name="box">the css box with the html tag to write</param>
-        /// <param name="indent">the indent to use for nice formatting</param>
         /// <param name="styleGen">Controls the way styles are generated when html is generated</param>
-        private static void WriteHtmlTag(CssParser cssParser, StringBuilder sb, CssBox box, int indent, HtmlGenerationStyle styleGen)
+        private static void WriteHtmlTag(CssParser cssParser, StringBuilder sb, CssBox box, HtmlGenerationStyle styleGen)
         {
-            sb.Append(new string(' ', indent * 4));
             sb.AppendFormat("<{0}", box.HtmlTag.Name);
 
             // collect all element style properties including from stylesheet
@@ -656,6 +731,7 @@ namespace HtmlRenderer.Core.Utils
                 foreach (var cssBlock in tagCssBlock)
                     foreach (var prop in cssBlock.Properties)
                         tagStyles[prop.Key] = prop.Value;
+
             }
 
             if (box.HtmlTag.HasAttributes())
@@ -664,20 +740,7 @@ namespace HtmlRenderer.Core.Utils
                 foreach (var att in box.HtmlTag.Attributes)
                 {
                     // handle image tags by inserting the image using base64 data
-                    if (box.HtmlTag.Name == "img" && att.Key == "src" && (att.Value.StartsWith("property") || att.Value.StartsWith("method")))
-                    {
-                        var img = ((CssBoxImage)box).Image;
-                        if (img != null)
-                        {
-                            using (var buffer = new MemoryStream())
-                            {
-                                img.Save(buffer);
-                                var base64 = Convert.ToBase64String(buffer.ToArray());
-                                sb.AppendFormat("{0}=\"data:image/png;base64, {1}\" ", att.Key, base64);
-                            }
-                        }
-                    }
-                    else if (styleGen == HtmlGenerationStyle.Inline && att.Key == HtmlConstants.Style)
+                    if (styleGen == HtmlGenerationStyle.Inline && att.Key == HtmlConstants.Style)
                     {
                         // if inline style add the styles to the collection
                         var block = cssParser.ParseCssBlock(box.HtmlTag.Name, box.HtmlTag.TryGetAttribute("style"));
@@ -708,17 +771,50 @@ namespace HtmlRenderer.Core.Utils
             // if inline style insert the style tag with all collected style properties
             if (styleGen == HtmlGenerationStyle.Inline && tagStyles.Count > 0)
             {
-                sb.Append(" style=\"");
-                foreach (var style in tagStyles)
+                var cleanTagStyles = StripDefaultStyles(box, tagStyles);
+                if (cleanTagStyles.Count > 0)
                 {
+                sb.Append(" style=\"");
+                    foreach (var style in cleanTagStyles)
                     sb.AppendFormat("{0}: {1}; ", style.Key, style.Value);
-                }
                 sb.Remove(sb.Length - 1, 1);
                 sb.Append("\"");
             }
+            }
 
             sb.AppendFormat("{0}>", box.HtmlTag.IsSingle ? "/" : "");
-            sb.AppendLine();
+        }
+
+        /// <summary>
+        /// Clean the given style collection by removing default styles so only custom styles remain.<br/>
+        /// Return new collection where the old remains unchanged.
+        /// </summary>
+        /// <param name="box">the box the styles apply to, used to know the default style</param>
+        /// <param name="tagStyles">the collection of styles to clean</param>
+        /// <returns>new cleaned styles collection</returns>
+        private static Dictionary<string, string> StripDefaultStyles(CssBox box, Dictionary<string, string> tagStyles)
+        {
+            // ReSharper disable PossibleMultipleEnumeration
+            var cleanTagStyles = new Dictionary<string, string>();
+            var defaultBlocks = box.HtmlContainer.Global.DefaultCssData.GetCssBlock(box.HtmlTag.Name);
+            foreach (var style in tagStyles)
+            {
+                bool isDefault = false;
+                foreach (var defaultBlock in defaultBlocks)
+                {
+                    string value;
+                    if (defaultBlock.Properties.TryGetValue(style.Key, out value) && value.Equals(style.Value, StringComparison.OrdinalIgnoreCase))
+                    {
+                        isDefault = true;
+                        break;
+                    }
+                }
+
+                if (!isDefault)
+                    cleanTagStyles[style.Key] = style.Value;
+            }
+            return cleanTagStyles;
+            // ReSharper restore PossibleMultipleEnumeration
         }
 
         /// <summary>
@@ -726,14 +822,11 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         /// <param name="sb">the string builder to write stylesheet into</param>
         /// <param name="cssData">the css data to write to the head</param>
-        /// <param name="indent">the indent to use for nice formating</param>
-        private static void WriteStylesheet(StringBuilder sb, CssData cssData, int indent)
+        private static void WriteStylesheet(StringBuilder sb, CssData cssData)
         {
-            sb.Append(new string(' ', indent * 4));
             sb.AppendLine("<style type=\"text/css\">");
             foreach (var cssBlocks in cssData.MediaBlocks["all"])
             {
-                sb.Append(new string(' ', (indent + 1) * 4));
                 sb.Append(cssBlocks.Key);
                 sb.Append(" { ");
                 foreach (var cssBlock in cssBlocks.Value)
@@ -747,7 +840,6 @@ namespace HtmlRenderer.Core.Utils
                 sb.Append(" }");
                 sb.AppendLine();
             }
-            sb.Append(new string(' ', indent * 4));
             sb.AppendLine("</style>");
         }
 

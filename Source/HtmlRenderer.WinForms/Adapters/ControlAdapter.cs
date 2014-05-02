@@ -109,7 +109,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <returns>drag-drop data object</returns>
         public object GetDataObject(string html, string plainText)
         {
-            return HtmlClipboardUtils.GetDataObject(html, plainText);
+            return ClipboardHelper.CreateDataObject(html, plainText);
         }
 
         /// <summary>
