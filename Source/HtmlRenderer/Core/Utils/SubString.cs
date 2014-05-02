@@ -62,9 +62,9 @@ namespace HtmlRenderer.Core.Utils
         public SubString(string fullString, int startIdx, int length)
         {
             ArgChecker.AssertArgNotNull(fullString, "fullString");
-            if(startIdx < 0 || startIdx >= fullString.Length)
+            if (startIdx < 0 || startIdx >= fullString.Length)
                 throw new ArgumentOutOfRangeException("startIdx", "Must within fullString boundries");
-            if(length < 0 || startIdx + length > fullString.Length)
+            if (length < 0 || startIdx + length > fullString.Length)
                 throw new ArgumentOutOfRangeException("length", "Must within fullString boundries");
 
             _fullString = fullString;
@@ -173,7 +173,7 @@ namespace HtmlRenderer.Core.Utils
                 throw new ArgumentOutOfRangeException("startIdx");
             if (length > _length)
                 throw new ArgumentOutOfRangeException("length");
-            if(startIdx + length > _length)
+            if (startIdx + length > _length)
                 throw new ArgumentOutOfRangeException("length");
 
             return _fullString.Substring(_startIdx + startIdx, length);

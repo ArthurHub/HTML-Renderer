@@ -40,11 +40,11 @@ namespace HtmlRenderer.WinForms.Utilities
         public const int IdcHand = 32649;
 
         public const int TextAlignDefault = 0;
-        
+
         public const int TextAlignRtl = 256;
-        
+
         public const int TextAlignBaseline = 24;
-        
+
         public const int TextAlignBaselineRtl = 256 + 24;
 
         [DllImport("user32.dll")]

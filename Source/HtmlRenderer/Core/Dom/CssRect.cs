@@ -174,9 +174,9 @@ namespace HtmlRenderer.Core.Dom
         public virtual IImage Image
         {
             get { return null; }
-// ReSharper disable ValueParameterNotUsed
-            set {}
-// ReSharper restore ValueParameterNotUsed
+            // ReSharper disable ValueParameterNotUsed
+            set { }
+            // ReSharper restore ValueParameterNotUsed
         }
 
         /// <summary>

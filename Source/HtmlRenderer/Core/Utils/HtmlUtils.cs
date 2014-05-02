@@ -34,7 +34,7 @@ namespace HtmlRenderer.Core.Utils
         /// <summary>
         /// the html encode\decode pairs
         /// </summary>
-        private static readonly KeyValuePair<string,string>[] _encodeDecode = new[]
+        private static readonly KeyValuePair<string, string>[] _encodeDecode = new[]
                                                            {
                                                                new KeyValuePair<string, string>("&lt;", "<"), 
                                                                new KeyValuePair<string, string>("&gt;", ">"),
@@ -341,7 +341,7 @@ namespace HtmlRenderer.Core.Utils
         {
             if (!string.IsNullOrEmpty(str))
             {
-                for (int i = _encodeDecode.Length-1; i >= 0; i--)
+                for (int i = _encodeDecode.Length - 1; i >= 0; i--)
                 {
                     str = str.Replace(_encodeDecode[i].Value, _encodeDecode[i].Key);
                 }
@@ -365,8 +365,8 @@ namespace HtmlRenderer.Core.Utils
                 var endIdx = idx + 2 + (hex ? 1 : 0);
 
                 long num = 0;
-                while( endIdx < str.Length && CommonUtils.IsDigit(str[endIdx], hex) )
-                    num = num*( hex ? 16 : 10 ) + CommonUtils.ToDigit(str[endIdx++], hex);
+                while (endIdx < str.Length && CommonUtils.IsDigit(str[endIdx], hex))
+                    num = num * (hex ? 16 : 10) + CommonUtils.ToDigit(str[endIdx++], hex);
                 endIdx += (endIdx < str.Length && str[endIdx] == ';') ? 1 : 0;
 
                 str = str.Remove(idx, endIdx - idx);
@@ -388,18 +388,18 @@ namespace HtmlRenderer.Core.Utils
             while (idx > -1)
             {
                 var endIdx = str.IndexOf(';', idx);
-                if(endIdx > -1 && endIdx - idx < 8)
+                if (endIdx > -1 && endIdx - idx < 8)
                 {
                     var key = str.Substring(idx + 1, endIdx - idx - 1);
                     char c;
-                    if(_decodeOnly.TryGetValue(key,out c))
+                    if (_decodeOnly.TryGetValue(key, out c))
                     {
-                        str = str.Remove(idx, endIdx - idx+1);
+                        str = str.Remove(idx, endIdx - idx + 1);
                         str = str.Insert(idx, c.ToString());
                     }
                 }
 
-                idx = str.IndexOf('&', idx+1);
+                idx = str.IndexOf('&', idx + 1);
             }
             return str;
         }

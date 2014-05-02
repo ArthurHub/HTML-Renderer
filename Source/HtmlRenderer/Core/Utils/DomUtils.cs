@@ -239,8 +239,8 @@ namespace HtmlRenderer.Core.Utils
                 if (box.IsClickable && box.Visibility == CssConstants.Visible)
                 {
                     if (IsInBox(box, location))
-                            return box;                        
-                        }
+                        return box;
+                }
 
                 if (box.ClientRectangle.IsEmpty || box.ClientRectangle.Contains(location))
                 {
@@ -606,7 +606,7 @@ namespace HtmlRenderer.Core.Utils
                     if (selectedBoxes.ContainsKey(childBox))
                     {
                         if (selectedChild != null)
-                    {
+                        {
                             foundRoot = true;
                             break;
                         }
@@ -667,46 +667,46 @@ namespace HtmlRenderer.Core.Utils
         {
             if (box.HtmlTag == null || selectedBoxes == null || selectedBoxes.ContainsKey(box))
             {
-            if (box.HtmlTag != null)
-            {
-                if (box.HtmlTag.Name != "link" || !box.HtmlTag.Attributes.ContainsKey("href") ||
-                    (!box.HtmlTag.Attributes["href"].StartsWith("property") && !box.HtmlTag.Attributes["href"].StartsWith("method")))
+                if (box.HtmlTag != null)
                 {
+                    if (box.HtmlTag.Name != "link" || !box.HtmlTag.Attributes.ContainsKey("href") ||
+                        (!box.HtmlTag.Attributes["href"].StartsWith("property") && !box.HtmlTag.Attributes["href"].StartsWith("method")))
+                    {
                         WriteHtmlTag(cssParser, sb, box, styleGen);
                         if (box == selectionRoot)
                             sb.Append("<!--StartFragment-->");
-                }
+                    }
 
-                if (styleGen == HtmlGenerationStyle.InHeader && box.HtmlTag.Name == "html" && box.HtmlContainer.CssData != null)
-                {
-                    sb.AppendLine("<head>");
-                        WriteStylesheet(sb, box.HtmlContainer.CssData);
-                    sb.AppendLine("</head>");
-                }
-            }
-
-            if (box.Words.Count > 0)
-            {
-                foreach (var word in box.Words)
-                {
-                        if (selectedBoxes == null || word.Selected)
+                    if (styleGen == HtmlGenerationStyle.InHeader && box.HtmlTag.Name == "html" && box.HtmlContainer.CssData != null)
                     {
-                            var wordText = GetSelectedWord(word, selectedBoxes != null);
-                        sb.Append(HtmlUtils.EncodeHtml(wordText));
+                        sb.AppendLine("<head>");
+                        WriteStylesheet(sb, box.HtmlContainer.CssData);
+                        sb.AppendLine("</head>");
                     }
                 }
-            }
 
-            foreach (var childBox in box.Boxes)
-            {
-                WriteHtml(cssParser,sb, childBox, styleGen, selectedBoxes, selectionRoot);
-            }
+                if (box.Words.Count > 0)
+                {
+                    foreach (var word in box.Words)
+                    {
+                        if (selectedBoxes == null || word.Selected)
+                        {
+                            var wordText = GetSelectedWord(word, selectedBoxes != null);
+                            sb.Append(HtmlUtils.EncodeHtml(wordText));
+                        }
+                    }
+                }
 
-            if (box.HtmlTag != null && !box.HtmlTag.IsSingle)
-            {
+                foreach (var childBox in box.Boxes)
+                {
+                    WriteHtml(cssParser, sb, childBox, styleGen, selectedBoxes, selectionRoot);
+                }
+
+                if (box.HtmlTag != null && !box.HtmlTag.IsSingle)
+                {
                     if (box == selectionRoot)
                         sb.Append("<!--EndFragment-->");
-                sb.AppendFormat("</{0}>", box.HtmlTag.Name);
+                    sb.AppendFormat("</{0}>", box.HtmlTag.Name);
                 }
             }
         }
@@ -774,12 +774,12 @@ namespace HtmlRenderer.Core.Utils
                 var cleanTagStyles = StripDefaultStyles(box, tagStyles);
                 if (cleanTagStyles.Count > 0)
                 {
-                sb.Append(" style=\"");
+                    sb.Append(" style=\"");
                     foreach (var style in cleanTagStyles)
-                    sb.AppendFormat("{0}: {1}; ", style.Key, style.Value);
-                sb.Remove(sb.Length - 1, 1);
-                sb.Append("\"");
-            }
+                        sb.AppendFormat("{0}: {1}; ", style.Key, style.Value);
+                    sb.Remove(sb.Length - 1, 1);
+                    sb.Append("\"");
+                }
             }
 
             sb.AppendFormat("{0}>", box.HtmlTag.IsSingle ? "/" : "");

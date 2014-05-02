@@ -147,7 +147,7 @@ namespace HtmlRenderer.Core
         /// Gets or sets a value indicating if image loading only when visible should be avoided (default - false).<br/>
         /// </summary>
         private bool _avoidImagesLateLoading;
-        
+
         /// <summary>
         /// the top-left most location of the rendered html
         /// </summary>
@@ -421,7 +421,7 @@ namespace HtmlRenderer.Core
 
                 DomParser parser = new DomParser(_cssParser);
                 _root = parser.GenerateCssTree(htmlSource, this, ref _cssData);
-                if( _root != null )
+                if (_root != null)
                 {
                     _selectionHandler = new SelectionHandler(_root);
                 }
@@ -491,14 +491,14 @@ namespace HtmlRenderer.Core
             {
                 _actualSize = RSize.Empty;
 
-                    // if width is not restricted we set it to large value to get the actual later
+                // if width is not restricted we set it to large value to get the actual later
                 _root.Size = new RSize(_maxSize.Width > 0 ? _maxSize.Width : 99999, 0);
-                    _root.Location = _location;
+                _root.Location = _location;
                 _root.PerformLayout(g);
 
-                    if (_maxSize.Width <= 0.1)
-                    {
-                        // in case the width is not restricted we need to double layout, first will find the width so second can layout by it (center alignment)
+                if (_maxSize.Width <= 0.1)
+                {
+                    // in case the width is not restricted we need to double layout, first will find the width so second can layout by it (center alignment)
                     _root.Size = new RSize((int)Math.Ceiling(_actualSize.Width), 0);
                     _actualSize = RSize.Empty;
                     _root.PerformLayout(g);
@@ -834,7 +834,7 @@ namespace HtmlRenderer.Core
             ArgChecker.AssertArgNotNull(box, "box");
             ArgChecker.AssertArgNotNull(block, "block");
 
-            if( _hoverBoxes == null )
+            if (_hoverBoxes == null)
                 _hoverBoxes = new List<HoverBoxBlock>();
 
             _hoverBoxes.Add(new HoverBoxBlock(box, block));

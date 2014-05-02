@@ -35,7 +35,7 @@ namespace HtmlRenderer.Entities
         /// <summary>
         /// the CSS block properties and values
         /// </summary>
-        private readonly Dictionary<string,string> _properties;
+        private readonly Dictionary<string, string> _properties;
 
         /// <summary>
         /// additional selectors to used in hierarchy (p className1 > className2)
@@ -87,7 +87,7 @@ namespace HtmlRenderer.Entities
         /// <summary>
         /// Gets the CSS block properties and its values
         /// </summary>
-        public IDictionary<string,string> Properties
+        public IDictionary<string, string> Properties
         {
             get { return _properties; }
         }
@@ -131,13 +131,13 @@ namespace HtmlRenderer.Entities
         /// <returns>true - the two blocks are the same, false - otherwise</returns>
         public bool Equals(CssBlock other)
         {
-            if (ReferenceEquals(null, other)) 
+            if (ReferenceEquals(null, other))
                 return false;
-            if (ReferenceEquals(this, other)) 
+            if (ReferenceEquals(this, other))
                 return true;
             if (!Equals(other._class, _class))
                 return false;
-            
+
             if (!Equals(other._properties.Count, _properties.Count))
                 return false;
 
@@ -167,7 +167,7 @@ namespace HtmlRenderer.Entities
             if (ReferenceEquals(this, other))
                 return true;
 
-            if( other.Hover != Hover )
+            if (other.Hover != Hover)
                 return false;
             if (other._selectors == null && _selectors != null)
                 return false;
@@ -176,7 +176,7 @@ namespace HtmlRenderer.Entities
 
             if (other._selectors != null && _selectors != null)
             {
-                if (!Equals(other._selectors.Count,_selectors.Count))
+                if (!Equals(other._selectors.Count, _selectors.Count))
                     return false;
 
                 for (int i = 0; i < _selectors.Count; i++)
@@ -198,13 +198,13 @@ namespace HtmlRenderer.Entities
         /// <returns>true - the two blocks are the same, false - otherwise</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) 
+            if (ReferenceEquals(null, obj))
                 return false;
-            if (ReferenceEquals(this, obj)) 
+            if (ReferenceEquals(this, obj))
                 return true;
-            if (obj.GetType() != typeof (CssBlock)) 
+            if (obj.GetType() != typeof(CssBlock))
                 return false;
-            return Equals((CssBlock) obj);
+            return Equals((CssBlock)obj);
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace HtmlRenderer.Entities
         {
             unchecked
             {
-                return ((_class != null ? _class.GetHashCode() : 0)*397) ^ (_properties != null ? _properties.GetHashCode() : 0);
+                return ((_class != null ? _class.GetHashCode() : 0) * 397) ^ (_properties != null ? _properties.GetHashCode() : 0);
             }
         }
 

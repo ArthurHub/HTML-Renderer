@@ -89,7 +89,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         public void SetCursorHand()
         {
-            _control.Cursor = Cursors.Hand;            
+            _control.Cursor = Cursors.Hand;
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         public void SetCursorIBeam()
         {
-            _control.Cursor = Cursors.IBeam;            
+            _control.Cursor = Cursors.IBeam;
         }
 
         /// <summary>

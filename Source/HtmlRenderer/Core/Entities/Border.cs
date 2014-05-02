@@ -17,9 +17,9 @@ namespace HtmlRenderer.Core.Entities
     /// </summary>
     internal enum Border
     {
-        Top, 
-        Right, 
-        Bottom, 
+        Top,
+        Right,
+        Bottom,
         Left
     }
 }

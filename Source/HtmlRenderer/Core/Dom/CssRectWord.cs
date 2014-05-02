@@ -23,7 +23,7 @@ namespace HtmlRenderer.Core.Dom
         /// The word text
         /// </summary>
         private readonly string _text;
-        
+
         /// <summary>
         /// was there a whitespace before the word chars (before trim)
         /// </summary>
@@ -45,7 +45,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="hasSpaceBefore">was there a whitespace before the word chars (before trim)</param>
         /// <param name="hasSpaceAfter">was there a whitespace after the word chars (before trim)</param>
         public CssRectWord(CssBox owner, string text, bool hasSpaceBefore, bool hasSpaceAfter)
-            :base(owner)
+            : base(owner)
         {
             _text = text;
             _hasSpaceBefore = hasSpaceBefore;
@@ -76,9 +76,9 @@ namespace HtmlRenderer.Core.Dom
         {
             get
             {
-                foreach(var c in Text)
+                foreach (var c in Text)
                 {
-                    if( !char.IsWhiteSpace(c) )
+                    if (!char.IsWhiteSpace(c))
                         return false;
                 }
                 return true;

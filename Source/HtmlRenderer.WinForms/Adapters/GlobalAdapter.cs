@@ -139,7 +139,7 @@ namespace HtmlRenderer.WinForms.Adapters
                 saveDialog.FileName = name;
                 saveDialog.DefaultExt = extension;
 
-                var dialogResult = control == null ? saveDialog.ShowDialog() : saveDialog.ShowDialog(( (ControlAdapter)control ).Control);
+                var dialogResult = control == null ? saveDialog.ShowDialog() : saveDialog.ShowDialog(((ControlAdapter)control).Control);
                 if (dialogResult == DialogResult.OK)
                 {
                     ((ImageAdapter)image).Image.Save(saveDialog.FileName);
@@ -171,7 +171,7 @@ namespace HtmlRenderer.WinForms.Adapters
         protected internal override IFont CreateFont(IFontFamily family, double size, RFontStyle style)
         {
             var fontStyle = (FontStyle)((int)style);
-            return new FontAdapter(new Font(( (FontFamilyAdapter)family ).FontFamily, (float)size, fontStyle));
+            return new FontAdapter(new Font(((FontFamilyAdapter)family).FontFamily, (float)size, fontStyle));
         }
     }
 }

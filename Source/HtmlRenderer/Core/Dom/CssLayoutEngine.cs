@@ -45,9 +45,9 @@ namespace HtmlRenderer.Core.Dom
             {
                 imageWord.Width = width.Number;
             }
-            else if(width.Number > 0 && width.IsPercentage)
+            else if (width.Number > 0 && width.IsPercentage)
             {
-                imageWord.Width = width.Number*imageWord.OwnerBox.ContainingBlock.Size.Width;
+                imageWord.Width = width.Number * imageWord.OwnerBox.ContainingBlock.Size.Width;
                 scaleImageHeight = true;
             }
             else if (imageWord.Image != null)
@@ -144,7 +144,7 @@ namespace HtmlRenderer.Core.Dom
             FlowBox(g, blockBox, blockBox, limitRight, 0, startx, ref line, ref curx, ref cury, ref maxRight, ref maxBottom);
 
             // if width is not restricted we need to lower it to the actual width
-            if( blockBox.ActualRight >= 90999 )
+            if (blockBox.ActualRight >= 90999)
             {
                 blockBox.ActualRight = maxRight + blockBox.ActualPaddingRight + blockBox.ActualBorderRightWidth;
             }
@@ -161,7 +161,7 @@ namespace HtmlRenderer.Core.Dom
             blockBox.ActualBottom = maxBottom + blockBox.ActualPaddingBottom + blockBox.ActualBorderBottomWidth;
 
             // handle limiting block height when overflow is hidden
-            if( blockBox.Height != null && blockBox.Height != CssConstants.Auto && blockBox.Overflow == CssConstants.Hidden && blockBox.ActualBottom - blockBox.Location.Y > blockBox.ActualHeight )
+            if (blockBox.Height != null && blockBox.Height != CssConstants.Auto && blockBox.Overflow == CssConstants.Hidden && blockBox.ActualBottom - blockBox.Location.Y > blockBox.ActualHeight)
             {
                 blockBox.ActualBottom = blockBox.Location.Y + blockBox.ActualHeight;
             }
@@ -246,7 +246,7 @@ namespace HtmlRenderer.Core.Dom
             var localCurx = curx;
             var localMaxRight = maxRight;
             var localmaxbottom = maxbottom;
-                
+
             foreach (CssBox b in box.Boxes)
             {
                 double leftspacing = b.Position != CssConstants.Absolute ? b.ActualMarginLeft + b.ActualBorderLeftWidth + b.ActualPaddingLeft : 0;
@@ -263,13 +263,13 @@ namespace HtmlRenderer.Core.Dom
                     if (b.WhiteSpace == CssConstants.NoWrap && curx > startx)
                     {
                         var boxRight = curx;
-                        foreach(var word in b.Words)
+                        foreach (var word in b.Words)
                             boxRight += word.FullWidth;
-                        if( boxRight > limitRight )
+                        if (boxRight > limitRight)
                             wrapNoWrapBox = true;
                     }
 
-                    if( DomUtils.IsBoxHasWhitespace(b) )
+                    if (DomUtils.IsBoxHasWhitespace(b))
                         curx += box.ActualWordSpacing;
 
                     foreach (var word in b.Words)
@@ -278,7 +278,7 @@ namespace HtmlRenderer.Core.Dom
                             maxbottom += box.ActualLineHeight - (maxbottom - cury);
 
                         if ((b.WhiteSpace != CssConstants.NoWrap && b.WhiteSpace != CssConstants.Pre && curx + word.Width + rightspacing > limitRight
-                            && (b.WhiteSpace != CssConstants.PreWrap || !word.IsSpaces)) 
+                            && (b.WhiteSpace != CssConstants.PreWrap || !word.IsSpaces))
                             || word.IsLineBreak || wrapNoWrapBox)
                         {
                             wrapNoWrapBox = false;
@@ -396,7 +396,7 @@ namespace HtmlRenderer.Core.Dom
                         var left = word.Left;
                         if (box == box.ParentBox.Boxes[0] && word == box.Words[0] && word == line.Words[0] && line != line.OwnerBox.LineBoxes[0] && !word.IsLineBreak)
                             left -= box.ParentBox.ActualMarginLeft + box.ParentBox.ActualBorderLeftWidth + box.ParentBox.ActualPaddingLeft;
-                        
+
                         x = Math.Min(x, left);
                         r = Math.Max(r, word.Right);
                         y = Math.Min(y, word.Top);
@@ -452,13 +452,13 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="lineBox"></param>
         private static void ApplyRightToLeft(CssBox blockBox, CssLineBox lineBox)
         {
-            if( blockBox.Direction == CssConstants.Rtl )
+            if (blockBox.Direction == CssConstants.Rtl)
             {
                 ApplyRightToLeftOnLine(lineBox);
             }
             else
             {
-                foreach(var box in lineBox.RelatedBoxes)
+                foreach (var box in lineBox.RelatedBoxes)
                 {
                     if (box.Direction == CssConstants.Rtl)
                     {
@@ -541,10 +541,10 @@ namespace HtmlRenderer.Core.Dom
                 switch (box.VerticalAlign)
                 {
                     case CssConstants.Sub:
-                        lineBox.SetBaseLine(g, box, baseline + lineBox.Rectangles[box].Height*.2f);
+                        lineBox.SetBaseLine(g, box, baseline + lineBox.Rectangles[box].Height * .2f);
                         break;
                     case CssConstants.Super:
-                        lineBox.SetBaseLine(g, box, baseline - lineBox.Rectangles[box].Height*.2f);
+                        lineBox.SetBaseLine(g, box, baseline - lineBox.Rectangles[box].Height * .2f);
                         break;
                     case CssConstants.TextTop:
 
@@ -591,7 +591,7 @@ namespace HtmlRenderer.Core.Dom
             }
 
             if (words <= 0f) return; //Avoid Zero division
-            double spacing = (availWidth - textSum)/words; //Spacing that will be used
+            double spacing = (availWidth - textSum) / words; //Spacing that will be used
             double curx = lineBox.OwnerBox.ClientLeft + indent;
 
             foreach (CssRect word in lineBox.Words)

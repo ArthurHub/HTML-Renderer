@@ -29,7 +29,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="parent">the parent box of this box</param>
         /// <param name="tag">the html tag data of this box</param>
-        public CssBoxHr(CssBox parent, HtmlTag tag) 
+        public CssBoxHr(CssBox parent, HtmlTag tag)
             : base(parent, tag)
         {
             Display = CssConstants.Block;
@@ -70,7 +70,7 @@ namespace HtmlRenderer.Core.Dom
                 width = minwidth;
 
             double height = ActualHeight;
-            if(height < 1)
+            if (height < 1)
             {
                 height = Size.Height + ActualBorderTopWidth + ActualBorderBottomWidth;
             }
@@ -78,7 +78,7 @@ namespace HtmlRenderer.Core.Dom
             {
                 height = 2;
             }
-            if(height<=2 && ActualBorderTopWidth < 1 && ActualBorderBottomWidth < 1)
+            if (height <= 2 && ActualBorderTopWidth < 1 && ActualBorderBottomWidth < 1)
             {
                 BorderTopStyle = BorderBottomStyle = CssConstants.Solid;
                 BorderTopWidth = "1px";

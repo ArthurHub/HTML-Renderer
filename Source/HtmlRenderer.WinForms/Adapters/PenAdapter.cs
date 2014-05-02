@@ -58,7 +58,7 @@ namespace HtmlRenderer.WinForms.Adapters
         {
             set
             {
-                switch( value )
+                switch (value)
                 {
                     case RDashStyle.Solid:
                         _pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
@@ -84,7 +84,7 @@ namespace HtmlRenderer.WinForms.Adapters
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets or sets an array of custom dashes and spaces.
         /// </summary>

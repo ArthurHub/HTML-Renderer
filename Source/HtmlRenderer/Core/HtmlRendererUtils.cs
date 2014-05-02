@@ -74,7 +74,7 @@ namespace HtmlRenderer.Core
         /// <param name="autoSizeHeightOnly">if to modify the height by html content layout</param>
         public static RSize Layout(IGraphics g, HtmlContainerInt htmlContainer, RSize size, RSize minSize, RSize maxSize, bool autoSize, bool autoSizeHeightOnly)
         {
-            if( autoSize )
+            if (autoSize)
                 htmlContainer.MaxSize = new RSize(0, 0);
             else if (autoSizeHeightOnly)
                 htmlContainer.MaxSize = new RSize(size.Width, 0);
@@ -84,9 +84,9 @@ namespace HtmlRenderer.Core
             htmlContainer.PerformLayout(g);
 
             RSize newSize = size;
-            if( autoSize || autoSizeHeightOnly )
+            if (autoSize || autoSizeHeightOnly)
             {
-                if( autoSize )
+                if (autoSize)
                 {
                     if (maxSize.Width > 0 && maxSize.Width < htmlContainer.ActualSize.Width)
                     {
@@ -113,7 +113,7 @@ namespace HtmlRenderer.Core
                                          : htmlContainer.ActualSize.Height;
 
                     // handle if changing the height of the label affects the desired width and those require re-layout
-                    if( Math.Abs(prevWidth - size.Width) > 0.01 )
+                    if (Math.Abs(prevWidth - size.Width) > 0.01)
                         return Layout(g, htmlContainer, size, minSize, maxSize, false, true);
                 }
             }

@@ -29,7 +29,7 @@ namespace HtmlRenderer.Entities
         private double _y;
 
         static RPoint()
-        {}
+        { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RPoint" /> class with the specified coordinates.
@@ -56,7 +56,7 @@ namespace HtmlRenderer.Entities
         {
             get
             {
-                if( Math.Abs(_x - 0.0) < 0.001 )
+                if (Math.Abs(_x - 0.0) < 0.001)
                     return Math.Abs(_y - 0.0) < 0.001;
                 else
                     return false;
@@ -162,7 +162,7 @@ namespace HtmlRenderer.Entities
         /// <filterpriority>3</filterpriority>
         public static bool operator ==(RPoint left, RPoint right)
         {
-            if( left.X == right.X )
+            if (left.X == right.X)
                 return left.Y == right.Y;
             else
                 return false;
@@ -189,7 +189,7 @@ namespace HtmlRenderer.Entities
         /// <filterpriority>3</filterpriority>
         public static bool operator !=(RPoint left, RPoint right)
         {
-            return !( left == right );
+            return !(left == right);
         }
 
         /// <summary>
@@ -253,10 +253,10 @@ namespace HtmlRenderer.Entities
         /// <filterpriority>1</filterpriority>
         public override bool Equals(object obj)
         {
-            if( !( obj is RPoint ) )
+            if (!(obj is RPoint))
                 return false;
             var pointF = (RPoint)obj;
-            if( pointF.X == X && pointF.Y == Y )
+            if (pointF.X == X && pointF.Y == Y)
                 return pointF.GetType().Equals(GetType());
             else
                 return false;

@@ -43,7 +43,7 @@ namespace HtmlRenderer.Entities
         /// </summary>
         public static RColor Black
         {
-            get { return FromArgb(0,0,0); }
+            get { return FromArgb(0, 0, 0); }
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace HtmlRenderer.Entities
         /// </summary>
         public static RColor White
         {
-            get { return FromArgb(255,255,255); }
+            get { return FromArgb(255, 255, 255); }
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace HtmlRenderer.Entities
         /// </summary>
         public byte R
         {
-            get { return (byte)( (ulong)( _value >> 16 ) & byte.MaxValue ); }
+            get { return (byte)((ulong)(_value >> 16) & byte.MaxValue); }
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace HtmlRenderer.Entities
         /// <filterpriority>3</filterpriority>
         public static bool operator !=(RColor left, RColor right)
         {
-            return !( left == right );
+            return !(left == right);
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace HtmlRenderer.Entities
         /// <filterpriority>1</filterpriority>
         public override bool Equals(object obj)
         {
-            if( obj is RColor )
+            if (obj is RColor)
             {
                 var color = (RColor)obj;
                 return _value == color._value;
@@ -263,7 +263,7 @@ namespace HtmlRenderer.Entities
 
         private static void CheckByte(int value)
         {
-            if( value >= 0 && value <= byte.MaxValue )
+            if (value >= 0 && value <= byte.MaxValue)
                 return;
             throw new ArgumentException("InvalidEx2BoundArgument");
         }

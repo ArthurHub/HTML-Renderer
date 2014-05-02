@@ -134,7 +134,7 @@ namespace HtmlRenderer.Core.Utils
             path.AddLine(rect.X + nwRadius, rect.Y, rect.Right - neRadius, rect.Y);
 
             //NE Arc
-            if( neRadius > 0f )
+            if (neRadius > 0f)
             {
                 path.AddArc(rect.Right - neRadius, rect.Top, neRadius, neRadius, -90, 90);
             }
@@ -145,7 +145,7 @@ namespace HtmlRenderer.Core.Utils
             path.AddLine(rect.Right, rect.Top + neRadius, rect.Right, rect.Bottom - seRadius);
 
             //SE Arc
-            if( seRadius > 0f )
+            if (seRadius > 0f)
             {
                 path.AddArc(rect.Right - seRadius, rect.Bottom - seRadius, seRadius, seRadius, 0, 90);
             }
@@ -154,7 +154,7 @@ namespace HtmlRenderer.Core.Utils
             path.AddLine(rect.Right - seRadius, rect.Bottom, rect.Left + swRadius, rect.Bottom);
 
             //SW Arc
-            if( swRadius > 0f )
+            if (swRadius > 0f)
             {
                 path.AddArc(rect.Left, rect.Bottom - swRadius, swRadius, swRadius, 90, 90);
             }
@@ -165,9 +165,9 @@ namespace HtmlRenderer.Core.Utils
             path.AddLine(rect.Left, rect.Bottom - swRadius, rect.Left, rect.Top + swRadius);
 
             //NW Arc
-            if( nwRadius > 0f )
+            if (nwRadius > 0f)
             {
-                path.AddArc(rect.Left, rect.Top, nwRadius, nwRadius,180, 90);
+                path.AddArc(rect.Left, rect.Top, nwRadius, nwRadius, 180, 90);
             }
 
             return path;

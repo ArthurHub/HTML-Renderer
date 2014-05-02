@@ -49,7 +49,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="parent">the parent box of this box</param>
         /// <param name="tag">the html tag data of this box</param>
-        public CssBoxImage(CssBox parent, HtmlTag tag) 
+        public CssBoxImage(CssBox parent, HtmlTag tag)
             : base(parent, tag)
         {
             _imageWord = new CssRectImage(this);
@@ -90,9 +90,9 @@ namespace HtmlRenderer.Core.Dom
             r.Offset(offset);
             r.Height -= ActualBorderTopWidth + ActualBorderBottomWidth + ActualPaddingTop + ActualPaddingBottom;
             r.Y += ActualBorderTopWidth + ActualPaddingTop;
-            r.X =  Math.Floor(r.X);
+            r.X = Math.Floor(r.X);
             r.Y = Math.Floor(r.Y);
-            
+
             if (_imageWord.Image != null)
             {
                 if (_imageWord.ImageRectangle == RRect.Empty)
@@ -102,7 +102,7 @@ namespace HtmlRenderer.Core.Dom
 
                 if (_imageWord.Selected)
                 {
-                    g.DrawRectangle(GetSelectionBackBrush(g,true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width+2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
+                    g.DrawRectangle(GetSelectionBackBrush(g, true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width + 2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
                 }
             }
             else if (_imageLoadingComplete)
@@ -141,7 +141,7 @@ namespace HtmlRenderer.Core.Dom
                 MeasureWordSpacing(g);
                 _wordsSizeMeasured = true;
             }
-            
+
             CssLayoutEngine.MeasureImageSize(_imageWord);
         }
 
@@ -150,7 +150,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         public override void Dispose()
         {
-            if(_imageLoadHandler != null)
+            if (_imageLoadHandler != null)
                 _imageLoadHandler.Dispose();
             base.Dispose();
         }

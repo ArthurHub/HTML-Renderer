@@ -75,7 +75,7 @@ namespace HtmlRenderer.WinForms.Adapters
         {
             get
             {
-                if( _hFont == IntPtr.Zero )
+                if (_hFont == IntPtr.Zero)
                     _hFont = _font.ToHfont();
                 return _hFont;
             }
@@ -124,7 +124,7 @@ namespace HtmlRenderer.WinForms.Adapters
 
         public double GetWhitespaceWidth(IGraphics graphics)
         {
-            if( _whitespaceWidth < 0 )
+            if (_whitespaceWidth < 0)
             {
                 _whitespaceWidth = graphics.MeasureString(" ", this).Width;
             }

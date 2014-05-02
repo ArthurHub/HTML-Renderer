@@ -39,7 +39,7 @@ namespace HtmlRenderer.Core.Parse
         /// Init.
         /// </summary>
         public DomParser(CssParser cssParser)
-    {
+        {
             ArgChecker.AssertArgNotNull(cssParser, "cssParser");
 
             _cssParser = cssParser;
@@ -122,7 +122,7 @@ namespace HtmlRenderer.Core.Parse
                 if (box.HtmlTag.HasAttribute("style"))
                 {
                     var block = _cssParser.ParseCssBlock(box.HtmlTag.Name, box.HtmlTag.TryGetAttribute("style"));
-                    if(block != null)
+                    if (block != null)
                         AssignCssBlock(box, block);
                 }
 
@@ -141,10 +141,10 @@ namespace HtmlRenderer.Core.Parse
                     CloneCssData(ref cssData, ref cssDataChanged);
                     string stylesheet;
                     CssData stylesheetData;
-                    StylesheetLoadHandler.LoadStylesheet(htmlContainer, box.GetAttribute("href", string.Empty), box.HtmlTag.Attributes,out stylesheet, out stylesheetData);
+                    StylesheetLoadHandler.LoadStylesheet(htmlContainer, box.GetAttribute("href", string.Empty), box.HtmlTag.Attributes, out stylesheet, out stylesheetData);
                     if (stylesheet != null)
                         _cssParser.ParseStyleSheet(cssData, stylesheet);
-                    else if( stylesheetData != null )
+                    else if (stylesheetData != null)
                         cssData.Combine(stylesheetData);
                 }
             }
@@ -670,7 +670,7 @@ namespace HtmlRenderer.Core.Parse
                 if (DomUtils.ContainsInlinesOnly(box) && !ContainsInlinesOnlyDeep(box))
                 {
                     var tempRightBox = CorrectBlockInsideInlineImp(box);
-                    while( tempRightBox != null )
+                    while (tempRightBox != null)
                     {
                         // loop on the created temp right box for the fixed box until no more need (optimization remove recursion)
                         CssBox newTempRightBox = null;
@@ -703,14 +703,14 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="box">the box that has the problem</param>
         private static CssBox CorrectBlockInsideInlineImp(CssBox box)
         {
-            if( box.Display == CssConstants.Inline )
+            if (box.Display == CssConstants.Inline)
                 box.Display = CssConstants.Block;
 
-            if( box.Boxes.Count > 1 || box.Boxes[0].Boxes.Count > 1 )
+            if (box.Boxes.Count > 1 || box.Boxes[0].Boxes.Count > 1)
             {
                 var leftBlock = CssBox.CreateBlock(box);
 
-                while( ContainsInlinesOnlyDeep(box.Boxes[0]) )
+                while (ContainsInlinesOnlyDeep(box.Boxes[0]))
                     box.Boxes[0].ParentBox = leftBlock;
                 leftBlock.SetBeforeBox(box.Boxes[0]);
 
@@ -720,21 +720,21 @@ namespace HtmlRenderer.Core.Parse
                 CorrectBlockSplitBadBox(box, splitBox, leftBlock);
 
                 // remove block that did not get any inner elements
-                if( leftBlock.Boxes.Count < 1 )
+                if (leftBlock.Boxes.Count < 1)
                     leftBlock.ParentBox = null;
 
                 int minBoxes = leftBlock.ParentBox != null ? 2 : 1;
-                if( box.Boxes.Count > minBoxes )
+                if (box.Boxes.Count > minBoxes)
                 {
                     // create temp box to handle the tail elements and then get them back so no deep hierarchy is created
                     var tempRightBox = CssBox.CreateBox(box, null, box.Boxes[minBoxes]);
-                    while( box.Boxes.Count > minBoxes + 1 )
+                    while (box.Boxes.Count > minBoxes + 1)
                         box.Boxes[minBoxes + 1].ParentBox = tempRightBox;
 
                     return tempRightBox;
                 }
             }
-            else if( box.Boxes[0].Display == CssConstants.Inline )
+            else if (box.Boxes[0].Display == CssConstants.Inline)
             {
                 box.Boxes[0].Display = CssConstants.Block;
             }
@@ -754,7 +754,7 @@ namespace HtmlRenderer.Core.Parse
             CssBox leftbox = null;
             while (badBox.Boxes[0].IsInline && ContainsInlinesOnlyDeep(badBox.Boxes[0]))
             {
-                if(leftbox == null)
+                if (leftbox == null)
                 {
                     // if there is no elements in the left box there is no reason to keep it
                     leftbox = CssBox.CreateBox(leftBlock, badBox.HtmlTag);

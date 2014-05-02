@@ -43,7 +43,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="isLast">is it the last rectangle of the element</param>
         public static void DrawBoxBorders(IGraphics g, CssBox box, RRect rect, bool isFirst, bool isLast)
         {
-            if( rect.Width > 0 && rect.Height > 0 )
+            if (rect.Width > 0 && rect.Height > 0)
             {
                 if (!(string.IsNullOrEmpty(box.BorderTopStyle) || box.BorderTopStyle == CssConstants.None || box.BorderTopStyle == CssConstants.Hidden) && box.ActualBorderTopWidth > 0)
                 {
@@ -113,7 +113,7 @@ namespace HtmlRenderer.Core.Handlers
             else
             {
                 // non rounded border
-                if( style == CssConstants.Inset || style == CssConstants.Outset )
+                if (style == CssConstants.Inset || style == CssConstants.Outset)
                 {
                     // inset/outset border needs special rectangle
                     SetInOutsetRectanglePoints(border, box, rect, isLineStart, isLineEnd);
@@ -153,16 +153,16 @@ namespace HtmlRenderer.Core.Handlers
         /// <returns>Beveled border path, null if there is no rounded corners</returns>
         private static void SetInOutsetRectanglePoints(Border border, CssBox b, RRect r, bool isLineStart, bool isLineEnd)
         {
-            switch( border )
+            switch (border)
             {
                 case Border.Top:
                     _borderPts[0] = new RPoint(r.Left, r.Top);
                     _borderPts[1] = new RPoint(r.Right, r.Top);
                     _borderPts[2] = new RPoint(r.Right, r.Top + b.ActualBorderTopWidth);
                     _borderPts[3] = new RPoint(r.Left, r.Top + b.ActualBorderTopWidth);
-                    if( isLineEnd )
+                    if (isLineEnd)
                         _borderPts[2].X -= b.ActualBorderRightWidth;
-                    if( isLineStart )
+                    if (isLineStart)
                         _borderPts[3].X += b.ActualBorderLeftWidth;
                     break;
                 case Border.Right:
@@ -176,9 +176,9 @@ namespace HtmlRenderer.Core.Handlers
                     _borderPts[1] = new RPoint(r.Right, r.Bottom - b.ActualBorderBottomWidth);
                     _borderPts[2] = new RPoint(r.Right, r.Bottom);
                     _borderPts[3] = new RPoint(r.Left, r.Bottom);
-                    if( isLineStart )
+                    if (isLineStart)
                         _borderPts[0].X += b.ActualBorderLeftWidth;
-                    if( isLineEnd )
+                    if (isLineEnd)
                         _borderPts[1].X -= b.ActualBorderRightWidth;
                     break;
                 case Border.Left:
@@ -204,10 +204,10 @@ namespace HtmlRenderer.Core.Handlers
         {
             IGraphicsPath path = null;
 
-            switch( border )
+            switch (border)
             {
                 case Border.Top:
-                    if( b.ActualCornerNw > 0 || b.ActualCornerNe > 0 )
+                    if (b.ActualCornerNw > 0 || b.ActualCornerNe > 0)
                     {
                         path = g.GetGraphicsPath();
 
@@ -239,7 +239,7 @@ namespace HtmlRenderer.Core.Handlers
                     }
                     break;
                 case Border.Right:
-                    if( b.ActualCornerNe > 0 || b.ActualCornerSe > 0 )
+                    if (b.ActualCornerNe > 0 || b.ActualCornerSe > 0)
                     {
                         path = g.GetGraphicsPath();
 
@@ -251,18 +251,18 @@ namespace HtmlRenderer.Core.Handlers
                         if (b.ActualCornerSe > 0 && (b.BorderBottomStyle == CssConstants.None || b.BorderBottomStyle == CssConstants.Hidden))
                             path.AddArc(r.Right - b.ActualCornerSe * 2 - b.ActualBorderRightWidth / 2, r.Bottom - b.ActualCornerSe * 2 - b.ActualBorderBottomWidth / 2, b.ActualCornerSe * 2, b.ActualCornerSe * 2, 0f, 90f);
                         else
-                            path.AddLine(r.Right - b.ActualBorderRightWidth / 2, r.Bottom - b.ActualCornerSe - b.ActualBorderBottomWidth / 2 -.1f, r.Right - b.ActualBorderRightWidth / 2, r.Bottom - b.ActualCornerSe - b.ActualBorderBottomWidth / 2);
+                            path.AddLine(r.Right - b.ActualBorderRightWidth / 2, r.Bottom - b.ActualCornerSe - b.ActualBorderBottomWidth / 2 - .1f, r.Right - b.ActualBorderRightWidth / 2, r.Bottom - b.ActualCornerSe - b.ActualBorderBottomWidth / 2);
                     }
                     break;
                 case Border.Left:
-                    if( b.ActualCornerNw > 0 || b.ActualCornerSw > 0 )
+                    if (b.ActualCornerNw > 0 || b.ActualCornerSw > 0)
                     {
                         path = g.GetGraphicsPath();
 
                         if (b.ActualCornerSw > 0 && (b.BorderTopStyle == CssConstants.None || b.BorderTopStyle == CssConstants.Hidden))
                             path.AddArc(r.Left + b.ActualBorderLeftWidth / 2, r.Bottom - b.ActualCornerSw * 2 - b.ActualBorderBottomWidth / 2, b.ActualCornerSw * 2, b.ActualCornerSw * 2, 90f, 90f);
                         else
-                            path.AddLine(r.Left + b.ActualBorderLeftWidth / 2, r.Bottom - b.ActualCornerSw - b.ActualBorderBottomWidth / 2, r.Left + b.ActualBorderLeftWidth / 2, r.Bottom - b.ActualCornerSw - b.ActualBorderBottomWidth / 2 -.1f);
+                            path.AddLine(r.Left + b.ActualBorderLeftWidth / 2, r.Bottom - b.ActualCornerSw - b.ActualBorderBottomWidth / 2, r.Left + b.ActualBorderLeftWidth / 2, r.Bottom - b.ActualCornerSw - b.ActualBorderBottomWidth / 2 - .1f);
 
                         if (b.ActualCornerNw > 0 && (b.BorderBottomStyle == CssConstants.None || b.BorderBottomStyle == CssConstants.Hidden))
                             path.AddArc(r.Left + b.ActualBorderLeftWidth / 2, r.Top + b.ActualBorderTopWidth / 2, b.ActualCornerNw * 2, b.ActualCornerNw * 2, 180f, 90f);

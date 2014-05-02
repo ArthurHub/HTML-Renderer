@@ -233,7 +233,7 @@ namespace HtmlRenderer.Core.Handlers
             ignore = ignore || (DateTime.Now - _lastMouseDown > TimeSpan.FromSeconds(1));
             return ignore;
         }
-        
+
         /// <summary>
         /// Handle mouse move to handle hover cursor and text selection.
         /// </summary>
@@ -279,7 +279,7 @@ namespace HtmlRenderer.Core.Handlers
                 }
             }
         }
-        
+
         /// <summary>
         /// On mouse leave change the cursor back to default.
         /// </summary>

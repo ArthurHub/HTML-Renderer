@@ -97,7 +97,7 @@ namespace HtmlRenderer.Core.Parse
         /// <returns>true - valid, false - invalid</returns>
         public static bool IsValidLength(string value)
         {
-            if(value.Length > 1)
+            if (value.Length > 1)
             {
                 string number = string.Empty;
                 if (value.EndsWith("%"))
@@ -207,7 +207,7 @@ namespace HtmlRenderer.Core.Parse
                     factor = emFactor;
                     break;
                 case CssConstants.Ex:
-                    factor = emFactor/2;
+                    factor = emFactor / 2;
                     break;
                 case CssConstants.Px:
                     factor = fontAdjust ? 72f / 96f : 1f; //atodo: check support for hi dpi
@@ -368,20 +368,20 @@ namespace HtmlRenderer.Core.Parse
             int b = -1;
             if (length == 7)
             {
-                r = ParseHexInt(str, idx+1, 2);
-                g = ParseHexInt(str, idx+3, 2);
-                b = ParseHexInt(str, idx+5, 2);
+                r = ParseHexInt(str, idx + 1, 2);
+                g = ParseHexInt(str, idx + 3, 2);
+                b = ParseHexInt(str, idx + 5, 2);
             }
             else if (length == 4)
             {
-                r = ParseHexInt(str, idx+1, 1);
+                r = ParseHexInt(str, idx + 1, 1);
                 r = r * 16 + r;
-                g = ParseHexInt(str, idx+2, 1);
+                g = ParseHexInt(str, idx + 2, 1);
                 g = g * 16 + g;
                 b = ParseHexInt(str, idx + 3, 1);
                 b = b * 16 + b;
             }
-            if(r > -1 && g > -1 && b > -1)
+            if (r > -1 && g > -1 && b > -1)
             {
                 color = RColor.FromArgb(r, g, b);
                 return true;
@@ -400,7 +400,7 @@ namespace HtmlRenderer.Core.Parse
             int g = -1;
             int b = -1;
 
-            if(length > 10)
+            if (length > 10)
             {
                 int s = idx + 4;
                 r = ParseIntAtIndex(str, ref s);
@@ -413,7 +413,7 @@ namespace HtmlRenderer.Core.Parse
                     b = ParseIntAtIndex(str, ref s);
                 }
             }
-            
+
             if (r > -1 && g > -1 && b > -1)
             {
                 color = RColor.FromArgb(r, g, b);
@@ -438,7 +438,7 @@ namespace HtmlRenderer.Core.Parse
             {
                 int s = idx + 5;
                 r = ParseIntAtIndex(str, ref s);
-                
+
                 if (s < idx + length)
                 {
                     g = ParseIntAtIndex(str, ref s);

@@ -67,7 +67,7 @@ namespace HtmlRenderer.Interfaces
         /// </summary>
         public CssData DefaultCssData
         {
-            get { return _defaultCssData ?? ( _defaultCssData = CssData.Parse(this, CssDefaults.DefaultStyleSheet, false) ); }
+            get { return _defaultCssData ?? (_defaultCssData = CssData.Parse(this, CssDefaults.DefaultStyleSheet, false)); }
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="image">the image returned from load event</param>
         /// <returns>converted image or null</returns>
         public abstract IImage ConvertImage(object image);
-        
+
         /// <summary>
         /// Create an <see cref="IImage"/> object from the given stream.
         /// </summary>
@@ -139,10 +139,10 @@ namespace HtmlRenderer.Interfaces
         /// </summary>
         public IImage GetLoadImage()
         {
-            if( _loadImage == null )
+            if (_loadImage == null)
             {
                 var stream = typeof(HtmlRendererUtils).Assembly.GetManifestResourceStream("HtmlRenderer.Core.Utils.ImageLoad.png");
-                if( stream != null )
+                if (stream != null)
                     _loadImage = ImageFromStream(stream);
             }
             return _loadImage;
@@ -178,7 +178,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="plainText">the plain text data</param>
         public virtual void SetToClipboard(string html, string plainText)
         {
-            throw new NotImplementedException();            
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="image"></param>
         public virtual void SetToClipboard(IImage image)
         {
-            throw new NotImplementedException();            
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="control">optional: the control to show the dialog on</param>
         public virtual void SaveToFile(IImage image, string name, string extension, IControl control = null)
         {
-            throw new NotImplementedException();            
+            throw new NotImplementedException();
         }
 
         /// <summary>

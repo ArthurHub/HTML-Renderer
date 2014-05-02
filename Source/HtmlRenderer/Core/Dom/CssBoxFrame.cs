@@ -143,22 +143,22 @@ namespace HtmlRenderer.Core.Dom
         private void LoadYoutubeDataAsync(Uri uri)
         {
             ThreadPool.QueueUserWorkItem(state =>
+            {
+                try
                 {
-                    try
-                    {
-                        var apiUri = new Uri(string.Format("http://gdata.youtube.com/feeds/api/videos/{0}?v=2&alt=json", uri.Segments[2]));
+                    var apiUri = new Uri(string.Format("http://gdata.youtube.com/feeds/api/videos/{0}?v=2&alt=json", uri.Segments[2]));
 
-                        var client = new WebClient();
-                        client.Encoding = Encoding.UTF8;
-                        client.DownloadStringCompleted += OnDownloadYoutubeApiCompleted;
-                        client.DownloadStringAsync(apiUri);
-                    }
-                    catch (Exception ex)
-                    {
-                        HtmlContainer.ReportError(HtmlRenderErrorType.Iframe, "Failed to get youtube video data: " + uri, ex);
-                        HtmlContainer.RequestRefresh(false);
-                    }
-                });
+                    var client = new WebClient();
+                    client.Encoding = Encoding.UTF8;
+                    client.DownloadStringCompleted += OnDownloadYoutubeApiCompleted;
+                    client.DownloadStringAsync(apiUri);
+                }
+                catch (Exception ex)
+                {
+                    HtmlContainer.ReportError(HtmlRenderErrorType.Iframe, "Failed to get youtube video data: " + uri, ex);
+                    HtmlContainer.RequestRefresh(false);
+                }
+            });
         }
 
         /// <summary>
@@ -198,30 +198,38 @@ namespace HtmlRenderer.Core.Dom
                             var iidx = e.Result.IndexOf("sddefault", idx);
                             if (iidx > -1)
                             {
-                                if (string.IsNullOrEmpty(Width)) Width = "640px";
-                                if (string.IsNullOrEmpty(Height)) Height = "480px";
+                                if (string.IsNullOrEmpty(Width))
+                                    Width = "640px";
+                                if (string.IsNullOrEmpty(Height))
+                                    Height = "480px";
                             }
                             else
                             {
                                 iidx = e.Result.IndexOf("hqdefault", idx);
                                 if (iidx > -1)
                                 {
-                                    if (string.IsNullOrEmpty(Width)) Width = "480px";
-                                    if (string.IsNullOrEmpty(Height)) Height = "360px";
+                                    if (string.IsNullOrEmpty(Width))
+                                        Width = "480px";
+                                    if (string.IsNullOrEmpty(Height))
+                                        Height = "360px";
                                 }
                                 else
                                 {
                                     iidx = e.Result.IndexOf("mqdefault", idx);
                                     if (iidx > -1)
                                     {
-                                        if (string.IsNullOrEmpty(Width)) Width = "320px";
-                                        if (string.IsNullOrEmpty(Height)) Height = "180px";
+                                        if (string.IsNullOrEmpty(Width))
+                                            Width = "320px";
+                                        if (string.IsNullOrEmpty(Height))
+                                            Height = "180px";
                                     }
                                     else
                                     {
                                         iidx = e.Result.IndexOf("default", idx);
-                                        if (string.IsNullOrEmpty(Width)) Width = "120px";
-                                        if (string.IsNullOrEmpty(Height)) Height = "90px";
+                                        if (string.IsNullOrEmpty(Width))
+                                            Width = "120px";
+                                        if (string.IsNullOrEmpty(Height))
+                                            Height = "90px";
                                     }
                                 }
                             }

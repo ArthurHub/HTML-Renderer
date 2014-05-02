@@ -40,8 +40,8 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="owner">the CSS box owner of the word</param>
         public CssRectImage(CssBox owner)
-            :base(owner)
-        {}
+            : base(owner)
+        { }
 
         /// <summary>
         /// Gets the image this words represents (if one exists)

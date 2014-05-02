@@ -228,7 +228,7 @@ namespace HtmlRenderer.WinForms
             get { return _borderStyle; }
             set
             {
-                if( BorderStyle != value )
+                if (BorderStyle != value)
                 {
                     _borderStyle = value;
                     OnBorderStyleChanged(EventArgs.Empty);
@@ -291,8 +291,8 @@ namespace HtmlRenderer.WinForms
         [Description("Sets a value indicating whether the container enables the user to scroll to any controls placed outside of its visible boundaries.")]
         public override bool AutoScroll
         {
-            get{return base.AutoScroll;}
-            set{base.AutoScroll = value;}
+            get { return base.AutoScroll; }
+            set { base.AutoScroll = value; }
         }
 
         /// <summary>
@@ -366,7 +366,7 @@ namespace HtmlRenderer.WinForms
         {
             ArgChecker.AssertArgNotNullOrEmpty(elementId, "elementId");
 
-            if( _htmlContainer != null )
+            if (_htmlContainer != null)
             {
                 var rect = _htmlContainer.GetElementRectangle(elementId);
                 if (rect.HasValue)
@@ -472,7 +472,7 @@ namespace HtmlRenderer.WinForms
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if( _htmlContainer != null )
+            if (_htmlContainer != null)
                 _htmlContainer.HandleMouseMove(this, e);
         }
 
@@ -527,7 +527,7 @@ namespace HtmlRenderer.WinForms
             if (e.KeyCode == Keys.Up)
             {
                 VerticalScroll.Value = Math.Max(VerticalScroll.Value - 70, VerticalScroll.Minimum);
-                PerformLayout();                
+                PerformLayout();
             }
             else if (e.KeyCode == Keys.Down)
             {
@@ -587,8 +587,8 @@ namespace HtmlRenderer.WinForms
         {
             var handler = RenderError;
             if (handler != null)
-                    handler(this, e);
-            }
+                handler(this, e);
+        }
 
         /// <summary>
         /// Propagate the stylesheet load event from root container.
@@ -614,12 +614,12 @@ namespace HtmlRenderer.WinForms
         /// Handle html renderer invalidate and re-layout as requested.
         /// </summary>
         protected virtual void OnRefresh(HtmlRefreshEventArgs e)
-            {
+        {
             if (e.Layout)
-                    PerformLayout();
-                    Invalidate();
+                PerformLayout();
+            Invalidate();
         }
-        
+
         /// <summary>
         /// On html renderer scroll request adjust the scrolling of the panel to the requested location.
         /// </summary>
@@ -688,7 +688,7 @@ namespace HtmlRenderer.WinForms
         /// </summary>
         protected override void Dispose(bool disposing)
         {
-            if(_htmlContainer != null)
+            if (_htmlContainer != null)
             {
                 _htmlContainer.LinkClicked -= OnLinkClicked;
                 _htmlContainer.RenderError -= OnRenderError;
@@ -712,7 +712,7 @@ namespace HtmlRenderer.WinForms
 
         private void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
         {
-            if( InvokeRequired )
+            if (InvokeRequired)
                 Invoke(new MethodInvoker(() => OnRenderError(e)));
             else
                 OnRenderError(e);
@@ -730,7 +730,7 @@ namespace HtmlRenderer.WinForms
 
         private void OnRefresh(object sender, HtmlRefreshEventArgs e)
         {
-            if( InvokeRequired )
+            if (InvokeRequired)
                 Invoke(new MethodInvoker(() => OnRefresh(e)));
             else
                 OnRefresh(e);

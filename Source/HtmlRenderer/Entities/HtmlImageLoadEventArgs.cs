@@ -36,7 +36,7 @@ namespace HtmlRenderer.Entities
     /// provide file path to load the image from. Can also use the asynchronous image overwrite not to block HTML rendering is applicable.<br/>
     /// If no alternative data is provided the original source will be used.<br/>
     /// </summary>
-    public sealed class HtmlImageLoadEventArgs : EventArgs 
+    public sealed class HtmlImageLoadEventArgs : EventArgs
     {
         #region Fields and Consts
 
@@ -120,7 +120,7 @@ namespace HtmlRenderer.Entities
         public void Callback(string path)
         {
             ArgChecker.AssertArgNotNullOrEmpty(path, "path");
-            
+
             _handled = true;
             _callback(path, null, RRect.Empty);
         }
@@ -151,7 +151,7 @@ namespace HtmlRenderer.Entities
         public void Callback(Object image)
         {
             ArgChecker.AssertArgNotNull(image, "image");
-            
+
             _handled = true;
             _callback(null, image, RRect.Empty);
         }

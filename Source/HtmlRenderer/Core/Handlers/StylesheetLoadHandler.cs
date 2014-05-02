@@ -81,7 +81,7 @@ namespace HtmlRenderer.Core.Handlers
         private static string LoadStylesheet(HtmlContainerInt htmlContainer, string src)
         {
             var uri = CommonUtils.TryGetUri(src);
-            if( uri == null || uri.Scheme == "file" )
+            if (uri == null || uri.Scheme == "file")
             {
                 return LoadStylesheetFromFile(htmlContainer, uri != null ? uri.AbsolutePath : src);
             }
@@ -136,7 +136,7 @@ namespace HtmlRenderer.Core.Handlers
                 {
                     stylesheet = CorrectRelativeUrls(stylesheet, uri);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     htmlContainer.ReportError(HtmlRenderErrorType.CssParsing, "Error in correcting relative URL in loaded stylesheet", ex);
                 }

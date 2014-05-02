@@ -53,7 +53,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         public void Dispose()
         {
-            if( _dispose )
+            if (_dispose)
             {
                 _brush.Dispose();
             }

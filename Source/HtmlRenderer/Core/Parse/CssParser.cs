@@ -46,7 +46,7 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// The chars to trim the css class name by
         /// </summary>
-        private static readonly char[] _cssClassTrimChars = new[] {'\r', '\n', '\t', ' ', '-', '!', '<', '>'};
+        private static readonly char[] _cssClassTrimChars = new[] { '\r', '\n', '\t', ' ', '-', '!', '<', '>' };
 
         #endregion
 
@@ -150,7 +150,7 @@ namespace HtmlRenderer.Core.Parse
             while (startIdx > -1 && startIdx < stylesheet.Length)
             {
                 startIdx = stylesheet.IndexOf("/*", startIdx);
-                if(startIdx > -1)
+                if (startIdx > -1)
                 {
                     if (sb == null)
                         sb = new StringBuilder(stylesheet.Length);
@@ -162,12 +162,12 @@ namespace HtmlRenderer.Core.Parse
 
                     prevIdx = startIdx = endIdx + 2;
                 }
-                else if(sb != null)
+                else if (sb != null)
                 {
                     sb.Append(stylesheet.Substring(prevIdx));
                 }
             }
-            
+
             return sb != null ? sb.ToString() : stylesheet;
         }
 
@@ -231,7 +231,7 @@ namespace HtmlRenderer.Core.Parse
             while ((atrule = RegexParserUtils.GetCssAtRules(stylesheet, ref startIdx)) != null)
             {
                 //Just process @media rules
-                if (!atrule.StartsWith("@media",StringComparison.InvariantCultureIgnoreCase)) continue;
+                if (!atrule.StartsWith("@media", StringComparison.InvariantCultureIgnoreCase)) continue;
 
                 //Extract specified media types
                 MatchCollection types = RegexParserUtils.Match(RegexParserUtils.CssMediaTypes, atrule);
@@ -407,7 +407,7 @@ namespace HtmlRenderer.Core.Parse
                     if (adjEndIdx >= splitIdx)
                     {
                         string propValue = blockSource.Substring(splitIdx, adjEndIdx - splitIdx + 1).Trim();
-                        if(!propValue.StartsWith("url",StringComparison.InvariantCultureIgnoreCase))
+                        if (!propValue.StartsWith("url", StringComparison.InvariantCultureIgnoreCase))
                             propValue = propValue.ToLower();
                         AddProperty(propName, propValue, properties);
                     }
@@ -435,7 +435,7 @@ namespace HtmlRenderer.Core.Parse
             }
             else if (propName == "color" || propName == "backgroundcolor" || propName == "bordertopcolor" || propName == "borderbottomcolor" || propName == "borderleftcolor" || propName == "borderrightcolor")
             {
-                 ParseColorProperty(propName, propValue, properties);
+                ParseColorProperty(propName, propValue, properties);
             }
             else if (propName == "font")
             {
@@ -503,7 +503,7 @@ namespace HtmlRenderer.Core.Parse
         /// <param name="properties">the properties collection to add to</param>
         private static void ParseLengthProperty(string propName, string propValue, Dictionary<string, string> properties)
         {
-            if (CssValueParser.IsValidLength(propValue) || propValue.Equals(CssConstants.Auto,StringComparison.OrdinalIgnoreCase))
+            if (CssValueParser.IsValidLength(propValue) || propValue.Equals(CssConstants.Auto, StringComparison.OrdinalIgnoreCase))
             {
                 properties[propName] = propValue;
             }
@@ -579,11 +579,11 @@ namespace HtmlRenderer.Core.Parse
         private static string ParseBackgroundImageProperty(string propValue)
         {
             int startIdx = propValue.IndexOf("url(", StringComparison.InvariantCultureIgnoreCase);
-            if(startIdx > -1)
+            if (startIdx > -1)
             {
                 startIdx += 4;
                 var endIdx = propValue.IndexOf(')', startIdx);
-                if(endIdx > -1)
+                if (endIdx > -1)
                 {
                     endIdx -= 1;
                     while (startIdx < endIdx && (char.IsWhiteSpace(propValue[startIdx]) || propValue[startIdx] == '\''))
@@ -607,12 +607,12 @@ namespace HtmlRenderer.Core.Parse
         private string ParseFontFamilyProperty(string propValue)
         {
             int start = 0;
-            while(start > -1 && start < propValue.Length)
+            while (start > -1 && start < propValue.Length)
             {
                 while (char.IsWhiteSpace(propValue[start]) || propValue[start] == ',' || propValue[start] == '\'' || propValue[start] == '"')
                     start++;
                 var end = propValue.IndexOf(',', start);
-                if(end < 0)
+                if (end < 0)
                     end = propValue.Length;
                 var adjEnd = end - 1;
                 while (char.IsWhiteSpace(propValue[adjEnd]) || propValue[adjEnd] == '\'' || propValue[adjEnd] == '"')
@@ -627,7 +627,7 @@ namespace HtmlRenderer.Core.Parse
 
                 start = end;
             }
-            
+
             return CssConstants.Inherit;
         }
 

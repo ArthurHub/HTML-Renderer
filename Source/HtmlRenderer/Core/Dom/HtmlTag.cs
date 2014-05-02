@@ -23,7 +23,7 @@ namespace HtmlRenderer.Core.Dom
         /// the name of the html tag
         /// </summary>
         private readonly string _name;
-        
+
         /// <summary>
         /// if the tag is single placed; in other words it doesn't have a separate closing tag;
         /// </summary>

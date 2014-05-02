@@ -348,7 +348,7 @@ namespace HtmlRenderer.WinForms
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
-            using(var ig = new GraphicsAdapter(g,_useGdiPlusTextRendering))
+            using (var ig = new GraphicsAdapter(g, _useGdiPlusTextRendering))
             {
                 _htmlContainerInt.PerformLayout(ig);
             }

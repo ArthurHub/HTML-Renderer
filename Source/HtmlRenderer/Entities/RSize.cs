@@ -102,7 +102,7 @@ namespace HtmlRenderer.Entities
         {
             get
             {
-                if( _width == 0.0 )
+                if (_width == 0.0)
                     return _height == 0.0;
                 else
                     return false;
@@ -204,7 +204,7 @@ namespace HtmlRenderer.Entities
         /// <filterpriority>3</filterpriority>
         public static bool operator ==(RSize sz1, RSize sz2)
         {
-            if( Math.Abs(sz1.Width - sz2.Width) < 0.001 )
+            if (Math.Abs(sz1.Width - sz2.Width) < 0.001)
                 return Math.Abs(sz1.Height - sz2.Height) < 0.001;
             else
                 return false;
@@ -228,7 +228,7 @@ namespace HtmlRenderer.Entities
         /// <filterpriority>3</filterpriority>
         public static bool operator !=(RSize sz1, RSize sz2)
         {
-            return !( sz1 == sz2 );
+            return !(sz1 == sz2);
         }
 
         /// <summary>
@@ -289,10 +289,10 @@ namespace HtmlRenderer.Entities
         /// <filterpriority>1</filterpriority>
         public override bool Equals(object obj)
         {
-            if( !( obj is RSize ) )
+            if (!(obj is RSize))
                 return false;
             var sizeF = (RSize)obj;
-            if( Math.Abs(sizeF.Width - Width) < 0.001 && Math.Abs(sizeF.Height - Height) < 0.001 )
+            if (Math.Abs(sizeF.Width - Width) < 0.001 && Math.Abs(sizeF.Height - Height) < 0.001)
                 return sizeF.GetType() == GetType();
             else
                 return false;

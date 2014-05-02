@@ -107,7 +107,7 @@ namespace HtmlRenderer.Core.Dom
         /// Gets or sets the location of the box
         /// </summary>
         private RPoint _location;
-        
+
         /// <summary>
         /// Gets or sets the size of the box
         /// </summary>
@@ -134,7 +134,7 @@ namespace HtmlRenderer.Core.Dom
         private double _actualBorderLeftWidth = double.NaN;
         private double _actualBorderBottomWidth = double.NaN;
         private double _actualBorderRightWidth = double.NaN;
-        
+
         /// <summary>
         /// the width of whitespace between words
         /// </summary>
@@ -850,7 +850,7 @@ namespace HtmlRenderer.Core.Dom
             {
                 if (double.IsNaN(_actualMarginLeft))
                 {
-                    if (MarginLeft == CssConstants.Auto) 
+                    if (MarginLeft == CssConstants.Auto)
                         MarginLeft = "0";
                     var actualMarginLeft = CssValueParser.ParseLength(MarginLeft, Size.Width, this);
                     if (MarginLeft.EndsWith("%"))
@@ -870,7 +870,7 @@ namespace HtmlRenderer.Core.Dom
             {
                 if (double.IsNaN(_actualMarginBottom))
                 {
-                    if (MarginBottom == CssConstants.Auto) 
+                    if (MarginBottom == CssConstants.Auto)
                         MarginBottom = "0";
                     var actualMarginBottom = CssValueParser.ParseLength(MarginBottom, Size.Width, this);
                     if (MarginLeft.EndsWith("%"))
@@ -890,7 +890,7 @@ namespace HtmlRenderer.Core.Dom
             {
                 if (double.IsNaN(_actualMarginRight))
                 {
-                    if (MarginRight == CssConstants.Auto) 
+                    if (MarginRight == CssConstants.Auto)
                         MarginRight = "0";
                     var actualMarginRight = CssValueParser.ParseLength(MarginRight, Size.Width, this);
                     if (MarginLeft.EndsWith("%"))
@@ -1266,7 +1266,7 @@ namespace HtmlRenderer.Core.Dom
             {
                 if (double.IsNaN(_actualLineHeight))
                 {
-                    _actualLineHeight = .9f*CssValueParser.ParseLength(LineHeight, Size.Height, this);
+                    _actualLineHeight = .9f * CssValueParser.ParseLength(LineHeight, Size.Height, this);
                 }
                 return _actualLineHeight;
             }

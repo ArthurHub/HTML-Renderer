@@ -125,7 +125,7 @@ namespace HtmlRenderer.Core
         public void AddCssBlock(string media, CssBlock cssBlock)
         {
             Dictionary<string, List<CssBlock>> mid;
-            if(!_mediaBlocks.TryGetValue(media, out mid))
+            if (!_mediaBlocks.TryGetValue(media, out mid))
             {
                 mid = new Dictionary<string, List<CssBlock>>(StringComparer.InvariantCultureIgnoreCase);
                 _mediaBlocks.Add(media, mid);
@@ -143,7 +143,7 @@ namespace HtmlRenderer.Core
                 var list = mid[cssBlock.Class];
                 foreach (var block in list)
                 {
-                    if(block.EqualsSelector(cssBlock))
+                    if (block.EqualsSelector(cssBlock))
                     {
                         merged = true;
                         block.Merge(cssBlock);
@@ -151,12 +151,12 @@ namespace HtmlRenderer.Core
                     }
                 }
 
-                if(!merged)
+                if (!merged)
                 {
                     // general block must be first
                     if (cssBlock.Selectors == null)
                         list.Insert(0, cssBlock);
-                    else 
+                    else
                         list.Add(cssBlock);
                 }
             }
@@ -172,13 +172,13 @@ namespace HtmlRenderer.Core
             ArgChecker.AssertArgNotNull(other, "other");
 
             // for each media block
-            foreach(var mediaBlock in other.MediaBlocks)
+            foreach (var mediaBlock in other.MediaBlocks)
             {
                 // for each css class in the media block
-                foreach(var bla in mediaBlock.Value)
+                foreach (var bla in mediaBlock.Value)
                 {
                     // for each css block of the css class
-                    foreach(var cssBlock in bla.Value)
+                    foreach (var cssBlock in bla.Value)
                     {
                         // combine with this
                         AddCssBlock(mediaBlock.Key, cssBlock);

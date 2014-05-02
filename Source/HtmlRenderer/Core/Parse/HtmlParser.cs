@@ -37,14 +37,14 @@ namespace HtmlRenderer.Core.Parse
             while (startIdx >= 0)
             {
                 var tagIdx = source.IndexOf('<', startIdx);
-                if(tagIdx >= 0 && tagIdx < source.Length)
+                if (tagIdx >= 0 && tagIdx < source.Length)
                 {
                     // add the html text as anon css box to the structure
                     AddTextBox(source, startIdx, tagIdx, ref curBox);
 
                     if (source[tagIdx + 1] == '!')
                     {
-                        if( source[tagIdx + 2] == '-' )
+                        if (source[tagIdx + 2] == '-')
                         {
                             // skip the html comment elements (<!-- bla -->)
                             startIdx = source.IndexOf("-->", tagIdx + 2);
@@ -62,11 +62,11 @@ namespace HtmlRenderer.Core.Parse
                         // parse element tag to css box structure
                         endIdx = ParseHtmlTag(source, tagIdx, ref curBox) + 1;
 
-                        if( curBox.HtmlTag != null && curBox.HtmlTag.Name.Equals(HtmlConstants.Style, StringComparison.OrdinalIgnoreCase) )
+                        if (curBox.HtmlTag != null && curBox.HtmlTag.Name.Equals(HtmlConstants.Style, StringComparison.OrdinalIgnoreCase))
                         {
                             var endIdxS = endIdx;
                             endIdx = source.IndexOf("</style>", endIdx, StringComparison.OrdinalIgnoreCase);
-                            if(endIdx > -1)
+                            if (endIdx > -1)
                                 AddTextBox(source, endIdxS, endIdx, ref curBox);
                         }
                     }
@@ -79,7 +79,7 @@ namespace HtmlRenderer.Core.Parse
             {
                 // there is text after the end of last element
                 var endText = new SubString(source, endIdx, source.Length - endIdx);
-                if(!endText.IsEmptyOrWhitespace())
+                if (!endText.IsEmptyOrWhitespace())
                 {
                     var abox = CssBox.CreateBox(root);
                     abox.Text = endText;
@@ -184,14 +184,14 @@ namespace HtmlRenderer.Core.Parse
             }
 
             int spaceIdx = idx;
-            while (spaceIdx < idx + length && !char.IsWhiteSpace(source,spaceIdx))
+            while (spaceIdx < idx + length && !char.IsWhiteSpace(source, spaceIdx))
                 spaceIdx++;
 
             // Get the name of the tag
             name = source.Substring(idx, spaceIdx - idx).ToLower();
 
             attributes = null;
-            if(!isClosing && idx+length > spaceIdx)
+            if (!isClosing && idx + length > spaceIdx)
             {
                 ExtractAttributes(source, spaceIdx, length - (spaceIdx - idx), out attributes);
             }
@@ -211,7 +211,7 @@ namespace HtmlRenderer.Core.Parse
             attributes = null;
 
             int startIdx = idx;
-            while (startIdx < idx  + length)
+            while (startIdx < idx + length)
             {
                 while (startIdx < idx + length && char.IsWhiteSpace(source, startIdx))
                     startIdx++;

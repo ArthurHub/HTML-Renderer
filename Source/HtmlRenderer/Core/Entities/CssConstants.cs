@@ -113,7 +113,7 @@ namespace HtmlRenderer.Core.Entities
         public const string Double = "double";
         public const string Groove = "groove";
         public const string Ridge = "ridge";
-        
+
         /// <summary>
         /// Centimeters
         /// </summary>

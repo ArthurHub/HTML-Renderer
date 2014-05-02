@@ -66,10 +66,10 @@ namespace HtmlRenderer.Core.Handlers
         public bool IsFontExists(string family)
         {
             bool exists = _existingFontFamilies.ContainsKey(family);
-            if( !exists )
+            if (!exists)
             {
                 string mappedFamily;
-                if( _fontsMapping.TryGetValue(family, out mappedFamily) )
+                if (_fontsMapping.TryGetValue(family, out mappedFamily))
                 {
                     exists = _existingFontFamilies.ContainsKey(mappedFamily);
                 }
@@ -111,15 +111,15 @@ namespace HtmlRenderer.Core.Handlers
         public IFont GetCachedFont(string family, double size, RFontStyle style)
         {
             var font = TryGetFont(family, size, style);
-            if( font == null )
+            if (font == null)
             {
-                if( !_existingFontFamilies.ContainsKey(family) )
+                if (!_existingFontFamilies.ContainsKey(family))
                 {
                     string mappedFamily;
-                    if( _fontsMapping.TryGetValue(family, out mappedFamily) )
+                    if (_fontsMapping.TryGetValue(family, out mappedFamily))
                     {
                         font = TryGetFont(mappedFamily, size, style);
-                        if( font == null )
+                        if (font == null)
                         {
                             font = CreateFont(mappedFamily, size, style);
                             _fontsCache[mappedFamily][size][style] = font;
@@ -127,7 +127,7 @@ namespace HtmlRenderer.Core.Handlers
                     }
                 }
 
-                if( font == null )
+                if (font == null)
                 {
                     font = CreateFont(family, size, style);
                 }
@@ -146,13 +146,13 @@ namespace HtmlRenderer.Core.Handlers
         private IFont TryGetFont(string family, double size, RFontStyle style)
         {
             IFont font = null;
-            if( _fontsCache.ContainsKey(family) )
+            if (_fontsCache.ContainsKey(family))
             {
                 var a = _fontsCache[family];
-                if( a.ContainsKey(size) )
+                if (a.ContainsKey(size))
                 {
                     var b = a[size];
-                    if( b.ContainsKey(style) )
+                    if (b.ContainsKey(style))
                     {
                         font = b[style];
                     }

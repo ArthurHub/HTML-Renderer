@@ -35,7 +35,7 @@ namespace HtmlRenderer.Core.Dom
 
         #endregion
 
-        
+
         /// <summary>
         /// Creates a new LineBox
         /// </summary>
@@ -47,7 +47,7 @@ namespace HtmlRenderer.Core.Dom
             _ownerBox = ownerBox;
             _ownerBox.LineBoxes.Add(this);
         }
-        
+
         /// <summary>
         /// Gets a list of boxes related with the linebox. 
         /// To know the words of the box inside this linebox, use the <see cref="WordsOf"/> method.
@@ -168,7 +168,7 @@ namespace HtmlRenderer.Core.Dom
                 y -= topspacing;
                 b += bottomspacing;
             }
-            
+
 
             if (!Rectangles.ContainsKey(box))
             {
@@ -245,14 +245,14 @@ namespace HtmlRenderer.Core.Dom
                 Rectangles[b] = newr;
                 b.OffsetRectangle(this, gap);
             }
-            
+
             foreach (var word in ws)
             {
                 if (!word.IsImage)
                     word.Top = newtop;
             }
         }
-        
+
         /// <summary>
         /// Check if the given word is the last selected word in the line.<br/>
         /// It can either be the last word in the line or the next word has no selection.
@@ -261,9 +261,9 @@ namespace HtmlRenderer.Core.Dom
         /// <returns></returns>
         public bool IsLastSelectedWord(CssRect word)
         {
-            for(int i = 0; i < _words.Count-1; i++)
+            for (int i = 0; i < _words.Count - 1; i++)
             {
-                if( _words[i] == word )
+                if (_words[i] == word)
                 {
                     return !_words[i + 1].Selected;
                 }

@@ -232,9 +232,9 @@ namespace HtmlRenderer.WinForms
             var desiredWidth = (int)Math.Ceiling(MaximumSize.Width > 0 ? Math.Min(_htmlContainer.ActualSize.Width, MaximumSize.Width) : _htmlContainer.ActualSize.Width);
             var desiredHeight = (int)Math.Ceiling(MaximumSize.Height > 0 ? Math.Min(_htmlContainer.ActualSize.Height, MaximumSize.Height) : _htmlContainer.ActualSize.Height);
             e.ToolTipSize = new Size(desiredWidth, desiredHeight);
-            
+
             // start mouse handle timer
-            if( _allowLinksHandling )
+            if (_allowLinksHandling)
             {
                 _associatedControl = e.AssociatedControl;
                 _linkHandlingTimer.Start();
@@ -246,7 +246,7 @@ namespace HtmlRenderer.WinForms
         /// </summary>
         protected virtual void OnToolTipDraw(DrawToolTipEventArgs e)
         {
-            if(_tooltipHandle == IntPtr.Zero)
+            if (_tooltipHandle == IntPtr.Zero)
             {
                 // get the handle of the tooltip window using the graphics device context
                 var hdc = e.Graphics.GetHdc();
@@ -278,7 +278,7 @@ namespace HtmlRenderer.WinForms
             const int yOffset = 20;
             if (mousePos.Y + size.Height + yOffset > screenBounds.Bottom)
                 mousePos.Y = Math.Max(screenBounds.Bottom - size.Height - yOffset - 3, screenBounds.Top + 2);
-            
+
             // move the tooltip window to new location
             Win32Utils.MoveWindow(_tooltipHandle, mousePos.X, mousePos.Y + yOffset, size.Width, size.Height, false);
         }
@@ -339,7 +339,7 @@ namespace HtmlRenderer.WinForms
                     var mPos = Control.MousePosition;
                     var mButtons = Control.MouseButtons;
                     var rect = Win32Utils.GetWindowRectangle(handle);
-                    if( rect.Contains(mPos) )
+                    if (rect.Contains(mPos))
                     {
                         _htmlContainer.HandleMouseMove(_associatedControl, new MouseEventArgs(mButtons, 0, mPos.X - rect.X, mPos.Y - rect.Y, 0));
                     }
@@ -352,9 +352,9 @@ namespace HtmlRenderer.WinForms
                     var mPos = Control.MousePosition;
                     var mButtons = Control.MouseButtons;
                     var rect = Win32Utils.GetWindowRectangle(handle);
-                    if( rect.Contains(mPos) )
+                    if (rect.Contains(mPos))
                     {
-                        if( mButtons == MouseButtons.Left )
+                        if (mButtons == MouseButtons.Left)
                         {
                             var args = new MouseEventArgs(mButtons, 1, mPos.X - rect.X, mPos.Y - rect.Y, 0);
                             _htmlContainer.HandleMouseDown(_associatedControl, args);
@@ -363,9 +363,9 @@ namespace HtmlRenderer.WinForms
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                OnRenderError(this, new HtmlRenderErrorEventArgs(HtmlRenderErrorType.General, "Error in link handling for tooltip", ex));                
+                OnRenderError(this, new HtmlRenderErrorEventArgs(HtmlRenderErrorType.General, "Error in link handling for tooltip", ex));
             }
         }
 
@@ -378,7 +378,7 @@ namespace HtmlRenderer.WinForms
             Draw -= OnToolTipDraw;
             Disposed -= OnToolTipDisposed;
 
-            if(_htmlContainer != null)
+            if (_htmlContainer != null)
             {
                 _htmlContainer.LinkClicked -= OnLinkClicked;
                 _htmlContainer.RenderError -= OnRenderError;
@@ -388,7 +388,7 @@ namespace HtmlRenderer.WinForms
                 _htmlContainer = null;
             }
 
-            if( _linkHandlingTimer != null )
+            if (_linkHandlingTimer != null)
             {
                 _linkHandlingTimer.Dispose();
                 _linkHandlingTimer = null;

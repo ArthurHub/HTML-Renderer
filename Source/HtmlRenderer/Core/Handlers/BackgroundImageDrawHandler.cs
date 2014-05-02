@@ -52,7 +52,7 @@ namespace HtmlRenderer.Core.Handlers
             lRectangle.Intersect(prevClip);
             g.SetClipReplace(lRectangle);
 
-            switch( box.BackgroundRepeat )
+            switch (box.BackgroundRepeat)
             {
                 case "no-repeat":
                     g.DrawImage(imageLoadHandler.Image, destRect, srcRect);
@@ -84,17 +84,17 @@ namespace HtmlRenderer.Core.Handlers
         private static RPoint GetLocation(string backgroundPosition, RRect rectangle, RSize imgSize)
         {
             double left = rectangle.Left;
-            if( backgroundPosition.IndexOf("left", StringComparison.OrdinalIgnoreCase) > -1 )
+            if (backgroundPosition.IndexOf("left", StringComparison.OrdinalIgnoreCase) > -1)
             {
                 left = (rectangle.Left + .5f);
             }
             else if (backgroundPosition.IndexOf("right", StringComparison.OrdinalIgnoreCase) > -1)
             {
-                left = rectangle.Right - imgSize.Width;                
+                left = rectangle.Right - imgSize.Width;
             }
             else if (backgroundPosition.IndexOf("0", StringComparison.OrdinalIgnoreCase) < 0)
             {
-                left = (rectangle.Left + (rectangle.Width - imgSize.Width) / 2 +.5f);
+                left = (rectangle.Left + (rectangle.Width - imgSize.Width) / 2 + .5f);
             }
 
             double top = rectangle.Top;
@@ -151,7 +151,7 @@ namespace HtmlRenderer.Core.Handlers
         private static void DrawRepeat(IGraphics g, ImageLoadHandler imageLoadHandler, RRect rectangle, RRect srcRect, RRect destRect, RSize imgSize)
         {
             while (destRect.X > rectangle.X)
-                destRect.X -= imgSize.Width; 
+                destRect.X -= imgSize.Width;
             while (destRect.Y > rectangle.Y)
                 destRect.Y -= imgSize.Height;
 

@@ -307,7 +307,7 @@ namespace HtmlRenderer.WinForms
         {
             ArgChecker.AssertArgNotNull(image, "image");
 
-            if( !string.IsNullOrEmpty(html) )
+            if (!string.IsNullOrEmpty(html))
             {
                 // create memory buffer from desktop handle that supports alpha channel
                 IntPtr dib;
@@ -315,7 +315,7 @@ namespace HtmlRenderer.WinForms
                 try
                 {
                     // create memory buffer graphics to use for HTML rendering
-                    using(var memoryGraphics = Graphics.FromHdc(memoryHdc))
+                    using (var memoryGraphics = Graphics.FromHdc(memoryHdc))
                     {
                         // draw the image to the memory buffer to be the background of the rendered html
                         memoryGraphics.DrawImageUnscaled(image, 0, 0);
@@ -353,13 +353,13 @@ namespace HtmlRenderer.WinForms
         public static Image RenderToImage(string html, Size size, Color backgroundColor = new Color(), CssData cssData = null,
                                           EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
-            if( backgroundColor == Color.Transparent )
+            if (backgroundColor == Color.Transparent)
                 throw new ArgumentOutOfRangeException("backgroundColor", "Transparent background in not supported");
 
             // create the final image to render into
             var image = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
 
-            if( !string.IsNullOrEmpty(html) )
+            if (!string.IsNullOrEmpty(html))
             {
                 // create memory buffer from desktop handle that supports alpha channel
                 IntPtr dib;
@@ -367,7 +367,7 @@ namespace HtmlRenderer.WinForms
                 try
                 {
                     // create memory buffer graphics to use for HTML rendering
-                    using(var memoryGraphics = Graphics.FromHdc(memoryHdc))
+                    using (var memoryGraphics = Graphics.FromHdc(memoryHdc))
                     {
                         memoryGraphics.Clear(backgroundColor != Color.Empty ? backgroundColor : Color.White);
 
@@ -437,20 +437,20 @@ namespace HtmlRenderer.WinForms
         public static Image RenderToImage(string html, Size minSize, Size maxSize, Color backgroundColor = new Color(), CssData cssData = null,
                                           EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
-            if( backgroundColor == Color.Transparent )
+            if (backgroundColor == Color.Transparent)
                 throw new ArgumentOutOfRangeException("backgroundColor", "Transparent background in not supported");
 
-            if( string.IsNullOrEmpty(html) )
+            if (string.IsNullOrEmpty(html))
                 return new Bitmap(0, 0, PixelFormat.Format32bppArgb);
 
-            using(var container = new HtmlContainer())
+            using (var container = new HtmlContainer())
             {
                 container.AvoidAsyncImagesLoading = true;
                 container.AvoidImagesLateLoading = true;
 
-                if( stylesheetLoad != null )
+                if (stylesheetLoad != null)
                     container.StylesheetLoad += stylesheetLoad;
-                if( imageLoad != null )
+                if (imageLoad != null)
                     container.ImageLoad += imageLoad;
                 container.SetHtml(html, cssData);
 
@@ -466,7 +466,7 @@ namespace HtmlRenderer.WinForms
                 try
                 {
                     // render HTML into the memory buffer
-                    using(var memoryGraphics = Graphics.FromHdc(memoryHdc))
+                    using (var memoryGraphics = Graphics.FromHdc(memoryHdc))
                     {
                         memoryGraphics.Clear(backgroundColor != Color.Empty ? backgroundColor : Color.White);
                         container.PerformPaint(memoryGraphics);
@@ -503,7 +503,7 @@ namespace HtmlRenderer.WinForms
         {
             var image = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
 
-            using(var g = Graphics.FromImage(image))
+            using (var g = Graphics.FromImage(image))
             {
                 g.TextRenderingHint = textRenderingHint;
                 RenderHtml(g, html, PointF.Empty, size, cssData, true, stylesheetLoad, imageLoad);
@@ -558,18 +558,18 @@ namespace HtmlRenderer.WinForms
         public static Image RenderToImageGdiPlus(string html, Size minSize, Size maxSize, TextRenderingHint textRenderingHint = TextRenderingHint.AntiAlias, CssData cssData = null,
                                                  EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
-            if( string.IsNullOrEmpty(html) )
+            if (string.IsNullOrEmpty(html))
                 return new Bitmap(0, 0, PixelFormat.Format32bppArgb);
 
-            using(var container = new HtmlContainer())
+            using (var container = new HtmlContainer())
             {
                 container.AvoidAsyncImagesLoading = true;
                 container.AvoidImagesLateLoading = true;
                 container.UseGdiPlusTextRendering = true;
-                    
-                if( stylesheetLoad != null )
+
+                if (stylesheetLoad != null)
                     container.StylesheetLoad += stylesheetLoad;
-                if( imageLoad != null )
+                if (imageLoad != null)
                     container.ImageLoad += imageLoad;
                 container.SetHtml(html, cssData);
 
@@ -580,7 +580,7 @@ namespace HtmlRenderer.WinForms
                 var image = new Bitmap(finalSize.Width, finalSize.Height, PixelFormat.Format32bppArgb);
 
                 // render HTML into the image
-                using(var g = Graphics.FromImage(image))
+                using (var g = Graphics.FromImage(image))
                 {
                     g.TextRenderingHint = textRenderingHint;
                     container.PerformPaint(g);
@@ -608,18 +608,18 @@ namespace HtmlRenderer.WinForms
                                      EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad, EventHandler<HtmlImageLoadEventArgs> imageLoad)
         {
             SizeF actualSize = SizeF.Empty;
-            if( !string.IsNullOrEmpty(html) )
+            if (!string.IsNullOrEmpty(html))
             {
-                using(var container = new HtmlContainer())
+                using (var container = new HtmlContainer())
                 {
                     container.MaxSize = new SizeF(maxWidth, 0);
                     container.AvoidAsyncImagesLoading = true;
                     container.AvoidImagesLateLoading = true;
                     container.UseGdiPlusTextRendering = useGdiPlusTextRendering;
 
-                    if( stylesheetLoad != null )
+                    if (stylesheetLoad != null)
                         container.StylesheetLoad += stylesheetLoad;
-                    if( imageLoad != null )
+                    if (imageLoad != null)
                         container.ImageLoad += imageLoad;
 
                     container.SetHtml(html, cssData);
@@ -641,8 +641,8 @@ namespace HtmlRenderer.WinForms
         private static Size MeasureHtmlByRestrictions(HtmlContainer htmlContainer, Size minSize, Size maxSize)
         {
             // use desktop created graphics to measure the HTML
-            using(var g = Graphics.FromHwnd(IntPtr.Zero))
-            using(var mg = new GraphicsAdapter(g, htmlContainer.UseGdiPlusTextRendering))
+            using (var g = Graphics.FromHwnd(IntPtr.Zero))
+            using (var mg = new GraphicsAdapter(g, htmlContainer.UseGdiPlusTextRendering))
             {
                 var sizeInt = HtmlRendererUtils.MeasureHtmlByRestrictions(mg, htmlContainer.HtmlContainerInt, Utils.Convert(minSize), Utils.Convert(maxSize));
                 return Utils.ConvertRound(sizeInt);
@@ -670,7 +670,7 @@ namespace HtmlRenderer.WinForms
         private static SizeF RenderClip(Graphics g, string html, PointF location, SizeF maxSize, CssData cssData, bool useGdiPlusTextRendering, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad, EventHandler<HtmlImageLoadEventArgs> imageLoad)
         {
             Region prevClip = null;
-            if( maxSize.Height > 0 )
+            if (maxSize.Height > 0)
             {
                 prevClip = g.Clip;
                 g.SetClip(new RectangleF(location, maxSize));
@@ -678,7 +678,7 @@ namespace HtmlRenderer.WinForms
 
             var actualSize = RenderHtml(g, html, location, maxSize, cssData, useGdiPlusTextRendering, stylesheetLoad, imageLoad);
 
-            if( prevClip != null )
+            if (prevClip != null)
             {
                 g.SetClip(prevClip, CombineMode.Replace);
             }
@@ -707,9 +707,9 @@ namespace HtmlRenderer.WinForms
         {
             SizeF actualSize = SizeF.Empty;
 
-            if( !string.IsNullOrEmpty(html) )
+            if (!string.IsNullOrEmpty(html))
             {
-                using(var container = new HtmlContainer())
+                using (var container = new HtmlContainer())
                 {
                     container.Location = location;
                     container.MaxSize = maxSize;
@@ -717,9 +717,9 @@ namespace HtmlRenderer.WinForms
                     container.AvoidImagesLateLoading = true;
                     container.UseGdiPlusTextRendering = useGdiPlusTextRendering;
 
-                    if( stylesheetLoad != null )
+                    if (stylesheetLoad != null)
                         container.StylesheetLoad += stylesheetLoad;
-                    if( imageLoad != null )
+                    if (imageLoad != null)
                         container.ImageLoad += imageLoad;
 
                     container.SetHtml(html, cssData);
@@ -740,7 +740,7 @@ namespace HtmlRenderer.WinForms
         /// <param name="image">the destination bitmap image to copy to</param>
         private static void CopyBufferToImage(IntPtr memoryHdc, Image image)
         {
-            using(var imageGraphics = Graphics.FromImage(image))
+            using (var imageGraphics = Graphics.FromImage(image))
             {
                 var imgHdc = imageGraphics.GetHdc();
                 Win32Utils.BitBlt(imgHdc, 0, 0, image.Width, image.Height, memoryHdc, 0, 0, Win32Utils.BitBltCopy);

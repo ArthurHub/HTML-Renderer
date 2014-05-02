@@ -88,7 +88,7 @@ namespace HtmlRenderer.Core.Dom
             int columns = 0;
             foreach (var box in tableBox.Boxes)
             {
-                if( box.Display == CssConstants.TableColumn )
+                if (box.Display == CssConstants.TableColumn)
                 {
                     columns += GetSpan(box);
                 }
@@ -108,12 +108,12 @@ namespace HtmlRenderer.Core.Dom
                 }
 
                 // limit the amount of rows to process for performance
-                if(count > 30)
+                if (count > 30)
                     break;
             }
 
             // +1 columns because padding is between the cell and table borders
-            return ( columns + 1 )*GetHorizontalSpacing(tableBox);
+            return (columns + 1) * GetHorizontalSpacing(tableBox);
         }
 
         /// <summary>
@@ -297,7 +297,7 @@ namespace HtmlRenderer.Core.Dom
             }
             else
             {
-                foreach (CssBox b in _allRows) 
+                foreach (CssBox b in _allRows)
                     _columnCount = Math.Max(_columnCount, b.Boxes.Count);
             }
 
@@ -494,7 +494,7 @@ namespace HtmlRenderer.Core.Dom
 
             // if table max width is limited by we need to lower the columns width even if it will result in clipping
             var maxWidth = GetMaxTableWidth();
-            if(maxWidth < 90999)
+            if (maxWidth < 90999)
             {
                 widthSum = GetWidthSum();
                 if (maxWidth < widthSum)
@@ -535,9 +535,9 @@ namespace HtmlRenderer.Core.Dom
                             if (decrease * nonMaxedColumns > widthSum - maxWidth)
                                 decrease = (widthSum - maxWidth) / nonMaxedColumns;
                             for (int i = 0; i < _columnWidths.Length; i++)
-                                if(_columnWidths[i] > largeWidth - 0.1)
+                                if (_columnWidths[i] > largeWidth - 0.1)
                                     _columnWidths[i] -= decrease;
-                            
+
                             widthSum = GetWidthSum();
                         }
                     }
@@ -632,7 +632,7 @@ namespace HtmlRenderer.Core.Dom
                     cell.Location = new RPoint(curx, cury);
                     cell.Size = new RSize(width, 0f);
                     cell.PerformLayout(g); //That will automatically set the bottom of the cell
-                    
+
                     //Alter max bottom only if row is cell's row + cell's rowspan - 1
                     CssSpacingBox sb = cell as CssSpacingBox;
                     if (sb != null)
@@ -671,7 +671,7 @@ namespace HtmlRenderer.Core.Dom
                 currentrow++;
             }
 
-            maxRight = Math.Max(maxRight,_tableBox.Location.X + _tableBox.ActualWidth);
+            maxRight = Math.Max(maxRight, _tableBox.Location.X + _tableBox.ActualWidth);
             _tableBox.ActualRight = maxRight + GetHorizontalSpacing() + _tableBox.ActualBorderRightWidth;
             _tableBox.ActualBottom = Math.Max(maxBottom, starty) + GetVerticalSpacing() + _tableBox.ActualBorderBottomWidth;
         }
@@ -884,14 +884,14 @@ namespace HtmlRenderer.Core.Dom
                     {
                         double minWidth, maxWidth;
                         row.Boxes[i].GetMinMaxWidth(out minWidth, out maxWidth);
-                        
+
                         var colSpan = GetColSpan(row.Boxes[i]);
                         minWidth = minWidth / colSpan;
                         maxWidth = maxWidth / colSpan;
                         for (int j = 0; j < colSpan; j++)
                         {
-                            minFullWidths[col + j] = Math.Max(minFullWidths[col+j], minWidth);
-                            maxFullWidths[col + j] = Math.Max(maxFullWidths[col+j], maxWidth);
+                            minFullWidths[col + j] = Math.Max(minFullWidths[col + j], minWidth);
+                            maxFullWidths[col + j] = Math.Max(maxFullWidths[col + j], maxWidth);
                         }
                     }
                 }

@@ -211,7 +211,7 @@ namespace HtmlRenderer.Entities
         {
             get
             {
-                if( Width > 0.0 )
+                if (Width > 0.0)
                     return Height <= 0.0;
                 else
                     return true;
@@ -233,7 +233,7 @@ namespace HtmlRenderer.Entities
         /// </param>
         public static bool operator ==(RRect left, RRect right)
         {
-            if( Math.Abs(left.X - right.X) < 0.001 && Math.Abs(left.Y - right.Y) < 0.001 && Math.Abs(left.Width - right.Width) < 0.001 )
+            if (Math.Abs(left.X - right.X) < 0.001 && Math.Abs(left.Y - right.Y) < 0.001 && Math.Abs(left.Width - right.Width) < 0.001)
                 return Math.Abs(left.Height - right.Height) < 0.001;
             else
                 return false;
@@ -255,7 +255,7 @@ namespace HtmlRenderer.Entities
         /// </param>
         public static bool operator !=(RRect left, RRect right)
         {
-            return !( left == right );
+            return !(left == right);
         }
 
         /// <summary>
@@ -286,10 +286,10 @@ namespace HtmlRenderer.Entities
         /// </param>
         public override bool Equals(object obj)
         {
-            if( !( obj is RRect ) )
+            if (!(obj is RRect))
                 return false;
             var rectangleF = (RRect)obj;
-            if( Math.Abs(rectangleF.X - X) < 0.001 && Math.Abs(rectangleF.Y - Y) < 0.001 && Math.Abs(rectangleF.Width - Width) < 0.001 )
+            if (Math.Abs(rectangleF.X - X) < 0.001 && Math.Abs(rectangleF.Y - Y) < 0.001 && Math.Abs(rectangleF.Width - Width) < 0.001)
                 return Math.Abs(rectangleF.Height - Height) < 0.001;
             else
                 return false;
@@ -307,7 +307,7 @@ namespace HtmlRenderer.Entities
         /// <param name="y">The y-coordinate of the point to test. </param>
         public bool Contains(double x, double y)
         {
-            if( X <= x && x < X + Width && Y <= y )
+            if (X <= x && x < X + Width && Y <= y)
                 return y < Y + Height;
             else
                 return false;
@@ -342,7 +342,7 @@ namespace HtmlRenderer.Entities
         /// </param>
         public bool Contains(RRect rect)
         {
-            if( X <= rect.X && rect.X + rect.Width <= X + Width && Y <= rect.Y )
+            if (X <= rect.X && rect.X + rect.Width <= X + Width && Y <= rect.Y)
                 return rect.Y + rect.Height <= Y + Height;
             else
                 return false;
@@ -361,8 +361,8 @@ namespace HtmlRenderer.Entities
         {
             X -= x;
             Y -= y;
-            Width += 2f*x;
-            Height += 2f*y;
+            Width += 2f * x;
+            Height += 2f * y;
         }
 
         /// <summary>
@@ -425,7 +425,7 @@ namespace HtmlRenderer.Entities
             double num1 = Math.Min(a.X + a.Width, b.X + b.Width);
             double y = Math.Max(a.Y, b.Y);
             double num2 = Math.Min(a.Y + a.Height, b.Y + b.Height);
-            if( num1 >= x && num2 >= y )
+            if (num1 >= x && num2 >= y)
                 return new RRect(x, y, num1 - x, num2 - y);
             else
                 return Empty;
@@ -440,7 +440,7 @@ namespace HtmlRenderer.Entities
         /// <param name="rect">The rectangle to test. </param>
         public bool IntersectsWith(RRect rect)
         {
-            if( rect.X < X + Width && X < rect.X + rect.Width && rect.Y < Y + Height )
+            if (rect.X < X + Width && X < rect.X + rect.Width && rect.Y < Y + Height)
                 return Y < rect.Y + rect.Height;
             else
                 return false;

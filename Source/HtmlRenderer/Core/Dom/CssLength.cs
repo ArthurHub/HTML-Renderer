@@ -96,7 +96,7 @@ namespace HtmlRenderer.Core.Dom
                     return;
             }
 
-            if (!double.TryParse(number,  System.Globalization.NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _number))
+            if (!double.TryParse(number, System.Globalization.NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _number))
             {
                 _hasError = true;
             }
@@ -131,7 +131,7 @@ namespace HtmlRenderer.Core.Dom
         {
             get { return _isPercentage; }
         }
-	
+
 
         /// <summary>
         /// Gets if the length is specified in relative units

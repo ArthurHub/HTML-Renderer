@@ -53,7 +53,7 @@ namespace HtmlRenderer.WinForms.Utilities
             }
             return pen;
         }
-        
+
         /// <summary>
         /// Get cached solid brush instance for the given color.
         /// </summary>
@@ -62,16 +62,16 @@ namespace HtmlRenderer.WinForms.Utilities
         public static IBrush GetSolidBrush(RColor color)
         {
             IBrush brush;
-            if( !_brushesCache.TryGetValue(color, out brush) )
+            if (!_brushesCache.TryGetValue(color, out brush))
             {
                 Brush solidBrush;
-                if( color == RColor.White )
+                if (color == RColor.White)
                     solidBrush = Brushes.White;
-                else if( color == RColor.Black )
+                else if (color == RColor.Black)
                     solidBrush = Brushes.Black;
                 else if (color == RColor.WhiteSmoke)
                     solidBrush = Brushes.WhiteSmoke;
-                else if( color.A < 1 )
+                else if (color.A < 1)
                     solidBrush = Brushes.Transparent;
                 else
                     solidBrush = new SolidBrush(Utils.Convert(color));
