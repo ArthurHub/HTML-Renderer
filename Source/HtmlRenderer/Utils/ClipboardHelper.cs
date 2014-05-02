@@ -92,7 +92,7 @@ EndSelection:<<<<<<<<4";
             var htmlFragment = GetHtmlDataString(html);
             
             // re-encode the string so it will work correctly
-            if (html.Length != Encoding.UTF8.GetByteCount(html))
+            if (Environment.Version.Major < 4 && html.Length != Encoding.UTF8.GetByteCount(html))
                 htmlFragment = Encoding.Default.GetString(Encoding.UTF8.GetBytes(htmlFragment));
 
             var dataObject = new DataObject();
