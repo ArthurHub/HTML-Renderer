@@ -1,27 +1,27 @@
 <html>
-<head>
-    <title>HtmlToolTip</title>
-    <link rel="Stylesheet" href="StyleSheet" />
-</head>
-<body>
-    <h1>ToolTip
-    </h1>
-    <blockquote>
-        <p>
-            Same as regular winforms tooltip but will render HTML and not just plain text. All HTML Renderer rules apply so you can use images, tables, styles, etc.
-            <br />
-            <br />
-            Try the <a href="ShowSampleForm">Sample Form</a> and place the mouse over
-            the button to change the ToolTip of the button.
-            <br />
-            <br />
-            <div class="htmltooltip" style="width: 450px">
-                Example tooltip, all Tooltips are wrapped in a <b>div</b> with the style of this paragraph
-            </div>
-        </p>
-        <h2>Default tooltip style
-        </h2>
-        <pre>
+    <head>
+        <title>HtmlToolTip</title>
+        <link rel="Stylesheet" href="StyleSheet" />
+    </head>
+    <body>
+        <h1>ToolTip
+        </h1>
+        <blockquote>
+            <p>
+                Same as regular winforms tooltip but will render HTML and not just plain text. All HTML Renderer rules apply so you can use images, tables, styles, etc.
+                <br />
+                <br />
+                Try the <a href="ShowSampleForm">Sample Form</a> and place the mouse over
+                the button to change the ToolTip of the button.
+                <br />
+                <br />
+                <div class="htmltooltip" style="width: 450px">
+                    Example tooltip, all Tooltips are wrapped in a <b>div</b> with the style of this paragraph
+                </div>
+            </p>
+            <h2>Default tooltip style
+            </h2>
+            <pre>
 .htmltooltip {
     border:solid 1px #767676;
     background-color:white;
@@ -29,25 +29,25 @@
     padding: 8px; 
     Font: 9pt Tahoma;
 }</pre>
-        <h2>Examples
-        </h2>
-        <div class="htmltooltip" style="width: 400px">
-            The size, width and height, of the tooltip is auto sized by the html shown, the longest line will set the width of the tooltip.<br />
-            <hr />
+            <h2>Examples
+            </h2>
+            <div class="htmltooltip" style="width: 400px">
+                The size, width and height, of the tooltip is auto sized by the html shown, the longest line will set the width of the tooltip.<br />
+                <hr />
+                <br />
+                Note: this is not the case here because those examples are embedded in HtmlPanel, but you can use <a href="ShowSampleForm">Sample Form</a> to play with it.
+            </div>
             <br />
-            Note: this is not the case here because those examples are embedded in HtmlPanel, but you can use <a href="ShowSampleForm">Sample Form</a> to play with it.
-        </div>
-        <br />
-        <div class="htmltooltip" style="width: 300px">
-            You can add any complex html as you require, including images, table bullets, etc.
-            <p>
-                Who said tooltip should be boring?<br />
-                <ol style="list-style-type: upper-roman; margin-top: 5px;">
-                    <li>Not me!</li>
-                    <li>Nope!</li>
-                </ol>
-            </p>
-        </div>
-    </blockquote>
-</body>
+            <div class="htmltooltip" style="width: 300px">
+                You can add any complex html as you require, including images, table bullets, etc.
+                <p>
+                    Who said tooltip should be boring?<br />
+                    <ol style="list-style-type: upper-roman; margin-top: 5px;">
+                        <li>Not me!</li>
+                        <li>Nope!</li>
+                    </ol>
+                </p>
+            </div>
+        </blockquote>
+    </body>
 </html>

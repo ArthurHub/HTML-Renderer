@@ -1,39 +1,39 @@
 <html>
-<head>
-    <link rel="Stylesheet" href="StyleSheet" />
-</head>
-<body>
-    <h1>
-        Embeded video
-    </h1>
-    <blockquote>
-        <p>
-            Embeded video is an 'iframe' with 'src' pointing to the video hosted on the server.<br />
-            Obviously the Html Renderer doesn't support iframes so don't expect to see ActiveX
-            in the control that will stream the video, but the video thumbnail image, caption
-            string and play visualization is shown. Clicking on it will open the video
-            page on its site.
-        </p>
-        <h3>
-            How does it works
-        </h3>
-        <div>
-            The id of the video is extracted from the 'src' URL and using the server API gets
-            the video data is extracted: thumbnail image url, caption string and link url.<br />
-            Then, on the video frame location, the thumbnail image is shown with the caption
-            on top and a nice play button in the middle.<br />
-            When the user clicks on the video frame a link click events occures that opens the
-            actual video page, instead of video source.
-        </div>
-        <p>
-            <b>Note: </b>Because this technique requires server API it is currently supported
-            only for <a href="http://www.youtube.com/">YouTube</a> and <a href="http://vimeo.com/">
-                Vimeo</a>.
-        </p>
-        <h2>
-            Example
-        </h2>
-        <iframe height="360" width="480" src="https://www.youtube.com/embed/Kdgt1ZHkvnM?wmode=transparent" />
-    </blockquote>
-</body>
+    <head>
+        <link rel="Stylesheet" href="StyleSheet" />
+    </head>
+    <body>
+        <h1>
+            Embeded video
+        </h1>
+        <blockquote>
+            <p>
+                Embeded video is an 'iframe' with 'src' pointing to the video hosted on the server.<br />
+                Obviously the Html Renderer doesn't support iframes so don't expect to see ActiveX
+                in the control that will stream the video, but the video thumbnail image, caption
+                string and play visualization is shown. Clicking on it will open the video
+                page on its site.
+            </p>
+            <h3>
+                How does it works
+            </h3>
+            <div>
+                The id of the video is extracted from the 'src' URL and using the server API gets
+                the video data is extracted: thumbnail image url, caption string and link url.<br />
+                Then, on the video frame location, the thumbnail image is shown with the caption
+                on top and a nice play button in the middle.<br />
+                When the user clicks on the video frame a link click events occures that opens the
+                actual video page, instead of video source.
+            </div>
+            <p>
+                <b>Note: </b>Because this technique requires server API it is currently supported
+                only for <a href="http://www.youtube.com/">YouTube</a> and <a href="http://vimeo.com/">
+                                                                               Vimeo</a>.
+            </p>
+            <h2>
+                Example
+            </h2>
+            <iframe height="360" width="480" src="https://www.youtube.com/embed/Kdgt1ZHkvnM?wmode=transparent" />
+        </blockquote>
+    </body>
 </html>

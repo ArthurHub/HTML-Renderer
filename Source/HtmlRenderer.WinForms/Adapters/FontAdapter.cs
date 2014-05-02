@@ -48,7 +48,6 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         private double _whitespaceWidth = -1;
 
-
         #endregion
 
 

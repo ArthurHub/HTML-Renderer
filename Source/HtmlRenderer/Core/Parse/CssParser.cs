@@ -135,6 +135,7 @@ namespace HtmlRenderer.Core.Parse
             return _valueParser.GetActualColor(colorStr);
         }
 
+
         #region Private methods
 
         /// <summary>
@@ -231,7 +232,8 @@ namespace HtmlRenderer.Core.Parse
             while ((atrule = RegexParserUtils.GetCssAtRules(stylesheet, ref startIdx)) != null)
             {
                 //Just process @media rules
-                if (!atrule.StartsWith("@media", StringComparison.InvariantCultureIgnoreCase)) continue;
+                if (!atrule.StartsWith("@media", StringComparison.InvariantCultureIgnoreCase))
+                    continue;
 
                 //Extract specified media types
                 MatchCollection types = RegexParserUtils.Match(RegexParserUtils.CssMediaTypes, atrule);
@@ -557,12 +559,18 @@ namespace HtmlRenderer.Core.Parse
                     lineHeight = mustBe.Substring(slashPos + 1);
                 }
 
-                if (!string.IsNullOrEmpty(fontFamily)) properties["font-family"] = ParseFontFamilyProperty(fontFamily);
-                if (!string.IsNullOrEmpty(fontStyle)) properties["font-style"] = fontStyle;
-                if (!string.IsNullOrEmpty(fontVariant)) properties["font-variant"] = fontVariant;
-                if (!string.IsNullOrEmpty(fontWeight)) properties["font-weight"] = fontWeight;
-                if (!string.IsNullOrEmpty(fontSize)) properties["font-size"] = fontSize;
-                if (!string.IsNullOrEmpty(lineHeight)) properties["line-height"] = lineHeight;
+                if (!string.IsNullOrEmpty(fontFamily))
+                    properties["font-family"] = ParseFontFamilyProperty(fontFamily);
+                if (!string.IsNullOrEmpty(fontStyle))
+                    properties["font-style"] = fontStyle;
+                if (!string.IsNullOrEmpty(fontVariant))
+                    properties["font-variant"] = fontVariant;
+                if (!string.IsNullOrEmpty(fontWeight))
+                    properties["font-weight"] = fontWeight;
+                if (!string.IsNullOrEmpty(fontSize))
+                    properties["font-size"] = fontSize;
+                if (!string.IsNullOrEmpty(lineHeight))
+                    properties["line-height"] = lineHeight;
             }
             else
             {
@@ -646,15 +654,21 @@ namespace HtmlRenderer.Core.Parse
 
             if (direction != null)
             {
-                if (borderWidth != null) properties["border" + direction + "-width"] = borderWidth;
-                if (borderStyle != null) properties["border" + direction + "-style"] = borderStyle;
-                if (borderColor != null) properties["border" + direction + "-color"] = borderColor;
+                if (borderWidth != null)
+                    properties["border" + direction + "-width"] = borderWidth;
+                if (borderStyle != null)
+                    properties["border" + direction + "-style"] = borderStyle;
+                if (borderColor != null)
+                    properties["border" + direction + "-color"] = borderColor;
             }
             else
             {
-                if (borderWidth != null) ParseBorderWidthProperty(borderWidth, properties);
-                if (borderStyle != null) ParseBorderStyleProperty(borderStyle, properties);
-                if (borderColor != null) ParseBorderColorProperty(borderColor, properties);
+                if (borderWidth != null)
+                    ParseBorderWidthProperty(borderWidth, properties);
+                if (borderStyle != null)
+                    ParseBorderStyleProperty(borderStyle, properties);
+                if (borderColor != null)
+                    ParseBorderColorProperty(borderColor, properties);
             }
         }
 
@@ -668,10 +682,14 @@ namespace HtmlRenderer.Core.Parse
             string bottom, top, left, right;
             SplitMultiDirectionValues(propValue, out left, out top, out right, out bottom);
 
-            if (left != null) properties["margin-left"] = left;
-            if (top != null) properties["margin-top"] = top;
-            if (right != null) properties["margin-right"] = right;
-            if (bottom != null) properties["margin-bottom"] = bottom;
+            if (left != null)
+                properties["margin-left"] = left;
+            if (top != null)
+                properties["margin-top"] = top;
+            if (right != null)
+                properties["margin-right"] = right;
+            if (bottom != null)
+                properties["margin-bottom"] = bottom;
         }
 
         /// <summary>
@@ -684,10 +702,14 @@ namespace HtmlRenderer.Core.Parse
             string bottom, top, left, right;
             SplitMultiDirectionValues(propValue, out left, out top, out right, out bottom);
 
-            if (left != null) properties["border-left-style"] = left;
-            if (top != null) properties["border-top-style"] = top;
-            if (right != null) properties["border-right-style"] = right;
-            if (bottom != null) properties["border-bottom-style"] = bottom;
+            if (left != null)
+                properties["border-left-style"] = left;
+            if (top != null)
+                properties["border-top-style"] = top;
+            if (right != null)
+                properties["border-right-style"] = right;
+            if (bottom != null)
+                properties["border-bottom-style"] = bottom;
         }
 
         /// <summary>
@@ -700,10 +722,14 @@ namespace HtmlRenderer.Core.Parse
             string bottom, top, left, right;
             SplitMultiDirectionValues(propValue, out left, out top, out right, out bottom);
 
-            if (left != null) properties["border-left-width"] = left;
-            if (top != null) properties["border-top-width"] = top;
-            if (right != null) properties["border-right-width"] = right;
-            if (bottom != null) properties["border-bottom-width"] = bottom;
+            if (left != null)
+                properties["border-left-width"] = left;
+            if (top != null)
+                properties["border-top-width"] = top;
+            if (right != null)
+                properties["border-right-width"] = right;
+            if (bottom != null)
+                properties["border-bottom-width"] = bottom;
         }
 
         /// <summary>
@@ -716,10 +742,14 @@ namespace HtmlRenderer.Core.Parse
             string bottom, top, left, right;
             SplitMultiDirectionValues(propValue, out left, out top, out right, out bottom);
 
-            if (left != null) properties["border-left-color"] = left;
-            if (top != null) properties["border-top-color"] = top;
-            if (right != null) properties["border-right-color"] = right;
-            if (bottom != null) properties["border-bottom-color"] = bottom;
+            if (left != null)
+                properties["border-left-color"] = left;
+            if (top != null)
+                properties["border-top-color"] = top;
+            if (right != null)
+                properties["border-right-color"] = right;
+            if (bottom != null)
+                properties["border-bottom-color"] = bottom;
         }
 
         /// <summary>
@@ -732,10 +762,14 @@ namespace HtmlRenderer.Core.Parse
             string bottom, top, left, right;
             SplitMultiDirectionValues(propValue, out left, out top, out right, out bottom);
 
-            if (left != null) properties["padding-left"] = left;
-            if (top != null) properties["padding-top"] = top;
-            if (right != null) properties["padding-right"] = right;
-            if (bottom != null) properties["padding-bottom"] = bottom;
+            if (left != null)
+                properties["padding-left"] = left;
+            if (top != null)
+                properties["padding-top"] = top;
+            if (right != null)
+                properties["padding-right"] = right;
+            if (bottom != null)
+                properties["padding-bottom"] = bottom;
         }
 
         /// <summary>

@@ -199,9 +199,9 @@ namespace HtmlRenderer.Core.Handlers
                 {
                     _image = _htmlContainer.Global.ConvertImage(image);
                     ImageLoadComplete(_asyncCallback);
-            }
+                }
                 else if (!string.IsNullOrEmpty(path))
-            {
+                {
                     SetImageFromPath(path);
                 }
                 else
@@ -263,9 +263,9 @@ namespace HtmlRenderer.Core.Handlers
             if (uri != null && uri.Scheme != "file")
             {
                 SetImageFromUrl(uri);
-                }
+            }
             else
-                {
+            {
                 var fileInfo = CommonUtils.TryGetFileInfo(uri != null ? uri.AbsolutePath : path);
                 if (fileInfo != null)
                 {
@@ -285,7 +285,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="source">the file path to get the image from</param>
         private void SetImageFromFile(FileInfo source)
         {
-            if( source.Exists )
+            if (source.Exists)
             {
                 if (_htmlContainer.AvoidAsyncImagesLoading)
                     LoadImageFromFile(source);
@@ -295,7 +295,7 @@ namespace HtmlRenderer.Core.Handlers
             else
             {
                 ImageLoadComplete();
-        }
+            }
         }
 
         /// <summary>
@@ -330,7 +330,7 @@ namespace HtmlRenderer.Core.Handlers
         private void SetImageFromUrl(Uri source)
         {
             var filePath = CommonUtils.GetLocalfileName(source);
-            if( filePath.Exists && filePath.Length > 0 )
+            if (filePath.Exists && filePath.Length > 0)
             {
                 SetImageFromFile(filePath);
             }
@@ -338,7 +338,7 @@ namespace HtmlRenderer.Core.Handlers
             {
                 if (_htmlContainer.AvoidAsyncImagesLoading)
                     DownloadImageFromUrl(source, filePath);
-            else
+                else
                     ThreadPool.QueueUserWorkItem(DownloadImageFromUrlAsync, new KeyValuePair<Uri, FileInfo>(source, filePath));
             }
         }
@@ -370,8 +370,8 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="data">key value pair of URL and file info to download the file to</param>
         private void DownloadImageFromUrlAsync(object data)
         {
-            var uri = ((KeyValuePair<Uri, FileInfo>) data).Key;
-            var filePath = ((KeyValuePair<Uri, FileInfo>) data).Value;
+            var uri = ((KeyValuePair<Uri, FileInfo>)data).Key;
+            var filePath = ((KeyValuePair<Uri, FileInfo>)data).Value;
 
             try
             {
@@ -412,27 +412,27 @@ namespace HtmlRenderer.Core.Handlers
         private void OnDownloadImageCompleted(bool cancelled, Exception error, FileInfo filePath, WebClient client)
         {
             if (!cancelled && !_disposed)
-                    {
+            {
                 if (error == null)
-                        {
+                {
                     filePath.Refresh();
-                            var contentType = CommonUtils.GetResponseContentType(client);
-                    if( contentType != null && contentType.StartsWith("image", StringComparison.OrdinalIgnoreCase) )
-                            {
+                    var contentType = CommonUtils.GetResponseContentType(client);
+                    if (contentType != null && contentType.StartsWith("image", StringComparison.OrdinalIgnoreCase))
+                    {
                         LoadImageFromFile(filePath);
-                            }
-                            else
-                            {
+                    }
+                    else
+                    {
                         _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image, not image content type: " + contentType);
-                                ImageLoadComplete();
+                        ImageLoadComplete();
                         filePath.Delete();
-                            }
-                        }
-                        else
-                        {
+                    }
+                }
+                else
+                {
                     _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image from URL: " + client.BaseAddress, error);
-                            ImageLoadComplete();
-                        }
+                    ImageLoadComplete();
+                }
             }
         }
 
@@ -442,9 +442,9 @@ namespace HtmlRenderer.Core.Handlers
         private void ImageLoadComplete(bool async = true)
         {
             // can happen if some operation return after the handler was disposed
-            if(_disposed)
+            if (_disposed)
                 ReleaseObjects();
-            else 
+            else
                 _loadCompleteCallback(_image, _imageRectangle, async);
         }
 

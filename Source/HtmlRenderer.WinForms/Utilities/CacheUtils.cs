@@ -37,6 +37,7 @@ namespace HtmlRenderer.WinForms.Utilities
 
         #endregion
 
+
         /// <summary>
         /// Get cached pen instance for the given color.
         /// </summary>

@@ -1,69 +1,69 @@
 <html>
-<head>
-    <title>HtmlRender Class</title>
-    <link rel="Stylesheet" href="StyleSheet" />
-</head>
-<body>
-    <h1>
-        HtmlRender Class</h1>
-    <code>HtmlRenderer.HtmlRender</code>
-    <blockquote>
-        <p>
-            <code style="color: blue">Static</code> class for direct html rendering, intendent for small html fragments.<br/>
-            Prefer using WinForms Html controls: <span style="color: blue">HtmlPanel</span> or <span style="color: blue">HtmlLabel</span>.<br/>
-            For direct non-trivial html rendering consider using <span style="color: blue">HtmlContainer</span>.<br/>
-        </p>
-        <p>
-            Not suitable for large htmls as each render call will parse the given html string into DOM structure, for large html it can be very expensive.<br/>
-            Consider using <span style="color: blue">HtmlContainer</span> for large html or for performance.
-        </p>
-        <div class="comment">
-            // Measure the size (width and height) required to draw the given html under given width and height restrictions.<br />
-        </div>
-        <div class="caption">
-            <img src="MethodIcon" />
-            <code>Measure(Graphics g, string html, float maxWidth = 0, float maxHeight = 0, CssData cssData = null)</code>
-        </div>
-        <br/>
-        <div class="comment">
-            // Measure the size (width and height) required to draw the given html under given width and height restrictions.<br />
-        </div>
-        <div class="caption">
-            <img src="MethodIcon" />
-            <code>Measure(Graphics g, string html, float maxWidth, float maxHeight, CssData cssData, EventHandler&lt;HtmlStylesheetLoadEventArgs&gt; stylesheetLoad, EventHandler&lt;HtmlImageLoadEventArgs&gt; imageLoad)</code>
-        </div>
-        <br />
-        <div class="comment">
-            // Renders the specified HTML source on the specified location and max size restriction.<br/>
-            // If <i>maxWidth</i> is zero the html will use all the required width, otherwise it will perform line wrap as specified in the html<br/>
-            // Returned is the actual widht and height of the rendered html.<br/>
-        </div>
-        <div class="caption">
-            <img src="MethodIcon" />
-            <code>Render(Graphics g, string html, float left = 0, float top = 0, float maxWidth = 0, CssData cssData = null)</code>
-        </div>
-        <br />
-        <div class="comment">
-            // Renders the specified HTML source on the specified location and max size restriction.<br/>
-            // If <i>maxSize.Width</i> is zero the html will use all the required width, otherwise it will perform line wrap as specified in the html<br/>
-            // If <i>maxSize.Height</i> is zero the html will use all the required height, otherwise it will clip at the given max height not rendering the html below it.<br/>
-            // Returned is the actual widht and height of the rendered html.<br/>
-        </div>
-        <div class="caption">
-            <img src="MethodIcon" />
-            <code>Render(Graphics g, string html, PointF location, SizeF maxSize, CssData cssData = null)</code>
-        </div>
-        <br />
-        <div class="comment">
-            // Renders the specified HTML source on the specified location and max size restriction.<br/>
-            // If <i>maxSize.Width</i> is zero the html will use all the required width, otherwise it will perform line wrap as specified in the html<br/>
-            // If <i>maxSize.Height</i> is zero the html will use all the required height, otherwise it will clip at the given max height not rendering the html below it.<br/>
-            // Returned is the actual widht and height of the rendered html.<br/>
-        </div>
-        <div class="caption">
-            <img src="MethodIcon" />
-            <code>Render(Graphics g, string html, PointF location, SizeF maxSize, CssData cssData, EventHandler&lt;HtmlStylesheetLoadEventArgs&gt; stylesheetLoad, EventHandler&lt;HtmlImageLoadEventArgs&gt; imageLoad)</code>
-        </div>
-    </blockquote>
-</body>
+    <head>
+        <title>HtmlRender Class</title>
+        <link rel="Stylesheet" href="StyleSheet" />
+    </head>
+    <body>
+        <h1>
+            HtmlRender Class</h1>
+        <code>HtmlRenderer.HtmlRender</code>
+        <blockquote>
+            <p>
+                <code style="color: blue">Static</code> class for direct html rendering, intendent for small html fragments.<br/>
+                Prefer using WinForms Html controls: <span style="color: blue">HtmlPanel</span> or <span style="color: blue">HtmlLabel</span>.<br/>
+                For direct non-trivial html rendering consider using <span style="color: blue">HtmlContainer</span>.<br/>
+            </p>
+            <p>
+                Not suitable for large htmls as each render call will parse the given html string into DOM structure, for large html it can be very expensive.<br/>
+                Consider using <span style="color: blue">HtmlContainer</span> for large html or for performance.
+            </p>
+            <div class="comment">
+                // Measure the size (width and height) required to draw the given html under given width and height restrictions.<br />
+            </div>
+            <div class="caption">
+                <img src="MethodIcon" />
+                <code>Measure(Graphics g, string html, float maxWidth = 0, float maxHeight = 0, CssData cssData = null)</code>
+            </div>
+            <br/>
+            <div class="comment">
+                // Measure the size (width and height) required to draw the given html under given width and height restrictions.<br />
+            </div>
+            <div class="caption">
+                <img src="MethodIcon" />
+                <code>Measure(Graphics g, string html, float maxWidth, float maxHeight, CssData cssData, EventHandler&lt;HtmlStylesheetLoadEventArgs&gt; stylesheetLoad, EventHandler&lt;HtmlImageLoadEventArgs&gt; imageLoad)</code>
+            </div>
+            <br />
+            <div class="comment">
+                // Renders the specified HTML source on the specified location and max size restriction.<br/>
+                // If <i>maxWidth</i> is zero the html will use all the required width, otherwise it will perform line wrap as specified in the html<br/>
+                // Returned is the actual widht and height of the rendered html.<br/>
+            </div>
+            <div class="caption">
+                <img src="MethodIcon" />
+                <code>Render(Graphics g, string html, float left = 0, float top = 0, float maxWidth = 0, CssData cssData = null)</code>
+            </div>
+            <br />
+            <div class="comment">
+                // Renders the specified HTML source on the specified location and max size restriction.<br/>
+                // If <i>maxSize.Width</i> is zero the html will use all the required width, otherwise it will perform line wrap as specified in the html<br/>
+                // If <i>maxSize.Height</i> is zero the html will use all the required height, otherwise it will clip at the given max height not rendering the html below it.<br/>
+                // Returned is the actual widht and height of the rendered html.<br/>
+            </div>
+            <div class="caption">
+                <img src="MethodIcon" />
+                <code>Render(Graphics g, string html, PointF location, SizeF maxSize, CssData cssData = null)</code>
+            </div>
+            <br />
+            <div class="comment">
+                // Renders the specified HTML source on the specified location and max size restriction.<br/>
+                // If <i>maxSize.Width</i> is zero the html will use all the required width, otherwise it will perform line wrap as specified in the html<br/>
+                // If <i>maxSize.Height</i> is zero the html will use all the required height, otherwise it will clip at the given max height not rendering the html below it.<br/>
+                // Returned is the actual widht and height of the rendered html.<br/>
+            </div>
+            <div class="caption">
+                <img src="MethodIcon" />
+                <code>Render(Graphics g, string html, PointF location, SizeF maxSize, CssData cssData, EventHandler&lt;HtmlStylesheetLoadEventArgs&gt; stylesheetLoad, EventHandler&lt;HtmlImageLoadEventArgs&gt; imageLoad)</code>
+            </div>
+        </blockquote>
+    </body>
 </html>

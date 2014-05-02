@@ -18,6 +18,5 @@ namespace HtmlRenderer.Interfaces
     /// atodo: add doc
     /// </summary>
     public interface IBrush : IDisposable
-    {
-    }
+    { }
 }

@@ -131,7 +131,8 @@ namespace HtmlRenderer.Core.Parse
             bool isPercent = number.EndsWith("%");
             double result;
 
-            if (isPercent) toParse = number.Substring(0, number.Length - 1);
+            if (isPercent)
+                toParse = number.Substring(0, number.Length - 1);
 
             if (!double.TryParse(toParse, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out result))
             {
@@ -185,10 +186,12 @@ namespace HtmlRenderer.Core.Parse
         public static double ParseLength(string length, double hundredPercent, double emFactor, string defaultUnit, bool fontAdjust, bool returnPoints)
         {
             //Return zero if no length specified, zero specified
-            if (string.IsNullOrEmpty(length) || length == "0") return 0f;
+            if (string.IsNullOrEmpty(length) || length == "0")
+                return 0f;
 
             //If percentage, use ParseNumber
-            if (length.EndsWith("%")) return ParseNumber(length, hundredPercent);
+            if (length.EndsWith("%"))
+                return ParseNumber(length, hundredPercent);
 
             //Get units of the length
             bool hasUnit;

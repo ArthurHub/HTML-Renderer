@@ -15,7 +15,7 @@ using System.Windows.Forms;
 
 namespace HtmlRenderer.Demo.WinForms
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
         /// The main entry point for the application.
@@ -27,9 +27,9 @@ namespace HtmlRenderer.Demo.WinForms
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new DemoForm());
 
-//            Application.Run(new PerfForm());
+            //            Application.Run(new PerfForm());
 
-//            PerfForm.Run();
+            //            PerfForm.Run();
         }
     }
 }

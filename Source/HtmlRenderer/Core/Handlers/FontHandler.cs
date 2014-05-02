@@ -177,8 +177,8 @@ namespace HtmlRenderer.Core.Handlers
         {
             IFontFamily fontFamily;
             return _existingFontFamilies.TryGetValue(family, out fontFamily)
-                       ? _global.CreateFont(fontFamily, size, style)
-                       : _global.CreateFont(family, size, style);
+                ? _global.CreateFont(fontFamily, size, style)
+                : _global.CreateFont(family, size, style);
         }
 
         #endregion

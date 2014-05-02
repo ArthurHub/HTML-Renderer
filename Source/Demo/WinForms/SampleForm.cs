@@ -39,7 +39,7 @@ namespace HtmlRenderer.Demo.WinForms
         private void OnHtmlLabelHostingPanelPaint(object sender, PaintEventArgs e)
         {
             var bmp = new Bitmap(10, 10);
-            
+
             using (var g = Graphics.FromImage(bmp))
             {
                 g.Clear(Color.White);
@@ -47,7 +47,7 @@ namespace HtmlRenderer.Demo.WinForms
                 g.FillRectangle(SystemBrushes.Control, new Rectangle(5, 5, 5, 5));
             }
 
-            using (var b = new TextureBrush(bmp,  WrapMode.Tile))
+            using (var b = new TextureBrush(bmp, WrapMode.Tile))
             {
                 e.Graphics.FillRectangle(b, _htmlLabelHostingPanel.ClientRectangle);
             }

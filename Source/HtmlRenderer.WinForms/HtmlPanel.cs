@@ -11,9 +11,9 @@
 // "The Art of War"
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.ComponentModel;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using HtmlRenderer.Core;
@@ -743,6 +743,7 @@ namespace HtmlRenderer.WinForms
 
         #endregion
 
+
         #region Hide not relevant properties from designer
 
         /// <summary>
@@ -806,6 +807,7 @@ namespace HtmlRenderer.WinForms
         }
 
         #endregion
+
 
         #endregion
     }

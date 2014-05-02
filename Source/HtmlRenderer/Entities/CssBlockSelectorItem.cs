@@ -33,6 +33,7 @@ namespace HtmlRenderer.Entities
 
         #endregion
 
+
         /// <summary>
         /// Creates a new block from the block's source
         /// </summary>

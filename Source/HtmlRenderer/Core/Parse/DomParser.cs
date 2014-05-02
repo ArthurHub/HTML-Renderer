@@ -80,6 +80,7 @@ namespace HtmlRenderer.Core.Parse
             return root;
         }
 
+
         #region Private methods
 
         /// <summary>
@@ -654,7 +655,6 @@ namespace HtmlRenderer.Core.Parse
                     if (followingBlock)
                         brBox.Height = ".95em"; // atodo: check the height to min-height when it is supported
                 }
-
             } while (brBox != null);
         }
 

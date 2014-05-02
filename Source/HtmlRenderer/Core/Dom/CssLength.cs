@@ -14,6 +14,7 @@ namespace HtmlRenderer.Core.Dom
     internal sealed class CssLength
     {
         #region Fields
+
         private readonly double _number;
         private readonly bool _isRelative;
         private readonly CssUnit _unit;
@@ -23,7 +24,6 @@ namespace HtmlRenderer.Core.Dom
 
         #endregion
 
-        #region Ctor
 
         /// <summary>
         /// Creates a new CssLength from a length specified on a CSS style sheet or fragment
@@ -37,7 +37,8 @@ namespace HtmlRenderer.Core.Dom
             _isPercentage = false;
 
             //Return zero if no length specified, zero specified
-            if (string.IsNullOrEmpty(length) || length == "0") return;
+            if (string.IsNullOrEmpty(length) || length == "0")
+                return;
 
             //If percentage, use ParseNumber
             if (length.EndsWith("%"))
@@ -96,14 +97,12 @@ namespace HtmlRenderer.Core.Dom
                     return;
             }
 
-            if (!double.TryParse(number, System.Globalization.NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _number))
+            if (!double.TryParse(number, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _number))
             {
                 _hasError = true;
             }
-
         }
 
-        #endregion
 
         #region Props
 
@@ -157,8 +156,8 @@ namespace HtmlRenderer.Core.Dom
             get { return _length; }
         }
 
-
         #endregion
+
 
         #region Methods
 
@@ -170,8 +169,10 @@ namespace HtmlRenderer.Core.Dom
         /// <exception cref="InvalidOperationException">If length has an error or isn't in ems</exception>
         public CssLength ConvertEmToPoints(double emSize)
         {
-            if (HasError) throw new InvalidOperationException("Invalid length");
-            if (Unit != CssUnit.Ems) throw new InvalidOperationException("Length is not in ems");
+            if (HasError)
+                throw new InvalidOperationException("Invalid length");
+            if (Unit != CssUnit.Ems)
+                throw new InvalidOperationException("Length is not in ems");
 
             return new CssLength(string.Format("{0}pt", Convert.ToSingle(Number * emSize).ToString("0.0", NumberFormatInfo.InvariantInfo)));
         }
@@ -184,8 +185,10 @@ namespace HtmlRenderer.Core.Dom
         /// <exception cref="InvalidOperationException">If length has an error or isn't in ems</exception>
         public CssLength ConvertEmToPixels(double pixelFactor)
         {
-            if (HasError) throw new InvalidOperationException("Invalid length");
-            if (Unit != CssUnit.Ems) throw new InvalidOperationException("Length is not in ems");
+            if (HasError)
+                throw new InvalidOperationException("Invalid length");
+            if (Unit != CssUnit.Ems)
+                throw new InvalidOperationException("Length is not in ems");
 
             return new CssLength(string.Format("{0}px", Convert.ToSingle(Number * pixelFactor).ToString("0.0", NumberFormatInfo.InvariantInfo)));
         }

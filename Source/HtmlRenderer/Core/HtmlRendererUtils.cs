@@ -99,7 +99,6 @@ namespace HtmlRenderer.Core
                         // if min size is larger than the actual we need to re-layout so all 100% layouts will be correct
                         htmlContainer.MaxSize = new RSize(minSize.Width, 0);
                         htmlContainer.PerformLayout(g);
-
                     }
                     newSize = htmlContainer.ActualSize;
                 }
@@ -109,8 +108,8 @@ namespace HtmlRenderer.Core
 
                     // make sure the height is not lower than min if given
                     newSize.Height = minSize.Height > 0 && minSize.Height > htmlContainer.ActualSize.Height
-                                         ? minSize.Height
-                                         : htmlContainer.ActualSize.Height;
+                        ? minSize.Height
+                        : htmlContainer.ActualSize.Height;
 
                     // handle if changing the height of the label affects the desired width and those require re-layout
                     if (Math.Abs(prevWidth - size.Width) > 0.01)

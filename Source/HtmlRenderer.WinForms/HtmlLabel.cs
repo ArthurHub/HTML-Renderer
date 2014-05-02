@@ -11,9 +11,9 @@
 // "The Art of War"
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.ComponentModel;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using HtmlRenderer.Core;

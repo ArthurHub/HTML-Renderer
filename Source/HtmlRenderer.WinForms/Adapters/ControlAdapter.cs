@@ -31,7 +31,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Use GDI+ text rendering to measure/draw text.
         /// </summary>
-        private bool _useGdiPlusTextRendering;
+        private readonly bool _useGdiPlusTextRendering;
 
         /// <summary>
         /// Init.

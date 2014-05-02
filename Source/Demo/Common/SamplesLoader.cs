@@ -86,27 +86,26 @@ namespace HtmlRenderer.Demo.Common
                     var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
                     if (resourceStream != null)
                     {
-                        using(var sreader = new StreamReader(resourceStream, Encoding.Default))
+                        using (var sreader = new StreamReader(resourceStream, Encoding.Default))
                         {
                             var html = sreader.ReadToEnd();
 
-                            if( name.Contains("TestSamples.") )
+                            if (name.Contains("TestSamples."))
                             {
                                 _testSamples.Add(new HtmlSample(shortName, name, html));
                             }
-                            else if( name.Contains("PerfSamples") )
+                            else if (name.Contains("PerfSamples"))
                             {
                                 _performanceSamples.Add(new HtmlSample(shortName, name, html));
                             }
                             else
                             {
-                                _showcaseSamples.Add(new HtmlSample(shortName, name, html));                                
+                                _showcaseSamples.Add(new HtmlSample(shortName, name, html));
                             }
                         }
                     }
                 }
             }
         }
-
     }
 }

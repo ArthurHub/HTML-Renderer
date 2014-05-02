@@ -101,7 +101,7 @@ namespace HtmlRenderer.Core.Dom
                     double ratio = imageWord.Width / imageWord.Image.Width;
                     imageWord.Height = imageWord.Image.Height * ratio;
                 }
-                // If only the height was set in the html tag, ratio the width.
+                    // If only the height was set in the html tag, ratio the width.
                 else if (hasImageTagHeight && !hasImageTagWidth)
                 {
                     // Divide the given tag height with the actual image height, to get the ratio.
@@ -177,7 +177,8 @@ namespace HtmlRenderer.Core.Dom
             ArgChecker.AssertArgNotNull(g, "g");
             ArgChecker.AssertArgNotNull(cell, "cell");
 
-            if (cell.VerticalAlign == CssConstants.Top || cell.VerticalAlign == CssConstants.Baseline) return;
+            if (cell.VerticalAlign == CssConstants.Top || cell.VerticalAlign == CssConstants.Baseline)
+                return;
 
             double cellbot = cell.ClientBottom;
             double bottom = cell.GetMaximumBottom(cell, 0f);
@@ -278,7 +279,7 @@ namespace HtmlRenderer.Core.Dom
                             maxbottom += box.ActualLineHeight - (maxbottom - cury);
 
                         if ((b.WhiteSpace != CssConstants.NoWrap && b.WhiteSpace != CssConstants.Pre && curx + word.Width + rightspacing > limitRight
-                            && (b.WhiteSpace != CssConstants.PreWrap || !word.IsSpaces))
+                             && (b.WhiteSpace != CssConstants.PreWrap || !word.IsSpaces))
                             || word.IsLineBreak || wrapNoWrapBox)
                         {
                             wrapNoWrapBox = false;
@@ -421,9 +422,6 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="lineBox"></param>
         private static void ApplyAlignment(IGraphics g, CssLineBox lineBox)
         {
-
-            #region Horizontal alignment
-
             switch (lineBox.OwnerBox.TextAlign)
             {
                 case CssConstants.Right:
@@ -439,8 +437,6 @@ namespace HtmlRenderer.Core.Dom
                     ApplyLeftAlignment(g, lineBox);
                     break;
             }
-
-            #endregion
 
             ApplyVerticalAlignment(g, lineBox);
         }
@@ -576,7 +572,8 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="lineBox"></param>
         private static void ApplyJustifyAlignment(IGraphics g, CssLineBox lineBox)
         {
-            if (lineBox.Equals(lineBox.OwnerBox.LineBoxes[lineBox.OwnerBox.LineBoxes.Count - 1])) return;
+            if (lineBox.Equals(lineBox.OwnerBox.LineBoxes[lineBox.OwnerBox.LineBoxes.Count - 1]))
+                return;
 
             double indent = lineBox.Equals(lineBox.OwnerBox.LineBoxes[0]) ? lineBox.OwnerBox.ActualTextIndent : 0f;
             double textSum = 0f;
@@ -590,7 +587,8 @@ namespace HtmlRenderer.Core.Dom
                 words += 1f;
             }
 
-            if (words <= 0f) return; //Avoid Zero division
+            if (words <= 0f)
+                return; //Avoid Zero division
             double spacing = (availWidth - textSum) / words; //Spacing that will be used
             double curx = lineBox.OwnerBox.ClientLeft + indent;
 
@@ -613,7 +611,8 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="line"></param>
         private static void ApplyCenterAlignment(IGraphics g, CssLineBox line)
         {
-            if (line.Words.Count == 0) return;
+            if (line.Words.Count == 0)
+                return;
 
             CssRect lastWord = line.Words[line.Words.Count - 1];
             double right = line.OwnerBox.ActualRight - line.OwnerBox.ActualPaddingRight - line.OwnerBox.ActualBorderRightWidth;
@@ -642,7 +641,8 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="line"></param>
         private static void ApplyRightAlignment(IGraphics g, CssLineBox line)
         {
-            if (line.Words.Count == 0) return;
+            if (line.Words.Count == 0)
+                return;
 
 
             CssRect lastWord = line.Words[line.Words.Count - 1];

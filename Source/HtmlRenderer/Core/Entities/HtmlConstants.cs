@@ -225,6 +225,5 @@ namespace HtmlRenderer.Core.Entities
         //        public const string middle = "middle";
         //        public const string bottom = "bottom";
         public const string Justify = "justify";
-
     }
 }

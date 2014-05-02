@@ -410,8 +410,7 @@ namespace HtmlRenderer.Core.Dom
                                 occupedSpace += maxFullWidths[i];
                             }
                         }
-                    }
-                    while (oldNumOfNans != numOfNans);
+                    } while (oldNumOfNans != numOfNans);
 
                     if (numOfNans > 0)
                     {
@@ -465,7 +464,6 @@ namespace HtmlRenderer.Core.Dom
                         var temp = _columnWidths[i];
                         _columnWidths[i] = Math.Min(_columnWidths[i] + (availCellSpace - occupedSpace) / Convert.ToSingle(_columnWidths.Length - i), maxFullWidths[i]);
                         occupedSpace = occupedSpace + _columnWidths[i] - temp;
-
                     }
                 }
             }
@@ -624,7 +622,8 @@ namespace HtmlRenderer.Core.Dom
                 for (int j = 0; j < row.Boxes.Count; j++)
                 {
                     CssBox cell = row.Boxes[j];
-                    if (curCol >= _columnWidths.Length) break;
+                    if (curCol >= _columnWidths.Length)
+                        break;
 
                     int rowspan = GetRowSpan(cell);
                     var columnIndex = GetCellRealColumnIndex(row, cell);
@@ -702,7 +701,8 @@ namespace HtmlRenderer.Core.Dom
 
             foreach (CssBox b in row.Boxes)
             {
-                if (b.Equals(cell)) break;
+                if (b.Equals(cell))
+                    break;
                 i += GetColSpan(b);
             }
 
@@ -722,8 +722,10 @@ namespace HtmlRenderer.Core.Dom
 
             for (int i = column; i < column + colspan; i++)
             {
-                if (column >= _columnWidths.Length) break;
-                if (_columnWidths.Length <= i) break;
+                if (column >= _columnWidths.Length)
+                    break;
+                if (_columnWidths.Length <= i)
+                    break;
                 sum += _columnWidths[i];
             }
 
@@ -809,7 +811,8 @@ namespace HtmlRenderer.Core.Dom
         /// <returns></returns>
         private bool CanReduceWidth(int columnIndex)
         {
-            if (_columnWidths.Length >= columnIndex || GetColumnMinWidths().Length >= columnIndex) return false;
+            if (_columnWidths.Length >= columnIndex || GetColumnMinWidths().Length >= columnIndex)
+                return false;
             return _columnWidths[columnIndex] > GetColumnMinWidths()[columnIndex];
         }
 

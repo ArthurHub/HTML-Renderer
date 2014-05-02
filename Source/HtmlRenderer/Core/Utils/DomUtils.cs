@@ -731,7 +731,6 @@ namespace HtmlRenderer.Core.Utils
                 foreach (var cssBlock in tagCssBlock)
                     foreach (var prop in cssBlock.Properties)
                         tagStyles[prop.Key] = prop.Value;
-
             }
 
             if (box.HtmlTag.HasAttributes())

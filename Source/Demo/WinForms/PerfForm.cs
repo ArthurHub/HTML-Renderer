@@ -14,11 +14,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using System.Reflection;
-using System.IO;
 using HtmlRenderer.WinForms;
 
 namespace HtmlRenderer.Demo.WinForms
@@ -137,7 +137,7 @@ namespace HtmlRenderer.Demo.WinForms
         {
             var root = new TreeNode("HTML Renderer");
             _samplesTreeView.Nodes.Add(root);
-            
+
             var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
             Array.Sort(names);
             foreach (string name in names)
@@ -159,7 +159,7 @@ namespace HtmlRenderer.Demo.WinForms
                                 _samples[name] = sreader.ReadToEnd();
                             }
 
-                            string nameWithSzie = string.Format("{0} ({1:N0} KB)", shortName, _samples[name].Length*2/1024);
+                            string nameWithSzie = string.Format("{0} ({1:N0} KB)", shortName, _samples[name].Length * 2 / 1024);
                             var node = new TreeNode(nameWithSzie);
                             root.Nodes.Add(node);
                             node.Tag = name;
@@ -167,7 +167,7 @@ namespace HtmlRenderer.Demo.WinForms
                     }
                 }
             }
-           
+
             root.Expand();
         }
 
@@ -192,7 +192,7 @@ namespace HtmlRenderer.Demo.WinForms
             _htmlPanel.Text = null;
             GC.Collect();
         }
-        
+
         /// <summary>
         /// Execute performance test by setting all sample htmls in a loop.
         /// </summary>
@@ -206,7 +206,7 @@ namespace HtmlRenderer.Demo.WinForms
 
                 var iterations = (float)_iterations.Value;
                 var html = _samples[(string)_samplesTreeView.SelectedNode.Tag];
-                
+
                 GC.Collect();
 #if NET_40
                 AppDomain.MonitoringIsEnabled = true;
@@ -233,10 +233,10 @@ namespace HtmlRenderer.Demo.WinForms
                 var msg = string.Format("1 HTML ({0:N0} KB)\r\n{1} Iterations", htmlSize, _iterations.Value);
                 msg += "\r\n\r\n";
                 msg += string.Format("CPU:\r\nTotal: {0} msec\r\nIterationAvg: {1:N2} msec",
-                                        sw.ElapsedMilliseconds, sw.ElapsedMilliseconds / iterations);
+                    sw.ElapsedMilliseconds, sw.ElapsedMilliseconds / iterations);
                 msg += "\r\n\r\n";
                 msg += string.Format("Memory:\r\nTotal: {0:N0} KB\r\nIterationAvg: {1:N0} KB\r\nOverhead: {2:N0}%",
-                                     totalMem, totalMem / iterations, 100 * (totalMem / iterations) / htmlSize);
+                    totalMem, totalMem / iterations, 100 * (totalMem / iterations) / htmlSize);
 
                 Clipboard.SetDataObject(msg);
                 MessageBox.Show(msg, "Test run results");

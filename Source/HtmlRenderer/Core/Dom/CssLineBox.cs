@@ -140,7 +140,8 @@ namespace HtmlRenderer.Core.Dom
             List<CssRect> r = new List<CssRect>();
 
             foreach (CssRect word in Words)
-                if (word.OwnerBox.Equals(box)) r.Add(word);
+                if (word.OwnerBox.Equals(box))
+                    r.Add(word);
 
             return r;
         }
@@ -160,8 +161,10 @@ namespace HtmlRenderer.Core.Dom
             double topspacing = box.ActualBorderTopWidth + box.ActualPaddingTop;
             double bottomspacing = box.ActualBorderBottomWidth + box.ActualPaddingTop;
 
-            if ((box.FirstHostingLineBox != null && box.FirstHostingLineBox.Equals(this)) || box.IsImage) x -= leftspacing;
-            if ((box.LastHostingLineBox != null && box.LastHostingLineBox.Equals(this)) || box.IsImage) r += rightspacing;
+            if ((box.FirstHostingLineBox != null && box.FirstHostingLineBox.Equals(this)) || box.IsImage)
+                x -= leftspacing;
+            if ((box.LastHostingLineBox != null && box.LastHostingLineBox.Equals(this)) || box.IsImage)
+                r += rightspacing;
 
             if (!box.IsImage)
             {
@@ -210,7 +213,8 @@ namespace HtmlRenderer.Core.Dom
             //TODO: Aqui me quede, checar poniendo "by the" con un font-size de 3em
             List<CssRect> ws = WordsOf(b);
 
-            if (!Rectangles.ContainsKey(b)) return;
+            if (!Rectangles.ContainsKey(b))
+                return;
 
             RRect r = Rectangles[b];
 
@@ -233,7 +237,7 @@ namespace HtmlRenderer.Core.Dom
 
             //New top that words will have
             //float newtop = baseline - (Height - OwnerBox.FontDescent - 3); //OLD
-            double newtop = baseline;// -GetBaseLineHeight(b, g); //OLD
+            double newtop = baseline; // -GetBaseLineHeight(b, g); //OLD
 
             if (b.ParentBox != null &&
                 b.ParentBox.Rectangles.ContainsKey(this) &&

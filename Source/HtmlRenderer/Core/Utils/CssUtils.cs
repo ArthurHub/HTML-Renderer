@@ -33,6 +33,7 @@ namespace HtmlRenderer.Core.Utils
 
         #endregion
 
+
         /// <summary>
         /// Brush for selection background
         /// </summary>

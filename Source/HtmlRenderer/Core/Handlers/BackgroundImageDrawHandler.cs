@@ -34,14 +34,14 @@ namespace HtmlRenderer.Core.Handlers
         {
             // image size depends if specific rectangle given in image loader
             var imgSize = new RSize(imageLoadHandler.Rectangle == RRect.Empty ? imageLoadHandler.Image.Width : imageLoadHandler.Rectangle.Width,
-                                   imageLoadHandler.Rectangle == RRect.Empty ? imageLoadHandler.Image.Height : imageLoadHandler.Rectangle.Height);
+                imageLoadHandler.Rectangle == RRect.Empty ? imageLoadHandler.Image.Height : imageLoadHandler.Rectangle.Height);
 
             // get the location by BackgroundPosition value
             var location = GetLocation(box.BackgroundPosition, rectangle, imgSize);
 
             var srcRect = imageLoadHandler.Rectangle == RRect.Empty
-                              ? new RRect(0, 0, imgSize.Width, imgSize.Height)
-                              : new RRect(imageLoadHandler.Rectangle.Left, imageLoadHandler.Rectangle.Top, imgSize.Width, imgSize.Height);
+                ? new RRect(0, 0, imgSize.Width, imgSize.Height)
+                : new RRect(imageLoadHandler.Rectangle.Left, imageLoadHandler.Rectangle.Top, imgSize.Width, imgSize.Height);
 
             // initial image destination rectangle
             var destRect = new RRect(location, imgSize);

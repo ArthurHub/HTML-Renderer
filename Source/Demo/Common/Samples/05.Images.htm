@@ -1,102 +1,96 @@
 <html>
-<head>
-    <title></title>
-    <link rel="Stylesheet" href="StyleSheet" />
-    <style>
-        .tag {
-            color: rgb(128,0,0);
-        }
+    <head>
+        <title></title>
+        <link rel="Stylesheet" href="StyleSheet" />
+        <style>
+            .tag { color: rgb(128, 0, 0); }
 
-        .att {
-            color: rgb(240,0,0);
-        }
+            .att { color: rgb(240, 0, 0); }
 
-        .prop {
-            color: rgb(128,0,171);
-        }
+            .prop { color: rgb(128, 0, 171); }
 
-        td {
-            vertical-align: middle;
-            padding: 1em;
-        }
-    </style>
-</head>
-<body>
-    <h1>Images
-        <img src="ImageIcon" />
-    </h1>
-    <blockquote>
-        <p>
-            HTML Renderer supports <code class="tag">img</code> tag as well as CSS <code class="prop">background-image</code> property.
-            <br />
-            Image data can be provided by URI, file path, base64 encoded and code interception.
-            
-        </p>
-
-        <h2>Loading image
-        </h2>
-        <p>
-            <h3>URI</h3>
-        </p>
-        <p>
-            <h3>File path</h3>
-        </p>
-        <p>
-            <h3>Base64 encoded</h3>
-        </p>
-        <p>
-            <h3>Intercept</h3>
-        </p>
-        <h2>img tag</h2>
-        <p>
-            You can use Images anyway you like, apply borders margin and padding as for any
-            other box.
-            <div style="margin-top: 10px;">
-                <b>Limitation</b>
+            td {
+                vertical-align: middle;
+                padding: 1em;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Images
+            <img src="ImageIcon" />
+        </h1>
+        <blockquote>
+            <p>
+                HTML Renderer supports <code class="tag">img</code> tag as well as CSS <code class="prop">background-image</code> property.
                 <br />
-                Image <code class="att">align</code> attribute and CSS <code class="prop">float</code> property are not yet supported.
-            </div>
-        </p>
-        <table border="1">
-            <tr>
-                <td>Just an image:
-                </td>
-                <td align="center">
-                    <img src="FontIcon" />
-                </td>
-            </tr>
-            <tr>
-                <td>Image with border and background:
-                </td>
-                <td align="center">
-                    <img src="FontIcon" style="border: 1px solid blue; background-color: Silver" />
-                </td>
-            </tr>
-            <tr>
-                <td>Stretched Image:
-                </td>
-                <td align="center">
-                    <img src="FontIcon" width="50" height="50" />
-                </td>
-            </tr>
-            <tr>
-                <td>Huge padding and border:
-                </td>
-                <td>
-                    <img align="center" src="FontIcon" style="padding: 1em; border: solid 1em blue; background-color: #def" />
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" align="center" valign="middle">Image in line
-                    <img src="CommentIcon" />
-                    with the text
-                </td>
-            </tr>
-        </table>
+                Image data can be provided by URI, file path, base64 encoded and code interception.
+            
+            </p>
 
-        <h2>Background images
-        </h2>
+            <h2>Loading image
+            </h2>
+            <p>
+                <h3>URI</h3>
+            </p>
+            <p>
+                <h3>File path</h3>
+            </p>
+            <p>
+                <h3>Base64 encoded</h3>
+            </p>
+            <p>
+                <h3>Intercept</h3>
+            </p>
+            <h2>img tag</h2>
+            <p>
+                You can use Images anyway you like, apply borders margin and padding as for any
+                other box.
+                <div style="margin-top: 10px;">
+                    <b>Limitation</b>
+                    <br />
+                    Image <code class="att">align</code> attribute and CSS <code class="prop">float</code> property are not yet supported.
+                </div>
+            </p>
+            <table border="1">
+                <tr>
+                    <td>Just an image:
+                    </td>
+                    <td align="center">
+                        <img src="FontIcon" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Image with border and background:
+                    </td>
+                    <td align="center">
+                        <img src="FontIcon" style="border: 1px solid blue; background-color: Silver" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Stretched Image:
+                    </td>
+                    <td align="center">
+                        <img src="FontIcon" width="50" height="50" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Huge padding and border:
+                    </td>
+                    <td>
+                        <img align="center" src="FontIcon" style="padding: 1em; border: solid 1em blue; background-color: #def" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center" valign="middle">Image in line
+                        <img src="CommentIcon" />
+                        with the text
+                    </td>
+                </tr>
+            </table>
 
-    </blockquote>
-</body>
+            <h2>Background images
+            </h2>
+
+        </blockquote>
+    </body>
 </html>

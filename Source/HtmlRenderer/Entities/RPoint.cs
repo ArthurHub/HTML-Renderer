@@ -109,7 +109,7 @@ namespace HtmlRenderer.Entities
         /// </param>
         public static RPoint operator +(RPoint pt, RSize sz)
         {
-            return RPoint.Add(pt, sz);
+            return Add(pt, sz);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace HtmlRenderer.Entities
         /// </param>
         public static RPoint operator -(RPoint pt, RSize sz)
         {
-            return RPoint.Subtract(pt, sz);
+            return Subtract(pt, sz);
         }
 
         /// <summary>
@@ -284,10 +284,10 @@ namespace HtmlRenderer.Entities
         public override string ToString()
         {
             return string.Format("{{X={0}, Y={1}}}", new object[]
-                {
-                    _x,
-                    _y
-                });
+            {
+                _x,
+                _y
+            });
         }
     }
 }

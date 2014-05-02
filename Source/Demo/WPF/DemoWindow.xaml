@@ -4,19 +4,19 @@
         Title="HTML Renderer WPF Demo" Height="486" Width="691">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" ></ColumnDefinition>
-            <ColumnDefinition Width="auto"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <TreeView x:Name="_samplesTreeView" Grid.Column="0" SelectedItemChanged="OnSelectedItemChanged"/>
         <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" Width="4" Background="#FFBCBCBC"/>
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-               <RowDefinition Height="150"></RowDefinition>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="150" />
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="hello"></TextBlock>
+            <TextBlock Grid.Row="0" Text="hello" />
             <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="4" Background="#FFBCBCBC"/>
             <RichTextBox x:Name="_htmlEditor" Grid.Row="2" VerticalScrollBarVisibility="Auto"/>
         </Grid>

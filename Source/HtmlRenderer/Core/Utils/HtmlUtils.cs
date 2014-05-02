@@ -24,23 +24,23 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         private static readonly List<string> _list = new List<string>(
             new[]
-                {
-                    "area", "base", "basefont", "br", "col",
-                    "frame", "hr", "img", "input", "isindex",
-                    "link", "meta", "param"
-                }
+            {
+                "area", "base", "basefont", "br", "col",
+                "frame", "hr", "img", "input", "isindex",
+                "link", "meta", "param"
+            }
             );
 
         /// <summary>
         /// the html encode\decode pairs
         /// </summary>
         private static readonly KeyValuePair<string, string>[] _encodeDecode = new[]
-                                                           {
-                                                               new KeyValuePair<string, string>("&lt;", "<"), 
-                                                               new KeyValuePair<string, string>("&gt;", ">"),
-                                                               new KeyValuePair<string, string>("&quot;", "\""),
-                                                               new KeyValuePair<string, string>("&amp;", "&"),
-                                                           };
+        {
+            new KeyValuePair<string, string>("&lt;", "<"),
+            new KeyValuePair<string, string>("&gt;", ">"),
+            new KeyValuePair<string, string>("&quot;", "\""),
+            new KeyValuePair<string, string>("&amp;", "&"),
+        };
 
         /// <summary>
         /// the html decode only pairs
@@ -348,6 +348,7 @@ namespace HtmlRenderer.Core.Utils
             }
             return str;
         }
+
 
         #region Private methods
 

@@ -139,6 +139,7 @@ namespace HtmlRenderer.Core.Dom
         /// the width of whitespace between words
         /// </summary>
         private double _actualLineHeight = double.NaN;
+
         private double _actualWordSpacing = double.NaN;
         private double _actualTextIndent = double.NaN;
         private double _actualBorderSpacingHorizontal = double.NaN;
@@ -361,25 +362,41 @@ namespace HtmlRenderer.Core.Dom
         public string PaddingBottom
         {
             get { return _paddingBottom; }
-            set { _paddingBottom = value; _actualPaddingBottom = double.NaN; }
+            set
+            {
+                _paddingBottom = value;
+                _actualPaddingBottom = double.NaN;
+            }
         }
 
         public string PaddingLeft
         {
             get { return _paddingLeft; }
-            set { _paddingLeft = value; _actualPaddingLeft = double.NaN; }
+            set
+            {
+                _paddingLeft = value;
+                _actualPaddingLeft = double.NaN;
+            }
         }
 
         public string PaddingRight
         {
             get { return _paddingRight; }
-            set { _paddingRight = value; _actualPaddingRight = double.NaN; }
+            set
+            {
+                _paddingRight = value;
+                _actualPaddingRight = double.NaN;
+            }
         }
 
         public string PaddingTop
         {
             get { return _paddingTop; }
-            set { _paddingTop = value; _actualPaddingTop = double.NaN; }
+            set
+            {
+                _paddingTop = value;
+                _actualPaddingTop = double.NaN;
+            }
         }
 
         public string Left
@@ -451,7 +468,11 @@ namespace HtmlRenderer.Core.Dom
         public string Color
         {
             get { return _color; }
-            set { _color = value; _actualColor = RColor.Empty; }
+            set
+            {
+                _color = value;
+                _actualColor = RColor.Empty;
+            }
         }
 
         public string Display
@@ -1123,14 +1144,12 @@ namespace HtmlRenderer.Core.Dom
         {
             get
             {
-
                 if (_actualColor.IsEmpty)
                 {
                     _actualColor = GetActualColor(Color);
                 }
 
                 return _actualColor;
-
             }
         }
 
@@ -1198,8 +1217,14 @@ namespace HtmlRenderer.Core.Dom
             {
                 if (_actualFont == null)
                 {
-                    if (string.IsNullOrEmpty(FontFamily)) { FontFamily = CssConstants.DefaultFont; }
-                    if (string.IsNullOrEmpty(FontSize)) { FontSize = CssConstants.FontSize.ToString(CultureInfo.InvariantCulture) + "pt"; }
+                    if (string.IsNullOrEmpty(FontFamily))
+                    {
+                        FontFamily = CssConstants.DefaultFont;
+                    }
+                    if (string.IsNullOrEmpty(FontSize))
+                    {
+                        FontSize = CssConstants.FontSize.ToString(CultureInfo.InvariantCulture) + "pt";
+                    }
 
                     RFontStyle st = RFontStyle.Regular;
 
@@ -1222,23 +1247,32 @@ namespace HtmlRenderer.Core.Dom
                     switch (FontSize)
                     {
                         case CssConstants.Medium:
-                            fsize = CssConstants.FontSize; break;
+                            fsize = CssConstants.FontSize;
+                            break;
                         case CssConstants.XXSmall:
-                            fsize = CssConstants.FontSize - 4; break;
+                            fsize = CssConstants.FontSize - 4;
+                            break;
                         case CssConstants.XSmall:
-                            fsize = CssConstants.FontSize - 3; break;
+                            fsize = CssConstants.FontSize - 3;
+                            break;
                         case CssConstants.Small:
-                            fsize = CssConstants.FontSize - 2; break;
+                            fsize = CssConstants.FontSize - 2;
+                            break;
                         case CssConstants.Large:
-                            fsize = CssConstants.FontSize + 2; break;
+                            fsize = CssConstants.FontSize + 2;
+                            break;
                         case CssConstants.XLarge:
-                            fsize = CssConstants.FontSize + 3; break;
+                            fsize = CssConstants.FontSize + 3;
+                            break;
                         case CssConstants.XXLarge:
-                            fsize = CssConstants.FontSize + 4; break;
+                            fsize = CssConstants.FontSize + 4;
+                            break;
                         case CssConstants.Smaller:
-                            fsize = parentSize - 2; break;
+                            fsize = parentSize - 2;
+                            break;
                         case CssConstants.Larger:
-                            fsize = parentSize + 2; break;
+                            fsize = parentSize + 2;
+                            break;
                         default:
                             fsize = CssValueParser.ParseLength(FontSize, parentSize, parentSize, null, true, true);
                             break;

@@ -56,9 +56,9 @@ namespace HtmlRenderer.Core.Dom
             //width at 100% (or auto)
             double minwidth = GetMinimumWidth();
             double width = ContainingBlock.Size.Width
-                          - ContainingBlock.ActualPaddingLeft - ContainingBlock.ActualPaddingRight
-                          - ContainingBlock.ActualBorderLeftWidth - ContainingBlock.ActualBorderRightWidth
-                          - ActualMarginLeft - ActualMarginRight - ActualBorderLeftWidth - ActualBorderRightWidth;
+                           - ContainingBlock.ActualPaddingLeft - ContainingBlock.ActualPaddingRight
+                           - ContainingBlock.ActualBorderLeftWidth - ContainingBlock.ActualBorderRightWidth
+                           - ActualMarginLeft - ActualMarginRight - ActualBorderLeftWidth - ActualBorderRightWidth;
 
             //Check width if not auto
             if (Width != CssConstants.Auto && !string.IsNullOrEmpty(Width))

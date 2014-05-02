@@ -16,10 +16,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using System.IO;
 using HtmlRenderer.Demo.Common;
 using HtmlRenderer.Entities;
 using HtmlRenderer.WinForms;
@@ -30,7 +30,7 @@ namespace HtmlRenderer.Demo.WinForms
     public partial class DemoForm : Form
     {
         #region Fields and Consts
-        
+
         /// <summary>
         /// the name of the tree node root for all performance samples
         /// </summary>
@@ -60,7 +60,7 @@ namespace HtmlRenderer.Demo.WinForms
         /// used ignore html editor updates when updating seperatly
         /// </summary>
         private bool _updateLock;
-        
+
         #endregion
 
 
@@ -82,10 +82,10 @@ namespace HtmlRenderer.Demo.WinForms
             _htmlToolTip.SetToolTip(_htmlPanel, Resources.Tooltip);
 
             _htmlEditor.Font = new Font(FontFamily.GenericMonospace, 10);
-            
+
             StartPosition = FormStartPosition.CenterScreen;
             var size = Screen.GetWorkingArea(Point.Empty);
-            Size = new Size((int) (size.Width*0.7), (int) (size.Height*0.8));
+            Size = new Size((int)(size.Width * 0.7), (int)(size.Height * 0.8));
 
             LoadSamples();
 
@@ -114,7 +114,7 @@ namespace HtmlRenderer.Demo.WinForms
             var showcaseRoot = new TreeNode("HTML Renderer");
             _samplesTreeView.Nodes.Add(showcaseRoot);
 
-            foreach(var sample in SamplesLoader.ShowcaseSamples)
+            foreach (var sample in SamplesLoader.ShowcaseSamples)
             {
                 _perfTestSamples.Add(sample.Html);
                 AddTreeNode(showcaseRoot, sample);
@@ -128,17 +128,17 @@ namespace HtmlRenderer.Demo.WinForms
                 AddTreeNode(testSamplesRoot, sample);
             }
 
-            if( SamplesLoader.PerformanceSamples.Count > 0 )
+            if (SamplesLoader.PerformanceSamples.Count > 0)
             {
                 var perfTestSamplesRoot = new TreeNode(PerformanceSamplesTreeNodeName);
                 _samplesTreeView.Nodes.Add(perfTestSamplesRoot);
 
-                foreach(var sample in SamplesLoader.PerformanceSamples)
+                foreach (var sample in SamplesLoader.PerformanceSamples)
                 {
                     AddTreeNode(perfTestSamplesRoot, sample);
                 }
             }
-           
+
             showcaseRoot.Expand();
 
             if (showcaseRoot.Nodes.Count > 0)
@@ -268,7 +268,7 @@ namespace HtmlRenderer.Demo.WinForms
             _splitter.Visible = _webBrowser.Visible;
             _toggleWebBrowserButton.Text = _webBrowser.Visible ? "Hide IE View" : "Show IE View";
 
-            if(_webBrowser.Visible)
+            if (_webBrowser.Visible)
             {
                 _webBrowser.Width = _splitContainer2.Panel2.Width / 2;
                 UpdateWebBrowserHtml();
@@ -295,16 +295,16 @@ namespace HtmlRenderer.Demo.WinForms
             var html = _htmlEditor.Text;
 
             html = Regex.Replace(html, @"src=\""(\w.*?)\""", match =>
+            {
+                var img = TryLoadResourceImage(match.Groups[1].Value);
+                if (img != null)
                 {
-                    var img = TryLoadResourceImage(match.Groups[1].Value);
-                    if (img != null)
-                    {
-                        var tmpFile = Path.GetTempFileName();
-                        img.Save(tmpFile, ImageFormat.Jpeg);
-                        return string.Format("src=\"{0}\"", tmpFile);
-                    }
-                    return match.Value;
-                }, RegexOptions.IgnoreCase);
+                    var tmpFile = Path.GetTempFileName();
+                    img.Save(tmpFile, ImageFormat.Jpeg);
+                    return string.Format("src=\"{0}\"", tmpFile);
+                }
+                return match.Value;
+            }, RegexOptions.IgnoreCase);
 
             html = Regex.Replace(html, @"href=\""(\w.*?)\""", match =>
             {
@@ -343,7 +343,7 @@ namespace HtmlRenderer.Demo.WinForms
         private static void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
         {
             var stylesheet = GetStylesheet(e.Src);
-            if(stylesheet != null)
+            if (stylesheet != null)
                 e.SetStyleSheet = stylesheet;
         }
 
@@ -381,7 +381,7 @@ namespace HtmlRenderer.Demo.WinForms
         {
             var img = TryLoadResourceImage(e.Src);
 
-            if(!e.Handled && e.Attributes != null)
+            if (!e.Handled && e.Attributes != null)
             {
                 if (e.Attributes.ContainsKey("byevent"))
                 {
@@ -390,10 +390,10 @@ namespace HtmlRenderer.Demo.WinForms
                     {
                         e.Handled = true;
                         ThreadPool.QueueUserWorkItem(state =>
-                            {
-                                Thread.Sleep(delay);
-                                e.Callback("https://fbcdn-sphotos-a-a.akamaihd.net/hphotos-ak-snc7/c0.44.403.403/p403x403/318890_10151195988833836_1081776452_n.jpg");
-                            });
+                        {
+                            Thread.Sleep(delay);
+                            e.Callback("https://fbcdn-sphotos-a-a.akamaihd.net/hphotos-ak-snc7/c0.44.403.403/p403x403/318890_10151195988833836_1081776452_n.jpg");
+                        });
                         return;
                     }
                     else
@@ -470,7 +470,7 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         private static void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
         {
-            if(e.Link == "SayHello")
+            if (e.Link == "SayHello")
             {
                 MessageBox.Show("Hello you!");
                 e.Handled = true;
@@ -537,17 +537,17 @@ namespace HtmlRenderer.Demo.WinForms
 #endif
             float htmlSize = 0;
             foreach (var sample in _perfTestSamples)
-                htmlSize += sample.Length*2;
-            htmlSize = htmlSize/1024f;
+                htmlSize += sample.Length * 2;
+            htmlSize = htmlSize / 1024f;
 
 
             var msg = string.Format("{0} HTMLs ({1:N0} KB)\r\n{2} Iterations", _perfTestSamples.Count, htmlSize, iterations);
             msg += "\r\n\r\n";
             msg += string.Format("CPU:\r\nTotal: {0} msec\r\nIterationAvg: {1:N2} msec\r\nSingleAvg: {2:N2} msec",
-                                    sw.ElapsedMilliseconds, sw.ElapsedMilliseconds/(double) iterations, sw.ElapsedMilliseconds/(double) iterations/_perfTestSamples.Count);
+                sw.ElapsedMilliseconds, sw.ElapsedMilliseconds / (double)iterations, sw.ElapsedMilliseconds / (double)iterations / _perfTestSamples.Count);
             msg += "\r\n\r\n";
             msg += string.Format("Memory:\r\nTotal: {0:N0} KB\r\nIterationAvg: {1:N0} KB\r\nSingleAvg: {2:N0} KB\r\nOverhead: {3:N0}%",
-                                 totalMem, totalMem/iterations, totalMem/iterations/_perfTestSamples.Count, 100*(totalMem/iterations)/htmlSize);
+                totalMem, totalMem / iterations, totalMem / iterations / _perfTestSamples.Count, 100 * (totalMem / iterations) / htmlSize);
 
             Clipboard.SetDataObject(msg);
             MessageBox.Show(msg, "Test run results");

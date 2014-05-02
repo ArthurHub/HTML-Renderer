@@ -16,6 +16,5 @@ namespace HtmlRenderer.Demo.WPF
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App
-    {
-    }
+    { }
 }

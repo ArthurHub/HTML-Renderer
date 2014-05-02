@@ -163,6 +163,5 @@ namespace HtmlRenderer.Core.Entities
         /// Default font used for the generic 'serif' family
         /// </summary>
         public const string DefaultFont = "Times New Roman";
-
     }
 }

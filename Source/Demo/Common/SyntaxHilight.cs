@@ -29,7 +29,7 @@ namespace HtmlRenderer.Demo.Common
                     "colortbl ;\\red255\\green0\\blue0;\\red0\\green128\\blue0;\\red0\\green0\\blue255;}");
             }
 
-            //color table doesn't exist yet, so let's make one
+                //color table doesn't exist yet, so let's make one
             else
             {
                 // find index of start of header
@@ -40,7 +40,8 @@ namespace HtmlRenderer.Demo.Common
 
                 // if there is no property, we'll insert colour table
                 // just before the end bracket of the header
-                if (iInsertLoc == -1) iInsertLoc = strRtf.IndexOf('}', iRTFLoc) - 1;
+                if (iInsertLoc == -1)
+                    iInsertLoc = strRtf.IndexOf('}', iRTFLoc) - 1;
 
                 // insert the colour table at our chosen location                
                 strRtf = strRtf.Insert(iInsertLoc,
@@ -93,7 +94,7 @@ namespace HtmlRenderer.Demo.Common
                         //skip forward past the 6 characters we've just added
                         i += 8;
                     }
-                    else if(!inComment)
+                    else if (!inComment)
                     {
                         strRtf = strRtf.Insert(i + 1, "\\cf0 ");
                         strRtf = strRtf.Insert(i, "\\cf4 ");
@@ -113,21 +114,21 @@ namespace HtmlRenderer.Demo.Common
                 {
                     //add RTF tags after character
                     strRtf = strRtf.Insert(i, "\\cf4");
-                    strRtf = strRtf.Insert(i+5, "\\cf1 ");
+                    strRtf = strRtf.Insert(i + 5, "\\cf1 ");
                     i += 7;
                 }
                 else if (inHtmlTag && strRtf[i] == '=')
                 {
                     //add RTF tags after character
                     strRtf = strRtf.Insert(i, "\\cf4 ");
-                    strRtf = strRtf.Insert(i+6, "\\cf5 ");
+                    strRtf = strRtf.Insert(i + 6, "\\cf5 ");
                     i += 10;
                 }
                 else if (inHtmlTag && strRtf[i] == '"')
                 {
                     //add RTF tags after character
                     strRtf = strRtf.Insert(i, "\\cf4 ");
-                    strRtf = strRtf.Insert(i+6, "\\cf5 ");
+                    strRtf = strRtf.Insert(i + 6, "\\cf5 ");
                     i += 10;
                     inAttributeVal = !inAttributeVal;
                 }

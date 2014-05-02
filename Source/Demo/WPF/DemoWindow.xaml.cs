@@ -25,6 +25,6 @@ namespace HtmlRenderer.Demo.WPF
         }
 
         private void OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {}
+        { }
     }
 }
