@@ -653,7 +653,7 @@ namespace HtmlRenderer.Core.Parse
                 {
                     brBox.Display = CssConstants.Block;
                     if (followingBlock)
-                        brBox.Height = ".95em"; // atodo: check the height to min-height when it is supported
+                        brBox.Height = ".95em"; // TODO:a check the height to min-height when it is supported
                 }
             } while (brBox != null);
         }

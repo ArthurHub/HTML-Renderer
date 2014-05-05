@@ -16,7 +16,7 @@ using System.IO;
 namespace HtmlRenderer.Interfaces
 {
     /// <summary>
-    /// aTODO: add doc
+    /// TODO:a add doc
     /// </summary>
     public interface IImage : IDisposable
     {

@@ -15,7 +15,7 @@ using HtmlRenderer.Entities;
 namespace HtmlRenderer.Interfaces
 {
     /// <summary>
-    /// atodo: add doc
+    /// TODO:a add doc
     /// </summary>
     public interface IPen
     {

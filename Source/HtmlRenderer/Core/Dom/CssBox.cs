@@ -1200,7 +1200,7 @@ namespace HtmlRenderer.Core.Dom
 
                 if (brush != null)
                 {
-                    // atodo: handle it correctly (tables background)
+                    // TODO:a handle it correctly (tables background)
                     // if (isLast)
                     //  rectangle.Width -= ActualWordSpacing + CssUtils.GetWordEndWhitespace(ActualFont);
 

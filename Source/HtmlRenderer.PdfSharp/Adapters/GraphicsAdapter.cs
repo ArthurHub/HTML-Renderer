@@ -212,7 +212,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="translateTransformLocation">The dimension by which to translate the transformation</param>
         public IBrush GetTextureBrush(IImage image, RRect dstRect, RPoint translateTransformLocation)
         {
-            // atodo: handle missing TextureBrush
+            // TODO:a handle missing TextureBrush
 //            var brush = new TextureBrush(((ImageAdapter)image).Image, Utils.Convert(dstRect));
 //            brush.TranslateTransform(translateTransformLocation.X, translateTransformLocation.Y);
 //            return new BrushAdapter(brush, true);

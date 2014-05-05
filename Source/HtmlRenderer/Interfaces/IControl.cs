@@ -15,7 +15,7 @@ using HtmlRenderer.Entities;
 namespace HtmlRenderer.Interfaces
 {
     /// <summary>
-    /// aTODO: add doc
+    /// TODO:a add doc
     /// </summary>
     public interface IControl
     {

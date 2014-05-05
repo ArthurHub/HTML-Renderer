@@ -21,7 +21,7 @@ using HtmlRenderer.Entities;
 namespace HtmlRenderer.Interfaces
 {
     /// <summary>
-    /// atodo: add doc
+    /// TODO:a add doc
     /// </summary>
     /// <remarks>
     /// It is best to have a singleton instance of this class for concrete implementation!<br/>

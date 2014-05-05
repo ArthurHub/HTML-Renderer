@@ -727,7 +727,7 @@ namespace HtmlRenderer.Core.Utils
             var tagCssBlock = box.HtmlContainer.CssData.GetCssBlock(box.HtmlTag.Name);
             if (tagCssBlock != null)
             {
-                // atodo: handle selectors
+                // TODO:a handle selectors
                 foreach (var cssBlock in tagCssBlock)
                     foreach (var prop in cssBlock.Properties)
                         tagStyles[prop.Key] = prop.Value;
@@ -752,7 +752,7 @@ namespace HtmlRenderer.Core.Utils
                         var cssBlocks = box.HtmlContainer.CssData.GetCssBlock("." + att.Value);
                         if (cssBlocks != null)
                         {
-                            // atodo: handle selectors
+                            // TODO:a handle selectors
                             foreach (var cssBlock in cssBlocks)
                                 foreach (var prop in cssBlock.Properties)
                                     tagStyles[prop.Key] = prop.Value;
@@ -832,7 +832,7 @@ namespace HtmlRenderer.Core.Utils
                 {
                     foreach (var property in cssBlock.Properties)
                     {
-                        // atodo: handle selectors
+                        // TODO:a handle selectors
                         sb.AppendFormat("{0}: {1};", property.Key, property.Value);
                     }
                 }
