@@ -84,7 +84,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// 
         /// </summary>
-        private readonly GlobalBase _global;
+        private readonly AdapterBase _adapter;
 
         /// <summary>
         /// parser for CSS data
@@ -175,20 +175,20 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// Init.
         /// </summary>
-        public HtmlContainerInt(GlobalBase global)
+        public HtmlContainerInt(AdapterBase adapter)
         {
-            ArgChecker.AssertArgNotNull(global, "global");
+            ArgChecker.AssertArgNotNull(adapter, "global");
 
-            _global = global;
-            _cssParser = new CssParser(global);
+            _adapter = adapter;
+            _cssParser = new CssParser(adapter);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        internal GlobalBase Global
+        internal AdapterBase Adapter
         {
-            get { return _global; }
+            get { return _adapter; }
         }
 
         /// <summary>
@@ -417,7 +417,7 @@ namespace HtmlRenderer.Core
 
             if (!string.IsNullOrEmpty(htmlSource))
             {
-                _cssData = baseCssData ?? _global.DefaultCssData;
+                _cssData = baseCssData ?? _adapter.DefaultCssData;
 
                 DomParser parser = new DomParser(_cssParser);
                 _root = parser.GenerateCssTree(htmlSource, this, ref _cssData);
@@ -483,7 +483,7 @@ namespace HtmlRenderer.Core
         /// Measures the bounds of box and children, recursively.
         /// </summary>
         /// <param name="g">Device context to draw</param>
-        public void PerformLayout(IGraphics g)
+        public void PerformLayout(GraphicsBase g)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
@@ -510,7 +510,7 @@ namespace HtmlRenderer.Core
         /// Render the html using the given device.
         /// </summary>
         /// <param name="g">the device to use to render</param>
-        public void PerformPaint(IGraphics g)
+        public void PerformPaint(GraphicsBase g)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 

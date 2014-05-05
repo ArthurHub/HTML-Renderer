@@ -68,7 +68,7 @@ namespace HtmlRenderer.Core.Dom
         /// Paints the fragment
         /// </summary>
         /// <param name="g">the device to draw to</param>
-        protected override void PaintImp(IGraphics g)
+        protected override void PaintImp(GraphicsBase g)
         {
             // load image iff it is in visible rectangle
             if (_imageLoadHandler == null)
@@ -128,7 +128,7 @@ namespace HtmlRenderer.Core.Dom
         /// Assigns words its width and height
         /// </summary>
         /// <param name="g">the device to use</param>
-        internal override void MeasureWordsSize(IGraphics g)
+        internal override void MeasureWordsSize(GraphicsBase g)
         {
             if (!_wordsSizeMeasured)
             {

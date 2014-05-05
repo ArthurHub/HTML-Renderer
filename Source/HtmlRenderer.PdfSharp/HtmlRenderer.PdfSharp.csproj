@@ -52,7 +52,7 @@
     <Compile Include="HtmlContainer.cs" />
     <Compile Include="PdfGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Adapters\GlobalAdapter.cs" />
+    <Compile Include="Adapters\PdfSharpAdapter.cs" />
     <Compile Include="Utilities\Utils.cs" />
   </ItemGroup>
   <ItemGroup>

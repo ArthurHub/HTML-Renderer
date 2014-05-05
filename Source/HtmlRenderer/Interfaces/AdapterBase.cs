@@ -12,10 +12,12 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
+using HtmlRenderer.Core.Utils;
 using HtmlRenderer.Entities;
 
 namespace HtmlRenderer.Interfaces
@@ -27,9 +29,19 @@ namespace HtmlRenderer.Interfaces
     /// It is best to have a singleton instance of this class for concrete implementation!<br/>
     /// This is because it holds caches of default CssData, Images, Fonts and Brushes.
     /// </remarks>
-    public abstract class GlobalBase
+    public abstract class AdapterBase
     {
-        #region Fields and Consts
+        #region Fields/Consts
+
+        /// <summary>
+        /// cache of brush color to brush instance
+        /// </summary>
+        private static readonly Dictionary<RColor, IBrush> _brushesCache = new Dictionary<RColor, IBrush>();
+
+        /// <summary>
+        /// cache of pen color to pen instance
+        /// </summary>
+        private static readonly Dictionary<RColor, IPen> _penCache = new Dictionary<RColor, IPen>();
 
         /// <summary>
         /// cache of all the font used not to create same font again and again
@@ -57,7 +69,7 @@ namespace HtmlRenderer.Interfaces
         /// <summary>
         /// Init.
         /// </summary>
-        protected GlobalBase()
+        protected AdapterBase()
         {
             _fontHandler = new FontHandler(this);
         }
@@ -75,21 +87,61 @@ namespace HtmlRenderer.Interfaces
         /// </summary>
         /// <param name="colorName">the color name</param>
         /// <returns>color value</returns>
-        public abstract RColor GetColor(string colorName);
+        public RColor GetColor(string colorName)
+        {
+            ArgChecker.AssertArgNotNullOrEmpty(colorName, "colorName");
+            return GetColorInt(colorName);
+        }
+
+        /// <summary>
+        /// Get cached pen instance for the given color.
+        /// </summary>
+        /// <param name="color">the color to get pen for</param>
+        /// <returns>pen instance</returns>
+        public IPen GetPen(RColor color)
+        {
+            IPen pen;
+            if (!_penCache.TryGetValue(color, out pen))
+            {
+                _penCache[color] = pen = CreatePen(color);
+            }
+            return pen;
+        }
+
+        /// <summary>
+        /// Get cached solid brush instance for the given color.
+        /// </summary>
+        /// <param name="color">the color to get brush for</param>
+        /// <returns>brush instance</returns>
+        public IBrush GetSolidBrush(RColor color)
+        {
+            IBrush brush;
+            if (!_brushesCache.TryGetValue(color, out brush))
+            {
+                _brushesCache[color] = brush = CreateSolidBrush(color);
+            }
+            return brush;
+        }
 
         /// <summary>
         /// Convert image object returned from <see cref="HtmlImageLoadEventArgs"/> to <see cref="IImage"/>.
         /// </summary>
         /// <param name="image">the image returned from load event</param>
         /// <returns>converted image or null</returns>
-        public abstract IImage ConvertImage(object image);
+        public IImage ConvertImage(object image)
+        {
+            return ConvertImageInt(image);
+        }
 
         /// <summary>
         /// Create an <see cref="IImage"/> object from the given stream.
         /// </summary>
         /// <param name="memoryStream">the stream to create image from</param>
         /// <returns>new image instance</returns>
-        public abstract IImage ImageFromStream(Stream memoryStream);
+        public IImage ImageFromStream(Stream memoryStream)
+        {
+            return ImageFromStreamInt(memoryStream);
+        }
 
         /// <summary>
         /// Check if the given font exists in the system by font family name.
@@ -166,7 +218,113 @@ namespace HtmlRenderer.Interfaces
         /// Set the given text to the clipboard
         /// </summary>
         /// <param name="text">the text to set</param>
-        public virtual void SetToClipboard(string text)
+        public void SetToClipboard(string text)
+        {
+            SetToClipboardInt(text);
+        }
+
+        /// <summary>
+        /// Set the given html and plain text data to clipboard.
+        /// </summary>
+        /// <param name="html">the html data</param>
+        /// <param name="plainText">the plain text data</param>
+        public void SetToClipboard(string html, string plainText)
+        {
+            SetToClipboardInt(html, plainText);
+        }
+
+        /// <summary>
+        /// Set the given image to clipboard.
+        /// </summary>
+        /// <param name="image"></param>
+        public void SetToClipboard(IImage image)
+        {
+            SetToClipboardInt(image);
+        }
+
+        /// <summary>
+        /// Create a context menu that can be used on the control
+        /// </summary>
+        /// <returns>new context menu</returns>
+        public IContextMenu GetContextMenu()
+        {
+            return CreateContextMenuInt();
+        }
+
+        /// <summary>
+        /// Save the given image to file by showing save dialog to the client.
+        /// </summary>
+        /// <param name="image">the image to save</param>
+        /// <param name="name">the name of the image for save dialog</param>
+        /// <param name="extension">the extension of the image for save dialog</param>
+        /// <param name="control">optional: the control to show the dialog on</param>
+        public void SaveToFile(IImage image, string name, string extension, IControl control = null)
+        {
+            SaveToFileInt(image, name, extension, control);
+        }
+
+
+        #region Private/Protected methods
+
+        /// <summary>
+        /// Resolve color value from given color name.
+        /// </summary>
+        /// <param name="colorName">the color name</param>
+        /// <returns>color value</returns>
+        protected abstract RColor GetColorInt(string colorName);
+
+        /// <summary>
+        /// Get cached pen instance for the given color.
+        /// </summary>
+        /// <param name="color">the color to get pen for</param>
+        /// <returns>pen instance</returns>
+        protected abstract IPen CreatePen(RColor color);
+
+        /// <summary>
+        /// Get cached solid brush instance for the given color.
+        /// </summary>
+        /// <param name="color">the color to get brush for</param>
+        /// <returns>brush instance</returns>
+        protected abstract IBrush CreateSolidBrush(RColor color);
+
+        /// <summary>
+        /// Convert image object returned from <see cref="HtmlImageLoadEventArgs"/> to <see cref="IImage"/>.
+        /// </summary>
+        /// <param name="image">the image returned from load event</param>
+        /// <returns>converted image or null</returns>
+        protected abstract IImage ConvertImageInt(object image);
+
+        /// <summary>
+        /// Create an <see cref="IImage"/> object from the given stream.
+        /// </summary>
+        /// <param name="memoryStream">the stream to create image from</param>
+        /// <returns>new image instance</returns>
+        protected abstract IImage ImageFromStreamInt(Stream memoryStream);
+
+        /// <summary>
+        /// Get font instance by given font family name, size and style.
+        /// </summary>
+        /// <param name="family">the font family name</param>
+        /// <param name="size">font size</param>
+        /// <param name="style">font style</param>
+        /// <returns>font instance</returns>
+        protected internal abstract IFont CreateFontInt(string family, double size, RFontStyle style);
+
+        /// <summary>
+        /// Get font instance by given font family instance, size and style.<br/>
+        /// Used to support custom fonts that require explicit font family instance to be created.
+        /// </summary>
+        /// <param name="family">the font family instance</param>
+        /// <param name="size">font size</param>
+        /// <param name="style">font style</param>
+        /// <returns>font instance</returns>
+        protected internal abstract IFont CreateFontInt(IFontFamily family, double size, RFontStyle style);
+
+        /// <summary>
+        /// Set the given text to the clipboard
+        /// </summary>
+        /// <param name="text">the text to set</param>
+        protected virtual void SetToClipboardInt(string text)
         {
             throw new NotImplementedException();
         }
@@ -176,7 +334,7 @@ namespace HtmlRenderer.Interfaces
         /// </summary>
         /// <param name="html">the html data</param>
         /// <param name="plainText">the plain text data</param>
-        public virtual void SetToClipboard(string html, string plainText)
+        protected virtual void SetToClipboardInt(string html, string plainText)
         {
             throw new NotImplementedException();
         }
@@ -185,7 +343,7 @@ namespace HtmlRenderer.Interfaces
         /// Set the given image to clipboard.
         /// </summary>
         /// <param name="image"></param>
-        public virtual void SetToClipboard(IImage image)
+        protected virtual void SetToClipboardInt(IImage image)
         {
             throw new NotImplementedException();
         }
@@ -194,7 +352,7 @@ namespace HtmlRenderer.Interfaces
         /// Create a context menu that can be used on the control
         /// </summary>
         /// <returns>new context menu</returns>
-        public virtual IContextMenu CreateContextMenu()
+        protected virtual IContextMenu CreateContextMenuInt()
         {
             throw new NotImplementedException();
         }
@@ -206,28 +364,11 @@ namespace HtmlRenderer.Interfaces
         /// <param name="name">the name of the image for save dialog</param>
         /// <param name="extension">the extension of the image for save dialog</param>
         /// <param name="control">optional: the control to show the dialog on</param>
-        public virtual void SaveToFile(IImage image, string name, string extension, IControl control = null)
+        protected virtual void SaveToFileInt(IImage image, string name, string extension, IControl control = null)
         {
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Get font instance by given font family name, size and style.
-        /// </summary>
-        /// <param name="family">the font family name</param>
-        /// <param name="size">font size</param>
-        /// <param name="style">font style</param>
-        /// <returns>font instance</returns>
-        protected internal abstract IFont CreateFont(string family, double size, RFontStyle style);
-
-        /// <summary>
-        /// Get font instance by given font family instance, size and style.<br/>
-        /// Used to support custom fonts that require explicit font family instance to be created.
-        /// </summary>
-        /// <param name="family">the font family instance</param>
-        /// <param name="size">font size</param>
-        /// <param name="style">font style</param>
-        /// <returns>font instance</returns>
-        protected internal abstract IFont CreateFont(IFontFamily family, double size, RFontStyle style);
+        #endregion
     }
 }

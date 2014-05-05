@@ -42,6 +42,6 @@ namespace HtmlRenderer.Interfaces
         /// </summary>
         double LeftPadding { get; }
 
-        double GetWhitespaceWidth(IGraphics graphics);
+        double GetWhitespaceWidth(GraphicsBase graphics);
     }
 }

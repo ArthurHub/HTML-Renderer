@@ -125,7 +125,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// Create graphics object that can be used with the control.
         /// </summary>
         /// <returns>graphics object</returns>
-        public IGraphics CreateGraphics()
+        public GraphicsBase CreateGraphics()
         {
             // the win forms graphics object will be disposed by WinGraphics
             return new GraphicsAdapter(_control.CreateGraphics(), _useGdiPlusTextRendering, true);

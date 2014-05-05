@@ -69,7 +69,7 @@
     <Compile Include="Adapters\BrushAdapter.cs" />
     <Compile Include="Adapters\FontFamilyAdapter.cs" />
     <Compile Include="Adapters\FontAdapter.cs" />
-    <Compile Include="Adapters\GlobalAdapter.cs" />
+    <Compile Include="Adapters\WinFormsAdapter.cs" />
     <Compile Include="Adapters\GraphicsPathAdapter.cs" />
     <Compile Include="Adapters\ImageAdapter.cs" />
     <Compile Include="Adapters\ContextMenuAdapter.cs" />
@@ -87,7 +87,6 @@
     <Compile Include="HtmlToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Utilities\CacheUtils.cs" />
     <Compile Include="Utilities\ClipboardHelper.cs" />
     <Compile Include="Utilities\Utils.cs" />
     <Compile Include="Utilities\Win32Utils.cs" />

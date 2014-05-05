@@ -23,7 +23,7 @@ namespace HtmlRenderer.WinForms.Adapters
     /// <summary>
     /// Adapter for WinForms Graphics for core.
     /// </summary>
-    internal sealed class GraphicsAdapter : IGraphics
+    internal sealed class GraphicsAdapter : GraphicsBase
     {
         #region Fields and Consts
 
@@ -98,6 +98,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="useGdiPlusTextRendering">Use GDI+ text rendering to measure/draw text</param>
         /// <param name="releaseGraphics">optional: if to release the graphics object on dispose (default - false)</param>
         public GraphicsAdapter(Graphics g, bool useGdiPlusTextRendering, bool releaseGraphics = false)
+            : base(WinFormsAdapter.Instance)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
@@ -106,11 +107,12 @@ namespace HtmlRenderer.WinForms.Adapters
             _releaseGraphics = releaseGraphics;
         }
 
-        /// <summary>
-        /// Gets the bounding clipping region of this graphics.
-        /// </summary>
-        /// <returns>The bounding rectangle for the clipping region</returns>
-        public RRect GetClip()
+        public override IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        {
+            return new BrushAdapter(new LinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), (float)angle), true);
+        }
+
+        public override RRect GetClip()
         {
             RectangleF clip;
             if (_hdc == IntPtr.Zero)
@@ -126,32 +128,19 @@ namespace HtmlRenderer.WinForms.Adapters
             return Utils.Convert(clip);
         }
 
-        /// <summary>
-        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
-        /// </summary>
-        /// <param name="rect">Rectangle structure to combine.</param>
-        public void SetClipReplace(RRect rect)
+        public override void SetClipReplace(RRect rect)
         {
             ReleaseHdc();
             _g.SetClip(Utils.Convert(rect), CombineMode.Replace);
         }
 
-        /// <summary>
-        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
-        /// </summary>
-        /// <param name="rect">Rectangle structure to combine.</param>
-        public void SetClipExclude(RRect rect)
+        public override void SetClipExclude(RRect rect)
         {
             ReleaseHdc();
             _g.SetClip(Utils.Convert(rect), CombineMode.Exclude);
         }
 
-        /// <summary>
-        /// Set the graphics smooth mode to use anti-alias.<br/>
-        /// Use <see cref="ReturnPreviousSmoothingMode"/> to return back the mode used.
-        /// </summary>
-        /// <returns>the previous smooth mode before the change</returns>
-        public Object SetAntiAliasSmoothingMode()
+        public override Object SetAntiAliasSmoothingMode()
         {
             ReleaseHdc();
             var prevMode = _g.SmoothingMode;
@@ -159,11 +148,7 @@ namespace HtmlRenderer.WinForms.Adapters
             return prevMode;
         }
 
-        /// <summary>
-        /// Return to previous smooth mode before anti-alias was set as returned from <see cref="SetAntiAliasSmoothingMode"/>.
-        /// </summary>
-        /// <param name="prevMode">the previous mode to set</param>
-        public void ReturnPreviousSmoothingMode(Object prevMode)
+        public override void ReturnPreviousSmoothingMode(Object prevMode)
         {
             if (prevMode != null)
             {
@@ -172,14 +157,7 @@ namespace HtmlRenderer.WinForms.Adapters
             }
         }
 
-        /// <summary>
-        /// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
-        /// using the given font <paramref name="font"/>.
-        /// </summary>
-        /// <param name="str">the string to measure</param>
-        /// <param name="font">the font to measure string with</param>
-        /// <returns>the size of the string</returns>
-        public RSize MeasureString(string str, IFont font)
+        public override RSize MeasureString(string str, IFont font)
         {
             if (_useGdiPlusTextRendering)
             {
@@ -216,19 +194,7 @@ namespace HtmlRenderer.WinForms.Adapters
             }
         }
 
-        /// <summary>
-        /// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
-        /// using the given font <paramref name="font"/>.<br/>
-        /// Restrict the width of the string and get the number of characters able to fit in the restriction and
-        /// the width those characters take.
-        /// </summary>
-        /// <param name="str">the string to measure</param>
-        /// <param name="font">the font to measure string with</param>
-        /// <param name="maxWidth">the max width to render the string in</param>
-        /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
-        /// <param name="charFitWidth">the width that only the fitted characters take</param>
-        /// <returns>the size of the string</returns>
-        public RSize MeasureString(string str, IFont font, double maxWidth, out int charFit, out int charFitWidth)
+        public override RSize MeasureString(string str, IFont font, double maxWidth, out int charFit, out int charFitWidth)
         {
             charFit = 0;
             charFitWidth = 0;
@@ -262,16 +228,7 @@ namespace HtmlRenderer.WinForms.Adapters
             }
         }
 
-        /// <summary>
-        /// Draw the given string using the given font and foreground color at given location.
-        /// </summary>
-        /// <param name="str">the string to draw</param>
-        /// <param name="font">the font to use to draw the string</param>
-        /// <param name="color">the text color to set</param>
-        /// <param name="point">the location to start string draw (top-left)</param>
-        /// <param name="size">used to know the size of the rendered text for transparent text support</param>
-        /// <param name="rtl">is to render the string right-to-left (true - RTL, false - LTR)</param>
-        public void DrawString(string str, IFont font, RColor color, RPoint point, RSize size, bool rtl)
+        public override void DrawString(string str, IFont font, RColor color, RPoint point, RSize size, bool rtl)
         {
             var pointConv = Utils.ConvertRound(point);
             var colorConv = Utils.Convert(color);
@@ -280,7 +237,7 @@ namespace HtmlRenderer.WinForms.Adapters
             {
                 ReleaseHdc();
                 SetRtlAlign(rtl);
-                var brush = ((BrushAdapter)CacheUtils.GetSolidBrush(color)).Brush;
+                var brush = ((BrushAdapter)_adapter.GetSolidBrush(color)).Brush;
                 _g.DrawString(str, ((FontAdapter)font).Font, brush, (int)(Math.Round(point.X) + (rtl ? size.Width : 0)), (int)Math.Round(point.Y), _stringFormat2);
             }
             else
@@ -302,65 +259,19 @@ namespace HtmlRenderer.WinForms.Adapters
             }
         }
 
-        /// <summary>
-        /// Get color pen.
-        /// </summary>
-        /// <param name="color">the color to get the pen for</param>
-        /// <returns>pen instance</returns>
-        public IPen GetPen(RColor color)
-        {
-            return CacheUtils.GetPen(color);
-        }
-
-        /// <summary>
-        /// Get solid color brush.
-        /// </summary>
-        /// <param name="color">the color to get the brush for</param>
-        /// <returns>solid color brush instance</returns>
-        public IBrush GetSolidBrush(RColor color)
-        {
-            return CacheUtils.GetSolidBrush(color);
-        }
-
-        /// <summary>
-        /// Get linear gradient color brush from <paramref name="color1"/> to <paramref name="color2"/>.
-        /// </summary>
-        /// <param name="rect">the rectangle to get the brush for</param>
-        /// <param name="color1">the start color of the gradient</param>
-        /// <param name="color2">the end color of the gradient</param>
-        /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
-        /// <returns>linear gradient color brush instance</returns>
-        public IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
-        {
-            return new BrushAdapter(new LinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), (float)angle), true);
-        }
-
-        /// <summary>
-        /// Get TextureBrush object that uses the specified image and bounding rectangle.
-        /// </summary>
-        /// <param name="image">The Image object with which this TextureBrush object fills interiors.</param>
-        /// <param name="dstRect">A Rectangle structure that represents the bounding rectangle for this TextureBrush object.</param>
-        /// <param name="translateTransformLocation">The dimension by which to translate the transformation</param>
-        public IBrush GetTextureBrush(IImage image, RRect dstRect, RPoint translateTransformLocation)
+        public override IBrush GetTextureBrush(IImage image, RRect dstRect, RPoint translateTransformLocation)
         {
             var brush = new TextureBrush(((ImageAdapter)image).Image, Utils.Convert(dstRect));
             brush.TranslateTransform((float)translateTransformLocation.X, (float)translateTransformLocation.Y);
             return new BrushAdapter(brush, true);
         }
 
-        /// <summary>
-        /// Get GraphicsPath object.
-        /// </summary>
-        /// <returns>graphics path instance</returns>
-        public IGraphicsPath GetGraphicsPath()
+        public override IGraphicsPath GetGraphicsPath()
         {
             return new GraphicsPathAdapter();
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             ReleaseHdc();
             if (_releaseGraphics)
@@ -373,97 +284,48 @@ namespace HtmlRenderer.WinForms.Adapters
 
         #region Delegate graphics methods
 
-        /// <summary>
-        /// Draws a line connecting the two points specified by the coordinate pairs.
-        /// </summary>
-        /// <param name="pen"><see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the line. </param>
-        /// <param name="x1">The x-coordinate of the first point. </param><param name="y1">The y-coordinate of the first point. </param>
-        /// <param name="x2">The x-coordinate of the second point. </param><param name="y2">The y-coordinate of the second point. </param>
-        /// <exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
-        public void DrawLine(IPen pen, double x1, double y1, double x2, double y2)
+        public override void DrawLine(IPen pen, double x1, double y1, double x2, double y2)
         {
             ReleaseHdc();
             _g.DrawLine(((PenAdapter)pen).Pen, (float)x1, (float)y1, (float)x2, (float)y2);
         }
 
-        /// <summary>
-        /// Draws a rectangle specified by a coordinate pair, a width, and a height.
-        /// </summary>
-        /// <param name="pen">A Pen that determines the color, width, and style of the rectangle. </param>
-        /// <param name="x">The x-coordinate of the upper-left corner of the rectangle to draw. </param>
-        /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param>
-        /// <param name="width">The width of the rectangle to draw. </param>
-        /// <param name="height">The height of the rectangle to draw. </param>
-        public void DrawRectangle(IPen pen, double x, double y, double width, double height)
+        public override void DrawRectangle(IPen pen, double x, double y, double width, double height)
         {
             ReleaseHdc();
             _g.DrawRectangle(((PenAdapter)pen).Pen, (float)x, (float)y, (float)width, (float)height);
         }
 
-        /// <summary>
-        /// Fills the interior of a rectangle specified by a pair of coordinates, a width, and a height.
-        /// </summary>
-        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
-        /// <param name="x">The x-coordinate of the upper-left corner of the rectangle to fill. </param>
-        /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to fill. </param>
-        /// <param name="width">Width of the rectangle to fill. </param>
-        /// <param name="height">Height of the rectangle to fill. </param>
-        public void DrawRectangle(IBrush brush, double x, double y, double width, double height)
+        public override void DrawRectangle(IBrush brush, double x, double y, double width, double height)
         {
             ReleaseHdc();
             _g.FillRectangle(((BrushAdapter)brush).Brush, (float)x, (float)y, (float)width, (float)height);
         }
 
-        /// <summary>
-        /// Draws the specified portion of the specified <see cref="T:System.Drawing.Image"/> at the specified location and with the specified size.
-        /// </summary>
-        /// <param name="image">Image to draw. </param>
-        /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. The image is scaled to fit the rectangle. </param>
-        /// <param name="srcRect">Rectangle structure that specifies the portion of the <paramref name="image"/> object to draw. </param>
-        public void DrawImage(IImage image, RRect destRect, RRect srcRect)
+        public override void DrawImage(IImage image, RRect destRect, RRect srcRect)
         {
             ReleaseHdc();
             _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect), Utils.Convert(srcRect), GraphicsUnit.Pixel);
         }
 
-        /// <summary>
-        /// Draws the specified Image at the specified location and with the specified size.
-        /// </summary>
-        /// <param name="image">Image to draw. </param>
-        /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. </param>
-        public void DrawImage(IImage image, RRect destRect)
+        public override void DrawImage(IImage image, RRect destRect)
         {
             ReleaseHdc();
             _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect));
         }
 
-        /// <summary>
-        /// Draws a GraphicsPath.
-        /// </summary>
-        /// <param name="pen">Pen that determines the color, width, and style of the path. </param>
-        /// <param name="path">GraphicsPath to draw. </param>
-        public void DrawPath(IPen pen, IGraphicsPath path)
+        public override void DrawPath(IPen pen, IGraphicsPath path)
         {
             _g.DrawPath(((PenAdapter)pen).Pen, ((GraphicsPathAdapter)path).GraphicsPath);
         }
 
-        /// <summary>
-        /// Fills the interior of a GraphicsPath.
-        /// </summary>
-        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
-        /// <param name="path">GraphicsPath that represents the path to fill. </param>
-        public void DrawPath(IBrush brush, IGraphicsPath path)
+        public override void DrawPath(IBrush brush, IGraphicsPath path)
         {
             ReleaseHdc();
             _g.FillPath(((BrushAdapter)brush).Brush, ((GraphicsPathAdapter)path).GraphicsPath);
         }
 
-        /// <summary>
-        /// Fills the interior of a polygon defined by an array of points specified by Point structures.
-        /// </summary>
-        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
-        /// <param name="points">Array of Point structures that represent the vertices of the polygon to fill. </param>
-        public void DrawPolygon(IBrush brush, RPoint[] points)
+        public override void DrawPolygon(IBrush brush, RPoint[] points)
         {
             if (points != null && points.Length > 0)
             {

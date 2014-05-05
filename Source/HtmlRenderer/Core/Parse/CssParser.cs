@@ -36,7 +36,7 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// 
         /// </summary>
-        private readonly GlobalBase _global;
+        private readonly AdapterBase _adapter;
 
         /// <summary>
         /// Utility for value parsing.
@@ -54,12 +54,12 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// Init.
         /// </summary>
-        public CssParser(GlobalBase global)
+        public CssParser(AdapterBase adapter)
         {
-            ArgChecker.AssertArgNotNull(global, "global");
+            ArgChecker.AssertArgNotNull(adapter, "global");
 
-            _valueParser = new CssValueParser(global);
-            _global = global;
+            _valueParser = new CssValueParser(adapter);
+            _adapter = adapter;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace HtmlRenderer.Core.Parse
         /// <returns>the CSS data with parsed CSS objects (never null)</returns>
         public CssData ParseStyleSheet(string stylesheet, bool combineWithDefault)
         {
-            var cssData = combineWithDefault ? _global.DefaultCssData.Clone() : new CssData();
+            var cssData = combineWithDefault ? _adapter.DefaultCssData.Clone() : new CssData();
             if (!string.IsNullOrEmpty(stylesheet))
             {
                 ParseStyleSheet(cssData, stylesheet);
@@ -628,7 +628,7 @@ namespace HtmlRenderer.Core.Parse
 
                 var font = propValue.Substring(start, adjEnd - start + 1);
 
-                if (_global.IsFontExists(font))
+                if (_adapter.IsFontExists(font))
                 {
                     return font;
                 }

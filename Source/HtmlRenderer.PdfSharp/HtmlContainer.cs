@@ -41,7 +41,7 @@ namespace HtmlRenderer.PdfSharp
         /// </summary>
         public HtmlContainer()
         {
-            _htmlContainerInt = new HtmlContainerInt(GlobalAdapter.Instance);
+            _htmlContainerInt = new HtmlContainerInt(PdfSharpAdapter.Instance);
         }
 
         /// <summary>

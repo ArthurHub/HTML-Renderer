@@ -103,7 +103,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         }
 
 
-        public double GetWhitespaceWidth(IGraphics graphics)
+        public double GetWhitespaceWidth(GraphicsBase graphics)
         {
             if( _whitespaceWidth < 0 )
             {

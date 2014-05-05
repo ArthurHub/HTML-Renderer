@@ -197,7 +197,7 @@ namespace HtmlRenderer.Core.Handlers
 
                 if (image != null)
                 {
-                    _image = _htmlContainer.Global.ConvertImage(image);
+                    _image = _htmlContainer.Adapter.ConvertImage(image);
                     ImageLoadComplete(_asyncCallback);
                 }
                 else if (!string.IsNullOrEmpty(path))
@@ -247,7 +247,7 @@ namespace HtmlRenderer.Core.Handlers
                 if (imagePartsCount > 0)
                 {
                     byte[] imageData = base64PartsCount > 0 ? Convert.FromBase64String(s[1].Trim()) : new UTF8Encoding().GetBytes(Uri.UnescapeDataString(s[1].Trim()));
-                    return _htmlContainer.Global.ImageFromStream(new MemoryStream(imageData));
+                    return _htmlContainer.Adapter.ImageFromStream(new MemoryStream(imageData));
                 }
             }
             return null;
@@ -310,7 +310,7 @@ namespace HtmlRenderer.Core.Handlers
                 if (source.Exists)
                 {
                     _imageFileStream = File.Open(source.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    _image = _htmlContainer.Global.ImageFromStream(_imageFileStream);
+                    _image = _htmlContainer.Adapter.ImageFromStream(_imageFileStream);
                     _releaseImageObject = true;
                 }
                 ImageLoadComplete();

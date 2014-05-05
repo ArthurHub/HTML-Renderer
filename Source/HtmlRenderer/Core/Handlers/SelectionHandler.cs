@@ -304,7 +304,7 @@ namespace HtmlRenderer.Core.Handlers
                 var html = DomUtils.GenerateHtml(_root, HtmlGenerationStyle.Inline, true);
                 var plainText = DomUtils.GetSelectedPlainText(_root);
                 if (!string.IsNullOrEmpty(plainText))
-                    _root.HtmlContainer.Global.SetToClipboard(html, plainText);
+                    _root.HtmlContainer.Adapter.SetToClipboard(html, plainText);
             }
         }
 

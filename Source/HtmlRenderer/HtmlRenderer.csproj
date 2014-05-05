@@ -103,13 +103,13 @@
     <Compile Include="Entities\RPoint.cs" />
     <Compile Include="Entities\RRect.cs" />
     <Compile Include="Entities\RSize.cs" />
-    <Compile Include="Interfaces\GlobalBase.cs" />
+    <Compile Include="Interfaces\AdapterBase.cs" />
     <Compile Include="Interfaces\IBrush.cs" />
     <Compile Include="Interfaces\IContextMenu.cs" />
     <Compile Include="Interfaces\IControl.cs" />
     <Compile Include="Interfaces\IFont.cs" />
     <Compile Include="Interfaces\IFontFamily.cs" />
-    <Compile Include="Interfaces\IGraphics.cs" />
+    <Compile Include="Interfaces\GraphicsBase.cs" />
     <Compile Include="Interfaces\IGraphicsPath.cs" />
     <Compile Include="Interfaces\IImage.cs" />
     <Compile Include="Interfaces\IPen.cs" />

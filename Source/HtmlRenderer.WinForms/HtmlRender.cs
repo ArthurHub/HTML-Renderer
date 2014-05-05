@@ -99,7 +99,7 @@ namespace HtmlRenderer.WinForms
         {
             ArgChecker.AssertArgNotNull(fontFamily, "fontFamily");
 
-            GlobalAdapter.Instance.AddFontFamily(new FontFamilyAdapter(fontFamily));
+            WinFormsAdapter.Instance.AddFontFamily(new FontFamilyAdapter(fontFamily));
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNullOrEmpty(fromFamily, "fromFamily");
             ArgChecker.AssertArgNotNullOrEmpty(toFamily, "toFamily");
 
-            GlobalAdapter.Instance.AddFontFamilyMapping(fromFamily, toFamily);
+            WinFormsAdapter.Instance.AddFontFamilyMapping(fromFamily, toFamily);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace HtmlRenderer.WinForms
         /// <returns>the parsed css data</returns>
         public static CssData ParseStyleSheet(string stylesheet, bool combineWithDefault = true)
         {
-            return CssData.Parse(GlobalAdapter.Instance, stylesheet, combineWithDefault);
+            return CssData.Parse(WinFormsAdapter.Instance, stylesheet, combineWithDefault);
         }
 
         /// <summary>

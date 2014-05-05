@@ -795,7 +795,7 @@ namespace HtmlRenderer.Core.Utils
         {
             // ReSharper disable PossibleMultipleEnumeration
             var cleanTagStyles = new Dictionary<string, string>();
-            var defaultBlocks = box.HtmlContainer.Global.DefaultCssData.GetCssBlock(box.HtmlTag.Name);
+            var defaultBlocks = box.HtmlContainer.Adapter.DefaultCssData.GetCssBlock(box.HtmlTag.Name);
             foreach (var style in tagStyles)
             {
                 bool isDefault = false;

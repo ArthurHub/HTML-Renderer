@@ -28,7 +28,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// 
         /// </summary>
-        private readonly GlobalBase _global;
+        private readonly AdapterBase _adapter;
 
         /// <summary>
         /// Allow to map not installed fonts to different
@@ -51,11 +51,11 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// Init.
         /// </summary>
-        public FontHandler(GlobalBase global)
+        public FontHandler(AdapterBase adapter)
         {
-            ArgChecker.AssertArgNotNull(global, "global");
+            ArgChecker.AssertArgNotNull(adapter, "global");
 
-            _global = global;
+            _adapter = adapter;
         }
 
         /// <summary>
@@ -177,8 +177,8 @@ namespace HtmlRenderer.Core.Handlers
         {
             IFontFamily fontFamily;
             return _existingFontFamilies.TryGetValue(family, out fontFamily)
-                ? _global.CreateFont(fontFamily, size, style)
-                : _global.CreateFont(family, size, style);
+                ? _adapter.CreateFontInt(fontFamily, size, style)
+                : _adapter.CreateFontInt(family, size, style);
         }
 
         #endregion

@@ -24,7 +24,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
     /// <summary>
     /// Adapter for WinForms Graphics for core.
     /// </summary>
-    internal sealed class GraphicsAdapter : IGraphics
+    internal sealed class GraphicsAdapter : GraphicsBase
     {
         #region Fields and Consts
 
@@ -47,6 +47,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="g">the win forms graphics object to use</param>
         /// <param name="releaseGraphics">optional: if to release the graphics object on dispose (default - false)</param>
         public GraphicsAdapter(XGraphics g, bool releaseGraphics = false)
+            : base(PdfSharpAdapter.Instance)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
@@ -58,7 +59,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// Gets the bounding clipping region of this graphics.
         /// </summary>
         /// <returns>The bounding rectangle for the clipping region</returns>
-        public RRect GetClip()
+        public override RRect GetClip()
         {
             RectangleF clip = _g.Graphics.ClipBounds;
             return Utils.Convert(clip);
@@ -68,7 +69,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
         /// </summary>
         /// <param name="rect">Rectangle structure to combine.</param>
-        public void SetClipReplace(RRect rect)
+        public override void SetClipReplace(RRect rect)
         {
             _g.Graphics.SetClip(new RectangleF((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height), CombineMode.Replace);
         }
@@ -77,7 +78,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
         /// </summary>
         /// <param name="rect">Rectangle structure to combine.</param>
-        public void SetClipExclude(RRect rect)
+        public override void SetClipExclude(RRect rect)
         {
             _g.Graphics.SetClip(new RectangleF((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height), CombineMode.Exclude);
         }
@@ -87,7 +88,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// Use <see cref="ReturnPreviousSmoothingMode"/> to return back the mode used.
         /// </summary>
         /// <returns>the previous smooth mode before the change</returns>
-        public Object SetAntiAliasSmoothingMode()
+        public override Object SetAntiAliasSmoothingMode()
         {
             var prevMode = _g.SmoothingMode;
             _g.SmoothingMode = XSmoothingMode.AntiAlias;
@@ -98,7 +99,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// Return to previous smooth mode before anti-alias was set as returned from <see cref="SetAntiAliasSmoothingMode"/>.
         /// </summary>
         /// <param name="prevMode">the previous mode to set</param>
-        public void ReturnPreviousSmoothingMode(Object prevMode)
+        public override void ReturnPreviousSmoothingMode(Object prevMode)
         {
             if (prevMode != null)
             {
@@ -113,21 +114,21 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="str">the string to measure</param>
         /// <param name="font">the font to measure string with</param>
         /// <returns>the size of the string</returns>
-        public RSize MeasureString(string str, IFont font)
+        public override RSize MeasureString(string str, IFont font)
         {
-                var fontAdapter = (FontAdapter)font;
-                var realFont = fontAdapter.Font;
-                var size = _g.MeasureString(str, realFont);
+            var fontAdapter = (FontAdapter)font;
+            var realFont = fontAdapter.Font;
+            var size = _g.MeasureString(str, realFont);
 
-                if (font.Height < 0)
-                {
-                    var height = realFont.Height;
-                    var descent = realFont.Size * realFont.FontFamily.GetCellDescent(realFont.Style) / realFont.FontFamily.GetEmHeight(realFont.Style);
-                    fontAdapter.SetMetrics(height, (int)Math.Round(( height - descent + .5f )));
-                }
+            if (font.Height < 0)
+            {
+                var height = realFont.Height;
+                var descent = realFont.Size * realFont.FontFamily.GetCellDescent(realFont.Style) / realFont.FontFamily.GetEmHeight(realFont.Style);
+                fontAdapter.SetMetrics(height, (int)Math.Round((height - descent + .5f)));
+            }
 
-                return Utils.Convert(size);
-            
+            return Utils.Convert(size);
+
         }
 
         /// <summary>
@@ -142,7 +143,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
         /// <param name="charFitWidth"></param>
         /// <returns>the size of the string</returns>
-        public RSize MeasureString(string str, IFont font, double maxWidth, out int charFit, out int charFitWidth)
+        public override RSize MeasureString(string str, IFont font, double maxWidth, out int charFit, out int charFitWidth)
         {
             throw new NotSupportedException();
         }
@@ -156,30 +157,10 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="point">the location to start string draw (top-left)</param>
         /// <param name="size">used to know the size of the rendered text for transparent text support</param>
         /// <param name="rtl">is to render the string right-to-left (true - RTL, false - LTR)</param>
-        public void DrawString(string str, IFont font, RColor color, RPoint point, RSize size, bool rtl)
+        public override void DrawString(string str, IFont font, RColor color, RPoint point, RSize size, bool rtl)
         {
             var brush = new XSolidBrush(Utils.Convert(color));
-            _g.DrawString(str, ( (FontAdapter)font ).Font, brush, point.X - font.LeftPadding*.8f, point.Y);
-        }
-
-        /// <summary>
-        /// Get color pen.
-        /// </summary>
-        /// <param name="color">the color to get the pen for</param>
-        /// <returns>pen instance</returns>
-        public IPen GetPen(RColor color)
-        {
-            return new PenAdapter(new XPen(Utils.Convert(color)));
-        }
-
-        /// <summary>
-        /// Get solid color brush.
-        /// </summary>
-        /// <param name="color">the color to get the brush for</param>
-        /// <returns>solid color brush instance</returns>
-        public IBrush GetSolidBrush(RColor color)
-        {
-            return new BrushAdapter(new XSolidBrush(Utils.Convert(color)));
+            _g.DrawString(str, ((FontAdapter)font).Font, brush, point.X - font.LeftPadding * .8f, point.Y);
         }
 
         /// <summary>
@@ -190,10 +171,10 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="color2">the end color of the gradient</param>
         /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
         /// <returns>linear gradient color brush instance</returns>
-        public IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        public override IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
         {
             XLinearGradientMode mode;
-            if(angle < 45)
+            if (angle < 45)
                 mode = XLinearGradientMode.ForwardDiagonal;
             else if (angle < 90)
                 mode = XLinearGradientMode.Vertical;
@@ -210,12 +191,12 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="image">The Image object with which this TextureBrush object fills interiors.</param>
         /// <param name="dstRect">A Rectangle structure that represents the bounding rectangle for this TextureBrush object.</param>
         /// <param name="translateTransformLocation">The dimension by which to translate the transformation</param>
-        public IBrush GetTextureBrush(IImage image, RRect dstRect, RPoint translateTransformLocation)
+        public override IBrush GetTextureBrush(IImage image, RRect dstRect, RPoint translateTransformLocation)
         {
             // TODO:a handle missing TextureBrush
-//            var brush = new TextureBrush(((ImageAdapter)image).Image, Utils.Convert(dstRect));
-//            brush.TranslateTransform(translateTransformLocation.X, translateTransformLocation.Y);
-//            return new BrushAdapter(brush, true);
+            //            var brush = new TextureBrush(((ImageAdapter)image).Image, Utils.Convert(dstRect));
+            //            brush.TranslateTransform(translateTransformLocation.X, translateTransformLocation.Y);
+            //            return new BrushAdapter(brush, true);
             return new BrushAdapter(new XSolidBrush(XColors.DeepPink));
         }
 
@@ -223,7 +204,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// Get GraphicsPath object.
         /// </summary>
         /// <returns>graphics path instance</returns>
-        public IGraphicsPath GetGraphicsPath()
+        public override IGraphicsPath GetGraphicsPath()
         {
             return new GraphicsPathAdapter();
         }
@@ -231,12 +212,12 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
-            if(_releaseGraphics)
+            if (_releaseGraphics)
                 _g.Dispose();
         }
-        
+
 
         #region Delegate graphics methods
 
@@ -247,7 +228,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="x1">The x-coordinate of the first point. </param><param name="y1">The y-coordinate of the first point. </param>
         /// <param name="x2">The x-coordinate of the second point. </param><param name="y2">The y-coordinate of the second point. </param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
-        public void DrawLine(IPen pen, double x1, double y1, double x2, double y2)
+        public override void DrawLine(IPen pen, double x1, double y1, double x2, double y2)
         {
             _g.DrawLine(((PenAdapter)pen).Pen, x1, y1, x2, y2);
         }
@@ -260,7 +241,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param>
         /// <param name="width">The width of the rectangle to draw. </param>
         /// <param name="height">The height of the rectangle to draw. </param>
-        public void DrawRectangle(IPen pen, double x, double y, double width, double height)
+        public override void DrawRectangle(IPen pen, double x, double y, double width, double height)
         {
             _g.DrawRectangle(((PenAdapter)pen).Pen, x, y, width, height);
         }
@@ -273,7 +254,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to fill. </param>
         /// <param name="width">Width of the rectangle to fill. </param>
         /// <param name="height">Height of the rectangle to fill. </param>
-        public void DrawRectangle(IBrush brush, double x, double y, double width, double height)
+        public override void DrawRectangle(IBrush brush, double x, double y, double width, double height)
         {
             _g.DrawRectangle(((BrushAdapter)brush).Brush, x, y, width, height);
         }
@@ -284,7 +265,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="image">Image to draw. </param>
         /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. The image is scaled to fit the rectangle. </param>
         /// <param name="srcRect">Rectangle structure that specifies the portion of the <paramref name="image"/> object to draw. </param>
-        public void DrawImage(IImage image, RRect destRect, RRect srcRect)
+        public override void DrawImage(IImage image, RRect destRect, RRect srcRect)
         {
             _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect), Utils.Convert(srcRect), XGraphicsUnit.Point);
         }
@@ -294,9 +275,9 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         /// <param name="image">Image to draw. </param>
         /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. </param>
-        public void DrawImage(IImage image, RRect destRect)
+        public override void DrawImage(IImage image, RRect destRect)
         {
-            _g.DrawImage(( (ImageAdapter)image ).Image, Utils.Convert(destRect));
+            _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect));
         }
 
         /// <summary>
@@ -304,7 +285,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         /// <param name="pen">Pen that determines the color, width, and style of the path. </param>
         /// <param name="path">GraphicsPath to draw. </param>
-        public void DrawPath(IPen pen, IGraphicsPath path)
+        public override void DrawPath(IPen pen, IGraphicsPath path)
         {
             _g.DrawPath(((PenAdapter)pen).Pen, ((GraphicsPathAdapter)path).GraphicsPath);
         }
@@ -314,7 +295,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         /// <param name="brush">Brush that determines the characteristics of the fill. </param>
         /// <param name="path">GraphicsPath that represents the path to fill. </param>
-        public void DrawPath(IBrush brush, IGraphicsPath path)
+        public override void DrawPath(IBrush brush, IGraphicsPath path)
         {
             _g.DrawPath(((BrushAdapter)brush).Brush, ((GraphicsPathAdapter)path).GraphicsPath);
         }
@@ -324,11 +305,11 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         /// <param name="brush">Brush that determines the characteristics of the fill. </param>
         /// <param name="points">Array of Point structures that represent the vertices of the polygon to fill. </param>
-        public void DrawPolygon(IBrush brush, RPoint[] points)
+        public override void DrawPolygon(IBrush brush, RPoint[] points)
         {
-            if( points != null && points.Length > 0 )
+            if (points != null && points.Length > 0)
             {
-                _g.DrawPolygon(( (BrushAdapter)brush ).Brush, Utils.Convert(points), XFillMode.Winding);
+                _g.DrawPolygon(((BrushAdapter)brush).Brush, Utils.Convert(points), XFillMode.Winding);
             }
         }
 

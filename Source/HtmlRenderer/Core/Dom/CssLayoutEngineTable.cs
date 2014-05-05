@@ -121,7 +121,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g"></param>
         /// <param name="tableBox"> </param>
-        public static void PerformLayout(IGraphics g, CssBox tableBox)
+        public static void PerformLayout(GraphicsBase g, CssBox tableBox)
         {
             ArgChecker.AssertArgNotNull(g, "g");
             ArgChecker.AssertArgNotNull(tableBox, "tableBox");
@@ -144,7 +144,7 @@ namespace HtmlRenderer.Core.Dom
         /// Analyzes the Table and assigns values to this CssTable object.
         /// To be called from the constructor
         /// </summary>
-        private void Layout(IGraphics g)
+        private void Layout(GraphicsBase g)
         {
             MeasureWords(_tableBox, g);
 
@@ -604,7 +604,7 @@ namespace HtmlRenderer.Core.Dom
         /// Layout the cells by the calculated table layout
         /// </summary>
         /// <param name="g"></param>
-        private void LayoutCells(IGraphics g)
+        private void LayoutCells(GraphicsBase g)
         {
             double startx = Math.Max(_tableBox.ClientLeft + GetHorizontalSpacing(), 0);
             double starty = Math.Max(_tableBox.ClientTop + GetVerticalSpacing(), 0);
@@ -773,7 +773,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="box">the box to measure</param>
         /// <param name="g">Device to use</param>
-        private static void MeasureWords(CssBox box, IGraphics g)
+        private static void MeasureWords(CssBox box, GraphicsBase g)
         {
             if (box != null)
             {

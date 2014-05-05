@@ -1425,7 +1425,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Measures the width of whitespace between words (set <see cref="ActualWordSpacing"/>).
         /// </summary>
-        protected void MeasureWordSpacing(IGraphics g)
+        protected void MeasureWordSpacing(GraphicsBase g)
         {
             if (double.IsNaN(ActualWordSpacing))
             {

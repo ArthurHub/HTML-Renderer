@@ -50,7 +50,7 @@ namespace HtmlRenderer.WinForms
         /// </summary>
         public HtmlContainer()
         {
-            _htmlContainerInt = new HtmlContainerInt(GlobalAdapter.Instance);
+            _htmlContainerInt = new HtmlContainerInt(WinFormsAdapter.Instance);
         }
 
         /// <summary>

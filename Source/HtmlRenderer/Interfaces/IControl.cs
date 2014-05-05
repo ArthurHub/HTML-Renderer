@@ -68,7 +68,7 @@ namespace HtmlRenderer.Interfaces
         /// Create graphics object that can be used with the control.
         /// </summary>
         /// <returns>graphics object</returns>
-        IGraphics CreateGraphics();
+        GraphicsBase CreateGraphics();
 
         /// <summary>
         /// Invalidates the entire surface of the control and causes the control to be redrawn.

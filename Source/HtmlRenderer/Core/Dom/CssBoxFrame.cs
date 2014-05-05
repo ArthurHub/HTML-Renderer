@@ -446,7 +446,7 @@ namespace HtmlRenderer.Core.Dom
         /// Paints the fragment
         /// </summary>
         /// <param name="g">the device to draw to</param>
-        protected override void PaintImp(IGraphics g)
+        protected override void PaintImp(GraphicsBase g)
         {
             var rects = CommonUtils.GetFirstValueOrDefault(Rectangles);
 
@@ -480,7 +480,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Draw video image over the iframe if found.
         /// </summary>
-        private void DrawImage(IGraphics g, RPoint offset, RRect rect)
+        private void DrawImage(GraphicsBase g, RPoint offset, RRect rect)
         {
             if (_imageWord.Image != null)
             {
@@ -507,11 +507,11 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Draw video title on top of the iframe if found.
         /// </summary>
-        private void DrawTitle(IGraphics g, RRect rect)
+        private void DrawTitle(GraphicsBase g, RRect rect)
         {
             if (_videoTitle != null && _imageWord.Width > 40 && _imageWord.Height > 40)
             {
-                var font = HtmlContainer.Global.GetFont("Arial", 9f, RFontStyle.Regular);
+                var font = HtmlContainer.Adapter.GetFont("Arial", 9f, RFontStyle.Regular);
                 g.DrawRectangle(g.GetSolidBrush(RColor.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, ActualFont.Height + 7);
 
                 var titleRect = new RRect(rect.Left + 3, rect.Top + 3, rect.Width - 6, rect.Height - 6);
@@ -522,7 +522,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Draw play over the iframe if we found link url.
         /// </summary>
-        private void DrawPlay(IGraphics g, RRect rect)
+        private void DrawPlay(GraphicsBase g, RRect rect)
         {
             if (_isVideo && _imageWord.Width > 70 && _imageWord.Height > 50)
             {
@@ -549,7 +549,7 @@ namespace HtmlRenderer.Core.Dom
         /// Assigns words its width and height
         /// </summary>
         /// <param name="g">the device to use</param>
-        internal override void MeasureWordsSize(IGraphics g)
+        internal override void MeasureWordsSize(GraphicsBase g)
         {
             if (!_wordsSizeMeasured)
             {
