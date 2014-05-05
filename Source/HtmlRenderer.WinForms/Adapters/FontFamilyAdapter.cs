@@ -18,7 +18,7 @@ namespace HtmlRenderer.WinForms.Adapters
     /// <summary>
     /// Adapter for WinForms Font family object for core.
     /// </summary>
-    internal sealed class FontFamilyAdapter : IFontFamily
+    internal sealed class FontFamilyAdapter : RFontFamily
     {
         /// <summary>
         /// the underline win-forms font.
@@ -44,7 +44,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Gets the name of this FontFamily.
         /// </summary>
-        public string Name
+        public override string Name
         {
             get { return _fontFamily.Name; }
         }

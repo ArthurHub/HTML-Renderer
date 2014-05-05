@@ -40,7 +40,7 @@ namespace HtmlRenderer.Core.Dom
         /// Performs layout of the DOM structure creating lines by set bounds restrictions.
         /// </summary>
         /// <param name="g">Device context to use</param>
-        protected override void PerformLayoutImp(GraphicsBase g)
+        protected override void PerformLayoutImp(RGraphics g)
         {
             if (Display == CssConstants.None)
                 return;
@@ -94,7 +94,7 @@ namespace HtmlRenderer.Core.Dom
         /// Paints the fragment
         /// </summary>
         /// <param name="g">the device to draw to</param>
-        protected override void PaintImp(GraphicsBase g)
+        protected override void PaintImp(RGraphics g)
         {
             var offset = HtmlContainer != null ? HtmlContainer.ScrollOffset : RPoint.Empty;
             var rect = new RRect(Bounds.X + offset.X, Bounds.Y + offset.Y, Bounds.Width, Bounds.Height);

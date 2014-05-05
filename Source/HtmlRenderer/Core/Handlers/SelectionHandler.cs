@@ -131,7 +131,7 @@ namespace HtmlRenderer.Core.Handlers
         /// Select all the words in the html.
         /// </summary>
         /// <param name="control">the control hosting the html to invalidate</param>
-        public void SelectAll(IControl control)
+        public void SelectAll(RControl control)
         {
             if (_root.HtmlContainer.IsSelectionEnabled)
             {
@@ -146,7 +146,7 @@ namespace HtmlRenderer.Core.Handlers
         /// </summary>
         /// <param name="control">the control hosting the html to invalidate</param>
         /// <param name="loc">the location to select word at</param>
-        public void SelectWord(IControl control, RPoint loc)
+        public void SelectWord(RControl control, RPoint loc)
         {
             if (_root.HtmlContainer.IsSelectionEnabled)
             {
@@ -167,7 +167,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="loc">the location of the mouse on the html</param>
         /// <param name="isMouseInContainer"> </param>
-        public void HandleMouseDown(IControl parent, RPoint loc, bool isMouseInContainer)
+        public void HandleMouseDown(RControl parent, RPoint loc, bool isMouseInContainer)
         {
             bool clear = !isMouseInContainer;
             if (isMouseInContainer)
@@ -214,7 +214,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="leftMouseButton">is the left mouse button has been released</param>
         /// <returns>is the mouse up should be ignored</returns>
-        public bool HandleMouseUp(IControl parent, bool leftMouseButton)
+        public bool HandleMouseUp(RControl parent, bool leftMouseButton)
         {
             bool ignore = false;
             _mouseDownInControl = false;
@@ -239,7 +239,7 @@ namespace HtmlRenderer.Core.Handlers
         /// </summary>
         /// <param name="parent">the control hosting the html to set cursor and invalidate</param>
         /// <param name="loc">the location of the mouse on the html</param>
-        public void HandleMouseMove(IControl parent, RPoint loc)
+        public void HandleMouseMove(RControl parent, RPoint loc)
         {
             if (_root.HtmlContainer.IsSelectionEnabled && _mouseDownInControl && parent.LeftMouseButton)
             {
@@ -284,7 +284,7 @@ namespace HtmlRenderer.Core.Handlers
         /// On mouse leave change the cursor back to default.
         /// </summary>
         /// <param name="parent">the control hosting the html to set cursor and invalidate</param>
-        public void HandleMouseLeave(IControl parent)
+        public void HandleMouseLeave(RControl parent)
         {
             if (_cursorChanged)
             {
@@ -396,7 +396,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="control">the control hosting the html to invalidate</param>
         /// <param name="loc">the mouse location</param>
         /// <param name="allowPartialSelect">true - partial word selection allowed, false - only full words selection</param>
-        private void HandleSelection(IControl control, RPoint loc, bool allowPartialSelect)
+        private void HandleSelection(RControl control, RPoint loc, bool allowPartialSelect)
         {
             // get the line under the mouse or nearest from the top
             var lineBox = DomUtils.GetCssLineBox(_root, loc);
@@ -500,7 +500,7 @@ namespace HtmlRenderer.Core.Handlers
         /// Start drag & drop operation on the currently selected html segment.
         /// </summary>
         /// <param name="control">the control to start the drag & drop on</param>
-        private void StartDragDrop(IControl control)
+        private void StartDragDrop(RControl control)
         {
             if (_dragDropData == null)
             {
@@ -600,13 +600,13 @@ namespace HtmlRenderer.Core.Handlers
 
         /// <summary>
         /// Calculate the character index and offset by characters for the given word and given offset.<br/>
-        /// <seealso cref="CalculateWordCharIndexAndOffset(HtmlRenderer.Interfaces.IControl,HtmlRenderer.Core.Dom.CssRect,HtmlRenderer.Entities.RPoint,bool)"/>.
+        /// <seealso cref="CalculateWordCharIndexAndOffset(RControl,HtmlRenderer.Core.Dom.CssRect,HtmlRenderer.Entities.RPoint,bool)"/>.
         /// </summary>
         /// <param name="control">used to create graphics to measure string</param>
         /// <param name="word">the word to calculate its index and offset</param>
         /// <param name="loc">the location to calculate for</param>
         /// <param name="selectionStart">to set the starting or ending char and offset data</param>
-        private void CalculateWordCharIndexAndOffset(IControl control, CssRect word, RPoint loc, bool selectionStart)
+        private void CalculateWordCharIndexAndOffset(RControl control, CssRect word, RPoint loc, bool selectionStart)
         {
             int selectionIndex;
             double selectionOffset;
@@ -637,7 +637,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="inclusive">is to include the first character in the calculation</param>
         /// <param name="selectionIndex">return the index of the char under the location</param>
         /// <param name="selectionOffset">return the offset of the char under the location</param>
-        private static void CalculateWordCharIndexAndOffset(IControl control, CssRect word, RPoint loc, bool inclusive, out int selectionIndex, out double selectionOffset)
+        private static void CalculateWordCharIndexAndOffset(RControl control, CssRect word, RPoint loc, bool inclusive, out int selectionIndex, out double selectionOffset)
         {
             selectionIndex = 0;
             selectionOffset = 0f;

@@ -18,7 +18,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
     /// <summary>
     /// Adapter for WinForms Font object for core.
     /// </summary>
-    internal sealed class FontAdapter : IFont
+    internal sealed class FontAdapter : RFont
     {
         #region Fields and Consts
 
@@ -42,7 +42,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         private double _whitespaceWidth = -1;
 
-
         #endregion
 
 
@@ -65,7 +64,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Gets the em-size of this Font measured in the units specified by the Unit property.
         /// </summary>
-        public double Size
+        public override double Size
         {
             get { return _font.Size; }
         }
@@ -73,7 +72,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Gets the em-size, in points, of this Font.
         /// </summary>
-        public double SizeInPoints
+        public override double SizeInPoints
         {
             get { return _font.Size; }
         }
@@ -81,7 +80,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Get the vertical offset of the font underline location from the top of the font.
         /// </summary>
-        public double UnderlineOffset
+        public override double UnderlineOffset
         {
             get { return _underlineOffset; }
         }
@@ -89,7 +88,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// The line spacing, in pixels, of this font.
         /// </summary>
-        public double Height
+        public override double Height
         {
             get { return _height; }
         }
@@ -97,15 +96,15 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Get the left padding, in pixels, of the font.
         /// </summary>
-        public double LeftPadding
+        public override double LeftPadding
         {
             get { return _height / 6f; }
         }
 
 
-        public double GetWhitespaceWidth(GraphicsBase graphics)
+        public override double GetWhitespaceWidth(RGraphics graphics)
         {
-            if( _whitespaceWidth < 0 )
+            if (_whitespaceWidth < 0)
             {
                 _whitespaceWidth = graphics.MeasureString(" ", this).Width;
             }

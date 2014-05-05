@@ -533,7 +533,7 @@ namespace HtmlRenderer.Demo.WinForms
             float totalMem = 0;
 #if NET_40
             endMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
-            totalMem = (endMemory - startMemory)/1024f;
+            totalMem = (endMemory - startMemory) / 1024f;
 #endif
             float htmlSize = 0;
             foreach (var sample in _perfTestSamples)

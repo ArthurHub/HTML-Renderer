@@ -19,7 +19,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
     /// <summary>
     /// Adapter for WinForms pens objects for core.
     /// </summary>
-    internal sealed class PenAdapter : IPen
+    internal sealed class PenAdapter : RPen
     {
         /// <summary>
         /// The actual WinForms brush instance.
@@ -45,7 +45,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Gets or sets the width of this Pen, in units of the Graphics object used for drawing.
         /// </summary>
-        public double Width
+        public override double Width
         {
             get { return _pen.Width; }
             set { _pen.Width = value; }
@@ -54,11 +54,11 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Gets or sets the style used for dashed lines drawn with this Pen.
         /// </summary>
-        public RDashStyle DashStyle
+        public override RDashStyle DashStyle
         {
             set
             {
-                switch( value )
+                switch (value)
                 {
                     case RDashStyle.Solid:
                         _pen.DashStyle = XDashStyle.Solid;
@@ -84,18 +84,18 @@ namespace HtmlRenderer.PdfSharp.Adapters
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets or sets an array of custom dashes and spaces.
         /// </summary>
-        public double[] DashPattern
+        public override double[] DashPattern
         {
             set
             {
                 var dValues = new double[value.Length];
-                for(int i = 0; i < value.Length; i++)
+                for (int i = 0; i < value.Length; i++)
                     dValues[i] = value[i];
-                
+
                 _pen.DashPattern = value;
             }
         }

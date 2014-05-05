@@ -63,12 +63,12 @@ namespace HtmlRenderer.WinForms.Adapters
             return Utils.Convert(color);
         }
 
-        protected override IPen CreatePen(RColor color)
+        protected override RPen CreatePen(RColor color)
         {
             return new PenAdapter(new Pen(Utils.Convert(color)));
         }
 
-        protected override IBrush CreateSolidBrush(RColor color)
+        protected override RBrush CreateSolidBrush(RColor color)
         {
             Brush solidBrush;
             if (color == RColor.White)
@@ -83,23 +83,23 @@ namespace HtmlRenderer.WinForms.Adapters
             return new BrushAdapter(solidBrush, false);
         }
 
-        protected override IImage ConvertImageInt(object image)
+        protected override RImage ConvertImageInt(object image)
         {
             return image != null ? new ImageAdapter((Image)image) : null;
         }
 
-        protected override IImage ImageFromStreamInt(Stream memoryStream)
+        protected override RImage ImageFromStreamInt(Stream memoryStream)
         {
             return new ImageAdapter(Image.FromStream(memoryStream));
         }
 
-        protected internal override IFont CreateFontInt(string family, double size, RFontStyle style)
+        protected internal override RFont CreateFontInt(string family, double size, RFontStyle style)
         {
             var fontStyle = (FontStyle)((int)style);
             return new FontAdapter(new Font(family, (float)size, fontStyle));
         }
 
-        protected internal override IFont CreateFontInt(IFontFamily family, double size, RFontStyle style)
+        protected internal override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style)
         {
             var fontStyle = (FontStyle)((int)style);
             return new FontAdapter(new Font(((FontFamilyAdapter)family).FontFamily, (float)size, fontStyle));
@@ -115,17 +115,17 @@ namespace HtmlRenderer.WinForms.Adapters
             ClipboardHelper.CopyToClipboard(html, plainText);
         }
 
-        protected override void SetToClipboardInt(IImage image)
+        protected override void SetToClipboardInt(RImage image)
         {
             Clipboard.SetImage(((ImageAdapter)image).Image);
         }
 
-        protected override IContextMenu CreateContextMenuInt()
+        protected override RContextMenu CreateContextMenuInt()
         {
             return new ContextMenuAdapter();
         }
 
-        protected override void SaveToFileInt(IImage image, string name, string extension, IControl control = null)
+        protected override void SaveToFileInt(RImage image, string name, string extension, RControl control = null)
         {
             using (var saveDialog = new SaveFileDialog())
             {

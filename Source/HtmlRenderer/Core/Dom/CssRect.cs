@@ -171,7 +171,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the image this words represents (if one exists)
         /// </summary>
-        public virtual IImage Image
+        public virtual RImage Image
         {
             get { return null; }
             // ReSharper disable ValueParameterNotUsed

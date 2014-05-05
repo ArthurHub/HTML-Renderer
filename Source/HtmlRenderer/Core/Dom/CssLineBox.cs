@@ -208,7 +208,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="g">Device info</param>
         /// <param name="b">box to check words</param>
         /// <param name="baseline">baseline</param>
-        internal void SetBaseLine(GraphicsBase g, CssBox b, double baseline)
+        internal void SetBaseLine(RGraphics g, CssBox b, double baseline)
         {
             //TODO: Aqui me quede, checar poniendo "by the" con un font-size de 3em
             List<CssRect> ws = WordsOf(b);

@@ -118,7 +118,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g"></param>
         /// <param name="blockBox"></param>
-        public static void CreateLineBoxes(GraphicsBase g, CssBox blockBox)
+        public static void CreateLineBoxes(RGraphics g, CssBox blockBox)
         {
             ArgChecker.AssertArgNotNull(g, "g");
             ArgChecker.AssertArgNotNull(blockBox, "blockBox");
@@ -172,7 +172,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g"></param>
         /// <param name="cell"></param>
-        public static void ApplyCellVerticalAlignment(GraphicsBase g, CssBox cell)
+        public static void ApplyCellVerticalAlignment(RGraphics g, CssBox cell)
         {
             ArgChecker.AssertArgNotNull(g, "g");
             ArgChecker.AssertArgNotNull(cell, "cell");
@@ -239,7 +239,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="cury">Current y coordinate that will be the top of the next word</param>
         /// <param name="maxRight">Maximum right reached so far</param>
         /// <param name="maxbottom">Maximum bottom reached so far</param>
-        private static void FlowBox(GraphicsBase g, CssBox blockbox, CssBox box, double limitRight, double linespacing, double startx, ref CssLineBox line, ref double curx, ref double cury, ref double maxRight, ref double maxbottom)
+        private static void FlowBox(RGraphics g, CssBox blockbox, CssBox box, double limitRight, double linespacing, double startx, ref CssLineBox line, ref double curx, ref double cury, ref double maxRight, ref double maxbottom)
         {
             var startX = curx;
             var startY = cury;
@@ -420,7 +420,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g"></param>
         /// <param name="lineBox"></param>
-        private static void ApplyAlignment(GraphicsBase g, CssLineBox lineBox)
+        private static void ApplyAlignment(RGraphics g, CssLineBox lineBox)
         {
             switch (lineBox.OwnerBox.TextAlign)
             {
@@ -522,7 +522,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g"></param>
         /// <param name="lineBox"></param>
-        private static void ApplyVerticalAlignment(GraphicsBase g, CssLineBox lineBox)
+        private static void ApplyVerticalAlignment(RGraphics g, CssLineBox lineBox)
         {
             double baseline = Single.MinValue;
             foreach (var box in lineBox.Rectangles.Keys)
@@ -570,7 +570,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g"></param>
         /// <param name="lineBox"></param>
-        private static void ApplyJustifyAlignment(GraphicsBase g, CssLineBox lineBox)
+        private static void ApplyJustifyAlignment(RGraphics g, CssLineBox lineBox)
         {
             if (lineBox.Equals(lineBox.OwnerBox.LineBoxes[lineBox.OwnerBox.LineBoxes.Count - 1]))
                 return;
@@ -609,7 +609,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g"></param>
         /// <param name="line"></param>
-        private static void ApplyCenterAlignment(GraphicsBase g, CssLineBox line)
+        private static void ApplyCenterAlignment(RGraphics g, CssLineBox line)
         {
             if (line.Words.Count == 0)
                 return;
@@ -639,7 +639,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g"></param>
         /// <param name="line"></param>
-        private static void ApplyRightAlignment(GraphicsBase g, CssLineBox line)
+        private static void ApplyRightAlignment(RGraphics g, CssLineBox line)
         {
             if (line.Words.Count == 0)
                 return;
@@ -669,7 +669,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g"></param>
         /// <param name="line"></param>
-        private static void ApplyLeftAlignment(GraphicsBase g, CssLineBox line)
+        private static void ApplyLeftAlignment(RGraphics g, CssLineBox line)
         {
             //No alignment needed.
 

@@ -36,12 +36,12 @@ namespace HtmlRenderer.Interfaces
         /// <summary>
         /// cache of brush color to brush instance
         /// </summary>
-        private static readonly Dictionary<RColor, IBrush> _brushesCache = new Dictionary<RColor, IBrush>();
+        private static readonly Dictionary<RColor, RBrush> _brushesCache = new Dictionary<RColor, RBrush>();
 
         /// <summary>
         /// cache of pen color to pen instance
         /// </summary>
-        private static readonly Dictionary<RColor, IPen> _penCache = new Dictionary<RColor, IPen>();
+        private static readonly Dictionary<RColor, RPen> _penCache = new Dictionary<RColor, RPen>();
 
         /// <summary>
         /// cache of all the font used not to create same font again and again
@@ -56,12 +56,12 @@ namespace HtmlRenderer.Interfaces
         /// <summary>
         /// image used to draw loading image icon
         /// </summary>
-        private IImage _loadImage;
+        private RImage _loadImage;
 
         /// <summary>
         /// image used to draw error image icon
         /// </summary>
-        private IImage _errorImage;
+        private RImage _errorImage;
 
         #endregion
 
@@ -98,9 +98,9 @@ namespace HtmlRenderer.Interfaces
         /// </summary>
         /// <param name="color">the color to get pen for</param>
         /// <returns>pen instance</returns>
-        public IPen GetPen(RColor color)
+        public RPen GetPen(RColor color)
         {
-            IPen pen;
+            RPen pen;
             if (!_penCache.TryGetValue(color, out pen))
             {
                 _penCache[color] = pen = CreatePen(color);
@@ -113,9 +113,9 @@ namespace HtmlRenderer.Interfaces
         /// </summary>
         /// <param name="color">the color to get brush for</param>
         /// <returns>brush instance</returns>
-        public IBrush GetSolidBrush(RColor color)
+        public RBrush GetSolidBrush(RColor color)
         {
-            IBrush brush;
+            RBrush brush;
             if (!_brushesCache.TryGetValue(color, out brush))
             {
                 _brushesCache[color] = brush = CreateSolidBrush(color);
@@ -124,21 +124,21 @@ namespace HtmlRenderer.Interfaces
         }
 
         /// <summary>
-        /// Convert image object returned from <see cref="HtmlImageLoadEventArgs"/> to <see cref="IImage"/>.
+        /// Convert image object returned from <see cref="HtmlImageLoadEventArgs"/> to <see cref="RImage"/>.
         /// </summary>
         /// <param name="image">the image returned from load event</param>
         /// <returns>converted image or null</returns>
-        public IImage ConvertImage(object image)
+        public RImage ConvertImage(object image)
         {
             return ConvertImageInt(image);
         }
 
         /// <summary>
-        /// Create an <see cref="IImage"/> object from the given stream.
+        /// Create an <see cref="RImage"/> object from the given stream.
         /// </summary>
         /// <param name="memoryStream">the stream to create image from</param>
         /// <returns>new image instance</returns>
-        public IImage ImageFromStream(Stream memoryStream)
+        public RImage ImageFromStream(Stream memoryStream)
         {
             return ImageFromStreamInt(memoryStream);
         }
@@ -157,7 +157,7 @@ namespace HtmlRenderer.Interfaces
         /// Adds a font family to be used.
         /// </summary>
         /// <param name="fontFamily">The font family to add.</param>
-        public void AddFontFamily(IFontFamily fontFamily)
+        public void AddFontFamily(RFontFamily fontFamily)
         {
             _fontHandler.AddFontFamily(fontFamily);
         }
@@ -181,7 +181,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="size">font size</param>
         /// <param name="style">font style</param>
         /// <returns>font instance</returns>
-        public IFont GetFont(string family, double size, RFontStyle style)
+        public RFont GetFont(string family, double size, RFontStyle style)
         {
             return _fontHandler.GetCachedFont(family, size, style);
         }
@@ -189,7 +189,7 @@ namespace HtmlRenderer.Interfaces
         /// <summary>
         /// Get image to be used while HTML image is loading.
         /// </summary>
-        public IImage GetLoadImage()
+        public RImage GetLoadImage()
         {
             if (_loadImage == null)
             {
@@ -203,7 +203,7 @@ namespace HtmlRenderer.Interfaces
         /// <summary>
         /// Get image to be used if HTML image load failed.
         /// </summary>
-        public IImage GetErrorImage()
+        public RImage GetErrorImage()
         {
             if (_errorImage == null)
             {
@@ -237,7 +237,7 @@ namespace HtmlRenderer.Interfaces
         /// Set the given image to clipboard.
         /// </summary>
         /// <param name="image"></param>
-        public void SetToClipboard(IImage image)
+        public void SetToClipboard(RImage image)
         {
             SetToClipboardInt(image);
         }
@@ -246,7 +246,7 @@ namespace HtmlRenderer.Interfaces
         /// Create a context menu that can be used on the control
         /// </summary>
         /// <returns>new context menu</returns>
-        public IContextMenu GetContextMenu()
+        public RContextMenu GetContextMenu()
         {
             return CreateContextMenuInt();
         }
@@ -258,7 +258,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="name">the name of the image for save dialog</param>
         /// <param name="extension">the extension of the image for save dialog</param>
         /// <param name="control">optional: the control to show the dialog on</param>
-        public void SaveToFile(IImage image, string name, string extension, IControl control = null)
+        public void SaveToFile(RImage image, string name, string extension, RControl control = null)
         {
             SaveToFileInt(image, name, extension, control);
         }
@@ -278,28 +278,28 @@ namespace HtmlRenderer.Interfaces
         /// </summary>
         /// <param name="color">the color to get pen for</param>
         /// <returns>pen instance</returns>
-        protected abstract IPen CreatePen(RColor color);
+        protected abstract RPen CreatePen(RColor color);
 
         /// <summary>
         /// Get cached solid brush instance for the given color.
         /// </summary>
         /// <param name="color">the color to get brush for</param>
         /// <returns>brush instance</returns>
-        protected abstract IBrush CreateSolidBrush(RColor color);
+        protected abstract RBrush CreateSolidBrush(RColor color);
 
         /// <summary>
-        /// Convert image object returned from <see cref="HtmlImageLoadEventArgs"/> to <see cref="IImage"/>.
+        /// Convert image object returned from <see cref="HtmlImageLoadEventArgs"/> to <see cref="RImage"/>.
         /// </summary>
         /// <param name="image">the image returned from load event</param>
         /// <returns>converted image or null</returns>
-        protected abstract IImage ConvertImageInt(object image);
+        protected abstract RImage ConvertImageInt(object image);
 
         /// <summary>
-        /// Create an <see cref="IImage"/> object from the given stream.
+        /// Create an <see cref="RImage"/> object from the given stream.
         /// </summary>
         /// <param name="memoryStream">the stream to create image from</param>
         /// <returns>new image instance</returns>
-        protected abstract IImage ImageFromStreamInt(Stream memoryStream);
+        protected abstract RImage ImageFromStreamInt(Stream memoryStream);
 
         /// <summary>
         /// Get font instance by given font family name, size and style.
@@ -308,7 +308,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="size">font size</param>
         /// <param name="style">font style</param>
         /// <returns>font instance</returns>
-        protected internal abstract IFont CreateFontInt(string family, double size, RFontStyle style);
+        protected internal abstract RFont CreateFontInt(string family, double size, RFontStyle style);
 
         /// <summary>
         /// Get font instance by given font family instance, size and style.<br/>
@@ -318,7 +318,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="size">font size</param>
         /// <param name="style">font style</param>
         /// <returns>font instance</returns>
-        protected internal abstract IFont CreateFontInt(IFontFamily family, double size, RFontStyle style);
+        protected internal abstract RFont CreateFontInt(RFontFamily family, double size, RFontStyle style);
 
         /// <summary>
         /// Set the given text to the clipboard
@@ -343,7 +343,7 @@ namespace HtmlRenderer.Interfaces
         /// Set the given image to clipboard.
         /// </summary>
         /// <param name="image"></param>
-        protected virtual void SetToClipboardInt(IImage image)
+        protected virtual void SetToClipboardInt(RImage image)
         {
             throw new NotImplementedException();
         }
@@ -352,7 +352,7 @@ namespace HtmlRenderer.Interfaces
         /// Create a context menu that can be used on the control
         /// </summary>
         /// <returns>new context menu</returns>
-        protected virtual IContextMenu CreateContextMenuInt()
+        protected virtual RContextMenu CreateContextMenuInt()
         {
             throw new NotImplementedException();
         }
@@ -364,7 +364,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="name">the name of the image for save dialog</param>
         /// <param name="extension">the extension of the image for save dialog</param>
         /// <param name="control">optional: the control to show the dialog on</param>
-        protected virtual void SaveToFileInt(IImage image, string name, string extension, IControl control = null)
+        protected virtual void SaveToFileInt(RImage image, string name, string extension, RControl control = null)
         {
             throw new NotImplementedException();
         }

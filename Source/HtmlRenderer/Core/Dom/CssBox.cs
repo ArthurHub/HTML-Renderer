@@ -409,7 +409,7 @@ namespace HtmlRenderer.Core.Dom
         /// Performs layout of the DOM structure creating lines by set bounds restrictions.
         /// </summary>
         /// <param name="g">Device context to use</param>
-        public void PerformLayout(GraphicsBase g)
+        public void PerformLayout(RGraphics g)
         {
             try
             {
@@ -425,7 +425,7 @@ namespace HtmlRenderer.Core.Dom
         /// Paints the fragment
         /// </summary>
         /// <param name="g">Device context to use</param>
-        public void Paint(GraphicsBase g)
+        public void Paint(RGraphics g)
         {
             try
             {
@@ -561,7 +561,7 @@ namespace HtmlRenderer.Core.Dom
         /// Performs layout of the DOM structure creating lines by set bounds restrictions.<br/>
         /// </summary>
         /// <param name="g">Device context to use</param>
-        protected virtual void PerformLayoutImp(GraphicsBase g)
+        protected virtual void PerformLayoutImp(RGraphics g)
         {
             if (Display != CssConstants.None)
             {
@@ -644,7 +644,7 @@ namespace HtmlRenderer.Core.Dom
         /// Assigns words its width and height
         /// </summary>
         /// <param name="g"></param>
-        internal virtual void MeasureWordsSize(GraphicsBase g)
+        internal virtual void MeasureWordsSize(RGraphics g)
         {
             if (!_wordsSizeMeasured)
             {
@@ -719,7 +719,7 @@ namespace HtmlRenderer.Core.Dom
         /// Creates the <see cref="_listItemBox"/>
         /// </summary>
         /// <param name="g"></param>
-        private void CreateListItemBox(GraphicsBase g)
+        private void CreateListItemBox(RGraphics g)
         {
             if (Display == CssConstants.ListItem && ListStyleType != CssConstants.None)
             {
@@ -1126,7 +1126,7 @@ namespace HtmlRenderer.Core.Dom
         /// Paints the fragment
         /// </summary>
         /// <param name="g">the device to draw to</param>
-        protected virtual void PaintImp(GraphicsBase g)
+        protected virtual void PaintImp(RGraphics g)
         {
             if (Display != CssConstants.None && (Display != CssConstants.TableCell || EmptyCells != CssConstants.Hide || !IsSpaceOrEmpty))
             {
@@ -1183,11 +1183,11 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="rect">the bounding rectangle to draw in</param>
         /// <param name="isFirst">is it the first rectangle of the element</param>
         /// <param name="isLast">is it the last rectangle of the element</param>
-        protected void PaintBackground(GraphicsBase g, RRect rect, bool isFirst, bool isLast)
+        protected void PaintBackground(RGraphics g, RRect rect, bool isFirst, bool isLast)
         {
             if (rect.Width > 0 && rect.Height > 0)
             {
-                IBrush brush = null;
+                RBrush brush = null;
 
                 if (BackgroundGradient != CssConstants.None)
                 {
@@ -1204,7 +1204,7 @@ namespace HtmlRenderer.Core.Dom
                     // if (isLast)
                     //  rectangle.Width -= ActualWordSpacing + CssUtils.GetWordEndWhitespace(ActualFont);
 
-                    IGraphicsPath roundrect = null;
+                    RGraphicsPath roundrect = null;
                     if (IsRounded)
                     {
                         roundrect = RenderUtils.GetRoundRect(g, rect, ActualCornerNw, ActualCornerNe, ActualCornerSe, ActualCornerSw);
@@ -1244,7 +1244,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g">the device to draw into</param>
         /// <param name="offset">the current scroll offset to offset the words</param>
-        private void PaintWords(GraphicsBase g, RPoint offset)
+        private void PaintWords(RGraphics g, RPoint offset)
         {
             if (Width.Length > 0)
             {
@@ -1293,7 +1293,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="rectangle"> </param>
         /// <param name="isFirst"> </param>
         /// <param name="isLast"> </param>
-        protected void PaintDecoration(GraphicsBase g, RRect rectangle, bool isFirst, bool isLast)
+        protected void PaintDecoration(RGraphics g, RRect rectangle, bool isFirst, bool isLast)
         {
             if (string.IsNullOrEmpty(TextDecoration) || TextDecoration == CssConstants.None)
                 return;
@@ -1356,7 +1356,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="image">the image loaded or null if failed</param>
         /// <param name="rectangle">the source rectangle to draw in the image (empty - draw everything)</param>
         /// <param name="async">is the callback was called async to load image call</param>
-        private void OnImageLoadComplete(IImage image, RRect rectangle, bool async)
+        private void OnImageLoadComplete(RImage image, RRect rectangle, bool async)
         {
             if (image != null && async)
                 HtmlContainer.RequestRefresh(false);
@@ -1375,7 +1375,7 @@ namespace HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g"></param>
         /// <param name="forceAlpha">used for images so they will have alpha effect</param>
-        protected IBrush GetSelectionBackBrush(GraphicsBase g, bool forceAlpha)
+        protected RBrush GetSelectionBackBrush(RGraphics g, bool forceAlpha)
         {
             var backColor = HtmlContainer.SelectionBackColor;
             if (backColor != RColor.Empty)
@@ -1391,7 +1391,7 @@ namespace HtmlRenderer.Core.Dom
             }
         }
 
-        protected override IFont GetCachedFont(string fontFamily, double fsize, RFontStyle st)
+        protected override RFont GetCachedFont(string fontFamily, double fsize, RFontStyle st)
         {
             return HtmlContainer.Adapter.GetFont(fontFamily, fsize, st);
         }

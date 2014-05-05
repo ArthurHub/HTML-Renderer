@@ -446,7 +446,7 @@ namespace HtmlRenderer.Core.Dom
         /// Paints the fragment
         /// </summary>
         /// <param name="g">the device to draw to</param>
-        protected override void PaintImp(GraphicsBase g)
+        protected override void PaintImp(RGraphics g)
         {
             var rects = CommonUtils.GetFirstValueOrDefault(Rectangles);
 
@@ -480,7 +480,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Draw video image over the iframe if found.
         /// </summary>
-        private void DrawImage(GraphicsBase g, RPoint offset, RRect rect)
+        private void DrawImage(RGraphics g, RPoint offset, RRect rect)
         {
             if (_imageWord.Image != null)
             {
@@ -507,7 +507,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Draw video title on top of the iframe if found.
         /// </summary>
-        private void DrawTitle(GraphicsBase g, RRect rect)
+        private void DrawTitle(RGraphics g, RRect rect)
         {
             if (_videoTitle != null && _imageWord.Width > 40 && _imageWord.Height > 40)
             {
@@ -522,7 +522,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Draw play over the iframe if we found link url.
         /// </summary>
-        private void DrawPlay(GraphicsBase g, RRect rect)
+        private void DrawPlay(RGraphics g, RRect rect)
         {
             if (_isVideo && _imageWord.Width > 70 && _imageWord.Height > 50)
             {
@@ -549,7 +549,7 @@ namespace HtmlRenderer.Core.Dom
         /// Assigns words its width and height
         /// </summary>
         /// <param name="g">the device to use</param>
-        internal override void MeasureWordsSize(GraphicsBase g)
+        internal override void MeasureWordsSize(RGraphics g)
         {
             if (!_wordsSizeMeasured)
             {
@@ -574,7 +574,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="image">the image loaded or null if failed</param>
         /// <param name="rectangle">the source rectangle to draw in the image (empty - draw everything)</param>
         /// <param name="async">is the callback was called async to load image call</param>
-        private void OnLoadImageComplete(IImage image, RRect rectangle, bool async)
+        private void OnLoadImageComplete(RImage image, RRect rectangle, bool async)
         {
             _imageWord.Image = image;
             _imageWord.ImageRectangle = rectangle;

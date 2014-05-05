@@ -21,7 +21,7 @@ namespace HtmlRenderer.Interfaces
     /// The core HTML Renderer components use this class for rendering logic, extending this
     /// class in different platform: WinForms, WPF, Silverlight, PdfSharp, etc.
     /// </summary>
-    public abstract class GraphicsBase : IDisposable
+    public abstract class RGraphics : IDisposable
     {
         #region Fields/Consts
 
@@ -32,10 +32,11 @@ namespace HtmlRenderer.Interfaces
 
         #endregion
 
+
         /// <summary>
         /// Init.
         /// </summary>
-        protected GraphicsBase(AdapterBase adapter)
+        protected RGraphics(AdapterBase adapter)
         {
             ArgChecker.AssertArgNotNull(adapter, "global");
 
@@ -47,7 +48,7 @@ namespace HtmlRenderer.Interfaces
         /// </summary>
         /// <param name="color">the color to get the pen for</param>
         /// <returns>pen instance</returns>
-        public virtual IPen GetPen(RColor color)
+        public virtual RPen GetPen(RColor color)
         {
             return _adapter.GetPen(color);
         }
@@ -57,7 +58,7 @@ namespace HtmlRenderer.Interfaces
         /// </summary>
         /// <param name="color">the color to get the brush for</param>
         /// <returns>solid color brush instance</returns>
-        public virtual IBrush GetSolidBrush(RColor color)
+        public virtual RBrush GetSolidBrush(RColor color)
         {
             return _adapter.GetSolidBrush(color);
         }
@@ -70,7 +71,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="color2">the end color of the gradient</param>
         /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
         /// <returns>linear gradient color brush instance</returns>
-        public abstract IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle);
+        public abstract RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle);
 
         /// <summary>
         /// Gets a Rectangle structure that bounds the clipping region of this Graphics.
@@ -109,13 +110,13 @@ namespace HtmlRenderer.Interfaces
         /// <param name="image">The Image object with which this TextureBrush object fills interiors.</param>
         /// <param name="dstRect">A Rectangle structure that represents the bounding rectangle for this TextureBrush object.</param>
         /// <param name="translateTransformLocation">The dimension by which to translate the transformation</param>
-        public abstract IBrush GetTextureBrush(IImage image, RRect dstRect, RPoint translateTransformLocation);
+        public abstract RBrush GetTextureBrush(RImage image, RRect dstRect, RPoint translateTransformLocation);
 
         /// <summary>
         /// Get GraphicsPath object.
         /// </summary>
         /// <returns>graphics path instance</returns>
-        public abstract IGraphicsPath GetGraphicsPath();
+        public abstract RGraphicsPath GetGraphicsPath();
 
         /// <summary>
         /// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
@@ -124,7 +125,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="str">the string to measure</param>
         /// <param name="font">the font to measure string with</param>
         /// <returns>the size of the string</returns>
-        public abstract RSize MeasureString(string str, IFont font);
+        public abstract RSize MeasureString(string str, RFont font);
 
         /// <summary>
         /// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
@@ -138,7 +139,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
         /// <param name="charFitWidth"></param>
         /// <returns>the size of the string</returns>
-        public abstract RSize MeasureString(string str, IFont font, double maxWidth, out int charFit, out int charFitWidth);
+        public abstract RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out int charFitWidth);
 
         /// <summary>
         /// Draw the given string using the given font and foreground color at given location.
@@ -149,7 +150,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="point">the location to start string draw (top-left)</param>
         /// <param name="size">used to know the size of the rendered text for transparent text support</param>
         /// <param name="rtl">is to render the string right-to-left (true - RTL, false - LTR)</param>
-        public abstract void DrawString(String str, IFont font, RColor color, RPoint point, RSize size, bool rtl);
+        public abstract void DrawString(String str, RFont font, RColor color, RPoint point, RSize size, bool rtl);
 
         /// <summary>
         /// Draws a line connecting the two points specified by the coordinate pairs.
@@ -159,7 +160,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="y1">The y-coordinate of the first point. </param>
         /// <param name="x2">The x-coordinate of the second point. </param>
         /// <param name="y2">The y-coordinate of the second point. </param>
-        public abstract void DrawLine(IPen pen, double x1, double y1, double x2, double y2);
+        public abstract void DrawLine(RPen pen, double x1, double y1, double x2, double y2);
 
         /// <summary>
         /// Draws a rectangle specified by a coordinate pair, a width, and a height.
@@ -169,7 +170,7 @@ namespace HtmlRenderer.Interfaces
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param>
         /// <param name="width">The width of the rectangle to draw. </param>
         /// <param name="height">The height of the rectangle to draw. </param>
-        public abstract void DrawRectangle(IPen pen, double x, double y, double width, double height);
+        public abstract void DrawRectangle(RPen pen, double x, double y, double width, double height);
 
         /// <summary>
         /// Fills the interior of a rectangle specified by a pair of coordinates, a width, and a height.
@@ -179,43 +180,43 @@ namespace HtmlRenderer.Interfaces
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to fill. </param>
         /// <param name="width">Width of the rectangle to fill. </param>
         /// <param name="height">Height of the rectangle to fill. </param>
-        public abstract void DrawRectangle(IBrush brush, double x, double y, double width, double height);
+        public abstract void DrawRectangle(RBrush brush, double x, double y, double width, double height);
 
         /// <summary>
-        /// Draws the specified portion of the specified <see cref="IImage"/> at the specified location and with the specified size.
+        /// Draws the specified portion of the specified <see cref="RImage"/> at the specified location and with the specified size.
         /// </summary>
         /// <param name="image">Image to draw. </param>
         /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. The image is scaled to fit the rectangle. </param>
         /// <param name="srcRect">Rectangle structure that specifies the portion of the <paramref name="image"/> object to draw. </param>
-        public abstract void DrawImage(IImage image, RRect destRect, RRect srcRect);
+        public abstract void DrawImage(RImage image, RRect destRect, RRect srcRect);
 
         /// <summary>
         /// Draws the specified Image at the specified location and with the specified size.
         /// </summary>
         /// <param name="image">Image to draw. </param>
         /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. </param>
-        public abstract void DrawImage(IImage image, RRect destRect);
+        public abstract void DrawImage(RImage image, RRect destRect);
 
         /// <summary>
         /// Draws a GraphicsPath.
         /// </summary>
         /// <param name="pen">Pen that determines the color, width, and style of the path. </param>
         /// <param name="path">GraphicsPath to draw. </param>
-        public abstract void DrawPath(IPen pen, IGraphicsPath path);
+        public abstract void DrawPath(RPen pen, RGraphicsPath path);
 
         /// <summary>
         /// Fills the interior of a GraphicsPath.
         /// </summary>
         /// <param name="brush">Brush that determines the characteristics of the fill. </param>
         /// <param name="path">GraphicsPath that represents the path to fill. </param>
-        public abstract void DrawPath(IBrush brush, IGraphicsPath path);
+        public abstract void DrawPath(RBrush brush, RGraphicsPath path);
 
         /// <summary>
         /// Fills the interior of a polygon defined by an array of points specified by Point structures.
         /// </summary>
         /// <param name="brush">Brush that determines the characteristics of the fill. </param>
         /// <param name="points">Array of Point structures that represent the vertices of the polygon to fill. </param>
-        public abstract void DrawPolygon(IBrush brush, RPoint[] points);
+        public abstract void DrawPolygon(RBrush brush, RPoint[] points);
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

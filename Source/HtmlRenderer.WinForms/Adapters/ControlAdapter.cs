@@ -21,7 +21,7 @@ namespace HtmlRenderer.WinForms.Adapters
     /// <summary>
     /// Adapter for WinForms Control for core.
     /// </summary>
-    internal sealed class ControlAdapter : IControl
+    internal sealed class ControlAdapter : RControl
     {
         /// <summary>
         /// the underline win forms control.
@@ -47,7 +47,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Get the current location of the mouse relative to the control
         /// </summary>
-        public RPoint MouseLocation
+        public override RPoint MouseLocation
         {
             get { return Utils.Convert(_control.PointToClient(Control.MousePosition)); }
         }
@@ -55,7 +55,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Is the left mouse button is currently in pressed state
         /// </summary>
-        public bool LeftMouseButton
+        public override bool LeftMouseButton
         {
             get { return (Control.MouseButtons & MouseButtons.Left) != 0; }
         }
@@ -63,7 +63,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Is the right mouse button is currently in pressed state
         /// </summary>
-        public bool RightMouseButton
+        public override bool RightMouseButton
         {
             get { return (Control.MouseButtons & MouseButtons.Right) != 0; }
         }
@@ -79,7 +79,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Set the cursor over the control to default cursor
         /// </summary>
-        public void SetCursorDefault()
+        public override void SetCursorDefault()
         {
             _control.Cursor = Cursors.Default;
         }
@@ -87,7 +87,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Set the cursor over the control to hand cursor
         /// </summary>
-        public void SetCursorHand()
+        public override void SetCursorHand()
         {
             _control.Cursor = Cursors.Hand;
         }
@@ -95,7 +95,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Set the cursor over the control to I beam cursor
         /// </summary>
-        public void SetCursorIBeam()
+        public override void SetCursorIBeam()
         {
             _control.Cursor = Cursors.IBeam;
         }
@@ -107,7 +107,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="html">the html data</param>
         /// <param name="plainText">the plain text data</param>
         /// <returns>drag-drop data object</returns>
-        public object GetDataObject(string html, string plainText)
+        public override object GetDataObject(string html, string plainText)
         {
             return ClipboardHelper.CreateDataObject(html, plainText);
         }
@@ -116,7 +116,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// Do drag-drop copy operation for the given data object.
         /// </summary>
         /// <param name="dragDropData">the data object</param>
-        public void DoDragDropCopy(object dragDropData)
+        public override void DoDragDropCopy(object dragDropData)
         {
             _control.DoDragDrop(dragDropData, DragDropEffects.Copy);
         }
@@ -125,7 +125,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// Create graphics object that can be used with the control.
         /// </summary>
         /// <returns>graphics object</returns>
-        public GraphicsBase CreateGraphics()
+        public override RGraphics CreateGraphics()
         {
             // the win forms graphics object will be disposed by WinGraphics
             return new GraphicsAdapter(_control.CreateGraphics(), _useGdiPlusTextRendering, true);
@@ -134,7 +134,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Invalidates the entire surface of the control and causes the control to be redrawn.
         /// </summary>
-        public void Invalidate()
+        public override void Invalidate()
         {
             _control.Invalidate();
         }

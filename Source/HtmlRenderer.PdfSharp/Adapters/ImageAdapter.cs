@@ -20,7 +20,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
     /// <summary>
     /// Adapter for WinForms Image object for core.
     /// </summary>
-    internal sealed class ImageAdapter : IImage
+    internal sealed class ImageAdapter : RImage
     {
         /// <summary>
         /// the underline win-forms image.
@@ -46,7 +46,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Get the width, in pixels, of the image.
         /// </summary>
-        public double Width
+        public override double Width
         {
             get { return _image.PixelWidth; }
         }
@@ -54,7 +54,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Get the height, in pixels, of the image.
         /// </summary>
-        public double Height
+        public override double Height
         {
             get { return _image.PixelHeight; }
         }
@@ -63,7 +63,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// Saves this image to the specified stream in PNG format.
         /// </summary>
         /// <param name="stream">The Stream where the image will be saved. </param>
-        public void Save(MemoryStream stream)
+        public override void Save(MemoryStream stream)
         {
             throw new NotSupportedException();
         }
@@ -71,7 +71,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             _image.Dispose();
         }

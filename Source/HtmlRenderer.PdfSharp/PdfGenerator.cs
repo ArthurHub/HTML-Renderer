@@ -25,10 +25,8 @@ namespace HtmlRenderer.PdfSharp
         {
             var size = PageSizeConverter.ToSize(pageSize);
 
-            using(var measure = XGraphics.CreateMeasureContext(size,XGraphicsUnit.Point, XPageDirection.Downwards))
-            {
-                
-            }
+            using (var measure = XGraphics.CreateMeasureContext(size, XGraphicsUnit.Point, XPageDirection.Downwards))
+            { }
 
             var document = new PdfDocument();
 

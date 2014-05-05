@@ -23,17 +23,17 @@ namespace HtmlRenderer.WinForms.Adapters
     /// <summary>
     /// Adapter for WinForms Graphics for core.
     /// </summary>
-    internal sealed class GraphicsAdapter : GraphicsBase
+    internal sealed class GraphicsAdapter : RGraphics
     {
         #region Fields and Consts
 
         /// <summary>
-        /// used for <see cref="MeasureString(string,IFont,double,out int,out int)"/> calculation.
+        /// used for <see cref="MeasureString(string,RFont,double,out int,out int)"/> calculation.
         /// </summary>
         private static readonly int[] _charFit = new int[1];
 
         /// <summary>
-        /// used for <see cref="MeasureString(string,IFont,double,out int,out int)"/> calculation.
+        /// used for <see cref="MeasureString(string,RFont,double,out int,out int)"/> calculation.
         /// </summary>
         private static readonly int[] _charFitWidth = new int[1000];
 
@@ -107,7 +107,7 @@ namespace HtmlRenderer.WinForms.Adapters
             _releaseGraphics = releaseGraphics;
         }
 
-        public override IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        public override RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
         {
             return new BrushAdapter(new LinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), (float)angle), true);
         }
@@ -157,7 +157,7 @@ namespace HtmlRenderer.WinForms.Adapters
             }
         }
 
-        public override RSize MeasureString(string str, IFont font)
+        public override RSize MeasureString(string str, RFont font)
         {
             if (_useGdiPlusTextRendering)
             {
@@ -194,7 +194,7 @@ namespace HtmlRenderer.WinForms.Adapters
             }
         }
 
-        public override RSize MeasureString(string str, IFont font, double maxWidth, out int charFit, out int charFitWidth)
+        public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out int charFitWidth)
         {
             charFit = 0;
             charFitWidth = 0;
@@ -228,7 +228,7 @@ namespace HtmlRenderer.WinForms.Adapters
             }
         }
 
-        public override void DrawString(string str, IFont font, RColor color, RPoint point, RSize size, bool rtl)
+        public override void DrawString(string str, RFont font, RColor color, RPoint point, RSize size, bool rtl)
         {
             var pointConv = Utils.ConvertRound(point);
             var colorConv = Utils.Convert(color);
@@ -259,14 +259,14 @@ namespace HtmlRenderer.WinForms.Adapters
             }
         }
 
-        public override IBrush GetTextureBrush(IImage image, RRect dstRect, RPoint translateTransformLocation)
+        public override RBrush GetTextureBrush(RImage image, RRect dstRect, RPoint translateTransformLocation)
         {
             var brush = new TextureBrush(((ImageAdapter)image).Image, Utils.Convert(dstRect));
             brush.TranslateTransform((float)translateTransformLocation.X, (float)translateTransformLocation.Y);
             return new BrushAdapter(brush, true);
         }
 
-        public override IGraphicsPath GetGraphicsPath()
+        public override RGraphicsPath GetGraphicsPath()
         {
             return new GraphicsPathAdapter();
         }
@@ -284,48 +284,48 @@ namespace HtmlRenderer.WinForms.Adapters
 
         #region Delegate graphics methods
 
-        public override void DrawLine(IPen pen, double x1, double y1, double x2, double y2)
+        public override void DrawLine(RPen pen, double x1, double y1, double x2, double y2)
         {
             ReleaseHdc();
             _g.DrawLine(((PenAdapter)pen).Pen, (float)x1, (float)y1, (float)x2, (float)y2);
         }
 
-        public override void DrawRectangle(IPen pen, double x, double y, double width, double height)
+        public override void DrawRectangle(RPen pen, double x, double y, double width, double height)
         {
             ReleaseHdc();
             _g.DrawRectangle(((PenAdapter)pen).Pen, (float)x, (float)y, (float)width, (float)height);
         }
 
-        public override void DrawRectangle(IBrush brush, double x, double y, double width, double height)
+        public override void DrawRectangle(RBrush brush, double x, double y, double width, double height)
         {
             ReleaseHdc();
             _g.FillRectangle(((BrushAdapter)brush).Brush, (float)x, (float)y, (float)width, (float)height);
         }
 
-        public override void DrawImage(IImage image, RRect destRect, RRect srcRect)
+        public override void DrawImage(RImage image, RRect destRect, RRect srcRect)
         {
             ReleaseHdc();
             _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect), Utils.Convert(srcRect), GraphicsUnit.Pixel);
         }
 
-        public override void DrawImage(IImage image, RRect destRect)
+        public override void DrawImage(RImage image, RRect destRect)
         {
             ReleaseHdc();
             _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect));
         }
 
-        public override void DrawPath(IPen pen, IGraphicsPath path)
+        public override void DrawPath(RPen pen, RGraphicsPath path)
         {
             _g.DrawPath(((PenAdapter)pen).Pen, ((GraphicsPathAdapter)path).GraphicsPath);
         }
 
-        public override void DrawPath(IBrush brush, IGraphicsPath path)
+        public override void DrawPath(RBrush brush, RGraphicsPath path)
         {
             ReleaseHdc();
             _g.FillPath(((BrushAdapter)brush).Brush, ((GraphicsPathAdapter)path).GraphicsPath);
         }
 
-        public override void DrawPolygon(IBrush brush, RPoint[] points)
+        public override void DrawPolygon(RBrush brush, RPoint[] points)
         {
             if (points != null && points.Length > 0)
             {
@@ -375,7 +375,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// Set a resource (e.g. a font) for the specified device context.
         /// WARNING: Calling Font.ToHfont() many times without releasing the font handle crashes the app.
         /// </summary>
-        private void SetFont(IFont font)
+        private void SetFont(RFont font)
         {
             InitHdc();
             Win32Utils.SelectObject(_hdc, ((FontAdapter)font).HFont);
@@ -423,7 +423,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// 3. Draw the text to in-memory DC<br/>
         /// 4. Copy the in-memory DC to the proper location with alpha blend<br/>
         /// </summary>
-        private static void DrawTransparentText(IntPtr hdc, string str, IFont font, Point point, Size size, Color color)
+        private static void DrawTransparentText(IntPtr hdc, string str, RFont font, Point point, Size size, Color color)
         {
             IntPtr dib;
             var memoryHdc = Win32Utils.CreateMemoryHdc(hdc, size.Width, size.Height, out dib);

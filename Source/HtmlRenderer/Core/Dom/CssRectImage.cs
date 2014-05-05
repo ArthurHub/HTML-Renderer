@@ -25,7 +25,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// the image object if it is image word (can be null if not loaded)
         /// </summary>
-        private IImage _image;
+        private RImage _image;
 
         /// <summary>
         /// the image rectangle restriction as returned from image load event
@@ -46,7 +46,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the image this words represents (if one exists)
         /// </summary>
-        public override IImage Image
+        public override RImage Image
         {
             get { return _image; }
             set { _image = value; }

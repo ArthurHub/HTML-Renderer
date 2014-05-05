@@ -10,17 +10,15 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System;
+
 namespace HtmlRenderer.Interfaces
 {
     /// <summary>
     /// TODO:a add doc
-    /// Required for custom fonts handling: fonts that are not installed on the system.
     /// </summary>
-    public interface IFontFamily
+    public abstract class RBrush : IDisposable
     {
-        /// <summary>
-        /// Gets the name of this Font Family.
-        /// </summary>
-        string Name { get; }
+        public abstract void Dispose();
     }
 }

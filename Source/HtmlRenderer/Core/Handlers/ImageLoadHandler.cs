@@ -53,7 +53,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// callback raised when image load process is complete with image or without
         /// </summary>
-        private readonly ActionInt<IImage, RRect, bool> _loadCompleteCallback;
+        private readonly ActionInt<RImage, RRect, bool> _loadCompleteCallback;
 
         /// <summary>
         /// the web client used to download image from URL (to cancel on dispose)
@@ -68,7 +68,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// the image instance of the loaded image
         /// </summary>
-        private IImage _image;
+        private RImage _image;
 
         /// <summary>
         /// the image rectangle restriction as returned from image load event
@@ -98,7 +98,7 @@ namespace HtmlRenderer.Core.Handlers
         /// </summary>
         /// <param name="htmlContainer">the container of the html to handle load image for</param>
         /// <param name="loadCompleteCallback">callback raised when image load process is complete with image or without</param>
-        public ImageLoadHandler(HtmlContainerInt htmlContainer, ActionInt<IImage, RRect, bool> loadCompleteCallback)
+        public ImageLoadHandler(HtmlContainerInt htmlContainer, ActionInt<RImage, RRect, bool> loadCompleteCallback)
         {
             ArgChecker.AssertArgNotNull(htmlContainer, "htmlContainer");
             ArgChecker.AssertArgNotNull(loadCompleteCallback, "loadCompleteCallback");
@@ -110,7 +110,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// the image instance of the loaded image
         /// </summary>
-        public IImage Image
+        public RImage Image
         {
             get { return _image; }
         }
@@ -229,7 +229,7 @@ namespace HtmlRenderer.Core.Handlers
         /// </summary>
         /// <param name="src">the source that has the base64 encoded image</param>
         /// <returns>image from base64 data string or null if failed</returns>
-        private IImage GetImageFromData(string src)
+        private RImage GetImageFromData(string src)
         {
             var s = src.Substring(src.IndexOf(':') + 1).Split(new[] { ',' }, 2);
             if (s.Length == 2)

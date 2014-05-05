@@ -41,7 +41,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="rect">the bounding rectangle to draw in</param>
         /// <param name="isFirst">is it the first rectangle of the element</param>
         /// <param name="isLast">is it the last rectangle of the element</param>
-        public static void DrawBoxBorders(GraphicsBase g, CssBox box, RRect rect, bool isFirst, bool isLast)
+        public static void DrawBoxBorders(RGraphics g, CssBox box, RRect rect, bool isFirst, bool isLast)
         {
             if (rect.Width > 0 && rect.Height > 0)
             {
@@ -73,7 +73,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="brush">the brush to use</param>
         /// <param name="rectangle">the bounding rectangle to draw in</param>
         /// <returns>Beveled border path, null if there is no rounded corners</returns>
-        public static void DrawBorder(Border border, GraphicsBase g, CssBox box, IBrush brush, RRect rectangle)
+        public static void DrawBorder(Border border, RGraphics g, CssBox box, RBrush brush, RRect rectangle)
         {
             SetInOutsetRectanglePoints(border, box, rectangle, true, true);
             g.DrawPolygon(brush, _borderPts);
@@ -91,7 +91,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="rect">the rectangle the border is enclosing</param>
         /// <param name="isLineStart">Specifies if the border is for a starting line (no bevel on left)</param>
         /// <param name="isLineEnd">Specifies if the border is for an ending line (no bevel on right)</param>
-        private static void DrawBorder(Border border, CssBox box, GraphicsBase g, RRect rect, bool isLineStart, bool isLineEnd)
+        private static void DrawBorder(Border border, CssBox box, RGraphics g, RRect rect, bool isLineStart, bool isLineEnd)
         {
             var style = GetStyle(border, box);
             var color = GetColor(border, box, style);
@@ -200,9 +200,9 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="b">Box which the border corresponds</param>
         /// <param name="r">the rectangle the border is enclosing</param>
         /// <returns>Beveled border path, null if there is no rounded corners</returns>
-        private static IGraphicsPath GetRoundedBorderPath(GraphicsBase g, Border border, CssBox b, RRect r)
+        private static RGraphicsPath GetRoundedBorderPath(RGraphics g, Border border, CssBox b, RRect r)
         {
-            IGraphicsPath path = null;
+            RGraphicsPath path = null;
 
             switch (border)
             {
@@ -278,7 +278,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// Get pen to be used for border draw respecting its style.
         /// </summary>
-        private static IPen GetPen(GraphicsBase g, string style, RColor color, double width)
+        private static RPen GetPen(RGraphics g, string style, RColor color, double width)
         {
             var p = g.GetPen(color);
             p.Width = width;

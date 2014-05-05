@@ -62,33 +62,33 @@ namespace HtmlRenderer.PdfSharp.Adapters
             return Utils.Convert(XColor.FromName(colorName));
         }
 
-        protected override IPen CreatePen(RColor color)
+        protected override RPen CreatePen(RColor color)
         {
             return null;
         }
 
-        protected override IBrush CreateSolidBrush(RColor color)
+        protected override RBrush CreateSolidBrush(RColor color)
         {
             return null;
         }
 
-        protected override IImage ConvertImageInt(object image)
+        protected override RImage ConvertImageInt(object image)
         {
             return image != null ? new ImageAdapter((XImage)image) : null;
         }
 
-        protected override IImage ImageFromStreamInt(Stream memoryStream)
+        protected override RImage ImageFromStreamInt(Stream memoryStream)
         {
             return new ImageAdapter(XImage.FromGdiPlusImage(Image.FromStream(memoryStream)));
         }
 
-        protected override IFont CreateFontInt(string family, double size, RFontStyle style)
+        protected override RFont CreateFontInt(string family, double size, RFontStyle style)
         {
             var fontStyle = (XFontStyle)((int)style);
             return new FontAdapter(new XFont(family, size, fontStyle));
         }
 
-        protected override IFont CreateFontInt(IFontFamily family, double size, RFontStyle style)
+        protected override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style)
         {
             var fontStyle = (XFontStyle)((int)style);
             return new FontAdapter(new XFont(((FontFamilyAdapter)family).FontFamily.Name, size, fontStyle));

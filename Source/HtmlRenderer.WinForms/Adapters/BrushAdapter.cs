@@ -18,7 +18,7 @@ namespace HtmlRenderer.WinForms.Adapters
     /// <summary>
     /// Adapter for WinForms brushes objects for core.
     /// </summary>
-    internal sealed class BrushAdapter : IBrush
+    internal sealed class BrushAdapter : RBrush
     {
         /// <summary>
         /// The actual WinForms brush instance.
@@ -51,7 +51,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             if (_dispose)
             {

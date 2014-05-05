@@ -22,7 +22,7 @@ namespace HtmlRenderer.WinForms.Adapters
     /// <summary>
     /// Adapter for WinForms context menu for core.
     /// </summary>
-    internal sealed class ContextMenuAdapter : IContextMenu
+    internal sealed class ContextMenuAdapter : RContextMenu
     {
         #region Fields and Consts
 
@@ -46,7 +46,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// The total number of items in the context menu
         /// </summary>
-        public int ItemsCount
+        public override int ItemsCount
         {
             get { return _contextMenu.Items.Count; }
         }
@@ -55,7 +55,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// Add divider item to the context menu.<br/>
         /// The divider is a non clickable place holder used to separate items.
         /// </summary>
-        public void AddDivider()
+        public override void AddDivider()
         {
             _contextMenu.Items.Add("-");
         }
@@ -66,7 +66,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="text">the text to set on the new context menu item</param>
         /// <param name="enabled">if to set the item as enabled or disabled</param>
         /// <param name="onClick">the event to raise when the item is clicked</param>
-        public void AddItem(string text, bool enabled, EventHandler onClick)
+        public override void AddItem(string text, bool enabled, EventHandler onClick)
         {
             ArgChecker.AssertArgNotNullOrEmpty(text, "text");
             ArgChecker.AssertArgNotNull(onClick, "onClick");
@@ -78,7 +78,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Remove the last item from the context menu iff it is a divider
         /// </summary>
-        public void RemoveLastDivider()
+        public override void RemoveLastDivider()
         {
             if (_contextMenu.Items[_contextMenu.Items.Count - 1].Text == string.Empty)
                 _contextMenu.Items.RemoveAt(_contextMenu.Items.Count - 1);
@@ -89,7 +89,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// </summary>
         /// <param name="parent">the parent control to show in</param>
         /// <param name="location">the location to show at relative to the parent control</param>
-        public void Show(IControl parent, RPoint location)
+        public override void Show(RControl parent, RPoint location)
         {
             _contextMenu.Show(((ControlAdapter)parent).Control, Utils.ConvertRound(location));
         }
@@ -97,7 +97,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             _contextMenu.Dispose();
         }

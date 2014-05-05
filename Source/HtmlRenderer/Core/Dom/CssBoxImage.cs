@@ -59,7 +59,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Get the image of this image box.
         /// </summary>
-        public IImage Image
+        public RImage Image
         {
             get { return _imageWord.Image; }
         }
@@ -68,7 +68,7 @@ namespace HtmlRenderer.Core.Dom
         /// Paints the fragment
         /// </summary>
         /// <param name="g">the device to draw to</param>
-        protected override void PaintImp(GraphicsBase g)
+        protected override void PaintImp(RGraphics g)
         {
             // load image iff it is in visible rectangle
             if (_imageLoadHandler == null)
@@ -128,7 +128,7 @@ namespace HtmlRenderer.Core.Dom
         /// Assigns words its width and height
         /// </summary>
         /// <param name="g">the device to use</param>
-        internal override void MeasureWordsSize(GraphicsBase g)
+        internal override void MeasureWordsSize(RGraphics g)
         {
             if (!_wordsSizeMeasured)
             {
@@ -173,7 +173,7 @@ namespace HtmlRenderer.Core.Dom
         /// <param name="image">the image loaded or null if failed</param>
         /// <param name="rectangle">the source rectangle to draw in the image (empty - draw everything)</param>
         /// <param name="async">is the callback was called async to load image call</param>
-        private void OnLoadImageComplete(IImage image, RRect rectangle, bool async)
+        private void OnLoadImageComplete(RImage image, RRect rectangle, bool async)
         {
             _imageWord.Image = image;
             _imageWord.ImageRectangle = rectangle;

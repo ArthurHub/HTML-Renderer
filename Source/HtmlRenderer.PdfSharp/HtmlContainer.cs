@@ -227,7 +227,7 @@ namespace HtmlRenderer.PdfSharp
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
-            using(var ig = new GraphicsAdapter(g))
+            using (var ig = new GraphicsAdapter(g))
             {
                 _htmlContainerInt.PerformLayout(ig);
             }

@@ -40,7 +40,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="g">the graphics to clip</param>
         /// <param name="box">the box that is rendered to get containing blocks</param>
         /// <returns>the previous region if clipped, otherwise null</returns>
-        public static RRect ClipGraphicsByOverflow(GraphicsBase g, CssBox box)
+        public static RRect ClipGraphicsByOverflow(RGraphics g, CssBox box)
         {
             var containingBlock = box.ContainingBlock;
             while (true)
@@ -72,7 +72,7 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         /// <param name="g">the graphics to clip</param>
         /// <param name="prevClip">the region to set on the graphics (null - ignore)</param>
-        public static void ReturnClip(GraphicsBase g, RRect prevClip)
+        public static void ReturnClip(RGraphics g, RRect prevClip)
         {
             if (prevClip != RRect.Empty)
             {
@@ -86,7 +86,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="g">the device to draw into</param>
         /// <param name="htmlContainer"></param>
         /// <param name="r">the rectangle to draw icon in</param>
-        public static void DrawImageLoadingIcon(GraphicsBase g, HtmlContainerInt htmlContainer, RRect r)
+        public static void DrawImageLoadingIcon(RGraphics g, HtmlContainerInt htmlContainer, RRect r)
         {
             g.DrawRectangle(g.GetPen(RColor.LightGray), r.Left + 3, r.Top + 3, 13, 14);
             var image = htmlContainer.Adapter.GetLoadImage();
@@ -99,7 +99,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="g">the device to draw into</param>
         /// <param name="htmlContainer"></param>
         /// <param name="r">the rectangle to draw icon in</param>
-        public static void DrawImageErrorIcon(GraphicsBase g, HtmlContainerInt htmlContainer, RRect r)
+        public static void DrawImageErrorIcon(RGraphics g, HtmlContainerInt htmlContainer, RRect r)
         {
             g.DrawRectangle(g.GetPen(RColor.LightGray), r.Left + 2, r.Top + 2, 15, 15);
             var image = htmlContainer.Adapter.GetErrorImage();
@@ -116,7 +116,7 @@ namespace HtmlRenderer.Core.Utils
         /// <param name="seRadius">Radius of the south east corner</param>
         /// <param name="swRadius">Radius of the south west corner</param>
         /// <returns>GraphicsPath with the lines of the rounded rectangle ready to be painted</returns>
-        public static IGraphicsPath GetRoundRect(GraphicsBase g, RRect rect, double nwRadius, double neRadius, double seRadius, double swRadius)
+        public static RGraphicsPath GetRoundRect(RGraphics g, RRect rect, double nwRadius, double neRadius, double seRadius, double swRadius)
         {
             //  NW-----NE
             //  |       |

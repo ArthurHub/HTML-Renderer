@@ -24,7 +24,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
     /// <summary>
     /// Adapter for WinForms Graphics for core.
     /// </summary>
-    internal sealed class GraphicsAdapter : GraphicsBase
+    internal sealed class GraphicsAdapter : RGraphics
     {
         #region Fields and Consts
 
@@ -114,7 +114,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="str">the string to measure</param>
         /// <param name="font">the font to measure string with</param>
         /// <returns>the size of the string</returns>
-        public override RSize MeasureString(string str, IFont font)
+        public override RSize MeasureString(string str, RFont font)
         {
             var fontAdapter = (FontAdapter)font;
             var realFont = fontAdapter.Font;
@@ -128,7 +128,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
             }
 
             return Utils.Convert(size);
-
         }
 
         /// <summary>
@@ -143,7 +142,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
         /// <param name="charFitWidth"></param>
         /// <returns>the size of the string</returns>
-        public override RSize MeasureString(string str, IFont font, double maxWidth, out int charFit, out int charFitWidth)
+        public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out int charFitWidth)
         {
             throw new NotSupportedException();
         }
@@ -157,7 +156,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="point">the location to start string draw (top-left)</param>
         /// <param name="size">used to know the size of the rendered text for transparent text support</param>
         /// <param name="rtl">is to render the string right-to-left (true - RTL, false - LTR)</param>
-        public override void DrawString(string str, IFont font, RColor color, RPoint point, RSize size, bool rtl)
+        public override void DrawString(string str, RFont font, RColor color, RPoint point, RSize size, bool rtl)
         {
             var brush = new XSolidBrush(Utils.Convert(color));
             _g.DrawString(str, ((FontAdapter)font).Font, brush, point.X - font.LeftPadding * .8f, point.Y);
@@ -171,7 +170,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="color2">the end color of the gradient</param>
         /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
         /// <returns>linear gradient color brush instance</returns>
-        public override IBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        public override RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
         {
             XLinearGradientMode mode;
             if (angle < 45)
@@ -191,7 +190,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="image">The Image object with which this TextureBrush object fills interiors.</param>
         /// <param name="dstRect">A Rectangle structure that represents the bounding rectangle for this TextureBrush object.</param>
         /// <param name="translateTransformLocation">The dimension by which to translate the transformation</param>
-        public override IBrush GetTextureBrush(IImage image, RRect dstRect, RPoint translateTransformLocation)
+        public override RBrush GetTextureBrush(RImage image, RRect dstRect, RPoint translateTransformLocation)
         {
             // TODO:a handle missing TextureBrush
             //            var brush = new TextureBrush(((ImageAdapter)image).Image, Utils.Convert(dstRect));
@@ -204,7 +203,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// Get GraphicsPath object.
         /// </summary>
         /// <returns>graphics path instance</returns>
-        public override IGraphicsPath GetGraphicsPath()
+        public override RGraphicsPath GetGraphicsPath()
         {
             return new GraphicsPathAdapter();
         }
@@ -228,7 +227,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="x1">The x-coordinate of the first point. </param><param name="y1">The y-coordinate of the first point. </param>
         /// <param name="x2">The x-coordinate of the second point. </param><param name="y2">The y-coordinate of the second point. </param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
-        public override void DrawLine(IPen pen, double x1, double y1, double x2, double y2)
+        public override void DrawLine(RPen pen, double x1, double y1, double x2, double y2)
         {
             _g.DrawLine(((PenAdapter)pen).Pen, x1, y1, x2, y2);
         }
@@ -241,7 +240,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param>
         /// <param name="width">The width of the rectangle to draw. </param>
         /// <param name="height">The height of the rectangle to draw. </param>
-        public override void DrawRectangle(IPen pen, double x, double y, double width, double height)
+        public override void DrawRectangle(RPen pen, double x, double y, double width, double height)
         {
             _g.DrawRectangle(((PenAdapter)pen).Pen, x, y, width, height);
         }
@@ -254,7 +253,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to fill. </param>
         /// <param name="width">Width of the rectangle to fill. </param>
         /// <param name="height">Height of the rectangle to fill. </param>
-        public override void DrawRectangle(IBrush brush, double x, double y, double width, double height)
+        public override void DrawRectangle(RBrush brush, double x, double y, double width, double height)
         {
             _g.DrawRectangle(((BrushAdapter)brush).Brush, x, y, width, height);
         }
@@ -265,7 +264,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="image">Image to draw. </param>
         /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. The image is scaled to fit the rectangle. </param>
         /// <param name="srcRect">Rectangle structure that specifies the portion of the <paramref name="image"/> object to draw. </param>
-        public override void DrawImage(IImage image, RRect destRect, RRect srcRect)
+        public override void DrawImage(RImage image, RRect destRect, RRect srcRect)
         {
             _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect), Utils.Convert(srcRect), XGraphicsUnit.Point);
         }
@@ -275,7 +274,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         /// <param name="image">Image to draw. </param>
         /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. </param>
-        public override void DrawImage(IImage image, RRect destRect)
+        public override void DrawImage(RImage image, RRect destRect)
         {
             _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect));
         }
@@ -285,7 +284,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         /// <param name="pen">Pen that determines the color, width, and style of the path. </param>
         /// <param name="path">GraphicsPath to draw. </param>
-        public override void DrawPath(IPen pen, IGraphicsPath path)
+        public override void DrawPath(RPen pen, RGraphicsPath path)
         {
             _g.DrawPath(((PenAdapter)pen).Pen, ((GraphicsPathAdapter)path).GraphicsPath);
         }
@@ -295,7 +294,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         /// <param name="brush">Brush that determines the characteristics of the fill. </param>
         /// <param name="path">GraphicsPath that represents the path to fill. </param>
-        public override void DrawPath(IBrush brush, IGraphicsPath path)
+        public override void DrawPath(RBrush brush, RGraphicsPath path)
         {
             _g.DrawPath(((BrushAdapter)brush).Brush, ((GraphicsPathAdapter)path).GraphicsPath);
         }
@@ -305,7 +304,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         /// <param name="brush">Brush that determines the characteristics of the fill. </param>
         /// <param name="points">Array of Point structures that represent the vertices of the polygon to fill. </param>
-        public override void DrawPolygon(IBrush brush, RPoint[] points)
+        public override void DrawPolygon(RBrush brush, RPoint[] points)
         {
             if (points != null && points.Length > 0)
             {

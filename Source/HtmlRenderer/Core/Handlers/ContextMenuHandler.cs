@@ -85,12 +85,12 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// the last context menu shown
         /// </summary>
-        private IContextMenu _contextMenu;
+        private RContextMenu _contextMenu;
 
         /// <summary>
         /// the control that the context menu was shown on
         /// </summary>
-        private IControl _parentControl;
+        private RControl _parentControl;
 
         /// <summary>
         /// the css rectangle that context menu shown on
@@ -276,7 +276,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <param name="parent">the parent control to show the context menu on</param>
         /// <param name="rect">the rectangle that was clicked to show context menu</param>
         /// <param name="link">the link that was clicked to show context menu on</param>
-        public void ShowContextMenu(IControl parent, CssRect rect, CssBox link)
+        public void ShowContextMenu(RControl parent, CssRect rect, CssBox link)
         {
             try
             {

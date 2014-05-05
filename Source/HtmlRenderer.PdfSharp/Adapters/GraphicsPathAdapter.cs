@@ -18,7 +18,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
     /// <summary>
     /// Adapter for WinForms graphics path object for core.
     /// </summary>
-    internal sealed class GraphicsPathAdapter : IGraphicsPath
+    internal sealed class GraphicsPathAdapter : RGraphicsPath
     {
         /// <summary>
         /// The actual WinForms graphics path instance.
@@ -36,7 +36,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Appends an elliptical arc to the current figure.
         /// </summary>
-        public void AddArc(double x, double y, double width, double height, double startAngle, double sweepAngle)
+        public override void AddArc(double x, double y, double width, double height, double startAngle, double sweepAngle)
         {
             _graphicsPath.AddArc(x, y, width, height, startAngle, sweepAngle);
         }
@@ -44,7 +44,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Appends a line segment to this GraphicsPath.
         /// </summary>
-        public void AddLine(double x1, double y1, double x2, double y2)
+        public override void AddLine(double x1, double y1, double x2, double y2)
         {
             _graphicsPath.AddLine(x1, y1, x2, y2);
         }
@@ -53,7 +53,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// Closes the current figure and starts a new figure. If the current figure contains a sequence of connected 
         /// lines and curves, the method closes the loop by connecting a line from the endpoint to the starting point.
         /// </summary>
-        public void CloseFigure()
+        public override void CloseFigure()
         {
             _graphicsPath.CloseFigure();
         }
@@ -61,8 +61,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
-        {
-        }
+        public override void Dispose()
+        { }
     }
 }

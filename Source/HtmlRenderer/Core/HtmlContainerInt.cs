@@ -483,7 +483,7 @@ namespace HtmlRenderer.Core
         /// Measures the bounds of box and children, recursively.
         /// </summary>
         /// <param name="g">Device context to draw</param>
-        public void PerformLayout(GraphicsBase g)
+        public void PerformLayout(RGraphics g)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
@@ -510,7 +510,7 @@ namespace HtmlRenderer.Core
         /// Render the html using the given device.
         /// </summary>
         /// <param name="g">the device to use to render</param>
-        public void PerformPaint(GraphicsBase g)
+        public void PerformPaint(RGraphics g)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
@@ -537,7 +537,7 @@ namespace HtmlRenderer.Core
         /// </summary>
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="location">the location of the mouse</param>
-        public void HandleMouseDown(IControl parent, RPoint location)
+        public void HandleMouseDown(RControl parent, RPoint location)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
 
@@ -558,7 +558,7 @@ namespace HtmlRenderer.Core
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="location">the location of the mouse</param>
         /// <param name="e">the mouse event data</param>
-        public void HandleMouseUp(IControl parent, RPoint location, RMouseEvent e)
+        public void HandleMouseUp(RControl parent, RPoint location, RMouseEvent e)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
 
@@ -593,7 +593,7 @@ namespace HtmlRenderer.Core
         /// </summary>
         /// <param name="parent">the control hosting the html to set cursor and invalidate</param>
         /// <param name="location">the location of the mouse</param>
-        public void HandleMouseDoubleClick(IControl parent, RPoint location)
+        public void HandleMouseDoubleClick(RControl parent, RPoint location)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
 
@@ -613,7 +613,7 @@ namespace HtmlRenderer.Core
         /// </summary>
         /// <param name="parent">the control hosting the html to set cursor and invalidate</param>
         /// <param name="location">the location of the mouse</param>
-        public void HandleMouseMove(IControl parent, RPoint location)
+        public void HandleMouseMove(RControl parent, RPoint location)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
 
@@ -654,7 +654,7 @@ namespace HtmlRenderer.Core
         /// Handle mouse leave to handle hover cursor.
         /// </summary>
         /// <param name="parent">the control hosting the html to set cursor and invalidate</param>
-        public void HandleMouseLeave(IControl parent)
+        public void HandleMouseLeave(RControl parent)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
 
@@ -674,7 +674,7 @@ namespace HtmlRenderer.Core
         /// </summary>
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="e">the pressed key</param>
-        public void HandleKeyDown(IControl parent, RKeyEvent e)
+        public void HandleKeyDown(RControl parent, RKeyEvent e)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
@@ -784,7 +784,7 @@ namespace HtmlRenderer.Core
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="location">the location of the mouse</param>
         /// <param name="link">the link that was clicked</param>
-        internal void HandleLinkClicked(IControl parent, RPoint location, CssBox link)
+        internal void HandleLinkClicked(RControl parent, RPoint location, CssBox link)
         {
             if (LinkClicked != null)
             {

@@ -104,15 +104,15 @@
     <Compile Include="Entities\RRect.cs" />
     <Compile Include="Entities\RSize.cs" />
     <Compile Include="Interfaces\AdapterBase.cs" />
-    <Compile Include="Interfaces\IBrush.cs" />
-    <Compile Include="Interfaces\IContextMenu.cs" />
-    <Compile Include="Interfaces\IControl.cs" />
-    <Compile Include="Interfaces\IFont.cs" />
-    <Compile Include="Interfaces\IFontFamily.cs" />
-    <Compile Include="Interfaces\GraphicsBase.cs" />
-    <Compile Include="Interfaces\IGraphicsPath.cs" />
-    <Compile Include="Interfaces\IImage.cs" />
-    <Compile Include="Interfaces\IPen.cs" />
+    <Compile Include="Interfaces\RBrush.cs" />
+    <Compile Include="Interfaces\RContextMenu.cs" />
+    <Compile Include="Interfaces\RControl.cs" />
+    <Compile Include="Interfaces\RFont.cs" />
+    <Compile Include="Interfaces\RFontFamily.cs" />
+    <Compile Include="Interfaces\RGraphics.cs" />
+    <Compile Include="Interfaces\RGraphicsPath.cs" />
+    <Compile Include="Interfaces\RImage.cs" />
+    <Compile Include="Interfaces\RPen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Utils\SubString.cs" />
   </ItemGroup>

@@ -150,7 +150,7 @@ namespace HtmlRenderer.Core.Dom
         private RColor _actualBorderBottomColor = RColor.Empty;
         private RColor _actualBorderRightColor = RColor.Empty;
         private RColor _actualBackgroundColor = RColor.Empty;
-        private IFont _actualFont;
+        private RFont _actualFont;
 
         #endregion
 
@@ -1203,7 +1203,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the actual font of the parent
         /// </summary>
-        public IFont ActualParentFont
+        public RFont ActualParentFont
         {
             get { return GetParent() == null ? ActualFont : GetParent().ActualFont; }
         }
@@ -1211,7 +1211,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets the font that should be actually used to paint the text of the box
         /// </summary>
-        public IFont ActualFont
+        public RFont ActualFont
         {
             get
             {
@@ -1289,7 +1289,7 @@ namespace HtmlRenderer.Core.Dom
             }
         }
 
-        protected abstract IFont GetCachedFont(string fontFamily, double fsize, RFontStyle st);
+        protected abstract RFont GetCachedFont(string fontFamily, double fsize, RFontStyle st);
 
         /// <summary>
         /// Gets the line height
@@ -1425,7 +1425,7 @@ namespace HtmlRenderer.Core.Dom
         /// <summary>
         /// Measures the width of whitespace between words (set <see cref="ActualWordSpacing"/>).
         /// </summary>
-        protected void MeasureWordSpacing(GraphicsBase g)
+        protected void MeasureWordSpacing(RGraphics g)
         {
             if (double.IsNaN(ActualWordSpacing))
             {

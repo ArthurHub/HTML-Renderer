@@ -19,7 +19,7 @@ namespace HtmlRenderer.WinForms.Adapters
     /// <summary>
     /// Adapter for WinForms Font object for core.
     /// </summary>
-    internal sealed class FontAdapter : IFont
+    internal sealed class FontAdapter : RFont
     {
         #region Fields and Consts
 
@@ -83,7 +83,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Gets the em-size of this Font measured in the units specified by the Unit property.
         /// </summary>
-        public double Size
+        public override double Size
         {
             get { return _font.Size; }
         }
@@ -91,7 +91,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Gets the em-size, in points, of this Font.
         /// </summary>
-        public double SizeInPoints
+        public override double SizeInPoints
         {
             get { return _font.SizeInPoints; }
         }
@@ -99,7 +99,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Get the vertical offset of the font underline location from the top of the font.
         /// </summary>
-        public double UnderlineOffset
+        public override double UnderlineOffset
         {
             get { return _underlineOffset; }
         }
@@ -107,7 +107,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// The line spacing, in pixels, of this font.
         /// </summary>
-        public double Height
+        public override double Height
         {
             get { return _height; }
         }
@@ -115,13 +115,13 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Get the left padding, in pixels, of the font.
         /// </summary>
-        public double LeftPadding
+        public override double LeftPadding
         {
             get { return _height / 6f; }
         }
 
 
-        public double GetWhitespaceWidth(GraphicsBase graphics)
+        public override double GetWhitespaceWidth(RGraphics graphics)
         {
             if (_whitespaceWidth < 0)
             {
