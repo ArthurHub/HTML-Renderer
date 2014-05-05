@@ -10,7 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 using PdfSharp.Drawing;
 
 namespace HtmlRenderer.PdfSharp.Adapters
@@ -41,9 +41,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
             get { return _fontFamily; }
         }
 
-        /// <summary>
-        /// Gets the name of this FontFamily.
-        /// </summary>
         public override string Name
         {
             get { return _fontFamily.Name; }

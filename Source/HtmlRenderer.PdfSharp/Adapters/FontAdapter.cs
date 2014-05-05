@@ -10,7 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 using PdfSharp.Drawing;
 
 namespace HtmlRenderer.PdfSharp.Adapters
@@ -61,41 +61,26 @@ namespace HtmlRenderer.PdfSharp.Adapters
             get { return _font; }
         }
 
-        /// <summary>
-        /// Gets the em-size of this Font measured in the units specified by the Unit property.
-        /// </summary>
         public override double Size
         {
             get { return _font.Size; }
         }
 
-        /// <summary>
-        /// Gets the em-size, in points, of this Font.
-        /// </summary>
         public override double SizeInPoints
         {
             get { return _font.Size; }
         }
 
-        /// <summary>
-        /// Get the vertical offset of the font underline location from the top of the font.
-        /// </summary>
         public override double UnderlineOffset
         {
             get { return _underlineOffset; }
         }
 
-        /// <summary>
-        /// The line spacing, in pixels, of this font.
-        /// </summary>
         public override double Height
         {
             get { return _height; }
         }
 
-        /// <summary>
-        /// Get the left padding, in pixels, of the font.
-        /// </summary>
         public override double LeftPadding
         {
             get { return _height / 6f; }

@@ -11,10 +11,11 @@
 // "The Art of War"
 
 using System;
+using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Dom;
+using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core.Handlers
 {
@@ -600,7 +601,7 @@ namespace HtmlRenderer.Core.Handlers
 
         /// <summary>
         /// Calculate the character index and offset by characters for the given word and given offset.<br/>
-        /// <seealso cref="CalculateWordCharIndexAndOffset(RControl,HtmlRenderer.Core.Dom.CssRect,HtmlRenderer.Entities.RPoint,bool)"/>.
+        /// <seealso cref="CalculateWordCharIndexAndOffset(RControl,HtmlRenderer.Core.Dom.CssRect,RPoint,bool)"/>.
         /// </summary>
         /// <param name="control">used to create graphics to measure string</param>
         /// <param name="word">the word to calculate its index and offset</param>

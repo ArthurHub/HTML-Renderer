@@ -13,13 +13,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core
 {
@@ -84,7 +84,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// 
         /// </summary>
-        private readonly AdapterBase _adapter;
+        private readonly Adapter _adapter;
 
         /// <summary>
         /// parser for CSS data
@@ -175,7 +175,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// Init.
         /// </summary>
-        public HtmlContainerInt(AdapterBase adapter)
+        public HtmlContainerInt(Adapter adapter)
         {
             ArgChecker.AssertArgNotNull(adapter, "global");
 
@@ -186,7 +186,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// 
         /// </summary>
-        internal AdapterBase Adapter
+        internal Adapter Adapter
         {
             get { return _adapter; }
         }

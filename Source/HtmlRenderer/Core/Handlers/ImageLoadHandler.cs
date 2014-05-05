@@ -17,9 +17,10 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
+using HtmlRenderer.Adapters.Entities;
+using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core.Handlers
 {

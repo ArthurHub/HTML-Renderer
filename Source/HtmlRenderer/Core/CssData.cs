@@ -12,10 +12,10 @@
 
 using System;
 using System.Collections.Generic;
+using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core
 {
@@ -61,7 +61,7 @@ namespace HtmlRenderer.Core
         /// <param name="stylesheet">the stylesheet source to parse</param>
         /// <param name="combineWithDefault">true - combine the parsed css data with default css data, false - return only the parsed css data</param>
         /// <returns>the parsed css data</returns>
-        public static CssData Parse(AdapterBase adapter, string stylesheet, bool combineWithDefault = true)
+        public static CssData Parse(Adapter adapter, string stylesheet, bool combineWithDefault = true)
         {
             CssParser parser = new CssParser(adapter);
             return parser.ParseStyleSheet(stylesheet, combineWithDefault);

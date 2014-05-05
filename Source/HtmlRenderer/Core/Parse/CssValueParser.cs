@@ -12,11 +12,10 @@
 
 using System;
 using System.Globalization;
+using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Dom;
-using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core.Parse
 {
@@ -30,7 +29,7 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// 
         /// </summary>
-        private readonly AdapterBase _adapter;
+        private readonly Adapter _adapter;
 
         #endregion
 
@@ -38,7 +37,7 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// Init.
         /// </summary>
-        public CssValueParser(AdapterBase adapter)
+        public CssValueParser(Adapter adapter)
         {
             ArgChecker.AssertArgNotNull(adapter, "global");
 

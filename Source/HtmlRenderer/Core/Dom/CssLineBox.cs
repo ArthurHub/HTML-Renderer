@@ -12,8 +12,8 @@
 
 using System;
 using System.Collections.Generic;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters.Entities;
+using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core.Dom
 {

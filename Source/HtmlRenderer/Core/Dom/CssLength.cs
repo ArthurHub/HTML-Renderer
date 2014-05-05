@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
-using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
+using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Dom
 {

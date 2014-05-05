@@ -12,8 +12,8 @@
 
 using System;
 using HtmlRenderer.Core;
+using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
 using HtmlRenderer.PdfSharp.Adapters;
 using HtmlRenderer.PdfSharp.Utilities;
 using PdfSharp.Drawing;

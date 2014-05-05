@@ -10,7 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 using PdfSharp.Drawing;
 
 namespace HtmlRenderer.PdfSharp.Adapters
@@ -41,9 +41,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
             get { return _brush; }
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
         public override void Dispose()
         { }
     }

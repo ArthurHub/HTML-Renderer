@@ -14,10 +14,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core.Parse
 {
@@ -36,7 +36,7 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// 
         /// </summary>
-        private readonly AdapterBase _adapter;
+        private readonly Adapter _adapter;
 
         /// <summary>
         /// Utility for value parsing.
@@ -54,7 +54,7 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// Init.
         /// </summary>
-        public CssParser(AdapterBase adapter)
+        public CssParser(Adapter adapter)
         {
             ArgChecker.AssertArgNotNull(adapter, "global");
 

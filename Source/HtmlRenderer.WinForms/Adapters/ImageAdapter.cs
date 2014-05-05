@@ -13,7 +13,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.WinForms.Adapters
 {

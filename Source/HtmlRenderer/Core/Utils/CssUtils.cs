@@ -11,11 +11,10 @@
 // "The Art of War"
 
 using System;
+using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Dom;
-using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core.Utils
 {

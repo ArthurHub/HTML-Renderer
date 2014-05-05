@@ -14,8 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
 
 namespace HtmlRenderer.Core.Handlers
 {

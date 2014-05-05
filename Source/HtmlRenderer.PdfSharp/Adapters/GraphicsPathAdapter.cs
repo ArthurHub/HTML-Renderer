@@ -10,7 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 using PdfSharp.Drawing;
 
 namespace HtmlRenderer.PdfSharp.Adapters
@@ -33,34 +33,21 @@ namespace HtmlRenderer.PdfSharp.Adapters
             get { return _graphicsPath; }
         }
 
-        /// <summary>
-        /// Appends an elliptical arc to the current figure.
-        /// </summary>
         public override void AddArc(double x, double y, double width, double height, double startAngle, double sweepAngle)
         {
             _graphicsPath.AddArc(x, y, width, height, startAngle, sweepAngle);
         }
 
-        /// <summary>
-        /// Appends a line segment to this GraphicsPath.
-        /// </summary>
         public override void AddLine(double x1, double y1, double x2, double y2)
         {
             _graphicsPath.AddLine(x1, y1, x2, y2);
         }
 
-        /// <summary>
-        /// Closes the current figure and starts a new figure. If the current figure contains a sequence of connected 
-        /// lines and curves, the method closes the loop by connecting a line from the endpoint to the starting point.
-        /// </summary>
         public override void CloseFigure()
         {
             _graphicsPath.CloseFigure();
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
         public override void Dispose()
         { }
     }

@@ -13,12 +13,12 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core.Dom
 {

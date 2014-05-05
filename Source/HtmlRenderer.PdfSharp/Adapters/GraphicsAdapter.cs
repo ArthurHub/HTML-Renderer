@@ -13,9 +13,9 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 using HtmlRenderer.PdfSharp.Utilities;
 using PdfSharp.Drawing;
 
@@ -55,39 +55,22 @@ namespace HtmlRenderer.PdfSharp.Adapters
             _releaseGraphics = releaseGraphics;
         }
 
-        /// <summary>
-        /// Gets the bounding clipping region of this graphics.
-        /// </summary>
-        /// <returns>The bounding rectangle for the clipping region</returns>
         public override RRect GetClip()
         {
             RectangleF clip = _g.Graphics.ClipBounds;
             return Utils.Convert(clip);
         }
 
-        /// <summary>
-        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
-        /// </summary>
-        /// <param name="rect">Rectangle structure to combine.</param>
         public override void SetClipReplace(RRect rect)
         {
             _g.Graphics.SetClip(new RectangleF((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height), CombineMode.Replace);
         }
 
-        /// <summary>
-        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
-        /// </summary>
-        /// <param name="rect">Rectangle structure to combine.</param>
         public override void SetClipExclude(RRect rect)
         {
             _g.Graphics.SetClip(new RectangleF((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height), CombineMode.Exclude);
         }
 
-        /// <summary>
-        /// Set the graphics smooth mode to use anti-alias.<br/>
-        /// Use <see cref="ReturnPreviousSmoothingMode"/> to return back the mode used.
-        /// </summary>
-        /// <returns>the previous smooth mode before the change</returns>
         public override Object SetAntiAliasSmoothingMode()
         {
             var prevMode = _g.SmoothingMode;
@@ -95,10 +78,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
             return prevMode;
         }
 
-        /// <summary>
-        /// Return to previous smooth mode before anti-alias was set as returned from <see cref="SetAntiAliasSmoothingMode"/>.
-        /// </summary>
-        /// <param name="prevMode">the previous mode to set</param>
         public override void ReturnPreviousSmoothingMode(Object prevMode)
         {
             if (prevMode != null)
@@ -107,13 +86,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
             }
         }
 
-        /// <summary>
-        /// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
-        /// using the given font <paramref name="font"/>.
-        /// </summary>
-        /// <param name="str">the string to measure</param>
-        /// <param name="font">the font to measure string with</param>
-        /// <returns>the size of the string</returns>
         public override RSize MeasureString(string str, RFont font)
         {
             var fontAdapter = (FontAdapter)font;
@@ -130,46 +102,17 @@ namespace HtmlRenderer.PdfSharp.Adapters
             return Utils.Convert(size);
         }
 
-        /// <summary>
-        /// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
-        /// using the given font <paramref name="font"/>.<br/>
-        /// Restrict the width of the string and get the number of characters able to fit in the restriction and
-        /// the width those characters take.
-        /// </summary>
-        /// <param name="str">the string to measure</param>
-        /// <param name="font">the font to measure string with</param>
-        /// <param name="maxWidth">the max width to render the string in</param>
-        /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
-        /// <param name="charFitWidth"></param>
-        /// <returns>the size of the string</returns>
         public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out int charFitWidth)
         {
             throw new NotSupportedException();
         }
 
-        /// <summary>
-        /// Draw the given string using the given font and foreground color at given location.
-        /// </summary>
-        /// <param name="str">the string to draw</param>
-        /// <param name="font">the font to use to draw the string</param>
-        /// <param name="color">the text color to set</param>
-        /// <param name="point">the location to start string draw (top-left)</param>
-        /// <param name="size">used to know the size of the rendered text for transparent text support</param>
-        /// <param name="rtl">is to render the string right-to-left (true - RTL, false - LTR)</param>
         public override void DrawString(string str, RFont font, RColor color, RPoint point, RSize size, bool rtl)
         {
             var brush = new XSolidBrush(Utils.Convert(color));
             _g.DrawString(str, ((FontAdapter)font).Font, brush, point.X - font.LeftPadding * .8f, point.Y);
         }
 
-        /// <summary>
-        /// Get linear gradient color brush from <paramref name="color1"/> to <paramref name="color2"/>.
-        /// </summary>
-        /// <param name="rect">the rectangle to get the brush for</param>
-        /// <param name="color1">the start color of the gradient</param>
-        /// <param name="color2">the end color of the gradient</param>
-        /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
-        /// <returns>linear gradient color brush instance</returns>
         public override RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
         {
             XLinearGradientMode mode;
@@ -184,12 +127,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
             return new BrushAdapter(new XLinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), mode));
         }
 
-        /// <summary>
-        /// Get TextureBrush object that uses the specified image and bounding rectangle.
-        /// </summary>
-        /// <param name="image">The Image object with which this TextureBrush object fills interiors.</param>
-        /// <param name="dstRect">A Rectangle structure that represents the bounding rectangle for this TextureBrush object.</param>
-        /// <param name="translateTransformLocation">The dimension by which to translate the transformation</param>
         public override RBrush GetTextureBrush(RImage image, RRect dstRect, RPoint translateTransformLocation)
         {
             // TODO:a handle missing TextureBrush
@@ -199,10 +136,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
             return new BrushAdapter(new XSolidBrush(XColors.DeepPink));
         }
 
-        /// <summary>
-        /// Get GraphicsPath object.
-        /// </summary>
-        /// <returns>graphics path instance</returns>
         public override RGraphicsPath GetGraphicsPath()
         {
             return new GraphicsPathAdapter();

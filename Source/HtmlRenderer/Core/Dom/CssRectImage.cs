@@ -10,8 +10,8 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters.Entities;
+using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core.Dom
 {

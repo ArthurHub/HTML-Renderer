@@ -10,8 +10,8 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters.Entities;
+using HtmlRenderer.Adapters;
 using PdfSharp.Drawing;
 
 namespace HtmlRenderer.PdfSharp.Adapters
@@ -42,18 +42,12 @@ namespace HtmlRenderer.PdfSharp.Adapters
             get { return _pen; }
         }
 
-        /// <summary>
-        /// Gets or sets the width of this Pen, in units of the Graphics object used for drawing.
-        /// </summary>
         public override double Width
         {
             get { return _pen.Width; }
             set { _pen.Width = value; }
         }
 
-        /// <summary>
-        /// Gets or sets the style used for dashed lines drawn with this Pen.
-        /// </summary>
         public override RDashStyle DashStyle
         {
             set
@@ -85,9 +79,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
             }
         }
 
-        /// <summary>
-        /// Gets or sets an array of custom dashes and spaces.
-        /// </summary>
         public override double[] DashPattern
         {
             set

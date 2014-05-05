@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Core.Dom
 {

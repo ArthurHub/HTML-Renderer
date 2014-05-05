@@ -13,10 +13,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
-using HtmlRenderer.Entities;
 
 namespace HtmlRenderer.Core.Utils
 {

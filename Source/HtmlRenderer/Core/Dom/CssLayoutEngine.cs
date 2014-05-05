@@ -12,10 +12,9 @@
 
 using System;
 using System.Collections.Generic;
-using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core.Dom
 {

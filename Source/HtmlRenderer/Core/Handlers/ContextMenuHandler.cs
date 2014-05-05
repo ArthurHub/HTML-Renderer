@@ -14,9 +14,9 @@ using System;
 using System.Globalization;
 using System.IO;
 using HtmlRenderer.Core.Dom;
+using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core.Handlers
 {

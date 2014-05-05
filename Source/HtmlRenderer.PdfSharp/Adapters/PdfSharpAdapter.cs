@@ -12,8 +12,8 @@
 
 using System.Drawing;
 using System.IO;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters.Entities;
+using HtmlRenderer.Adapters;
 using HtmlRenderer.PdfSharp.Utilities;
 using PdfSharp.Drawing;
 
@@ -23,7 +23,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
     /// Adapter for general stuff for core.
     /// TODO:a add doc.
     /// </summary>
-    internal sealed class PdfSharpAdapter : AdapterBase
+    internal sealed class PdfSharpAdapter : Adapter
     {
         #region Fields and Consts
 

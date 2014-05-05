@@ -12,9 +12,9 @@
 
 using System;
 using System.Windows.Forms;
+using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 using HtmlRenderer.WinForms.Utilities;
 
 namespace HtmlRenderer.WinForms.Adapters

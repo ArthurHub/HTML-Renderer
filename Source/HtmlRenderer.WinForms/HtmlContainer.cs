@@ -14,10 +14,11 @@ using System;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
+using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core;
+using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Entities;
 using HtmlRenderer.WinForms.Adapters;
 using HtmlRenderer.WinForms.Utilities;
 

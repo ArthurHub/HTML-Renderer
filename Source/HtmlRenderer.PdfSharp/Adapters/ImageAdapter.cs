@@ -12,7 +12,7 @@
 
 using System;
 using System.IO;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters;
 using PdfSharp.Drawing;
 
 namespace HtmlRenderer.PdfSharp.Adapters
@@ -43,34 +43,21 @@ namespace HtmlRenderer.PdfSharp.Adapters
             get { return _image; }
         }
 
-        /// <summary>
-        /// Get the width, in pixels, of the image.
-        /// </summary>
         public override double Width
         {
             get { return _image.PixelWidth; }
         }
 
-        /// <summary>
-        /// Get the height, in pixels, of the image.
-        /// </summary>
         public override double Height
         {
             get { return _image.PixelHeight; }
         }
 
-        /// <summary>
-        /// Saves this image to the specified stream in PNG format.
-        /// </summary>
-        /// <param name="stream">The Stream where the image will be saved. </param>
         public override void Save(MemoryStream stream)
         {
             throw new NotSupportedException();
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
         public override void Dispose()
         {
             _image.Dispose();

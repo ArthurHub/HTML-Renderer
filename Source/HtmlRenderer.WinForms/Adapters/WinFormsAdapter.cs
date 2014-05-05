@@ -13,8 +13,8 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using HtmlRenderer.Entities;
-using HtmlRenderer.Interfaces;
+using HtmlRenderer.Adapters.Entities;
+using HtmlRenderer.Adapters;
 using HtmlRenderer.WinForms.Utilities;
 
 namespace HtmlRenderer.WinForms.Adapters
@@ -23,7 +23,7 @@ namespace HtmlRenderer.WinForms.Adapters
     /// Adapter for general stuff for core.
     /// TODO:a add doc.
     /// </summary>
-    internal sealed class WinFormsAdapter : AdapterBase
+    internal sealed class WinFormsAdapter : Adapter
     {
         #region Fields and Consts
 
