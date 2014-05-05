@@ -10,6 +10,9 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System;
+using HtmlRenderer.Core;
+using HtmlRenderer.Core.Entities;
 using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
@@ -21,16 +24,38 @@ namespace HtmlRenderer.PdfSharp
     /// </summary>
     public static class PdfGenerator
     {
-        public static PdfDocument GeneratePdf(string html, PageSize pageSize)
+        public static PdfDocument GeneratePdf(string html, PageSize pageSize, int margin = 25, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
+            var document = new PdfDocument();
+            document.Settings.TrimMargins.All = XUnit.FromPoint(margin);
             var size = PageSizeConverter.ToSize(pageSize);
 
-            using (var measure = XGraphics.CreateMeasureContext(size, XGraphicsUnit.Point, XPageDirection.Downwards))
-            { }
+            if (!string.IsNullOrEmpty(html))
+            {
+                using (var container = new HtmlContainer())
+                {
+                    if (stylesheetLoad != null)
+                        container.StylesheetLoad += stylesheetLoad;
+                    if (imageLoad != null)
+                        container.ImageLoad += imageLoad;
 
-            var document = new PdfDocument();
+                    container.MaxSize = new XSize(size.Width, 0);
 
-            var page = document.AddPage();
+                    container.SetHtml(html, cssData);
+
+                    using (var measure = XGraphics.CreateMeasureContext(size, XGraphicsUnit.Point, XPageDirection.Downwards))
+                    {
+                        container.PerformLayout(measure);
+                    }
+
+                    var page = document.AddPage();
+                    page.Size = pageSize;
+                    using (var g = XGraphics.FromPdfPage(page))
+                    {
+                        container.PerformPaint(g);
+                    }
+                }
+            }
 
             return document;
         }

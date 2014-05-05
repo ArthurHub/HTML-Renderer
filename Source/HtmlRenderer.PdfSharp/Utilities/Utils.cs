@@ -84,7 +84,8 @@ namespace HtmlRenderer.PdfSharp.Utilities
         /// </summary>
         public static RColor Convert(XColor c)
         {
-            return RColor.FromArgb((int)c.A, c.R, c.G, c.B);
+            var gc = c.ToGdiColor();
+            return RColor.FromArgb(gc.A, gc.R, gc.G, gc.B);
         }
 
         /// <summary>

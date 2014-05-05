@@ -60,6 +60,12 @@
     <ApplicationIcon>html.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PdfSharp">
+      <HintPath>..\..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp.Charting">
+      <HintPath>..\..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.Charting.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -90,6 +96,11 @@
       <SubType>Designer</SubType>
       <DependentUpon>DemoForm.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Include="Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
     <Compile Include="SampleForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -98,6 +109,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="SampleForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SampleForm.cs</DependentUpon>
@@ -121,6 +136,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HtmlRenderer.PdfSharp\HtmlRenderer.PdfSharp.csproj">
+      <Project>{ca249f5d-9285-40a6-b217-5889ef79fd7e}</Project>
+      <Name>HtmlRenderer.PdfSharp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HtmlRenderer.WinForms\HtmlRenderer.WinForms.csproj">
       <Project>{1b058920-24b4-4140-8ae7-c8c6c38ca52d}</Project>
       <Name>HtmlRenderer.WinForms</Name>
@@ -136,6 +155,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="html.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

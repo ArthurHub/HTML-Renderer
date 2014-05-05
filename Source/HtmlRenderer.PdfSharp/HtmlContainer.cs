@@ -42,6 +42,8 @@ namespace HtmlRenderer.PdfSharp
         public HtmlContainer()
         {
             _htmlContainerInt = new HtmlContainerInt(PdfSharpAdapter.Instance);
+            _htmlContainerInt.AvoidAsyncImagesLoading = true;
+            _htmlContainerInt.AvoidImagesLateLoading = true;
         }
 
         /// <summary>

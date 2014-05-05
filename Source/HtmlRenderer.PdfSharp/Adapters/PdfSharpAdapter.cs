@@ -64,12 +64,22 @@ namespace HtmlRenderer.PdfSharp.Adapters
 
         protected override RPen CreatePen(RColor color)
         {
-            return null;
+            return new PenAdapter(new XPen(Utils.Convert(color)));
         }
 
         protected override RBrush CreateSolidBrush(RColor color)
         {
-            return null;
+            XBrush solidBrush;
+            if (color == RColor.White)
+                solidBrush = XBrushes.White;
+            else if (color == RColor.Black)
+                solidBrush = XBrushes.Black;
+            else if (color.A < 1)
+                solidBrush = XBrushes.Transparent;
+            else
+                solidBrush = new XSolidBrush(Utils.Convert(color));
+
+            return new BrushAdapter(solidBrush);
         }
 
         protected override RImage ConvertImageInt(object image)

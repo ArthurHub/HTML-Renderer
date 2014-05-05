@@ -38,8 +38,21 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         private readonly bool _releaseGraphics;
 
+        /// <summary>
+        /// Used to measure and draw strings
+        /// </summary>
+        private static readonly XStringFormat _stringFormat;
+
         #endregion
 
+
+        static GraphicsAdapter()
+        {
+            _stringFormat = new XStringFormat();
+            _stringFormat.Alignment = XStringAlignment.Near;
+            _stringFormat.LineAlignment = XLineAlignment.Near;
+            _stringFormat.FormatFlags = XStringFormatFlags.MeasureTrailingSpaces;
+        }
 
         /// <summary>
         /// Init.
@@ -90,7 +103,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         {
             var fontAdapter = (FontAdapter)font;
             var realFont = fontAdapter.Font;
-            var size = _g.MeasureString(str, realFont);
+            var size = _g.MeasureString(str, realFont, _stringFormat);
 
             if (font.Height < 0)
             {
@@ -109,8 +122,8 @@ namespace HtmlRenderer.PdfSharp.Adapters
 
         public override void DrawString(string str, RFont font, RColor color, RPoint point, RSize size, bool rtl)
         {
-            var brush = new XSolidBrush(Utils.Convert(color));
-            _g.DrawString(str, ((FontAdapter)font).Font, brush, point.X - font.LeftPadding * .8f, point.Y);
+            var xBrush = ((BrushAdapter)_adapter.GetSolidBrush(color)).Brush;
+            _g.DrawString(str, ((FontAdapter)font).Font, xBrush, point.X, point.Y, _stringFormat);
         }
 
         public override RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
