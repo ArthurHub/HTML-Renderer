@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HtmlRenderer.Demo.WinForms {
+namespace HtmlRenderer.Demo.WinForms.Properties {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace HtmlRenderer.Demo.WinForms {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resource1 {
+    internal class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resource1() {
+        internal Resources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace HtmlRenderer.Demo.WinForms {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HtmlRenderer.Demo.WinForms.Resource1", typeof(Resource1).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HtmlRenderer.Demo.WinForms.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,20 +61,42 @@ namespace HtmlRenderer.Demo.WinForms {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;body style=&quot;font: 10pt Tahoma&quot;&gt;
-        ///    &lt;h3 style=&quot;color: navy; margin-bottom: 8px&quot;&gt;Render to Image&lt;/h3&gt;
-        ///    &lt;hr /&gt;
-        ///    &lt;table style=&quot;border: 1px solid maroon; margin-top: 5px&quot;&gt;
-        ///        &lt;tr style=&quot;vertical-align: top;&quot;&gt;
-        ///            &lt;td width=&quot;32&quot; style=&quot;padding: 2px 0 0 0&quot;&gt;
-        ///                &lt;img src=&quot;http://download-codeplex.sec.s-msft.com/Download?ProjectName=HtmlRenderer&amp;DownloadId=770243&quot; /&gt;
-        ///            &lt;/td&gt;
-        ///            &lt;td&gt;This &lt;i&gt;text&lt;/i&gt; is inside a &lt;b&gt;table&lt;/b&gt; &lt;u&gt;element&lt;/u&gt;.&lt;br /&gt;
-        ///            [rest of string was truncated]&quot;;.
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static string String1 {
+        internal static System.Drawing.Bitmap chrome {
             get {
-                return ResourceManager.GetString("String1", resourceCulture);
+                object obj = ResourceManager.GetObject("chrome", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IE {
+            get {
+                object obj = ResourceManager.GetObject("IE", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap pdf {
+            get {
+                object obj = ResourceManager.GetObject("pdf", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap stopwatch {
+            get {
+                object obj = ResourceManager.GetObject("stopwatch", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

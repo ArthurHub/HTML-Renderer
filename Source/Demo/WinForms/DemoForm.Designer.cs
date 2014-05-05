@@ -30,245 +30,152 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         private void InitializeComponent()
         {
-            this._splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this._showGeneratedHtmlCB = new System.Windows.Forms.CheckBox();
-            this._openExternalViewButton = new System.Windows.Forms.Button();
-            this._toggleWebBrowserButton = new System.Windows.Forms.Button();
-            this._runTestButton = new System.Windows.Forms.Button();
-            this._samplesTreeView = new System.Windows.Forms.TreeView();
-            this._splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this._htmlPanel = new HtmlPanel();
-            this._splitter = new System.Windows.Forms.Splitter();
-            this._webBrowser = new System.Windows.Forms.WebBrowser();
-            this._reloadColorsLink = new System.Windows.Forms.LinkLabel();
-            this._htmlEditor = new System.Windows.Forms.RichTextBox();
-            this._htmlToolTip = new HtmlToolTip();
-            this._splitContainer1.Panel1.SuspendLayout();
-            this._splitContainer1.Panel2.SuspendLayout();
-            this._splitContainer1.SuspendLayout();
-            this._splitContainer2.Panel1.SuspendLayout();
-            this._splitContainer2.Panel2.SuspendLayout();
-            this._splitContainer2.SuspendLayout();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DemoForm));
+            this._toolStrip = new System.Windows.Forms.ToolStrip();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this._mainControl = new HtmlRenderer.Demo.WinForms.MainControl();
+            this._openSampleFormTSB = new System.Windows.Forms.ToolStripButton();
+            this._showIEViewTSSB = new System.Windows.Forms.ToolStripButton();
+            this._openInExternalViewTSB = new System.Windows.Forms.ToolStripButton();
+            this._useGeneratedHtmlTSB = new System.Windows.Forms.ToolStripButton();
+            this._generatePdfTSB = new System.Windows.Forms.ToolStripButton();
+            this._runPerformanceTSB = new System.Windows.Forms.ToolStripButton();
+            this._toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
-            // _splitContainer1
+            // _toolStrip
             // 
-            this._splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this._splitContainer1.Location = new System.Drawing.Point(4, 4);
-            this._splitContainer1.Name = "_splitContainer1";
+            this._toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._openSampleFormTSB,
+            this.toolStripSeparator3,
+            this._showIEViewTSSB,
+            this._openInExternalViewTSB,
+            this._useGeneratedHtmlTSB,
+            this.toolStripSeparator1,
+            this._generatePdfTSB,
+            this.toolStripSeparator2,
+            this._runPerformanceTSB});
+            this._toolStrip.Location = new System.Drawing.Point(4, 4);
+            this._toolStrip.Name = "_toolStrip";
+            this._toolStrip.Size = new System.Drawing.Size(878, 25);
+            this._toolStrip.TabIndex = 1;
             // 
-            // _splitContainer1.Panel1
+            // toolStripSeparator3
             // 
-            this._splitContainer1.Panel1.Controls.Add(this._showGeneratedHtmlCB);
-            this._splitContainer1.Panel1.Controls.Add(this._openExternalViewButton);
-            this._splitContainer1.Panel1.Controls.Add(this._toggleWebBrowserButton);
-            this._splitContainer1.Panel1.Controls.Add(this._runTestButton);
-            this._splitContainer1.Panel1.Controls.Add(this._samplesTreeView);
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
-            // _splitContainer1.Panel2
+            // toolStripSeparator1
             // 
-            this._splitContainer1.Panel2.Controls.Add(this._splitContainer2);
-            this._splitContainer1.Size = new System.Drawing.Size(667, 439);
-            this._splitContainer1.SplitterDistance = 146;
-            this._splitContainer1.TabIndex = 0;
-            this._splitContainer1.TabStop = false;
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
-            // _showGeneratedHtmlCB
+            // toolStripSeparator2
             // 
-            this._showGeneratedHtmlCB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this._showGeneratedHtmlCB.AutoSize = true;
-            this._showGeneratedHtmlCB.BackColor = System.Drawing.Color.White;
-            this._showGeneratedHtmlCB.Location = new System.Drawing.Point(6, 330);
-            this._showGeneratedHtmlCB.Name = "_showGeneratedHtmlCB";
-            this._showGeneratedHtmlCB.Size = new System.Drawing.Size(137, 17);
-            this._showGeneratedHtmlCB.TabIndex = 16;
-            this._showGeneratedHtmlCB.Text = "Show generated HTML";
-            this._showGeneratedHtmlCB.UseVisualStyleBackColor = false;
-            this._showGeneratedHtmlCB.CheckedChanged += new System.EventHandler(this.OnShowGeneratedHtmlCheckedChanged);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
-            // _openExternalViewButton
+            // _mainControl
             // 
-            this._openExternalViewButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this._mainControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this._openExternalViewButton.Location = new System.Drawing.Point(4, 382);
-            this._openExternalViewButton.Name = "_openExternalViewButton";
-            this._openExternalViewButton.Size = new System.Drawing.Size(138, 23);
-            this._openExternalViewButton.TabIndex = 13;
-            this._openExternalViewButton.TabStop = false;
-            this._openExternalViewButton.Text = "Open External View";
-            this._openExternalViewButton.UseVisualStyleBackColor = true;
-            this._openExternalViewButton.Click += new System.EventHandler(this.OnOpenExternalViewButtonClick);
+            this._mainControl.Location = new System.Drawing.Point(4, 32);
+            this._mainControl.Name = "_mainControl";
+            this._mainControl.Size = new System.Drawing.Size(878, 594);
+            this._mainControl.TabIndex = 2;
+            this._mainControl.UpdateLock = false;
+            this._mainControl.UseGeneratedHtml = false;
             // 
-            // _toggleWebBrowserButton
+            // _openSampleFormTSB
             // 
-            this._toggleWebBrowserButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this._toggleWebBrowserButton.Location = new System.Drawing.Point(4, 353);
-            this._toggleWebBrowserButton.Name = "_toggleWebBrowserButton";
-            this._toggleWebBrowserButton.Size = new System.Drawing.Size(138, 23);
-            this._toggleWebBrowserButton.TabIndex = 13;
-            this._toggleWebBrowserButton.TabStop = false;
-            this._toggleWebBrowserButton.Text = "Show IE View";
-            this._toggleWebBrowserButton.UseVisualStyleBackColor = true;
-            this._toggleWebBrowserButton.Click += new System.EventHandler(this.OnToggleWebBrowserButton_Click);
+            this._openSampleFormTSB.Image = ((System.Drawing.Image)(resources.GetObject("_openSampleFormTSB.Image")));
+            this._openSampleFormTSB.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._openSampleFormTSB.Name = "_openSampleFormTSB";
+            this._openSampleFormTSB.Size = new System.Drawing.Size(129, 22);
+            this._openSampleFormTSB.Text = "Open Sample Form";
+            this._openSampleFormTSB.Click += new System.EventHandler(this.OnOpenSampleForm_Click);
             // 
-            // _runTestButton
+            // _showIEViewTSSB
             // 
-            this._runTestButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this._runTestButton.Location = new System.Drawing.Point(4, 411);
-            this._runTestButton.Name = "_runTestButton";
-            this._runTestButton.Size = new System.Drawing.Size(138, 23);
-            this._runTestButton.TabIndex = 15;
-            this._runTestButton.TabStop = false;
-            this._runTestButton.Text = "Run Performance Test";
-            this._runTestButton.UseVisualStyleBackColor = true;
-            this._runTestButton.Click += new System.EventHandler(this.OnRunTestButtonClick);
+            this._showIEViewTSSB.Image = ((System.Drawing.Image)(resources.GetObject("_showIEViewTSSB.Image")));
+            this._showIEViewTSSB.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._showIEViewTSSB.Name = "_showIEViewTSSB";
+            this._showIEViewTSSB.Size = new System.Drawing.Size(96, 22);
+            this._showIEViewTSSB.Text = "Show IE View";
+            this._showIEViewTSSB.Click += new System.EventHandler(this.OnShowIEView_ButtonClick);
             // 
-            // _samplesTreeView
+            // _openInExternalViewTSB
             // 
-            this._samplesTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._samplesTreeView.HideSelection = false;
-            this._samplesTreeView.Location = new System.Drawing.Point(0, 0);
-            this._samplesTreeView.Name = "_samplesTreeView";
-            this._samplesTreeView.Size = new System.Drawing.Size(146, 439);
-            this._samplesTreeView.TabIndex = 14;
-            this._samplesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnSamplesTreeViewAfterSelect);
+            this._openInExternalViewTSB.Image = ((System.Drawing.Image)(resources.GetObject("_openInExternalViewTSB.Image")));
+            this._openInExternalViewTSB.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._openInExternalViewTSB.Name = "_openInExternalViewTSB";
+            this._openInExternalViewTSB.Size = new System.Drawing.Size(141, 22);
+            this._openInExternalViewTSB.Text = "Open in External View";
+            this._openInExternalViewTSB.Click += new System.EventHandler(this.OnOpenInExternalView_Click);
             // 
-            // _splitContainer2
+            // _useGeneratedHtmlTSB
             // 
-            this._splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this._splitContainer2.Name = "_splitContainer2";
-            this._splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this._useGeneratedHtmlTSB.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this._useGeneratedHtmlTSB.Image = ((System.Drawing.Image)(resources.GetObject("_useGeneratedHtmlTSB.Image")));
+            this._useGeneratedHtmlTSB.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._useGeneratedHtmlTSB.Name = "_useGeneratedHtmlTSB";
+            this._useGeneratedHtmlTSB.Size = new System.Drawing.Size(23, 22);
+            this._useGeneratedHtmlTSB.Text = "Use Generated HTML";
+            this._useGeneratedHtmlTSB.Click += new System.EventHandler(this.OnUseGeneratedHtml_Click);
             // 
-            // _splitContainer2.Panel1
+            // _generatePdfTSB
             // 
-            this._splitContainer2.Panel1.Controls.Add(this._htmlPanel);
-            this._splitContainer2.Panel1.Controls.Add(this._splitter);
-            this._splitContainer2.Panel1.Controls.Add(this._webBrowser);
+            this._generatePdfTSB.Image = global::HtmlRenderer.Demo.WinForms.Properties.Resources.pdf;
+            this._generatePdfTSB.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._generatePdfTSB.Name = "_generatePdfTSB";
+            this._generatePdfTSB.Size = new System.Drawing.Size(98, 22);
+            this._generatePdfTSB.Text = "Generate PDF";
+            this._generatePdfTSB.Click += new System.EventHandler(this.OnGeneratePdf_Click);
             // 
-            // _splitContainer2.Panel2
+            // _runPerformanceTSB
             // 
-            this._splitContainer2.Panel2.Controls.Add(this._reloadColorsLink);
-            this._splitContainer2.Panel2.Controls.Add(this._htmlEditor);
-            this._splitContainer2.Size = new System.Drawing.Size(517, 439);
-            this._splitContainer2.SplitterDistance = 354;
-            this._splitContainer2.TabIndex = 13;
-            this._splitContainer2.TabStop = false;
-            // 
-            // _htmlPanel
-            // 
-            this._htmlPanel.AutoScroll = true;
-            this._htmlPanel.AvoidGeometryAntialias = false;
-            this._htmlPanel.AvoidImagesLateLoading = false;
-            this._htmlPanel.BackColor = System.Drawing.SystemColors.Window;
-            this._htmlPanel.BaseStylesheet = null;
-            this._htmlPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._htmlPanel.Location = new System.Drawing.Point(0, 0);
-            this._htmlPanel.Name = "_htmlPanel";
-            this._htmlPanel.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
-            this._htmlPanel.Size = new System.Drawing.Size(273, 354);
-            this._htmlPanel.TabIndex = 8;
-            this._htmlPanel.Text = null;
-            this._htmlPanel.UseGdiPlusTextRendering = false;
-            this._htmlPanel.UseSystemCursors = true;
-            // 
-            // _splitter
-            // 
-            this._splitter.Dock = System.Windows.Forms.DockStyle.Right;
-            this._splitter.Location = new System.Drawing.Point(273, 0);
-            this._splitter.Name = "_splitter";
-            this._splitter.Size = new System.Drawing.Size(3, 354);
-            this._splitter.TabIndex = 9;
-            this._splitter.TabStop = false;
-            this._splitter.Visible = false;
-            // 
-            // _webBrowser
-            // 
-            this._webBrowser.Dock = System.Windows.Forms.DockStyle.Right;
-            this._webBrowser.Location = new System.Drawing.Point(276, 0);
-            this._webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
-            this._webBrowser.Name = "_webBrowser";
-            this._webBrowser.Size = new System.Drawing.Size(241, 354);
-            this._webBrowser.TabIndex = 7;
-            this._webBrowser.Visible = false;
-            // 
-            // _reloadColorsLink
-            // 
-            this._reloadColorsLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this._reloadColorsLink.AutoSize = true;
-            this._reloadColorsLink.BackColor = System.Drawing.Color.White;
-            this._reloadColorsLink.Location = new System.Drawing.Point(454, 65);
-            this._reloadColorsLink.Name = "_reloadColorsLink";
-            this._reloadColorsLink.Size = new System.Drawing.Size(44, 13);
-            this._reloadColorsLink.TabIndex = 8;
-            this._reloadColorsLink.TabStop = true;
-            this._reloadColorsLink.Text = "Refresh";
-            this._reloadColorsLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnReloadColorsLinkClicked);
-            // 
-            // _htmlEditor
-            // 
-            this._htmlEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._htmlEditor.Location = new System.Drawing.Point(0, 0);
-            this._htmlEditor.Name = "_htmlEditor";
-            this._htmlEditor.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
-            this._htmlEditor.Size = new System.Drawing.Size(517, 81);
-            this._htmlEditor.TabIndex = 7;
-            this._htmlEditor.Text = "";
-            this._htmlEditor.TextChanged += new System.EventHandler(this.OnHtmlEditorTextChanged);
-            // 
-            // _htmlToolTip
-            // 
-            this._htmlToolTip.AllowLinksHandling = true;
-            this._htmlToolTip.AutoPopDelay = 15000;
-            this._htmlToolTip.BaseStylesheet = null;
-            this._htmlToolTip.InitialDelay = 500;
-            this._htmlToolTip.MaximumSize = new System.Drawing.Size(0, 0);
-            this._htmlToolTip.OwnerDraw = true;
-            this._htmlToolTip.ReshowDelay = 100;
-            this._htmlToolTip.TooltipCssClass = "htmltooltip";
-            this._htmlToolTip.UseGdiPlusTextRendering = false;
+            this._runPerformanceTSB.Image = global::HtmlRenderer.Demo.WinForms.Properties.Resources.stopwatch;
+            this._runPerformanceTSB.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._runPerformanceTSB.Name = "_runPerformanceTSB";
+            this._runPerformanceTSB.Size = new System.Drawing.Size(119, 22);
+            this._runPerformanceTSB.Text = "Run Performance";
+            this._runPerformanceTSB.Click += new System.EventHandler(this.OnRunPerformance_Click);
             // 
             // DemoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(255)))));
-            this.ClientSize = new System.Drawing.Size(675, 447);
-            this.Controls.Add(this._splitContainer1);
+            this.ClientSize = new System.Drawing.Size(886, 630);
+            this.Controls.Add(this._mainControl);
+            this.Controls.Add(this._toolStrip);
             this.KeyPreview = true;
             this.Name = "DemoForm";
             this.Padding = new System.Windows.Forms.Padding(4);
             this.Text = "HTML Renderer Demo";
-            this._splitContainer1.Panel1.ResumeLayout(false);
-            this._splitContainer1.Panel1.PerformLayout();
-            this._splitContainer1.Panel2.ResumeLayout(false);
-            this._splitContainer1.ResumeLayout(false);
-            this._splitContainer2.Panel1.ResumeLayout(false);
-            this._splitContainer2.Panel2.ResumeLayout(false);
-            this._splitContainer2.Panel2.PerformLayout();
-            this._splitContainer2.ResumeLayout(false);
+            this._toolStrip.ResumeLayout(false);
+            this._toolStrip.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.SplitContainer _splitContainer1;
-        private System.Windows.Forms.Button _toggleWebBrowserButton;
-        private System.Windows.Forms.Button _runTestButton;
-        private System.Windows.Forms.TreeView _samplesTreeView;
-        private System.Windows.Forms.SplitContainer _splitContainer2;
-        private HtmlPanel _htmlPanel;
-        private System.Windows.Forms.Splitter _splitter;
-        private System.Windows.Forms.WebBrowser _webBrowser;
-        private System.Windows.Forms.RichTextBox _htmlEditor;
-        private HtmlToolTip _htmlToolTip;
-        private System.Windows.Forms.Button _openExternalViewButton;
-        private System.Windows.Forms.CheckBox _showGeneratedHtmlCB;
-        private System.Windows.Forms.LinkLabel _reloadColorsLink;
+        private System.Windows.Forms.ToolStrip _toolStrip;
+        private System.Windows.Forms.ToolStripButton _generatePdfTSB;
+        private MainControl _mainControl;
+        private System.Windows.Forms.ToolStripButton _openInExternalViewTSB;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton _runPerformanceTSB;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripButton _openSampleFormTSB;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripButton _showIEViewTSSB;
+        private System.Windows.Forms.ToolStripButton _useGeneratedHtmlTSB;
 
     }
 }
