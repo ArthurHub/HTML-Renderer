@@ -49,6 +49,7 @@
     <Compile Include="Adapters\GraphicsPathAdapter.cs" />
     <Compile Include="Adapters\ImageAdapter.cs" />
     <Compile Include="Adapters\PenAdapter.cs" />
+    <Compile Include="Adapters\XTextureBrush.cs" />
     <Compile Include="PdfGenerateConfig.cs" />
     <Compile Include="HtmlContainer.cs" />
     <Compile Include="PdfGenerator.cs" />

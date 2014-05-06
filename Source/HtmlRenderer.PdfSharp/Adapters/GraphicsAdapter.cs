@@ -12,10 +12,9 @@
 
 using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
+using HtmlRenderer.Adapters;
 using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Adapters;
 using HtmlRenderer.PdfSharp.Utilities;
 using PdfSharp.Drawing;
 
@@ -76,12 +75,12 @@ namespace HtmlRenderer.PdfSharp.Adapters
 
         public override void SetClipReplace(RRect rect)
         {
-            _g.Graphics.SetClip(new RectangleF((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height), CombineMode.Replace);
+            
         }
 
         public override void SetClipExclude(RRect rect)
         {
-            _g.Graphics.SetClip(new RectangleF((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height), CombineMode.Exclude);
+            
         }
 
         public override Object SetAntiAliasSmoothingMode()
@@ -117,13 +116,14 @@ namespace HtmlRenderer.PdfSharp.Adapters
 
         public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out int charFitWidth)
         {
+            // there is no need for it - used for text selection
             throw new NotSupportedException();
         }
 
         public override void DrawString(string str, RFont font, RColor color, RPoint point, RSize size, bool rtl)
         {
             var xBrush = ((BrushAdapter)_adapter.GetSolidBrush(color)).Brush;
-            _g.DrawString(str, ((FontAdapter)font).Font, xBrush, point.X, point.Y, _stringFormat);
+            _g.DrawString(str, ((FontAdapter)font).Font, (XBrush)xBrush, point.X, point.Y, _stringFormat);
         }
 
         public override RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
@@ -142,11 +142,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
 
         public override RBrush GetTextureBrush(RImage image, RRect dstRect, RPoint translateTransformLocation)
         {
-            // TODO:a handle missing TextureBrush
-            //            var brush = new TextureBrush(((ImageAdapter)image).Image, Utils.Convert(dstRect));
-            //            brush.TranslateTransform(translateTransformLocation.X, translateTransformLocation.Y);
-            //            return new BrushAdapter(brush, true);
-            return new BrushAdapter(new XSolidBrush(XColors.DeepPink));
+            return new BrushAdapter(new XTextureBrush(((ImageAdapter)image).Image, Utils.Convert(dstRect), Utils.Convert(translateTransformLocation)));
         }
 
         public override RGraphicsPath GetGraphicsPath()
@@ -201,7 +197,12 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="height">Height of the rectangle to fill. </param>
         public override void DrawRectangle(RBrush brush, double x, double y, double width, double height)
         {
-            _g.DrawRectangle(((BrushAdapter)brush).Brush, x, y, width, height);
+            var xBrush = ((BrushAdapter)brush).Brush;
+            var xTextureBrush = xBrush as XTextureBrush;
+            if (xTextureBrush != null)
+                xTextureBrush.DrawRectangle(_g, x, y, width, height);
+            else
+                _g.DrawRectangle((XBrush)xBrush, x, y, width, height);
         }
 
         /// <summary>
@@ -242,7 +243,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="path">GraphicsPath that represents the path to fill. </param>
         public override void DrawPath(RBrush brush, RGraphicsPath path)
         {
-            _g.DrawPath(((BrushAdapter)brush).Brush, ((GraphicsPathAdapter)path).GraphicsPath);
+            _g.DrawPath((XBrush)((BrushAdapter)brush).Brush, ((GraphicsPathAdapter)path).GraphicsPath);
         }
 
         /// <summary>
@@ -254,7 +255,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         {
             if (points != null && points.Length > 0)
             {
-                _g.DrawPolygon(((BrushAdapter)brush).Brush, Utils.Convert(points), XFillMode.Winding);
+                _g.DrawPolygon((XBrush)((BrushAdapter)brush).Brush, Utils.Convert(points), XFillMode.Winding);
             }
         }
 

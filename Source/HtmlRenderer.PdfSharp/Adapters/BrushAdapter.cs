@@ -10,6 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System;
 using HtmlRenderer.Adapters;
 using PdfSharp.Drawing;
 
@@ -21,14 +22,15 @@ namespace HtmlRenderer.PdfSharp.Adapters
     internal sealed class BrushAdapter : RBrush
     {
         /// <summary>
-        /// The actual WinForms brush instance.
+        /// The actual PdfSharp brush instance.<br/>
+        /// Should be <see cref="XBrush"/> but there is some fucking issue inheriting from it =/
         /// </summary>
-        private readonly XBrush _brush;
+        private readonly Object _brush;
 
         /// <summary>
         /// Init.
         /// </summary>
-        public BrushAdapter(XBrush brush)
+        public BrushAdapter(Object brush)
         {
             _brush = brush;
         }
@@ -36,7 +38,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <summary>
         /// The actual WinForms brush instance.
         /// </summary>
-        public XBrush Brush
+        public Object Brush
         {
             get { return _brush; }
         }
