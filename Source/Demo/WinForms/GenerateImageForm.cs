@@ -34,13 +34,7 @@ namespace HtmlRenderer.Demo.WinForms
 
             Icon = Icon.FromHandle(Resources.image.GetHicon());
 
-            _background = new Bitmap(10, 10);
-            using (var g = Graphics.FromImage(_background))
-            {
-                g.Clear(Color.White);
-                g.FillRectangle(SystemBrushes.Control, new Rectangle(0, 0, 5, 5));
-                g.FillRectangle(SystemBrushes.Control, new Rectangle(5, 5, 5, 5));
-            }
+            _background = HtmlRenderingHelper.CreateImageForTransparentBackground();
 
             foreach (var color in GetColors())
             {

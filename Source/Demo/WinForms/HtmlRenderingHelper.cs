@@ -33,6 +33,21 @@ namespace HtmlRenderer.Demo.WinForms
 
 
         /// <summary>
+        /// Create image to be used to fill background so it will be clear that what's on top is transparent.
+        /// </summary>
+        public static Bitmap CreateImageForTransparentBackground()
+        {
+            var image = new Bitmap(10, 10);
+            using (var g = Graphics.FromImage(image))
+            {
+                g.Clear(Color.White);
+                g.FillRectangle(SystemBrushes.Control, new Rectangle(0, 0, 5, 5));
+                g.FillRectangle(SystemBrushes.Control, new Rectangle(5, 5, 5, 5));
+            }
+            return image;
+        }
+
+        /// <summary>
         /// Get stylesheet by given key.
         /// </summary>
         public static string GetStylesheet(string src)
@@ -154,7 +169,7 @@ namespace HtmlRenderer.Demo.WinForms
                 if (e.Attributes.ContainsKey("byevent"))
                 {
                     int delay;
-                    if (int.TryParse(e.Attributes["byevent"], out delay))
+                    if (Int32.TryParse(e.Attributes["byevent"], out delay))
                     {
                         e.Handled = true;
                         ThreadPool.QueueUserWorkItem(state =>
@@ -173,7 +188,7 @@ namespace HtmlRenderer.Demo.WinForms
                 else if (e.Attributes.ContainsKey("byrect"))
                 {
                     var split = e.Attributes["byrect"].Split(',');
-                    var rect = new Rectangle(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]), int.Parse(split[3]));
+                    var rect = new Rectangle(Int32.Parse(split[0]), Int32.Parse(split[1]), Int32.Parse(split[2]), Int32.Parse(split[3]));
                     e.Callback(imgObj ?? TryLoadResourceImage("htmlicon"), rect.X, rect.Y, rect.Width, rect.Height);
                     return;
                 }
