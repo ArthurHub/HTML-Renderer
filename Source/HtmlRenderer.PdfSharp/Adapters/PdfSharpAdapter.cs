@@ -12,10 +12,11 @@
 
 using System.Drawing;
 using System.IO;
-using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Adapters;
+using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.PdfSharp.Utilities;
 using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 
 namespace HtmlRenderer.PdfSharp.Adapters
 {
@@ -95,13 +96,15 @@ namespace HtmlRenderer.PdfSharp.Adapters
         protected override RFont CreateFontInt(string family, double size, RFontStyle style)
         {
             var fontStyle = (XFontStyle)((int)style);
-            return new FontAdapter(new XFont(family, size, fontStyle));
+            var xFont = new XFont(family, size, fontStyle, new XPdfFontOptions(PdfFontEncoding.Unicode));
+            return new FontAdapter(xFont);
         }
 
         protected override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style)
         {
             var fontStyle = (XFontStyle)((int)style);
-            return new FontAdapter(new XFont(((FontFamilyAdapter)family).FontFamily.Name, size, fontStyle));
+            var xFont = new XFont(((FontFamilyAdapter)family).FontFamily.Name, size, fontStyle, new XPdfFontOptions(PdfFontEncoding.Unicode));
+            return new FontAdapter(xFont);
         }
     }
 }
