@@ -75,12 +75,12 @@ namespace HtmlRenderer.PdfSharp.Adapters
 
         public override void SetClipReplace(RRect rect)
         {
-            
+            // TODO:a handle clip (maybe api need to be changed)
         }
 
         public override void SetClipExclude(RRect rect)
         {
-            
+            // TODO:a handle clip (maybe api need to be changed)
         }
 
         public override Object SetAntiAliasSmoothingMode()
