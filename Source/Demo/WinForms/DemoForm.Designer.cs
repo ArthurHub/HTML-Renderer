@@ -32,17 +32,17 @@ namespace HtmlRenderer.Demo.WinForms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DemoForm));
             this._toolStrip = new System.Windows.Forms.ToolStrip();
-            this._openSampleFormTSB = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this._mainControl = new HtmlRenderer.Demo.WinForms.MainControl();
+            this._openSampleFormTSB = new System.Windows.Forms.ToolStripButton();
             this._showIEViewTSSB = new System.Windows.Forms.ToolStripButton();
             this._openInExternalViewTSB = new System.Windows.Forms.ToolStripButton();
             this._useGeneratedHtmlTSB = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this._generateImageSTB = new System.Windows.Forms.ToolStripButton();
             this._generatePdfTSB = new System.Windows.Forms.ToolStripButton();
             this._runPerformanceTSB = new System.Windows.Forms.ToolStripButton();
-            this._mainControl = new HtmlRenderer.Demo.WinForms.MainControl();
             this._toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -64,6 +64,33 @@ namespace HtmlRenderer.Demo.WinForms
             this._toolStrip.Size = new System.Drawing.Size(878, 25);
             this._toolStrip.TabIndex = 1;
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // _mainControl
+            // 
+            this._mainControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this._mainControl.Location = new System.Drawing.Point(4, 32);
+            this._mainControl.Name = "_mainControl";
+            this._mainControl.Size = new System.Drawing.Size(878, 594);
+            this._mainControl.TabIndex = 2;
+            this._mainControl.UpdateLock = false;
+            this._mainControl.UseGeneratedHtml = false;
+            // 
             // _openSampleFormTSB
             // 
             this._openSampleFormTSB.Image = global::HtmlRenderer.Demo.WinForms.Properties.Resources.form;
@@ -71,12 +98,8 @@ namespace HtmlRenderer.Demo.WinForms
             this._openSampleFormTSB.Name = "_openSampleFormTSB";
             this._openSampleFormTSB.Size = new System.Drawing.Size(129, 22);
             this._openSampleFormTSB.Text = "Open Sample Form";
+            this._openSampleFormTSB.ToolTipText = "Open Sample Form to control HtmlPanel, HtmlLabel and HtmlTooltip properties.";
             this._openSampleFormTSB.Click += new System.EventHandler(this.OnOpenSampleForm_Click);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // _showIEViewTSSB
             // 
@@ -101,23 +124,13 @@ namespace HtmlRenderer.Demo.WinForms
             // _useGeneratedHtmlTSB
             // 
             this._useGeneratedHtmlTSB.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this._useGeneratedHtmlTSB.Image = ((System.Drawing.Image)(resources.GetObject("_useGeneratedHtmlTSB.Image")));
+            this._useGeneratedHtmlTSB.Image = global::HtmlRenderer.Demo.WinForms.Properties.Resources.code;
             this._useGeneratedHtmlTSB.ImageTransparentColor = System.Drawing.Color.Magenta;
             this._useGeneratedHtmlTSB.Name = "_useGeneratedHtmlTSB";
             this._useGeneratedHtmlTSB.Size = new System.Drawing.Size(23, 22);
             this._useGeneratedHtmlTSB.Text = "Use Generated HTML";
             this._useGeneratedHtmlTSB.ToolTipText = "Toggle is to use generated HTML from the HtmlPanel in Browser/External views.";
             this._useGeneratedHtmlTSB.Click += new System.EventHandler(this.OnUseGeneratedHtml_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // _generateImageSTB
             // 
@@ -137,6 +150,7 @@ namespace HtmlRenderer.Demo.WinForms
             this._generatePdfTSB.Name = "_generatePdfTSB";
             this._generatePdfTSB.Size = new System.Drawing.Size(98, 22);
             this._generatePdfTSB.Text = "Generate PDF";
+            this._generatePdfTSB.ToolTipText = "Generate PDF from the current HTML using PdfSharp library.";
             this._generatePdfTSB.Click += new System.EventHandler(this.OnGeneratePdf_Click);
             // 
             // _runPerformanceTSB
@@ -148,18 +162,6 @@ namespace HtmlRenderer.Demo.WinForms
             this._runPerformanceTSB.Size = new System.Drawing.Size(119, 22);
             this._runPerformanceTSB.Text = "Run Performance";
             this._runPerformanceTSB.Click += new System.EventHandler(this.OnRunPerformance_Click);
-            // 
-            // _mainControl
-            // 
-            this._mainControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this._mainControl.Location = new System.Drawing.Point(4, 32);
-            this._mainControl.Name = "_mainControl";
-            this._mainControl.Size = new System.Drawing.Size(878, 594);
-            this._mainControl.TabIndex = 2;
-            this._mainControl.UpdateLock = false;
-            this._mainControl.UseGeneratedHtml = false;
             // 
             // DemoForm
             // 

@@ -73,6 +73,16 @@ namespace HtmlRenderer.Demo.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap code {
+            get {
+                object obj = ResourceManager.GetObject("code", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap form {
             get {
                 object obj = ResourceManager.GetObject("form", resourceCulture);

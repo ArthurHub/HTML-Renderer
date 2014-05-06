@@ -92,7 +92,7 @@ namespace HtmlRenderer.Demo.WinForms
         public void ShowWebBrowserView(bool show)
         {
             _webBrowser.Visible = show;
-            _splitter.Visible = !show;
+            _splitter.Visible = show;
 
             if (_webBrowser.Visible)
             {
