@@ -16,6 +16,7 @@ using System.Drawing;
 using System.Threading;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Demo.Common;
+using PdfSharp.Drawing;
 
 namespace HtmlRenderer.Demo.WinForms
 {
@@ -101,6 +102,15 @@ namespace HtmlRenderer.Demo.WinForms
         }
 
         /// <summary>
+        /// Get image by resource key.
+        /// </summary>
+        public static XImage TryLoadResourceXImage(string src)
+        {
+            var img = TryLoadResourceImage(src);
+            return img != null ? XImage.FromGdiPlusImage(img) : null;
+        }
+
+        /// <summary>
         /// Handle stylesheet resolve.
         /// </summary>
         public static void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
@@ -115,7 +125,29 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         public static void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
         {
+            ImageLoad(e, false);
+        }
+
+        /// <summary>
+        /// On image load in renderer set the image by event async.
+        /// </summary>
+        public static void OnImageLoadPdfSharp(object sender, HtmlImageLoadEventArgs e)
+        {
+            ImageLoad(e, true);
+        }
+
+        /// <summary>
+        /// On image load in renderer set the image by event async.
+        /// </summary>
+        public static void ImageLoad(HtmlImageLoadEventArgs e, bool pdfSharp)
+        {
             var img = TryLoadResourceImage(e.Src);
+            var xImg = img != null ? XImage.FromGdiPlusImage(img) : null;
+            object imgObj;
+            if (pdfSharp)
+                imgObj = xImg;
+            else
+                imgObj = img;
 
             if (!e.Handled && e.Attributes != null)
             {
@@ -142,13 +174,13 @@ namespace HtmlRenderer.Demo.WinForms
                 {
                     var split = e.Attributes["byrect"].Split(',');
                     var rect = new Rectangle(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]), int.Parse(split[3]));
-                    e.Callback(img ?? TryLoadResourceImage("htmlicon"), rect.X, rect.Y, rect.Width, rect.Height);
+                    e.Callback(imgObj ?? TryLoadResourceImage("htmlicon"), rect.X, rect.Y, rect.Width, rect.Height);
                     return;
                 }
             }
 
             if (img != null)
-                e.Callback(img);
+                e.Callback(imgObj);
         }
     }
 }

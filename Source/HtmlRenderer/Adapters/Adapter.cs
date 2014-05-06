@@ -36,12 +36,12 @@ namespace HtmlRenderer.Adapters
         /// <summary>
         /// cache of brush color to brush instance
         /// </summary>
-        private static readonly Dictionary<RColor, RBrush> _brushesCache = new Dictionary<RColor, RBrush>();
+        private readonly Dictionary<RColor, RBrush> _brushesCache = new Dictionary<RColor, RBrush>();
 
         /// <summary>
         /// cache of pen color to pen instance
         /// </summary>
-        private static readonly Dictionary<RColor, RPen> _penCache = new Dictionary<RColor, RPen>();
+        private readonly Dictionary<RColor, RPen> _penCache = new Dictionary<RColor, RPen>();
 
         /// <summary>
         /// cache of all the font used not to create same font again and again

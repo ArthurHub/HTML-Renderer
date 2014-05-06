@@ -141,7 +141,7 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         private void OnGeneratePdf_Click(object sender, EventArgs e)
         {
-            var doc = PdfGenerator.GeneratePdf(_mainControl.GetHtml(), PageSize.A4, 25, null, HtmlRenderingHelper.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);
+            var doc = PdfGenerator.GeneratePdf(_mainControl.GetHtml(), PageSize.A4, 25, null, HtmlRenderingHelper.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoadPdfSharp);
             var tmpFile = Path.GetTempFileName();
             tmpFile = Path.GetFileNameWithoutExtension(tmpFile) + ".pdf";
             doc.Save(tmpFile);
@@ -149,7 +149,7 @@ namespace HtmlRenderer.Demo.WinForms
         }
 
         /// <summary>
-        /// Execute performance test by setting all sample htmls in a loop.
+        /// Execute performance test by setting all sample HTMLs in a loop.
         /// </summary>
         private void OnRunPerformance_Click(object sender, EventArgs e)
         {

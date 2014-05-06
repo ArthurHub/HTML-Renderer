@@ -10,6 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System.Drawing;
 using HtmlRenderer.Adapters.Entities;
 using PdfSharp.Drawing;
 
@@ -93,7 +94,7 @@ namespace HtmlRenderer.PdfSharp.Utilities
         /// </summary>
         public static XColor Convert(RColor c)
         {
-            return XColor.FromArgb(c.A, c.R, c.G, c.B);
+            return XColor.FromArgb(Color.FromArgb(c.A, c.R, c.G, c.B));
         }
     }
 }
