@@ -57,7 +57,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>html.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\html.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PdfSharp">
@@ -74,6 +74,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GenerateImageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GenerateImageForm.Designer.cs">
+      <DependentUpon>GenerateImageForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HtmlRenderingHelper.cs" />
     <Compile Include="MainControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -94,6 +101,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GenerateImageForm.resx">
+      <DependentUpon>GenerateImageForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainControl.resx">
       <DependentUpon>MainControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -105,11 +115,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>DemoForm.cs</DependentUpon>
     </EmbeddedResource>
-    <Compile Include="Properties\Resource1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resource1.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -123,10 +128,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resource1.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -172,7 +173,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="html.ico" />
+    <EmbeddedResource Include="Resources\html.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -188,6 +189,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\pdf.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\form.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\image.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

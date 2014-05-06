@@ -32,16 +32,17 @@ namespace HtmlRenderer.Demo.WinForms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DemoForm));
             this._toolStrip = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this._mainControl = new HtmlRenderer.Demo.WinForms.MainControl();
             this._openSampleFormTSB = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this._showIEViewTSSB = new System.Windows.Forms.ToolStripButton();
             this._openInExternalViewTSB = new System.Windows.Forms.ToolStripButton();
             this._useGeneratedHtmlTSB = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this._generateImageSTB = new System.Windows.Forms.ToolStripButton();
             this._generatePdfTSB = new System.Windows.Forms.ToolStripButton();
             this._runPerformanceTSB = new System.Windows.Forms.ToolStripButton();
+            this._mainControl = new HtmlRenderer.Demo.WinForms.MainControl();
             this._toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,18 +55,59 @@ namespace HtmlRenderer.Demo.WinForms
             this._openInExternalViewTSB,
             this._useGeneratedHtmlTSB,
             this.toolStripSeparator1,
-            this._generatePdfTSB,
             this.toolStripSeparator2,
+            this._generateImageSTB,
+            this._generatePdfTSB,
             this._runPerformanceTSB});
             this._toolStrip.Location = new System.Drawing.Point(4, 4);
             this._toolStrip.Name = "_toolStrip";
             this._toolStrip.Size = new System.Drawing.Size(878, 25);
             this._toolStrip.TabIndex = 1;
             // 
+            // _openSampleFormTSB
+            // 
+            this._openSampleFormTSB.Image = global::HtmlRenderer.Demo.WinForms.Properties.Resources.form;
+            this._openSampleFormTSB.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._openSampleFormTSB.Name = "_openSampleFormTSB";
+            this._openSampleFormTSB.Size = new System.Drawing.Size(129, 22);
+            this._openSampleFormTSB.Text = "Open Sample Form";
+            this._openSampleFormTSB.Click += new System.EventHandler(this.OnOpenSampleForm_Click);
+            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            // 
+            // _showIEViewTSSB
+            // 
+            this._showIEViewTSSB.Image = ((System.Drawing.Image)(resources.GetObject("_showIEViewTSSB.Image")));
+            this._showIEViewTSSB.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._showIEViewTSSB.Name = "_showIEViewTSSB";
+            this._showIEViewTSSB.Size = new System.Drawing.Size(101, 22);
+            this._showIEViewTSSB.Text = "Show Browser";
+            this._showIEViewTSSB.ToolTipText = "Toggle if to show split view of HtmlPanel and WinForms WebBrowser control.";
+            this._showIEViewTSSB.Click += new System.EventHandler(this.OnShowIEView_ButtonClick);
+            // 
+            // _openInExternalViewTSB
+            // 
+            this._openInExternalViewTSB.Image = ((System.Drawing.Image)(resources.GetObject("_openInExternalViewTSB.Image")));
+            this._openInExternalViewTSB.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._openInExternalViewTSB.Name = "_openInExternalViewTSB";
+            this._openInExternalViewTSB.Size = new System.Drawing.Size(100, 22);
+            this._openInExternalViewTSB.Text = "Open External";
+            this._openInExternalViewTSB.ToolTipText = "Open the HTML is the machine default browser, external to the demo application.";
+            this._openInExternalViewTSB.Click += new System.EventHandler(this.OnOpenInExternalView_Click);
+            // 
+            // _useGeneratedHtmlTSB
+            // 
+            this._useGeneratedHtmlTSB.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this._useGeneratedHtmlTSB.Image = ((System.Drawing.Image)(resources.GetObject("_useGeneratedHtmlTSB.Image")));
+            this._useGeneratedHtmlTSB.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._useGeneratedHtmlTSB.Name = "_useGeneratedHtmlTSB";
+            this._useGeneratedHtmlTSB.Size = new System.Drawing.Size(23, 22);
+            this._useGeneratedHtmlTSB.Text = "Use Generated HTML";
+            this._useGeneratedHtmlTSB.ToolTipText = "Toggle is to use generated HTML from the HtmlPanel in Browser/External views.";
+            this._useGeneratedHtmlTSB.Click += new System.EventHandler(this.OnUseGeneratedHtml_Click);
             // 
             // toolStripSeparator1
             // 
@@ -77,54 +119,16 @@ namespace HtmlRenderer.Demo.WinForms
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
-            // _mainControl
+            // _generateImageSTB
             // 
-            this._mainControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this._mainControl.Location = new System.Drawing.Point(4, 32);
-            this._mainControl.Name = "_mainControl";
-            this._mainControl.Size = new System.Drawing.Size(878, 594);
-            this._mainControl.TabIndex = 2;
-            this._mainControl.UpdateLock = false;
-            this._mainControl.UseGeneratedHtml = false;
-            // 
-            // _openSampleFormTSB
-            // 
-            this._openSampleFormTSB.Image = ((System.Drawing.Image)(resources.GetObject("_openSampleFormTSB.Image")));
-            this._openSampleFormTSB.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._openSampleFormTSB.Name = "_openSampleFormTSB";
-            this._openSampleFormTSB.Size = new System.Drawing.Size(129, 22);
-            this._openSampleFormTSB.Text = "Open Sample Form";
-            this._openSampleFormTSB.Click += new System.EventHandler(this.OnOpenSampleForm_Click);
-            // 
-            // _showIEViewTSSB
-            // 
-            this._showIEViewTSSB.Image = ((System.Drawing.Image)(resources.GetObject("_showIEViewTSSB.Image")));
-            this._showIEViewTSSB.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._showIEViewTSSB.Name = "_showIEViewTSSB";
-            this._showIEViewTSSB.Size = new System.Drawing.Size(96, 22);
-            this._showIEViewTSSB.Text = "Show IE View";
-            this._showIEViewTSSB.Click += new System.EventHandler(this.OnShowIEView_ButtonClick);
-            // 
-            // _openInExternalViewTSB
-            // 
-            this._openInExternalViewTSB.Image = ((System.Drawing.Image)(resources.GetObject("_openInExternalViewTSB.Image")));
-            this._openInExternalViewTSB.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._openInExternalViewTSB.Name = "_openInExternalViewTSB";
-            this._openInExternalViewTSB.Size = new System.Drawing.Size(141, 22);
-            this._openInExternalViewTSB.Text = "Open in External View";
-            this._openInExternalViewTSB.Click += new System.EventHandler(this.OnOpenInExternalView_Click);
-            // 
-            // _useGeneratedHtmlTSB
-            // 
-            this._useGeneratedHtmlTSB.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this._useGeneratedHtmlTSB.Image = ((System.Drawing.Image)(resources.GetObject("_useGeneratedHtmlTSB.Image")));
-            this._useGeneratedHtmlTSB.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._useGeneratedHtmlTSB.Name = "_useGeneratedHtmlTSB";
-            this._useGeneratedHtmlTSB.Size = new System.Drawing.Size(23, 22);
-            this._useGeneratedHtmlTSB.Text = "Use Generated HTML";
-            this._useGeneratedHtmlTSB.Click += new System.EventHandler(this.OnUseGeneratedHtml_Click);
+            this._generateImageSTB.Image = global::HtmlRenderer.Demo.WinForms.Properties.Resources.image;
+            this._generateImageSTB.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._generateImageSTB.Name = "_generateImageSTB";
+            this._generateImageSTB.Size = new System.Drawing.Size(110, 22);
+            this._generateImageSTB.Text = "Generate Image";
+            this._generateImageSTB.ToolTipText = "Open generate image form to show the image generation capabilities of HTML Render" +
+    "er.";
+            this._generateImageSTB.Click += new System.EventHandler(this.OnGenerateImage_Click);
             // 
             // _generatePdfTSB
             // 
@@ -137,12 +141,25 @@ namespace HtmlRenderer.Demo.WinForms
             // 
             // _runPerformanceTSB
             // 
+            this._runPerformanceTSB.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this._runPerformanceTSB.Image = global::HtmlRenderer.Demo.WinForms.Properties.Resources.stopwatch;
             this._runPerformanceTSB.ImageTransparentColor = System.Drawing.Color.Magenta;
             this._runPerformanceTSB.Name = "_runPerformanceTSB";
             this._runPerformanceTSB.Size = new System.Drawing.Size(119, 22);
             this._runPerformanceTSB.Text = "Run Performance";
             this._runPerformanceTSB.Click += new System.EventHandler(this.OnRunPerformance_Click);
+            // 
+            // _mainControl
+            // 
+            this._mainControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this._mainControl.Location = new System.Drawing.Point(4, 32);
+            this._mainControl.Name = "_mainControl";
+            this._mainControl.Size = new System.Drawing.Size(878, 594);
+            this._mainControl.TabIndex = 2;
+            this._mainControl.UpdateLock = false;
+            this._mainControl.UseGeneratedHtml = false;
             // 
             // DemoForm
             // 
@@ -171,11 +188,12 @@ namespace HtmlRenderer.Demo.WinForms
         private System.Windows.Forms.ToolStripButton _openInExternalViewTSB;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton _runPerformanceTSB;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton _openSampleFormTSB;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton _showIEViewTSSB;
         private System.Windows.Forms.ToolStripButton _useGeneratedHtmlTSB;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripButton _generateImageSTB;
 
     }
 }

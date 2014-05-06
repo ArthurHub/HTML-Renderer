@@ -19,11 +19,21 @@ namespace HtmlRenderer.Demo.WinForms
 {
     public partial class SampleForm : Form
     {
+        private readonly Bitmap _background;
+
         public SampleForm()
         {
             InitializeComponent();
 
             Icon = DemoForm.GetIcon();
+
+            _background = new Bitmap(10, 10);
+            using (var g = Graphics.FromImage(_background))
+            {
+                g.Clear(Color.White);
+                g.FillRectangle(SystemBrushes.Control, new Rectangle(0, 0, 5, 5));
+                g.FillRectangle(SystemBrushes.Control, new Rectangle(5, 5, 5, 5));
+            }
         }
 
         private void OnHtmlLabelClick(object sender, EventArgs e)
@@ -38,21 +48,10 @@ namespace HtmlRenderer.Demo.WinForms
 
         private void OnHtmlLabelHostingPanelPaint(object sender, PaintEventArgs e)
         {
-            var bmp = new Bitmap(10, 10);
-
-            using (var g = Graphics.FromImage(bmp))
-            {
-                g.Clear(Color.White);
-                g.FillRectangle(SystemBrushes.Control, new Rectangle(0, 0, 5, 5));
-                g.FillRectangle(SystemBrushes.Control, new Rectangle(5, 5, 5, 5));
-            }
-
-            using (var b = new TextureBrush(bmp, WrapMode.Tile))
+            using (var b = new TextureBrush(_background, WrapMode.Tile))
             {
                 e.Graphics.FillRectangle(b, _htmlLabelHostingPanel.ClientRectangle);
             }
-
-            bmp.Dispose();
         }
 
         private void OnButtonClick(object sender, EventArgs e)

@@ -12,8 +12,6 @@
 
 using System;
 using System.Windows.Forms;
-using HtmlRenderer.PdfSharp;
-using PdfSharp;
 
 namespace HtmlRenderer.Demo.WinForms
 {
@@ -25,13 +23,13 @@ namespace HtmlRenderer.Demo.WinForms
         [STAThread]
         private static void Main()
         {
-//            string html = Resource1.String1;
-//            string html = "a<p style='background-color: yellow'>hello <b>world</b></p>";
+            //            string html = Resource1.String1;
+            //            string html = "a<p style='background-color: yellow'>hello <b>world</b></p>";
 
-//            var doc = PdfGenerator.GeneratePdf(html, PageSize.A4);
+            //            var doc = PdfGenerator.GeneratePdf(html, PageSize.A4);
 
-//            doc.Save(@"d:\doc.pdf");
-//            return;
+            //            doc.Save(@"d:\doc.pdf");
+            //            return;
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

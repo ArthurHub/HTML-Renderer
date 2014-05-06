@@ -11,17 +11,13 @@
 // "The Art of War"
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Drawing.Text;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows.Forms;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Demo.Common;
-using HtmlRenderer.WinForms;
 using Timer = System.Threading.Timer;
 
 namespace HtmlRenderer.Demo.WinForms
@@ -34,16 +30,6 @@ namespace HtmlRenderer.Demo.WinForms
         /// the name of the tree node root for all performance samples
         /// </summary>
         private const string PerformanceSamplesTreeNodeName = "Performance Samples";
-
-        /// <summary>
-        /// Cache for resource images
-        /// </summary>
-        private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
-
-        /// <summary>
-        /// the private font used for the demo
-        /// </summary>
-        private readonly PrivateFontCollection _privateFont = new PrivateFontCollection();
 
         /// <summary>
         /// timer to update the rendered html when html in editor changes with delay
@@ -67,20 +53,17 @@ namespace HtmlRenderer.Demo.WinForms
         {
             InitializeComponent();
 
-
             _htmlPanel.RenderError += OnRenderError;
             _htmlPanel.LinkClicked += OnLinkClicked;
-            _htmlPanel.StylesheetLoad += OnStylesheetLoad;
-            _htmlPanel.ImageLoad += OnImageLoad;
-            _htmlToolTip.ImageLoad += OnImageLoad;
+            _htmlPanel.StylesheetLoad += HtmlRenderingHelper.OnStylesheetLoad;
+            _htmlPanel.ImageLoad += HtmlRenderingHelper.OnImageLoad;
+            _htmlToolTip.ImageLoad += HtmlRenderingHelper.OnImageLoad;
 
             _htmlToolTip.SetToolTip(_htmlPanel, Resources.Tooltip);
 
             _htmlEditor.Font = new Font(FontFamily.GenericMonospace, 10);
 
             LoadSamples();
-
-            LoadCustomFonts();
 
             _updateHtmlTimer = new Timer(OnUpdateHtmlTimerTick);
         }
@@ -110,7 +93,7 @@ namespace HtmlRenderer.Demo.WinForms
         {
             _webBrowser.Visible = show;
             _splitter.Visible = !show;
-            
+
             if (_webBrowser.Visible)
             {
                 _webBrowser.Width = _splitContainer2.Panel2.Width / 2;
@@ -195,23 +178,6 @@ namespace HtmlRenderer.Demo.WinForms
         }
 
         /// <summary>
-        /// Load custom fonts to be used by renderer HTMLs
-        /// </summary>
-        private void LoadCustomFonts()
-        {
-            // load custom font font into private fonts collection
-            var file = Path.GetTempFileName();
-            File.WriteAllBytes(file, Resources.CustomFont);
-            _privateFont.AddFontFile(file);
-
-            // add the fonts to renderer
-            foreach (var fontFamily in _privateFont.Families)
-            {
-                HtmlRender.AddFontFamily(fontFamily);
-            }
-        }
-
-        /// <summary>
         /// On tree view node click load the html to the html panel and html editor.
         /// </summary>
         private void OnSamplesTreeViewAfterSelect(object sender, TreeViewEventArgs e)
@@ -293,7 +259,7 @@ namespace HtmlRenderer.Demo.WinForms
 
             html = Regex.Replace(html, @"src=\""(\w.*?)\""", match =>
             {
-                var img = TryLoadResourceImage(match.Groups[1].Value);
+                var img = HtmlRenderingHelper.TryLoadResourceImage(match.Groups[1].Value);
                 if (img != null)
                 {
                     var tmpFile = Path.GetTempFileName();
@@ -305,7 +271,7 @@ namespace HtmlRenderer.Demo.WinForms
 
             html = Regex.Replace(html, @"href=\""(\w.*?)\""", match =>
             {
-                var stylesheet = GetStylesheet(match.Groups[1].Value);
+                var stylesheet = HtmlRenderingHelper.GetStylesheet(match.Groups[1].Value);
                 if (stylesheet != null)
                 {
                     var tmpFile = Path.GetTempFileName();
@@ -324,126 +290,6 @@ namespace HtmlRenderer.Demo.WinForms
         private void OnReloadColorsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             SetColoredText(_htmlEditor.Text);
-        }
-
-        /// <summary>
-        /// Handle stylesheet resolve.
-        /// </summary>
-        private static void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
-        {
-            var stylesheet = GetStylesheet(e.Src);
-            if (stylesheet != null)
-                e.SetStyleSheet = stylesheet;
-        }
-
-        /// <summary>
-        /// Get stylesheet by given key.
-        /// </summary>
-        private static string GetStylesheet(string src)
-        {
-            if (src == "StyleSheet")
-            {
-                return @"h1, h2, h3 { color: navy; font-weight:normal; }
-                    h1 { margin-bottom: .47em }
-                    h2 { margin-bottom: .3em }
-                    h3 { margin-bottom: .4em }
-                    ul { margin-top: .5em }
-                    ul li {margin: .25em}
-                    body { font:10pt Tahoma }
-		            pre  { border:solid 1px gray; background-color:#eee; padding:1em }
-                    a:link { text-decoration: none; }
-                    a:hover { text-decoration: underline; }
-                    .gray    { color:gray; }
-                    .example { background-color:#efefef; corner-radius:5px; padding:0.5em; }
-                    .whitehole { background-color:white; corner-radius:10px; padding:15px; }
-                    .caption { font-size: 1.1em }
-                    .comment { color: green; margin-bottom: 5px; margin-left: 3px; }
-                    .comment2 { color: green; }";
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// On image load in renderer set the image by event async.
-        /// </summary>
-        private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
-        {
-            var img = TryLoadResourceImage(e.Src);
-
-            if (!e.Handled && e.Attributes != null)
-            {
-                if (e.Attributes.ContainsKey("byevent"))
-                {
-                    int delay;
-                    if (int.TryParse(e.Attributes["byevent"], out delay))
-                    {
-                        e.Handled = true;
-                        ThreadPool.QueueUserWorkItem(state =>
-                        {
-                            Thread.Sleep(delay);
-                            e.Callback("https://fbcdn-sphotos-a-a.akamaihd.net/hphotos-ak-snc7/c0.44.403.403/p403x403/318890_10151195988833836_1081776452_n.jpg");
-                        });
-                        return;
-                    }
-                    else
-                    {
-                        e.Callback("http://sphotos-a.xx.fbcdn.net/hphotos-ash4/c22.0.403.403/p403x403/263440_10152243591765596_773620816_n.jpg");
-                        return;
-                    }
-                }
-                else if (e.Attributes.ContainsKey("byrect"))
-                {
-                    var split = e.Attributes["byrect"].Split(',');
-                    var rect = new Rectangle(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]), int.Parse(split[3]));
-                    e.Callback(img ?? TryLoadResourceImage("htmlicon"), rect.X, rect.Y, rect.Width, rect.Height);
-                    return;
-                }
-            }
-
-            if (img != null)
-                e.Callback(img);
-        }
-
-        /// <summary>
-        /// Get image by resource key.
-        /// </summary>
-        private Image TryLoadResourceImage(string src)
-        {
-            Image image;
-            if (!_imageCache.TryGetValue(src, out image))
-            {
-                switch (src.ToLower())
-                {
-                    case "htmlicon":
-                        image = Image.FromStream(Resources.Html32);
-                        break;
-                    case "staricon":
-                        image = Image.FromStream(Resources.Favorites32);
-                        break;
-                    case "fonticon":
-                        image = Image.FromStream(Resources.Font32);
-                        break;
-                    case "commenticon":
-                        image = Image.FromStream(Resources.Comment16);
-                        break;
-                    case "imageicon":
-                        image = Image.FromStream(Resources.Image32);
-                        break;
-                    case "methodicon":
-                        image = Image.FromStream(Resources.Method16);
-                        break;
-                    case "propertyicon":
-                        image = Image.FromStream(Resources.Property16);
-                        break;
-                    case "eventicon":
-                        image = Image.FromStream(Resources.Event16);
-                        break;
-                }
-
-                if (image != null)
-                    _imageCache[src] = image;
-            }
-            return image;
         }
 
         /// <summary>

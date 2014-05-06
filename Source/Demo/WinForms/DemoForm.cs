@@ -14,10 +14,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Text;
 using System.IO;
 using System.Windows.Forms;
 using HtmlRenderer.Demo.Common;
 using HtmlRenderer.PdfSharp;
+using HtmlRenderer.WinForms;
 using PdfSharp;
 
 namespace HtmlRenderer.Demo.WinForms
@@ -30,6 +32,11 @@ namespace HtmlRenderer.Demo.WinForms
         /// the html samples used for performance testing
         /// </summary>
         private readonly List<string> _perfTestSamples = new List<string>();
+
+        /// <summary>
+        /// the private font used for the demo
+        /// </summary>
+        private readonly PrivateFontCollection _privateFont = new PrivateFontCollection();
 
         #endregion
 
@@ -51,6 +58,25 @@ namespace HtmlRenderer.Demo.WinForms
             {
                 _perfTestSamples.Add(sample.Html);
             }
+
+            LoadCustomFonts();
+        }
+
+        /// <summary>
+        /// Load custom fonts to be used by renderer HTMLs
+        /// </summary>
+        private void LoadCustomFonts()
+        {
+            // load custom font font into private fonts collection
+            var file = Path.GetTempFileName();
+            File.WriteAllBytes(file, Resources.CustomFont);
+            _privateFont.AddFontFile(file);
+
+            // add the fonts to renderer
+            foreach (var fontFamily in _privateFont.Families)
+            {
+                HtmlRender.AddFontFamily(fontFamily);
+            }
         }
 
         /// <summary>
@@ -58,7 +84,7 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         internal static Icon GetIcon()
         {
-            var stream = typeof(DemoForm).Assembly.GetManifestResourceStream("HtmlRenderer.Demo.WinForms.html.ico");
+            var stream = typeof(DemoForm).Assembly.GetManifestResourceStream("HtmlRenderer.Demo.WinForms.Resources.html.ico");
             return stream != null ? new Icon(stream) : null;
         }
 
@@ -70,6 +96,9 @@ namespace HtmlRenderer.Demo.WinForms
             }
         }
 
+        /// <summary>
+        /// Toggle if to show split view of HtmlPanel and WinForms WebBrowser control.
+        /// </summary>
         private void OnShowIEView_ButtonClick(object sender, EventArgs e)
         {
             _showIEViewTSSB.Checked = !_showIEViewTSSB.Checked;
@@ -97,11 +126,22 @@ namespace HtmlRenderer.Demo.WinForms
         }
 
         /// <summary>
+        /// Open generate image form for the current html.
+        /// </summary>
+        private void OnGenerateImage_Click(object sender, EventArgs e)
+        {
+            using (var f = new GenerateImageForm(_mainControl.GetHtml()))
+            {
+                f.ShowDialog();
+            }
+        }
+
+        /// <summary>
         /// Create PDF using PdfSharp project, save to file and open that file.
         /// </summary>
         private void OnGeneratePdf_Click(object sender, EventArgs e)
         {
-            var doc = PdfGenerator.GeneratePdf(_mainControl.GetHtml(), PageSize.A4);
+            var doc = PdfGenerator.GeneratePdf(_mainControl.GetHtml(), PageSize.A4, 25, null, HtmlRenderingHelper.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);
             var tmpFile = Path.GetTempFileName();
             tmpFile = Path.GetFileNameWithoutExtension(tmpFile) + ".pdf";
             doc.Save(tmpFile);
@@ -114,7 +154,7 @@ namespace HtmlRenderer.Demo.WinForms
         private void OnRunPerformance_Click(object sender, EventArgs e)
         {
             _mainControl.UpdateLock = true;
-            _runPerformanceTSB.Enabled = false;
+            _toolStrip.Enabled = false;
             Application.DoEvents();
 
             GC.Collect();
@@ -160,7 +200,7 @@ namespace HtmlRenderer.Demo.WinForms
             MessageBox.Show(msg, "Test run results");
 
             _mainControl.UpdateLock = false;
-            _runPerformanceTSB.Enabled = true;
+            _toolStrip.Enabled = true;
         }
     }
 }
