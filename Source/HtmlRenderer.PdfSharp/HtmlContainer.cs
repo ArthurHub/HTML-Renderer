@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System;
+using System.Collections.Generic;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
@@ -196,6 +197,20 @@ namespace HtmlRenderer.PdfSharp
         public string GetAttributeAt(XPoint location, string attribute)
         {
             return _htmlContainerInt.GetAttributeAt(Utils.Convert(location), attribute);
+        }
+
+        /// <summary>
+        /// Get all the links in the HTML with the element rectangle and href data.
+        /// </summary>
+        /// <returns>collection of all the links in the HTML</returns>
+        public List<LinkElementData<XRect>> GetLinks()
+        {
+            var linkElements = new List<LinkElementData<XRect>>();
+            foreach (var link in HtmlContainerInt.GetLinks())
+            {
+                linkElements.Add(new LinkElementData<XRect>(link.Id, link.Href, Utils.Convert(link.Rectangle)));
+            }
+            return linkElements;
         }
 
         /// <summary>

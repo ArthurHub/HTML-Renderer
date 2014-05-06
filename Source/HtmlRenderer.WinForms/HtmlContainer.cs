@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
@@ -316,6 +317,20 @@ namespace HtmlRenderer.WinForms
         public string GetAttributeAt(Point location, string attribute)
         {
             return _htmlContainerInt.GetAttributeAt(Utils.Convert(location), attribute);
+        }
+
+        /// <summary>
+        /// Get all the links in the HTML with the element rectangle and href data.
+        /// </summary>
+        /// <returns>collection of all the links in the HTML</returns>
+        public List<LinkElementData<RectangleF>> GetLinks()
+        {
+            var linkElements = new List<LinkElementData<RectangleF>>();
+            foreach (var link in HtmlContainerInt.GetLinks())
+            {
+                linkElements.Add(new LinkElementData<RectangleF>(link.Id, link.Href, Utils.Convert(link.Rectangle)));
+            }
+            return linkElements;
         }
 
         /// <summary>

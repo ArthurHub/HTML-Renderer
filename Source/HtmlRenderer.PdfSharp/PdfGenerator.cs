@@ -55,10 +55,10 @@ namespace HtmlRenderer.PdfSharp
         {
             // create PDF document to render the HTML into
             var document = new PdfDocument();
-            
+
             // get the size of each page to layout the HTML in
-            var size = PageSizeConverter.ToSize(config.PageSize);
-            size = new XSize(size.Width - config.MarginLeft - config.MarginRight, size.Height - config.MarginTop - config.MarginBottom);
+            var orgPageSize = PageSizeConverter.ToSize(config.PageSize);
+            var pageSize = new XSize(orgPageSize.Width - config.MarginLeft - config.MarginRight, orgPageSize.Height - config.MarginTop - config.MarginBottom);
 
             if (!string.IsNullOrEmpty(html))
             {
@@ -70,11 +70,11 @@ namespace HtmlRenderer.PdfSharp
                         container.ImageLoad += imageLoad;
 
                     container.Location = new XPoint(config.MarginLeft, config.MarginTop);
-                    container.MaxSize = new XSize(size.Width, 0);
+                    container.MaxSize = new XSize(pageSize.Width, 0);
                     container.SetHtml(html, cssData);
 
                     // layout the HTML with the page width restriction to know how many pages are required
-                    using (var measure = XGraphics.CreateMeasureContext(size, XGraphicsUnit.Point, XPageDirection.Downwards))
+                    using (var measure = XGraphics.CreateMeasureContext(pageSize, XGraphicsUnit.Point, XPageDirection.Downwards))
                     {
                         container.PerformLayout(measure);
                     }
@@ -87,17 +87,61 @@ namespace HtmlRenderer.PdfSharp
                         page.Size = config.PageSize;
                         using (var g = XGraphics.FromPdfPage(page))
                         {
-                            g.IntersectClip(new XRect(config.MarginLeft, config.MarginTop, size.Width, size.Height));
+                            g.IntersectClip(new XRect(config.MarginLeft, config.MarginTop, pageSize.Width, pageSize.Height));
 
                             container.ScrollOffset = new XPoint(0, scrollOffset);
                             container.PerformPaint(g);
                         }
-                        scrollOffset -= size.Height;
+                        scrollOffset -= pageSize.Height;
                     }
+
+                    // add web links and anchors
+                    HandleLinks(document, container, orgPageSize, pageSize);
                 }
             }
 
             return document;
         }
+
+
+        #region Private/Protected methods
+
+        /// <summary>
+        /// Handle HTML links by create PDF Documents link either to external URL or to another page in the document.
+        /// </summary>
+        private static void HandleLinks(PdfDocument document, HtmlContainer container, XSize orgPageSize, XSize pageSize)
+        {
+            foreach (var link in container.GetLinks())
+            {
+                int i = (int)(link.Rectangle.Top / pageSize.Height);
+                for (; i < document.Pages.Count && pageSize.Height * i < link.Rectangle.Bottom; i++)
+                {
+                    var offset = pageSize.Height * i;
+
+                    // fucking position is from the bottom of the page
+                    var xRect = new XRect(link.Rectangle.Left, orgPageSize.Height - (link.Rectangle.Height + link.Rectangle.Top - offset), link.Rectangle.Width, link.Rectangle.Height);
+
+                    if (link.IsAnchor)
+                    {
+                        // create link to another page in the document
+                        var anchorRect = container.GetElementRectangle(link.AnchorId);
+                        if (anchorRect.HasValue)
+                        {
+                            // document links to the same page as the link is not allowed
+                            int anchorPageIdx = (int)(anchorRect.Value.Top / pageSize.Height);
+                            if (i != anchorPageIdx)
+                                document.Pages[i].AddDocumentLink(new PdfRectangle(xRect), anchorPageIdx);
+                        }
+                    }
+                    else
+                    {
+                        // create link to URL
+                        document.Pages[i].AddWebLink(new PdfRectangle(xRect), link.Href);
+                    }
+                }
+            }
+        }
+
+        #endregion
     }
 }

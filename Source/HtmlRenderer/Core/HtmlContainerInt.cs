@@ -13,13 +13,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using HtmlRenderer.Adapters;
 using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Handlers;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core
 {
@@ -451,6 +451,23 @@ namespace HtmlRenderer.Core
 
             var cssBox = DomUtils.GetCssBox(_root, OffsetByScroll(location));
             return cssBox != null ? DomUtils.GetAttribute(cssBox, attribute) : null;
+        }
+
+        /// <summary>
+        /// Get all the links in the HTML with the element rectangle and href data.
+        /// </summary>
+        /// <returns>collection of all the links in the HTML</returns>
+        public List<LinkElementData<RRect>> GetLinks()
+        {
+            var linkBoxes = new List<CssBox>();
+            DomUtils.GetAllLinkBoxes(_root, linkBoxes);
+
+            var linkElements = new List<LinkElementData<RRect>>();
+            foreach (var box in linkBoxes)
+            {
+                linkElements.Add(new LinkElementData<RRect>(box.GetAttribute("id"), box.GetAttribute("href"), CommonUtils.GetFirstValueOrDefault(box.Rectangles, box.Bounds)));
+            }
+            return linkElements;
         }
 
         /// <summary>

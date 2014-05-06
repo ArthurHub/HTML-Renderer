@@ -13,10 +13,10 @@
 using System;
 using System.Globalization;
 using System.IO;
+using HtmlRenderer.Adapters;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core.Handlers
 {

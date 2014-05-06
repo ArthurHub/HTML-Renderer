@@ -13,10 +13,10 @@
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using HtmlRenderer.Adapters;
 using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Parse;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core.Dom
 {

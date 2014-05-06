@@ -12,10 +12,10 @@
 
 using System;
 using System.Globalization;
+using HtmlRenderer.Adapters;
 using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Dom;
 using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.Core.Parse
 {

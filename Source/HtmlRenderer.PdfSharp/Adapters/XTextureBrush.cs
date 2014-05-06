@@ -55,7 +55,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         public void DrawRectangle(XGraphics g, double x, double y, double width, double height)
         {
             var prevState = g.Save();
-            g.IntersectClip(new XRect(x,y,width,height));
+            g.IntersectClip(new XRect(x, y, width, height));
 
             double rx = _translateTransformLocation.X;
             double w = _image.PixelWidth, h = _image.PixelHeight;

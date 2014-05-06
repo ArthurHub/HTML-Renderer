@@ -72,6 +72,7 @@
     <Compile Include="Core\Entities\HtmlRenderErrorType.cs" />
     <Compile Include="Core\Entities\HtmlScrollEventArgs.cs" />
     <Compile Include="Core\Entities\HtmlStylesheetLoadEventArgs.cs" />
+    <Compile Include="Core\Entities\LinkElementData.cs" />
     <Compile Include="Core\Handlers\BackgroundImageDrawHandler.cs" />
     <Compile Include="Core\Handlers\BordersDrawHandler.cs" />
     <Compile Include="Core\Handlers\ContextMenuHandler.cs" />

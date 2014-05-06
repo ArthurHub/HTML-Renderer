@@ -226,6 +226,27 @@ namespace HtmlRenderer.Core.Utils
         }
 
         /// <summary>
+        /// Collect all link boxes found in the HTML tree.
+        /// </summary>
+        /// <param name="box">the box to start search from</param>
+        /// <param name="linkBoxes">collection to add all link boxes to</param>
+        public static void GetAllLinkBoxes(CssBox box, List<CssBox> linkBoxes)
+        {
+            if (box != null)
+            {
+                if (box.IsClickable && box.Visibility == CssConstants.Visible)
+                {
+                    linkBoxes.Add(box);
+                }
+
+                foreach (var childBox in box.Boxes)
+                {
+                    GetAllLinkBoxes(childBox, linkBoxes);
+                }
+            }
+        }
+
+        /// <summary>
         /// Get css link box under the given sub-tree at the given x,y location.<br/>
         /// the location must be in correct scroll offset.
         /// </summary>
@@ -375,7 +396,7 @@ namespace HtmlRenderer.Core.Utils
             {
                 foreach (var word in rects.Key.Words)
                 {
-                    // add word spacing to word width so sentance won't have hols in it when moving the mouse
+                    // add word spacing to word width so sentence won't have hols in it when moving the mouse
                     var rect = word.Rectangle;
                     rect.Width += word.OwnerBox.ActualWordSpacing;
                     if (rect.Contains(location))
