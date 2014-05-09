@@ -21,6 +21,7 @@ using HtmlRenderer.Demo.Common;
 using HtmlRenderer.PdfSharp;
 using HtmlRenderer.WinForms;
 using PdfSharp;
+using PdfSharp.Drawing;
 
 namespace HtmlRenderer.Demo.WinForms
 {
@@ -71,12 +72,10 @@ namespace HtmlRenderer.Demo.WinForms
             var file = Path.GetTempFileName();
             File.WriteAllBytes(file, Resources.CustomFont);
             _privateFont.AddFontFile(file);
-
+            
             // add the fonts to renderer
             foreach (var fontFamily in _privateFont.Families)
-            {
                 HtmlRender.AddFontFamily(fontFamily);
-            }
         }
 
         /// <summary>
@@ -141,7 +140,11 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         private void OnGeneratePdf_Click(object sender, EventArgs e)
         {
-            var doc = PdfGenerator.GeneratePdf(_mainControl.GetHtml(), PageSize.A4, 25, null, HtmlRenderingHelper.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoadPdfSharp);
+            PdfGenerateConfig config = new PdfGenerateConfig();
+            config.PageSize = PageSize.A4;
+            config.SetMargins(20);
+
+            var doc = PdfGenerator.GeneratePdf(_mainControl.GetHtml(), config, null, HtmlRenderingHelper.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoadPdfSharp);
             var tmpFile = Path.GetTempFileName();
             tmpFile = Path.GetFileNameWithoutExtension(tmpFile) + ".pdf";
             doc.Save(tmpFile);

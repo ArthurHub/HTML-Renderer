@@ -11,8 +11,12 @@
 // "The Art of War"
 
 using System;
+using System.Drawing;
+using System.Drawing.Text;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
+using HtmlRenderer.Core.Utils;
+using HtmlRenderer.PdfSharp.Adapters;
 using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
@@ -24,6 +28,38 @@ namespace HtmlRenderer.PdfSharp
     /// </summary>
     public static class PdfGenerator
     {
+        /// <summary>
+        /// Adds a font mapping from <paramref name="fromFamily"/> to <paramref name="toFamily"/> iff the <paramref name="fromFamily"/> is not found.<br/>
+        /// When the <paramref name="fromFamily"/> font is used in rendered html and is not found in existing 
+        /// fonts (installed or added) it will be replaced by <paramref name="toFamily"/>.<br/>
+        /// </summary>
+        /// <remarks>
+        /// This fonts mapping can be used as a fallback in case the requested font is not installed in the client system.
+        /// </remarks>
+        /// <param name="fromFamily">the font family to replace</param>
+        /// <param name="toFamily">the font family to replace with</param>
+        public static void AddFontFamilyMapping(string fromFamily, string toFamily)
+        {
+            ArgChecker.AssertArgNotNullOrEmpty(fromFamily, "fromFamily");
+            ArgChecker.AssertArgNotNullOrEmpty(toFamily, "toFamily");
+
+            PdfSharpAdapter.Instance.AddFontFamilyMapping(fromFamily, toFamily);
+        }
+
+        /// <summary>
+        /// Parse the given stylesheet to <see cref="CssData"/> object.<br/>
+        /// If <paramref name="combineWithDefault"/> is true the parsed css blocks are added to the 
+        /// default css data (as defined by W3), merged if class name already exists. If false only the data in the given stylesheet is returned.
+        /// </summary>
+        /// <seealso cref="http://www.w3.org/TR/CSS21/sample.html"/>
+        /// <param name="stylesheet">the stylesheet source to parse</param>
+        /// <param name="combineWithDefault">true - combine the parsed css data with default css data, false - return only the parsed css data</param>
+        /// <returns>the parsed css data</returns>
+        public static CssData ParseStyleSheet(string stylesheet, bool combineWithDefault = true)
+        {
+            return CssData.Parse(PdfSharpAdapter.Instance, stylesheet, combineWithDefault);
+        }
+
         /// <summary>
         /// Create PDF document from given HTML.<br/>
         /// </summary>
@@ -55,7 +91,7 @@ namespace HtmlRenderer.PdfSharp
         {
             // create PDF document to render the HTML into
             var document = new PdfDocument();
-
+            
             // get the size of each page to layout the HTML in
             var orgPageSize = PageSizeConverter.ToSize(config.PageSize);
             var pageSize = new XSize(orgPageSize.Width - config.MarginLeft - config.MarginRight, orgPageSize.Height - config.MarginTop - config.MarginBottom);
