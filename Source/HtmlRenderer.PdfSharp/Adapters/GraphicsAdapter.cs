@@ -200,9 +200,17 @@ namespace HtmlRenderer.PdfSharp.Adapters
             var xBrush = ((BrushAdapter)brush).Brush;
             var xTextureBrush = xBrush as XTextureBrush;
             if (xTextureBrush != null)
+            {
                 xTextureBrush.DrawRectangle(_g, x, y, width, height);
+            }
             else
+            {
                 _g.DrawRectangle((XBrush)xBrush, x, y, width, height);
+                
+                // handle bug in PdfSharp that keeps the brush color for next string draw
+                if(xBrush is XLinearGradientBrush)
+                    _g.DrawRectangle(XBrushes.White, 0,0,0.1,0.1);
+            }
         }
 
         /// <summary>
