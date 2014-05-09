@@ -108,7 +108,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
             {
                 var height = realFont.Height;
                 var descent = realFont.Size * realFont.FontFamily.GetCellDescent(realFont.Style) / realFont.FontFamily.GetEmHeight(realFont.Style);
-                fontAdapter.SetMetrics(height, (int)Math.Round((height - descent + .5f)));
+                fontAdapter.SetMetrics(height, (int)Math.Round((height - descent + 1f)));
             }
 
             return Utils.Convert(size);
