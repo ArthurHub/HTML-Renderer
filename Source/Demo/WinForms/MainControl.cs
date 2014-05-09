@@ -327,11 +327,7 @@ namespace HtmlRenderer.Demo.WinForms
         {
             var selectionStart = _htmlEditor.SelectionStart;
             _htmlEditor.Clear();
-            _htmlEditor.AppendText(text);
-            text = _htmlEditor.Rtf;
-
-            _htmlEditor.Clear();
-            _htmlEditor.Rtf = SyntaxHilight.AddColoredText(text);
+            _htmlEditor.Rtf = HtmlSyntaxHighlighter.Process(text);
             _htmlEditor.SelectionStart = selectionStart;
         }
 

@@ -14,6 +14,9 @@ namespace HtmlRenderer.WinForms.Utilities
     /// See http://theartofdev.wordpress.com/2012/11/11/setting-html-and-plain-text-formatting-to-clipboard/.<br/>
     /// <seealso cref="CreateDataObject"/>.
     /// </summary>
+    /// <remarks>
+    /// The MIT License (MIT) Copyright (c) 2014 Arthur Teplitzki.
+    /// </remarks>
     internal static class ClipboardHelper
     {
         #region Fields and Consts
@@ -25,12 +28,12 @@ namespace HtmlRenderer.WinForms.Utilities
         /// character must be escaped. <br/>
         /// </summary>
         private const string Header = @"Version:0.9
-StartHTML:<<<<<<<<1
-EndHTML:<<<<<<<<2
-StartFragment:<<<<<<<<3
-EndFragment:<<<<<<<<4
-StartSelection:<<<<<<<<3
-EndSelection:<<<<<<<<4";
+    StartHTML:<<<<<<<<1
+    EndHTML:<<<<<<<<2
+    StartFragment:<<<<<<<<3
+    EndFragment:<<<<<<<<4
+    StartSelection:<<<<<<<<3
+    EndSelection:<<<<<<<<4";
 
         /// <summary>
         /// html comment to point the beginning of html fragment
