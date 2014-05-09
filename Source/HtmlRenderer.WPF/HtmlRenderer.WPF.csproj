@@ -54,6 +54,20 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Adapters\BrushAdapter.cs" />
+    <Compile Include="Adapters\ContextMenuAdapter.cs" />
+    <Compile Include="Adapters\ControlAdapter.cs" />
+    <Compile Include="Adapters\FontAdapter.cs" />
+    <Compile Include="Adapters\FontFamilyAdapter.cs" />
+    <Compile Include="Adapters\GraphicsAdapter.cs" />
+    <Compile Include="Adapters\GraphicsPathAdapter.cs" />
+    <Compile Include="Adapters\ImageAdapter.cs" />
+    <Compile Include="Adapters\PenAdapter.cs" />
+    <Compile Include="Adapters\WpfAdapter.cs" />
+    <Compile Include="HtmlContainer.cs" />
+    <Compile Include="HtmlPanel.cs" />
+    <Compile Include="HtmlRender.cs" />
+    <Compile Include="Utilities\Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
