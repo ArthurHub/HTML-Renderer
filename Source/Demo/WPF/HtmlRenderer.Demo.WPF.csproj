@@ -111,6 +111,30 @@
   <ItemGroup>
     <Resource Include="html.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\chrome.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\code.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\form.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\html.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\IE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\pdf.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\stopwatch.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

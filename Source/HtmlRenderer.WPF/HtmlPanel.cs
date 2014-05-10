@@ -298,28 +298,27 @@ namespace HtmlRenderer.WPF
         /// <summary>
         /// Perform the layout of the html in the control.
         /// </summary>
-        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        protected override Size MeasureOverride(Size constraint)
         {
-            PerformHtmlLayout();
-
-            base.OnRenderSizeChanged(sizeInfo);
+            PerformHtmlLayout(constraint);
 
             // to handle if vertical scrollbar is appearing or disappearing
-            if (_htmlContainer != null && Math.Abs(_htmlContainer.MaxSize.Width - Width) > 0.1)
+            if (_htmlContainer != null && Math.Abs(_htmlContainer.MaxSize.Width - constraint.Width) > 0.1)
             {
-                PerformHtmlLayout();
-                base.OnRenderSizeChanged(sizeInfo);
+                PerformHtmlLayout(constraint);
             }
-        }
 
+            return _htmlContainer != null ? _htmlContainer.ActualSize : Size.Empty;
+        }
+        
         /// <summary>
         /// Perform html container layout by the current panel client size.
         /// </summary>
-        protected void PerformHtmlLayout()
+        protected void PerformHtmlLayout(Size constraint)
         {
             if (_htmlContainer != null)
             {
-                _htmlContainer.MaxSize = new Size(Width, 0);
+                _htmlContainer.MaxSize = new Size(constraint.Width, 0);
 
                 DrawingGroup dGroup = new DrawingGroup();
                 using (var g = dGroup.Open())

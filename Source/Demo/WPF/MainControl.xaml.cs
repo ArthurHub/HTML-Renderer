@@ -65,9 +65,6 @@ namespace HtmlRenderer.Demo.WPF
             //            _htmlToolTip.ImageLoad += HtmlRenderingHelper.OnImageLoad;
             //            _htmlToolTip.SetToolTip(_htmlPanel, Resources.Tooltip);
 
-            _htmlEditor.FontFamily = (FontFamily)new FontFamilyConverter().ConvertFromString("GenericMonospace");
-            _htmlEditor.FontSize = 10;
-
             LoadSamples();
 
             _updateHtmlTimer = new Timer(OnUpdateHtmlTimerTick);
@@ -120,9 +117,7 @@ namespace HtmlRenderer.Demo.WPF
 
         public string GetHtml()
         {
-            return _useGeneratedHtml
-                ? _htmlPanel.GetHtml()
-                : new TextRange(_htmlEditor.Document.ContentStart, _htmlEditor.Document.ContentStart).Text;
+            return _useGeneratedHtml ? _htmlPanel.GetHtml() : GetHtmlEditorText();
         }
 
         public void SetHtml(string html)
@@ -171,9 +166,7 @@ namespace HtmlRenderer.Demo.WPF
             showcaseRoot.IsExpanded = true;
 
             if (showcaseRoot.Items.Count > 0)
-            {
-                //_samplesTreeView.SelectedItem = showcaseRoot.Items[0];
-            }
+                ((TreeViewItem)showcaseRoot.Items[1]).IsSelected = true;
         }
 
         /// <summary>
@@ -192,7 +185,7 @@ namespace HtmlRenderer.Demo.WPF
         /// <summary>
         /// On tree view node click load the html to the html panel and html editor.
         /// </summary>
-        private void OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void OnTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var item = ((TreeViewItem)e.NewValue);
             var sample = item.Tag as HtmlSample;
@@ -251,8 +244,7 @@ namespace HtmlRenderer.Demo.WPF
 
                 try
                 {
-                    var textRange = new TextRange(_htmlEditor.Document.ContentStart, _htmlEditor.Document.ContentEnd);
-                    _htmlPanel.Html = textRange.Text;
+                    _htmlPanel.Html = GetHtmlEditorText();
                 }
                 catch (Exception ex)
                 {
@@ -303,15 +295,13 @@ namespace HtmlRenderer.Demo.WPF
             return null;
         }
 
-        /*
         /// <summary>
         /// Reload the html shown in the html editor by running coloring again.
         /// </summary>
-        private void OnReloadColorsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void OnRefreshLink_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            SetColoredText(_htmlEditor.Text);
+            SetColoredText(GetHtmlEditorText());
         }
-         */
 
         /// <summary>
         /// Show error raised from html renderer.
@@ -357,6 +347,14 @@ namespace HtmlRenderer.Demo.WPF
             }
 
             _htmlEditor.CaretPosition = selectionStart;
+        }
+
+        /// <summary>
+        /// Get the html text from the html editor control.
+        /// </summary>
+        private string GetHtmlEditorText()
+        {
+            return new TextRange(_htmlEditor.Document.ContentStart, _htmlEditor.Document.ContentEnd).Text;
         }
 
         #endregion

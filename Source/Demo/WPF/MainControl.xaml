@@ -8,21 +8,25 @@
              d:DesignHeight="300" d:DesignWidth="600">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TreeView x:Name="_samplesTreeView" Grid.Column="0" SelectedItemChanged="OnSelectedItemChanged"/>
-        <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" Width="4" Background="#FFBCBCBC"/>
-        <Grid Grid.Column="2">
+        <TreeView x:Name="_samplesTreeView" Grid.Column="0" BorderThickness="0" Margin="0 0 3 0"
+                  SelectedItemChanged="OnTreeView_SelectedItemChanged" />
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
+                <RowDefinition Height="*" MinHeight="80" />
                 <RowDefinition Height="auto" />
-                <RowDefinition Height="150" />
+                <RowDefinition Height="150" MinHeight="50" />
             </Grid.RowDefinitions>
             <wpf:HtmlPanel x:Name="_htmlPanel" Grid.Row="0" />
-            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="4" Background="#FFBCBCBC"/>
-            <RichTextBox x:Name="_htmlEditor" Grid.Row="2" VerticalScrollBarVisibility="Auto" TextChanged="OnHtmlEditor_TextChanged"/>
+            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="3" Background="LightGray" />
+            <RichTextBox x:Name="_htmlEditor" Grid.Row="2" VerticalScrollBarVisibility="Auto" BorderThickness="0" 
+                         TextChanged="OnHtmlEditor_TextChanged"/>
         </Grid>
+        <Label HorizontalAlignment="Right" Margin="0,0,16,0" VerticalAlignment="Bottom" Grid.Column="1" FontSize="11" Foreground="Blue" Cursor="Hand"
+               MouseLeftButtonUp="OnRefreshLink_MouseLeftButtonUp">
+            <Underline>Refresh</Underline>
+        </Label>
     </Grid>
 </UserControl>
