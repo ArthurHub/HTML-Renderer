@@ -104,12 +104,6 @@ namespace HtmlRenderer.WPF
         }
 
         /// <summary>
-        ///   Raised when the BorderStyle property value changes.
-        /// </summary>
-        [Category("Property Changed")]
-        public event EventHandler BorderStyleChanged;
-
-        /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
         /// Allows canceling the execution of the link.
         /// </summary>
@@ -204,7 +198,7 @@ namespace HtmlRenderer.WPF
         [Browsable(true)]
         [Category("Appearance")]
         [Description("Set base stylesheet to be used by html rendered in the control.")]
-        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+        //[Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public virtual string BaseStylesheet
         {
             get { return _baseRawCssData; }
@@ -228,7 +222,7 @@ namespace HtmlRenderer.WPF
                 _html = value;
                 //ScrollInfo.SetVerticalOffset(0);
                 _htmlContainer.SetHtml(_html, _baseCssData);
-                InvalidateArrange();
+                InvalidateMeasure();
             }
         }
 
@@ -310,7 +304,7 @@ namespace HtmlRenderer.WPF
 
             return _htmlContainer != null ? _htmlContainer.ActualSize : Size.Empty;
         }
-        
+
         /// <summary>
         /// Perform html container layout by the current panel client size.
         /// </summary>
@@ -348,6 +342,7 @@ namespace HtmlRenderer.WPF
                 //                _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
             }
         }
+
         /*
         /// <summary>
         /// Set focus on the control for keyboard scrollbars handling.
@@ -498,7 +493,7 @@ namespace HtmlRenderer.WPF
         protected virtual void OnRefresh(HtmlRefreshEventArgs e)
         {
             if (e.Layout)
-                InvalidateArrange();
+                InvalidateMeasure();
             else
                 InvalidateVisual();
         }

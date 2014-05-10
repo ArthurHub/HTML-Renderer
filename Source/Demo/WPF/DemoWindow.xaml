@@ -4,10 +4,11 @@
         xmlns:wpf1="clr-namespace:HtmlRenderer.Demo.WPF"
         Title="HTML Renderer WPF Demo" Height="486" Width="900">
     <DockPanel Background="LightGray">
-        <ToolBar DockPanel.Dock="Top" Background="WhiteSmoke" Margin="0 0 0 2">
+        <ToolBar x:Name="_toolBar" DockPanel.Dock="Top" Background="WhiteSmoke" Margin="0 0 0 2">
             <DockPanel Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ToolBarPanel}}}">
                 <DockPanel.Resources>
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"/>
+                    <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"/>
                     <Style TargetType="{x:Type Separator}" BasedOn="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
                 </DockPanel.Resources>
                 <Button IsEnabled="False">
@@ -17,21 +18,21 @@
                     </StackPanel>
                 </Button>
                 <Separator/>
-                <Button>
+                <ToggleButton x:Name="_showIEView" Click="OnShowIEView_ButtonClick">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="Resources/IE.png" MaxHeight="18" Margin="0 0 5 0"/>
                         <TextBlock Text="Show Browser" VerticalAlignment="Center"/>
                     </StackPanel>
-                </Button>
-                <Button>
+                </ToggleButton>
+                <Button Click="OnOpenInExternalView_Click">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="Resources/chrome.png" MaxHeight="18" Margin="0 0 5 0"/>
                         <TextBlock Text="Open External" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
-                <Button>
+                <ToggleButton x:Name="_useGeneratedHtml" Click="OnUseGeneratedHtml_Click">
                     <Image Source="Resources/code.png" MaxHeight="16"/>
-                </Button>
+                </ToggleButton>
                 <Separator/>
                 <Separator/>
                 <Button IsEnabled="False">
@@ -46,7 +47,7 @@
                         <TextBlock Text="Generate PDF" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
-                <Button HorizontalAlignment="Right">
+                <Button HorizontalAlignment="Right" Click="OnRunPerformance_Click">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="Resources/stopwatch.png" MaxHeight="18" Margin="0 0 5 0"/>
                         <TextBlock Text="Run Performance" VerticalAlignment="Center"/>
