@@ -76,7 +76,7 @@ namespace HtmlRenderer.WPF.Adapters
         /// </summary>
         public override void SetCursorDefault()
         {
-            _control.Cursor = Cursors.None;
+            _control.Cursor = Cursors.Arrow;
         }
 
         /// <summary>

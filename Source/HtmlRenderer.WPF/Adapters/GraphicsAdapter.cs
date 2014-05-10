@@ -13,6 +13,7 @@
 using System;
 using System.Globalization;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media;
 using HtmlRenderer.Adapters;
 using HtmlRenderer.Adapters.Entities;
@@ -117,6 +118,7 @@ namespace HtmlRenderer.WPF.Adapters
 
             var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, font.Size, colorConv);
             _g.DrawText(formattedText, Utils.Convert(point));
+
         }
 
         public override RBrush GetTextureBrush(RImage image, RRect dstRect, RPoint translateTransformLocation)

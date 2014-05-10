@@ -57,7 +57,7 @@ namespace HtmlRenderer.WPF.Adapters
         {
             _font = font;
             _size = size;
-            _height = font.XHeight;
+            _height = SizeInPoints;
             _underlineOffset = font.UnderlinePosition;
         }
 
@@ -74,7 +74,7 @@ namespace HtmlRenderer.WPF.Adapters
         /// </summary>
         public override double Size
         {
-            get { return _size; }
+            get { return _size * 96 / 72; }
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace HtmlRenderer.WPF.Adapters
         /// </summary>
         public override double SizeInPoints
         {
-            get { return _size*_font.FontFamily.LineSpacing; }
+            get { return Size * _font.FontFamily.LineSpacing; }
         }
 
         /// <summary>

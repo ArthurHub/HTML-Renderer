@@ -23,8 +23,5 @@ namespace HtmlRenderer.Demo.WPF
         {
             InitializeComponent();
         }
-
-        private void OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        { }
     }
 }

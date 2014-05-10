@@ -320,7 +320,7 @@ namespace HtmlRenderer.WPF
         /// </summary>
         /// <param name="elementId">the id of the element to get its Rect</param>
         /// <returns>the Rect of the element or null if not found</returns>
-        public Rect? GetElementRect(string elementId)
+        public Rect? GetElementRectangle(string elementId)
         {
             var r = _htmlContainerInt.GetElementRectangle(elementId);
             return r.HasValue ? Utils.Convert(r.Value) : (Rect?)null;
