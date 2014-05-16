@@ -62,6 +62,7 @@ namespace HtmlRenderer.Demo.WPF
         /// </summary>
         private void LoadCustomFonts()
         {
+            // TODO:a load custom fonts
             //            // load custom font font into private fonts collection
             //            var file = Path.GetTempFileName();
             //            File.WriteAllBytes(file, Resources.CustomFont);

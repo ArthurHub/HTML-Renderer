@@ -17,6 +17,7 @@ namespace HtmlRenderer.WPF.Adapters
 {
     /// <summary>
     /// Adapter for WinForms Font object for core.
+    /// // TODO:a check all the usages of different height to understand what do we need
     /// </summary>
     internal sealed class FontAdapter : RFont
     {
@@ -58,7 +59,7 @@ namespace HtmlRenderer.WPF.Adapters
             _font = font;
             _size = size;
             _height = SizeInPoints;
-            _underlineOffset = font.UnderlinePosition;
+            _underlineOffset = Size*(_font.FontFamily.LineSpacing + font.UnderlinePosition);
         }
 
         /// <summary>

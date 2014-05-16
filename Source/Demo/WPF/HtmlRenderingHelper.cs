@@ -124,7 +124,10 @@ namespace HtmlRenderer.Demo.WPF
         public static BitmapImage ImageFromStream(Stream stream)
         {
             var bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
             bitmapImage.StreamSource = stream;
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.EndInit();
             return bitmapImage;
         }
 

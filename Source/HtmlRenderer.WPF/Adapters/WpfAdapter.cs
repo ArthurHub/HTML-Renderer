@@ -85,7 +85,7 @@ namespace HtmlRenderer.WPF.Adapters
             var bitmap = new BitmapImage();
             bitmap.BeginInit();
             bitmap.StreamSource = memoryStream;
-            bitmap.CacheOption = BitmapCacheOption.OnDemand;
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
             bitmap.EndInit();
             bitmap.Freeze();
 
