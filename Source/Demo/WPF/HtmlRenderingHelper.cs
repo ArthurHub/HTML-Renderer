@@ -128,6 +128,7 @@ namespace HtmlRenderer.Demo.WPF
             bitmapImage.StreamSource = stream;
             bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
             bitmapImage.EndInit();
+            bitmapImage.Freeze();
             return bitmapImage;
         }
 

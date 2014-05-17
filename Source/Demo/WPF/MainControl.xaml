@@ -11,7 +11,7 @@
             <ColumnDefinition Width="160"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TreeView x:Name="_samplesTreeView" Grid.Column="0" BorderThickness="0" Margin="0 0 3 0"
+        <TreeView x:Name="_samplesTreeView" Grid.Column="0" BorderThickness="0" Margin="0 0 4 0"
                   SelectedItemChanged="OnTreeView_SelectedItemChanged" />
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
@@ -20,7 +20,7 @@
                 <RowDefinition Height="150" MinHeight="50" />
             </Grid.RowDefinitions>
             <wpf:HtmlPanel x:Name="_htmlPanel" Grid.Row="0" />
-            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="3" Background="LightGray" />
+            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="4" Background="#BFDBFF" />
             <RichTextBox x:Name="_htmlEditor" Grid.Row="2" VerticalScrollBarVisibility="Auto" BorderThickness="0" 
                          TextChanged="OnHtmlEditor_TextChanged"/>
         </Grid>

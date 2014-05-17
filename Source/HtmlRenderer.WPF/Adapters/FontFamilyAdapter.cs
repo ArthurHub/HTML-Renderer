@@ -10,7 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Windows.Markup;
 using System.Windows.Media;
 using HtmlRenderer.Adapters;
 

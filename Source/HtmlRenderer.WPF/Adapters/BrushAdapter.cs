@@ -26,18 +26,11 @@ namespace HtmlRenderer.WPF.Adapters
         private readonly Brush _brush;
 
         /// <summary>
-        /// If to dispose the brush when <see cref="Dispose"/> is called.<br/>
-        /// Ignore dispose for cached brushes.
-        /// </summary>
-        private readonly bool _dispose;
-
-        /// <summary>
         /// Init.
         /// </summary>
-        public BrushAdapter(Brush brush, bool dispose)
+        public BrushAdapter(Brush brush)
         {
             _brush = brush;
-            _dispose = dispose;
         }
 
         /// <summary>

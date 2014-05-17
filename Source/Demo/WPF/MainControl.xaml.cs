@@ -165,8 +165,8 @@ namespace HtmlRenderer.Demo.WPF
 
             showcaseRoot.IsExpanded = true;
 
-            if (showcaseRoot.Items.Count > 0)
-                ((TreeViewItem)showcaseRoot.Items[1]).IsSelected = true;
+//            if (showcaseRoot.Items.Count > 0)
+//                ((TreeViewItem)showcaseRoot.Items[1]).IsSelected = true;
         }
 
         /// <summary>

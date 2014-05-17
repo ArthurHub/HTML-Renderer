@@ -492,10 +492,11 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected virtual void OnRefresh(HtmlRefreshEventArgs e)
         {
-            if (e.Layout)
-                InvalidateMeasure();
-            else
-                InvalidateVisual();
+            // TODO:a handle refresh
+//            if (e.Layout)
+//                InvalidateMeasure();
+//            else
+//                InvalidateVisual();
         }
 
         /// <summary>

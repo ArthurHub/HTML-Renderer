@@ -10,6 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System.Windows;
 using System.Windows.Media;
 using HtmlRenderer.Adapters;
 
@@ -58,8 +59,8 @@ namespace HtmlRenderer.WPF.Adapters
         {
             _font = font;
             _size = size;
-            _height = SizeInPoints;
-            _underlineOffset = Size*(_font.FontFamily.LineSpacing + font.UnderlinePosition);
+            _height = 96d / 72d * _size * _font.FontFamily.LineSpacing;
+            _underlineOffset = 96d / 72d * _size * (_font.FontFamily.LineSpacing + font.UnderlinePosition);
         }
 
         /// <summary>
@@ -75,16 +76,7 @@ namespace HtmlRenderer.WPF.Adapters
         /// </summary>
         public override double Size
         {
-            get { return _size * 96 / 72; }
-        }
-
-        /// <summary>
-        /// Gets the em-size, in points, of this Font.
-        /// // TODO:a check that the size is handled properly
-        /// </summary>
-        public override double SizeInPoints
-        {
-            get { return Size * _font.FontFamily.LineSpacing; }
+            get { return _size; }
         }
 
         /// <summary>

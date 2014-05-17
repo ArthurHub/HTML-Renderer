@@ -582,7 +582,7 @@ namespace HtmlRenderer.Core.Dom
                     }
                     else if (len.Unit == CssUnit.Ems && GetParent() != null)
                     {
-                        computedValue = len.ConvertEmToPoints(GetParent().ActualFont.SizeInPoints).ToString();
+                        computedValue = len.ConvertEmToPoints(GetParent().ActualFont.Size).ToString();
                     }
                     else
                     {

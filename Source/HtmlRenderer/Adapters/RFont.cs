@@ -23,11 +23,6 @@ namespace HtmlRenderer.Adapters
         public abstract double Size { get; }
 
         /// <summary>
-        ///  Gets the em-size, in points, of this Font.
-        ///  </summary>
-        public abstract double SizeInPoints { get; }
-
-        /// <summary>
         ///  The line spacing, in pixels, of this font.
         ///  </summary>
         public abstract double Height { get; }

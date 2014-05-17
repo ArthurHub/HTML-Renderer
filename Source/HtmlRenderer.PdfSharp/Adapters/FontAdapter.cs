@@ -66,11 +66,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
             get { return _font.Size; }
         }
 
-        public override double SizeInPoints
-        {
-            get { return _font.Size; }
-        }
-
         public override double UnderlineOffset
         {
             get { return _underlineOffset; }

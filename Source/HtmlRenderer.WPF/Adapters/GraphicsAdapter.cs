@@ -13,7 +13,6 @@
 using System;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Media;
 using HtmlRenderer.Adapters;
 using HtmlRenderer.Adapters.Entities;
@@ -58,7 +57,7 @@ namespace HtmlRenderer.WPF.Adapters
 
         public override RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
         {
-            return new BrushAdapter(new LinearGradientBrush(Utils.Convert(color1), Utils.Convert(color2), angle), true);
+            return new BrushAdapter(new LinearGradientBrush(Utils.Convert(color1), Utils.Convert(color2), angle));
         }
 
         public override RRect GetClip()
@@ -66,7 +65,7 @@ namespace HtmlRenderer.WPF.Adapters
             // TODO:a handle clip
             //            var clip = _g.ClipBounds;
             //            return Utils.Convert(clip);
-            return new RRect(0,0,9999,9999);
+            return new RRect(0, 0, 9999, 9999);
         }
 
         public override void SetClipReplace(RRect rect)
@@ -100,13 +99,13 @@ namespace HtmlRenderer.WPF.Adapters
 
         public override RSize MeasureString(string str, RFont font)
         {
-            var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, font.Size, Brushes.Red);
+            var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, Brushes.Red);
             return new RSize(formattedText.WidthIncludingTrailingWhitespace, formattedText.Height);
         }
 
         public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out int charFitWidth)
         {
-            var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, font.Size, Brushes.Red);
+            var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, Brushes.Red);
             charFit = str.Length;
             charFitWidth = (int)formattedText.Width;
             return new RSize(formattedText.Width, formattedText.Height);
@@ -116,17 +115,20 @@ namespace HtmlRenderer.WPF.Adapters
         {
             var colorConv = ((BrushAdapter)_adapter.GetSolidBrush(color)).Brush;
 
-            var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, font.Size, colorConv);
+            var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d/72d*font.Size, colorConv);
             _g.DrawText(formattedText, Utils.Convert(point));
-
         }
 
         public override RBrush GetTextureBrush(RImage image, RRect dstRect, RPoint translateTransformLocation)
         {
-            // TODO:a handle WPF image brush
             var brush = new ImageBrush(((ImageAdapter)image).Image);
-            //brush.TranslateTransform(translateTransformLocation.X, translateTransformLocation.Y);
-            return new BrushAdapter(brush, true);
+            brush.Stretch = Stretch.None;
+            brush.TileMode = TileMode.Tile;
+            brush.Viewport = Utils.Convert(dstRect);
+            brush.ViewportUnits = BrushMappingMode.Absolute;
+            brush.Transform = new TranslateTransform(translateTransformLocation.X, translateTransformLocation.Y);
+            brush.Freeze();
+            return new BrushAdapter(brush);
         }
 
         public override RGraphicsPath GetGraphicsPath()
@@ -146,7 +148,6 @@ namespace HtmlRenderer.WPF.Adapters
 
         public override void DrawLine(RPen pen, double x1, double y1, double x2, double y2)
         {
-
             _g.DrawLine(((PenAdapter)pen).Pen, new Point(x1, y1), new Point(x2, y2));
         }
 
@@ -170,7 +171,6 @@ namespace HtmlRenderer.WPF.Adapters
 
         public override void DrawImage(RImage image, RRect destRect)
         {
-
             _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect));
         }
 

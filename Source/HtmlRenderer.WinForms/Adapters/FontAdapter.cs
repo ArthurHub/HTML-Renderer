@@ -89,14 +89,6 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
-        /// Gets the em-size, in points, of this Font.
-        /// </summary>
-        public override double SizeInPoints
-        {
-            get { return _font.SizeInPoints; }
-        }
-
-        /// <summary>
         /// Get the vertical offset of the font underline location from the top of the font.
         /// </summary>
         public override double UnderlineOffset

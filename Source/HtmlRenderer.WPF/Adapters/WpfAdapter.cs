@@ -72,7 +72,7 @@ namespace HtmlRenderer.WPF.Adapters
         protected override RBrush CreateSolidBrush(RColor color)
         {
             var solidBrush = GetSolidColorBrush(color);
-            return new BrushAdapter(solidBrush, false);
+            return new BrushAdapter(solidBrush);
         }
 
         protected override RImage ConvertImageInt(object image)
