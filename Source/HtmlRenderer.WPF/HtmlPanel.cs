@@ -312,7 +312,7 @@ namespace HtmlRenderer.WPF
         {
             if (_htmlContainer != null)
             {
-                _htmlContainer.MaxSize = new Size(constraint.Width, 0);
+                _htmlContainer.MaxSize = new Size(constraint.Width-20, 0);
 
                 DrawingGroup dGroup = new DrawingGroup();
                 using (var g = dGroup.Open())

@@ -22,24 +22,26 @@ namespace HtmlRenderer.WPF.Adapters
     internal sealed class PenAdapter : RPen
     {
         /// <summary>
-        /// The actual WinForms brush instance.
+        /// The actual WPF brush instance.
         /// </summary>
-        private readonly Pen _pen;
+        private readonly Brush _brush;
+
+        /// <summary>
+        /// the width of the pen
+        /// </summary>
+        private double _width;
+
+        /// <summary>
+        /// the dash style of the pen
+        /// </summary>
+        private DashStyle _dashStyle = DashStyles.Solid;
 
         /// <summary>
         /// Init.
         /// </summary>
-        public PenAdapter(Pen pen)
+        public PenAdapter(Brush brush)
         {
-            _pen = pen;
-        }
-
-        /// <summary>
-        /// The actual WinForms brush instance.
-        /// </summary>
-        public Pen Pen
-        {
-            get { return _pen; }
+            _brush = brush;
         }
 
         /// <summary>
@@ -47,8 +49,8 @@ namespace HtmlRenderer.WPF.Adapters
         /// </summary>
         public override double Width
         {
-            get { return _pen.Thickness; }
-            set { _pen.Thickness = value; }
+            get { return _width; }
+            set { _width = value; }
         }
 
         /// <summary>
@@ -61,22 +63,22 @@ namespace HtmlRenderer.WPF.Adapters
                 switch (value)
                 {
                     case RDashStyle.Solid:
-                        _pen.DashStyle = DashStyles.Solid;
+                        _dashStyle = DashStyles.Solid;
                         break;
                     case RDashStyle.Dash:
-                        _pen.DashStyle = DashStyles.Dash;
+                        _dashStyle = DashStyles.Dash;
                         break;
                     case RDashStyle.Dot:
-                        _pen.DashStyle = DashStyles.Dot;
+                        _dashStyle = DashStyles.Dot;
                         break;
                     case RDashStyle.DashDot:
-                        _pen.DashStyle = DashStyles.DashDot;
+                        _dashStyle = DashStyles.DashDot;
                         break;
                     case RDashStyle.DashDotDot:
-                        _pen.DashStyle = DashStyles.DashDotDot;
+                        _dashStyle = DashStyles.DashDotDot;
                         break;
                     default:
-                        _pen.DashStyle = DashStyles.Solid;
+                        _dashStyle = DashStyles.Solid;
                         break;
                 }
             }
@@ -90,11 +92,21 @@ namespace HtmlRenderer.WPF.Adapters
             set
             {
                 // TODO:a handle custom pattern pen
-//                var fValues = new float[value.Length];
-//                for (int i = 0; i < value.Length; i++)
-//                    fValues[i] = (float)value[i];
-//                _pen.DashPattern = fValues;
+                //                var fValues = new float[value.Length];
+                //                for (int i = 0; i < value.Length; i++)
+                //                    fValues[i] = (float)value[i];
+                //                _pen.DashPattern = fValues;
             }
+        }
+
+        /// <summary>
+        /// Create the actual WPF pen instance.
+        /// </summary>
+        public Pen CreatePen()
+        {
+            var pen = new Pen(_brush, _width);
+            pen.DashStyle = _dashStyle;
+            return pen;
         }
     }
 }

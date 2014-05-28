@@ -115,7 +115,7 @@ namespace HtmlRenderer.WPF.Adapters
         {
             var colorConv = ((BrushAdapter)_adapter.GetSolidBrush(color)).Brush;
 
-            var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d/72d*font.Size, colorConv);
+            var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, colorConv);
             _g.DrawText(formattedText, Utils.Convert(point));
         }
 
@@ -138,9 +138,8 @@ namespace HtmlRenderer.WPF.Adapters
 
         public override void Dispose()
         {
-            // TODO:a handle dispose
-            //            if (_releaseGraphics)
-            //                _g.Dispose();
+            if (_releaseGraphics)
+                _g.Close();
         }
 
 
@@ -148,12 +147,12 @@ namespace HtmlRenderer.WPF.Adapters
 
         public override void DrawLine(RPen pen, double x1, double y1, double x2, double y2)
         {
-            _g.DrawLine(((PenAdapter)pen).Pen, new Point(x1, y1), new Point(x2, y2));
+            _g.DrawLine(((PenAdapter)pen).CreatePen(), new Point(x1, y1), new Point(x2, y2));
         }
 
         public override void DrawRectangle(RPen pen, double x, double y, double width, double height)
         {
-            var pen2 = ((PenAdapter)pen).Pen;
+            var pen2 = ((PenAdapter)pen).CreatePen();
             _g.DrawRectangle(null, pen2, new Rect(x, y, width, height));
         }
 
@@ -176,20 +175,28 @@ namespace HtmlRenderer.WPF.Adapters
 
         public override void DrawPath(RPen pen, RGraphicsPath path)
         {
-            _g.DrawGeometry(null, ((PenAdapter)pen).Pen, ((GraphicsPathAdapter)path).GraphicsPath);
+            _g.DrawGeometry(null, ((PenAdapter)pen).CreatePen(), ((GraphicsPathAdapter)path).GetClosedGeometry());
         }
 
         public override void DrawPath(RBrush brush, RGraphicsPath path)
         {
-            _g.DrawGeometry(((BrushAdapter)brush).Brush, null, ((GraphicsPathAdapter)path).GraphicsPath);
+            _g.DrawGeometry(((BrushAdapter)brush).Brush, null, ((GraphicsPathAdapter)path).GetClosedGeometry());
         }
 
         public override void DrawPolygon(RBrush brush, RPoint[] points)
         {
             if (points != null && points.Length > 0)
             {
-                // TODO:a hand;e draw polygon
-                //                _g.FillPolygon(((BrushAdapter)brush).Brush, Utils.Convert(points));
+                var g = new StreamGeometry();
+                using (var context = g.Open())
+                {
+                    context.BeginFigure(Utils.Convert(points[0]), true, true);
+                    for (int i = 1; i < points.Length; i++)
+                        context.LineTo(Utils.Convert(points[i]), false, true);
+                }
+                g.Freeze();
+
+                _g.DrawGeometry(((BrushAdapter)brush).Brush, null, g);
             }
         }
 

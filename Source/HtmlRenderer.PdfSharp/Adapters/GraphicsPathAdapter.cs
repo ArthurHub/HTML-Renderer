@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using HtmlRenderer.Adapters;
+using HtmlRenderer.Adapters.Entities;
 using PdfSharp.Drawing;
 
 namespace HtmlRenderer.PdfSharp.Adapters
@@ -21,19 +22,43 @@ namespace HtmlRenderer.PdfSharp.Adapters
     internal sealed class GraphicsPathAdapter : RGraphicsPath
     {
         /// <summary>
-        /// The actual WinForms graphics path instance.
+        /// The actual PdfSharp graphics path instance.
         /// </summary>
         private readonly XGraphicsPath _graphicsPath = new XGraphicsPath();
 
         /// <summary>
-        /// The actual WinForms graphics path instance.
+        /// the last point added to the path to begin next segment from
+        /// </summary>
+        private RPoint _lastPoint;
+
+        /// <summary>
+        /// The actual PdfSharp graphics path instance.
         /// </summary>
         public XGraphicsPath GraphicsPath
         {
             get { return _graphicsPath; }
         }
 
-        public override void AddArc(double x, double y, double width, double height, double startAngle, double sweepAngle)
+        public override void Start(double x, double y)
+        {
+            _lastPoint = new RPoint(x, y);
+        }
+
+        public override void LineTo(double x, double y)
+        {
+            _graphicsPath.AddLine((float)_lastPoint.X, (float)_lastPoint.Y, (float)x, (float)y);
+            _lastPoint = new RPoint(x, y);
+        }
+
+        public override void ArcTo(double x, double y, double size, int startAngle, int sweepAngle)
+        {
+            float left = (float)(System.Math.Min(x, _lastPoint.X) - (startAngle == 270 || startAngle == 0 ? size : 0));
+            float top = (float)(System.Math.Min(y, _lastPoint.Y) - (startAngle == 90 || startAngle == 0 ? size : 0));
+            _graphicsPath.AddArc(left, top, (float)size * 2, (float)size * 2, startAngle, sweepAngle);
+            _lastPoint = new RPoint(x, y);
+        }
+
+        public override void AddArc(double x, double y, double width, double height, int startAngle, int sweepAngle)
         {
             _graphicsPath.AddArc(x, y, width, height, startAngle, sweepAngle);
         }
@@ -41,11 +66,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
         public override void AddLine(double x1, double y1, double x2, double y2)
         {
             _graphicsPath.AddLine(x1, y1, x2, y2);
-        }
-
-        public override void CloseFigure()
-        {
-            _graphicsPath.CloseFigure();
         }
 
         public override void Dispose()

@@ -19,9 +19,18 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="150" MinHeight="50" />
             </Grid.RowDefinitions>
-            <wpf:HtmlPanel x:Name="_htmlPanel" Grid.Row="0" />
+            <Grid x:Name="_grid2" Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <wpf:HtmlPanel x:Name="_htmlPanel" Grid.Column="0" />
+                <GridSplitter x:Name="_splitter" Grid.Column="1" Width="4" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Background="#BFDBFF" Visibility="Collapsed" />
+                <WebBrowser x:Name="_webBrowser" Grid.Column="2" Visibility="Collapsed"/>
+            </Grid>
             <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="4" Background="#BFDBFF" />
-            <RichTextBox x:Name="_htmlEditor" Grid.Row="2" VerticalScrollBarVisibility="Auto" BorderThickness="0" 
+            <RichTextBox x:Name="_htmlEditor" Grid.Row="2" VerticalScrollBarVisibility="Visible" BorderThickness="0" 
                          TextChanged="OnHtmlEditor_TextChanged"/>
         </Grid>
         <Label HorizontalAlignment="Right" Margin="0,0,16,0" VerticalAlignment="Bottom" Grid.Column="1" FontSize="11" Foreground="Blue" Cursor="Hand"

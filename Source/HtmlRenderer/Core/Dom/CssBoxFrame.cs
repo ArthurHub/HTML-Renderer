@@ -533,14 +533,14 @@ namespace HtmlRenderer.Core.Dom
                 var top = rect.Top + (rect.Height - size.Height) / 2;
                 g.DrawRectangle(g.GetSolidBrush(RColor.FromArgb(160, 0, 0, 0)), left, top, size.Width, size.Height);
 
-                using (var path = g.GetGraphicsPath())
+                RPoint[] points =
                 {
-                    path.AddLine(left + size.Width / 3f + 1, top + 3 * size.Height / 4f, left + size.Width / 3f + 1, top + size.Height / 4f);
-                    path.AddLine(left + size.Width / 3f + 1, top + size.Height / 4f, left + 2 * size.Width / 3f + 1, top + size.Height / 2f);
-                    path.CloseFigure();
-                    g.DrawPath(g.GetSolidBrush(RColor.White), path);
-                }
-
+                    new RPoint(left + size.Width / 3f + 1,top + 3 * size.Height / 4f),
+                    new RPoint(left + size.Width / 3f + 1, top + size.Height / 4f),
+                    new RPoint(left + 2 * size.Width / 3f + 1, top + size.Height / 2f)
+                };
+                g.DrawPolygon(g.GetSolidBrush(RColor.White), points);
+                
                 g.ReturnPreviousSmoothingMode(prevMode);
             }
         }

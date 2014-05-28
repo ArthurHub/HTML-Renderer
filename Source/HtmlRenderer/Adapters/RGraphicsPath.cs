@@ -22,7 +22,7 @@ namespace HtmlRenderer.Adapters
         /// <summary>
         ///  Appends an elliptical arc to the current figure.
         ///  </summary>
-        public abstract void AddArc(double x, double y, double width, double height, double startAngle, double sweepAngle);
+        public abstract void AddArc(double x, double y, double size, double height, int startAngle, int sweepAngle);
 
         /// <summary>
         ///  Appends a line segment to this GraphicsPath.
@@ -30,11 +30,24 @@ namespace HtmlRenderer.Adapters
         public abstract void AddLine(double x1, double y1, double x2, double y2);
 
         /// <summary>
-        ///  Closes the current figure and starts a new figure. If the current figure contains a sequence of connected 
-        ///  lines and curves, the method closes the loop by connecting a line from the endpoint to the starting point.
+        /// Start path at the given point.
+        /// </summary>
+        public abstract void Start(double x, double y);
+        
+        /// <summary>
+        ///  Add stright line to the given point from te last point.
         ///  </summary>
-        public abstract void CloseFigure();
-
+        public abstract void LineTo(double x, double y);
+        
+        /// <summary>
+        /// Add circular arc of the given size to the given point from the last point.
+        /// </summary>
+        public abstract void ArcTo(double x, double y, double size, int startAngle, int sweepAngle);
+        
+        /// <summary>
+        /// Release path resources.
+        /// </summary>
         public abstract void Dispose();
+        
     }
 }

@@ -10,8 +10,8 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System.Windows;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.WPF.Adapters
@@ -22,49 +22,61 @@ namespace HtmlRenderer.WPF.Adapters
     internal sealed class GraphicsPathAdapter : RGraphicsPath
     {
         /// <summary>
-        /// The actual WinForms graphics path instance.
+        /// The actual WPF graphics geometry instance.
         /// </summary>
-        private readonly PathGeometry _graphicsPath = new PathGeometry();
+        private readonly StreamGeometry _geometry = new StreamGeometry();
 
         /// <summary>
-        /// The actual WinForms graphics path instance.
+        /// The context used in WPF geometry to render path
         /// </summary>
-        public PathGeometry GraphicsPath
+        private readonly StreamGeometryContext _geometryContext;
+
+        public GraphicsPathAdapter()
         {
-            get { return _graphicsPath; }
+            _geometryContext = _geometry.Open();
+        }
+
+        public override void Start(double x, double y)
+        {
+            _geometryContext.BeginFigure(new Point(x, y), true, false);
+        }
+
+        public override void LineTo(double x, double y)
+        {
+            _geometryContext.LineTo(new Point(x, y), true, true);
+        }
+
+        public override void ArcTo(double x, double y, double size, int i, int i1)
+        {
+            _geometryContext.ArcTo(new Point(x, y), new Size(size, size), 0, false, SweepDirection.Clockwise, true, true);
+        }
+
+        /// <summary>
+        /// Close the geometry to so no more path adding is allowed and return the instance so it can be rendered.
+        /// </summary>
+        public StreamGeometry GetClosedGeometry()
+        {
+            _geometryContext.Close();
+            _geometry.Freeze();
+            return _geometry;
         }
 
         /// <summary>
         /// Appends an elliptical arc to the current figure.
         /// </summary>
-        public override void AddArc(double x, double y, double width, double height, double startAngle, double sweepAngle)
-        {
-            //_graphicsPath.AddArc((float)x, (float)y, (float)width, (float)height, (float)startAngle, (float)sweepAngle);
-        }
+        public override void AddArc(double x, double y, double width, double height, int startAngle, int sweepAngle)
+        { }
 
         /// <summary>
         /// Appends a line segment to this GraphicsPath.
         /// </summary>
         public override void AddLine(double x1, double y1, double x2, double y2)
-        {
-            //_graphicsPath.AddLine((float)x1, (float)y1, (float)x2, (float)y2);
-        }
-
-        /// <summary>
-        /// Closes the current figure and starts a new figure. If the current figure contains a sequence of connected 
-        /// lines and curves, the method closes the loop by connecting a line from the endpoint to the starting point.
-        /// </summary>
-        public override void CloseFigure()
-        {
-            //_graphicsPath.CloseFigure();
-        }
+        { }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public override void Dispose()
-        {
-            //_graphicsPath.Dispose();
-        }
+        { }
     }
 }

@@ -66,7 +66,7 @@ namespace HtmlRenderer.WPF.Adapters
 
         protected override RPen CreatePen(RColor color)
         {
-            return new PenAdapter(new Pen(GetSolidColorBrush(color), 1));
+            return new PenAdapter(GetSolidColorBrush(color));
         }
 
         protected override RBrush CreateSolidBrush(RColor color)

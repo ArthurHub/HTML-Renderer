@@ -13,12 +13,13 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Demo.Common;
 
@@ -52,6 +53,7 @@ namespace HtmlRenderer.Demo.WPF
         private bool _useGeneratedHtml;
 
         #endregion
+
 
         public MainControl()
         {
@@ -94,14 +96,13 @@ namespace HtmlRenderer.Demo.WPF
         /// </summary>
         public void ShowWebBrowserView(bool show)
         {
-            //            _webBrowser.Visible = show;
-            //            _splitter.Visible = show;
-            //
-            //            if (_webBrowser.Visible)
-            //            {
-            //                _webBrowser.Width = _splitContainer2.Panel2.Width / 2;
-            //                UpdateWebBrowserHtml();
-            //            }
+            _webBrowser.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            _splitter.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+
+            _grid2.ColumnDefinitions[2].Width = show ? new GridLength(_grid2.ActualWidth/2, GridUnitType.Pixel) : GridLength.Auto;
+
+            if (show)
+                UpdateWebBrowserHtml();
         }
 
         /// <summary>
@@ -109,10 +110,10 @@ namespace HtmlRenderer.Demo.WPF
         /// </summary>
         public void UpdateWebBrowserHtml()
         {
-            //            if (_webBrowser.Visible)
-            //            {
-            //                _webBrowser.DocumentText = _useGeneratedHtml ? _htmlPanel.GetHtml() : GetFixedHtml();
-            //            }
+            if (_webBrowser.IsVisible)
+            {
+                _webBrowser.NavigateToString(_useGeneratedHtml ? _htmlPanel.GetHtml() : GetFixedHtml());
+            }
         }
 
         public string GetHtml()
@@ -165,8 +166,8 @@ namespace HtmlRenderer.Demo.WPF
 
             showcaseRoot.IsExpanded = true;
 
-//            if (showcaseRoot.Items.Count > 0)
-//                ((TreeViewItem)showcaseRoot.Items[1]).IsSelected = true;
+            if (showcaseRoot.Items.Count > 0)
+                ((TreeViewItem)showcaseRoot.Items[0]).IsSelected = true;
         }
 
         /// <summary>
@@ -265,34 +266,36 @@ namespace HtmlRenderer.Demo.WPF
         /// <returns>fixed html</returns>
         private string GetFixedHtml()
         {
-            //            var html = _htmlEditor.Text;
-            //
-            //            html = Regex.Replace(html, @"src=\""(\w.*?)\""", match =>
-            //            {
-            //                var img = HtmlRenderingHelper.TryLoadResourceImage(match.Groups[1].Value);
-            //                if (img != null)
-            //                {
-            //                    var tmpFile = Path.GetTempFileName();
-            //                    img.Save(tmpFile, ImageFormat.Jpeg);
-            //                    return string.Format("src=\"{0}\"", tmpFile);
-            //                }
-            //                return match.Value;
-            //            }, RegexOptions.IgnoreCase);
-            //
-            //            html = Regex.Replace(html, @"href=\""(\w.*?)\""", match =>
-            //            {
-            //                var stylesheet = HtmlRenderingHelper.GetStylesheet(match.Groups[1].Value);
-            //                if (stylesheet != null)
-            //                {
-            //                    var tmpFile = Path.GetTempFileName();
-            //                    File.WriteAllText(tmpFile, stylesheet);
-            //                    return string.Format("href=\"{0}\"", tmpFile);
-            //                }
-            //                return match.Value;
-            //            }, RegexOptions.IgnoreCase);
-            //
-            //            return html;
-            return null;
+            var html = GetHtmlEditorText();
+
+            html = Regex.Replace(html, @"src=\""(\w.*?)\""", match =>
+            {
+                var img = HtmlRenderingHelper.TryLoadResourceImage(match.Groups[1].Value);
+                if (img != null)
+                {
+                    var tmpFile = Path.GetTempFileName();
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(img));
+                    using (FileStream stream = new FileStream(tmpFile, FileMode.Create))
+                        encoder.Save(stream);
+                    return string.Format("src=\"{0}\"", tmpFile);
+                }
+                return match.Value;
+            }, RegexOptions.IgnoreCase);
+
+            html = Regex.Replace(html, @"href=\""(\w.*?)\""", match =>
+            {
+                var stylesheet = HtmlRenderingHelper.GetStylesheet(match.Groups[1].Value);
+                if (stylesheet != null)
+                {
+                    var tmpFile = Path.GetTempFileName();
+                    File.WriteAllText(tmpFile, stylesheet);
+                    return string.Format("href=\"{0}\"", tmpFile);
+                }
+                return match.Value;
+            }, RegexOptions.IgnoreCase);
+
+            return html;
         }
 
         /// <summary>
