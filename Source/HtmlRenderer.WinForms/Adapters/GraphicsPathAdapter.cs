@@ -60,22 +60,6 @@ namespace HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
-        /// Appends an elliptical arc to the current figure.
-        /// </summary>
-        public override void AddArc(double x, double y, double width, double height, int startAngle, int sweepAngle)
-        {
-            _graphicsPath.AddArc((float)x, (float)y, (float)width, (float)height, (float)startAngle, (float)sweepAngle);
-        }
-
-        /// <summary>
-        /// Appends a line segment to this GraphicsPath.
-        /// </summary>
-        public override void AddLine(double x1, double y1, double x2, double y2)
-        {
-            _graphicsPath.AddLine((float)x1, (float)y1, (float)x2, (float)y2);
-        }
-
-        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public override void Dispose()

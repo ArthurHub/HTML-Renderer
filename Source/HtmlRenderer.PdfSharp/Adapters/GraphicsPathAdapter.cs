@@ -58,16 +58,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
             _lastPoint = new RPoint(x, y);
         }
 
-        public override void AddArc(double x, double y, double width, double height, int startAngle, int sweepAngle)
-        {
-            _graphicsPath.AddArc(x, y, width, height, startAngle, sweepAngle);
-        }
-
-        public override void AddLine(double x1, double y1, double x2, double y2)
-        {
-            _graphicsPath.AddLine(x1, y1, x2, y2);
-        }
-
         public override void Dispose()
         { }
     }

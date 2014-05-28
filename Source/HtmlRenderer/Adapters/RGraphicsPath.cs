@@ -20,16 +20,6 @@ namespace HtmlRenderer.Adapters
     public abstract class RGraphicsPath : IDisposable
     {
         /// <summary>
-        ///  Appends an elliptical arc to the current figure.
-        ///  </summary>
-        public abstract void AddArc(double x, double y, double size, double height, int startAngle, int sweepAngle);
-
-        /// <summary>
-        ///  Appends a line segment to this GraphicsPath.
-        ///  </summary>
-        public abstract void AddLine(double x1, double y1, double x2, double y2);
-
-        /// <summary>
         /// Start path at the given point.
         /// </summary>
         public abstract void Start(double x, double y);

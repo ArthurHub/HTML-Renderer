@@ -62,18 +62,6 @@ namespace HtmlRenderer.WPF.Adapters
         }
 
         /// <summary>
-        /// Appends an elliptical arc to the current figure.
-        /// </summary>
-        public override void AddArc(double x, double y, double width, double height, int startAngle, int sweepAngle)
-        { }
-
-        /// <summary>
-        /// Appends a line segment to this GraphicsPath.
-        /// </summary>
-        public override void AddLine(double x1, double y1, double x2, double y2)
-        { }
-
-        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public override void Dispose()

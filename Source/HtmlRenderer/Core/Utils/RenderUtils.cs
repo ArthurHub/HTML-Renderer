@@ -106,7 +106,11 @@ namespace HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Creates a rounded rectangle using the specified corner radius
+        /// Creates a rounded rectangle using the specified corner radius<br/>
+        ///  NW-----NE
+        ///  |       |
+        ///  |       |
+        ///  SW-----SE
         /// </summary>
         /// <param name="g">the device to draw into</param>
         /// <param name="rect">Rectangle to round</param>
@@ -117,57 +121,29 @@ namespace HtmlRenderer.Core.Utils
         /// <returns>GraphicsPath with the lines of the rounded rectangle ready to be painted</returns>
         public static RGraphicsPath GetRoundRect(RGraphics g, RRect rect, double nwRadius, double neRadius, double seRadius, double swRadius)
         {
-            //  NW-----NE
-            //  |       |
-            //  |       |
-            //  SW-----SE
-
             var path = g.GetGraphicsPath();
 
-            nwRadius *= 2;
-            neRadius *= 2;
-            seRadius *= 2;
-            swRadius *= 2;
+            path.Start(rect.Left + nwRadius, rect.Top);
 
-            //NW ---- NE
-            path.AddLine(rect.X + nwRadius, rect.Y, rect.Right - neRadius, rect.Y);
+            path.LineTo(rect.Right - neRadius, rect.Y);
 
-            //NE Arc
             if (neRadius > 0f)
-            {
-                path.AddArc(rect.Right - neRadius, rect.Top, neRadius, neRadius, -90, 90);
-            }
+                path.ArcTo(rect.Right, rect.Top + neRadius, neRadius, 270, 90);
 
-            // NE
-            //  |
-            // SE
-            path.AddLine(rect.Right, rect.Top + neRadius, rect.Right, rect.Bottom - seRadius);
+            path.LineTo(rect.Right, rect.Bottom - seRadius);
 
-            //SE Arc
             if (seRadius > 0f)
-            {
-                path.AddArc(rect.Right - seRadius, rect.Bottom - seRadius, seRadius, seRadius, 0, 90);
-            }
+                path.ArcTo(rect.Right - seRadius, rect.Bottom, seRadius, 0, 90);
 
-            // SW --- SE
-            path.AddLine(rect.Right - seRadius, rect.Bottom, rect.Left + swRadius, rect.Bottom);
+            path.LineTo(rect.Left + swRadius, rect.Bottom);
 
-            //SW Arc
             if (swRadius > 0f)
-            {
-                path.AddArc(rect.Left, rect.Bottom - swRadius, swRadius, swRadius, 90, 90);
-            }
+                path.ArcTo(rect.Left, rect.Bottom - swRadius, swRadius, 90, 90);
 
-            // NW
-            // |
-            // SW
-            path.AddLine(rect.Left, rect.Bottom - swRadius, rect.Left, rect.Top + swRadius);
+            path.LineTo(rect.Left, rect.Top + swRadius);
 
-            //NW Arc
             if (nwRadius > 0f)
-            {
-                path.AddArc(rect.Left, rect.Top, nwRadius, nwRadius, 180, 90);
-            }
+                path.ArcTo(rect.Left + nwRadius, rect.Top, swRadius, 180, 90);
 
             return path;
         }
