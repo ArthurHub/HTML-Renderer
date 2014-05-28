@@ -32,12 +32,22 @@ namespace HtmlRenderer.Adapters
         /// <summary>
         /// Add circular arc of the given size to the given point from the last point.
         /// </summary>
-        public abstract void ArcTo(double x, double y, double size, int startAngle, int sweepAngle);
+        public abstract void ArcTo(double x, double y, double size, Corner corner);
         
         /// <summary>
         /// Release path resources.
         /// </summary>
         public abstract void Dispose();
-        
+
+        /// <summary>
+        /// The 4 corners that are handled in arc rendering.
+        /// </summary>
+        public enum Corner
+        {
+            TopLeft,
+            TopRight,
+            BottomLeft,
+            BottomRight,
+        }
     }
 }

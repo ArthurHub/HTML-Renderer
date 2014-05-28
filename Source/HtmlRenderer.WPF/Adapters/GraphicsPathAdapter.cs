@@ -46,7 +46,7 @@ namespace HtmlRenderer.WPF.Adapters
             _geometryContext.LineTo(new Point(x, y), true, true);
         }
 
-        public override void ArcTo(double x, double y, double size, int i, int i1)
+        public override void ArcTo(double x, double y, double size, Corner corner)
         {
             _geometryContext.ArcTo(new Point(x, y), new Size(size, size), 0, false, SweepDirection.Clockwise, true, true);
         }

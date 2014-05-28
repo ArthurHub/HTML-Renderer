@@ -128,22 +128,22 @@ namespace HtmlRenderer.Core.Utils
             path.LineTo(rect.Right - neRadius, rect.Y);
 
             if (neRadius > 0f)
-                path.ArcTo(rect.Right, rect.Top + neRadius, neRadius, 270, 90);
+                path.ArcTo(rect.Right, rect.Top + neRadius, neRadius, RGraphicsPath.Corner.TopRight);
 
             path.LineTo(rect.Right, rect.Bottom - seRadius);
 
             if (seRadius > 0f)
-                path.ArcTo(rect.Right - seRadius, rect.Bottom, seRadius, 0, 90);
+                path.ArcTo(rect.Right - seRadius, rect.Bottom, seRadius, RGraphicsPath.Corner.BottomRight);
 
             path.LineTo(rect.Left + swRadius, rect.Bottom);
 
             if (swRadius > 0f)
-                path.ArcTo(rect.Left, rect.Bottom - swRadius, swRadius, 90, 90);
+                path.ArcTo(rect.Left, rect.Bottom - swRadius, swRadius, RGraphicsPath.Corner.BottomLeft);
 
-            path.LineTo(rect.Left, rect.Top + swRadius);
+            path.LineTo(rect.Left, rect.Top + nwRadius);
 
             if (nwRadius > 0f)
-                path.ArcTo(rect.Left + nwRadius, rect.Top, swRadius, 180, 90);
+                path.ArcTo(rect.Left + nwRadius, rect.Top, nwRadius, RGraphicsPath.Corner.TopLeft);
 
             return path;
         }

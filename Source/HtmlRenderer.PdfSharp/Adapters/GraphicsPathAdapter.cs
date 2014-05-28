@@ -10,6 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System;
 using HtmlRenderer.Adapters;
 using HtmlRenderer.Adapters.Entities;
 using PdfSharp.Drawing;
@@ -50,15 +51,41 @@ namespace HtmlRenderer.PdfSharp.Adapters
             _lastPoint = new RPoint(x, y);
         }
 
-        public override void ArcTo(double x, double y, double size, int startAngle, int sweepAngle)
+        public override void ArcTo(double x, double y, double size, Corner corner)
         {
-            float left = (float)(System.Math.Min(x, _lastPoint.X) - (startAngle == 270 || startAngle == 0 ? size : 0));
-            float top = (float)(System.Math.Min(y, _lastPoint.Y) - (startAngle == 90 || startAngle == 0 ? size : 0));
-            _graphicsPath.AddArc(left, top, (float)size * 2, (float)size * 2, startAngle, sweepAngle);
+            float left = (float)(Math.Min(x, _lastPoint.X) - (corner == Corner.TopRight || corner == Corner.BottomRight ? size : 0));
+            float top = (float)(Math.Min(y, _lastPoint.Y) - (corner == Corner.BottomLeft || corner == Corner.BottomRight ? size : 0));
+            _graphicsPath.AddArc(left, top, (float)size * 2, (float)size * 2, GetStartAngle(corner), 90);
             _lastPoint = new RPoint(x, y);
         }
 
         public override void Dispose()
         { }
+
+        /// <summary>
+        /// Get arc start angle for the given corner.
+        /// </summary>
+        private static int GetStartAngle(Corner corner)
+        {
+            int startAngle;
+            switch (corner)
+            {
+                case Corner.TopLeft:
+                    startAngle = 180;
+                    break;
+                case Corner.TopRight:
+                    startAngle = 270;
+                    break;
+                case Corner.BottomLeft:
+                    startAngle = 90;
+                    break;
+                case Corner.BottomRight:
+                    startAngle = 0;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("corner");
+            }
+            return startAngle;
+        }
     }
 }
