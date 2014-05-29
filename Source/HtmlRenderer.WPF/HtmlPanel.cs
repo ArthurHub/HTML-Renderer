@@ -1,21 +1,20 @@
-﻿// // "Therefore those skilled at the unorthodox
-// // are infinite as heaven and earth,
-// // inexhaustible as the great rivers.
-// // When they come to an end,
-// // they begin again,
-// // like the days and months;
-// // they die and are reborn,
-// // like the four seasons."
-// // 
-// // - Sun Tsu,
-// // "The Art of War"
+﻿// "Therefore those skilled at the unorthodox
+// are infinite as heaven and earth,
+// inexhaustible as the great rivers.
+// When they come to an end,
+// they begin again,
+// like the days and months;
+// they die and are reborn,
+// like the four seasons."
+// 
+// - Sun Tsu,
+// "The Art of War"
 
 using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
@@ -24,19 +23,13 @@ namespace HtmlRenderer.WPF
 {
     /// <summary>
     /// Provides HTML rendering using the text property.<br/>
-    /// WinForms control that will render html content in it's client rectangle.<br/>
-    /// If <see cref="AutoScroll"/> is true and the layout of the html resulted in its content beyond the client bounds 
-    /// of the panel it will show scrollbars (horizontal/vertical) allowing to scroll the content.<br/>
-    /// If <see cref="AutoScroll"/> is false html content outside the client bounds will be clipped.<br/>
+    /// WPF control that will render html content in it's client rectangle.<br/>
+    /// If the layout of the html resulted in its content beyond the client bounds of the panel it will show scrollbars (horizontal/vertical) allowing to scroll the content.<br/>
     /// The control will handle mouse and keyboard events on it to support html text selection, copy-paste and mouse clicks.<br/>
     /// <para>
     /// The major differential to use HtmlPanel or HtmlLabel is size and scrollbars.<br/>
     /// If the size of the control depends on the html content the HtmlLabel should be used.<br/>
     /// If the size is set by some kind of layout then HtmlPanel is more suitable, also shows scrollbars if the html contents is larger than the control client rectangle.<br/>
-    /// </para>
-    /// <para>
-    /// <h4>AutoScroll:</h4>
-    /// Allows showing scrollbars if html content is placed outside the visible boundaries of the panel.
     /// </para>
     /// <para>
     /// <h4>LinkClicked event:</h4>
@@ -66,7 +59,12 @@ namespace HtmlRenderer.WPF
         /// <summary>
         /// Underline html container instance.
         /// </summary>
-        protected HtmlContainer _htmlContainer;
+        protected readonly HtmlContainer _htmlContainer;
+
+        /// <summary>
+        /// The content control of the scroll viewer that actually measures and renderes the html
+        /// </summary>
+        protected readonly UIElement _htmlContent;
 
         /// <summary>
         /// the raw base stylesheet data used in the control
@@ -91,8 +89,9 @@ namespace HtmlRenderer.WPF
         /// </summary>
         public HtmlPanel()
         {
-            //AutoScroll = true;
-            //BackColor = SystemColors.Window;
+            Background = SystemColors.WindowBrush;
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            //HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
 
             _htmlContainer = new HtmlContainer();
             _htmlContainer.LinkClicked += OnLinkClicked;
@@ -101,6 +100,8 @@ namespace HtmlRenderer.WPF
             _htmlContainer.ScrollChange += OnScrollChange;
             _htmlContainer.StylesheetLoad += OnStylesheetLoad;
             _htmlContainer.ImageLoad += OnImageLoad;
+
+            Content = _htmlContent = new HtmlUIElement(_htmlContainer);
         }
 
         /// <summary>
@@ -198,7 +199,6 @@ namespace HtmlRenderer.WPF
         [Browsable(true)]
         [Category("Appearance")]
         [Description("Set base stylesheet to be used by html rendered in the control.")]
-        //[Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public virtual string BaseStylesheet
         {
             get { return _baseRawCssData; }
@@ -220,9 +220,9 @@ namespace HtmlRenderer.WPF
             set
             {
                 _html = value;
-                //ScrollInfo.SetVerticalOffset(0);
+                ScrollToHome();
                 _htmlContainer.SetHtml(_html, _baseCssData);
-                InvalidateMeasure();
+                _htmlContent.InvalidateMeasure();
             }
         }
 
@@ -280,7 +280,7 @@ namespace HtmlRenderer.WPF
                 var rect = _htmlContainer.GetElementRectangle(elementId);
                 if (rect.HasValue)
                 {
-                    UpdateScroll(rect.Value.Location);
+                    ScrollToPoint(rect.Value.Location.X, rect.Value.Location.Y);
                     _htmlContainer.HandleMouseMove(this, new MouseEventArgs(Mouse.PrimaryDevice, 0));
                 }
             }
@@ -290,70 +290,6 @@ namespace HtmlRenderer.WPF
         #region Private methods
 
         /// <summary>
-        /// Perform the layout of the html in the control.
-        /// </summary>
-        protected override Size MeasureOverride(Size constraint)
-        {
-            PerformHtmlLayout(constraint);
-
-            // to handle if vertical scrollbar is appearing or disappearing
-            if (_htmlContainer != null && Math.Abs(_htmlContainer.MaxSize.Width - constraint.Width) > 0.1)
-            {
-                PerformHtmlLayout(constraint);
-            }
-
-            return _htmlContainer != null ? _htmlContainer.ActualSize : Size.Empty;
-        }
-
-        /// <summary>
-        /// Perform html container layout by the current panel client size.
-        /// </summary>
-        protected void PerformHtmlLayout(Size constraint)
-        {
-            if (_htmlContainer != null)
-            {
-                _htmlContainer.MaxSize = new Size(constraint.Width-20, 0);
-
-                DrawingGroup dGroup = new DrawingGroup();
-                using (var g = dGroup.Open())
-                {
-                    _htmlContainer.PerformLayout(g);
-                }
-
-                // TODO:a handle scroll
-                // AutoScrollMinSize = Size.Round(_htmlContainer.ActualSize);
-            }
-        }
-
-        /// <summary>
-        /// Perform paint of the html in the control.
-        /// </summary>
-        protected override void OnRender(DrawingContext context)
-        {
-            base.OnRender(context);
-
-            if (_htmlContainer != null)
-            {
-                //_htmlContainer.ScrollOffset = new Point(ScrollInfo.HorizontalOffset, ScrollInfo.VerticalOffset);
-                _htmlContainer.PerformPaint(context);
-
-                // call mouse move to handle paint after scroll or html change affecting mouse cursor.
-                //                var mp = PointToClient(MousePosition);
-                //                _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
-            }
-        }
-
-        /*
-        /// <summary>
-        /// Set focus on the control for keyboard scrollbars handling.
-        /// </summary>
-        protected override void OnMouseDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseDown(e);
-            Focus();
-        }
-        */
-        /// <summary>
         /// Handle mouse move to handle hover cursor and text selection. 
         /// </summary>
         protected override void OnMouseMove(MouseEventArgs e)
@@ -362,8 +298,6 @@ namespace HtmlRenderer.WPF
             if (_htmlContainer != null)
                 _htmlContainer.HandleMouseMove(this, e);
         }
-
-
 
         /// <summary>
         /// Handle mouse leave to handle cursor change.
@@ -414,37 +348,14 @@ namespace HtmlRenderer.WPF
             if (_htmlContainer != null)
                 _htmlContainer.HandleKeyDown(this, e);
 
-            // TODO:a handle scroll
-            //            if (e.Key == Key.Up)
-            //            {
-            //                VerticalScroll.Value = Math.Max(VerticalScroll.Value - 70, VerticalScroll.Minimum);
-            //                PerformLayout();
-            //            }
-            //            else if (e.Key == Key.Down)
-            //            {
-            //                VerticalScroll.Value = Math.Min(VerticalScroll.Value + 70, VerticalScroll.Maximum);
-            //                PerformLayout();
-            //            }
-            //            else if (e.Key == Key.PageDown)
-            //            {
-            //                VerticalScroll.Value = Math.Min(VerticalScroll.Value + 400, VerticalScroll.Maximum);
-            //                PerformLayout();
-            //            }
-            //            else if (e.Key == Key.PageUp)
-            //            {
-            //                VerticalScroll.Value = Math.Max(VerticalScroll.Value - 400, VerticalScroll.Minimum);
-            //                PerformLayout();
-            //            }
-            //            else if (e.Key == Key.End)
-            //            {
-            //                VerticalScroll.Value = VerticalScroll.Maximum;
-            //                PerformLayout();
-            //            }
-            //            else if (e.Key == Key.Home)
-            //            {
-            //                VerticalScroll.Value = VerticalScroll.Minimum;
-            //                PerformLayout();
-            //            }
+            if (e.Key == Key.Home)
+            {
+                ScrollToTop();
+            }
+            else if (e.Key == Key.End)
+            {
+                ScrollToBottom();
+            }
         }
 
         /// <summary>
@@ -492,62 +403,24 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected virtual void OnRefresh(HtmlRefreshEventArgs e)
         {
-            // TODO:a handle refresh
-//            if (e.Layout)
-//                InvalidateMeasure();
-//            else
-//                InvalidateVisual();
+            if (e.Layout)
+                _htmlContent.InvalidateMeasure();
+            else
+                _htmlContent.InvalidateVisual();
         }
 
-        /// <summary>
-        /// On html renderer scroll request adjust the scrolling of the panel to the requested location.
-        /// </summary>
-        protected virtual void OnScrollChange(HtmlScrollEventArgs e)
+        private void ScrollToPoint(double x, double y)
         {
-            UpdateScroll(new Point((int)e.X, (int)e.Y));
+            ScrollToHorizontalOffset(x);
+            ScrollToVerticalOffset(y);
         }
-
-        /// <summary>
-        /// Adjust the scrolling of the panel to the requested location.
-        /// </summary>
-        /// <param name="location">the location to adjust the scroll to</param>
-        protected virtual void UpdateScroll(Point location)
-        {
-            // TODO:a handle scroll
-            //            AutoScrollPosition = location;
-            //            _htmlContainer.ScrollOffset = AutoScrollPosition;
-        }
-
-
-        /*
-        /// <summary>
-        /// Used to add arrow keys to the handled keys in <see cref="OnKeyDown"/>.
-        /// </summary>
-        protected override bool IsInputKey(Key keyData)
-        {
-            switch (keyData)
-            {
-                case Key.Right:
-                case Key.Left:
-                case Key.Up:
-                case Key.Down:
-                    return true;
-                case Key.Shift | Key.Right:
-                case Key.Shift | Key.Left:
-                case Key.Shift | Key.Up:
-                case Key.Shift | Key.Down:
-                    return true;
-            }
-            return base.IsInputKey(keyData);
-        }
-        */
-
 
         /// <summary>
         /// Release the html container resources.
         /// </summary>
         protected void Dispose(bool disposing)
         {
+            // TODO:a handle dispose
             //            if (_htmlContainer != null)
             //            {
             //                _htmlContainer.LinkClicked -= OnLinkClicked;
@@ -573,9 +446,9 @@ namespace HtmlRenderer.WPF
         private void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
         {
             if (CheckAccess())
-                Dispatcher.Invoke(new Action<HtmlRenderErrorEventArgs>(OnRenderError), e);
-            else
                 OnRenderError(e);
+            else
+                Dispatcher.Invoke(new Action<HtmlRenderErrorEventArgs>(OnRenderError), e);
         }
 
         private void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
@@ -591,17 +464,18 @@ namespace HtmlRenderer.WPF
         private void OnRefresh(object sender, HtmlRefreshEventArgs e)
         {
             if (CheckAccess())
-                Dispatcher.Invoke(new Action<HtmlRefreshEventArgs>(OnRefresh), e);
-            else
                 OnRefresh(e);
+            else
+                Dispatcher.Invoke(new Action<HtmlRefreshEventArgs>(OnRefresh), e);
         }
 
         private void OnScrollChange(object sender, HtmlScrollEventArgs e)
         {
-            OnScrollChange(e);
+            ScrollToPoint(e.X, e.Y);
         }
 
         #endregion
+
 
         #endregion
     }
