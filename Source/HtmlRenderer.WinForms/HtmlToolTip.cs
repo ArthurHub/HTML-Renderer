@@ -44,6 +44,11 @@ namespace HtmlRenderer.WinForms
         protected CssData _baseCssData;
 
         /// <summary>
+        /// The text rendering hint to be used for text rendering.
+        /// </summary>
+        protected TextRenderingHint _textRenderingHint = TextRenderingHint.SystemDefault;
+
+        /// <summary>
         /// timer used to handle mouse move events when mouse is over the tooltip.<br/>
         /// Used for link handling.
         /// </summary>
@@ -150,6 +155,19 @@ namespace HtmlRenderer.WinForms
         }
 
         /// <summary>
+        /// The text rendering hint to be used for text rendering.
+        /// </summary>
+        [Category("Behavior")]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [DefaultValue(TextRenderingHint.SystemDefault)]
+        [Description("The text rendering hint to be used for text rendering.")]
+        public TextRenderingHint TextRenderingHint
+        {
+            get { return _textRenderingHint; }
+            set { _textRenderingHint = value; }
+        }
+
+        /// <summary>
         /// Set base stylesheet to be used by html rendered in the panel.
         /// </summary>
         [Browsable(true)]
@@ -225,6 +243,7 @@ namespace HtmlRenderer.WinForms
             //Measure size of the container
             using (var g = e.AssociatedControl.CreateGraphics())
             {
+                g.TextRenderingHint = _textRenderingHint;
                 _htmlContainer.PerformLayout(g);
             }
 
@@ -257,6 +276,7 @@ namespace HtmlRenderer.WinForms
             }
 
             e.Graphics.Clear(Color.White);
+            e.Graphics.TextRenderingHint = _textRenderingHint;
             _htmlContainer.PerformPaint(e.Graphics);
         }
 

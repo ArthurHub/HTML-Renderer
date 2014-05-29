@@ -106,6 +106,11 @@ namespace HtmlRenderer.WinForms
         /// </summary>
         protected bool _useSystemCursors;
 
+        /// <summary>
+        /// The text rendering hint to be used for text rendering.
+        /// </summary>
+        protected TextRenderingHint _textRenderingHint = TextRenderingHint.SystemDefault;
+
         #endregion
 
 
@@ -187,7 +192,7 @@ namespace HtmlRenderer.WinForms
         /// </para>
         /// <para>
         /// While using GDI+ text rendering you can control the text rendering using <see cref="Graphics.TextRenderingHint"/>, note that
-        /// using <see cref="TextRenderingHint.ClearTypeGridFit"/> doesn't work well with transparent background.
+        /// using <see cref="System.Drawing.Text.TextRenderingHint.ClearTypeGridFit"/> doesn't work well with transparent background.
         /// </para>
         /// </remarks>
         [Category("Behavior")]
@@ -198,6 +203,19 @@ namespace HtmlRenderer.WinForms
         {
             get { return _htmlContainer.UseGdiPlusTextRendering; }
             set { _htmlContainer.UseGdiPlusTextRendering = value; }
+        }
+
+        /// <summary>
+        /// The text rendering hint to be used for text rendering.
+        /// </summary>
+        [Category("Behavior")]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [DefaultValue(TextRenderingHint.SystemDefault)]
+        [Description("The text rendering hint to be used for text rendering.")]
+        public TextRenderingHint TextRenderingHint
+        {
+            get { return _textRenderingHint; }
+            set { _textRenderingHint = value; }
         }
 
         /// <summary>
@@ -468,6 +486,7 @@ namespace HtmlRenderer.WinForms
 
             if (_htmlContainer != null)
             {
+                e.Graphics.TextRenderingHint = _textRenderingHint;
                 _htmlContainer.PerformPaint(e.Graphics);
             }
         }

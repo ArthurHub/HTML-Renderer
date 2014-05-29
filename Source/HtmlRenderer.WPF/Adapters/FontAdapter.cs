@@ -10,7 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Windows;
 using System.Windows.Media;
 using HtmlRenderer.Adapters;
 
@@ -18,7 +17,6 @@ namespace HtmlRenderer.WPF.Adapters
 {
     /// <summary>
     /// Adapter for WinForms Font object for core.
-    /// // TODO:a check all the usages of different height to understand what do we need
     /// </summary>
     internal sealed class FontAdapter : RFont
     {
@@ -71,38 +69,25 @@ namespace HtmlRenderer.WPF.Adapters
             get { return _font; }
         }
 
-        /// <summary>
-        /// Gets the em-size of this Font measured in the units specified by the Unit property.
-        /// </summary>
         public override double Size
         {
             get { return _size; }
         }
 
-        /// <summary>
-        /// Get the vertical offset of the font underline location from the top of the font.
-        /// </summary>
         public override double UnderlineOffset
         {
             get { return _underlineOffset; }
         }
 
-        /// <summary>
-        /// The line spacing, in pixels, of this font.
-        /// </summary>
         public override double Height
         {
             get { return _height; }
         }
 
-        /// <summary>
-        /// Get the left padding, in pixels, of the font.
-        /// </summary>
         public override double LeftPadding
         {
             get { return _height / 6f; }
         }
-
 
         public override double GetWhitespaceWidth(RGraphics graphics)
         {
