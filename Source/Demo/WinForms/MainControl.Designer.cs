@@ -37,11 +37,9 @@
             this._reloadColorsLink = new System.Windows.Forms.LinkLabel();
             this._htmlEditor = new System.Windows.Forms.RichTextBox();
             this._htmlToolTip = new HtmlRenderer.WinForms.HtmlToolTip();
-            ((System.ComponentModel.ISupportInitialize)(this._splitContainer1)).BeginInit();
             this._splitContainer1.Panel1.SuspendLayout();
             this._splitContainer1.Panel2.SuspendLayout();
             this._splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this._splitContainer2)).BeginInit();
             this._splitContainer2.Panel1.SuspendLayout();
             this._splitContainer2.Panel2.SuspendLayout();
             this._splitContainer2.SuspendLayout();
@@ -176,12 +174,10 @@
             this.Size = new System.Drawing.Size(879, 593);
             this._splitContainer1.Panel1.ResumeLayout(false);
             this._splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this._splitContainer1)).EndInit();
             this._splitContainer1.ResumeLayout(false);
             this._splitContainer2.Panel1.ResumeLayout(false);
             this._splitContainer2.Panel2.ResumeLayout(false);
             this._splitContainer2.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this._splitContainer2)).EndInit();
             this._splitContainer2.ResumeLayout(false);
             this.ResumeLayout(false);
 

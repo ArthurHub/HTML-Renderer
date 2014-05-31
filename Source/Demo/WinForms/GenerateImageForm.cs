@@ -79,8 +79,7 @@ namespace HtmlRenderer.Demo.WinForms
             if (_backgroundColorTSB.SelectedItem != null && _textRenderingHintTSCB.SelectedItem != null)
             {
                 var backgroundColor = Color.FromName(_backgroundColorTSB.SelectedItem.ToString());
-                TextRenderingHint textRenderingHint;
-                Enum.TryParse(_textRenderingHintTSCB.SelectedItem.ToString(), out textRenderingHint);
+                TextRenderingHint textRenderingHint = (TextRenderingHint)Enum.Parse(typeof(TextRenderingHint), _textRenderingHintTSCB.SelectedItem.ToString());
                 var img = _useGdiPlusTSB.Checked
                     ? HtmlRender.RenderToImageGdiPlus(_html, _pictureBox.ClientSize, textRenderingHint, null, HtmlRenderingHelper.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad)
                     : HtmlRender.RenderToImage(_html, _pictureBox.ClientSize, backgroundColor, null, HtmlRenderingHelper.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);

@@ -1,7 +1,14 @@
-﻿// Sample class for Copying and Pasting HTML fragments to and from the clipboard.
-//
-// Mike Stall. http://blogs.msdn.com/jmstall
+﻿// "Therefore those skilled at the unorthodox
+// are infinite as heaven and earth,
+// inexhaustible as the great rivers.
+// When they come to an end,
+// they begin again,
+// like the days and months;
+// they die and are reborn,
+// like the four seasons."
 // 
+// - Sun Tsu,
+// "The Art of War"
 
 using System;
 using System.Text;
@@ -28,12 +35,12 @@ namespace HtmlRenderer.WinForms.Utilities
         /// character must be escaped. <br/>
         /// </summary>
         private const string Header = @"Version:0.9
-    StartHTML:<<<<<<<<1
-    EndHTML:<<<<<<<<2
-    StartFragment:<<<<<<<<3
-    EndFragment:<<<<<<<<4
-    StartSelection:<<<<<<<<3
-    EndSelection:<<<<<<<<4";
+StartHTML:<<<<<<<<1
+EndHTML:<<<<<<<<2
+StartFragment:<<<<<<<<3
+EndFragment:<<<<<<<<4
+StartSelection:<<<<<<<<3
+EndSelection:<<<<<<<<4";
 
         /// <summary>
         /// html comment to point the beginning of html fragment
