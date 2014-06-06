@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -28,17 +27,11 @@ namespace HtmlRenderer.Demo.WPF
         #region Fields/Consts
 
         /// <summary>
-        /// the html samples used for performance testing
-        /// </summary>
-        private readonly List<string> _perfTestSamples = new List<string>();
-
-        /// <summary>
         /// the private font used for the demo
         /// </summary>
         //private readonly PrivateFontCollection _privateFont = new PrivateFontCollection();
 
         #endregion
-
         public DemoWindow()
         {
             InitializeComponent();
@@ -48,11 +41,6 @@ namespace HtmlRenderer.Demo.WPF
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             Width = SystemParameters.PrimaryScreenWidth * 0.7;
             Height = SystemParameters.PrimaryScreenHeight * 0.8;
-
-            foreach (var sample in SamplesLoader.ShowcaseSamples)
-            {
-                _perfTestSamples.Add(sample.Html);
-            }
 
             LoadCustomFonts();
         }
@@ -110,44 +98,11 @@ namespace HtmlRenderer.Demo.WPF
             _toolBar.IsEnabled = false;
             ApplicationDoEvents();
 
-            GC.Collect();
-#if NET_40
-            AppDomain.MonitoringIsEnabled = true;
-            var startMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
-#endif
-            var sw = Stopwatch.StartNew();
-
-            const int iterations = 20;
-            for (int i = 0; i < iterations; i++)
+            var msg = DemoUtils.RunSamplesPerformanceTest(html =>
             {
-                foreach (var html in _perfTestSamples)
-                {
-                    _mainControl.SetHtml(html);
-                    ApplicationDoEvents(); // so paint will be called
-                }
-            }
-
-            sw.Stop();
-
-            long endMemory = 0;
-            float totalMem = 0;
-#if NET_40
-            endMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
-            totalMem = (endMemory - startMemory) / 1024f;
-#endif
-            float htmlSize = 0;
-            foreach (var sample in _perfTestSamples)
-                htmlSize += sample.Length * 2;
-            htmlSize = htmlSize / 1024f;
-
-
-            var msg = string.Format("{0} HTMLs ({1:N0} KB)\r\n{2} Iterations", _perfTestSamples.Count, htmlSize, iterations);
-            msg += "\r\n\r\n";
-            msg += string.Format("CPU:\r\nTotal: {0} msec\r\nIterationAvg: {1:N2} msec\r\nSingleAvg: {2:N2} msec",
-                sw.ElapsedMilliseconds, sw.ElapsedMilliseconds / (double)iterations, sw.ElapsedMilliseconds / (double)iterations / _perfTestSamples.Count);
-            msg += "\r\n\r\n";
-            msg += string.Format("Memory:\r\nTotal: {0:N0} KB\r\nIterationAvg: {1:N0} KB\r\nSingleAvg: {2:N0} KB\r\nOverhead: {3:N0}%",
-                totalMem, totalMem / iterations, totalMem / iterations / _perfTestSamples.Count, 100 * (totalMem / iterations) / htmlSize);
+                _mainControl.SetHtml(html);
+                ApplicationDoEvents(); // so paint will be called
+            });
 
             Clipboard.SetDataObject(msg);
             MessageBox.Show(msg, "Test run results");

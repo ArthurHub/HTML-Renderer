@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HtmlRenderer.Demo.Common</RootNamespace>
     <AssemblyName>HtmlRendererDemoCommon</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,7 +26,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET_40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -41,6 +42,7 @@
     <Compile Include="SamplesLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HtmlSyntaxHighlighter.cs" />
+    <Compile Include="DemoUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PerfSamples\1.Big table.htm" />
