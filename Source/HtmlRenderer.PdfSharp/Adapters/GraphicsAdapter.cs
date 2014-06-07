@@ -114,7 +114,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
             return Utils.Convert(size);
         }
 
-        public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out int charFitWidth)
+        public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth)
         {
             // there is no need for it - used for text selection
             throw new NotSupportedException();

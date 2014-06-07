@@ -99,24 +99,119 @@ namespace HtmlRenderer.WPF.Adapters
 
         public override RSize MeasureString(string str, RFont font)
         {
-            var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, Brushes.Red);
-            return new RSize(formattedText.WidthIncludingTrailingWhitespace, formattedText.Height);
+            double width = 0;
+            GlyphTypeface glyphTypeface = ((FontAdapter)font).GlyphTypeface;
+            if (glyphTypeface != null)
+            {
+                for (int i = 0; i < str.Length; i++)
+                {
+                    if (glyphTypeface.CharacterToGlyphMap.ContainsKey(str[i]))
+                    {
+                        ushort glyph = glyphTypeface.CharacterToGlyphMap[str[i]];
+                        double advanceWidth = glyphTypeface.AdvanceWidths[glyph];
+                        width += advanceWidth;
+                    }
+                    else
+                    {
+                        width = 0;
+                        break;
+                    }
+                }
+            }
+
+            if (width <= 0)
+            {
+                var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, Brushes.Red);
+                return new RSize(formattedText.WidthIncludingTrailingWhitespace, formattedText.Height);
+            }
+
+            return new RSize(width * font.Size * 96d / 72d, font.Height);
         }
 
-        public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out int charFitWidth)
+        public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth)
         {
-            var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, Brushes.Red);
-            charFit = str.Length;
-            charFitWidth = (int)formattedText.Width;
-            return new RSize(formattedText.Width, formattedText.Height);
+            double width = 0;
+            charFit = -1;
+            charFitWidth = -1;
+            GlyphTypeface glyphTypeface = ((FontAdapter)font).GlyphTypeface;
+            if (glyphTypeface != null)
+            {
+                for (int i = 0; i < str.Length; i++)
+                {
+                    if (glyphTypeface.CharacterToGlyphMap.ContainsKey(str[i]))
+                    {
+                        ushort glyph = glyphTypeface.CharacterToGlyphMap[str[i]];
+                        double advanceWidth = glyphTypeface.AdvanceWidths[glyph];
+
+                        if (charFit == -1 && !(width + advanceWidth < maxWidth))
+                        {
+                            charFit = i;
+                            charFitWidth = width;
+                        }
+                        width += advanceWidth;
+                    }
+                    else
+                    {
+                        width = 0;
+                        break;
+                    }
+                }
+            }
+
+            if (width <= 0)
+            {
+                var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, Brushes.Red);
+                charFit = str.Length;
+                charFitWidth = formattedText.WidthIncludingTrailingWhitespace;
+                return new RSize(formattedText.WidthIncludingTrailingWhitespace, formattedText.Height);
+            }
+
+            return new RSize(width * font.Size * 96d / 72d, font.Height);
         }
 
         public override void DrawString(string str, RFont font, RColor color, RPoint point, RSize size, bool rtl)
         {
             var colorConv = ((BrushAdapter)_adapter.GetSolidBrush(color)).Brush;
 
-            var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, colorConv);
-            _g.DrawText(formattedText, Utils.Convert(point));
+            //return;
+
+            bool glyphRendered = false;
+            GlyphTypeface glyphTypeface = ((FontAdapter)font).GlyphTypeface;
+            if (glyphTypeface != null)
+            {
+                double width = 0;
+                ushort[] glyphs = new ushort[str.Length];
+                double[] widths = new double[str.Length];
+
+                int i = 0;
+                for (; i < str.Length; i++)
+                {
+                    ushort glyph;
+                    if (!glyphTypeface.CharacterToGlyphMap.TryGetValue(str[i], out glyph))
+                        break;
+
+                    glyphs[i] = glyph;
+                    width += glyphTypeface.AdvanceWidths[glyph];
+                    widths[i] = 96d / 72d * font.Size * glyphTypeface.AdvanceWidths[glyph];
+                }
+
+                if (i >= str.Length)
+                {
+                    point.Y += glyphTypeface.Baseline * font.Size * 96d / 72d;
+                    point.X += rtl ? 96d / 72d * font.Size * width : 0;
+
+                    glyphRendered = true;
+                    var glyphRun = new GlyphRun(glyphTypeface, rtl ? 1 : 0, false, 96d / 72d * font.Size, glyphs, Utils.ConvertRound(point), widths, null, null, null, null, null, null);
+                    _g.DrawGlyphRun(colorConv, glyphRun);
+                }
+            }
+
+            if (!glyphRendered)
+            {
+                var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, rtl ? FlowDirection.RightToLeft : FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, colorConv);
+                point.X += rtl ? formattedText.Width : 0;
+                _g.DrawText(formattedText, Utils.ConvertRound(point));
+            }
         }
 
         public override RBrush GetTextureBrush(RImage image, RRect dstRect, RPoint translateTransformLocation)
@@ -190,9 +285,9 @@ namespace HtmlRenderer.WPF.Adapters
                 var g = new StreamGeometry();
                 using (var context = g.Open())
                 {
-                    context.BeginFigure(Utils.Convert(points[0]), true, true);
+                    context.BeginFigure(Utils.ConvertRound(points[0]), true, true);
                     for (int i = 1; i < points.Length; i++)
-                        context.LineTo(Utils.Convert(points[i]), false, true);
+                        context.LineTo(Utils.ConvertRound(points[i]), false, true);
                 }
                 g.Freeze();
 

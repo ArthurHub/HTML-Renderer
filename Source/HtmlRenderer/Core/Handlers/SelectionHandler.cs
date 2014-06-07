@@ -662,7 +662,7 @@ namespace HtmlRenderer.Core.Handlers
                 using (var g = control.CreateGraphics())
                 {
                     int charFit;
-                    int charFitWidth;
+                    double charFitWidth;
                     var maxWidth = offset + (inclusive ? 0 : 1.5f * word.LeftGlyphPadding);
                     g.MeasureString(word.Text, font, maxWidth, out charFit, out charFitWidth);
 

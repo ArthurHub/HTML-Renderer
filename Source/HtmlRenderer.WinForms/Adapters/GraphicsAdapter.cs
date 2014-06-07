@@ -194,7 +194,7 @@ namespace HtmlRenderer.WinForms.Adapters
             }
         }
 
-        public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out int charFitWidth)
+        public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth)
         {
             charFit = 0;
             charFitWidth = 0;
@@ -209,7 +209,7 @@ namespace HtmlRenderer.WinForms.Adapters
                     charFit = i - 1;
                     RSize pSize = MeasureString(str.Substring(0, i), font);
                     if (pSize.Height <= size.Height && pSize.Width < maxWidth)
-                        charFitWidth = (int)pSize.Width;
+                        charFitWidth = pSize.Width;
                     else
                         break;
                 }

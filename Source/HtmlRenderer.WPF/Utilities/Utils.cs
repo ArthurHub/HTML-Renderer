@@ -10,6 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System;
 using System.Windows;
 using System.Windows.Media;
 using HtmlRenderer.Adapters.Entities;
@@ -46,6 +47,14 @@ namespace HtmlRenderer.WPF.Utilities
         public static Point Convert(RPoint p)
         {
             return new Point(p.X, p.Y);
+        }
+
+        /// <summary>
+        /// Convert from core point to WinForms point.
+        /// </summary>
+        public static Point ConvertRound(RPoint p)
+        {
+            return new Point(Math.Round(p.X), Math.Round(p.Y));
         }
 
         /// <summary>

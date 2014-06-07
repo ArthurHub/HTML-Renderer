@@ -28,6 +28,11 @@ namespace HtmlRenderer.WPF.Adapters
         private readonly Typeface _font;
 
         /// <summary>
+        /// The glyph font for the font
+        /// </summary>
+        private readonly GlyphTypeface _glyphTypeface;
+
+        /// <summary>
         /// the size of the font
         /// </summary>
         private readonly double _size;
@@ -59,6 +64,10 @@ namespace HtmlRenderer.WPF.Adapters
             _size = size;
             _height = 96d / 72d * _size * _font.FontFamily.LineSpacing;
             _underlineOffset = 96d / 72d * _size * (_font.FontFamily.LineSpacing + font.UnderlinePosition);
+
+            GlyphTypeface typeface;
+            if (font.TryGetGlyphTypeface(out typeface))
+                _glyphTypeface = typeface;
         }
 
         /// <summary>
@@ -67,6 +76,11 @@ namespace HtmlRenderer.WPF.Adapters
         public Typeface Font
         {
             get { return _font; }
+        }
+
+        public GlyphTypeface GlyphTypeface
+        {
+            get { return _glyphTypeface; }
         }
 
         public override double Size

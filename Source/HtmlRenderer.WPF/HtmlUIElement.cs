@@ -84,8 +84,6 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected override void OnRender(DrawingContext context)
         {
-            base.OnRender(context);
-
             if (_htmlContainer != null)
             {
                 _htmlContainer.PerformPaint(context);

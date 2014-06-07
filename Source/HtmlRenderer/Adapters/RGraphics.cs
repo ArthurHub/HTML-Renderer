@@ -139,7 +139,7 @@ namespace HtmlRenderer.Adapters
         /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
         /// <param name="charFitWidth"></param>
         /// <returns>the size of the string</returns>
-        public abstract RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out int charFitWidth);
+        public abstract RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth);
 
         /// <summary>
         /// Draw the given string using the given font and foreground color at given location.
