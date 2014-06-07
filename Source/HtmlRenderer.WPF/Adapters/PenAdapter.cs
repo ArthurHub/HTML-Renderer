@@ -17,7 +17,7 @@ using HtmlRenderer.Adapters.Entities;
 namespace HtmlRenderer.WPF.Adapters
 {
     /// <summary>
-    /// Adapter for WinForms pens objects for core.
+    /// Adapter for WPF pens objects for core.
     /// </summary>
     internal sealed class PenAdapter : RPen
     {
@@ -44,18 +44,12 @@ namespace HtmlRenderer.WPF.Adapters
             _brush = brush;
         }
 
-        /// <summary>
-        /// Gets or sets the width of this Pen, in units of the Graphics object used for drawing.
-        /// </summary>
         public override double Width
         {
             get { return _width; }
             set { _width = value; }
         }
 
-        /// <summary>
-        /// Gets or sets the style used for dashed lines drawn with this Pen.
-        /// </summary>
         public override RDashStyle DashStyle
         {
             set
@@ -84,9 +78,6 @@ namespace HtmlRenderer.WPF.Adapters
             }
         }
 
-        /// <summary>
-        /// Gets or sets an array of custom dashes and spaces.
-        /// </summary>
         public override double[] DashPattern
         {
             set

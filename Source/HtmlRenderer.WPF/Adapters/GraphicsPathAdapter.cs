@@ -17,7 +17,7 @@ using HtmlRenderer.Adapters;
 namespace HtmlRenderer.WPF.Adapters
 {
     /// <summary>
-    /// Adapter for WinForms graphics path object for core.
+    /// Adapter for WPF graphics path object for core.
     /// </summary>
     internal sealed class GraphicsPathAdapter : RGraphicsPath
     {
@@ -61,9 +61,6 @@ namespace HtmlRenderer.WPF.Adapters
             return _geometry;
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
         public override void Dispose()
         { }
     }

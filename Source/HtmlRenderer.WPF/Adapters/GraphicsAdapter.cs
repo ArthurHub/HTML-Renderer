@@ -14,6 +14,7 @@ using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using HtmlRenderer.Adapters;
 using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Utils;
@@ -254,8 +255,8 @@ namespace HtmlRenderer.WPF.Adapters
 
         public override void DrawImage(RImage image, RRect destRect, RRect srcRect)
         {
-            // TODO:a handle image source
-            _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect));
+            CroppedBitmap croppedImage = new CroppedBitmap(((ImageAdapter)image).Image, new Int32Rect((int)srcRect.X, (int)srcRect.Y, (int)srcRect.Width, (int)srcRect.Height));
+            _g.DrawImage(croppedImage, Utils.Convert(destRect));
         }
 
         public override void DrawImage(RImage image, RRect destRect)

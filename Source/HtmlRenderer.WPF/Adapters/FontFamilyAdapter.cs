@@ -16,7 +16,7 @@ using HtmlRenderer.Adapters;
 namespace HtmlRenderer.WPF.Adapters
 {
     /// <summary>
-    /// Adapter for WinForms Font family object for core.
+    /// Adapter for WPF Font family object for core.
     /// </summary>
     internal sealed class FontFamilyAdapter : RFontFamily
     {
@@ -34,16 +34,13 @@ namespace HtmlRenderer.WPF.Adapters
         }
 
         /// <summary>
-        /// the underline win-forms font family.
+        /// the underline WPF font family.
         /// </summary>
         public FontFamily FontFamily
         {
             get { return _fontFamily; }
         }
 
-        /// <summary>
-        /// Gets the name of this FontFamily.
-        /// </summary>
         public override string Name
         {
             get { return _fontFamily.Source; }

@@ -17,17 +17,17 @@ using HtmlRenderer.Adapters;
 namespace HtmlRenderer.WPF.Adapters
 {
     /// <summary>
-    /// Adapter for WinForms Image object for core.
+    /// Adapter for WPF Image object for core.
     /// </summary>
     internal sealed class ImageAdapter : RImage
     {
         /// <summary>
-        /// the underline win-forms image.
+        /// the underline WPF image.
         /// </summary>
         private readonly BitmapImage _image;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object"/> class.
+        /// Init.
         /// </summary>
         public ImageAdapter(BitmapImage image)
         {
@@ -35,43 +35,30 @@ namespace HtmlRenderer.WPF.Adapters
         }
 
         /// <summary>
-        /// the underline win-forms image.
+        /// the underline WPF image.
         /// </summary>
         public BitmapImage Image
         {
             get { return _image; }
         }
 
-        /// <summary>
-        /// Get the width, in pixels, of the image.
-        /// </summary>
         public override double Width
         {
-            get { return _image.Width; }
+            get { return _image.PixelWidth; }
         }
 
-        /// <summary>
-        /// Get the height, in pixels, of the image.
-        /// </summary>
         public override double Height
         {
-            get { return _image.Height; }
+            get { return _image.PixelHeight; }
         }
 
-        /// <summary>
-        /// Saves this image to the specified stream in PNG format.
-        /// </summary>
-        /// <param name="stream">The Stream where the image will be saved. </param>
         public override void Save(MemoryStream stream)
         {
-            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(_image));
             encoder.Save(stream);
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
         public override void Dispose()
         {
             _image.StreamSource.Dispose();
