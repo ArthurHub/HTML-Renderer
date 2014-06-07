@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using System;
-using System.Drawing;
 using HtmlRenderer.Adapters;
 using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Utils;
@@ -59,7 +58,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
         /// <param name="g">the win forms graphics object to use</param>
         /// <param name="releaseGraphics">optional: if to release the graphics object on dispose (default - false)</param>
         public GraphicsAdapter(XGraphics g, bool releaseGraphics = false)
-            : base(PdfSharpAdapter.Instance)
+            : base(PdfSharpAdapter.Instance, new RRect(0, 0, double.MaxValue, double.MaxValue))
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
@@ -67,21 +66,19 @@ namespace HtmlRenderer.PdfSharp.Adapters
             _releaseGraphics = releaseGraphics;
         }
 
-        public override RRect GetClip()
+        public override void PopClip()
         {
-            RectangleF clip = _g.Graphics.ClipBounds;
-            return Utils.Convert(clip);
+            _g.Restore();
         }
 
-        public override void SetClipReplace(RRect rect)
+        public override void PushClip(RRect rect)
         {
-            // TODO:a handle clip (maybe api need to be changed)
+            _g.IntersectClip(Utils.Convert(rect));
+            _g.Save();
         }
 
-        public override void SetClipExclude(RRect rect)
-        {
-            // TODO:a handle clip (maybe api need to be changed)
-        }
+        public override void PushClipExclude(RRect rect)
+        { }
 
         public override Object SetAntiAliasSmoothingMode()
         {
@@ -206,10 +203,10 @@ namespace HtmlRenderer.PdfSharp.Adapters
             else
             {
                 _g.DrawRectangle((XBrush)xBrush, x, y, width, height);
-                
+
                 // handle bug in PdfSharp that keeps the brush color for next string draw
-                if(xBrush is XLinearGradientBrush)
-                    _g.DrawRectangle(XBrushes.White, 0,0,0.1,0.1);
+                if (xBrush is XLinearGradientBrush)
+                    _g.DrawRectangle(XBrushes.White, 0, 0, 0.1, 0.1);
             }
         }
 

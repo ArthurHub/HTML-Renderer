@@ -1130,7 +1130,7 @@ namespace HtmlRenderer.Core.Dom
         {
             if (Display != CssConstants.None && (Display != CssConstants.TableCell || EmptyCells != CssConstants.Hide || !IsSpaceOrEmpty))
             {
-                var prevClip = RenderUtils.ClipGraphicsByOverflow(g, this);
+                var clipped = RenderUtils.ClipGraphicsByOverflow(g, this);
 
                 var areas = Rectangles.Count == 0 ? new List<RRect>(new[] { Bounds }) : new List<RRect>(Rectangles.Values);
 
@@ -1167,7 +1167,8 @@ namespace HtmlRenderer.Core.Dom
                         b.Paint(g);
                 }
 
-                RenderUtils.ReturnClip(g, prevClip);
+                if (clipped)
+                    g.PopClip();
 
                 if (_listItemBox != null)
                 {
@@ -1267,12 +1268,12 @@ namespace HtmlRenderer.Core.Dom
 
                             if (HtmlContainer.SelectionForeColor != RColor.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
                             {
-                                var orgClip = g.GetClip();
-                                g.SetClipExclude(rect);
+                                //                                var orgClip = g.GetClip();
+                                //                                g.SetClipExclude(rect);
                                 g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
-                                g.SetClipReplace(rect);
+                                //                                g.SetClipReplace(rect);
                                 g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
-                                g.SetClipReplace(orgClip);
+                                //                                g.SetClipReplace(orgClip);
                             }
                             else
                             {
@@ -1281,7 +1282,7 @@ namespace HtmlRenderer.Core.Dom
                         }
                         else
                         {
-//                            g.DrawRectangle(HtmlContainer.Adapter.GetPen(RColor.Black), wordPoint.X, wordPoint.Y, word.Width - 1, word.Height - 1);
+                            //                            g.DrawRectangle(HtmlContainer.Adapter.GetPen(RColor.Black), wordPoint.X, wordPoint.Y, word.Width - 1, word.Height - 1);
                             g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
                         }
                     }

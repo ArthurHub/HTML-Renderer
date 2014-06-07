@@ -86,7 +86,7 @@ namespace HtmlRenderer.WPF
         {
             if (_htmlContainer != null)
             {
-                _htmlContainer.PerformPaint(context);
+                _htmlContainer.PerformPaint(context, new Rect(RenderSize));
 
                 // TODO:a handle if we need to refresh the pointer here
                 // call mouse move to handle paint after scroll or html change affecting mouse cursor.
@@ -94,6 +94,6 @@ namespace HtmlRenderer.WPF
                 //                _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
             }
         }
- 
+
     }
 }

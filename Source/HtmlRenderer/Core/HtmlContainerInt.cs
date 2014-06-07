@@ -531,11 +531,11 @@ namespace HtmlRenderer.Core
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
-            RRect prevClip = RRect.Empty;
+            bool pushedClip = false;
             if (MaxSize.Height > 0)
             {
-                prevClip = g.GetClip();
-                g.SetClipReplace(new RRect(_location, _maxSize));
+                pushedClip = true;
+                g.PushClip(new RRect(_location, _maxSize));
             }
 
             if (_root != null)
@@ -543,9 +543,9 @@ namespace HtmlRenderer.Core
                 _root.Paint(g);
             }
 
-            if (prevClip != RRect.Empty)
+            if (pushedClip)
             {
-                g.SetClipReplace(prevClip);
+                g.PopClip();
             }
         }
 

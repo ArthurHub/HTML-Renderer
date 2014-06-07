@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System;
+using System.Collections.Generic;
 using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Utils;
 
@@ -30,17 +31,23 @@ namespace HtmlRenderer.Adapters
         /// </summary>
         protected readonly Adapter _adapter;
 
+        /// <summary>
+        /// Te clipping bound stack as clips are pushed/poped to/from the graphics
+        /// </summary>
+        protected readonly Stack<RRect> _clipStack = new Stack<RRect>();
+
         #endregion
 
 
         /// <summary>
         /// Init.
         /// </summary>
-        protected RGraphics(Adapter adapter)
+        protected RGraphics(Adapter adapter, RRect initialClip)
         {
             ArgChecker.AssertArgNotNull(adapter, "global");
 
             _adapter = adapter;
+            _clipStack.Push(initialClip);
         }
 
         /// <summary>
@@ -77,19 +84,27 @@ namespace HtmlRenderer.Adapters
         /// Gets a Rectangle structure that bounds the clipping region of this Graphics.
         /// </summary>
         /// <returns>A rectangle structure that represents a bounding rectangle for the clipping region of this Graphics.</returns>
-        public abstract RRect GetClip();
+        public RRect GetClip()
+        {
+            return _clipStack.Peek();
+        }
 
         /// <summary>
-        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
+        /// Pop the latest clip push.
         /// </summary>
-        /// <param name="rect">Rectangle structure to combine.</param>
-        public abstract void SetClipReplace(RRect rect);
+        public abstract void PopClip();
 
         /// <summary>
-        /// Sets the clipping region of this Graphics to the result of the specified operation combining the current clip region and the rectangle specified by a Rectangle structure.
+        /// Push the clipping region of this Graphics to interception of current clipping rectangle and the given rectangle.
         /// </summary>
-        /// <param name="rect">Rectangle structure to combine.</param>
-        public abstract void SetClipExclude(RRect rect);
+        /// <param name="rect">Rectangle to clip to.</param>
+        public abstract void PushClip(RRect rect);
+
+        /// <summary>
+        /// Push the clipping region of this Graphics to exclude the given rectangle from the current clipping rectangle.
+        /// </summary>
+        /// <param name="rect">Rectangle to exclude clipping in.</param>
+        public abstract void PushClipExclude(RRect rect);
 
         /// <summary>
         /// Set the graphics smooth mode to use anti-alias.<br/>

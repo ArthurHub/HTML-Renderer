@@ -38,8 +38,8 @@ namespace HtmlRenderer.Core.Utils
         /// </summary>
         /// <param name="g">the graphics to clip</param>
         /// <param name="box">the box that is rendered to get containing blocks</param>
-        /// <returns>the previous region if clipped, otherwise null</returns>
-        public static RRect ClipGraphicsByOverflow(RGraphics g, CssBox box)
+        /// <returns>true - was clipped, false - not clipped</returns>
+        public static bool ClipGraphicsByOverflow(RGraphics g, CssBox box)
         {
             var containingBlock = box.ContainingBlock;
             while (true)
@@ -52,30 +52,16 @@ namespace HtmlRenderer.Core.Utils
                     rect.Width += 2;
                     rect.Offset(box.HtmlContainer.ScrollOffset);
                     rect.Intersect(prevClip);
-                    g.SetClipReplace(rect);
-                    return prevClip;
+                    g.PushClip(rect);
+                    return true;
                 }
                 else
                 {
                     var cBlock = containingBlock.ContainingBlock;
                     if (cBlock == containingBlock)
-                        return RRect.Empty;
+                        return false;
                     containingBlock = cBlock;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Return original clip region to the graphics object.<br/>
-        /// Should be used with <see cref="ClipGraphicsByOverflow"/> return value to return clip back to original.
-        /// </summary>
-        /// <param name="g">the graphics to clip</param>
-        /// <param name="prevClip">the region to set on the graphics (null - ignore)</param>
-        public static void ReturnClip(RGraphics g, RRect prevClip)
-        {
-            if (prevClip != RRect.Empty)
-            {
-                g.SetClipReplace(prevClip);
             }
         }
 

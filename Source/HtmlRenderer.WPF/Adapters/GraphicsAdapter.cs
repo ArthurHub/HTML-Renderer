@@ -45,9 +45,10 @@ namespace HtmlRenderer.WPF.Adapters
         /// Init.
         /// </summary>
         /// <param name="g">the WPF graphics object to use</param>
+        /// <param name="initialClip">the initial clip of the graphics</param>
         /// <param name="releaseGraphics">optional: if to release the graphics object on dispose (default - false)</param>
-        public GraphicsAdapter(DrawingContext g, bool releaseGraphics = false)
-            : base(WpfAdapter.Instance)
+        public GraphicsAdapter(DrawingContext g, RRect initialClip, bool releaseGraphics = false)
+            : base(WpfAdapter.Instance, initialClip)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
@@ -60,42 +61,36 @@ namespace HtmlRenderer.WPF.Adapters
             return new BrushAdapter(new LinearGradientBrush(Utils.Convert(color1), Utils.Convert(color2), angle));
         }
 
-        public override RRect GetClip()
+        public override void PopClip()
         {
-            // TODO:a handle clip
-            //            var clip = _g.ClipBounds;
-            //            return Utils.Convert(clip);
-            return new RRect(0, 0, 9999, 9999);
+            _g.Pop();
+            _clipStack.Pop();
         }
 
-        public override void SetClipReplace(RRect rect)
+        public override void PushClip(RRect rect)
         {
-            // TODO:a handle clip
-            //            _g.SetClip(Utils.Convert(rect), CombineMode.Replace);
+            _clipStack.Push(rect);
+            _g.PushClip(new RectangleGeometry(Utils.Convert(rect)));
         }
 
-        public override void SetClipExclude(RRect rect)
+        public override void PushClipExclude(RRect rect)
         {
-            // TODO:a handle clip
-            //            _g.SetClip(Utils.Convert(rect), CombineMode.Exclude);
+            var geometry = new CombinedGeometry();
+            geometry.Geometry1 = new RectangleGeometry(Utils.Convert(_clipStack.Peek()));
+            geometry.Geometry2 = new RectangleGeometry(Utils.Convert(rect));
+            geometry.GeometryCombineMode = GeometryCombineMode.Exclude;
+
+            _clipStack.Push(_clipStack.Peek());
+            _g.PushClip(geometry);
         }
 
         public override Object SetAntiAliasSmoothingMode()
         {
-            //            var prevMode = _g.SmoothingMode;
-            //            _g.SmoothingMode = SmoothingMode.AntiAlias;
-            //            return prevMode;
             return null;
         }
 
         public override void ReturnPreviousSmoothingMode(Object prevMode)
-        {
-            if (prevMode != null)
-            {
-                // TODO:a handle smoothing mode
-                //                _g.SmoothingMode = (SmoothingMode)prevMode;
-            }
-        }
+        { }
 
         public override RSize MeasureString(string str, RFont font)
         {

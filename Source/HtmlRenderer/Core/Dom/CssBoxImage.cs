@@ -80,7 +80,7 @@ namespace HtmlRenderer.Core.Dom
             RPoint offset = HtmlContainer.ScrollOffset;
             rect.Offset(offset);
 
-            var prevClip = RenderUtils.ClipGraphicsByOverflow(g, this);
+            var clipped = RenderUtils.ClipGraphicsByOverflow(g, this);
 
             PaintBackground(g, rect, true, true);
             BordersDrawHandler.DrawBoxBorders(g, this, rect, true, true);
@@ -120,7 +120,8 @@ namespace HtmlRenderer.Core.Dom
                 }
             }
 
-            RenderUtils.ReturnClip(g, prevClip);
+            if (clipped)
+                g.PopClip();
         }
 
         /// <summary>

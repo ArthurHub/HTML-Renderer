@@ -133,15 +133,6 @@ namespace HtmlRenderer.WPF
         }
 
         /// <summary>
-        /// Gets or sets a value indicating if anti-aliasing should be avoided for geometry like backgrounds and borders (default - false).
-        /// </summary>
-        public bool AvoidGeometryAntialias
-        {
-            get { return _htmlContainerInt.AvoidGeometryAntialias; }
-            set { _htmlContainerInt.AvoidGeometryAntialias = value; }
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating if image asynchronous loading should be avoided (default - false).<br/>
         /// True - images are loaded synchronously during html parsing.<br/>
         /// False - images are loaded asynchronously to html parsing when downloaded from URL or loaded from disk.<br/>
@@ -334,7 +325,7 @@ namespace HtmlRenderer.WPF
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
-            using (var ig = new GraphicsAdapter(g))
+            using (var ig = new GraphicsAdapter(g, new RRect(0, 0, double.MaxValue, double.MaxValue)))
             {
                 _htmlContainerInt.PerformLayout(ig);
             }
@@ -344,11 +335,12 @@ namespace HtmlRenderer.WPF
         /// Render the html using the given device.
         /// </summary>
         /// <param name="g">the device to use to render</param>
-        public void PerformPaint(DrawingContext g)
+        /// <param name="clip">the clip rectangle of the html container</param>
+        public void PerformPaint(DrawingContext g, Rect clip)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
-            using (var ig = new GraphicsAdapter(g))
+            using (var ig = new GraphicsAdapter(g, Utils.Convert(clip)))
             {
                 _htmlContainerInt.PerformPaint(ig);
             }

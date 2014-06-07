@@ -28,12 +28,12 @@ namespace HtmlRenderer.WinForms.Adapters
         #region Fields and Consts
 
         /// <summary>
-        /// used for <see cref="MeasureString(string,RFont,double,out int,out int)"/> calculation.
+        /// used for <see cref="MeasureString(string,RFont,double,out int,out double)"/> calculation.
         /// </summary>
         private static readonly int[] _charFit = new int[1];
 
         /// <summary>
-        /// used for <see cref="MeasureString(string,RFont,double,out int,out int)"/> calculation.
+        /// used for <see cref="MeasureString(string,RFont,double,out int,out double)"/> calculation.
         /// </summary>
         private static readonly int[] _charFitWidth = new int[1000];
 
@@ -98,7 +98,7 @@ namespace HtmlRenderer.WinForms.Adapters
         /// <param name="useGdiPlusTextRendering">Use GDI+ text rendering to measure/draw text</param>
         /// <param name="releaseGraphics">optional: if to release the graphics object on dispose (default - false)</param>
         public GraphicsAdapter(Graphics g, bool useGdiPlusTextRendering, bool releaseGraphics = false)
-            : base(WinFormsAdapter.Instance)
+            : base(WinFormsAdapter.Instance, Utils.Convert(g.ClipBounds))
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
@@ -112,31 +112,24 @@ namespace HtmlRenderer.WinForms.Adapters
             return new BrushAdapter(new LinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), (float)angle), true);
         }
 
-        public override RRect GetClip()
-        {
-            RectangleF clip;
-            if (_hdc == IntPtr.Zero)
-            {
-                clip = _g.ClipBounds;
-            }
-            else
-            {
-                Rectangle lprc;
-                Win32Utils.GetClipBox(_hdc, out lprc);
-                clip = lprc;
-            }
-            return Utils.Convert(clip);
-        }
-
-        public override void SetClipReplace(RRect rect)
+        public override void PopClip()
         {
             ReleaseHdc();
+            _clipStack.Pop();
+            _g.SetClip(Utils.Convert(_clipStack.Peek()), CombineMode.Replace);
+        }
+
+        public override void PushClip(RRect rect)
+        {
+            ReleaseHdc();
+            _clipStack.Push(rect);
             _g.SetClip(Utils.Convert(rect), CombineMode.Replace);
         }
 
-        public override void SetClipExclude(RRect rect)
+        public override void PushClipExclude(RRect rect)
         {
             ReleaseHdc();
+            _clipStack.Push(_clipStack.Peek());
             _g.SetClip(Utils.Convert(rect), CombineMode.Exclude);
         }
 

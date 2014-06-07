@@ -47,10 +47,9 @@ namespace HtmlRenderer.Core.Handlers
             var destRect = new RRect(location, imgSize);
 
             // need to clip so repeated image will be cut on rectangle
-            var prevClip = g.GetClip();
             var lRectangle = rectangle;
-            lRectangle.Intersect(prevClip);
-            g.SetClipReplace(lRectangle);
+            lRectangle.Intersect(g.GetClip());
+            g.PushClip(lRectangle);
 
             switch (box.BackgroundRepeat)
             {
@@ -68,7 +67,7 @@ namespace HtmlRenderer.Core.Handlers
                     break;
             }
 
-            g.SetClipReplace(prevClip);
+            g.PopClip();
         }
 
 

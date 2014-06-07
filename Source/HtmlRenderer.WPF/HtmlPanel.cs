@@ -129,18 +129,6 @@ namespace HtmlRenderer.WPF
         public event EventHandler<HtmlImageLoadEventArgs> ImageLoad;
 
         /// <summary>
-        /// Gets or sets a value indicating if anti-aliasing should be avoided for geometry like backgrounds and borders (default - false).
-        /// </summary>
-        [Category("Behavior")]
-        [DefaultValue(false)]
-        [Description("If anti-aliasing should be avoided for geometry like backgrounds and borders")]
-        public virtual bool AvoidGeometryAntialias
-        {
-            get { return _htmlContainer.AvoidGeometryAntialias; }
-            set { _htmlContainer.AvoidGeometryAntialias = value; }
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating if image loading only when visible should be avoided (default - false).<br/>
         /// True - images are loaded as soon as the html is parsed.<br/>
         /// False - images that are not visible because of scroll location are not loaded until they are scrolled to.

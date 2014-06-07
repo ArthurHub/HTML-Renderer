@@ -397,7 +397,7 @@ namespace HtmlRenderer.WPF
         }
 
          */
-          
+
         /// <summary>
         /// Renders the specified HTML source on the specified location and max size restriction.<br/>
         /// If <paramref name="maxSize"/>.Width is zero the html will use all the required width, otherwise it will perform line 
@@ -418,19 +418,19 @@ namespace HtmlRenderer.WPF
         /// <returns>the actual size of the rendered html</returns>
         private static Size RenderClip(DrawingContext g, string html, Point location, Size maxSize, CssData cssData, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad, EventHandler<HtmlImageLoadEventArgs> imageLoad)
         {
-//            Region prevClip = null;
-//            if (maxSize.Height > 0)
-//            {
-//                prevClip = g.Clip;
-//                g.SetClip(new RectangleF(location, maxSize));
-//            }
+            //            Region prevClip = null;
+            //            if (maxSize.Height > 0)
+            //            {
+            //                prevClip = g.Clip;
+            //                g.SetClip(new RectangleF(location, maxSize));
+            //            }
 
             var actualSize = RenderHtml(g, html, location, maxSize, cssData, stylesheetLoad, imageLoad);
 
-//            if (prevClip != null)
-//            {
-//                g.SetClip(prevClip, CombineMode.Replace);
-//            }
+            //            if (prevClip != null)
+            //            {
+            //                g.SetClip(prevClip, CombineMode.Replace);
+            //            }
 
             return actualSize;
         }
@@ -471,7 +471,7 @@ namespace HtmlRenderer.WPF
 
                     container.SetHtml(html, cssData);
                     container.PerformLayout(g);
-                    container.PerformPaint(g);
+                    container.PerformPaint(g, new Rect(0, 0, double.MaxValue, double.MaxValue));
 
                     actualSize = container.ActualSize;
                 }
