@@ -46,28 +46,41 @@ namespace HtmlRenderer.Demo.Common
             msg += "\r\n\r\n";
             msg += string.Format("CPU:\r\nTotal: {0} msec\r\nIterationAvg: {1:N2} msec\r\nSingleAvg: {2:N2} msec",
                 elapsedMilliseconds, elapsedMilliseconds / (double)Iterations, elapsedMilliseconds / (double)Iterations / sampleCount);
-            msg += "\r\n\r\n";
-            msg += string.Format("Memory:\r\nTotal: {0:N0} KB\r\nIterationAvg: {1:N0} KB\r\nSingleAvg: {2:N0} KB\r\nOverhead: {3:N0}%",
-                memory, memory / Iterations, memory / Iterations / sampleCount, 100 * (memory / Iterations) / htmlSize);
+
+            if (Environment.Version.Major >= 4)
+            {
+                msg += "\r\n\r\n";
+                msg += string.Format("Memory:\r\nTotal: {0:N0} KB\r\nIterationAvg: {1:N0} KB\r\nSingleAvg: {2:N0} KB\r\nOverhead: {3:N0}%",
+                    memory, memory / Iterations, memory / Iterations / sampleCount, 100 * (memory / Iterations) / htmlSize);
+            }
+
             msg += "\r\n\r\n\r\n";
             msg += string.Format("Full CPU:\r\nTotal: {0} msec\r\nIterationAvg: {1:N2} msec\r\nSingleAvg: {2:N2} msec",
                 runStopwatch.ElapsedMilliseconds, runStopwatch.ElapsedMilliseconds / (double)Iterations, runStopwatch.ElapsedMilliseconds / (double)Iterations / sampleCount);
-            msg += "\r\n\r\n";
-            msg += string.Format("Full Memory:\r\nTotal: {0:N0} KB\r\nIterationAvg: {1:N0} KB\r\nSingleAvg: {2:N0} KB\r\nOverhead: {3:N0}%",
-                runMemory, runMemory / Iterations, runMemory / Iterations / sampleCount, 100 * (runMemory / Iterations) / htmlSize);
-            
+
+            if (Environment.Version.Major >= 4)
+            {
+                msg += "\r\n\r\n";
+                msg += string.Format("Full Memory:\r\nTotal: {0:N0} KB\r\nIterationAvg: {1:N0} KB\r\nSingleAvg: {2:N0} KB\r\nOverhead: {3:N0}%",
+                    runMemory, runMemory / Iterations, runMemory / Iterations / sampleCount, 100 * (runMemory / Iterations) / htmlSize);
+            }
+
             return msg;
         }
 
         private static Stopwatch RunTest(Action<String> setHtmlDelegate, bool real, out double totalMem)
         {
-#if NET_40
-            AppDomain.MonitoringIsEnabled = true;
-            var startMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
-#endif
+            totalMem = 0;
+            long startMemory = 0;
+            if (Environment.Version.Major >= 4)
+            {
+                typeof(AppDomain).GetProperty("MonitoringIsEnabled").SetValue(null, true, null);
+                startMemory = (long)AppDomain.CurrentDomain.GetType().GetProperty("MonitoringTotalAllocatedMemorySize").GetValue(AppDomain.CurrentDomain, null);
+            }
+
             var sw = Stopwatch.StartNew();
 
-            for (int i = 0; i < DemoUtils.Iterations; i++)
+            for (int i = 0; i < Iterations; i++)
             {
                 foreach (var sample in SamplesLoader.ShowcaseSamples)
                 {
@@ -77,12 +90,12 @@ namespace HtmlRenderer.Demo.Common
 
             sw.Stop();
 
-#if NET_40
-            var endMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
-            totalMem = (endMemory - startMemory) / 1024f;
-#else
-            totalMem = 0;
-#endif
+            if (Environment.Version.Major >= 4)
+            {
+                var endMemory = (long)AppDomain.CurrentDomain.GetType().GetProperty("MonitoringTotalAllocatedMemorySize").GetValue(AppDomain.CurrentDomain, null);
+                totalMem = (endMemory - startMemory) / 1024f;
+            }
+
             return sw;
         }
     }
