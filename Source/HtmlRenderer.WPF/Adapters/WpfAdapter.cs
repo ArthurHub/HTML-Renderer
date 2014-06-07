@@ -94,8 +94,7 @@ namespace HtmlRenderer.WPF.Adapters
 
         protected internal override RFont CreateFontInt(string family, double size, RFontStyle style)
         {
-            // TODO:a handle possible null
-            var fontFamily = (FontFamily)new FontFamilyConverter().ConvertFromString(family);
+            var fontFamily = (FontFamily)new FontFamilyConverter().ConvertFromString(family) ?? new FontFamily();
             return new FontAdapter(new Typeface(fontFamily, GetFontStyle(style), GetFontWidth(style), FontStretches.Normal), size);
         }
 

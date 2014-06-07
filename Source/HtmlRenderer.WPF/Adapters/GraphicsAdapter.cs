@@ -238,13 +238,18 @@ namespace HtmlRenderer.WPF.Adapters
 
         public override void DrawLine(RPen pen, double x1, double y1, double x2, double y2)
         {
+            var adj = pen.Width;
+            _g.PushGuidelineSet(new GuidelineSet(new[] { x1 + adj / 2, x2 + adj / 2 }, new[] { y1 + adj / 2, y2 + adj / 2 }));
             _g.DrawLine(((PenAdapter)pen).CreatePen(), new Point(x1, y1), new Point(x2, y2));
+            _g.Pop();
         }
 
         public override void DrawRectangle(RPen pen, double x, double y, double width, double height)
         {
-            var pen2 = ((PenAdapter)pen).CreatePen();
-            _g.DrawRectangle(null, pen2, new Rect(x, y, width, height));
+            var adj = pen.Width;
+            _g.PushGuidelineSet(new GuidelineSet(new[] { x + adj / 2, x + width + adj / 2 }, new[] { y + adj / 2, y + height + adj / 2 }));
+            _g.DrawRectangle(null, ((PenAdapter)pen).CreatePen(), new Rect(x, y, width, height));
+            _g.Pop();
         }
 
         public override void DrawRectangle(RBrush brush, double x, double y, double width, double height)
