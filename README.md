@@ -1,6 +1,8 @@
 HTML Renderer
 =============
 
+[![Build status](https://ci.appveyor.com/api/projects/status/cm8xpf8ebt3hyi3e)](https://ci.appveyor.com/project/ArthurHub/html-renderer)
+
 #### Documentation, Discussion and Issue tracking is on [CodePlex](https://htmlrenderer.codeplex.com/).
 
 The rich formatting power of *HTML* in your *.NET applications* using simple controls or static rendering code.
