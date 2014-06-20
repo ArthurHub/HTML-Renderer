@@ -364,12 +364,13 @@ namespace HtmlRenderer.WPF
         /// </summary>
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="e">the mouse event args</param>
-        public void HandleMouseUp(Control parent, MouseEventArgs e)
+        public void HandleMouseUp(Control parent, MouseButtonEventArgs e)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            _htmlContainerInt.HandleMouseUp(new ControlAdapter(parent), Utils.Convert(e.GetPosition(parent)), CreateMouseEvent(e));
+            var mouseEvent = new RMouseEvent(e.ChangedButton == MouseButton.Left);
+            _htmlContainerInt.HandleMouseUp(new ControlAdapter(parent), Utils.Convert(e.GetPosition(parent)), mouseEvent);
         }
 
         /// <summary>
@@ -432,14 +433,6 @@ namespace HtmlRenderer.WPF
 
 
         #region Private methods
-
-        /// <summary>
-        /// Create HtmlRenderer mouse event from WPF mouse event.
-        /// </summary>
-        private static RMouseEvent CreateMouseEvent(MouseEventArgs e)
-        {
-            return new RMouseEvent(e.LeftButton == MouseButtonState.Pressed);
-        }
 
         /// <summary>
         /// Create HtmlRenderer key event from WPF key event.

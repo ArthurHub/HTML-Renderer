@@ -65,6 +65,7 @@
     <Compile Include="Adapters\PenAdapter.cs" />
     <Compile Include="Adapters\WpfAdapter.cs" />
     <Compile Include="HtmlContainer.cs" />
+    <Compile Include="HtmlControlBase.cs" />
     <Compile Include="HtmlPanel.cs" />
     <Compile Include="HtmlRender.cs" />
     <Compile Include="Utilities\Utils.cs" />
