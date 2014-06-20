@@ -80,14 +80,14 @@ namespace HtmlRenderer.WPF.Adapters
         public override object GetDataObject(string html, string plainText)
         {
             // TODO:a handle WPF clipboard
-//            return ClipboardHelper.CreateDataObject(html, plainText);
+            //            return ClipboardHelper.CreateDataObject(html, plainText);
             return null;
         }
 
         public override void DoDragDropCopy(object dragDropData)
         {
             // TODO:a handle WPF clipboard
-//            _control.DoDragDrop(dragDropData, DragDropEffects.Copy);
+            //            _control.DoDragDrop(dragDropData, DragDropEffects.Copy);
         }
 
         public override RGraphics CreateGraphics()

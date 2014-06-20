@@ -67,7 +67,6 @@
     <Compile Include="HtmlContainer.cs" />
     <Compile Include="HtmlPanel.cs" />
     <Compile Include="HtmlRender.cs" />
-    <Compile Include="HtmlUIElement.cs" />
     <Compile Include="Utilities\Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

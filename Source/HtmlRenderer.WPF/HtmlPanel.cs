@@ -14,7 +14,9 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
@@ -52,7 +54,7 @@ namespace HtmlRenderer.WPF
     /// Raised when an error occurred during html rendering.<br/>
     /// </para>
     /// </summary>
-    public class HtmlPanel : ScrollViewer
+    public class HtmlPanel : Control
     {
         #region Fields and Consts
 
@@ -62,9 +64,14 @@ namespace HtmlRenderer.WPF
         protected readonly HtmlContainer _htmlContainer;
 
         /// <summary>
-        /// The content control of the scroll viewer that actually measures and renderes the html
+        /// the vertical scroll bar for the control to scroll to html content out of view
         /// </summary>
-        protected readonly UIElement _htmlContent;
+        protected ScrollBar _verticalScrollBar;
+
+        /// <summary>
+        /// the horizontal scroll bar for the control to scroll to html content out of view
+        /// </summary>
+        protected ScrollBar _horizontalScrollBar;
 
         /// <summary>
         /// the raw base stylesheet data used in the control
@@ -90,8 +97,22 @@ namespace HtmlRenderer.WPF
         public HtmlPanel()
         {
             Background = SystemColors.WindowBrush;
-            VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            //HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
+            // VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            // HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
+
+            _verticalScrollBar = new ScrollBar();
+            _verticalScrollBar.Orientation = Orientation.Vertical;
+            _verticalScrollBar.Width = 18;
+            _verticalScrollBar.Scroll += VerticalScrollBarOnScroll;
+            AddVisualChild(_verticalScrollBar);
+            AddLogicalChild(_verticalScrollBar);
+
+            _horizontalScrollBar = new ScrollBar();
+            _horizontalScrollBar.Visibility = Visibility.Hidden;
+            //            _horizontalScrollBar.Orientation = Orientation.Horizontal;
+            //            _horizontalScrollBar.Height = 18;
+            //            AddVisualChild(_horizontalScrollBar);
+            //            AddLogicalChild(_horizontalScrollBar);
 
             _htmlContainer = new HtmlContainer();
             _htmlContainer.LinkClicked += OnLinkClicked;
@@ -100,8 +121,6 @@ namespace HtmlRenderer.WPF
             _htmlContainer.ScrollChange += OnScrollChange;
             _htmlContainer.StylesheetLoad += OnStylesheetLoad;
             _htmlContainer.ImageLoad += OnImageLoad;
-
-            Content = _htmlContent = new HtmlUIElement(_htmlContainer);
         }
 
         /// <summary>
@@ -208,9 +227,12 @@ namespace HtmlRenderer.WPF
             set
             {
                 _html = value;
-                ScrollToHome();
+                _verticalScrollBar.Value = 0;
+                _horizontalScrollBar.Value = 0;
+                _htmlContainer.ScrollOffset = new Point(0, 0);
                 _htmlContainer.SetHtml(_html, _baseCssData);
-                _htmlContent.InvalidateMeasure();
+                InvalidateMeasure();
+                InvalidateVisual();
             }
         }
 
@@ -277,6 +299,101 @@ namespace HtmlRenderer.WPF
 
         #region Private methods
 
+        protected override int VisualChildrenCount
+        {
+            get { return _verticalScrollBar != null ? 1 : 0; }
+        }
+
+        protected override Visual GetVisualChild(int index)
+        {
+            if (index == 0)
+                return _verticalScrollBar;
+            return null;
+        }
+
+        /// <summary>
+        /// Perform the layout of the html in the control.
+        /// </summary>
+        protected override Size MeasureOverride(Size constraint)
+        {
+            Size size = PerformHtmlLayout(constraint);
+
+            // to handle if scrollbar is appearing or disappearing
+            if ((_verticalScrollBar.Visibility == Visibility.Hidden && size.Height > constraint.Height) ||
+                (_verticalScrollBar.Visibility == Visibility.Visible && size.Height < constraint.Height))
+            {
+                _verticalScrollBar.Visibility = _verticalScrollBar.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                PerformHtmlLayout(constraint);
+            }
+
+            return constraint;
+        }
+
+        /// <summary>
+        /// After measurement arrange the scrollbars of the panel.
+        /// </summary>
+        protected override Size ArrangeOverride(Size bounds)
+        {
+            _verticalScrollBar.Arrange(new Rect(bounds.Width - _verticalScrollBar.Width, 0, _verticalScrollBar.Width, bounds.Height));
+
+            if (_htmlContainer != null && _verticalScrollBar.Visibility == Visibility.Visible)
+            {
+                _verticalScrollBar.ViewportSize = HtmlHeight(bounds);
+                _verticalScrollBar.Maximum = _htmlContainer.ActualSize.Height - _verticalScrollBar.ViewportSize;
+            }
+
+            return bounds;
+        }
+
+        /// <summary>
+        /// Perform html container layout by the current panel client size.
+        /// </summary>
+        protected Size PerformHtmlLayout(Size constraint)
+        {
+            if (_htmlContainer != null)
+            {
+                _htmlContainer.MaxSize = new Size(HtmlWidth(constraint), 0);
+
+                DrawingGroup dGroup = new DrawingGroup();
+                using (var g = dGroup.Open())
+                {
+                    _htmlContainer.PerformLayout(g);
+                }
+
+                return _htmlContainer.ActualSize;
+            }
+            return Size.Empty;
+        }
+
+        private void VerticalScrollBarOnScroll(object sender, ScrollEventArgs e)
+        {
+            _htmlContainer.ScrollOffset = new Point(_htmlContainer.ScrollOffset.X, -e.NewValue);
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Perform paint of the html in the control.
+        /// </summary>
+        protected override void OnRender(DrawingContext context)
+        {
+            if (Background != null && Background.Opacity > 0)
+                context.DrawRectangle(Background, null, new Rect(RenderSize));
+
+            var htmlWidth = HtmlWidth(RenderSize);
+            var htmlHeight = HtmlHeight(RenderSize);
+            if (_htmlContainer != null && htmlWidth > 0 && htmlHeight > 0)
+            {
+                context.PushClip(new RectangleGeometry(new Rect(new Size(htmlWidth, htmlHeight))));
+                _htmlContainer.PerformPaint(context, new Rect(new Size(htmlWidth, htmlHeight)));
+                context.Pop();
+
+                // TODO:a handle if we need to refresh the pointer here
+                // call mouse move to handle paint after scroll or html change affecting mouse cursor.
+                //                var mp = PointToClient(MousePosition);
+                //                _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
+            }
+        }
+
         /// <summary>
         /// Handle mouse move to handle hover cursor and text selection. 
         /// </summary>
@@ -338,11 +455,11 @@ namespace HtmlRenderer.WPF
 
             if (e.Key == Key.Home)
             {
-                ScrollToTop();
+                //                ScrollToTop();
             }
             else if (e.Key == Key.End)
             {
-                ScrollToBottom();
+                //                ScrollToBottom();
             }
         }
 
@@ -392,15 +509,15 @@ namespace HtmlRenderer.WPF
         protected virtual void OnRefresh(HtmlRefreshEventArgs e)
         {
             if (e.Layout)
-                _htmlContent.InvalidateMeasure();
+                InvalidateMeasure();
             else
-                _htmlContent.InvalidateVisual();
+                InvalidateVisual();
         }
 
         private void ScrollToPoint(double x, double y)
         {
-            ScrollToHorizontalOffset(x);
-            ScrollToVerticalOffset(y);
+            //            ScrollToHorizontalOffset(x);
+            //            ScrollToVerticalOffset(y);
         }
 
         /// <summary>
@@ -423,6 +540,21 @@ namespace HtmlRenderer.WPF
             //            base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Get the width the HTML has to render in (not including vertical scroll iff it is visible)
+        /// </summary>
+        private double HtmlWidth(Size size)
+        {
+            return size.Width - (_verticalScrollBar.Visibility == Visibility.Visible ? _verticalScrollBar.Width : 0);
+        }
+
+        /// <summary>
+        /// Get the width the HTML has to render in (not including vertical scroll iff it is visible)
+        /// </summary>
+        private double HtmlHeight(Size size)
+        {
+            return size.Height - (_horizontalScrollBar.Visibility == Visibility.Visible ? _horizontalScrollBar.Height : 0);
+        }
 
         #region Private event handlers
 
