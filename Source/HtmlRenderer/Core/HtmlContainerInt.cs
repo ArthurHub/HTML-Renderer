@@ -504,10 +504,9 @@ namespace HtmlRenderer.Core
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
+            _actualSize = RSize.Empty;
             if (_root != null)
             {
-                _actualSize = RSize.Empty;
-
                 // if width is not restricted we set it to large value to get the actual later
                 _root.Size = new RSize(_maxSize.Width > 0 ? _maxSize.Width : 99999, 0);
                 _root.Location = _location;
