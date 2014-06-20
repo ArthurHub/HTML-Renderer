@@ -197,6 +197,7 @@ namespace HtmlRenderer.WPF
             set
             {
                 _html = value;
+                _htmlContainer.ScrollOffset = new Point(0, 0);
                 _htmlContainer.SetHtml(_html, _baseCssData);
                 InvalidateMeasure();
                 InvalidateVisual();

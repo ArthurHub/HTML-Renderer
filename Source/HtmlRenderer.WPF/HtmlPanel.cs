@@ -51,24 +51,30 @@ namespace HtmlRenderer.WPF
         /// </summary>
         public HtmlPanel()
         {
-            // VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            // HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
-
             _verticalScrollBar = new ScrollBar();
             _verticalScrollBar.Orientation = Orientation.Vertical;
             _verticalScrollBar.Width = 18;
-            _verticalScrollBar.Scroll += OnVerticalScrollBarScroll;
+            _verticalScrollBar.Scroll += OnScrollBarScroll;
             AddVisualChild(_verticalScrollBar);
             AddLogicalChild(_verticalScrollBar);
 
             _horizontalScrollBar = new ScrollBar();
-            _horizontalScrollBar.Visibility = Visibility.Hidden;
-            //            _horizontalScrollBar.Orientation = Orientation.Horizontal;
-            //            _horizontalScrollBar.Height = 18;
-            //            AddVisualChild(_horizontalScrollBar);
-            //            AddLogicalChild(_horizontalScrollBar);
+            _horizontalScrollBar.Orientation = Orientation.Horizontal;
+            _horizontalScrollBar.Height = 18;
+            _horizontalScrollBar.Scroll += OnScrollBarScroll;
+            AddVisualChild(_horizontalScrollBar);
+            AddLogicalChild(_horizontalScrollBar);
 
             _htmlContainer.ScrollChange += OnScrollChange;
+        }
+
+        public override string Html
+        {
+            set
+            {
+                _horizontalScrollBar.Value = _verticalScrollBar.Value = 0;
+                base.Html = value;
+            }
         }
 
         /// <summary>
@@ -97,13 +103,15 @@ namespace HtmlRenderer.WPF
 
         protected override int VisualChildrenCount
         {
-            get { return _verticalScrollBar != null ? 1 : 0; }
+            get { return 2; }
         }
 
         protected override Visual GetVisualChild(int index)
         {
             if (index == 0)
                 return _verticalScrollBar;
+            else if (index == 1)
+                return _horizontalScrollBar;
             return null;
         }
 
@@ -115,12 +123,26 @@ namespace HtmlRenderer.WPF
             Size size = PerformHtmlLayout(constraint);
 
             // to handle if scrollbar is appearing or disappearing
-            if ((_verticalScrollBar.Visibility == Visibility.Hidden && size.Height > constraint.Height) ||
-                (_verticalScrollBar.Visibility == Visibility.Visible && size.Height < constraint.Height))
+            bool relayout = false;
+
+            var htmlHeight = HtmlWidth(constraint);
+            if ((_verticalScrollBar.Visibility == Visibility.Hidden && size.Height > htmlHeight) ||
+                (_verticalScrollBar.Visibility == Visibility.Visible && size.Height <= htmlHeight))
             {
                 _verticalScrollBar.Visibility = _verticalScrollBar.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-                PerformHtmlLayout(constraint);
+                relayout = true;
             }
+
+            var htmlWidth = HtmlWidth(constraint);
+            if ((_horizontalScrollBar.Visibility == Visibility.Hidden && size.Width > htmlWidth) ||
+                (_horizontalScrollBar.Visibility == Visibility.Visible && size.Width <= htmlWidth))
+            {
+                _horizontalScrollBar.Visibility = _horizontalScrollBar.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                relayout = true;
+            }
+
+            if (relayout)
+                PerformHtmlLayout(constraint);
 
             return constraint;
         }
@@ -130,14 +152,29 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected override Size ArrangeOverride(Size bounds)
         {
-            _verticalScrollBar.Arrange(new Rect(bounds.Width - _verticalScrollBar.Width, 0, _verticalScrollBar.Width, bounds.Height));
+            _verticalScrollBar.Arrange(new Rect(bounds.Width - _verticalScrollBar.Width, 0, _verticalScrollBar.Width, bounds.Height - (_horizontalScrollBar.Visibility == Visibility.Visible ? _horizontalScrollBar.Height : 0)));
+            _horizontalScrollBar.Arrange(new Rect(0, bounds.Height - _horizontalScrollBar.Height, bounds.Width - (_verticalScrollBar.Visibility == Visibility.Visible ? _verticalScrollBar.Width : 0), _horizontalScrollBar.Height));
 
-            if (_htmlContainer != null && _verticalScrollBar.Visibility == Visibility.Visible)
+            if (_htmlContainer != null)
             {
-                _verticalScrollBar.ViewportSize = HtmlHeight(bounds);
-                _verticalScrollBar.SmallChange = 25;
-                _verticalScrollBar.LargeChange = _verticalScrollBar.ViewportSize * .9;
-                _verticalScrollBar.Maximum = _htmlContainer.ActualSize.Height - _verticalScrollBar.ViewportSize;
+                if (_verticalScrollBar.Visibility == Visibility.Visible)
+                {
+                    _verticalScrollBar.ViewportSize = HtmlHeight(bounds);
+                    _verticalScrollBar.SmallChange = 25;
+                    _verticalScrollBar.LargeChange = _verticalScrollBar.ViewportSize * .9;
+                    _verticalScrollBar.Maximum = _htmlContainer.ActualSize.Height - _verticalScrollBar.ViewportSize;
+                }
+
+                if (_horizontalScrollBar.Visibility == Visibility.Visible)
+                {
+                    _horizontalScrollBar.ViewportSize = HtmlWidth(bounds);
+                    _horizontalScrollBar.SmallChange = 25;
+                    _horizontalScrollBar.LargeChange = _horizontalScrollBar.ViewportSize * .9;
+                    _horizontalScrollBar.Maximum = _htmlContainer.ActualSize.Width - _horizontalScrollBar.ViewportSize;
+                }
+
+                // update the scroll offset because the scroll values may have changed
+                UpdateScrollOffsets();
             }
 
             return bounds;
@@ -163,15 +200,27 @@ namespace HtmlRenderer.WPF
             return Size.Empty;
         }
 
-        private void OnVerticalScrollBarScroll(object sender, ScrollEventArgs e)
+        /// <summary>
+        /// Handle mouse up to set focus on the control. 
+        /// </summary>
+        protected override void OnMouseUp(MouseButtonEventArgs e)
         {
-            UpdateScrollOffsets();
+            base.OnMouseUp(e);
+            Focus();
         }
 
-        private void UpdateScrollOffsets()
+        /// <summary>
+        /// Handle mouse wheel for scrolling.
+        /// </summary>
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            _htmlContainer.ScrollOffset = new Point(-_horizontalScrollBar.Value, -_verticalScrollBar.Value);
-            InvalidateVisual();
+            base.OnMouseWheel(e);
+            if (_verticalScrollBar.Visibility == Visibility.Visible)
+            {
+                _verticalScrollBar.Value -= e.Delta;
+                UpdateScrollOffsets();
+                e.Handled = true;
+            }
         }
 
         /// <summary>
@@ -180,22 +229,62 @@ namespace HtmlRenderer.WPF
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-            
-            if (e.Key == Key.Home)
-            {
-                //                ScrollToTop();
-            }
-            else if (e.Key == Key.End)
-            {
-                //                ScrollToBottom();
-            }
-        }
 
-        private void ScrollToPoint(double x, double y)
-        {
-            _horizontalScrollBar.Value = x;
-            _verticalScrollBar.Value = y;
-            UpdateScrollOffsets();
+            if (_verticalScrollBar.Visibility == Visibility.Visible)
+            {
+                if (e.Key == Key.Up)
+                {
+                    _verticalScrollBar.Value -= _verticalScrollBar.SmallChange;
+                    UpdateScrollOffsets();
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Down)
+                {
+                    _verticalScrollBar.Value += _verticalScrollBar.SmallChange;
+                    UpdateScrollOffsets();
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.PageUp)
+                {
+                    _verticalScrollBar.Value -= _verticalScrollBar.LargeChange;
+                    UpdateScrollOffsets();
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.PageDown)
+                {
+                    _verticalScrollBar.Value += _verticalScrollBar.LargeChange;
+                    UpdateScrollOffsets();
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Home)
+                {
+                    _verticalScrollBar.Value = 0;
+                    UpdateScrollOffsets();
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.End)
+                {
+                    _verticalScrollBar.Value = _verticalScrollBar.Maximum;
+                    UpdateScrollOffsets();
+                    e.Handled = true;
+                }
+            }
+
+            if (_horizontalScrollBar.Visibility == Visibility.Visible)
+            {
+                if (e.Key == Key.Left)
+                {
+                    _horizontalScrollBar.Value -= _horizontalScrollBar.SmallChange;
+                    UpdateScrollOffsets();
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Right)
+                {
+                    _horizontalScrollBar.Value += _horizontalScrollBar.SmallChange;
+                    UpdateScrollOffsets();
+                    e.Handled = true;
+                }
+            }
         }
 
         /// <summary>
@@ -214,9 +303,43 @@ namespace HtmlRenderer.WPF
             return size.Height - (_horizontalScrollBar.Visibility == Visibility.Visible ? _horizontalScrollBar.Height : 0);
         }
 
+        /// <summary>
+        /// On HTML container scroll change request scroll to the requested location.
+        /// </summary>
         private void OnScrollChange(object sender, HtmlScrollEventArgs e)
         {
             ScrollToPoint(e.X, e.Y);
+        }
+
+        /// <summary>
+        /// Set the control scroll offset to the given values.
+        /// </summary>
+        private void ScrollToPoint(double x, double y)
+        {
+            _horizontalScrollBar.Value = x;
+            _verticalScrollBar.Value = y;
+            UpdateScrollOffsets();
+        }
+
+        /// <summary>
+        /// On scrollbar scroll update the scroll offsets and invalidate.
+        /// </summary>
+        private void OnScrollBarScroll(object sender, ScrollEventArgs e)
+        {
+            UpdateScrollOffsets();
+        }
+
+        /// <summary>
+        /// Update the scroll offset of the HTML container and invalidate visual to re-render.
+        /// </summary>
+        private void UpdateScrollOffsets()
+        {
+            var newScrollOffset = new Point(-_horizontalScrollBar.Value, -_verticalScrollBar.Value);
+            if (!newScrollOffset.Equals(_htmlContainer.ScrollOffset))
+            {
+                _htmlContainer.ScrollOffset = newScrollOffset;
+                InvalidateVisual();
+            }
         }
 
         #endregion
