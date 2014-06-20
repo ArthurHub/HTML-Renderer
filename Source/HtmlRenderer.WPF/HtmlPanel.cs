@@ -124,8 +124,9 @@ namespace HtmlRenderer.WPF
 
             // to handle if scrollbar is appearing or disappearing
             bool relayout = false;
-
             var htmlHeight = HtmlWidth(constraint);
+            var htmlWidth = HtmlWidth(constraint);
+
             if ((_verticalScrollBar.Visibility == Visibility.Hidden && size.Height > htmlHeight) ||
                 (_verticalScrollBar.Visibility == Visibility.Visible && size.Height <= htmlHeight))
             {
@@ -133,7 +134,6 @@ namespace HtmlRenderer.WPF
                 relayout = true;
             }
 
-            var htmlWidth = HtmlWidth(constraint);
             if ((_horizontalScrollBar.Visibility == Visibility.Hidden && size.Width > htmlWidth) ||
                 (_horizontalScrollBar.Visibility == Visibility.Visible && size.Width <= htmlWidth))
             {
@@ -198,6 +198,18 @@ namespace HtmlRenderer.WPF
                 return _htmlContainer.ActualSize;
             }
             return Size.Empty;
+        }
+
+        /// <summary>
+        /// Handle minor case where both scroll are visible and create a rectangle at the bottom right corner between them.
+        /// </summary>
+        protected override void OnRender(DrawingContext context)
+        {
+            base.OnRender(context);
+
+            // render rectangle in right bottom corner where both scrolls meet
+            if (_horizontalScrollBar.Visibility == Visibility.Visible && _verticalScrollBar.Visibility == Visibility.Visible)
+                context.DrawRectangle(SystemColors.ControlBrush, null, new Rect(HtmlWidth(RenderSize), HtmlHeight(RenderSize), _verticalScrollBar.Width, _horizontalScrollBar.Height));
         }
 
         /// <summary>
