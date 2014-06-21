@@ -11,29 +11,23 @@
 // "The Art of War"
 
 using System;
-using System.IO;
 
 namespace HtmlRenderer.Adapters
 {
     /// <summary>
-    /// TODO:a add doc
+    /// Adapter for platform specific image object - used to render images.
     /// </summary>
     public abstract class RImage : IDisposable
     {
         /// <summary>
-        ///  Get the width, in pixels, of the image.
-        ///  </summary>
+        /// Get the width, in pixels, of the image.
+        /// </summary>
         public abstract double Width { get; }
 
         /// <summary>
-        ///  Get the height, in pixels, of the image.
-        ///  </summary>
+        /// Get the height, in pixels, of the image.
+        /// </summary>
         public abstract double Height { get; }
-
-        /// <summary>
-        ///  Saves this image to the specified stream in PNG format.
-        ///  </summary><param name="stream">The Stream where the image will be saved. </param>
-        public abstract void Save(MemoryStream stream);
 
         public abstract void Dispose();
     }

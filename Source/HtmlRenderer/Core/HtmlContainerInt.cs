@@ -26,7 +26,7 @@ namespace HtmlRenderer.Core
     /// <summary>
     /// Low level handling of Html Renderer logic.<br/>
     /// Allows html layout and rendering without association to actual control, those allowing to handle html rendering on any graphics object.<br/>
-    /// Using this class will require the client to handle all propagations of mouse/keyboard events, layout/paint calls, scrolling offset, 
+    /// Using this class will require the client to handle all propagation's of mouse/keyboard events, layout/paint calls, scrolling offset, 
     /// location/size/rectangle handling and UI refresh requests.<br/>
     /// </summary>
     /// <remarks>
@@ -84,7 +84,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// 
         /// </summary>
-        private readonly Adapter _adapter;
+        private readonly RAdapter _adapter;
 
         /// <summary>
         /// parser for CSS data
@@ -175,7 +175,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// Init.
         /// </summary>
-        public HtmlContainerInt(Adapter adapter)
+        public HtmlContainerInt(RAdapter adapter)
         {
             ArgChecker.AssertArgNotNull(adapter, "global");
 
@@ -186,7 +186,7 @@ namespace HtmlRenderer.Core
         /// <summary>
         /// 
         /// </summary>
-        internal Adapter Adapter
+        internal RAdapter Adapter
         {
             get { return _adapter; }
         }
@@ -339,7 +339,7 @@ namespace HtmlRenderer.Core
         /// The max width and height of the rendered html.<br/>
         /// The max width will effect the html layout wrapping lines, resize images and tables where possible.<br/>
         /// The max height does NOT effect layout, but will not render outside it (clip).<br/>
-        /// <see cref="ActualSize"/> can be exceed the max size by layout restrictions (unwrappable line, set image size, etc.).<br/>
+        /// <see cref="ActualSize"/> can be exceed the max size by layout restrictions (unwrapable line, set image size, etc.).<br/>
         /// Set zero for unlimited (width\height separately).<br/>
         /// </summary>
         public RSize MaxSize
@@ -406,15 +406,7 @@ namespace HtmlRenderer.Core
         /// <param name="baseCssData">optional: the stylesheet to init with, init default if not given</param>
         public void SetHtml(string htmlSource, CssData baseCssData = null)
         {
-            if (_root != null)
-            {
-                _root.Dispose();
-                _root = null;
-                if (_selectionHandler != null)
-                    _selectionHandler.Dispose();
-                _selectionHandler = null;
-            }
-
+            Clear();
             if (!string.IsNullOrEmpty(htmlSource))
             {
                 _cssData = baseCssData ?? _adapter.DefaultCssData;
@@ -425,6 +417,21 @@ namespace HtmlRenderer.Core
                 {
                     _selectionHandler = new SelectionHandler(_root);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Clear the content of the HTML container releasing any resources used to render previously existing content.
+        /// </summary>
+        public void Clear()
+        {
+            if (_root != null)
+            {
+                _root.Dispose();
+                _root = null;
+                if (_selectionHandler != null)
+                    _selectionHandler.Dispose();
+                _selectionHandler = null;
             }
         }
 

@@ -10,8 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System;
-using System.IO;
 using HtmlRenderer.Adapters;
 using PdfSharp.Drawing;
 
@@ -51,11 +49,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
         public override double Height
         {
             get { return _image.PixelHeight; }
-        }
-
-        public override void Save(MemoryStream stream)
-        {
-            throw new NotSupportedException();
         }
 
         public override void Dispose()

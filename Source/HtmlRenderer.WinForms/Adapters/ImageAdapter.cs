@@ -11,8 +11,6 @@
 // "The Art of War"
 
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using HtmlRenderer.Adapters;
 
 namespace HtmlRenderer.WinForms.Adapters
@@ -51,11 +49,6 @@ namespace HtmlRenderer.WinForms.Adapters
         public override double Height
         {
             get { return _image.Height; }
-        }
-
-        public override void Save(MemoryStream stream)
-        {
-            _image.Save(stream, ImageFormat.Png);
         }
 
         public override void Dispose()

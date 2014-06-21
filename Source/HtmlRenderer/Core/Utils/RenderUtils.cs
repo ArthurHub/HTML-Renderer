@@ -74,7 +74,7 @@ namespace HtmlRenderer.Core.Utils
         public static void DrawImageLoadingIcon(RGraphics g, HtmlContainerInt htmlContainer, RRect r)
         {
             g.DrawRectangle(g.GetPen(RColor.LightGray), r.Left + 3, r.Top + 3, 13, 14);
-            var image = htmlContainer.Adapter.GetLoadImage();
+            var image = htmlContainer.Adapter.GetLoadingImage();
             g.DrawImage(image, new RRect(r.Left + 4, r.Top + 4, image.Width, image.Height));
         }
 
@@ -87,16 +87,16 @@ namespace HtmlRenderer.Core.Utils
         public static void DrawImageErrorIcon(RGraphics g, HtmlContainerInt htmlContainer, RRect r)
         {
             g.DrawRectangle(g.GetPen(RColor.LightGray), r.Left + 2, r.Top + 2, 15, 15);
-            var image = htmlContainer.Adapter.GetErrorImage();
+            var image = htmlContainer.Adapter.GetLoadingFailedImage();
             g.DrawImage(image, new RRect(r.Left + 3, r.Top + 3, image.Width, image.Height));
         }
 
         /// <summary>
         /// Creates a rounded rectangle using the specified corner radius<br/>
-        ///  NW-----NE
+        /// NW-----NE
         ///  |       |
         ///  |       |
-        ///  SW-----SE
+        /// SW-----SE
         /// </summary>
         /// <param name="g">the device to draw into</param>
         /// <param name="rect">Rectangle to round</param>

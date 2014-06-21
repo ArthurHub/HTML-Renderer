@@ -21,10 +21,9 @@ using PdfSharp.Pdf;
 namespace HtmlRenderer.PdfSharp.Adapters
 {
     /// <summary>
-    /// Adapter for general stuff for core.
-    /// TODO:a add doc.
+    /// Adapter for PdfSharp library platform.
     /// </summary>
-    internal sealed class PdfSharpAdapter : Adapter
+    internal sealed class PdfSharpAdapter : RAdapter
     {
         #region Fields and Consts
 

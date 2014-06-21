@@ -104,7 +104,7 @@
     <Compile Include="Adapters\Entities\RPoint.cs" />
     <Compile Include="Adapters\Entities\RRect.cs" />
     <Compile Include="Adapters\Entities\RSize.cs" />
-    <Compile Include="Adapters\Adapter.cs" />
+    <Compile Include="Adapters\RAdapter.cs" />
     <Compile Include="Adapters\RBrush.cs" />
     <Compile Include="Adapters\RContextMenu.cs" />
     <Compile Include="Adapters\RControl.cs" />

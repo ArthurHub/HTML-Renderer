@@ -29,7 +29,7 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// 
         /// </summary>
-        private readonly Adapter _adapter;
+        private readonly RAdapter _adapter;
 
         #endregion
 
@@ -37,7 +37,7 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// Init.
         /// </summary>
-        public CssValueParser(Adapter adapter)
+        public CssValueParser(RAdapter adapter)
         {
             ArgChecker.AssertArgNotNull(adapter, "global");
 

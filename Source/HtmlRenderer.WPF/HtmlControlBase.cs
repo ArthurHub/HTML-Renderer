@@ -380,23 +380,13 @@ namespace HtmlRenderer.WPF
         }
 
         /// <summary>
-        /// Release the html container resources.
+        /// When the control is no longer part of visual tree clear its content so resources can be released immediately.
         /// </summary>
-        protected void Dispose(bool disposing)
+        protected override void OnVisualParentChanged(DependencyObject oldParent)
         {
-            // TODO:a handle dispose
-            //            if (_htmlContainer != null)
-            //            {
-            //                _htmlContainer.LinkClicked -= OnLinkClicked;
-            //                _htmlContainer.RenderError -= OnRenderError;
-            //                _htmlContainer.Refresh -= OnRefresh;
-            //                _htmlContainer.ScrollChange -= OnScrollChange;
-            //                _htmlContainer.StylesheetLoad -= OnStylesheetLoad;
-            //                _htmlContainer.ImageLoad -= OnImageLoad;
-            //                _htmlContainer.Dispose();
-            //                _htmlContainer = null;
-            //            }
-            //            base.Dispose(disposing);
+            if (_htmlContainer != null)
+                _htmlContainer.Clear();
+            base.OnVisualParentChanged(oldParent);
         }
 
         /// <summary>
@@ -414,6 +404,7 @@ namespace HtmlRenderer.WPF
         {
             return size.Height;
         }
+
 
         #region Private event handlers
 

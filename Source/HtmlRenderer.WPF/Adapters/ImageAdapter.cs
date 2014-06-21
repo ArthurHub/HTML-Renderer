@@ -10,7 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.IO;
 using System.Windows.Media.Imaging;
 using HtmlRenderer.Adapters;
 
@@ -52,16 +51,10 @@ namespace HtmlRenderer.WPF.Adapters
             get { return _image.PixelHeight; }
         }
 
-        public override void Save(MemoryStream stream)
-        {
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(_image));
-            encoder.Save(stream);
-        }
-
         public override void Dispose()
         {
-            _image.StreamSource.Dispose();
+            if (_image.StreamSource != null)
+                _image.StreamSource.Dispose();
         }
     }
 }

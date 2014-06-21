@@ -290,12 +290,9 @@ namespace HtmlRenderer.Core.Handlers
                     break;
                 case "dotted":
                     p.DashStyle = RDashStyle.Dot;
-
                     break;
                 case "dashed":
                     p.DashStyle = RDashStyle.Dash;
-                    if (p.Width < 2)
-                        p.DashPattern = new[] { 4, 4d }; // better looking
                     break;
             }
             return p;

@@ -57,11 +57,11 @@ namespace HtmlRenderer.Core
         /// default css data (as defined by W3), merged if class name already exists. If false only the data in the given stylesheet is returned.
         /// </summary>
         /// <seealso cref="http://www.w3.org/TR/CSS21/sample.html"/>
-        /// <param name="adapter">TODO:a add doc</param>
+        /// <param name="adapter">Platform adapter</param>
         /// <param name="stylesheet">the stylesheet source to parse</param>
         /// <param name="combineWithDefault">true - combine the parsed css data with default css data, false - return only the parsed css data</param>
         /// <returns>the parsed css data</returns>
-        public static CssData Parse(Adapter adapter, string stylesheet, bool combineWithDefault = true)
+        public static CssData Parse(RAdapter adapter, string stylesheet, bool combineWithDefault = true)
         {
             CssParser parser = new CssParser(adapter);
             return parser.ParseStyleSheet(stylesheet, combineWithDefault);

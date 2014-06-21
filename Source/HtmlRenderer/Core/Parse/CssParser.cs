@@ -36,7 +36,7 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// 
         /// </summary>
-        private readonly Adapter _adapter;
+        private readonly RAdapter _adapter;
 
         /// <summary>
         /// Utility for value parsing.
@@ -54,7 +54,7 @@ namespace HtmlRenderer.Core.Parse
         /// <summary>
         /// Init.
         /// </summary>
-        public CssParser(Adapter adapter)
+        public CssParser(RAdapter adapter)
         {
             ArgChecker.AssertArgNotNull(adapter, "global");
 

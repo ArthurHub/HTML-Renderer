@@ -78,18 +78,6 @@ namespace HtmlRenderer.WPF.Adapters
             }
         }
 
-        public override double[] DashPattern
-        {
-            set
-            {
-                // TODO:a handle custom pattern pen
-                //                var fValues = new float[value.Length];
-                //                for (int i = 0; i < value.Length; i++)
-                //                    fValues[i] = (float)value[i];
-                //                _pen.DashPattern = fValues;
-            }
-        }
-
         /// <summary>
         /// Create the actual WPF pen instance.
         /// </summary>

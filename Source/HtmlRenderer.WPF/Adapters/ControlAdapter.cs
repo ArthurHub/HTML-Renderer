@@ -10,6 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using HtmlRenderer.Adapters;
@@ -80,8 +81,7 @@ namespace HtmlRenderer.WPF.Adapters
 
         public override void DoDragDropCopy(object dragDropData)
         {
-            // TODO:a handle WPF clipboard
-            //            _control.DoDragDrop(dragDropData, DragDropEffects.Copy);
+            DragDrop.DoDragDrop(_control, dragDropData, DragDropEffects.Copy);
         }
 
         public override void MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth)

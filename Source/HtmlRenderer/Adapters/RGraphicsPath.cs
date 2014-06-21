@@ -15,7 +15,7 @@ using System;
 namespace HtmlRenderer.Adapters
 {
     /// <summary>
-    /// TODO:a add doc
+    /// Adapter for platform specific graphics path object - used to render (draw/fill) path shape.
     /// </summary>
     public abstract class RGraphicsPath : IDisposable
     {
@@ -25,8 +25,8 @@ namespace HtmlRenderer.Adapters
         public abstract void Start(double x, double y);
         
         /// <summary>
-        ///  Add stright line to the given point from te last point.
-        ///  </summary>
+        /// Add stright line to the given point from te last point.
+        /// </summary>
         public abstract void LineTo(double x, double y);
         
         /// <summary>

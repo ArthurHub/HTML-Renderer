@@ -23,13 +23,19 @@ using HtmlRenderer.Core.Utils;
 namespace HtmlRenderer.Adapters
 {
     /// <summary>
-    /// TODO:a add doc
+    /// Platform adapter to bridge platform specific objects to HTML Renderer core library.<br/>
+    /// Core uses abstract renderer objects (RAdapter/RControl/REtc...) to access platform specific functionality, the concrete platforms 
+    /// implements those objects to provide concrete platform implementation. Those allowing the core library to be platform agnostic.
+    /// <para>
+    /// Platforms: WinForms, WPF, Metro, PDF renders, etc.<br/>
+    /// Objects: UI elements(Controls), Graphics(Render context), Colors, Brushes, Pens, Fonts, Images, Clipboard, etc.<br/>
+    /// </para>
     /// </summary>
     /// <remarks>
     /// It is best to have a singleton instance of this class for concrete implementation!<br/>
     /// This is because it holds caches of default CssData, Images, Fonts and Brushes.
     /// </remarks>
-    public abstract class Adapter
+    public abstract class RAdapter
     {
         #region Fields/Consts
 
@@ -69,7 +75,7 @@ namespace HtmlRenderer.Adapters
         /// <summary>
         /// Init.
         /// </summary>
-        protected Adapter()
+        protected RAdapter()
         {
             _fontsHandler = new FontsHandler(this);
         }
@@ -130,6 +136,7 @@ namespace HtmlRenderer.Adapters
         /// <returns>converted image or null</returns>
         public RImage ConvertImage(object image)
         {
+            // TODO:a remove this by creating better API.
             return ConvertImageInt(image);
         }
 
@@ -189,7 +196,7 @@ namespace HtmlRenderer.Adapters
         /// <summary>
         /// Get image to be used while HTML image is loading.
         /// </summary>
-        public RImage GetLoadImage()
+        public RImage GetLoadingImage()
         {
             if (_loadImage == null)
             {
@@ -203,7 +210,7 @@ namespace HtmlRenderer.Adapters
         /// <summary>
         /// Get image to be used if HTML image load failed.
         /// </summary>
-        public RImage GetErrorImage()
+        public RImage GetLoadingFailedImage()
         {
             if (_errorImage == null)
             {
@@ -216,15 +223,20 @@ namespace HtmlRenderer.Adapters
 
         /// <summary>
         /// Get data object for the given html and plain text data.<br />
-        /// The data object can be used for clipboard or drag-drop operation.
-        /// </summary><param name="html">the html data</param><param name="plainText">the plain text data</param><returns>drag-drop data object</returns>
+        /// The data object can be used for clipboard or drag-drop operation.<br/>
+        /// Not relevant for platforms that don't render HTML on UI element.
+        /// </summary>
+        /// <param name="html">the html data</param>
+        /// <param name="plainText">the plain text data</param>
+        /// <returns>drag-drop data object</returns>
         public object GetClipboardDataObject(string html, string plainText)
         {
             return GetClipboardDataObjectInt(html, plainText);
         }
 
         /// <summary>
-        /// Set the given text to the clipboard
+        /// Set the given text to the clipboard<br/>
+        /// Not relevant for platforms that don't render HTML on UI element.
         /// </summary>
         /// <param name="text">the text to set</param>
         public void SetToClipboard(string text)
@@ -233,7 +245,8 @@ namespace HtmlRenderer.Adapters
         }
 
         /// <summary>
-        /// Set the given html and plain text data to clipboard.
+        /// Set the given html and plain text data to clipboard.<br/>
+        /// Not relevant for platforms that don't render HTML on UI element.
         /// </summary>
         /// <param name="html">the html data</param>
         /// <param name="plainText">the plain text data</param>
@@ -243,16 +256,18 @@ namespace HtmlRenderer.Adapters
         }
 
         /// <summary>
-        /// Set the given image to clipboard.
+        /// Set the given image to clipboard.<br/>
+        /// Not relevant for platforms that don't render HTML on UI element.
         /// </summary>
-        /// <param name="image"></param>
+        /// <param name="image">the image object to set to clipboard</param>
         public void SetToClipboard(RImage image)
         {
             SetToClipboardInt(image);
         }
 
         /// <summary>
-        /// Create a context menu that can be used on the control
+        /// Create a context menu that can be used on the control<br/>
+        /// Not relevant for platforms that don't render HTML on UI element.
         /// </summary>
         /// <returns>new context menu</returns>
         public RContextMenu GetContextMenu()
@@ -261,7 +276,8 @@ namespace HtmlRenderer.Adapters
         }
 
         /// <summary>
-        /// Save the given image to file by showing save dialog to the client.
+        /// Save the given image to file by showing save dialog to the client.<br/>
+        /// Not relevant for platforms that don't render HTML on UI element.
         /// </summary>
         /// <param name="image">the image to save</param>
         /// <param name="name">the name of the image for save dialog</param>

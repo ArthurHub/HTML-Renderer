@@ -59,6 +59,8 @@ namespace HtmlRenderer.PdfSharp.Adapters
                         break;
                     case RDashStyle.Dash:
                         _pen.DashStyle = XDashStyle.Dash;
+                        if (Width < 2)
+                            _pen.DashPattern = new[] { 4, 4d }; // better looking
                         break;
                     case RDashStyle.Dot:
                         _pen.DashStyle = XDashStyle.Dot;
@@ -76,18 +78,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
                         _pen.DashStyle = XDashStyle.Solid;
                         break;
                 }
-            }
-        }
-
-        public override double[] DashPattern
-        {
-            set
-            {
-                var dValues = new double[value.Length];
-                for (int i = 0; i < value.Length; i++)
-                    dValues[i] = value[i];
-
-                _pen.DashPattern = value;
             }
         }
     }

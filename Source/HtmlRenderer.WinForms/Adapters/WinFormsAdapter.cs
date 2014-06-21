@@ -20,10 +20,9 @@ using HtmlRenderer.WinForms.Utilities;
 namespace HtmlRenderer.WinForms.Adapters
 {
     /// <summary>
-    /// Adapter for general stuff for core.
-    /// TODO:a add doc.
+    /// Adapter for WinForms platforms.
     /// </summary>
-    internal sealed class WinFormsAdapter : Adapter
+    internal sealed class WinFormsAdapter : RAdapter
     {
         #region Fields and Consts
 

@@ -16,19 +16,20 @@ using HtmlRenderer.Core.Utils;
 namespace HtmlRenderer.Adapters
 {
     /// <summary>
-    /// TODO:a add doc
+    /// Adapter for platform specific control object - used to handle updating the control that the html is rendered on.<br/>
+    /// Not relevant for platforms that don't render HTML on UI element.
     /// </summary>
     public abstract class RControl
     {
         /// <summary>
         /// The platform adapter.
         /// </summary>
-        private readonly Adapter _adapter;
+        private readonly RAdapter _adapter;
 
         /// <summary>
         /// Init control with platform adapter.
         /// </summary>
-        protected RControl(Adapter adapter)
+        protected RControl(RAdapter adapter)
         {
             ArgChecker.AssertArgNotNull(adapter, "adapter");
             _adapter = adapter;
@@ -37,7 +38,7 @@ namespace HtmlRenderer.Adapters
         /// <summary>
         /// The platform adapter.
         /// </summary>
-        public Adapter Adapter
+        public RAdapter Adapter
         {
             get { return _adapter; }
         }
@@ -48,8 +49,8 @@ namespace HtmlRenderer.Adapters
         public abstract bool LeftMouseButton { get; }
 
         /// <summary>
-        ///  Is the right mouse button is currently in pressed state
-        ///  </summary>
+        /// Is the right mouse button is currently in pressed state
+        /// </summary>
         public abstract bool RightMouseButton { get; }
 
         /// <summary>

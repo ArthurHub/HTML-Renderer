@@ -259,6 +259,14 @@ namespace HtmlRenderer.WPF
         }
 
         /// <summary>
+        /// Clear the content of the HTML container releasing any resources used to render previously existing content.
+        /// </summary>
+        public void Clear()
+        {
+            _htmlContainerInt.Clear();
+        }
+
+        /// <summary>
         /// Get html from the current DOM tree with style if requested.
         /// </summary>
         /// <param name="styleGen">Optional: controls the way styles are generated when html is generated (default: <see cref="HtmlGenerationStyle.Inline"/>)</param>

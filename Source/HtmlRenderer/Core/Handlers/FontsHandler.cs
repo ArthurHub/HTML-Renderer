@@ -28,7 +28,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// 
         /// </summary>
-        private readonly Adapter _adapter;
+        private readonly RAdapter _adapter;
 
         /// <summary>
         /// Allow to map not installed fonts to different
@@ -51,7 +51,7 @@ namespace HtmlRenderer.Core.Handlers
         /// <summary>
         /// Init.
         /// </summary>
-        public FontsHandler(Adapter adapter)
+        public FontsHandler(RAdapter adapter)
         {
             ArgChecker.AssertArgNotNull(adapter, "global");
 

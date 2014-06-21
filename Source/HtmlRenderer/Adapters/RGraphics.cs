@@ -18,9 +18,9 @@ using HtmlRenderer.Core.Utils;
 namespace HtmlRenderer.Adapters
 {
     /// <summary>
-    /// Base class for the graphics methods required for HTML rendering.<br/>
+    /// Adapter for platform specific graphics rendering object - used to render graphics and text in platform specific context.<br/>
     /// The core HTML Renderer components use this class for rendering logic, extending this
-    /// class in different platform: WinForms, WPF, Silverlight, PdfSharp, etc.
+    /// class in different platform: WinForms, WPF, Metro, PDF, etc.
     /// </summary>
     public abstract class RGraphics : IDisposable
     {
@@ -29,7 +29,7 @@ namespace HtmlRenderer.Adapters
         /// <summary>
         /// the global adapter
         /// </summary>
-        protected readonly Adapter _adapter;
+        protected readonly RAdapter _adapter;
 
         /// <summary>
         /// Te clipping bound stack as clips are pushed/poped to/from the graphics
@@ -42,7 +42,7 @@ namespace HtmlRenderer.Adapters
         /// <summary>
         /// Init.
         /// </summary>
-        protected RGraphics(Adapter adapter, RRect initialClip)
+        protected RGraphics(RAdapter adapter, RRect initialClip)
         {
             ArgChecker.AssertArgNotNull(adapter, "global");
 
@@ -144,6 +144,7 @@ namespace HtmlRenderer.Adapters
 
         /// <summary>
         /// Measure the width of string under max width restriction calculating the number of characters that can fit and the width those characters take.<br/>
+        /// Not relevant for platforms that don't render HTML on UI element.
         /// </summary>
         /// <param name="str">the string to measure</param>
         /// <param name="font">the font to measure string with</param>

@@ -24,7 +24,7 @@ namespace HtmlRenderer.WPF.Adapters
     /// <summary>
     /// Adapter for WPF platform.
     /// </summary>
-    internal sealed class WpfAdapter : Adapter
+    internal sealed class WpfAdapter : RAdapter
     {
         #region Fields and Consts
 
