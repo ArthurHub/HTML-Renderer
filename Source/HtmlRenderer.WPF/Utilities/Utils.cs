@@ -75,6 +75,14 @@ namespace HtmlRenderer.WPF.Utilities
         }
 
         /// <summary>
+        /// Convert from core point to WPF point.
+        /// </summary>
+        public static Size ConvertRound(RSize s)
+        {
+            return new Size(Math.Round(s.Width), Math.Round(s.Height));
+        }
+
+        /// <summary>
         /// Convert from WPF rectangle to core rectangle.
         /// </summary>
         public static RRect Convert(Rect r)
