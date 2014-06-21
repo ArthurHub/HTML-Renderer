@@ -48,33 +48,6 @@ namespace HtmlRenderer.Demo.WinForms
         }
 
         /// <summary>
-        /// Get stylesheet by given key.
-        /// </summary>
-        public static string GetStylesheet(string src)
-        {
-            if (src == "StyleSheet")
-            {
-                return @"h1, h2, h3 { color: navy; font-weight:normal; }
-                    h1 { margin-bottom: .47em }
-                    h2 { margin-bottom: .3em }
-                    h3 { margin-bottom: .4em }
-                    ul { margin-top: .5em }
-                    ul li {margin: .25em}
-                    body { font:10pt Tahoma }
-		            pre  { border:solid 1px gray; background-color:#eee; padding:1em }
-                    a:link { text-decoration: none; }
-                    a:hover { text-decoration: underline; }
-                    .gray    { color:gray; }
-                    .example { background-color:#efefef; corner-radius:5px; padding:0.5em; }
-                    .whitehole { background-color:white; corner-radius:10px; padding:15px; }
-                    .caption { font-size: 1.1em }
-                    .comment { color: green; margin-bottom: 5px; margin-left: 3px; }
-                    .comment2 { color: green; }";
-            }
-            return null;
-        }
-
-        /// <summary>
         /// Get image by resource key.
         /// </summary>
         public static Image TryLoadResourceImage(string src)
@@ -82,36 +55,12 @@ namespace HtmlRenderer.Demo.WinForms
             Image image;
             if (!_imageCache.TryGetValue(src, out image))
             {
-                switch (src.ToLower())
+                var imageStream = DemoUtils.GetImageStream(src);
+                if (imageStream != null)
                 {
-                    case "htmlicon":
-                        image = Image.FromStream(Resources.Html32);
-                        break;
-                    case "staricon":
-                        image = Image.FromStream(Resources.Favorites32);
-                        break;
-                    case "fonticon":
-                        image = Image.FromStream(Resources.Font32);
-                        break;
-                    case "commenticon":
-                        image = Image.FromStream(Resources.Comment16);
-                        break;
-                    case "imageicon":
-                        image = Image.FromStream(Resources.Image32);
-                        break;
-                    case "methodicon":
-                        image = Image.FromStream(Resources.Method16);
-                        break;
-                    case "propertyicon":
-                        image = Image.FromStream(Resources.Property16);
-                        break;
-                    case "eventicon":
-                        image = Image.FromStream(Resources.Event16);
-                        break;
-                }
-
-                if (image != null)
+                    image = Image.FromStream(imageStream);
                     _imageCache[src] = image;
+                }
             }
             return image;
         }
@@ -123,16 +72,6 @@ namespace HtmlRenderer.Demo.WinForms
         {
             var img = TryLoadResourceImage(src);
             return img != null ? XImage.FromGdiPlusImage(img) : null;
-        }
-
-        /// <summary>
-        /// Handle stylesheet resolve.
-        /// </summary>
-        public static void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
-        {
-            var stylesheet = GetStylesheet(e.Src);
-            if (stylesheet != null)
-                e.SetStyleSheet = stylesheet;
         }
 
         /// <summary>

@@ -17,7 +17,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Reflection;
 using System.Windows.Forms;
-using HtmlRenderer.Demo.WinForms.Properties;
+using HtmlRenderer.Demo.Common;
 using HtmlRenderer.WinForms;
 
 namespace HtmlRenderer.Demo.WinForms
@@ -32,7 +32,7 @@ namespace HtmlRenderer.Demo.WinForms
             _html = html;
             InitializeComponent();
 
-            Icon = Icon.FromHandle(Resources.image.GetHicon());
+            Icon = DemoForm.GetIcon();
 
             _background = HtmlRenderingHelper.CreateImageForTransparentBackground();
 
@@ -81,8 +81,8 @@ namespace HtmlRenderer.Demo.WinForms
                 var backgroundColor = Color.FromName(_backgroundColorTSB.SelectedItem.ToString());
                 TextRenderingHint textRenderingHint = (TextRenderingHint)Enum.Parse(typeof(TextRenderingHint), _textRenderingHintTSCB.SelectedItem.ToString());
                 var img = _useGdiPlusTSB.Checked
-                    ? HtmlRender.RenderToImageGdiPlus(_html, _pictureBox.ClientSize, textRenderingHint, null, HtmlRenderingHelper.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad)
-                    : HtmlRender.RenderToImage(_html, _pictureBox.ClientSize, backgroundColor, null, HtmlRenderingHelper.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);
+                    ? HtmlRender.RenderToImageGdiPlus(_html, _pictureBox.ClientSize, textRenderingHint, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad)
+                    : HtmlRender.RenderToImage(_html, _pictureBox.ClientSize, backgroundColor, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);
                 _pictureBox.Image = img;
             }
         }

@@ -14,6 +14,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 using HtmlRenderer.Demo.Common;
 using HtmlRenderer.WPF;
@@ -61,7 +62,6 @@ namespace HtmlRenderer.Demo.WPF
             //            foreach (var fontFamily in _privateFont.Families)
             //                HtmlRender.AddFontFamily(fontFamily);
         }
-
 
         /// <summary>
         /// Toggle if to show split view of HtmlPanel and WinForms WebBrowser control.

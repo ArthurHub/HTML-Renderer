@@ -45,6 +45,13 @@ namespace HtmlRenderer.Demo.WinForms
             InitializeComponent();
 
             Icon = GetIcon();
+            _openSampleFormTSB.Image = Common.Properties.Resources.form;
+            _showIEViewTSSB.Image = Common.Properties.Resources.IE;
+            _openInExternalViewTSB.Image = Common.Properties.Resources.chrome;
+            _useGeneratedHtmlTSB.Image = Common.Properties.Resources.code;
+            _generateImageSTB.Image = Common.Properties.Resources.image;
+            _generatePdfTSB.Image = Common.Properties.Resources.pdf;
+            _runPerformanceTSB.Image = Common.Properties.Resources.stopwatch;
 
             StartPosition = FormStartPosition.CenterScreen;
             var size = Screen.GetWorkingArea(Point.Empty);
@@ -73,7 +80,7 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         internal static Icon GetIcon()
         {
-            var stream = typeof(DemoForm).Assembly.GetManifestResourceStream("HtmlRenderer.Demo.WinForms.Resources.html.ico");
+            var stream = typeof(DemoForm).Assembly.GetManifestResourceStream("HtmlRenderer.Demo.WinForms.html.ico");
             return stream != null ? new Icon(stream) : null;
         }
 
@@ -134,7 +141,7 @@ namespace HtmlRenderer.Demo.WinForms
             config.PageSize = PageSize.A4;
             config.SetMargins(20);
 
-            var doc = PdfGenerator.GeneratePdf(_mainControl.GetHtml(), config, null, HtmlRenderingHelper.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoadPdfSharp);
+            var doc = PdfGenerator.GeneratePdf(_mainControl.GetHtml(), config, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoadPdfSharp);
             var tmpFile = Path.GetTempFileName();
             tmpFile = Path.GetFileNameWithoutExtension(tmpFile) + ".pdf";
             doc.Save(tmpFile);

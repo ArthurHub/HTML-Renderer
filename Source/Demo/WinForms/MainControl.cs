@@ -55,7 +55,7 @@ namespace HtmlRenderer.Demo.WinForms
 
             _htmlPanel.RenderError += OnRenderError;
             _htmlPanel.LinkClicked += OnLinkClicked;
-            _htmlPanel.StylesheetLoad += HtmlRenderingHelper.OnStylesheetLoad;
+            _htmlPanel.StylesheetLoad += DemoUtils.OnStylesheetLoad;
             _htmlPanel.ImageLoad += HtmlRenderingHelper.OnImageLoad;
             _htmlToolTip.ImageLoad += HtmlRenderingHelper.OnImageLoad;
 
@@ -269,7 +269,7 @@ namespace HtmlRenderer.Demo.WinForms
 
             html = Regex.Replace(html, @"href=\""(\w.*?)\""", match =>
             {
-                var stylesheet = HtmlRenderingHelper.GetStylesheet(match.Groups[1].Value);
+                var stylesheet = DemoUtils.GetStylesheet(match.Groups[1].Value);
                 if (stylesheet != null)
                 {
                     var tmpFile = Path.GetTempFileName();
