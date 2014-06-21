@@ -328,12 +328,9 @@ namespace HtmlRenderer.WPF
         /// <summary>
         /// Measures the bounds of box and children, recursively.
         /// </summary>
-        /// <param name="g">Device context to draw</param>
-        public void PerformLayout(DrawingContext g)
+        public void PerformLayout()
         {
-            ArgChecker.AssertArgNotNull(g, "g");
-
-            using (var ig = new GraphicsAdapter(g, new RRect(0, 0, double.MaxValue, double.MaxValue)))
+            using (var ig = new GraphicsAdapter())
             {
                 _htmlContainerInt.PerformLayout(ig);
             }

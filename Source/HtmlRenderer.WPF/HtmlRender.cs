@@ -79,7 +79,6 @@ namespace HtmlRenderer.WPF
         /// </summary>
         /// <remarks>
         /// The given font family instance must be remain alive while the renderer is in use.<br/>
-        /// If loaded to <see cref="PrivateFontCollection"/> then the collection must be alive.<br/>
         /// If loaded from file then the file must not be deleted.
         /// </remarks>
         /// <param name="fontFamily">The font family to add.</param>
@@ -138,7 +137,7 @@ namespace HtmlRenderer.WPF
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             ArgChecker.AssertArgNotNull(g, "g");
-            return MeasureInt(g, html, maxWidth, cssData, stylesheetLoad, imageLoad);
+            return MeasureInt(html, maxWidth, cssData, stylesheetLoad, imageLoad);
         }
 
         /// <summary>
@@ -335,14 +334,13 @@ namespace HtmlRenderer.WPF
         /// <summary>
         /// Measure the size (width and height) required to draw the given html under given width and height restrictions.<br/>
         /// </summary>
-        /// <param name="g">Device to use for measure</param>
         /// <param name="html">HTML source to render</param>
         /// <param name="maxWidth">optional: bound the width of the html to render in (default - 0, unlimited)</param>
         /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the size required for the html</returns>
-        private static Size MeasureInt(DrawingContext g, string html, double maxWidth, CssData cssData, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad, EventHandler<HtmlImageLoadEventArgs> imageLoad)
+        private static Size MeasureInt(string html, double maxWidth, CssData cssData, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad, EventHandler<HtmlImageLoadEventArgs> imageLoad)
         {
             Size actualSize = Size.Empty;
             if (!string.IsNullOrEmpty(html))
@@ -359,7 +357,7 @@ namespace HtmlRenderer.WPF
                         container.ImageLoad += imageLoad;
 
                     container.SetHtml(html, cssData);
-                    container.PerformLayout(g);
+                    container.PerformLayout();
 
                     actualSize = container.ActualSize;
                 }
@@ -460,7 +458,7 @@ namespace HtmlRenderer.WPF
                         container.ImageLoad += imageLoad;
 
                     container.SetHtml(html, cssData);
-                    container.PerformLayout(g);
+                    container.PerformLayout();
                     container.PerformPaint(g, new Rect(0, 0, double.MaxValue, double.MaxValue));
 
                     actualSize = container.ActualSize;
