@@ -1268,12 +1268,12 @@ namespace HtmlRenderer.Core.Dom
 
                             if (HtmlContainer.SelectionForeColor != RColor.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
                             {
-                                //                                var orgClip = g.GetClip();
-                                //                                g.SetClipExclude(rect);
+                                g.PushClipExclude(rect);
                                 g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
-                                //                                g.SetClipReplace(rect);
+                                g.PopClip();
+                                g.PushClip(rect);
                                 g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
-                                //                                g.SetClipReplace(orgClip);
+                                g.PopClip();
                             }
                             else
                             {
