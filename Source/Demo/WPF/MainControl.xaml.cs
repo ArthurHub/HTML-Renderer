@@ -64,9 +64,6 @@ namespace HtmlRenderer.Demo.WPF
             _htmlPanel.StylesheetLoad += HtmlRenderingHelper.OnStylesheetLoad;
             _htmlPanel.ImageLoad += HtmlRenderingHelper.OnImageLoad;
 
-            //            _htmlToolTip.ImageLoad += HtmlRenderingHelper.OnImageLoad;
-            //            _htmlToolTip.SetToolTip(_htmlPanel, Resources.Tooltip);
-
             LoadSamples();
 
             _updateHtmlTimer = new Timer(OnUpdateHtmlTimerTick);

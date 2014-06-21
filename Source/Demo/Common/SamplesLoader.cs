@@ -38,9 +38,9 @@ namespace HtmlRenderer.Demo.Common
         /// <summary>
         /// Init.
         /// </summary>
-        static SamplesLoader()
+        public static void Init(string platform, string version)
         {
-            LoadSamples();
+            LoadSamples(platform, version);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace HtmlRenderer.Demo.Common
         /// <summary>
         /// Loads the tree of document samples
         /// </summary>
-        private static void LoadSamples()
+        private static void LoadSamples(string platform, string version)
         {
             var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
             Array.Sort(names);
@@ -100,6 +100,7 @@ namespace HtmlRenderer.Demo.Common
                             }
                             else
                             {
+                                html = html.Replace("$$Platform$$", platform).Replace("$$Release$$", version);
                                 _showcaseSamples.Add(new HtmlSample(shortName, name, html));
                             }
                         }

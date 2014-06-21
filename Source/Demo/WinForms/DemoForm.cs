@@ -40,6 +40,8 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         public DemoForm()
         {
+            SamplesLoader.Init("WinForms", typeof(HtmlRender).Assembly.GetName().Version.ToString());
+
             InitializeComponent();
 
             Icon = GetIcon();

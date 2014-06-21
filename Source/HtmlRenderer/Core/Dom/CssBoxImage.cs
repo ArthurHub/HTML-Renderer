@@ -94,14 +94,17 @@ namespace HtmlRenderer.Core.Dom
 
             if (_imageWord.Image != null)
             {
-                if (_imageWord.ImageRectangle == RRect.Empty)
-                    g.DrawImage(_imageWord.Image, r);
-                else
-                    g.DrawImage(_imageWord.Image, r, _imageWord.ImageRectangle);
-
-                if (_imageWord.Selected)
+                if (r.Width > 0 && r.Height > 0)
                 {
-                    g.DrawRectangle(GetSelectionBackBrush(g, true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width + 2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
+                    if (_imageWord.ImageRectangle == RRect.Empty)
+                        g.DrawImage(_imageWord.Image, r);
+                    else
+                        g.DrawImage(_imageWord.Image, r, _imageWord.ImageRectangle);
+
+                    if (_imageWord.Selected)
+                    {
+                        g.DrawRectangle(GetSelectionBackBrush(g, true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width + 2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
+                    }
                 }
             }
             else if (_imageLoadingComplete)

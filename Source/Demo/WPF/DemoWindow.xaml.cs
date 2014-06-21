@@ -16,6 +16,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Threading;
 using HtmlRenderer.Demo.Common;
+using HtmlRenderer.WPF;
 
 namespace HtmlRenderer.Demo.WPF
 {
@@ -34,9 +35,9 @@ namespace HtmlRenderer.Demo.WPF
         #endregion
         public DemoWindow()
         {
-            InitializeComponent();
+            SamplesLoader.Init("WPF", typeof(HtmlRender).Assembly.GetName().Version.ToString());
 
-            // Icon = GetIcon();
+            InitializeComponent();
 
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             Width = SystemParameters.PrimaryScreenWidth * 0.7;

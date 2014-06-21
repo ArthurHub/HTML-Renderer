@@ -170,10 +170,8 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         private void AddTreeNode(TreeNode root, HtmlSample sample)
         {
-            var html = sample.Html.Replace("$$Release$$", _htmlPanel.GetType().Assembly.GetName().Version.ToString());
-
             var node = new TreeNode(sample.Name);
-            node.Tag = new HtmlSample(sample.Name, sample.FullName, html);
+            node.Tag = new HtmlSample(sample.Name, sample.FullName, sample.Html);
             root.Nodes.Add(node);
         }
 

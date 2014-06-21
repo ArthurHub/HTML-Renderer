@@ -485,14 +485,17 @@ namespace HtmlRenderer.Core.Dom
         {
             if (_imageWord.Image != null)
             {
-                if (_imageWord.ImageRectangle == RRect.Empty)
-                    g.DrawImage(_imageWord.Image, rect);
-                else
-                    g.DrawImage(_imageWord.Image, rect, _imageWord.ImageRectangle);
-
-                if (_imageWord.Selected)
+                if (rect.Width > 0 && rect.Height > 0)
                 {
-                    g.DrawRectangle(GetSelectionBackBrush(g, true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width + 2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
+                    if (_imageWord.ImageRectangle == RRect.Empty)
+                        g.DrawImage(_imageWord.Image, rect);
+                    else
+                        g.DrawImage(_imageWord.Image, rect, _imageWord.ImageRectangle);
+
+                    if (_imageWord.Selected)
+                    {
+                        g.DrawRectangle(GetSelectionBackBrush(g, true), _imageWord.Left + offset.X, _imageWord.Top + offset.Y, _imageWord.Width + 2, DomUtils.GetCssLineBoxByWord(_imageWord).LineHeight);
+                    }
                 }
             }
             else if (_isVideo && !_imageLoadingComplete)
