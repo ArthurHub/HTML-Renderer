@@ -12,13 +12,13 @@
 
 using System;
 using System.Text;
-using System.Windows.Forms;
+using System.Windows;
 
-namespace HtmlRenderer.WinForms.Utilities
+namespace HtmlRenderer.WPF.Utilities
 {
     /// <summary>
     /// Helper to encode and set HTML fragment to clipboard.<br/>
-    /// See http://theartofdev.wordpress.com/2012/11/11/setting-html-and-plain-text-formatting-to-clipboard/.<br/>
+    /// See http://theartofdev.com/2012/11/11/setting-html-and-plain-text-formatting-to-clipboard/.<br/>
     /// <seealso cref="CreateDataObject"/>.
     /// </summary>
     /// <remarks>

@@ -105,9 +105,14 @@ namespace HtmlRenderer.WinForms.Adapters
             return new FontAdapter(new Font(((FontFamilyAdapter)family).FontFamily, (float)size, fontStyle));
         }
 
+        protected override object GetClipboardDataObjectInt(string html, string plainText)
+        {
+            return ClipboardHelper.CreateDataObject(html, plainText);
+        }
+
         protected override void SetToClipboardInt(string text)
         {
-            Clipboard.SetText(text);
+            ClipboardHelper.CopyToClipboard(text);
         }
 
         protected override void SetToClipboardInt(string html, string plainText)

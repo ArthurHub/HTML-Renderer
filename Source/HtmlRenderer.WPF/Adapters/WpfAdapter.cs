@@ -103,21 +103,24 @@ namespace HtmlRenderer.WPF.Adapters
             return new FontAdapter(new Typeface(((FontFamilyAdapter)family).FontFamily, GetFontStyle(style), GetFontWidth(style), FontStretches.Normal), size);
         }
 
+        protected override object GetClipboardDataObjectInt(string html, string plainText)
+        {
+            return ClipboardHelper.CreateDataObject(html, plainText);
+        }
+
         protected override void SetToClipboardInt(string text)
         {
-            Clipboard.SetText(text);
+            ClipboardHelper.CopyToClipboard(text);
         }
 
         protected override void SetToClipboardInt(string html, string plainText)
         {
-            // TODO:a handle WPF clipboard
-            //            ClipboardHelper.CopyToClipboard(html, plainText);
+            ClipboardHelper.CopyToClipboard(html, plainText);
         }
 
         protected override void SetToClipboardInt(RImage image)
         {
-            // TODO:a handle WPF clipboard
-            //            Clipboard.SetImage(((ImageAdapter)image).Image);
+            Clipboard.SetImage(((ImageAdapter)image).Image);
         }
 
         protected override RContextMenu CreateContextMenuInt()
@@ -141,6 +144,9 @@ namespace HtmlRenderer.WPF.Adapters
             //                }
             //            }
         }
+
+
+        #region Private/Protected methods
 
         /// <summary>
         /// Get solid color brush for the given color.
@@ -186,5 +192,7 @@ namespace HtmlRenderer.WPF.Adapters
                     return FontWeights.Normal;
             }
         }
+
+        #endregion
     }
 }

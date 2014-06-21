@@ -143,18 +143,14 @@ namespace HtmlRenderer.Adapters
         public abstract RSize MeasureString(string str, RFont font);
 
         /// <summary>
-        /// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
-        /// using the given font <paramref name="font"/>.<br/>
-        /// Restrict the width of the string and get the number of characters able to fit in the restriction and
-        /// the width those characters take.
+        /// Measure the width of string under max width restriction calculating the number of characters that can fit and the width those characters take.<br/>
         /// </summary>
         /// <param name="str">the string to measure</param>
         /// <param name="font">the font to measure string with</param>
-        /// <param name="maxWidth">the max width to render the string in</param>
+        /// <param name="maxWidth">the max width to calculate fit characters</param>
         /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
-        /// <param name="charFitWidth"></param>
-        /// <returns>the size of the string</returns>
-        public abstract RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth);
+        /// <param name="charFitWidth">the width that only the characters that fit into max width take</param>
+        public abstract void MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth);
 
         /// <summary>
         /// Draw the given string using the given font and foreground color at given location.

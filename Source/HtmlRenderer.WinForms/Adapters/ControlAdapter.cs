@@ -37,35 +37,12 @@ namespace HtmlRenderer.WinForms.Adapters
         /// Init.
         /// </summary>
         public ControlAdapter(Control control, bool useGdiPlusTextRendering)
+            : base(WinFormsAdapter.Instance)
         {
             ArgChecker.AssertArgNotNull(control, "control");
 
             _control = control;
             _useGdiPlusTextRendering = useGdiPlusTextRendering;
-        }
-
-        /// <summary>
-        /// Get the current location of the mouse relative to the control
-        /// </summary>
-        public override RPoint MouseLocation
-        {
-            get { return Utils.Convert(_control.PointToClient(Control.MousePosition)); }
-        }
-
-        /// <summary>
-        /// Is the left mouse button is currently in pressed state
-        /// </summary>
-        public override bool LeftMouseButton
-        {
-            get { return (Control.MouseButtons & MouseButtons.Left) != 0; }
-        }
-
-        /// <summary>
-        /// Is the right mouse button is currently in pressed state
-        /// </summary>
-        public override bool RightMouseButton
-        {
-            get { return (Control.MouseButtons & MouseButtons.Right) != 0; }
         }
 
         /// <summary>
@@ -76,64 +53,49 @@ namespace HtmlRenderer.WinForms.Adapters
             get { return _control; }
         }
 
-        /// <summary>
-        /// Set the cursor over the control to default cursor
-        /// </summary>
+        public override RPoint MouseLocation
+        {
+            get { return Utils.Convert(_control.PointToClient(Control.MousePosition)); }
+        }
+
+        public override bool LeftMouseButton
+        {
+            get { return (Control.MouseButtons & MouseButtons.Left) != 0; }
+        }
+
+        public override bool RightMouseButton
+        {
+            get { return (Control.MouseButtons & MouseButtons.Right) != 0; }
+        }
+
         public override void SetCursorDefault()
         {
             _control.Cursor = Cursors.Default;
         }
 
-        /// <summary>
-        /// Set the cursor over the control to hand cursor
-        /// </summary>
         public override void SetCursorHand()
         {
             _control.Cursor = Cursors.Hand;
         }
 
-        /// <summary>
-        /// Set the cursor over the control to I beam cursor
-        /// </summary>
         public override void SetCursorIBeam()
         {
             _control.Cursor = Cursors.IBeam;
         }
 
-        /// <summary>
-        /// Get data object for the given html and plain text data.<br/>
-        /// The data object can be used for clipboard or drag-drop operation.
-        /// </summary>
-        /// <param name="html">the html data</param>
-        /// <param name="plainText">the plain text data</param>
-        /// <returns>drag-drop data object</returns>
-        public override object GetDataObject(string html, string plainText)
-        {
-            return ClipboardHelper.CreateDataObject(html, plainText);
-        }
-
-        /// <summary>
-        /// Do drag-drop copy operation for the given data object.
-        /// </summary>
-        /// <param name="dragDropData">the data object</param>
         public override void DoDragDropCopy(object dragDropData)
         {
             _control.DoDragDrop(dragDropData, DragDropEffects.Copy);
         }
 
-        /// <summary>
-        /// Create graphics object that can be used with the control.
-        /// </summary>
-        /// <returns>graphics object</returns>
-        public override RGraphics CreateGraphics()
+        public override void MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth)
         {
-            // the win forms graphics object will be disposed by WinGraphics
-            return new GraphicsAdapter(_control.CreateGraphics(), _useGdiPlusTextRendering, true);
+            using (var g = new GraphicsAdapter(_control.CreateGraphics(), _useGdiPlusTextRendering, true))
+            {
+                g.MeasureString(str, font, maxWidth, out charFit, out charFitWidth);
+            }
         }
 
-        /// <summary>
-        /// Invalidates the entire surface of the control and causes the control to be redrawn.
-        /// </summary>
         public override void Invalidate()
         {
             _control.Invalidate();

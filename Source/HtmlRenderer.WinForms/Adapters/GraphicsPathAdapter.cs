@@ -59,9 +59,6 @@ namespace HtmlRenderer.WinForms.Adapters
             _lastPoint = new RPoint(x, y);
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
         public override void Dispose()
         {
             _graphicsPath.Dispose();

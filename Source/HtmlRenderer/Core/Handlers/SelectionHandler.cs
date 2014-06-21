@@ -507,7 +507,7 @@ namespace HtmlRenderer.Core.Handlers
             {
                 var html = DomUtils.GenerateHtml(_root, HtmlGenerationStyle.Inline, true);
                 var plainText = DomUtils.GetSelectedPlainText(_root);
-                _dragDropData = control.GetDataObject(html, plainText);
+                _dragDropData = control.Adapter.GetClipboardDataObject(html, plainText);
             }
             control.DoDragDropCopy(_dragDropData);
         }
@@ -658,17 +658,13 @@ namespace HtmlRenderer.Core.Handlers
             else if (offset > 0)
             {
                 // calculate partial word selection
-                var font = word.OwnerBox.ActualFont;
-                using (var g = control.CreateGraphics())
-                {
-                    int charFit;
-                    double charFitWidth;
-                    var maxWidth = offset + (inclusive ? 0 : 1.5f * word.LeftGlyphPadding);
-                    g.MeasureString(word.Text, font, maxWidth, out charFit, out charFitWidth);
+                int charFit;
+                double charFitWidth;
+                var maxWidth = offset + (inclusive ? 0 : 1.5f * word.LeftGlyphPadding);
+                control.MeasureString(word.Text, word.OwnerBox.ActualFont, maxWidth, out charFit, out charFitWidth);
 
-                    selectionIndex = charFit;
-                    selectionOffset = charFitWidth;
-                }
+                selectionIndex = charFit;
+                selectionOffset = charFitWidth;
             }
         }
 

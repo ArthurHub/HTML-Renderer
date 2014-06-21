@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using HtmlRenderer.Adapters.Entities;
+using HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Adapters
 {
@@ -20,8 +21,30 @@ namespace HtmlRenderer.Adapters
     public abstract class RControl
     {
         /// <summary>
-        ///  Is the left mouse button is currently in pressed state
-        ///  </summary>
+        /// The platform adapter.
+        /// </summary>
+        private readonly Adapter _adapter;
+
+        /// <summary>
+        /// Init control with platform adapter.
+        /// </summary>
+        protected RControl(Adapter adapter)
+        {
+            ArgChecker.AssertArgNotNull(adapter, "adapter");
+            _adapter = adapter;
+        }
+
+        /// <summary>
+        /// The platform adapter.
+        /// </summary>
+        public Adapter Adapter
+        {
+            get { return _adapter; }
+        }
+
+        /// <summary>
+        /// Is the left mouse button is currently in pressed state
+        /// </summary>
         public abstract bool LeftMouseButton { get; }
 
         /// <summary>
@@ -30,44 +53,44 @@ namespace HtmlRenderer.Adapters
         public abstract bool RightMouseButton { get; }
 
         /// <summary>
-        ///  Get the current location of the mouse relative to the control
-        ///  </summary>
+        /// Get the current location of the mouse relative to the control
+        /// </summary>
         public abstract RPoint MouseLocation { get; }
 
         /// <summary>
-        ///  Set the cursor over the control to default cursor
-        ///  </summary>
+        /// Set the cursor over the control to default cursor
+        /// </summary>
         public abstract void SetCursorDefault();
 
         /// <summary>
-        ///  Set the cursor over the control to hand cursor
-        ///  </summary>
+        /// Set the cursor over the control to hand cursor
+        /// </summary>
         public abstract void SetCursorHand();
 
         /// <summary>
-        ///  Set the cursor over the control to I beam cursor
-        ///  </summary>
+        /// Set the cursor over the control to I beam cursor
+        /// </summary>
         public abstract void SetCursorIBeam();
 
         /// <summary>
-        ///  Get data object for the given html and plain text data.<br />
-        ///  The data object can be used for clipboard or drag-drop operation.
-        ///  </summary><param name="html">the html data</param><param name="plainText">the plain text data</param><returns>drag-drop data object</returns>
-        public abstract object GetDataObject(string html, string plainText);
-
-        /// <summary>
-        ///  Do drag-drop copy operation for the given data object.
-        ///  </summary><param name="dragDropData">the drag-drop data object</param>
+        /// Do drag-drop copy operation for the given data object.
+        /// </summary>
+        /// <param name="dragDropData">the drag-drop data object</param>
         public abstract void DoDragDropCopy(object dragDropData);
 
         /// <summary>
-        ///  Create graphics object that can be used with the control.
-        ///  </summary><returns>graphics object</returns>
-        public abstract RGraphics CreateGraphics();
+        /// Measure the width of string under max width restriction calculating the number of characters that can fit and the width those characters take.<br/>
+        /// </summary>
+        /// <param name="str">the string to measure</param>
+        /// <param name="font">the font to measure string with</param>
+        /// <param name="maxWidth">the max width to calculate fit characters</param>
+        /// <param name="charFit">the number of characters that will fit under <see cref="maxWidth"/> restriction</param>
+        /// <param name="charFitWidth">the width that only the characters that fit into max width take</param>
+        public abstract void MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth);
 
         /// <summary>
-        ///  Invalidates the entire surface of the control and causes the control to be redrawn.
-        ///  </summary>
+        /// Invalidates the entire surface of the control and causes the control to be redrawn.
+        /// </summary>
         public abstract void Invalidate();
     }
 }

@@ -33,6 +33,7 @@ namespace HtmlRenderer.WPF.Adapters
         /// Init.
         /// </summary>
         public ControlAdapter(Control control)
+            : base(WpfAdapter.Instance)
         {
             ArgChecker.AssertArgNotNull(control, "control");
 
@@ -77,26 +78,18 @@ namespace HtmlRenderer.WPF.Adapters
             _control.Cursor = Cursors.IBeam;
         }
 
-        public override object GetDataObject(string html, string plainText)
-        {
-            // TODO:a handle WPF clipboard
-            //            return ClipboardHelper.CreateDataObject(html, plainText);
-            return null;
-        }
-
         public override void DoDragDropCopy(object dragDropData)
         {
             // TODO:a handle WPF clipboard
             //            _control.DoDragDrop(dragDropData, DragDropEffects.Copy);
         }
 
-        public override RGraphics CreateGraphics()
+        public override void MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth)
         {
-            // TODO:a handle it
-            return null;
-
-            // the WPF graphics object will be disposed by WinGraphics
-            //            return new GraphicsAdapter(DrawingContext. _control.CreateGraphics(), _useGdiPlusTextRendering, true);
+            using (var g = new GraphicsAdapter())
+            {
+                g.MeasureString(str, font, maxWidth, out charFit, out charFitWidth);
+            }
         }
 
         public override void Invalidate()

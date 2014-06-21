@@ -113,7 +113,7 @@ namespace HtmlRenderer.PdfSharp.Adapters
             return Utils.Convert(size);
         }
 
-        public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth)
+        public override void MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth)
         {
             // there is no need for it - used for text selection
             throw new NotSupportedException();
@@ -149,9 +149,6 @@ namespace HtmlRenderer.PdfSharp.Adapters
             return new GraphicsPathAdapter();
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
         public override void Dispose()
         {
             if (_releaseGraphics)
@@ -161,39 +158,16 @@ namespace HtmlRenderer.PdfSharp.Adapters
 
         #region Delegate graphics methods
 
-        /// <summary>
-        /// Draws a line connecting the two points specified by the coordinate pairs.
-        /// </summary>
-        /// <param name="pen"><see cref="T:System.Drawing.Pen"/> that determines the color, width, and style of the line. </param>
-        /// <param name="x1">The x-coordinate of the first point. </param><param name="y1">The y-coordinate of the first point. </param>
-        /// <param name="x2">The x-coordinate of the second point. </param><param name="y2">The y-coordinate of the second point. </param>
-        /// <exception cref="T:System.ArgumentNullException"><paramref name="pen"/> is null.</exception>
         public override void DrawLine(RPen pen, double x1, double y1, double x2, double y2)
         {
             _g.DrawLine(((PenAdapter)pen).Pen, x1, y1, x2, y2);
         }
 
-        /// <summary>
-        /// Draws a rectangle specified by a coordinate pair, a width, and a height.
-        /// </summary>
-        /// <param name="pen">A Pen that determines the color, width, and style of the rectangle. </param>
-        /// <param name="x">The x-coordinate of the upper-left corner of the rectangle to draw. </param>
-        /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to draw. </param>
-        /// <param name="width">The width of the rectangle to draw. </param>
-        /// <param name="height">The height of the rectangle to draw. </param>
         public override void DrawRectangle(RPen pen, double x, double y, double width, double height)
         {
             _g.DrawRectangle(((PenAdapter)pen).Pen, x, y, width, height);
         }
 
-        /// <summary>
-        /// Fills the interior of a rectangle specified by a pair of coordinates, a width, and a height.
-        /// </summary>
-        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
-        /// <param name="x">The x-coordinate of the upper-left corner of the rectangle to fill. </param>
-        /// <param name="y">The y-coordinate of the upper-left corner of the rectangle to fill. </param>
-        /// <param name="width">Width of the rectangle to fill. </param>
-        /// <param name="height">Height of the rectangle to fill. </param>
         public override void DrawRectangle(RBrush brush, double x, double y, double width, double height)
         {
             var xBrush = ((BrushAdapter)brush).Brush;
@@ -212,52 +186,26 @@ namespace HtmlRenderer.PdfSharp.Adapters
             }
         }
 
-        /// <summary>
-        /// Draws the specified portion of the specified <see cref="T:System.Drawing.Image"/> at the specified location and with the specified size.
-        /// </summary>
-        /// <param name="image">Image to draw. </param>
-        /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. The image is scaled to fit the rectangle. </param>
-        /// <param name="srcRect">Rectangle structure that specifies the portion of the <paramref name="image"/> object to draw. </param>
         public override void DrawImage(RImage image, RRect destRect, RRect srcRect)
         {
             _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect), Utils.Convert(srcRect), XGraphicsUnit.Point);
         }
 
-        /// <summary>
-        /// Draws the specified Image at the specified location and with the specified size.
-        /// </summary>
-        /// <param name="image">Image to draw. </param>
-        /// <param name="destRect">Rectangle structure that specifies the location and size of the drawn image. </param>
         public override void DrawImage(RImage image, RRect destRect)
         {
             _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect));
         }
 
-        /// <summary>
-        /// Draws a GraphicsPath.
-        /// </summary>
-        /// <param name="pen">Pen that determines the color, width, and style of the path. </param>
-        /// <param name="path">GraphicsPath to draw. </param>
         public override void DrawPath(RPen pen, RGraphicsPath path)
         {
             _g.DrawPath(((PenAdapter)pen).Pen, ((GraphicsPathAdapter)path).GraphicsPath);
         }
 
-        /// <summary>
-        /// Fills the interior of a GraphicsPath.
-        /// </summary>
-        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
-        /// <param name="path">GraphicsPath that represents the path to fill. </param>
         public override void DrawPath(RBrush brush, RGraphicsPath path)
         {
             _g.DrawPath((XBrush)((BrushAdapter)brush).Brush, ((GraphicsPathAdapter)path).GraphicsPath);
         }
 
-        /// <summary>
-        /// Fills the interior of a polygon defined by an array of points specified by Point structures.
-        /// </summary>
-        /// <param name="brush">Brush that determines the characteristics of the fill. </param>
-        /// <param name="points">Array of Point structures that represent the vertices of the polygon to fill. </param>
         public override void DrawPolygon(RBrush brush, RPoint[] points)
         {
             if (points != null && points.Length > 0)

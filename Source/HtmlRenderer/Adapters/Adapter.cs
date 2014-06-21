@@ -215,6 +215,15 @@ namespace HtmlRenderer.Adapters
         }
 
         /// <summary>
+        /// Get data object for the given html and plain text data.<br />
+        /// The data object can be used for clipboard or drag-drop operation.
+        /// </summary><param name="html">the html data</param><param name="plainText">the plain text data</param><returns>drag-drop data object</returns>
+        public object GetClipboardDataObject(string html, string plainText)
+        {
+            return GetClipboardDataObjectInt(html, plainText);
+        }
+
+        /// <summary>
         /// Set the given text to the clipboard
         /// </summary>
         /// <param name="text">the text to set</param>
@@ -319,6 +328,18 @@ namespace HtmlRenderer.Adapters
         /// <param name="style">font style</param>
         /// <returns>font instance</returns>
         protected internal abstract RFont CreateFontInt(RFontFamily family, double size, RFontStyle style);
+
+        /// <summary>
+        /// Get data object for the given html and plain text data.<br />
+        /// The data object can be used for clipboard or drag-drop operation.
+        /// </summary>
+        /// <param name="html">the html data</param>
+        /// <param name="plainText">the plain text data</param>
+        /// <returns>drag-drop data object</returns>
+        protected virtual object GetClipboardDataObjectInt(string html, string plainText)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Set the given text to the clipboard

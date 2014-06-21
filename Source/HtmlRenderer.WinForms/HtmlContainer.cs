@@ -460,9 +460,6 @@ namespace HtmlRenderer.WinForms
             _htmlContainerInt.HandleKeyDown(new ControlAdapter(parent, _useGdiPlusTextRendering), CreateKeyEevent(e));
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
         public void Dispose()
         {
             _htmlContainerInt.Dispose();

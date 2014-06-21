@@ -42,18 +42,12 @@ namespace HtmlRenderer.WinForms.Adapters
             get { return _pen; }
         }
 
-        /// <summary>
-        /// Gets or sets the width of this Pen, in units of the Graphics object used for drawing.
-        /// </summary>
         public override double Width
         {
             get { return _pen.Width; }
             set { _pen.Width = (float)value; }
         }
 
-        /// <summary>
-        /// Gets or sets the style used for dashed lines drawn with this Pen.
-        /// </summary>
         public override RDashStyle DashStyle
         {
             set
@@ -85,9 +79,6 @@ namespace HtmlRenderer.WinForms.Adapters
             }
         }
 
-        /// <summary>
-        /// Gets or sets an array of custom dashes and spaces.
-        /// </summary>
         public override double[] DashPattern
         {
             set

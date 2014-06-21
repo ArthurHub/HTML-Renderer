@@ -41,9 +41,6 @@ namespace HtmlRenderer.WinForms.Adapters
             get { return _fontFamily; }
         }
 
-        /// <summary>
-        /// Gets the name of this FontFamily.
-        /// </summary>
         public override string Name
         {
             get { return _fontFamily.Name; }

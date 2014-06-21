@@ -68,6 +68,7 @@
     <Compile Include="HtmlControlBase.cs" />
     <Compile Include="HtmlPanel.cs" />
     <Compile Include="HtmlRender.cs" />
+    <Compile Include="Utilities\ClipboardHelper.cs" />
     <Compile Include="Utilities\Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

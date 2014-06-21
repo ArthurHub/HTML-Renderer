@@ -187,7 +187,7 @@ namespace HtmlRenderer.WinForms.Adapters
             }
         }
 
-        public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth)
+        public override void MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth)
         {
             charFit = 0;
             charFitWidth = 0;
@@ -206,8 +206,6 @@ namespace HtmlRenderer.WinForms.Adapters
                     else
                         break;
                 }
-
-                return size;
             }
             else
             {
@@ -217,7 +215,6 @@ namespace HtmlRenderer.WinForms.Adapters
                 Win32Utils.GetTextExtentExPoint(_hdc, str, str.Length, (int)Math.Round(maxWidth), _charFit, _charFitWidth, ref size);
                 charFit = _charFit[0];
                 charFitWidth = charFit > 0 ? _charFitWidth[charFit - 1] : 0;
-                return Utils.Convert(size);
             }
         }
 

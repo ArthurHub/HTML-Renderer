@@ -57,6 +57,16 @@ namespace HtmlRenderer.WPF.Adapters
             _releaseGraphics = releaseGraphics;
         }
 
+        /// <summary>
+        /// Init.
+        /// </summary>
+        public GraphicsAdapter()
+            : base(WpfAdapter.Instance, RRect.Empty)
+        {
+            _g = null;
+            _releaseGraphics = false;
+        }
+
         public override RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
         {
             return new BrushAdapter(new LinearGradientBrush(Utils.Convert(color1), Utils.Convert(color2), angle));
@@ -124,45 +134,45 @@ namespace HtmlRenderer.WPF.Adapters
             return new RSize(width * font.Size * 96d / 72d, font.Height);
         }
 
-        public override RSize MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth)
+        public override void MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth)
         {
-            double width = 0;
-            charFit = -1;
-            charFitWidth = -1;
+            charFit = 0;
+            charFitWidth = 0;
+            bool handled = false;
             GlyphTypeface glyphTypeface = ((FontAdapter)font).GlyphTypeface;
             if (glyphTypeface != null)
             {
+                handled = true;
+                double width = 0;
                 for (int i = 0; i < str.Length; i++)
                 {
                     if (glyphTypeface.CharacterToGlyphMap.ContainsKey(str[i]))
                     {
                         ushort glyph = glyphTypeface.CharacterToGlyphMap[str[i]];
-                        double advanceWidth = glyphTypeface.AdvanceWidths[glyph];
+                        double advanceWidth = glyphTypeface.AdvanceWidths[glyph] * font.Size * 96d / 72d;
 
-                        if (charFit == -1 && !(width + advanceWidth < maxWidth))
+                        if (!(width + advanceWidth < maxWidth))
                         {
                             charFit = i;
                             charFitWidth = width;
+                            break;
                         }
-                        width += advanceWidth;
+                        width += advanceWidth ;
                     }
                     else
                     {
-                        width = 0;
+                        handled = false;
                         break;
                     }
                 }
             }
 
-            if (width <= 0)
+            if (!handled)
             {
                 var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, Brushes.Red);
                 charFit = str.Length;
                 charFitWidth = formattedText.WidthIncludingTrailingWhitespace;
-                return new RSize(formattedText.WidthIncludingTrailingWhitespace, formattedText.Height);
             }
-
-            return new RSize(width * font.Size * 96d / 72d, font.Height);
         }
 
         public override void DrawString(string str, RFont font, RColor color, RPoint point, RSize size, bool rtl)
