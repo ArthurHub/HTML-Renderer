@@ -16,7 +16,7 @@ using HtmlRenderer.Adapters;
 namespace HtmlRenderer.WPF.Adapters
 {
     /// <summary>
-    /// Adapter for WinForms Font object for core.
+    /// Adapter for WPF Font.
     /// </summary>
     internal sealed class FontAdapter : RFont
     {

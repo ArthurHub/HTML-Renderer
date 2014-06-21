@@ -16,12 +16,12 @@ using HtmlRenderer.Adapters;
 namespace HtmlRenderer.WPF.Adapters
 {
     /// <summary>
-    /// Adapter for WinForms brushes objects for core.
+    /// Adapter for WPF brushes.
     /// </summary>
     internal sealed class BrushAdapter : RBrush
     {
         /// <summary>
-        /// The actual WinForms brush instance.
+        /// The actual WPF brush instance.
         /// </summary>
         private readonly Brush _brush;
 
@@ -34,7 +34,7 @@ namespace HtmlRenderer.WPF.Adapters
         }
 
         /// <summary>
-        /// The actual WinForms brush instance.
+        /// The actual WPF brush instance.
         /// </summary>
         public Brush Brush
         {

@@ -23,14 +23,14 @@ using HtmlRenderer.WPF.Utilities;
 namespace HtmlRenderer.WPF.Adapters
 {
     /// <summary>
-    /// Adapter for WinForms Graphics for core.
+    /// Adapter for WPF Graphics.
     /// </summary>
     internal sealed class GraphicsAdapter : RGraphics
     {
         #region Fields and Consts
 
         /// <summary>
-        /// The wrapped WinForms graphics object
+        /// The wrapped WPF graphics object
         /// </summary>
         private readonly DrawingContext _g;
 

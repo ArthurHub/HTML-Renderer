@@ -13,17 +13,18 @@
 using System;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using HtmlRenderer.Adapters.Entities;
 
 namespace HtmlRenderer.WPF.Utilities
 {
     /// <summary>
-    /// Utilities for converting WinForms entities to HtmlRenderer core entities.
+    /// Utilities for converting WPF entities to HtmlRenderer core entities.
     /// </summary>
     internal static class Utils
     {
         /// <summary>
-        /// Convert from WinForms point to core point.
+        /// Convert from WPF point to core point.
         /// </summary>
         public static RPoint Convert(Point p)
         {
@@ -31,7 +32,7 @@ namespace HtmlRenderer.WPF.Utilities
         }
 
         /// <summary>
-        /// Convert from WinForms point to core point.
+        /// Convert from WPF point to core point.
         /// </summary>
         public static Point[] Convert(RPoint[] points)
         {
@@ -42,7 +43,7 @@ namespace HtmlRenderer.WPF.Utilities
         }
 
         /// <summary>
-        /// Convert from core point to WinForms point.
+        /// Convert from core point to WPF point.
         /// </summary>
         public static Point Convert(RPoint p)
         {
@@ -50,7 +51,7 @@ namespace HtmlRenderer.WPF.Utilities
         }
 
         /// <summary>
-        /// Convert from core point to WinForms point.
+        /// Convert from core point to WPF point.
         /// </summary>
         public static Point ConvertRound(RPoint p)
         {
@@ -58,7 +59,7 @@ namespace HtmlRenderer.WPF.Utilities
         }
 
         /// <summary>
-        /// Convert from WinForms size to core size.
+        /// Convert from WPF size to core size.
         /// </summary>
         public static RSize Convert(Size s)
         {
@@ -66,7 +67,7 @@ namespace HtmlRenderer.WPF.Utilities
         }
 
         /// <summary>
-        /// Convert from core size to WinForms size.
+        /// Convert from core size to WPF size.
         /// </summary>
         public static Size Convert(RSize s)
         {
@@ -74,7 +75,7 @@ namespace HtmlRenderer.WPF.Utilities
         }
 
         /// <summary>
-        /// Convert from WinForms rectangle to core rectangle.
+        /// Convert from WPF rectangle to core rectangle.
         /// </summary>
         public static RRect Convert(Rect r)
         {
@@ -82,7 +83,7 @@ namespace HtmlRenderer.WPF.Utilities
         }
 
         /// <summary>
-        /// Convert from core rectangle to WinForms rectangle.
+        /// Convert from core rectangle to WPF rectangle.
         /// </summary>
         public static Rect Convert(RRect r)
         {
@@ -90,7 +91,7 @@ namespace HtmlRenderer.WPF.Utilities
         }
 
         /// <summary>
-        /// Convert from WinForms color to core color.
+        /// Convert from WPF color to core color.
         /// </summary>
         public static RColor Convert(Color c)
         {
@@ -98,11 +99,33 @@ namespace HtmlRenderer.WPF.Utilities
         }
 
         /// <summary>
-        /// Convert from core color to WinForms color.
+        /// Convert from core color to WPF color.
         /// </summary>
         public static Color Convert(RColor c)
         {
             return Color.FromArgb(c.A, c.R, c.G, c.B);
+        }
+
+        public static BitmapEncoder GetBitmapEncoder(string ext)
+        {
+            switch (ext.ToLower())
+            {
+                case ".jpg":
+                case ".jpeg":
+                    return new JpegBitmapEncoder();
+                case ".bmp":
+                    return new BmpBitmapEncoder();
+                case ".tif":
+                case ".tiff":
+                    return new TiffBitmapEncoder();
+                case ".gif":
+                    return new GifBitmapEncoder();
+                case ".wmp":
+                    return new WmpBitmapEncoder();
+                default:
+                    return new PngBitmapEncoder();
+
+            }
         }
     }
 }

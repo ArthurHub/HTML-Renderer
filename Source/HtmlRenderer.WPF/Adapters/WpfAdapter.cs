@@ -17,12 +17,12 @@ using System.Windows.Media.Imaging;
 using HtmlRenderer.Adapters;
 using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.WPF.Utilities;
+using Microsoft.Win32;
 
 namespace HtmlRenderer.WPF.Adapters
 {
     /// <summary>
-    /// Adapter for general stuff for core.
-    /// TODO:a add doc.
+    /// Adapter for WPF platform.
     /// </summary>
     internal sealed class WpfAdapter : Adapter
     {
@@ -130,19 +130,19 @@ namespace HtmlRenderer.WPF.Adapters
 
         protected override void SaveToFileInt(RImage image, string name, string extension, RControl control = null)
         {
-            // TODO:a handle save to file
-            //            using (var saveDialog = new SaveFileDialog())
-            //            {
-            //                saveDialog.Filter = "Images|*.png;*.bmp;*.jpg";
-            //                saveDialog.FileName = name;
-            //                saveDialog.DefaultExt = extension;
-            //
-            //                var dialogResult = control == null ? saveDialog.ShowDialog() : saveDialog.ShowDialog(((ControlAdapter)control).Control);
-            //                if (dialogResult == DialogResult.OK)
-            //                {
-            //                    ((ImageAdapter)image).Image.Save(saveDialog.FileName);
-            //                }
-            //            }
+            var saveDialog = new SaveFileDialog();
+            saveDialog.Filter = "Images|*.png;*.bmp;*.jpg;*.tif;*.gif;*.wmp;";
+            saveDialog.FileName = name;
+            saveDialog.DefaultExt = extension;
+
+            var dialogResult = saveDialog.ShowDialog();
+            if (dialogResult.GetValueOrDefault())
+            {
+                var encoder = Utils.GetBitmapEncoder(Path.GetExtension(saveDialog.FileName));
+                encoder.Frames.Add(BitmapFrame.Create(((ImageAdapter)image).Image));
+                using (FileStream stream = new FileStream(saveDialog.FileName, FileMode.OpenOrCreate))
+                    encoder.Save(stream);
+            }
         }
 
 

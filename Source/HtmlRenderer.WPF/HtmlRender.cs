@@ -22,20 +22,13 @@ namespace HtmlRenderer.WPF
 {
     /// <summary>
     /// Standalone static class for simple and direct HTML rendering.<br/>
-    /// For WinForms UI prefer using HTML controls: <see cref="HtmlPanel"/> or <see cref="HtmlLabel"/>.<br/>
+    /// For WPF UI prefer using HTML controls: <see cref="HtmlPanel"/> or <see cref="HtmlLabel"/>.<br/>
     /// For low-level control and performance consider using <see cref="HtmlContainer"/>.<br/>
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>GDI vs. GDI+ text rendering</b><br/>
-    /// Windows supports two text rendering technologies: GDI and GDI+.<br/> 
-    /// GDI is older, has better performance and looks better on standard monitors but doesn't support alpha channel for transparency.<br/> 
-    /// GDI+ is newer, device independent so work better for printers but is slower and looks worse on monitors.<br/>
-    /// HtmlRender supports both GDI and GDI+ text rendering to accommodate different needs, GDI+ text rendering methods have "GdiPlus" suffix
-    /// in their name where GDI do not.<br/>
-    /// </para>
-    /// <para>
     /// <b>Rendering to image</b><br/>
+    /// // TODO:a update!
     /// See https://htmlrenderer.codeplex.com/wikipage?title=Image%20generation <br/>
     /// Because of GDI text rendering issue with alpha channel clear type text rendering rendering to image requires special handling.<br/>
     /// <u>Solid color background -</u> generate an image where the background is filled with solid color and all the html is rendered on top
@@ -43,8 +36,6 @@ namespace HtmlRenderer.WPF
     /// <u>Image background -</u> render html on top of existing image with whatever currently exist but it cannot have transparent pixels, 
     /// GDI text rendering will be used. (RenderToImage method where the first argument is Image object)<br/>
     /// <u>Transparent background -</u> render html to empty image using GDI+ text rendering, the generated image can be transparent.
-    /// Text rendering can be controlled using <see cref="TextRenderingHint"/>, note that <see cref="TextRenderingHint.ClearTypeGridFit"/>
-    /// doesn't render well on transparent background. (RenderToImageGdiPlus method)<br/>
     /// </para>
     /// <para>
     /// <b>Overwrite stylesheet resolution</b><br/>
@@ -84,7 +75,7 @@ namespace HtmlRenderer.WPF
     {
         /// <summary>
         /// Adds a font family to be used in html rendering.<br/>
-        /// The added font will be used by all rendering function including <see cref="HtmlContainer"/> and all WinForms controls.
+        /// The added font will be used by all rendering function including <see cref="HtmlContainer"/> and all WPF controls.
         /// </summary>
         /// <remarks>
         /// The given font family instance must be remain alive while the renderer is in use.<br/>
@@ -412,7 +403,6 @@ namespace HtmlRenderer.WPF
         /// <param name="location">the top-left most location to start render the html at</param>
         /// <param name="maxSize">the max size of the rendered html (if height above zero it will be clipped)</param>
         /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
-        /// <param name="useGdiPlusTextRendering">true - use GDI+ text rendering, false - use GDI text rendering</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the actual size of the rendered html</returns>
