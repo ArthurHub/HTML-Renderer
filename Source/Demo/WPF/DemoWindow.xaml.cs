@@ -52,15 +52,13 @@ namespace HtmlRenderer.Demo.WPF
         /// </summary>
         private void LoadCustomFonts()
         {
-            // TODO:a load custom fonts
-            //            // load custom font font into private fonts collection
-            //            var file = Path.GetTempFileName();
-            //            File.WriteAllBytes(file, Resources.CustomFont);
-            //            _privateFont.AddFontFile(file);
-            //
-            //            // add the fonts to renderer
-            //            foreach (var fontFamily in _privateFont.Families)
-            //                HtmlRender.AddFontFamily(fontFamily);
+            // load custom font font into private fonts collection
+            var file = Path.GetTempFileName();
+            File.WriteAllBytes(file, Common.Resources.CustomFont);
+            var customFont = new FontFamily(file);
+            
+            // add the fonts to renderer
+            HtmlRender.AddFontFamily(customFont);
         }
 
         /// <summary>
