@@ -50,15 +50,14 @@ namespace HtmlRenderer.Demo.WPF
         /// <summary>
         /// Load custom fonts to be used by renderer HTMLs
         /// </summary>
-        private void LoadCustomFonts()
+        private static void LoadCustomFonts()
         {
             // load custom font font into private fonts collection
-            var file = Path.GetTempFileName();
-            File.WriteAllBytes(file, Common.Resources.CustomFont);
-            var customFont = new FontFamily(file);
-            
-            // add the fonts to renderer
-            HtmlRender.AddFontFamily(customFont);
+            foreach (FontFamily fontFamily in Fonts.GetFontFamilies(new Uri("pack://application:,,,/"), "./fonts/"))
+            {
+                // add the fonts to renderer
+                HtmlRender.AddFontFamily(fontFamily);
+            }
         }
 
         /// <summary>

@@ -96,6 +96,9 @@
   <ItemGroup>
     <Resource Include="html.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="fonts\CustomFont.ttf" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterResolveReferences">
     <ItemGroup>
