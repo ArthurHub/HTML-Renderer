@@ -11,15 +11,17 @@
 // "The Art of War"
 
 using System;
+using System.Windows;
+using System.Windows.Controls;
 using HtmlRenderer.Adapters;
 using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core.Utils;
+using HtmlRenderer.WPF.Utilities;
 
 namespace HtmlRenderer.WPF.Adapters
 {
     /// <summary>
-    /// Adapter for WinForms context menu for core.
-    // TODO:a handle WPF context menu
+    /// Adapter for WPF context menu for core.
     /// </summary>
     internal sealed class ContextMenuAdapter : RContextMenu
     {
@@ -28,7 +30,7 @@ namespace HtmlRenderer.WPF.Adapters
         /// <summary>
         /// the underline WPF context menu
         /// </summary>
-//        private readonly ContextMenuStrip _contextMenu;
+        private readonly ContextMenu _contextMenu;
 
         #endregion
 
@@ -38,71 +40,49 @@ namespace HtmlRenderer.WPF.Adapters
         /// </summary>
         public ContextMenuAdapter()
         {
-//            _contextMenu = new ContextMenuStrip();
-//            _contextMenu.ShowImageMargin = false;
+            _contextMenu = new ContextMenu();
         }
 
-        /// <summary>
-        /// The total number of items in the context menu
-        /// </summary>
         public override int ItemsCount
         {
-            get
-            {
-                //                return _contextMenu.Items.Count;
-                return 0;
-            }
+            get { return _contextMenu.Items.Count; }
         }
 
-        /// <summary>
-        /// Add divider item to the context menu.<br/>
-        /// The divider is a non clickable place holder used to separate items.
-        /// </summary>
         public override void AddDivider()
         {
-//            _contextMenu.Items.Add("-");
+            _contextMenu.Items.Add(new Separator());
         }
 
-        /// <summary>
-        /// Add item to the context menu with the given text that will raise the given event when clicked.
-        /// </summary>
-        /// <param name="text">the text to set on the new context menu item</param>
-        /// <param name="enabled">if to set the item as enabled or disabled</param>
-        /// <param name="onClick">the event to raise when the item is clicked</param>
         public override void AddItem(string text, bool enabled, EventHandler onClick)
         {
             ArgChecker.AssertArgNotNullOrEmpty(text, "text");
             ArgChecker.AssertArgNotNull(onClick, "onClick");
 
-//            var item = _contextMenu.Items.Add(text, null, onClick);
-//            item.Enabled = enabled;
+            var item = new MenuItem();
+            item.Header = text;
+            item.IsEnabled = enabled;
+            item.Click += new RoutedEventHandler(onClick);
+            _contextMenu.Items.Add(item);
         }
 
-        /// <summary>
-        /// Remove the last item from the context menu iff it is a divider
-        /// </summary>
         public override void RemoveLastDivider()
         {
-//            if (_contextMenu.Items[_contextMenu.Items.Count - 1].Text == string.Empty)
-//                _contextMenu.Items.RemoveAt(_contextMenu.Items.Count - 1);
+            if (_contextMenu.Items[_contextMenu.Items.Count - 1].GetType() == typeof(Separator))
+                _contextMenu.Items.RemoveAt(_contextMenu.Items.Count - 1);
         }
 
-        /// <summary>
-        /// Show the context menu in the given parent control at the given location.
-        /// </summary>
-        /// <param name="parent">the parent control to show in</param>
-        /// <param name="location">the location to show at relative to the parent control</param>
         public override void Show(RControl parent, RPoint location)
         {
-//            _contextMenu.Show(((ControlAdapter)parent).Control, Utils.ConvertRound(location));
+            _contextMenu.PlacementTarget = ((ControlAdapter)parent).Control;
+            _contextMenu.PlacementRectangle = new Rect(Utils.ConvertRound(location), Size.Empty);
+            _contextMenu.IsOpen = true;
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
         public override void Dispose()
         {
-//            _contextMenu.Dispose();
+            _contextMenu.IsOpen = false;
+            _contextMenu.PlacementTarget = null;
+            _contextMenu.Items.Clear();
         }
     }
 }
