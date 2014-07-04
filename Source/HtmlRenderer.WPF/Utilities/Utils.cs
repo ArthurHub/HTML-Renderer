@@ -10,7 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -55,7 +54,7 @@ namespace HtmlRenderer.WPF.Utilities
         /// </summary>
         public static Point ConvertRound(RPoint p)
         {
-            return new Point(Math.Round(p.X), Math.Round(p.Y));
+            return new Point((int)p.X, (int)p.Y);
         }
 
         /// <summary>
@@ -79,7 +78,7 @@ namespace HtmlRenderer.WPF.Utilities
         /// </summary>
         public static Size ConvertRound(RSize s)
         {
-            return new Size(Math.Round(s.Width), Math.Round(s.Height));
+            return new Size((int)s.Width, (int)s.Height);
         }
 
         /// <summary>
@@ -96,6 +95,14 @@ namespace HtmlRenderer.WPF.Utilities
         public static Rect Convert(RRect r)
         {
             return new Rect(r.X, r.Y, r.Width, r.Height);
+        }
+
+        /// <summary>
+        /// Convert from core rectangle to WPF rectangle.
+        /// </summary>
+        public static Rect ConvertRound(RRect r)
+        {
+            return new Rect((int)r.X, (int)r.Y, (int)r.Width, (int)r.Height);
         }
 
         /// <summary>
@@ -138,7 +145,6 @@ namespace HtmlRenderer.WPF.Utilities
                     return new WmpBitmapEncoder();
                 default:
                     return new PngBitmapEncoder();
-
             }
         }
     }

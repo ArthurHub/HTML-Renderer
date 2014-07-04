@@ -152,8 +152,12 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected override Size ArrangeOverride(Size bounds)
         {
-            _verticalScrollBar.Arrange(new Rect(bounds.Width - _verticalScrollBar.Width, 0, _verticalScrollBar.Width, bounds.Height - (_horizontalScrollBar.Visibility == Visibility.Visible ? _horizontalScrollBar.Height : 0)));
-            _horizontalScrollBar.Arrange(new Rect(0, bounds.Height - _horizontalScrollBar.Height, bounds.Width - (_verticalScrollBar.Visibility == Visibility.Visible ? _verticalScrollBar.Width : 0), _horizontalScrollBar.Height));
+            var scrollHeight = bounds.Height - (_horizontalScrollBar.Visibility == Visibility.Visible ? _horizontalScrollBar.Height : 0);
+            scrollHeight = scrollHeight > 1 ? scrollHeight : 1;
+            var scrollWidth = bounds.Width - (_verticalScrollBar.Visibility == Visibility.Visible ? _verticalScrollBar.Width : 0);
+            scrollWidth = scrollWidth > 1 ? scrollWidth : 1;
+            _verticalScrollBar.Arrange(new Rect(System.Math.Max(bounds.Width - _verticalScrollBar.Width, 0), 0, _verticalScrollBar.Width, scrollHeight));
+            _horizontalScrollBar.Arrange(new Rect(0, System.Math.Max(bounds.Height - _horizontalScrollBar.Height, 0), scrollWidth, _horizontalScrollBar.Height));
 
             if (_htmlContainer != null)
             {
@@ -298,7 +302,8 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected override double HtmlWidth(Size size)
         {
-            return size.Width - (_verticalScrollBar.Visibility == Visibility.Visible ? _verticalScrollBar.Width : 0);
+            var width = size.Width - (_verticalScrollBar.Visibility == Visibility.Visible ? _verticalScrollBar.Width : 0);
+            return width > 1 ? width : 1;
         }
 
         /// <summary>
@@ -306,7 +311,8 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected override double HtmlHeight(Size size)
         {
-            return size.Height - (_horizontalScrollBar.Visibility == Visibility.Visible ? _horizontalScrollBar.Height : 0);
+            var height = size.Height - (_horizontalScrollBar.Visibility == Visibility.Visible ? _horizontalScrollBar.Height : 0);
+            return height > 1 ? height : 1;
         }
 
         /// <summary>

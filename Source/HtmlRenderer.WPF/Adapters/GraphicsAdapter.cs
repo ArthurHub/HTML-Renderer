@@ -253,35 +253,57 @@ namespace HtmlRenderer.WPF.Adapters
 
         public override void DrawLine(RPen pen, double x1, double y1, double x2, double y2)
         {
+            x1 = (int)x1;
+            x2 = (int)x2;
+            y1 = (int)y1;
+            y2 = (int)y2;
+
             var adj = pen.Width;
-            _g.PushGuidelineSet(new GuidelineSet(new[] { x1 + adj / 2, x2 + adj / 2 }, new[] { y1 + adj / 2, y2 + adj / 2 }));
+            if (Math.Abs(x1 - x2) < .1 && Math.Abs(adj % 2 - 1) < .1)
+            {
+                x1 += .5;
+                x2 += .5;
+            }
+            if (Math.Abs(y1 - y2) < .1 && Math.Abs(adj % 2 - 1) < .1)
+            {
+                y1 += .5;
+                y2 += .5;
+            }
+
             _g.DrawLine(((PenAdapter)pen).CreatePen(), new Point(x1, y1), new Point(x2, y2));
-            _g.Pop();
         }
 
         public override void DrawRectangle(RPen pen, double x, double y, double width, double height)
         {
+            x = (int)x;
+            y = (int)y;
+            width = (int)width;
+            height = (int)height;
+
             var adj = pen.Width;
-            _g.PushGuidelineSet(new GuidelineSet(new[] { x + adj / 2, x + width + adj / 2 }, new[] { y + adj / 2, y + height + adj / 2 }));
+            if (Math.Abs(adj % 2 - 1) < .1)
+            {
+                x += .5;
+                y += .5;
+            }
+            
             _g.DrawRectangle(null, ((PenAdapter)pen).CreatePen(), new Rect(x, y, width, height));
-            _g.Pop();
         }
 
         public override void DrawRectangle(RBrush brush, double x, double y, double width, double height)
         {
-            var brush2 = ((BrushAdapter)brush).Brush;
-            _g.DrawRectangle(brush2, null, new Rect(x, y, width, height));
+            _g.DrawRectangle(((BrushAdapter)brush).Brush, null, new Rect((int)x, (int)y, (int)width, (int)height));
         }
 
         public override void DrawImage(RImage image, RRect destRect, RRect srcRect)
         {
             CroppedBitmap croppedImage = new CroppedBitmap(((ImageAdapter)image).Image, new Int32Rect((int)srcRect.X, (int)srcRect.Y, (int)srcRect.Width, (int)srcRect.Height));
-            _g.DrawImage(croppedImage, Utils.Convert(destRect));
+            _g.DrawImage(croppedImage, Utils.ConvertRound(destRect));
         }
 
         public override void DrawImage(RImage image, RRect destRect)
         {
-            _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect));
+            _g.DrawImage(((ImageAdapter)image).Image, Utils.ConvertRound(destRect));
         }
 
         public override void DrawPath(RPen pen, RGraphicsPath path)
@@ -303,7 +325,7 @@ namespace HtmlRenderer.WPF.Adapters
                 {
                     context.BeginFigure(Utils.ConvertRound(points[0]), true, true);
                     for (int i = 1; i < points.Length; i++)
-                        context.LineTo(Utils.ConvertRound(points[i]), false, true);
+                        context.LineTo(Utils.ConvertRound(points[i]), true, true);
                 }
                 g.Freeze();
 
