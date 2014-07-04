@@ -3,9 +3,15 @@
 CD %~dp0
 
 echo Run MSBuild...
+
+echo Delete previous folder..
 rmdir Release /s /q
 
-set version=1.5.0.0
+echo Get version...
+for /f %%i in ('getVer.exe ..\Source\SharedAssemblyInfo.cs') do set version=%%i
+echo Version: %version%
+
+echo Set params...
 set verb=/verbosity:minimal
 
 set msbuild=C:\Windows\Microsoft.Net\Framework\v4.0.30319\MSBuild.exe
