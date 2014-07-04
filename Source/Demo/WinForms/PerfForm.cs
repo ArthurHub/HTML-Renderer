@@ -37,6 +37,8 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         private static readonly List<string> _perfTestSamples = new List<string>();
 
+        private const int Iterations = 3;
+
         #endregion
 
 
@@ -60,14 +62,10 @@ namespace HtmlRenderer.Demo.WinForms
         /// Used to execute performance test run for memory profiler so the form is not loaded, 
         /// only html container is working.
         /// </summary>
-        public static void Run()
+        public static void Run(bool layout, bool paint)
         {
             try
             {
-                const int iterations = 3;
-                const bool Layout = false;
-                const bool Paint = false;
-
                 LoadRunSamples();
 
                 var htmlContainer = new HtmlContainer();
@@ -79,16 +77,16 @@ namespace HtmlRenderer.Demo.WinForms
                 using (var img = new Bitmap(1, 1))
                 using (var g = Graphics.FromImage(img))
                 {
-                    for (int i = 0; i < iterations; i++)
+                    for (int i = 0; i < Iterations; i++)
                     {
                         foreach (var html in _perfTestSamples)
                         {
                             htmlContainer.SetHtml(html);
 
-                            if (Layout)
+                            if (layout)
                                 htmlContainer.PerformLayout(g);
 
-                            if (Paint)
+                            if (paint)
                                 htmlContainer.PerformPaint(g);
                         }
                     }
@@ -208,10 +206,15 @@ namespace HtmlRenderer.Demo.WinForms
                 var html = _samples[(string)_samplesTreeView.SelectedNode.Tag];
 
                 GC.Collect();
-#if NET_40
-                AppDomain.MonitoringIsEnabled = true;
-                var startMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
-#endif
+
+                double totalMem = 0;
+                long startMemory = 0;
+                if (Environment.Version.Major >= 4)
+                {
+                    typeof(AppDomain).GetProperty("MonitoringIsEnabled").SetValue(null, true, null);
+                    startMemory = (long)AppDomain.CurrentDomain.GetType().GetProperty("MonitoringTotalAllocatedMemorySize").GetValue(AppDomain.CurrentDomain, null);
+                }
+
                 var sw = Stopwatch.StartNew();
 
                 for (int i = 0; i < _iterations.Value; i++)
@@ -222,12 +225,12 @@ namespace HtmlRenderer.Demo.WinForms
 
                 sw.Stop();
 
-                long endMemory = 0;
-                float totalMem = 0;
-#if NET_40
-                endMemory = AppDomain.CurrentDomain.MonitoringTotalAllocatedMemorySize;
-                totalMem = (endMemory - startMemory) / 1024f;
-#endif
+                if (Environment.Version.Major >= 4)
+                {
+                    var endMemory = (long)AppDomain.CurrentDomain.GetType().GetProperty("MonitoringTotalAllocatedMemorySize").GetValue(AppDomain.CurrentDomain, null);
+                    totalMem = (endMemory - startMemory) / 1024f;
+                }
+
                 float htmlSize = html.Length * 2 / 1024f;
 
                 var msg = string.Format("1 HTML ({0:N0} KB)\r\n{1} Iterations", htmlSize, _iterations.Value);
