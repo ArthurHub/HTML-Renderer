@@ -69,7 +69,12 @@ namespace HtmlRenderer.WPF.Adapters
 
         public override RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
         {
-            return new BrushAdapter(new LinearGradientBrush(Utils.Convert(color1), Utils.Convert(color2), angle));
+            var startColor = angle <= 180 ? Utils.Convert(color1) : Utils.Convert(color2);
+            var endColor = angle <= 180 ? Utils.Convert(color2) : Utils.Convert(color1);
+            angle = angle <= 180 ? angle : angle - 180;
+            double x = angle < 135 ? Math.Max((angle - 45) / 90, 0) : 1;
+            double y = angle <= 45 ? Math.Max(0.5 - angle / 90, 0) : angle > 135 ? Math.Abs(1.5 - angle / 90) : 0;
+            return new BrushAdapter(new LinearGradientBrush(startColor, endColor, new Point(x, y), new Point(1 - x, 1 - y)));
         }
 
         public override void PopClip()
@@ -157,7 +162,7 @@ namespace HtmlRenderer.WPF.Adapters
                             charFitWidth = width;
                             break;
                         }
-                        width += advanceWidth ;
+                        width += advanceWidth;
                     }
                     else
                     {
