@@ -184,8 +184,6 @@ namespace HtmlRenderer.WPF.Adapters
         {
             var colorConv = ((BrushAdapter)_adapter.GetSolidBrush(color)).Brush;
 
-            //return;
-
             bool glyphRendered = false;
             GlyphTypeface glyphTypeface = ((FontAdapter)font).GlyphTypeface;
             if (glyphTypeface != null)

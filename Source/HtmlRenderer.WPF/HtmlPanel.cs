@@ -124,8 +124,8 @@ namespace HtmlRenderer.WPF
 
             // to handle if scrollbar is appearing or disappearing
             bool relayout = false;
-            var htmlHeight = HtmlWidth(constraint);
             var htmlWidth = HtmlWidth(constraint);
+            var htmlHeight = HtmlHeight(constraint);
 
             if ((_verticalScrollBar.Visibility == Visibility.Hidden && size.Height > htmlHeight) ||
                 (_verticalScrollBar.Visibility == Visibility.Visible && size.Height <= htmlHeight))
