@@ -38,7 +38,7 @@
                 </ToggleButton>
                 <Separator/>
                 <Separator/>
-                <Button IsEnabled="False">
+                <Button Click="OnGenerateImage_Click">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding ConverterParameter=image, Converter={StaticResource Converter}}" MaxHeight="18" Margin="0 0 5 0"/>
                         <TextBlock Text="Generate Image" VerticalAlignment="Center"/>

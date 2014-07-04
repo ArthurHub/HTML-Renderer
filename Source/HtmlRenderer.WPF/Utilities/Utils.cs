@@ -114,6 +114,12 @@ namespace HtmlRenderer.WPF.Utilities
             return Color.FromArgb(c.A, c.R, c.G, c.B);
         }
 
+        /// <summary>
+        /// Get encoder to be used for encoding bitmap frame by given file extension.<br/>
+        /// Default is PNG encoder.
+        /// </summary>
+        /// <param name="ext">the file extension to select encoder by</param>
+        /// <returns>encoder instance</returns>
         public static BitmapEncoder GetBitmapEncoder(string ext)
         {
             switch (ext.ToLower())

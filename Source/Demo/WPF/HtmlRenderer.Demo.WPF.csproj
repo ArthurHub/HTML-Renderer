@@ -51,6 +51,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="GenerateImageWindow.xaml.cs">
+      <DependentUpon>GenerateImageWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolStripImageConverter.cs" />
     <Page Include="DemoWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -64,6 +67,10 @@
       <DependentUpon>DemoWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="GenerateImageWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -50,6 +50,22 @@ namespace HtmlRenderer.Demo.WinForms
             _textRenderingHintTSCB.SelectedItem = TextRenderingHint.AntiAlias.ToString();
         }
 
+        private void OnSaveToFile_Click(object sender, EventArgs e)
+        {
+            using (var saveDialog = new SaveFileDialog())
+            {
+                saveDialog.Filter = "Images|*.png;*.bmp;*.jpg";
+                saveDialog.FileName = "image";
+                saveDialog.DefaultExt = ".png";
+
+                var dialogResult = saveDialog.ShowDialog(this);
+                if (dialogResult == DialogResult.OK)
+                {
+                    _pictureBox.Image.Save(saveDialog.FileName);
+                }
+            }
+        }
+
         private void OnUseGdiPlus_Click(object sender, EventArgs e)
         {
             _useGdiPlusTSB.Checked = !_useGdiPlusTSB.Checked;

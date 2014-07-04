@@ -34,19 +34,31 @@ namespace HtmlRenderer.Demo.WPF
 
 
         /// <summary>
-        /// Create image to be used to fill background so it will be clear that what's on top is transparent.
+        /// Get encoder to be used for encoding bitmap frame by given file extension.<br/>
+        /// Default is PNG encoder.
         /// </summary>
-        public static BitmapImage CreateImageForTransparentBackground()
+        /// <param name="ext">the file extension to select encoder by</param>
+        /// <returns>encoder instance</returns>
+        public static BitmapEncoder GetBitmapEncoder(string ext)
         {
-//            var image = new BitmapImage(10, 10);
-//            using (var g = Graphics.FromImage(image))
-//            {
-//                g.Clear(Color.White);
-//                g.FillRectangle(SystemBrushes.Control, new Rectangle(0, 0, 5, 5));
-//                g.FillRectangle(SystemBrushes.Control, new Rectangle(5, 5, 5, 5));
-//            }
-//            return image;
-            return null;
+            switch (ext.ToLower())
+            {
+                case ".jpg":
+                case ".jpeg":
+                    return new JpegBitmapEncoder();
+                case ".bmp":
+                    return new BmpBitmapEncoder();
+                case ".tif":
+                case ".tiff":
+                    return new TiffBitmapEncoder();
+                case ".gif":
+                    return new GifBitmapEncoder();
+                case ".wmp":
+                    return new WmpBitmapEncoder();
+                default:
+                    return new PngBitmapEncoder();
+
+            }
         }
 
         /// <summary>

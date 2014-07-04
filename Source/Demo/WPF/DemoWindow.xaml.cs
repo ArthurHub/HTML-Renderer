@@ -88,6 +88,18 @@ namespace HtmlRenderer.Demo.WPF
         }
 
         /// <summary>
+        /// Open generate image window for the current html.
+        /// </summary>
+        private void OnGenerateImage_Click(object sender, RoutedEventArgs e)
+        {
+            var w = new GenerateImageWindow(_mainControl.GetHtml());
+            w.Owner = this;
+            w.Width = Width * 0.8;
+            w.Height = Height * 0.8;
+            w.ShowDialog();
+        }
+
+        /// <summary>
         /// Execute performance test by setting all sample HTMLs in a loop.
         /// </summary>
         private void OnRunPerformance_Click(object sender, EventArgs e)
