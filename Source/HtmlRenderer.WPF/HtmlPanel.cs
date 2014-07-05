@@ -94,7 +94,7 @@ namespace HtmlRenderer.WPF
                 if (rect.HasValue)
                 {
                     ScrollToPoint(rect.Value.Location.X, rect.Value.Location.Y);
-                    _htmlContainer.HandleMouseMove(this, new MouseEventArgs(Mouse.PrimaryDevice, 0));
+                    _htmlContainer.HandleMouseMove(this, Mouse.GetPosition(this));
                 }
             }
         }

@@ -233,9 +233,9 @@ namespace HtmlRenderer.WinForms
         /// Element that is rendered at location (50,100) with offset of (0,200) will not be rendered as it
         /// will be at -100 therefore outside the client rectangle.
         /// </example>
-        public PointF ScrollOffset
+        public Point ScrollOffset
         {
-            get { return Utils.Convert(_htmlContainerInt.ScrollOffset); }
+            get { return Utils.ConvertRound(_htmlContainerInt.ScrollOffset); }
             set { _htmlContainerInt.ScrollOffset = Utils.Convert(value); }
         }
 

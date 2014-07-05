@@ -75,6 +75,11 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected string _text;
 
+        /// <summary>
+        /// The last position of the scrollbars to know if it has changed to update mouse
+        /// </summary>
+        protected Point _lastScrollOffset;
+
         #endregion
 
 
@@ -203,6 +208,7 @@ namespace HtmlRenderer.WPF
                 _htmlContainer.SetHtml(_text, _baseCssData);
                 InvalidateMeasure();
                 InvalidateVisual();
+                InvokeMouseMove();
             }
         }
 
@@ -278,10 +284,11 @@ namespace HtmlRenderer.WPF
                 _htmlContainer.PerformPaint(context, new Rect(new Size(htmlWidth, htmlHeight)));
                 context.Pop();
 
-                // TODO:a handle if we need to refresh the pointer here
-                // call mouse move to handle paint after scroll or html change affecting mouse cursor.
-                //                var mp = PointToClient(MousePosition);
-                //                _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
+                if (!_lastScrollOffset.Equals(_htmlContainer.ScrollOffset))
+                {
+                    _lastScrollOffset = _htmlContainer.ScrollOffset;
+                    InvokeMouseMove();
+                }
             }
         }
 
@@ -292,7 +299,7 @@ namespace HtmlRenderer.WPF
         {
             base.OnMouseMove(e);
             if (_htmlContainer != null)
-                _htmlContainer.HandleMouseMove(this, e);
+                _htmlContainer.HandleMouseMove(this, e.GetPosition(this));
         }
 
         /// <summary>
@@ -409,6 +416,14 @@ namespace HtmlRenderer.WPF
         protected virtual double HtmlHeight(Size size)
         {
             return size.Height - BorderThickness.Top - BorderThickness.Bottom;
+        }
+
+        /// <summary>
+        /// call mouse move to handle paint after scroll or html change affecting mouse cursor.
+        /// </summary>
+        protected virtual void InvokeMouseMove()
+        {
+            _htmlContainer.HandleMouseMove(this, Mouse.GetPosition(this));
         }
 
 

@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
+using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Core.Utils;
@@ -98,6 +99,11 @@ namespace HtmlRenderer.WinForms
         /// The text rendering hint to be used for text rendering.
         /// </summary>
         protected TextRenderingHint _textRenderingHint = TextRenderingHint.SystemDefault;
+
+        /// <summary>
+        /// The last position of the scrollbars to know if it has changed to update mouse
+        /// </summary>
+        protected Point _lastScrollOffset;
 
         #endregion
 
@@ -332,6 +338,7 @@ namespace HtmlRenderer.WinForms
                     _htmlContainer.SetHtml(_text, _baseCssData);
                     PerformLayout();
                     Invalidate();
+                    InvokeMouseMove();
                 }
             }
         }
@@ -468,14 +475,16 @@ namespace HtmlRenderer.WinForms
             if (_htmlContainer != null)
             {
                 e.Graphics.TextRenderingHint = _textRenderingHint;
-                e.Graphics.SetClip( ClientRectangle);
+                e.Graphics.SetClip(ClientRectangle);
 
                 _htmlContainer.ScrollOffset = AutoScrollPosition;
                 _htmlContainer.PerformPaint(e.Graphics);
 
-                // call mouse move to handle paint after scroll or html change affecting mouse cursor.
-                var mp = PointToClient(MousePosition);
-                _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
+                if (!_lastScrollOffset.Equals(_htmlContainer.ScrollOffset))
+                {
+                    _lastScrollOffset = _htmlContainer.ScrollOffset;
+                    InvokeMouseMove();
+                }
             }
         }
 
@@ -658,6 +667,15 @@ namespace HtmlRenderer.WinForms
         {
             AutoScrollPosition = location;
             _htmlContainer.ScrollOffset = AutoScrollPosition;
+        }
+
+        /// <summary>
+        /// call mouse move to handle paint after scroll or html change affecting mouse cursor.
+        /// </summary>
+        protected virtual void InvokeMouseMove()
+        {
+            var mp = PointToClient(MousePosition);
+            _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
         }
 
         /// <summary>

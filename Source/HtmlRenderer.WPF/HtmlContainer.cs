@@ -395,13 +395,12 @@ namespace HtmlRenderer.WPF
         /// Handle mouse move to handle hover cursor and text selection.
         /// </summary>
         /// <param name="parent">the control hosting the html to set cursor and invalidate</param>
-        /// <param name="e">the mouse event args</param>
-        public void HandleMouseMove(Control parent, MouseEventArgs e)
+        /// <param name="mousePos">the mouse event args</param>
+        public void HandleMouseMove(Control parent, Point mousePos)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
-            ArgChecker.AssertArgNotNull(e, "e");
-
-            _htmlContainerInt.HandleMouseMove(new ControlAdapter(parent), Utils.Convert(e.GetPosition(parent)));
+            
+            _htmlContainerInt.HandleMouseMove(new ControlAdapter(parent), Utils.Convert(mousePos));
         }
 
         /// <summary>
