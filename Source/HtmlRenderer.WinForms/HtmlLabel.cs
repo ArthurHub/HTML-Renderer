@@ -295,6 +295,7 @@ namespace HtmlRenderer.WinForms
             {
                 _baseRawCssData = value;
                 _baseCssData = HtmlRender.ParseStyleSheet(value);
+                _htmlContainer.SetHtml(_text, _baseCssData);
             }
         }
 

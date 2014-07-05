@@ -10,8 +10,10 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System.Windows;
 using System.Windows.Input;
 using HtmlRenderer.Demo.Common;
+using Xceed.Wpf.Toolkit.PropertyGrid;
 
 namespace HtmlRenderer.Demo.WPF
 {
@@ -30,9 +32,16 @@ namespace HtmlRenderer.Demo.WPF
             _propertyGrid.SelectedObject = _htmlLabel;
         }
 
-        private void OnHtmlControl_mouseDown(object sender, MouseButtonEventArgs e)
+        private void OnHtmlControl_click(object sender, MouseButtonEventArgs e)
         {
             _propertyGrid.SelectedObject = sender;
+        }
+
+        private void OnPropertyChanged(object sender, PropertyValueChangedEventArgs e)
+        {
+            var control = (UIElement)_propertyGrid.SelectedObject;
+            control.InvalidateMeasure();
+            control.InvalidateVisual();
         }
     }
 }

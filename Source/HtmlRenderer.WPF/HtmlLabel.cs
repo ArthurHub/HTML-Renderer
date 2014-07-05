@@ -10,6 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
@@ -25,7 +26,7 @@ namespace HtmlRenderer.WPF
     /// WPF control that will render html content in it's client rectangle.<br/>
     /// Using <see cref="AutoSize"/> and <see cref="AutoSizeHeightOnly"/> client can control how the html content effects the
     /// size of the label. Either case scrollbars are never shown and html content outside of client bounds will be clipped.
-    /// <see cref="MaximumSize"/> and <see cref="MinimumSize"/> with AutoSize can limit the max/min size of the control<br/>
+    /// MaxWidth/MaxHeight and MinWidth/MinHeight with AutoSize can limit the max/min size of the control<br/>
     /// The control will handle mouse and keyboard events on it to support html text selection, copy-paste and mouse clicks.<br/>
     /// </summary>
     /// <remarks>
@@ -48,6 +49,9 @@ namespace HtmlRenderer.WPF
         #endregion
 
 
+        /// <summary>
+        /// Init.
+        /// </summary>
         public HtmlLabel()
         {
             _autoSize = true;
@@ -59,6 +63,7 @@ namespace HtmlRenderer.WPF
         /// </summary>
         [Browsable(true)]
         [DefaultValue(true)]
+        [Category("Layout")]
         [EditorBrowsable(EditorBrowsableState.Always)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Description("Automatically sets the size of the label by content size.")]
@@ -111,7 +116,9 @@ namespace HtmlRenderer.WPF
             {
                 using (var ig = new GraphicsAdapter())
                 {
-                    var newSize = HtmlRendererUtils.Layout(ig, _htmlContainer.HtmlContainerInt, Utils.Convert(constraint), new RSize(MinWidth, MinHeight), new RSize(MaxWidth, MaxHeight), AutoSize, AutoSizeHeightOnly);
+                    var minSize = new RSize(MinWidth < Double.PositiveInfinity ? MinWidth : 0, MinHeight < Double.PositiveInfinity ? MinHeight : 0);
+                    var maxSize = new RSize(MaxWidth < Double.PositiveInfinity ? MaxWidth : 0, MaxHeight < Double.PositiveInfinity ? MaxHeight : 0);
+                    var newSize = HtmlRendererUtils.Layout(ig, _htmlContainer.HtmlContainerInt, Utils.Convert(constraint), minSize, maxSize, AutoSize, AutoSizeHeightOnly);
                     constraint = Utils.ConvertRound(newSize);
                 }
             }

@@ -18,11 +18,11 @@
         </Grid.RowDefinitions>
         <TextBlock Text="Html Label" Margin="10 0"/>
         <Border Background="{StaticResource TransBackBrush}" Grid.Row="1" Grid.Column="0" Margin="10 5">
-            <wpf:HtmlLabel x:Name="_htmlLabel" MouseDown="OnHtmlControl_mouseDown" Margin="8" />
+            <wpf:HtmlLabel x:Name="_htmlLabel" AutoSizeHeightOnly="True" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8" MouseLeftButtonUp="OnHtmlControl_click"  />
         </Border>
         <TextBlock Text="Html Panel" Grid.Row="2" Grid.Column="0" Margin="10 0"/>
-        <wpf:HtmlPanel x:Name="_htmlPanel" Grid.Row="3" Grid.Column="0" Margin="10 5" MouseDown="OnHtmlControl_mouseDown"/>
-        <xctk:PropertyGrid x:Name="_propertyGrid" Grid.Row="0" Grid.Column="2" Grid.RowSpan="5"/>
-        <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="5" Width="4" Background="#BFDBFF" ResizeBehavior="PreviousAndNext" VerticalAlignment="Stretch" />
+        <wpf:HtmlPanel x:Name="_htmlPanel" Grid.Row="3" Grid.Column="0" Margin="10 5" MouseLeftButtonUp="OnHtmlControl_click"/>
+        <xctk:PropertyGrid x:Name="_propertyGrid" Grid.Row="0" Grid.Column="2" Grid.RowSpan="4" PropertyValueChanged="OnPropertyChanged"/>
+        <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="4" Width="4" Background="#BFDBFF" ResizeBehavior="PreviousAndNext" VerticalAlignment="Stretch" />
     </Grid>
 </Window>

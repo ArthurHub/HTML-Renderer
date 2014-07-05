@@ -183,6 +183,7 @@ namespace HtmlRenderer.WPF
             {
                 _baseRawCssData = value;
                 _baseCssData = HtmlRender.ParseStyleSheet(value);
+                _htmlContainer.SetHtml(_html, _baseCssData);
             }
         }
 
