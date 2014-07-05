@@ -288,6 +288,31 @@ namespace HtmlRenderer.Adapters
             SaveToFileInt(image, name, extension, control);
         }
 
+        /// <summary>
+        /// Get font instance by given font family name, size and style.
+        /// </summary>
+        /// <param name="family">the font family name</param>
+        /// <param name="size">font size</param>
+        /// <param name="style">font style</param>
+        /// <returns>font instance</returns>
+        internal RFont CreateFont(string family, double size, RFontStyle style)
+        {
+            return CreateFontInt(family, size, style);
+        }
+
+        /// <summary>
+        /// Get font instance by given font family instance, size and style.<br/>
+        /// Used to support custom fonts that require explicit font family instance to be created.
+        /// </summary>
+        /// <param name="family">the font family instance</param>
+        /// <param name="size">font size</param>
+        /// <param name="style">font style</param>
+        /// <returns>font instance</returns>
+        internal RFont CreateFont(RFontFamily family, double size, RFontStyle style)
+        {
+            return CreateFontInt(family, size, style);
+        }
+
 
         #region Private/Protected methods
 
@@ -333,7 +358,7 @@ namespace HtmlRenderer.Adapters
         /// <param name="size">font size</param>
         /// <param name="style">font style</param>
         /// <returns>font instance</returns>
-        protected internal abstract RFont CreateFontInt(string family, double size, RFontStyle style);
+        protected abstract RFont CreateFontInt(string family, double size, RFontStyle style);
 
         /// <summary>
         /// Get font instance by given font family instance, size and style.<br/>
@@ -343,7 +368,7 @@ namespace HtmlRenderer.Adapters
         /// <param name="size">font size</param>
         /// <param name="style">font style</param>
         /// <returns>font instance</returns>
-        protected internal abstract RFont CreateFontInt(RFontFamily family, double size, RFontStyle style);
+        protected abstract RFont CreateFontInt(RFontFamily family, double size, RFontStyle style);
 
         /// <summary>
         /// Get data object for the given html and plain text data.<br />

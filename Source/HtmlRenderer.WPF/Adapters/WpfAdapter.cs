@@ -92,13 +92,13 @@ namespace HtmlRenderer.WPF.Adapters
             return new ImageAdapter(bitmap);
         }
 
-        protected internal override RFont CreateFontInt(string family, double size, RFontStyle style)
+        protected override RFont CreateFontInt(string family, double size, RFontStyle style)
         {
             var fontFamily = (FontFamily)new FontFamilyConverter().ConvertFromString(family) ?? new FontFamily();
             return new FontAdapter(new Typeface(fontFamily, GetFontStyle(style), GetFontWidth(style), FontStretches.Normal), size);
         }
 
-        protected internal override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style)
+        protected override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style)
         {
             return new FontAdapter(new Typeface(((FontFamilyAdapter)family).FontFamily, GetFontStyle(style), GetFontWidth(style), FontStretches.Normal), size);
         }

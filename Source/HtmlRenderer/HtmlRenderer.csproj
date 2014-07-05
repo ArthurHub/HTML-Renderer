@@ -114,7 +114,6 @@
     <Compile Include="Adapters\RGraphicsPath.cs" />
     <Compile Include="Adapters\RImage.cs" />
     <Compile Include="Adapters\RPen.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Utils\SubString.cs" />
   </ItemGroup>
   <ItemGroup />

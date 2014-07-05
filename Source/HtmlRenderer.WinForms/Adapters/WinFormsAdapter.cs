@@ -92,13 +92,13 @@ namespace HtmlRenderer.WinForms.Adapters
             return new ImageAdapter(Image.FromStream(memoryStream));
         }
 
-        protected internal override RFont CreateFontInt(string family, double size, RFontStyle style)
+        protected override RFont CreateFontInt(string family, double size, RFontStyle style)
         {
             var fontStyle = (FontStyle)((int)style);
             return new FontAdapter(new Font(family, (float)size, fontStyle));
         }
 
-        protected internal override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style)
+        protected override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style)
         {
             var fontStyle = (FontStyle)((int)style);
             return new FontAdapter(new Font(((FontFamilyAdapter)family).FontFamily, (float)size, fontStyle));
