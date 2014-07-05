@@ -67,6 +67,7 @@
     <Compile Include="Adapters\WpfAdapter.cs" />
     <Compile Include="HtmlContainer.cs" />
     <Compile Include="HtmlControlBase.cs" />
+    <Compile Include="HtmlLabel.cs" />
     <Compile Include="HtmlPanel.cs" />
     <Compile Include="HtmlRender.cs" />
     <Compile Include="Utilities\ClipboardHelper.cs" />
