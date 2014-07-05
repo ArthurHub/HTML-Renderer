@@ -396,16 +396,6 @@ namespace HtmlRenderer.WPF
         }
 
         /// <summary>
-        /// When the control is no longer part of visual tree clear its content so resources can be released immediately.
-        /// </summary>
-        protected override void OnVisualParentChanged(DependencyObject oldParent)
-        {
-            if (_htmlContainer != null)
-                _htmlContainer.Clear();
-            base.OnVisualParentChanged(oldParent);
-        }
-
-        /// <summary>
         /// Get the width the HTML has to render in (not including vertical scroll iff it is visible)
         /// </summary>
         protected virtual double HtmlWidth(Size size)

@@ -115,7 +115,8 @@ namespace HtmlRenderer.WPF
             {
                 using (var ig = new GraphicsAdapter())
                 {
-                    var size = new RSize(constraint.Width - BorderThickness.Left - BorderThickness.Right, constraint.Height - BorderThickness.Top - BorderThickness.Bottom);
+                    var size = new RSize(constraint.Width < Double.PositiveInfinity ? constraint.Width - BorderThickness.Left - BorderThickness.Right : 0,
+                        constraint.Height < Double.PositiveInfinity ? constraint.Height - BorderThickness.Top - BorderThickness.Bottom : 0);
                     var minSize = new RSize(MinWidth < Double.PositiveInfinity ? MinWidth : 0, MinHeight < Double.PositiveInfinity ? MinHeight : 0);
                     var maxSize = new RSize(MaxWidth < Double.PositiveInfinity ? MaxWidth : 0, MaxHeight < Double.PositiveInfinity ? MaxHeight : 0);
                     var newSize = HtmlRendererUtils.Layout(ig, _htmlContainer.HtmlContainerInt, size, minSize, maxSize, AutoSize, AutoSizeHeightOnly);

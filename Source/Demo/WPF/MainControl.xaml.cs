@@ -63,6 +63,12 @@ namespace HtmlRenderer.Demo.WPF
             _htmlPanel.StylesheetLoad += DemoUtils.OnStylesheetLoad;
             _htmlPanel.ImageLoad += HtmlRenderingHelper.OnImageLoad;
 
+            _htmlTooltipLabel.AvoidImagesLateLoading = true;
+            _htmlTooltipLabel.StylesheetLoad += DemoUtils.OnStylesheetLoad;
+            _htmlTooltipLabel.ImageLoad += HtmlRenderingHelper.OnImageLoad;
+            _htmlTooltipLabel.Text = Common.Resources.Tooltip;
+            
+
             LoadSamples();
 
             _updateHtmlTimer = new Timer(OnUpdateHtmlTimerTick);
