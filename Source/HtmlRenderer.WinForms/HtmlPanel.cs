@@ -468,6 +468,7 @@ namespace HtmlRenderer.WinForms
             if (_htmlContainer != null)
             {
                 e.Graphics.TextRenderingHint = _textRenderingHint;
+                e.Graphics.SetClip( ClientRectangle);
 
                 _htmlContainer.ScrollOffset = AutoScrollPosition;
                 _htmlContainer.PerformPaint(e.Graphics);
