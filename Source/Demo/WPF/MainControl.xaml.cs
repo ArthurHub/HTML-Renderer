@@ -314,7 +314,7 @@ namespace HtmlRenderer.Demo.WPF
         /// <summary>
         /// On specific link click handle it here.
         /// </summary>
-        private static void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
+        private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
         {
             if (e.Link == "SayHello")
             {
@@ -323,11 +323,16 @@ namespace HtmlRenderer.Demo.WPF
             }
             else if (e.Link == "ShowSampleForm")
             {
-                //                using (var f = new SampleForm())
-                //                {
-                //                    f.ShowDialog();
-                //                    e.Handled = true;
-                //                }
+                var w = new SampleWindow();
+                var window = Window.GetWindow(this);
+                if (window != null)
+                {
+                    w.Owner = window;
+                    w.Width = window.Width * 0.8;
+                    w.Height = window.Height * 0.8;
+                    w.ShowDialog();
+                }
+                e.Handled = true;
             }
         }
 

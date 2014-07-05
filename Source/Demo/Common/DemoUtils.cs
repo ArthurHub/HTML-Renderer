@@ -22,6 +22,31 @@ namespace HtmlRenderer.Demo.Common
         private const int Iterations = 20;
 
         /// <summary>
+        /// The HTML text used in sample form for HtmlLabel.
+        /// </summary>
+        public static String SampleHtmlLabelText
+        {
+            get
+            {
+                return "This is an <b>HtmlLabel</b> on transparent background with <span style=\"color: red\">colors</span> and links: " +
+                       "<a href=\"http://htmlrenderer.codeplex.com/\">HTML Renderer</a>";
+            }
+        }
+
+        /// <summary>
+        /// The HTML text used in sample form for HtmlPanel.
+        /// </summary>
+        public static String SampleHtmlPanelText
+        {
+            get
+            {
+                return "This is an <b>HtmlPanel</b> with <span style=\"color: red\">colors</span> and links: <a href=\"http://htmlrenderer.codeplex.com/\">HTML Renderer</a>" +
+                       "<div style=\"font-size: 1.2em; padding-top: 10px;\" >If there is more text than the size of the control scrollbars will appear.</div>" +
+                       "<br/>Click me to change my <code>Text</code> property.";
+            }
+        }
+
+        /// <summary>
         /// Handle stylesheet resolve.
         /// </summary>
         public static void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)

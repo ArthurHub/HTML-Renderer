@@ -120,7 +120,4 @@
   <metadata name="_htmlToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="_htmlPanel.Text" xml:space="preserve">
-    <value>This is an &lt;b&gt;HtmlPanel&lt;/b&gt; with &lt;span style="color: red"&gt;colors&lt;/span&gt; and links: &lt;a href="http://htmlrenderer.codeplex.com/"&gt;HTML Renderer&lt;/a&gt;&lt;div style="font-size: 1.2em; padding-top: 10px;" &gt;If there is more text than the size of the control scrollbars will appear.&lt;/div&gt;&lt;br/&gt;Click me to change my &lt;code&gt;Text&lt;/code&gt; property.</value>
-  </data>
 </root>

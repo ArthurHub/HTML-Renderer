@@ -61,6 +61,18 @@ namespace HtmlRenderer.Demo.WPF
         }
 
         /// <summary>
+        /// Open sample window.
+        /// </summary>
+        private void OnOpenSampleWindow_click(object sender, RoutedEventArgs e)
+        {
+            var w = new SampleWindow();
+            w.Owner = this;
+            w.Width = Width * 0.8;
+            w.Height = Height * 0.8;
+            w.ShowDialog();
+        }
+
+        /// <summary>
         /// Toggle if to show split view of HtmlPanel and WinForms WebBrowser control.
         /// </summary>
         private void OnShowIEView_ButtonClick(object sender, EventArgs e)

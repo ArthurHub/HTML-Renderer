@@ -30,14 +30,13 @@ namespace HtmlRenderer.Demo.WinForms
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SampleForm));
-            this._htmlToolTip = new HtmlToolTip();
+            this._htmlToolTip = new HtmlRenderer.WinForms.HtmlToolTip();
             this._changeTooltipButton = new System.Windows.Forms.Button();
             this._splitContainer = new System.Windows.Forms.SplitContainer();
-            this._htmlPanel = new HtmlPanel();
+            this._htmlPanel = new HtmlRenderer.WinForms.HtmlPanel();
             this.label2 = new System.Windows.Forms.Label();
             this._htmlLabelHostingPanel = new System.Windows.Forms.Panel();
-            this._htmlLabel = new HtmlLabel();
+            this._htmlLabel = new HtmlRenderer.WinForms.HtmlLabel();
             this.label1 = new System.Windows.Forms.Label();
             this._pGrid = new System.Windows.Forms.PropertyGrid();
             this._splitContainer.Panel1.SuspendLayout();
@@ -53,7 +52,6 @@ namespace HtmlRenderer.Demo.WinForms
             this._htmlToolTip.MaximumSize = new System.Drawing.Size(0, 0);
             this._htmlToolTip.OwnerDraw = true;
             this._htmlToolTip.TooltipCssClass = "htmltooltip";
-            this._htmlToolTip.UseGdiPlusTextRendering = false;
             // 
             // _changeTooltipButton
             // 
@@ -96,17 +94,13 @@ namespace HtmlRenderer.Demo.WinForms
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this._htmlPanel.AutoScroll = true;
-            this._htmlPanel.AutoScrollMinSize = new System.Drawing.Size(407, 99);
-            this._htmlPanel.AvoidGeometryAntialias = false;
-            this._htmlPanel.AvoidImagesLateLoading = false;
             this._htmlPanel.BackColor = System.Drawing.SystemColors.Window;
             this._htmlPanel.BaseStylesheet = null;
+            this._htmlPanel.Cursor = System.Windows.Forms.Cursors.IBeam;
             this._htmlPanel.Location = new System.Drawing.Point(7, 221);
             this._htmlPanel.Name = "_htmlPanel";
             this._htmlPanel.Size = new System.Drawing.Size(407, 225);
             this._htmlPanel.TabIndex = 10;
-            this._htmlPanel.Text = resources.GetString("_htmlPanel.Text");
-            this._htmlPanel.UseGdiPlusTextRendering = false;
             this._htmlPanel.UseSystemCursors = true;
             this._htmlPanel.Click += new System.EventHandler(this.OnHtmlPanelClick);
             // 
@@ -137,17 +131,13 @@ namespace HtmlRenderer.Demo.WinForms
             | System.Windows.Forms.AnchorStyles.Right)));
             this._htmlLabel.AutoSize = false;
             this._htmlLabel.AutoSizeHeightOnly = true;
-            this._htmlLabel.AvoidGeometryAntialias = false;
             this._htmlLabel.BackColor = System.Drawing.Color.Transparent;
             this._htmlLabel.BaseStylesheet = null;
             this._htmlLabel.Location = new System.Drawing.Point(10, 11);
             this._htmlLabel.Name = "_htmlLabel";
-            this._htmlLabel.Size = new System.Drawing.Size(385, 33);
+            this._htmlLabel.Size = new System.Drawing.Size(385, 0);
             this._htmlLabel.TabIndex = 0;
-            this._htmlLabel.Text = "This is an <b>HtmlLabel</b> on transparent background with <span style=\"color: re" +
-    "d\">colors</span> and links: <a href=\"http://htmlrenderer.codeplex.com/\">HTML Ren" +
-    "derer</a>";
-            this._htmlLabel.UseGdiPlusTextRendering = false;
+            this._htmlLabel.Text = null;
             this._htmlLabel.Click += new System.EventHandler(this.OnHtmlLabelClick);
             // 
             // label1

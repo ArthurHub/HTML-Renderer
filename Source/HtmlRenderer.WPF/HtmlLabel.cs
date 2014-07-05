@@ -12,6 +12,7 @@
 
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Media;
 using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core;
 using HtmlRenderer.WPF.Adapters;
@@ -37,7 +38,7 @@ namespace HtmlRenderer.WPF
         /// <summary>
         /// Automatically sets the size of the label by content size.
         /// </summary>
-        protected bool _autoSize = true;
+        protected bool _autoSize;
 
         /// <summary>
         /// is to handle auto size of the control height only
@@ -46,6 +47,12 @@ namespace HtmlRenderer.WPF
 
         #endregion
 
+
+        public HtmlLabel()
+        {
+            _autoSize = true;
+            Background = Brushes.Transparent;
+        }
 
         /// <summary>
         /// Automatically sets the size of the label by content size

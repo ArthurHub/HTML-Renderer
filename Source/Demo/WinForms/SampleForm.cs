@@ -14,6 +14,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using HtmlRenderer.Demo.Common;
 
 namespace HtmlRenderer.Demo.WinForms
 {
@@ -26,6 +27,9 @@ namespace HtmlRenderer.Demo.WinForms
             InitializeComponent();
 
             Icon = DemoForm.GetIcon();
+
+            _htmlLabel.Text = DemoUtils.SampleHtmlLabelText;
+            _htmlPanel.Text = DemoUtils.SampleHtmlPanelText;
 
             _background = HtmlRenderingHelper.CreateImageForTransparentBackground();
         }

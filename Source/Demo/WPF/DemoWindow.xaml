@@ -14,10 +14,10 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <ToolBar Grid.Column="0">
-                <Button IsEnabled="False" ToolBar.OverflowMode="Never">
+                <Button ToolBar.OverflowMode="Never" Click="OnOpenSampleWindow_click" >
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding ConverterParameter=form, Converter={StaticResource Converter}}" Tag="form" MaxHeight="18" Margin="0 0 5 0"/>
-                        <TextBlock Text="Open Sample Form" VerticalAlignment="Center"/>
+                        <TextBlock Text="Open Sample Window" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Separator/>
