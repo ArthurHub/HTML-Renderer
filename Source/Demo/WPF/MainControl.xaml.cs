@@ -119,7 +119,7 @@ namespace HtmlRenderer.Demo.WPF
 
         public void SetHtml(string html)
         {
-            _htmlPanel.Html = html;
+            _htmlPanel.Text = html;
         }
 
 
@@ -205,7 +205,7 @@ namespace HtmlRenderer.Demo.WPF
                 try
                 {
                     _htmlPanel.AvoidImagesLateLoading = !sample.FullName.Contains("Many images");
-                    _htmlPanel.Html = sample.Html;
+                    _htmlPanel.Text = sample.Html;
                 }
                 catch (Exception ex)
                 {
@@ -241,7 +241,7 @@ namespace HtmlRenderer.Demo.WPF
 
                 try
                 {
-                    _htmlPanel.Html = GetHtmlEditorText();
+                    _htmlPanel.Text = GetHtmlEditorText();
                 }
                 catch (Exception ex)
                 {

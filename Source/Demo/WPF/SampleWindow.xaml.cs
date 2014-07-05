@@ -26,8 +26,8 @@ namespace HtmlRenderer.Demo.WPF
         {
             InitializeComponent();
 
-            _htmlLabel.Html = DemoUtils.SampleHtmlLabelText;
-            _htmlPanel.Html = DemoUtils.SampleHtmlPanelText;
+            _htmlLabel.Text = DemoUtils.SampleHtmlLabelText;
+            _htmlPanel.Text = DemoUtils.SampleHtmlPanelText;
 
             _propertyGrid.SelectedObject = _htmlLabel;
         }

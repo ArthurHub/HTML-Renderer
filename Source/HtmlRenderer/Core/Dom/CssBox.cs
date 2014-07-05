@@ -439,6 +439,7 @@ namespace HtmlRenderer.Core.Dom
                         var rect = ContainingBlock.ClientRectangle;
                         rect.X -= 2;
                         rect.Width += 2;
+                        rect.Offset(new RPoint(-HtmlContainer.Location.X, -HtmlContainer.Location.Y));
                         rect.Offset(HtmlContainer.ScrollOffset);
                         clip.Intersect(rect);
 
@@ -636,7 +637,7 @@ namespace HtmlRenderer.Core.Dom
 
             CreateListItemBox(g);
 
-            var actualWidth = Math.Max(GetMinimumWidth() + GetWidthMarginDeep(this), Size.Width < 90999 ? ActualRight : 0);
+            var actualWidth = Math.Max(GetMinimumWidth() + GetWidthMarginDeep(this), Size.Width < 90999 ? ActualRight - HtmlContainer.Root.Location.X : 0);
             HtmlContainer.ActualSize = CommonUtils.Max(HtmlContainer.ActualSize, new RSize(actualWidth, ActualBottom - HtmlContainer.Root.Location.Y));
         }
 

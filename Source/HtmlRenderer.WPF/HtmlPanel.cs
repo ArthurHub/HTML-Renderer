@@ -68,12 +68,13 @@ namespace HtmlRenderer.WPF
             _htmlContainer.ScrollChange += OnScrollChange;
         }
 
-        public override string Html
+        public override string Text
         {
+            get { return base.Text; }
             set
             {
                 _horizontalScrollBar.Value = _verticalScrollBar.Value = 0;
-                base.Html = value;
+                base.Text = value;
             }
         }
 
@@ -152,12 +153,12 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected override Size ArrangeOverride(Size bounds)
         {
-            var scrollHeight = bounds.Height - (_horizontalScrollBar.Visibility == Visibility.Visible ? _horizontalScrollBar.Height : 0);
+            var scrollHeight = HtmlHeight(bounds);
             scrollHeight = scrollHeight > 1 ? scrollHeight : 1;
-            var scrollWidth = bounds.Width - (_verticalScrollBar.Visibility == Visibility.Visible ? _verticalScrollBar.Width : 0);
+            var scrollWidth = HtmlWidth(bounds);
             scrollWidth = scrollWidth > 1 ? scrollWidth : 1;
-            _verticalScrollBar.Arrange(new Rect(System.Math.Max(bounds.Width - _verticalScrollBar.Width, 0), 0, _verticalScrollBar.Width, scrollHeight));
-            _horizontalScrollBar.Arrange(new Rect(0, System.Math.Max(bounds.Height - _horizontalScrollBar.Height, 0), scrollWidth, _horizontalScrollBar.Height));
+            _verticalScrollBar.Arrange(new Rect(System.Math.Max(bounds.Width - _verticalScrollBar.Width - BorderThickness.Right, 0), BorderThickness.Top, _verticalScrollBar.Width, scrollHeight));
+            _horizontalScrollBar.Arrange(new Rect(BorderThickness.Left, System.Math.Max(bounds.Height - _horizontalScrollBar.Height - BorderThickness.Bottom, 0), scrollWidth, _horizontalScrollBar.Height));
 
             if (_htmlContainer != null)
             {
@@ -207,7 +208,7 @@ namespace HtmlRenderer.WPF
 
             // render rectangle in right bottom corner where both scrolls meet
             if (_horizontalScrollBar.Visibility == Visibility.Visible && _verticalScrollBar.Visibility == Visibility.Visible)
-                context.DrawRectangle(SystemColors.ControlBrush, null, new Rect(HtmlWidth(RenderSize), HtmlHeight(RenderSize), _verticalScrollBar.Width, _horizontalScrollBar.Height));
+                context.DrawRectangle(SystemColors.ControlBrush, null, new Rect(BorderThickness.Left + HtmlWidth(RenderSize), BorderThickness.Top + HtmlHeight(RenderSize), _verticalScrollBar.Width, _horizontalScrollBar.Height));
         }
 
         /// <summary>
@@ -302,7 +303,7 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected override double HtmlWidth(Size size)
         {
-            var width = size.Width - (_verticalScrollBar.Visibility == Visibility.Visible ? _verticalScrollBar.Width : 0);
+            var width = base.HtmlWidth(size) - (_verticalScrollBar.Visibility == Visibility.Visible ? _verticalScrollBar.Width : 0);
             return width > 1 ? width : 1;
         }
 
@@ -311,7 +312,7 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected override double HtmlHeight(Size size)
         {
-            var height = size.Height - (_horizontalScrollBar.Visibility == Visibility.Visible ? _horizontalScrollBar.Height : 0);
+            var height = base.HtmlHeight(size) - (_horizontalScrollBar.Visibility == Visibility.Visible ? _horizontalScrollBar.Height : 0);
             return height > 1 ? height : 1;
         }
 

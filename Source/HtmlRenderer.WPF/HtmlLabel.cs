@@ -17,7 +17,6 @@ using System.Windows.Media;
 using HtmlRenderer.Adapters.Entities;
 using HtmlRenderer.Core;
 using HtmlRenderer.WPF.Adapters;
-using HtmlRenderer.WPF.Utilities;
 
 namespace HtmlRenderer.WPF
 {
@@ -116,10 +115,11 @@ namespace HtmlRenderer.WPF
             {
                 using (var ig = new GraphicsAdapter())
                 {
+                    var size = new RSize(constraint.Width - BorderThickness.Left - BorderThickness.Right, constraint.Height - BorderThickness.Top - BorderThickness.Bottom);
                     var minSize = new RSize(MinWidth < Double.PositiveInfinity ? MinWidth : 0, MinHeight < Double.PositiveInfinity ? MinHeight : 0);
                     var maxSize = new RSize(MaxWidth < Double.PositiveInfinity ? MaxWidth : 0, MaxHeight < Double.PositiveInfinity ? MaxHeight : 0);
-                    var newSize = HtmlRendererUtils.Layout(ig, _htmlContainer.HtmlContainerInt, Utils.Convert(constraint), minSize, maxSize, AutoSize, AutoSizeHeightOnly);
-                    constraint = Utils.ConvertRound(newSize);
+                    var newSize = HtmlRendererUtils.Layout(ig, _htmlContainer.HtmlContainerInt, size, minSize, maxSize, AutoSize, AutoSizeHeightOnly);
+                    constraint = new Size(newSize.Width + BorderThickness.Left + BorderThickness.Right, newSize.Height + BorderThickness.Top + BorderThickness.Bottom);
                 }
             }
 

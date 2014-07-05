@@ -73,7 +73,7 @@ namespace HtmlRenderer.WPF
         /// <summary>
         /// the current html text set in the control
         /// </summary>
-        protected string _html;
+        protected string _text;
 
         #endregion
 
@@ -84,6 +84,7 @@ namespace HtmlRenderer.WPF
         protected HtmlControlBase()
         {
             Background = SystemColors.WindowBrush;
+            SnapsToDevicePixels = true;
 
             _htmlContainer = new HtmlContainer();
             _htmlContainer.LinkClicked += OnLinkClicked;
@@ -183,7 +184,7 @@ namespace HtmlRenderer.WPF
             {
                 _baseRawCssData = value;
                 _baseCssData = HtmlRender.ParseStyleSheet(value);
-                _htmlContainer.SetHtml(_html, _baseCssData);
+                _htmlContainer.SetHtml(_text, _baseCssData);
             }
         }
 
@@ -192,14 +193,14 @@ namespace HtmlRenderer.WPF
         /// </summary>
         [Browsable(true)]
         [Description("Sets the html of this control.")]
-        public virtual string Html
+        public virtual string Text
         {
-            get { return _html; }
+            get { return _text; }
             set
             {
-                _html = value;
+                _text = value;
                 _htmlContainer.ScrollOffset = new Point(0, 0);
-                _htmlContainer.SetHtml(_html, _baseCssData);
+                _htmlContainer.SetHtml(_text, _baseCssData);
                 InvalidateMeasure();
                 InvalidateVisual();
             }
@@ -255,11 +256,25 @@ namespace HtmlRenderer.WPF
             if (Background != null && Background.Opacity > 0)
                 context.DrawRectangle(Background, null, new Rect(RenderSize));
 
+            if (BorderThickness != new Thickness(0))
+            {
+                var brush = BorderBrush ?? SystemColors.ControlDarkBrush;
+                if (BorderThickness.Top > 0)
+                    context.DrawRectangle(brush, null, new Rect(0, 0, RenderSize.Width, BorderThickness.Top));
+                if (BorderThickness.Bottom > 0)
+                    context.DrawRectangle(brush, null, new Rect(0, RenderSize.Height - BorderThickness.Bottom, RenderSize.Width, BorderThickness.Bottom));
+                if (BorderThickness.Left > 0)
+                    context.DrawRectangle(brush, null, new Rect(0, 0, BorderThickness.Left, RenderSize.Height));
+                if (BorderThickness.Right > 0)
+                    context.DrawRectangle(brush, null, new Rect(RenderSize.Width - BorderThickness.Right, 0, BorderThickness.Right, RenderSize.Height));
+            }
+
             var htmlWidth = HtmlWidth(RenderSize);
             var htmlHeight = HtmlHeight(RenderSize);
             if (_htmlContainer != null && htmlWidth > 0 && htmlHeight > 0)
             {
-                context.PushClip(new RectangleGeometry(new Rect(new Size(htmlWidth, htmlHeight))));
+                context.PushClip(new RectangleGeometry(new Rect(BorderThickness.Left, BorderThickness.Top, htmlWidth, htmlHeight)));
+                _htmlContainer.Location = new Point(BorderThickness.Left, BorderThickness.Top);
                 _htmlContainer.PerformPaint(context, new Rect(new Size(htmlWidth, htmlHeight)));
                 context.Pop();
 
@@ -395,7 +410,7 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected virtual double HtmlWidth(Size size)
         {
-            return size.Width;
+            return size.Width - BorderThickness.Left - BorderThickness.Right;
         }
 
         /// <summary>
@@ -403,7 +418,7 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected virtual double HtmlHeight(Size size)
         {
-            return size.Height;
+            return size.Height - BorderThickness.Top - BorderThickness.Bottom;
         }
 
 
