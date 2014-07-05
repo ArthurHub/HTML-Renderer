@@ -12,7 +12,6 @@
 
 using System;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
@@ -96,7 +95,7 @@ namespace HtmlRenderer.Demo.WPF
             _webBrowser.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
             _splitter.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
 
-            _grid2.ColumnDefinitions[2].Width = show ? new GridLength(_grid2.ActualWidth/2, GridUnitType.Pixel) : GridLength.Auto;
+            _grid2.ColumnDefinitions[2].Width = show ? new GridLength(_grid2.ActualWidth / 2, GridUnitType.Pixel) : GridLength.Auto;
 
             if (show)
                 UpdateWebBrowserHtml();
@@ -193,7 +192,7 @@ namespace HtmlRenderer.Demo.WPF
 
                 if (!Equals(((TreeViewItem)item.Parent).Header, PerformanceSamplesTreeNodeName))
                 {
-                    SetColoredText(sample.Html);
+                    SetColoredText(sample.Html, _coloredCheckBox.IsChecked.GetValueOrDefault(false));
                 }
                 else
                 {
@@ -300,7 +299,15 @@ namespace HtmlRenderer.Demo.WPF
         /// </summary>
         private void OnRefreshLink_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            SetColoredText(GetHtmlEditorText());
+            SetColoredText(GetHtmlEditorText(), true);
+        }
+
+        /// <summary>
+        /// Toggle if the html syntax is colored.
+        /// </summary>
+        private void OnColoredCheckbox_click(object sender, RoutedEventArgs e)
+        {
+            SetColoredText(GetHtmlEditorText(), _coloredCheckBox.IsChecked.GetValueOrDefault(false));
         }
 
         /// <summary>
@@ -339,18 +346,10 @@ namespace HtmlRenderer.Demo.WPF
         /// <summary>
         /// Set html syntax color text on the RTF html editor.
         /// </summary>
-        private void SetColoredText(string text)
+        private void SetColoredText(string text, bool color)
         {
             var selectionStart = _htmlEditor.CaretPosition;
-
-            text = HtmlSyntaxHighlighter.Process(text);
-            var documentBytes = Encoding.UTF8.GetBytes(text);
-            using (var reader = new MemoryStream(documentBytes))
-            {
-                _htmlEditor.SelectAll();
-                _htmlEditor.Selection.Load(reader, DataFormats.Rtf);
-            }
-
+            _htmlEditor.Text = color ? HtmlSyntaxHighlighter.Process(text) : text.Replace("\n", "\\par ");
             _htmlEditor.CaretPosition = selectionStart;
         }
 

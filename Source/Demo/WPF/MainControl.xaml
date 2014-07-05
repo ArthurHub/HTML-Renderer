@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:wpf="clr-namespace:HtmlRenderer.WPF;assembly=HtmlRenderer.WPF"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600">
     <Grid>
@@ -30,12 +31,16 @@
                 <WebBrowser x:Name="_webBrowser" Grid.Column="2" Visibility="Collapsed"/>
             </Grid>
             <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="4" Background="#BFDBFF" />
-            <RichTextBox x:Name="_htmlEditor" Grid.Row="2" VerticalScrollBarVisibility="Visible" BorderThickness="0" 
-                         TextChanged="OnHtmlEditor_TextChanged"/>
+            <xctk:RichTextBox x:Name="_htmlEditor" Grid.Row="2" VerticalScrollBarVisibility="Visible" BorderThickness="0" 
+                         TextChanged="OnHtmlEditor_TextChanged" />
         </Grid>
-        <Label HorizontalAlignment="Right" Margin="0,0,16,0" VerticalAlignment="Bottom" Grid.Column="1" FontSize="11" Foreground="Blue" Cursor="Hand"
+        <Label HorizontalAlignment="Right" Margin="0,0,16,14" VerticalAlignment="Bottom" Grid.Column="1" FontSize="11" Foreground="Blue" Cursor="Hand"
                MouseLeftButtonUp="OnRefreshLink_MouseLeftButtonUp">
             <Underline>Refresh</Underline>
         </Label>
+        <CheckBox x:Name="_coloredCheckBox" HorizontalAlignment="Right" Margin="0,0,22,2" VerticalAlignment="Bottom" Grid.Column="1" FontSize="11" Foreground="Blue" Cursor="Hand"
+               Click="OnColoredCheckbox_click">
+            <Underline>Colored</Underline>
+        </CheckBox>
     </Grid>
 </UserControl>
