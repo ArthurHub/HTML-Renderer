@@ -38,14 +38,14 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="Release\WinForms\net20\HtmlRenderer.WinForms.dll" target="lib\net20\HtmlRenderer.WinForms.dll" />
-    <file src="Release\WinForms\net20\HtmlRenderer.WinForms.pdb" target="lib\net20\HtmlRenderer.WinForms.pdb" />
-    <file src="Release\WinForms\net35\HtmlRenderer.WinForms.dll" target="lib\net35-client\HtmlRenderer.WinForms.dll" />
-    <file src="Release\WinForms\net35\HtmlRenderer.WinForms.pdb" target="lib\net35-client\HtmlRenderer.WinForms.pdb" />
-    <file src="Release\WinForms\net40\HtmlRenderer.WinForms.dll" target="lib\net40-client\HtmlRenderer.WinForms.dll" />
-    <file src="Release\WinForms\net40\HtmlRenderer.WinForms.pdb" target="lib\net40-client\HtmlRenderer.WinForms.pdb" />
-    <file src="Release\WinForms\net45\HtmlRenderer.WinForms.dll" target="lib\net45\HtmlRenderer.WinForms.dll" />
-    <file src="Release\WinForms\net45\HtmlRenderer.WinForms.pdb" target="lib\net45\HtmlRenderer.WinForms.pdb" />
+    <file src="..\Release\WinForms\net20\HtmlRenderer.WinForms.dll" target="lib\net20\HtmlRenderer.WinForms.dll" />
+    <file src="..\Release\WinForms\net20\HtmlRenderer.WinForms.pdb" target="lib\net20\HtmlRenderer.WinForms.pdb" />
+    <file src="..\Release\WinForms\net35\HtmlRenderer.WinForms.dll" target="lib\net35-client\HtmlRenderer.WinForms.dll" />
+    <file src="..\Release\WinForms\net35\HtmlRenderer.WinForms.pdb" target="lib\net35-client\HtmlRenderer.WinForms.pdb" />
+    <file src="..\Release\WinForms\net40\HtmlRenderer.WinForms.dll" target="lib\net40-client\HtmlRenderer.WinForms.dll" />
+    <file src="..\Release\WinForms\net40\HtmlRenderer.WinForms.pdb" target="lib\net40-client\HtmlRenderer.WinForms.pdb" />
+    <file src="..\Release\WinForms\net45\HtmlRenderer.WinForms.dll" target="lib\net45\HtmlRenderer.WinForms.dll" />
+    <file src="..\Release\WinForms\net45\HtmlRenderer.WinForms.pdb" target="lib\net45\HtmlRenderer.WinForms.pdb" />
     <file src="HtmlRenderer.WinForms.readme.txt" target="readme.txt" />
   </files>
 </package>

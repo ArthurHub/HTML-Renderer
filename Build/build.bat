@@ -20,10 +20,12 @@ set git="C:\Program Files (x86)\Git\bin\git.exe"
 set c_proj=..\Source\HtmlRenderer\HtmlRenderer.csproj
 set wf_proj=..\Source\HtmlRenderer.WinForms\HtmlRenderer.WinForms.csproj
 set wpf_proj=..\Source\HtmlRenderer.WPF\HtmlRenderer.WPF.csproj
+set pdfs_proj=..\Source\HtmlRenderer.PdfSharp\HtmlRenderer.PdfSharp.csproj
 
 set c_out=..\..\Build\Release\Core
 set wf_out=..\..\Build\Release\WinForms
 set wpf_out=..\..\Build\Release\WPF
+set pdfs_out=..\..\Build\Release\PdfSharp
 
 set t_20=Configuration=Release;TargetFrameworkVersion=v2.0
 set t_30=Configuration=Release;TargetFrameworkVersion=v3.0
@@ -50,6 +52,12 @@ echo Run WPF builds...
 %msbuild% %wpf_proj% /t:rebuild /p:%t_40%;OutputPath=%wpf_out%\NET40 %verb%
 %msbuild% %wpf_proj% /t:rebuild /p:%t_45%;OutputPath=%wpf_out%\NET45 %verb%
 
+echo Run PDF Sharp builds...
+%msbuild% %pdfs_proj% /t:rebuild /p:%t_20%;OutputPath=%pdfs_out%\NET20 %verb%
+%msbuild% %pdfs_proj% /t:rebuild /p:%t_35%;OutputPath=%pdfs_out%\NET35 %verb%
+%msbuild% %pdfs_proj% /t:rebuild /p:%t_40%;OutputPath=%pdfs_out%\NET40 %verb%
+%msbuild% %pdfs_proj% /t:rebuild /p:%t_45%;OutputPath=%pdfs_out%\NET45 %verb%
+
 echo Run Demo builds...
 %msbuild% ..\Source\Demo\WinForms\HtmlRenderer.Demo.WinForms.csproj /t:rebuild /p:%t_20%;OutputPath=..\..\..\Build\Release\Demo\WinForms %verb%
 %msbuild% ..\Source\Demo\WPF\HtmlRenderer.Demo.WPF.csproj /t:rebuild /p:%t_40%;OutputPath=..\..\..\Build\Release\Demo\WPF %verb%
@@ -74,16 +82,17 @@ cd Release
 cd..
 
 echo Create NuGets...
-nuget.exe pack HtmlRenderer.WinForms.nuspec -Version %version% -OutputDirectory Release
+nuget.exe pack NuGet\HtmlRenderer.WinForms.nuspec -Version %version% -OutputDirectory Release
 
 echo Remove files...
 rmdir Release\Source /s /q
 rmdir Release\Core /s /q
 rmdir Release\WinForms /s /q
 rmdir Release\WPF /s /q
+rmdir Release\PdfSharp /s /q
 del "Release\HtmlRenderer WinForms Demo.exe"
 del "Release\HtmlRenderer WPF Demo.exe"
 
-echo
+echo -
 echo FINISHED
 pause
