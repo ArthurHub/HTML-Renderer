@@ -127,6 +127,11 @@ namespace HtmlRenderer.Demo.WPF
         public void SetHtml(string html)
         {
             _htmlPanel.Text = html;
+            if (string.IsNullOrWhiteSpace(html))
+            {
+                _htmlPanel.InvalidateMeasure();
+                _htmlPanel.InvalidateVisual();
+            }
         }
 
 
