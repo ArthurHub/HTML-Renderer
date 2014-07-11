@@ -61,19 +61,9 @@ namespace HtmlRenderer.WPF
         protected readonly HtmlContainer _htmlContainer;
 
         /// <summary>
-        /// the raw base stylesheet data used in the control
-        /// </summary>
-        protected string _baseRawCssData;
-
-        /// <summary>
         /// the base stylesheet data used in the control
         /// </summary>
         protected CssData _baseCssData;
-
-        /// <summary>
-        /// the current html text set in the control
-        /// </summary>
-        protected string _text;
 
         /// <summary>
         /// The last position of the scrollbars to know if it has changed to update mouse
@@ -83,12 +73,23 @@ namespace HtmlRenderer.WPF
         #endregion
 
 
+        #region Dependency properties
+
+        public static readonly DependencyProperty AvoidImagesLateLoadingProperty = DependencyProperty.Register("AvoidImagesLateLoading", typeof(bool), typeof(HtmlControlBase), new PropertyMetadata(false, OnDependencyProperty_valueChanged));
+        public static readonly DependencyProperty IsSelectionEnabledProperty = DependencyProperty.Register("IsSelectionEnabled", typeof(bool), typeof(HtmlControlBase), new PropertyMetadata(true, OnDependencyProperty_valueChanged));
+        public static readonly DependencyProperty IsContextMenuEnabledProperty = DependencyProperty.Register("IsContextMenuEnabled", typeof(bool), typeof(HtmlControlBase), new PropertyMetadata(true, OnDependencyProperty_valueChanged));
+        public static readonly DependencyProperty BaseStylesheetProperty = DependencyProperty.Register("BaseStylesheet", typeof(string), typeof(HtmlControlBase), new PropertyMetadata(null, OnDependencyProperty_valueChanged));
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(HtmlControlBase), new PropertyMetadata(null, OnDependencyProperty_valueChanged));
+
+        #endregion
+
+
+
         /// <summary>
         /// Creates a new HtmlPanel and sets a basic css for it's styling.
         /// </summary>
         protected HtmlControlBase()
         {
-            Background = SystemColors.WindowBrush;
             SnapsToDevicePixels = true;
 
             _htmlContainer = new HtmlContainer();
@@ -137,79 +138,55 @@ namespace HtmlRenderer.WPF
         /// will push the html elements down.
         /// </remarks>
         [Category("Behavior")]
-        [DefaultValue(false)]
         [Description("If image loading only when visible should be avoided")]
-        public virtual bool AvoidImagesLateLoading
+        public bool AvoidImagesLateLoading
         {
-            get { return _htmlContainer.AvoidImagesLateLoading; }
-            set { _htmlContainer.AvoidImagesLateLoading = value; }
+            get { return (bool)GetValue(AvoidImagesLateLoadingProperty); }
+            set { SetValue(AvoidImagesLateLoadingProperty, value); }
         }
 
         /// <summary>
         /// Is content selection is enabled for the rendered html (default - true).<br/>
         /// If set to 'false' the rendered html will be static only with ability to click on links.
         /// </summary>
-        [Browsable(true)]
-        [DefaultValue(true)]
         [Category("Behavior")]
-        [EditorBrowsable(EditorBrowsableState.Always)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Description("Is content selection is enabled for the rendered html.")]
-        public virtual bool IsSelectionEnabled
+        public bool IsSelectionEnabled
         {
-            get { return _htmlContainer.IsSelectionEnabled; }
-            set { _htmlContainer.IsSelectionEnabled = value; }
+            get { return (bool)GetValue(IsSelectionEnabledProperty); }
+            set { SetValue(IsSelectionEnabledProperty, value); }
         }
 
         /// <summary>
         /// Is the build-in context menu enabled and will be shown on mouse right click (default - true)
         /// </summary>
-        [Browsable(true)]
-        [DefaultValue(true)]
         [Category("Behavior")]
-        [EditorBrowsable(EditorBrowsableState.Always)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Description("Is the build-in context menu enabled and will be shown on mouse right click.")]
-        public virtual bool IsContextMenuEnabled
+        public bool IsContextMenuEnabled
         {
-            get { return _htmlContainer.IsContextMenuEnabled; }
-            set { _htmlContainer.IsContextMenuEnabled = value; }
+            get { return (bool)GetValue(IsContextMenuEnabledProperty); }
+            set { SetValue(IsContextMenuEnabledProperty, value); }
         }
 
         /// <summary>
         /// Set base stylesheet to be used by html rendered in the panel.
         /// </summary>
-        [Browsable(true)]
         [Category("Appearance")]
         [Description("Set base stylesheet to be used by html rendered in the control.")]
-        public virtual string BaseStylesheet
+        public string BaseStylesheet
         {
-            get { return _baseRawCssData; }
-            set
-            {
-                _baseRawCssData = value;
-                _baseCssData = HtmlRender.ParseStyleSheet(value);
-                _htmlContainer.SetHtml(_text, _baseCssData);
-            }
+            get { return (string)GetValue(BaseStylesheetProperty); }
+            set { SetValue(BaseStylesheetProperty, value); }
         }
 
         /// <summary>
         /// Gets or sets the text of this panel
         /// </summary>
-        [Browsable(true)]
         [Description("Sets the html of this control.")]
-        public virtual string Text
+        public string Text
         {
-            get { return _text; }
-            set
-            {
-                _text = value;
-                _htmlContainer.ScrollOffset = new Point(0, 0);
-                _htmlContainer.SetHtml(_text, _baseCssData);
-                InvalidateMeasure();
-                InvalidateVisual();
-                InvokeMouseMove();
-            }
+            get { return (string)GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
         }
 
         /// <summary>
@@ -259,7 +236,7 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected override void OnRender(DrawingContext context)
         {
-            if (Background != null && Background.Opacity > 0)
+            if (Background.Opacity > 0)
                 context.DrawRectangle(Background, null, new Rect(RenderSize));
 
             if (BorderThickness != new Thickness(0))
@@ -424,6 +401,44 @@ namespace HtmlRenderer.WPF
         protected virtual void InvokeMouseMove()
         {
             _htmlContainer.HandleMouseMove(this, Mouse.GetPosition(this));
+        }
+
+        /// <summary>
+        /// Handle when dependency property value changes to update the underline HtmlContainer with the new value.
+        /// </summary>
+        private static void OnDependencyProperty_valueChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
+            var control = dependencyObject as HtmlControlBase;
+            if (control != null)
+            {
+                var htmlContainer = control._htmlContainer;
+                if (e.Property == AvoidImagesLateLoadingProperty)
+                {
+                    htmlContainer.AvoidImagesLateLoading = (bool)e.NewValue;
+                }
+                else if (e.Property == IsSelectionEnabledProperty)
+                {
+                    htmlContainer.IsSelectionEnabled = (bool)e.NewValue;
+                }
+                else if (e.Property == IsContextMenuEnabledProperty)
+                {
+                    htmlContainer.IsContextMenuEnabled = (bool)e.NewValue;
+                }
+                else if (e.Property == BaseStylesheetProperty)
+                {
+                    var baseCssData = HtmlRender.ParseStyleSheet((string)e.NewValue);
+                    control._baseCssData = baseCssData;
+                    htmlContainer.SetHtml(control.Text, baseCssData);
+                }
+                else if (e.Property == TextProperty)
+                {
+                    htmlContainer.ScrollOffset = new Point(0, 0);
+                    htmlContainer.SetHtml((string)e.NewValue, control._baseCssData);
+                    control.InvalidateMeasure();
+                    control.InvalidateVisual();
+                    control.InvokeMouseMove();
+                }
+            }
         }
 
 

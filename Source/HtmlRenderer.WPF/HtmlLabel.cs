@@ -33,17 +33,10 @@ namespace HtmlRenderer.WPF
     /// </remarks>
     public class HtmlLabel : HtmlControlBase
     {
-        #region Fields and Consts
+        #region Dependency properties
 
-        /// <summary>
-        /// Automatically sets the size of the label by content size.
-        /// </summary>
-        protected bool _autoSize;
-
-        /// <summary>
-        /// is to handle auto size of the control height only
-        /// </summary>
-        protected bool _autoSizeHeight;
+        public static readonly DependencyProperty AutoSizeProperty = DependencyProperty.Register("AutoSize", typeof(bool), typeof(HtmlLabel), new PropertyMetadata(true, OnDependencyProperty_valueChanged));
+        public static readonly DependencyProperty AutoSizeHeightOnlyProperty = DependencyProperty.Register("AutoSizeHeightOnly", typeof(bool), typeof(HtmlLabel), new PropertyMetadata(false, OnDependencyProperty_valueChanged));
 
         #endregion
 
@@ -51,56 +44,31 @@ namespace HtmlRenderer.WPF
         /// <summary>
         /// Init.
         /// </summary>
-        public HtmlLabel()
+        static HtmlLabel()
         {
-            _autoSize = true;
-            Background = Brushes.Transparent;
+            BackgroundProperty.OverrideMetadata(typeof(HtmlLabel), new FrameworkPropertyMetadata(Brushes.Transparent));
         }
 
         /// <summary>
         /// Automatically sets the size of the label by content size
         /// </summary>
-        [Browsable(true)]
-        [DefaultValue(true)]
         [Category("Layout")]
-        [EditorBrowsable(EditorBrowsableState.Always)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Description("Automatically sets the size of the label by content size.")]
         public bool AutoSize
         {
-            get { return _autoSize; }
-            set
-            {
-                _autoSize = value;
-                if (value)
-                {
-                    _autoSizeHeight = false;
-                    InvalidateMeasure();
-                    InvalidateVisual();
-                }
-            }
+            get { return (bool)GetValue(AutoSizeProperty); }
+            set { SetValue(AutoSizeProperty, value); }
         }
 
         /// <summary>
         /// Automatically sets the height of the label by content height (width is not effected).
         /// </summary>
-        [Browsable(true)]
-        [DefaultValue(false)]
         [Category("Layout")]
         [Description("Automatically sets the height of the label by content height (width is not effected)")]
         public virtual bool AutoSizeHeightOnly
         {
-            get { return _autoSizeHeight; }
-            set
-            {
-                _autoSizeHeight = value;
-                if (value)
-                {
-                    AutoSize = false;
-                    InvalidateMeasure();
-                    InvalidateVisual();
-                }
-            }
+            get { return (bool)GetValue(AutoSizeHeightOnlyProperty); }
+            set { SetValue(AutoSizeHeightOnlyProperty, value); }
         }
 
 
@@ -125,6 +93,35 @@ namespace HtmlRenderer.WPF
             }
 
             return constraint;
+        }
+
+        /// <summary>
+        /// Handle when dependency property value changes to update the underline HtmlContainer with the new value.
+        /// </summary>
+        private static void OnDependencyProperty_valueChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
+            var control = dependencyObject as HtmlLabel;
+            if (control != null)
+            {
+                if (e.Property == AutoSizeProperty)
+                {
+                    if ((bool)e.NewValue)
+                    {
+                        dependencyObject.SetValue(AutoSizeHeightOnlyProperty, false);
+                        control.InvalidateMeasure();
+                        control.InvalidateVisual();
+                    }
+                }
+                else if (e.Property == AutoSizeHeightOnlyProperty)
+                {
+                    if ((bool)e.NewValue)
+                    {
+                        dependencyObject.SetValue(AutoSizeProperty, false);
+                        control.InvalidateMeasure();
+                        control.InvalidateVisual();
+                    }
+                }
+            }
         }
 
         #endregion

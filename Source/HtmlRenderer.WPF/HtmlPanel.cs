@@ -46,6 +46,13 @@ namespace HtmlRenderer.WPF
         #endregion
 
 
+        static HtmlPanel()
+        {
+            BackgroundProperty.OverrideMetadata(typeof(HtmlPanel), new FrameworkPropertyMetadata(SystemColors.WindowBrush));
+
+            TextProperty.OverrideMetadata(typeof(HtmlPanel), new PropertyMetadata(null, OnTextProperty_change));
+        }
+
         /// <summary>
         /// Creates a new HtmlPanel and sets a basic css for it's styling.
         /// </summary>
@@ -66,16 +73,6 @@ namespace HtmlRenderer.WPF
             AddLogicalChild(_horizontalScrollBar);
 
             _htmlContainer.ScrollChange += OnScrollChange;
-        }
-
-        public override string Text
-        {
-            get { return base.Text; }
-            set
-            {
-                _horizontalScrollBar.Value = _verticalScrollBar.Value = 0;
-                base.Text = value;
-            }
         }
 
         /// <summary>
@@ -353,6 +350,16 @@ namespace HtmlRenderer.WPF
                 _htmlContainer.ScrollOffset = newScrollOffset;
                 InvalidateVisual();
             }
+        }
+
+        /// <summary>
+        /// On text property change reset the scrollbars to zero.
+        /// </summary>
+        private static void OnTextProperty_change(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var panel = d as HtmlPanel;
+            if (panel != null)
+                panel._horizontalScrollBar.Value = panel._verticalScrollBar.Value = 0;
         }
 
         #endregion
