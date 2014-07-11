@@ -10,6 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
@@ -73,6 +74,16 @@ namespace HtmlRenderer.WPF.Adapters
         {
             var solidBrush = GetSolidColorBrush(color);
             return new BrushAdapter(solidBrush);
+        }
+
+        protected override RBrush CreateLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        {
+            var startColor = angle <= 180 ? Utils.Convert(color1) : Utils.Convert(color2);
+            var endColor = angle <= 180 ? Utils.Convert(color2) : Utils.Convert(color1);
+            angle = angle <= 180 ? angle : angle - 180;
+            double x = angle < 135 ? Math.Max((angle - 45) / 90, 0) : 1;
+            double y = angle <= 45 ? Math.Max(0.5 - angle / 90, 0) : angle > 135 ? Math.Abs(1.5 - angle / 90) : 0;
+            return new BrushAdapter(new LinearGradientBrush(startColor, endColor, new Point(x, y), new Point(1 - x, 1 - y)));
         }
 
         protected override RImage ConvertImageInt(object image)

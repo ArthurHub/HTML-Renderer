@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Windows.Forms;
 using HtmlRenderer.Adapters.Entities;
@@ -80,6 +81,11 @@ namespace HtmlRenderer.WinForms.Adapters
                 solidBrush = new SolidBrush(Utils.Convert(color));
 
             return new BrushAdapter(solidBrush, false);
+        }
+
+        protected override RBrush CreateLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        {
+            return new BrushAdapter(new LinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), (float)angle), true);
         }
 
         protected override RImage ConvertImageInt(object image)

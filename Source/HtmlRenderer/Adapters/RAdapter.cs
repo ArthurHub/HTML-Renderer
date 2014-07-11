@@ -130,6 +130,19 @@ namespace HtmlRenderer.Adapters
         }
 
         /// <summary>
+        /// Get linear gradient color brush from <paramref name="color1"/> to <paramref name="color2"/>.
+        /// </summary>
+        /// <param name="rect">the rectangle to get the brush for</param>
+        /// <param name="color1">the start color of the gradient</param>
+        /// <param name="color2">the end color of the gradient</param>
+        /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
+        /// <returns>linear gradient color brush instance</returns>
+        public RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        {
+            return CreateLinearGradientBrush(rect, color1, color2, angle);
+        }
+
+        /// <summary>
         /// Convert image object returned from <see cref="HtmlImageLoadEventArgs"/> to <see cref="RImage"/>.
         /// </summary>
         /// <param name="image">the image returned from load event</param>
@@ -336,6 +349,16 @@ namespace HtmlRenderer.Adapters
         /// <param name="color">the color to get brush for</param>
         /// <returns>brush instance</returns>
         protected abstract RBrush CreateSolidBrush(RColor color);
+
+        /// <summary>
+        /// Get linear gradient color brush from <paramref name="color1"/> to <paramref name="color2"/>.
+        /// </summary>
+        /// <param name="rect">the rectangle to get the brush for</param>
+        /// <param name="color1">the start color of the gradient</param>
+        /// <param name="color2">the end color of the gradient</param>
+        /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
+        /// <returns>linear gradient color brush instance</returns>
+        protected abstract RBrush CreateLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle);
 
         /// <summary>
         /// Convert image object returned from <see cref="HtmlImageLoadEventArgs"/> to <see cref="RImage"/>.

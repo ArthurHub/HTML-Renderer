@@ -121,8 +121,8 @@ namespace HtmlRenderer.WPF
         /// </summary>
         public event RoutedEventHandler<HtmlRenderErrorEventArgs> RenderError
         {
-            add { AddHandler(LinkClickedEvent, value); }
-            remove { RemoveHandler(LinkClickedEvent, value); }
+            add { AddHandler(RenderErrorEvent, value); }
+            remove { RemoveHandler(RenderErrorEvent, value); }
         }
 
         /// <summary>
@@ -132,8 +132,8 @@ namespace HtmlRenderer.WPF
         /// </summary>
         public event RoutedEventHandler<HtmlStylesheetLoadEventArgs> StylesheetLoad
         {
-            add { AddHandler(LinkClickedEvent, value); }
-            remove { RemoveHandler(LinkClickedEvent, value); }
+            add { AddHandler(StylesheetLoadEvent, value); }
+            remove { RemoveHandler(StylesheetLoadEvent, value); }
         }
 
         /// <summary>
@@ -142,8 +142,8 @@ namespace HtmlRenderer.WPF
         /// </summary>
         public event RoutedEventHandler<HtmlImageLoadEventArgs> ImageLoad
         {
-            add { AddHandler(LinkClickedEvent, value); }
-            remove { RemoveHandler(LinkClickedEvent, value); }
+            add { AddHandler(ImageLoadEvent, value); }
+            remove { RemoveHandler(ImageLoadEvent, value); }
         }
 
         /// <summary>
@@ -464,7 +464,10 @@ namespace HtmlRenderer.WPF
 
         private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
         {
-            OnLinkClicked(e);
+            if (CheckAccess())
+                OnLinkClicked(e);
+            else
+                Dispatcher.Invoke(new Action<HtmlLinkClickedEventArgs>(OnLinkClicked), e);
         }
 
         private void OnRenderError(object sender, HtmlRenderErrorEventArgs e)
@@ -477,12 +480,18 @@ namespace HtmlRenderer.WPF
 
         private void OnStylesheetLoad(object sender, HtmlStylesheetLoadEventArgs e)
         {
-            OnStylesheetLoad(e);
+            if (CheckAccess())
+                OnStylesheetLoad(e);
+            else
+                Dispatcher.Invoke(new Action<HtmlStylesheetLoadEventArgs>(OnStylesheetLoad), e);
         }
 
         private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
         {
-            OnImageLoad(e);
+            if (CheckAccess())
+                OnImageLoad(e);
+            else
+                Dispatcher.Invoke(new Action<HtmlImageLoadEventArgs>(OnImageLoad), e);
         }
 
         private void OnRefresh(object sender, HtmlRefreshEventArgs e)

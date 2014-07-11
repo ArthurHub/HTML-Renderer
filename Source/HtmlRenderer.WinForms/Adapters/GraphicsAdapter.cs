@@ -107,11 +107,6 @@ namespace HtmlRenderer.WinForms.Adapters
             _releaseGraphics = releaseGraphics;
         }
 
-        public override RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
-        {
-            return new BrushAdapter(new LinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), (float)angle), true);
-        }
-
         public override void PopClip()
         {
             ReleaseHdc();

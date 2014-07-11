@@ -55,7 +55,7 @@ namespace HtmlRenderer.Adapters
         /// </summary>
         /// <param name="color">the color to get the pen for</param>
         /// <returns>pen instance</returns>
-        public virtual RPen GetPen(RColor color)
+        public RPen GetPen(RColor color)
         {
             return _adapter.GetPen(color);
         }
@@ -65,7 +65,7 @@ namespace HtmlRenderer.Adapters
         /// </summary>
         /// <param name="color">the color to get the brush for</param>
         /// <returns>solid color brush instance</returns>
-        public virtual RBrush GetSolidBrush(RColor color)
+        public RBrush GetSolidBrush(RColor color)
         {
             return _adapter.GetSolidBrush(color);
         }
@@ -78,7 +78,10 @@ namespace HtmlRenderer.Adapters
         /// <param name="color2">the end color of the gradient</param>
         /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
         /// <returns>linear gradient color brush instance</returns>
-        public abstract RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle);
+        public RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        {
+            return _adapter.GetLinearGradientBrush(rect, color1, color2, angle);
+        }
 
         /// <summary>
         /// Gets a Rectangle structure that bounds the clipping region of this Graphics.

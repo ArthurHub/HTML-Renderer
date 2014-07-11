@@ -82,6 +82,20 @@ namespace HtmlRenderer.PdfSharp.Adapters
             return new BrushAdapter(solidBrush);
         }
 
+        protected override RBrush CreateLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        {
+            XLinearGradientMode mode;
+            if (angle < 45)
+                mode = XLinearGradientMode.ForwardDiagonal;
+            else if (angle < 90)
+                mode = XLinearGradientMode.Vertical;
+            else if (angle < 135)
+                mode = XLinearGradientMode.BackwardDiagonal;
+            else
+                mode = XLinearGradientMode.Horizontal;
+            return new BrushAdapter(new XLinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), mode));
+        }
+
         protected override RImage ConvertImageInt(object image)
         {
             return image != null ? new ImageAdapter((XImage)image) : null;
