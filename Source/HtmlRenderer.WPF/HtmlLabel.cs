@@ -29,9 +29,9 @@ namespace HtmlRenderer.WPF
     /// The control will handle mouse and keyboard events on it to support html text selection, copy-paste and mouse clicks.<br/>
     /// </summary>
     /// <remarks>
-    /// See <see cref="HtmlControlBase"/> for more info.
+    /// See <see cref="HtmlControl"/> for more info.
     /// </remarks>
-    public class HtmlLabel : HtmlControlBase
+    public class HtmlLabel : HtmlControl
     {
         #region Dependency properties
 

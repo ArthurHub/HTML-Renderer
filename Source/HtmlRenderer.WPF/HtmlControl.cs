@@ -51,7 +51,7 @@ namespace HtmlRenderer.WPF
     /// Raised when an error occurred during html rendering.<br/>
     /// </para>
     /// </summary>
-    public abstract class HtmlControlBase : Control
+    public class HtmlControl : Control
     {
         #region Fields and Consts
 
@@ -73,13 +73,19 @@ namespace HtmlRenderer.WPF
         #endregion
 
 
-        #region Dependency properties
+        #region Dependency properties / routed events
 
-        public static readonly DependencyProperty AvoidImagesLateLoadingProperty = DependencyProperty.Register("AvoidImagesLateLoading", typeof(bool), typeof(HtmlControlBase), new PropertyMetadata(false, OnDependencyProperty_valueChanged));
-        public static readonly DependencyProperty IsSelectionEnabledProperty = DependencyProperty.Register("IsSelectionEnabled", typeof(bool), typeof(HtmlControlBase), new PropertyMetadata(true, OnDependencyProperty_valueChanged));
-        public static readonly DependencyProperty IsContextMenuEnabledProperty = DependencyProperty.Register("IsContextMenuEnabled", typeof(bool), typeof(HtmlControlBase), new PropertyMetadata(true, OnDependencyProperty_valueChanged));
-        public static readonly DependencyProperty BaseStylesheetProperty = DependencyProperty.Register("BaseStylesheet", typeof(string), typeof(HtmlControlBase), new PropertyMetadata(null, OnDependencyProperty_valueChanged));
-        public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(HtmlControlBase), new PropertyMetadata(null, OnDependencyProperty_valueChanged));
+        public static readonly DependencyProperty AvoidImagesLateLoadingProperty = DependencyProperty.Register("AvoidImagesLateLoading", typeof(bool), typeof(HtmlControl), new PropertyMetadata(false, OnDependencyProperty_valueChanged));
+        public static readonly DependencyProperty IsSelectionEnabledProperty = DependencyProperty.Register("IsSelectionEnabled", typeof(bool), typeof(HtmlControl), new PropertyMetadata(true, OnDependencyProperty_valueChanged));
+        public static readonly DependencyProperty IsContextMenuEnabledProperty = DependencyProperty.Register("IsContextMenuEnabled", typeof(bool), typeof(HtmlControl), new PropertyMetadata(true, OnDependencyProperty_valueChanged));
+        public static readonly DependencyProperty BaseStylesheetProperty = DependencyProperty.Register("BaseStylesheet", typeof(string), typeof(HtmlControl), new PropertyMetadata(null, OnDependencyProperty_valueChanged));
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(HtmlControl), new PropertyMetadata(null, OnDependencyProperty_valueChanged));
+
+        public static readonly RoutedEvent LinkClickedEvent = EventManager.RegisterRoutedEvent("LinkClicked", RoutingStrategy.Bubble, typeof(RoutedEventHandler<HtmlLinkClickedEventArgs>), typeof(HtmlControl));
+        public static readonly RoutedEvent RenderErrorEvent = EventManager.RegisterRoutedEvent("RenderError", RoutingStrategy.Bubble, typeof(RoutedEventHandler<HtmlRenderErrorEventArgs>), typeof(HtmlControl));
+        public static readonly RoutedEvent RefreshEvent = EventManager.RegisterRoutedEvent("Refresh", RoutingStrategy.Bubble, typeof(RoutedEventHandler<HtmlRefreshEventArgs>), typeof(HtmlControl));
+        public static readonly RoutedEvent StylesheetLoadEvent = EventManager.RegisterRoutedEvent("StylesheetLoad", RoutingStrategy.Bubble, typeof(RoutedEventHandler<HtmlStylesheetLoadEventArgs>), typeof(HtmlControl));
+        public static readonly RoutedEvent ImageLoadEvent = EventManager.RegisterRoutedEvent("ImageLoad", RoutingStrategy.Bubble, typeof(RoutedEventHandler<HtmlImageLoadEventArgs>), typeof(HtmlControl));
 
         #endregion
 
@@ -88,7 +94,7 @@ namespace HtmlRenderer.WPF
         /// <summary>
         /// Creates a new HtmlPanel and sets a basic css for it's styling.
         /// </summary>
-        protected HtmlControlBase()
+        protected HtmlControl()
         {
             SnapsToDevicePixels = true;
 
@@ -104,25 +110,41 @@ namespace HtmlRenderer.WPF
         /// Raised when the user clicks on a link in the html.<br/>
         /// Allows canceling the execution of the link.
         /// </summary>
-        public event EventHandler<HtmlLinkClickedEventArgs> LinkClicked;
+        public event RoutedEventHandler<HtmlLinkClickedEventArgs> LinkClicked
+        {
+            add { AddHandler(LinkClickedEvent, value); }
+            remove { RemoveHandler(LinkClickedEvent, value); }
+        }
 
         /// <summary>
         /// Raised when an error occurred during html rendering.<br/>
         /// </summary>
-        public event EventHandler<HtmlRenderErrorEventArgs> RenderError;
+        public event RoutedEventHandler<HtmlRenderErrorEventArgs> RenderError
+        {
+            add { AddHandler(LinkClickedEvent, value); }
+            remove { RemoveHandler(LinkClickedEvent, value); }
+        }
 
         /// <summary>
         /// Raised when a stylesheet is about to be loaded by file path or URI by link element.<br/>
         /// This event allows to provide the stylesheet manually or provide new source (file or uri) to load from.<br/>
         /// If no alternative data is provided the original source will be used.<br/>
         /// </summary>
-        public event EventHandler<HtmlStylesheetLoadEventArgs> StylesheetLoad;
+        public event RoutedEventHandler<HtmlStylesheetLoadEventArgs> StylesheetLoad
+        {
+            add { AddHandler(LinkClickedEvent, value); }
+            remove { RemoveHandler(LinkClickedEvent, value); }
+        }
 
         /// <summary>
         /// Raised when an image is about to be loaded by file path or URI.<br/>
         /// This event allows to provide the image manually, if not handled the image will be loaded from file or download from URI.
         /// </summary>
-        public event EventHandler<HtmlImageLoadEventArgs> ImageLoad;
+        public event RoutedEventHandler<HtmlImageLoadEventArgs> ImageLoad
+        {
+            add { AddHandler(LinkClickedEvent, value); }
+            remove { RemoveHandler(LinkClickedEvent, value); }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating if image loading only when visible should be avoided (default - false).<br/>
@@ -334,9 +356,8 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected virtual void OnLinkClicked(HtmlLinkClickedEventArgs e)
         {
-            var handler = LinkClicked;
-            if (handler != null)
-                handler(this, e);
+            RoutedEventArgs newEventArgs = new RoutedEvenArgs<HtmlLinkClickedEventArgs>(LinkClickedEvent, this, e);
+            RaiseEvent(newEventArgs);
         }
 
         /// <summary>
@@ -344,9 +365,8 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected virtual void OnRenderError(HtmlRenderErrorEventArgs e)
         {
-            var handler = RenderError;
-            if (handler != null)
-                handler(this, e);
+            RoutedEventArgs newEventArgs = new RoutedEvenArgs<HtmlRenderErrorEventArgs>(RenderErrorEvent, this, e);
+            RaiseEvent(newEventArgs);
         }
 
         /// <summary>
@@ -354,9 +374,8 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected virtual void OnStylesheetLoad(HtmlStylesheetLoadEventArgs e)
         {
-            var handler = StylesheetLoad;
-            if (handler != null)
-                handler(this, e);
+            RoutedEventArgs newEventArgs = new RoutedEvenArgs<HtmlStylesheetLoadEventArgs>(StylesheetLoadEvent, this, e);
+            RaiseEvent(newEventArgs);
         }
 
         /// <summary>
@@ -364,9 +383,8 @@ namespace HtmlRenderer.WPF
         /// </summary>
         protected virtual void OnImageLoad(HtmlImageLoadEventArgs e)
         {
-            var handler = ImageLoad;
-            if (handler != null)
-                handler(this, e);
+            RoutedEventArgs newEventArgs = new RoutedEvenArgs<HtmlImageLoadEventArgs>(ImageLoadEvent, this, e);
+            RaiseEvent(newEventArgs);
         }
 
         /// <summary>
@@ -408,7 +426,7 @@ namespace HtmlRenderer.WPF
         /// </summary>
         private static void OnDependencyProperty_valueChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
-            var control = dependencyObject as HtmlControlBase;
+            var control = dependencyObject as HtmlControl;
             if (control != null)
             {
                 var htmlContainer = control._htmlContainer;

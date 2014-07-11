@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using HtmlRenderer.Core.Entities;
 using HtmlRenderer.Demo.Common;
+using HtmlRenderer.WPF;
 
 namespace HtmlRenderer.Demo.WPF
 {
@@ -62,6 +63,14 @@ namespace HtmlRenderer.Demo.WPF
         }
 
         /// <summary>
+        /// Handle stylesheet resolve.
+        /// </summary>
+        public static void OnStylesheetLoad(object sender, RoutedEvenArgs<HtmlStylesheetLoadEventArgs> args)
+        {
+            DemoUtils.OnStylesheetLoad(sender, args.Data);
+        }
+
+        /// <summary>
         /// Get image by resource key.
         /// </summary>
         public static BitmapImage TryLoadResourceImage(string src)
@@ -96,9 +105,17 @@ namespace HtmlRenderer.Demo.WPF
         /// <summary>
         /// On image load in renderer set the image by event async.
         /// </summary>
-        public static void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
+        public static void OnImageLoad(object sender, RoutedEvenArgs<HtmlImageLoadEventArgs> args)
         {
-            ImageLoad(e);
+            ImageLoad(args.Data);
+        }
+
+        /// <summary>
+        /// On image load in renderer set the image by event async.
+        /// </summary>
+        public static void OnImageLoad(object sender, HtmlImageLoadEventArgs args)
+        {
+            ImageLoad(args);
         }
 
         /// <summary>
@@ -107,7 +124,7 @@ namespace HtmlRenderer.Demo.WPF
         public static void ImageLoad(HtmlImageLoadEventArgs e)
         {
             var img = TryLoadResourceImage(e.Src);
-            
+
             if (!e.Handled && e.Attributes != null)
             {
                 if (e.Attributes.ContainsKey("byevent"))
