@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>HtmlRenderer.WinForms</id>
+    <id>HtmlRenderer.PdfSharp</id>
     <version>0.0.0.1</version>
-    <title>HTML Renderer for WinForms</title>
+    <title>HTML Renderer for PDF generation using PdfSharp</title>
     <authors>Arthur Teplitzki</authors>
     <owners>Arthur Teplitzki</owners>
     <licenseUrl>https://htmlrenderer.codeplex.com/license</licenseUrl>
@@ -11,7 +11,7 @@
     <iconUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/html.ico?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>
-      Multipurpose (UI Controls / Image generation) 100% managed (C#) HTML Rendering library for WinForms.
+      PDF generation 100% managed (C#) HTML PDF generation library.
     </summary>
     <description>
       The rich formatting power of HTML in your WinForms .NET applications using simple controls or static rendering code.
@@ -19,12 +19,9 @@
 
       Features and Benefits:
       ---
-      * Controls: HtmlPanel, HtmlLabel, HtmlToolTip.
-      * Create images from HTML snippets.
       * 100% managed code and no external dependencies.
       * Extensive HTML 4.01 and CSS level 2 specifications support.
       * Support separating CSS from HTML by loading stylesheet code separately.
-      * Support text selection, copy-paste and context menu.
       * Handles "real world" malformed HTML, it doesn't have to be XHTML.
       * Supports .NET 2.0 or higher including Client Profile.
       * Lightweight, only two DLLs (~300K).
@@ -42,14 +39,14 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Release\WinForms\net20\HtmlRenderer.WinForms.dll" target="lib\net20\HtmlRenderer.WinForms.dll" />
-    <file src="..\Release\WinForms\net20\HtmlRenderer.WinForms.pdb" target="lib\net20\HtmlRenderer.WinForms.pdb" />
-    <file src="..\Release\WinForms\net35\HtmlRenderer.WinForms.dll" target="lib\net35-client\HtmlRenderer.WinForms.dll" />
-    <file src="..\Release\WinForms\net35\HtmlRenderer.WinForms.pdb" target="lib\net35-client\HtmlRenderer.WinForms.pdb" />
-    <file src="..\Release\WinForms\net40\HtmlRenderer.WinForms.dll" target="lib\net40-client\HtmlRenderer.WinForms.dll" />
-    <file src="..\Release\WinForms\net40\HtmlRenderer.WinForms.pdb" target="lib\net40-client\HtmlRenderer.WinForms.pdb" />
-    <file src="..\Release\WinForms\net45\HtmlRenderer.WinForms.dll" target="lib\net45\HtmlRenderer.WinForms.dll" />
-    <file src="..\Release\WinForms\net45\HtmlRenderer.WinForms.pdb" target="lib\net45\HtmlRenderer.WinForms.pdb" />
-    <file src="HtmlRenderer.WinForms.readme.txt" target="readme.txt" />
+    <file src="..\Release\PdfSharp\net20\HtmlRenderer.PdfSharp.dll" target="lib\net20\HtmlRenderer.PdfSharp.dll" />
+    <file src="..\Release\PdfSharp\net20\HtmlRenderer.PdfSharp.pdb" target="lib\net20\HtmlRenderer.PdfSharp.pdb" />
+    <file src="..\Release\PdfSharp\net35\HtmlRenderer.PdfSharp.dll" target="lib\net35-client\HtmlRenderer.PdfSharp.dll" />
+    <file src="..\Release\PdfSharp\net35\HtmlRenderer.PdfSharp.pdb" target="lib\net35-client\HtmlRenderer.PdfSharp.pdb" />
+    <file src="..\Release\PdfSharp\net40\HtmlRenderer.PdfSharp.dll" target="lib\net40-client\HtmlRenderer.PdfSharp.dll" />
+    <file src="..\Release\PdfSharp\net40\HtmlRenderer.PdfSharp.pdb" target="lib\net40-client\HtmlRenderer.PdfSharp.pdb" />
+    <file src="..\Release\PdfSharp\net45\HtmlRenderer.PdfSharp.dll" target="lib\net45\HtmlRenderer.PdfSharp.dll" />
+    <file src="..\Release\PdfSharp\net45\HtmlRenderer.PdfSharp.pdb" target="lib\net45\HtmlRenderer.PdfSharp.pdb" />
+    <file src="HtmlRenderer.PdfSharp.readme.txt" target="readme.txt" />
   </files>
 </package>

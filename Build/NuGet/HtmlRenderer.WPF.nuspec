@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>HtmlRenderer.WPF</id>
+    <version>0.0.0.1</version>
+    <title>HTML Renderer for WPF</title>
+    <authors>Arthur Teplitzki</authors>
+    <owners>Arthur Teplitzki</owners>
+    <licenseUrl>https://htmlrenderer.codeplex.com/license</licenseUrl>
+    <projectUrl>https://htmlrenderer.codeplex.com/</projectUrl>
+    <iconUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/html.ico?raw=true</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>
+      Multipurpose (UI Controls / Image generation) 100% managed (C#) HTML Rendering library for WPF.
+    </summary>
+    <description>
+      The rich formatting power of HTML in your WPF .NET applications using simple controls or static rendering code.
+      The library is 100% managed C# code without any external dependencies (no WebBrowser control, ActiveX / COM or MSHTML dll), the only requirement is .NET 3.0 or higher.
+
+      Features and Benefits:
+      ---
+      * Controls: HtmlPanel, HtmlLabel.
+      * Create images from HTML snippets.
+      * 100% managed code and no external dependencies.
+      * Extensive HTML 4.01 and CSS level 2 specifications support.
+      * Support separating CSS from HTML by loading stylesheet code separately.
+      * Support text selection, copy-paste and context menu.
+      * Handles "real world" malformed HTML, it doesn't have to be XHTML.
+      * Supports .NET 3.0 or higher including Client Profile.
+      * Lightweight, only two DLLs (~300K).
+      * High performance and low memory footprint.
+      * Extendable and configurable.
+    </description>
+    <releaseNotes>See http://htmlrenderer.codeplex.com/releases.</releaseNotes>
+    <tags>html render renderer draw control WPF</tags>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Windows.Forms" targetFramework="" />
+      <frameworkAssembly assemblyName="System.Drawing" targetFramework="" />
+    </frameworkAssemblies>
+    <dependencies>
+      <dependency id="HtmlRenderer.Core" version="1.5.0.0"/>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\Release\WPF\net30\HtmlRenderer.WPF.dll" target="lib\net30\HtmlRenderer.WPF.dll" />
+    <file src="..\Release\WPF\net30\HtmlRenderer.WPF.pdb" target="lib\net30\HtmlRenderer.WPF.pdb" />
+    <file src="..\Release\WPF\net35\HtmlRenderer.WPF.dll" target="lib\net35-client\HtmlRenderer.WPF.dll" />
+    <file src="..\Release\WPF\net35\HtmlRenderer.WPF.pdb" target="lib\net35-client\HtmlRenderer.WPF.pdb" />
+    <file src="..\Release\WPF\net40\HtmlRenderer.WPF.dll" target="lib\net40-client\HtmlRenderer.WPF.dll" />
+    <file src="..\Release\WPF\net40\HtmlRenderer.WPF.pdb" target="lib\net40-client\HtmlRenderer.WPF.pdb" />
+    <file src="..\Release\WPF\net45\HtmlRenderer.WPF.dll" target="lib\net45\HtmlRenderer.WPF.dll" />
+    <file src="..\Release\WPF\net45\HtmlRenderer.WPF.pdb" target="lib\net45\HtmlRenderer.WPF.pdb" />
+    <file src="HtmlRenderer.WPF.readme.txt" target="readme.txt" />
+  </files>
+</package>

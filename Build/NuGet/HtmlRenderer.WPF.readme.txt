@@ -1,5 +1,5 @@
 
-********** Welcome to the HTML Renderer WinForms library! *****************************************
+********** Welcome to the HTML Renderer WPF library! **********************************************
 
 This library provides the rich formatting power of HTML in your WinForms .NET applications using
 simple controls or static rendering code.
