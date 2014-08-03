@@ -10,7 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-namespace HtmlRenderer.Core.Entities
+namespace TheArtOfDev.HtmlRenderer.Core.Entities
 {
     /// <summary>
     /// Holds data on link element in HTML.<br/>

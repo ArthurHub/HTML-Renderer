@@ -12,7 +12,7 @@
 
 using System;
 
-namespace HtmlRenderer.Adapters
+namespace TheArtOfDev.HtmlRenderer.Adapters
 {
     /// <summary>
     /// Adapter for platform specific image object - used to render images.

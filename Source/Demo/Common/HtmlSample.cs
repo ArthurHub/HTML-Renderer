@@ -10,7 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-namespace HtmlRenderer.Demo.Common
+namespace TheArtOfDev.HtmlRenderer.Demo.Common
 {
     /// <summary>
     /// Used to hold a single html sample with its name.

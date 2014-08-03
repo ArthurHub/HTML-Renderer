@@ -13,12 +13,12 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using HtmlRenderer.Adapters;
-using HtmlRenderer.Adapters.Entities;
-using HtmlRenderer.Core.Utils;
-using HtmlRenderer.WPF.Utilities;
+using TheArtOfDev.HtmlRenderer.Adapters;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
+using TheArtOfDev.HtmlRenderer.WPF.Utilities;
 
-namespace HtmlRenderer.WPF.Adapters
+namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
 {
     /// <summary>
     /// Adapter for WPF Control for core.

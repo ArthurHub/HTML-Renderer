@@ -14,13 +14,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using HtmlRenderer.Adapters.Entities;
-using HtmlRenderer.Core;
-using HtmlRenderer.Core.Entities;
-using HtmlRenderer.Core.Handlers;
-using HtmlRenderer.Core.Utils;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Handlers;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Adapters
+namespace TheArtOfDev.HtmlRenderer.Adapters
 {
     /// <summary>
     /// Platform adapter to bridge platform specific objects to HTML Renderer core library.<br/>

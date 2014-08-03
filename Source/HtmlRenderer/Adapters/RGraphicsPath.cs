@@ -12,7 +12,7 @@
 
 using System;
 
-namespace HtmlRenderer.Adapters
+namespace TheArtOfDev.HtmlRenderer.Adapters
 {
     /// <summary>
     /// Adapter for platform specific graphics path object - used to render (draw/fill) path shape.

@@ -11,13 +11,13 @@
 // "The Art of War"
 
 using System;
-using HtmlRenderer.Adapters;
-using HtmlRenderer.Adapters.Entities;
-using HtmlRenderer.Core.Dom;
-using HtmlRenderer.Core.Entities;
-using HtmlRenderer.Core.Utils;
+using TheArtOfDev.HtmlRenderer.Adapters;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Dom;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Core.Handlers
+namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 {
     /// <summary>
     /// Handler for text selection in the html.

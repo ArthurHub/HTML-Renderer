@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HtmlRenderer.Demo.Common.Properties {
+namespace TheArtOfDev.HtmlRenderer.Demo.Common.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace HtmlRenderer.Demo.Common.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HtmlRenderer.Demo.Common.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TheArtOfDev.HtmlRenderer.Demo.Common.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

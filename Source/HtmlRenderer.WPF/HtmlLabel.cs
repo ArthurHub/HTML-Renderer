@@ -14,11 +14,11 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
-using HtmlRenderer.Adapters.Entities;
-using HtmlRenderer.Core;
-using HtmlRenderer.WPF.Adapters;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core;
+using TheArtOfDev.HtmlRenderer.WPF.Adapters;
 
-namespace HtmlRenderer.WPF
+namespace TheArtOfDev.HtmlRenderer.WPF
 {
     /// <summary>
     /// Provides HTML rendering using the text property.<br/>

@@ -14,7 +14,7 @@ using System;
 using System.Drawing;
 using System.Text;
 
-namespace HtmlRenderer.Demo.Common
+namespace TheArtOfDev.HtmlRenderer.Demo.Common
 {
     /// <summary>
     /// HTML syntax highlighting using Rich-Text formatting.<br/>

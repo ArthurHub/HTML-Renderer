@@ -17,10 +17,10 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Reflection;
 using System.Windows.Forms;
-using HtmlRenderer.Demo.Common;
-using HtmlRenderer.WinForms;
+using TheArtOfDev.HtmlRenderer.Demo.Common;
+using TheArtOfDev.HtmlRenderer.WinForms;
 
-namespace HtmlRenderer.Demo.WinForms
+namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
 {
     public partial class GenerateImageForm : Form
     {

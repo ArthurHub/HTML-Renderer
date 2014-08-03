@@ -12,13 +12,13 @@
 
 using System.Drawing;
 using System.IO;
-using HtmlRenderer.Adapters;
-using HtmlRenderer.Adapters.Entities;
-using HtmlRenderer.PdfSharp.Utilities;
+using TheArtOfDev.HtmlRenderer.Adapters;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.PdfSharp.Utilities;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
-namespace HtmlRenderer.PdfSharp.Adapters
+namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
 {
     /// <summary>
     /// Adapter for PdfSharp library platform.

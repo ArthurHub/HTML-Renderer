@@ -12,7 +12,7 @@
 
 using PdfSharp;
 
-namespace HtmlRenderer.PdfSharp
+namespace TheArtOfDev.HtmlRenderer.PdfSharp
 {
     /// <summary>
     /// The settings for generating PDF using <see cref="PdfGenerator"/>

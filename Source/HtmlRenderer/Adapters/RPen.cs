@@ -10,9 +10,9 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 
-namespace HtmlRenderer.Adapters
+namespace TheArtOfDev.HtmlRenderer.Adapters
 {
     /// <summary>
     /// Adapter for platform specific pen objects - used to draw graphics (lines, rectangles and paths) 

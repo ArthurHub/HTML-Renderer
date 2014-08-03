@@ -13,14 +13,14 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using HtmlRenderer.Adapters;
-using HtmlRenderer.Adapters.Entities;
-using HtmlRenderer.Core.Entities;
-using HtmlRenderer.Core.Handlers;
-using HtmlRenderer.Core.Parse;
-using HtmlRenderer.Core.Utils;
+using TheArtOfDev.HtmlRenderer.Adapters;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Handlers;
+using TheArtOfDev.HtmlRenderer.Core.Parse;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Core.Dom
+namespace TheArtOfDev.HtmlRenderer.Core.Dom
 {
     /// <summary>
     /// Represents a CSS Box of text or replaced elements.

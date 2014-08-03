@@ -16,13 +16,13 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
-using HtmlRenderer.Adapters.Entities;
-using HtmlRenderer.Core;
-using HtmlRenderer.Core.Entities;
-using HtmlRenderer.Core.Utils;
-using HtmlRenderer.WinForms.Utilities;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
+using TheArtOfDev.HtmlRenderer.WinForms.Utilities;
 
-namespace HtmlRenderer.WinForms
+namespace TheArtOfDev.HtmlRenderer.WinForms
 {
     /// <summary>
     /// Provides HTML rendering using the text property.<br/>

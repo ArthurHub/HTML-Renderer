@@ -7,7 +7,7 @@
     <ProjectGuid>{CA249F5D-9285-40A6-B217-5889EF79FD7E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HtmlRenderer.PdfSharp</RootNamespace>
+    <RootNamespace>TheArtOfDev.HtmlRenderer.PdfSharp</RootNamespace>
     <AssemblyName>HtmlRenderer.PdfSharp</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

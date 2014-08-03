@@ -12,10 +12,10 @@
 
 using System;
 using System.Collections.Generic;
-using HtmlRenderer.Core.Dom;
-using HtmlRenderer.Core.Utils;
+using TheArtOfDev.HtmlRenderer.Core.Dom;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Core.Parse
+namespace TheArtOfDev.HtmlRenderer.Core.Parse
 {
     /// <summary>
     /// 

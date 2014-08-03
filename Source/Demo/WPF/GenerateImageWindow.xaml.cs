@@ -13,11 +13,11 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using HtmlRenderer.Demo.Common;
-using HtmlRenderer.WPF;
+using TheArtOfDev.HtmlRenderer.Demo.Common;
+using TheArtOfDev.HtmlRenderer.WPF;
 using Microsoft.Win32;
 
-namespace HtmlRenderer.Demo.WPF
+namespace TheArtOfDev.HtmlRenderer.Demo.WPF
 {
     /// <summary>
     /// Interaction logic for GenerateImageWindow.xaml

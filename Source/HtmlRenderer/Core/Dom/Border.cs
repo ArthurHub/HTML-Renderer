@@ -10,7 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-namespace HtmlRenderer.Core.Dom
+namespace TheArtOfDev.HtmlRenderer.Core.Dom
 {
     /// <summary>
     /// Border types

@@ -13,12 +13,12 @@
 using System;
 using System.Globalization;
 using System.IO;
-using HtmlRenderer.Adapters;
-using HtmlRenderer.Core.Dom;
-using HtmlRenderer.Core.Entities;
-using HtmlRenderer.Core.Utils;
+using TheArtOfDev.HtmlRenderer.Adapters;
+using TheArtOfDev.HtmlRenderer.Core.Dom;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Core.Handlers
+namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 {
     /// <summary>
     /// Handle context menu.

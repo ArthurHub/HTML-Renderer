@@ -11,9 +11,9 @@
 // "The Art of War"
 
 using System.Windows;
-using HtmlRenderer.Core.Utils;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.WPF
+namespace TheArtOfDev.HtmlRenderer.WPF
 {
     /// <summary>
     /// Handler for HTML renderer routed events.

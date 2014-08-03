@@ -16,10 +16,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using HtmlRenderer.Core;
-using HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
 
-namespace HtmlRenderer.WPF
+namespace TheArtOfDev.HtmlRenderer.WPF
 {
     /// <summary>
     /// Provides HTML rendering using the text property.<br/>

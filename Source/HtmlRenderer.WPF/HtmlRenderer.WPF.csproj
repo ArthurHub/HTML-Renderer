@@ -7,7 +7,7 @@
     <ProjectGuid>{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}</ProjectGuid>
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HtmlRenderer.WPF</RootNamespace>
+    <RootNamespace>TheArtOfDev.HtmlRenderer.WPF</RootNamespace>
     <AssemblyName>HtmlRenderer.WPF</AssemblyName>
     <TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

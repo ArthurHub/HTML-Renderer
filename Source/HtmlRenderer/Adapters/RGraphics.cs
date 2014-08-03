@@ -12,10 +12,10 @@
 
 using System;
 using System.Collections.Generic;
-using HtmlRenderer.Adapters.Entities;
-using HtmlRenderer.Core.Utils;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
 
-namespace HtmlRenderer.Adapters
+namespace TheArtOfDev.HtmlRenderer.Adapters
 {
     /// <summary>
     /// Adapter for platform specific graphics rendering object - used to render graphics and text in platform specific context.<br/>

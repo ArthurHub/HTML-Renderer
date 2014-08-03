@@ -16,9 +16,9 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
-using HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 
-namespace HtmlRenderer.Core.Utils
+namespace TheArtOfDev.HtmlRenderer.Core.Utils
 {
     internal delegate void ActionInt<in T>(T obj);
 

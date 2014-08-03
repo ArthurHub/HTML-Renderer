@@ -8,7 +8,7 @@
     <ProjectGuid>{1B058920-24B4-4140-8AE7-C8C6C38CA52D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HtmlRenderer.WinForms</RootNamespace>
+    <RootNamespace>TheArtOfDev.HtmlRenderer.WinForms</RootNamespace>
     <AssemblyName>HtmlRenderer.WinForms</AssemblyName>
     <StartupObject>
     </StartupObject>

@@ -16,7 +16,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace HtmlRenderer.Demo.WinForms
+namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
 {
     internal static class Program
     {

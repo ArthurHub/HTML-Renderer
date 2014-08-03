@@ -12,10 +12,10 @@
 
 using System.Windows;
 using System.Windows.Input;
-using HtmlRenderer.Demo.Common;
+using TheArtOfDev.HtmlRenderer.Demo.Common;
 using Xceed.Wpf.Toolkit.PropertyGrid;
 
-namespace HtmlRenderer.Demo.WPF
+namespace TheArtOfDev.HtmlRenderer.Demo.WPF
 {
     /// <summary>
     /// Interaction logic for SampleWindow.xaml

@@ -15,11 +15,11 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
-using HtmlRenderer.Core;
-using HtmlRenderer.Core.Entities;
-using HtmlRenderer.WinForms.Utilities;
+using TheArtOfDev.HtmlRenderer.Core;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.WinForms.Utilities;
 
-namespace HtmlRenderer.WinForms
+namespace TheArtOfDev.HtmlRenderer.WinForms
 {
     /// <summary>
     /// Provides HTML rendering on the tooltips.

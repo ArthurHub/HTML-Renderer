@@ -7,7 +7,7 @@
     <ProjectGuid>{FE611685-391F-4E3E-B27E-D3150E51E49B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HtmlRenderer</RootNamespace>
+    <RootNamespace>TheArtOfDev.HtmlRenderer</RootNamespace>
     <AssemblyName>HtmlRenderer</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -12,10 +12,10 @@
 
 using System;
 using System.Collections.Generic;
-using HtmlRenderer.Adapters;
-using HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Adapters;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 
-namespace HtmlRenderer.Core.Dom
+namespace TheArtOfDev.HtmlRenderer.Core.Dom
 {
     /// <summary>
     /// Represents a line of text.

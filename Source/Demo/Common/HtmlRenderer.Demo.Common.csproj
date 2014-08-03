@@ -7,7 +7,7 @@
     <ProjectGuid>{2390B71F-9400-47F4-B23A-7F2649C87D35}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HtmlRenderer.Demo.Common</RootNamespace>
+    <RootNamespace>TheArtOfDev.HtmlRenderer.Demo.Common</RootNamespace>
     <AssemblyName>HtmlRendererDemoCommon</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

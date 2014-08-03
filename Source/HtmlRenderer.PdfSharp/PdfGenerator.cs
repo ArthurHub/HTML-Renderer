@@ -11,15 +11,15 @@
 // "The Art of War"
 
 using System;
-using HtmlRenderer.Core;
-using HtmlRenderer.Core.Entities;
-using HtmlRenderer.Core.Utils;
-using HtmlRenderer.PdfSharp.Adapters;
+using TheArtOfDev.HtmlRenderer.Core;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
+using TheArtOfDev.HtmlRenderer.PdfSharp.Adapters;
 using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
-namespace HtmlRenderer.PdfSharp
+namespace TheArtOfDev.HtmlRenderer.PdfSharp
 {
     /// <summary>
     /// TODO:a add doc

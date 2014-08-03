@@ -13,12 +13,12 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using HtmlRenderer.Adapters.Entities;
-using HtmlRenderer.Core.Utils;
-using HtmlRenderer.Adapters;
-using HtmlRenderer.WinForms.Utilities;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
+using TheArtOfDev.HtmlRenderer.Adapters;
+using TheArtOfDev.HtmlRenderer.WinForms.Utilities;
 
-namespace HtmlRenderer.WinForms.Adapters
+namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
 {
     /// <summary>
     /// Adapter for WinForms Graphics for core.

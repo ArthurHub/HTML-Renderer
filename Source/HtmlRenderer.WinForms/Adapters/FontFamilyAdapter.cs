@@ -11,9 +11,9 @@
 // "The Art of War"
 
 using System.Drawing;
-using HtmlRenderer.Adapters;
+using TheArtOfDev.HtmlRenderer.Adapters;
 
-namespace HtmlRenderer.WinForms.Adapters
+namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
 {
     /// <summary>
     /// Adapter for WinForms Font family object for core.

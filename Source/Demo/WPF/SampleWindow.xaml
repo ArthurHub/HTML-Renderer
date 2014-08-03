@@ -1,8 +1,8 @@
-﻿<Window x:Class="HtmlRenderer.Demo.WPF.SampleWindow"
+﻿<Window x:Class="TheArtOfDev.HtmlRenderer.Demo.WPF.SampleWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:wpf="clr-namespace:HtmlRenderer.WPF;assembly=HtmlRenderer.WPF"
+        xmlns:wpf="clr-namespace:TheArtOfDev.HtmlRenderer.WPF;assembly=HtmlRenderer.WPF"
         Title="Sample Window" Height="300" Width="500" WindowStartupLocation="CenterOwner">
     <Grid Background="{x:Static SystemColors.ControlBrush}">
         <Grid.ColumnDefinitions>

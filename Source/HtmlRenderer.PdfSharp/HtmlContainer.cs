@@ -12,14 +12,14 @@
 
 using System;
 using System.Collections.Generic;
-using HtmlRenderer.Core;
-using HtmlRenderer.Core.Entities;
-using HtmlRenderer.Core.Utils;
-using HtmlRenderer.PdfSharp.Adapters;
-using HtmlRenderer.PdfSharp.Utilities;
+using TheArtOfDev.HtmlRenderer.Core;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
+using TheArtOfDev.HtmlRenderer.PdfSharp.Adapters;
+using TheArtOfDev.HtmlRenderer.PdfSharp.Utilities;
 using PdfSharp.Drawing;
 
-namespace HtmlRenderer.PdfSharp
+namespace TheArtOfDev.HtmlRenderer.PdfSharp
 {
     /// <summary>
     /// Low level handling of Html Renderer logic, this class is used by <see cref="PdfGenerator"/>.

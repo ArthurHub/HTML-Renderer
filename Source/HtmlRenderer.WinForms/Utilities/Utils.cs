@@ -12,9 +12,9 @@
 
 using System;
 using System.Drawing;
-using HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 
-namespace HtmlRenderer.WinForms.Utilities
+namespace TheArtOfDev.HtmlRenderer.WinForms.Utilities
 {
     /// <summary>
     /// Utilities for converting WinForms entities to HtmlRenderer core entities.

@@ -7,7 +7,7 @@
     <ProjectGuid>{F02E0216-4AE3-474F-9381-FCB93411CDB0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HtmlRenderer.Demo.WPF</RootNamespace>
+    <RootNamespace>TheArtOfDev.HtmlRenderer.Demo.WPF</RootNamespace>
     <AssemblyName>HtmlRendererWpfDemo</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

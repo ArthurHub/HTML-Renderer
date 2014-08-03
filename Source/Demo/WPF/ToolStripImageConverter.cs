@@ -13,9 +13,9 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
-using HtmlRenderer.Demo.Common;
+using TheArtOfDev.HtmlRenderer.Demo.Common;
 
-namespace HtmlRenderer.Demo.WPF
+namespace TheArtOfDev.HtmlRenderer.Demo.WPF
 {
     public class ToolStripImageConverter : IValueConverter
     {

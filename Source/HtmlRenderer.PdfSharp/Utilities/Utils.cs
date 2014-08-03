@@ -11,10 +11,10 @@
 // "The Art of War"
 
 using System.Drawing;
-using HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using PdfSharp.Drawing;
 
-namespace HtmlRenderer.PdfSharp.Utilities
+namespace TheArtOfDev.HtmlRenderer.PdfSharp.Utilities
 {
     /// <summary>
     /// Utilities for converting WinForms entities to HtmlRenderer core entities.

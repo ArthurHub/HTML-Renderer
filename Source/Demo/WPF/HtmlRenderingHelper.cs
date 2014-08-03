@@ -16,11 +16,11 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using HtmlRenderer.Core.Entities;
-using HtmlRenderer.Demo.Common;
-using HtmlRenderer.WPF;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Demo.Common;
+using TheArtOfDev.HtmlRenderer.WPF;
 
-namespace HtmlRenderer.Demo.WPF
+namespace TheArtOfDev.HtmlRenderer.Demo.WPF
 {
     internal static class HtmlRenderingHelper
     {

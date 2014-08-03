@@ -14,11 +14,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
-using HtmlRenderer.Core.Entities;
-using HtmlRenderer.Demo.Common;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Demo.Common;
 using PdfSharp.Drawing;
 
-namespace HtmlRenderer.Demo.WinForms
+namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
 {
     internal static class HtmlRenderingHelper
     {

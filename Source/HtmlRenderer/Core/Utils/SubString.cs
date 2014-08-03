@@ -12,7 +12,7 @@
 
 using System;
 
-namespace HtmlRenderer.Core.Utils
+namespace TheArtOfDev.HtmlRenderer.Core.Utils
 {
     /// <summary>
     /// Represents sub-string of a full string starting at specific location with a specific length.

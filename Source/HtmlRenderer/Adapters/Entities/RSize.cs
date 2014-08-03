@@ -12,7 +12,7 @@
 
 using System;
 
-namespace HtmlRenderer.Adapters.Entities
+namespace TheArtOfDev.HtmlRenderer.Adapters.Entities
 {
     /// <summary>
     /// Stores an ordered pair of floating-point numbers, typically the width and height of a rectangle.

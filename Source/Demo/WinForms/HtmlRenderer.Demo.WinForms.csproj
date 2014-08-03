@@ -8,7 +8,7 @@
     <ProjectGuid>{8AD34FE8-8382-4A8A-B3AA-A0392ED42423}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HtmlRenderer.Demo.WinForms</RootNamespace>
+    <RootNamespace>TheArtOfDev.HtmlRenderer.Demo.WinForms</RootNamespace>
     <AssemblyName>HtmlRendererWinFormsDemo</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
