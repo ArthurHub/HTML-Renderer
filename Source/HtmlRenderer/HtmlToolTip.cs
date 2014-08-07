@@ -250,7 +250,13 @@ namespace HtmlRenderer
             {
                 // get the handle of the tooltip window using the graphics device context
                 var hdc = e.Graphics.GetHdc();
+					try
+					{
                 _tooltipHandle = Win32Utils.WindowFromDC(hdc);
+					}
+					catch
+				{
+				}
                 e.Graphics.ReleaseHdc(hdc);
 
                 AdjustTooltipPosition(e.AssociatedControl, e.Bounds.Size);
@@ -280,7 +286,13 @@ namespace HtmlRenderer
                 mousePos.Y = Math.Max(screenBounds.Bottom - size.Height - yOffset - 3, screenBounds.Top + 2);
             
             // move the tooltip window to new location
+			try
+			{
             Win32Utils.MoveWindow(_tooltipHandle, mousePos.X, mousePos.Y + yOffset, size.Width, size.Height, false);
+			}
+			catch
+			{
+			}
         }
 
         /// <summary>

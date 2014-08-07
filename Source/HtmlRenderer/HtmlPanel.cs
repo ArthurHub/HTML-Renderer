@@ -427,6 +427,14 @@ namespace HtmlRenderer
         {
             if (_htmlContainer != null)
             {
+				if (ClientSize.Width == 0 || ClientSize.Height == 0)
+				{
+					return;
+				}
+				this.Text = String.Empty;
+
+
+
                 _htmlContainer.MaxSize = new SizeF(ClientSize.Width, 0);
 
                 using (var g = CreateGraphics())
