@@ -376,7 +376,15 @@ namespace HtmlRenderer
         {
             if (_hdc != IntPtr.Zero)
             {
+					try
+					{
                 Win32Utils.SelectClipRgn(_hdc, IntPtr.Zero);
+					}
+					catch
+					{
+						// suppress exception in mono
+					}
+
                 _g.ReleaseHdc(_hdc);
                 _hdc = IntPtr.Zero;
             }

@@ -67,7 +67,11 @@ namespace HtmlRenderer.Utils
 
             foreach (var family in FontFamily.Families)
             {
-                _existingFontFamilies.Add(family.Name, family);
+				string name = family.Name;
+				if (IsFontExists(name) == false)
+				{
+					_existingFontFamilies.Add(name, family);
+				}
             }
         }
 
