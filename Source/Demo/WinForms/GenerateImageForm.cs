@@ -96,9 +96,19 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             {
                 var backgroundColor = Color.FromName(_backgroundColorTSB.SelectedItem.ToString());
                 TextRenderingHint textRenderingHint = (TextRenderingHint)Enum.Parse(typeof(TextRenderingHint), _textRenderingHintTSCB.SelectedItem.ToString());
-                var img = _useGdiPlusTSB.Checked
-                    ? HtmlRender.RenderToImageGdiPlus(_html, _pictureBox.ClientSize, textRenderingHint, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad)
-                    : HtmlRender.RenderToImage(_html, _pictureBox.ClientSize, backgroundColor, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);
+                Image img;
+                if (_useGdiPlusTSB.Checked)
+                {
+                    img = HtmlRender.RenderToImageGdiPlus(_html, _pictureBox.ClientSize, textRenderingHint, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);
+                }
+                else
+                {
+#if !MONO
+                    img = HtmlRender.RenderToImage(_html, _pictureBox.ClientSize, backgroundColor, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);
+#else
+                    throw new InvalidProgramException("Not Mono");
+#endif
+                }
                 _pictureBox.Image = img;
             }
         }

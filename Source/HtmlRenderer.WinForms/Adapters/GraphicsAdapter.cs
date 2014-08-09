@@ -63,14 +63,14 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
         private readonly bool _useGdiPlusTextRendering;
 
         /// <summary>
-        /// if to release the graphics object on dispose
-        /// </summary>
-        private readonly bool _releaseGraphics;
-
-        /// <summary>
         /// the initialized HDC used
         /// </summary>
         private IntPtr _hdc;
+
+        /// <summary>
+        /// if to release the graphics object on dispose
+        /// </summary>
+        private readonly bool _releaseGraphics;
 
         /// <summary>
         /// If text alignment was set to RTL
@@ -103,8 +103,13 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
             ArgChecker.AssertArgNotNull(g, "g");
 
             _g = g;
-            _useGdiPlusTextRendering = useGdiPlusTextRendering;
             _releaseGraphics = releaseGraphics;
+
+#if MONO
+            _useGdiPlusTextRendering = true;
+#else
+            _useGdiPlusTextRendering = useGdiPlusTextRendering;
+#endif
         }
 
         public override void PopClip()
@@ -167,6 +172,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
             }
             else
             {
+#if !MONO
                 SetFont(font);
                 var size = new Size();
                 Win32Utils.GetTextExtentPoint32(_hdc, str, str.Length, ref size);
@@ -179,6 +185,9 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
                 }
 
                 return Utils.Convert(size);
+#else
+                throw new InvalidProgramException("Invalid Mono code");
+#endif
             }
         }
 
@@ -204,29 +213,32 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
             }
             else
             {
+#if !MONO
                 SetFont(font);
 
                 var size = new Size();
                 Win32Utils.GetTextExtentExPoint(_hdc, str, str.Length, (int)Math.Round(maxWidth), _charFit, _charFitWidth, ref size);
                 charFit = _charFit[0];
                 charFitWidth = charFit > 0 ? _charFitWidth[charFit - 1] : 0;
+#endif
             }
         }
 
         public override void DrawString(string str, RFont font, RColor color, RPoint point, RSize size, bool rtl)
         {
-            var pointConv = Utils.ConvertRound(point);
-            var colorConv = Utils.Convert(color);
-
             if (_useGdiPlusTextRendering)
             {
                 ReleaseHdc();
-                SetRtlAlign(rtl);
+                SetRtlAlignGdiPlus(rtl);
                 var brush = ((BrushAdapter)_adapter.GetSolidBrush(color)).Brush;
                 _g.DrawString(str, ((FontAdapter)font).Font, brush, (int)(Math.Round(point.X) + (rtl ? size.Width : 0)), (int)Math.Round(point.Y), _stringFormat2);
             }
             else
             {
+#if !MONO
+                var pointConv = Utils.ConvertRound(point);
+                var colorConv = Utils.Convert(color);
+
                 if (color.A == 255)
                 {
                     SetFont(font);
@@ -241,6 +253,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
                     SetRtlAlign(rtl);
                     DrawTransparentText(_hdc, str, font, pointConv, Utils.ConvertRound(size), colorConv);
                 }
+#endif
             }
         }
 
@@ -325,6 +338,22 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
         #region Private methods
 
         /// <summary>
+        /// Release current HDC to be able to use <see cref="Graphics"/> methods.
+        /// </summary>
+        private void ReleaseHdc()
+        {
+#if !MONO
+            if (_hdc != IntPtr.Zero)
+            {
+                Win32Utils.SelectClipRgn(_hdc, IntPtr.Zero);
+                _g.ReleaseHdc(_hdc);
+                _hdc = IntPtr.Zero;
+            }
+#endif
+        }
+
+#if !MONO
+        /// <summary>
         /// Init HDC for the current graphics object to be used to call GDI directly.
         /// </summary>
         private void InitHdc()
@@ -340,19 +369,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
                 Win32Utils.SelectClipRgn(_hdc, clip);
 
                 Win32Utils.DeleteObject(clip);
-            }
-        }
-
-        /// <summary>
-        /// Release current HDC to be able to use <see cref="Graphics"/> methods.
-        /// </summary>
-        private void ReleaseHdc()
-        {
-            if (_hdc != IntPtr.Zero)
-            {
-                Win32Utils.SelectClipRgn(_hdc, IntPtr.Zero);
-                _g.ReleaseHdc(_hdc);
-                _hdc = IntPtr.Zero;
             }
         }
 
@@ -379,24 +395,16 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
         /// <summary>
         /// Change text align to Left-to-Right or Right-to-Left if required.
         /// </summary>
-        private void SetRtlAlign(bool rtl)
+        private void SetRtlAlignGdi(bool rtl)
         {
             if (_setRtl)
             {
                 if (!rtl)
-                {
-                    if (_useGdiPlusTextRendering)
-                        _stringFormat2.FormatFlags ^= StringFormatFlags.DirectionRightToLeft;
-                    else
-                        Win32Utils.SetTextAlign(_hdc, Win32Utils.TextAlignDefault);
-                }
+                    Win32Utils.SetTextAlign(_hdc, Win32Utils.TextAlignDefault);
             }
             else if (rtl)
             {
-                if (_useGdiPlusTextRendering)
-                    _stringFormat2.FormatFlags |= StringFormatFlags.DirectionRightToLeft;
-                else
-                    Win32Utils.SetTextAlign(_hdc, Win32Utils.TextAlignRtl);
+                Win32Utils.SetTextAlign(_hdc, Win32Utils.TextAlignRtl);
             }
             _setRtl = rtl;
         }
@@ -432,6 +440,24 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
             {
                 Win32Utils.ReleaseMemoryHdc(memoryHdc, dib);
             }
+        }
+#endif
+
+        /// <summary>
+        /// Change text align to Left-to-Right or Right-to-Left if required.
+        /// </summary>
+        private void SetRtlAlignGdiPlus(bool rtl)
+        {
+            if (_setRtl)
+            {
+                if (!rtl)
+                    _stringFormat2.FormatFlags ^= StringFormatFlags.DirectionRightToLeft;
+            }
+            else if (rtl)
+            {
+                _stringFormat2.FormatFlags |= StringFormatFlags.DirectionRightToLeft;
+            }
+            _setRtl = rtl;
         }
 
         #endregion

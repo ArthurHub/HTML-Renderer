@@ -156,7 +156,6 @@
             // 
             // _htmlToolTip
             // 
-            this._htmlToolTip.AllowLinksHandling = true;
             this._htmlToolTip.AutoPopDelay = 15000;
             this._htmlToolTip.BaseStylesheet = null;
             this._htmlToolTip.InitialDelay = 500;

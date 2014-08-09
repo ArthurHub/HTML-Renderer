@@ -47,7 +47,6 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             // 
             // _htmlToolTip
             // 
-            this._htmlToolTip.AllowLinksHandling = true;
             this._htmlToolTip.BaseStylesheet = null;
             this._htmlToolTip.MaximumSize = new System.Drawing.Size(0, 0);
             this._htmlToolTip.OwnerDraw = true;
