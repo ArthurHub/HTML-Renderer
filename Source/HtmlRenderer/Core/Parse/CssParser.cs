@@ -594,9 +594,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 if (endIdx > -1)
                 {
                     endIdx -= 1;
-                    while (startIdx < endIdx && (char.IsWhiteSpace(propValue[startIdx]) || propValue[startIdx] == '\''))
+                    while (startIdx < endIdx && (char.IsWhiteSpace(propValue[startIdx]) || propValue[startIdx] == '\'' || propValue[startIdx] == '"'))
                         startIdx++;
-                    while (startIdx < endIdx && (char.IsWhiteSpace(propValue[endIdx]) || propValue[endIdx] == '\''))
+                    while (startIdx < endIdx && (char.IsWhiteSpace(propValue[endIdx]) || propValue[endIdx] == '\'' || propValue[startIdx] == '"'))
                         endIdx--;
 
                     if (startIdx <= endIdx)
