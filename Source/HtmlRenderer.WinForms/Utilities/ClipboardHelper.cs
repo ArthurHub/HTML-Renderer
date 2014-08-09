@@ -6,7 +6,7 @@
 // like the days and months;
 // they die and are reborn,
 // like the four seasons."
-// 
+//
 // - Sun Tsu,
 // "The Art of War"
 
@@ -100,7 +100,7 @@ EndSelection:<<<<<<<<4";
         {
             html = html ?? String.Empty;
             var htmlFragment = GetHtmlDataString(html);
-
+            
             // re-encode the string so it will work correctly (fixed in CLR 4.0)
             if (Environment.Version.Major < 4 && html.Length != Encoding.UTF8.GetByteCount(html))
                 htmlFragment = Encoding.Default.GetString(Encoding.UTF8.GetBytes(htmlFragment));
