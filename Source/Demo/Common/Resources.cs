@@ -96,7 +96,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.Common
 
         private static Stream GetManifestResourceStream(string name)
         {
-            return typeof(Resources).Assembly.GetManifestResourceStream("HtmlRenderer.Demo.Common.Resources." + name);
+            return typeof(Resources).Assembly.GetManifestResourceStream("TheArtOfDev.HtmlRenderer.Demo.Common.Resources." + name);
         }
     }
 }

@@ -96,8 +96,6 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// </summary>
         protected HtmlControl()
         {
-            SnapsToDevicePixels = true;
-
             _htmlContainer = new HtmlContainer();
             _htmlContainer.LinkClicked += OnLinkClicked;
             _htmlContainer.RenderError += OnRenderError;
