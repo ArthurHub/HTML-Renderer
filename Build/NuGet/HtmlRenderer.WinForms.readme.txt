@@ -30,7 +30,7 @@ public partial class Form1 : Form
     {
         InitializeComponent();
 
-        TheArtOfDev.HtmlRenderer.HtmlPanel htmlPanel = new TheArtOfDev.HtmlRenderer.HtmlPanel();
+        TheArtOfDev.HtmlRenderer.WinForms.HtmlPanel htmlPanel = new TheArtOfDev.HtmlRenderer.WinForms.HtmlPanel();
         htmlPanel.Text = "<p><h1>Hello World</h1>This is html rendered text</p>";
         htmlPanel.Dock = DockStyle.Fill;
         Controls.Add(htmlPanel);
@@ -44,7 +44,7 @@ class Program
 {
     private static void Main(string[] args)
     {
-        Image image = TheArtOfDev.HtmlRenderer.HtmlRender.RenderToImage("<p><h1>Hello World</h1>This is html rendered text</p>");
+        Image image = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.RenderToImage("<p><h1>Hello World</h1>This is html rendered text</p>");
         image.Save("image.png", ImageFormat.Png);
     }
 }

@@ -14,8 +14,7 @@
       Multipurpose (UI Controls / Image generation) 100% managed (C#) HTML Rendering library for WPF.
     </summary>
     <description>
-      The rich formatting power of HTML in your WPF .NET applications using simple controls or static rendering code.
-      The library is 100% managed C# code without any external dependencies (no WebBrowser control, ActiveX / COM or MSHTML dll), the only requirement is .NET 3.0 or higher.
+      The rich formatting power of HTML in your WPF .NET applications using controls or static rendering.
 
       Features and Benefits:
       ---
