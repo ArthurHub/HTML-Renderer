@@ -243,14 +243,14 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
                 {
                     SetFont(font);
                     SetTextColor(colorConv);
-                    SetRtlAlign(rtl);
+                    SetRtlAlignGdi(rtl);
 
                     Win32Utils.TextOut(_hdc, pointConv.X, pointConv.Y, str, str.Length);
                 }
                 else
                 {
                     InitHdc();
-                    SetRtlAlign(rtl);
+                    SetRtlAlignGdi(rtl);
                     DrawTransparentText(_hdc, str, font, pointConv, Utils.ConvertRound(size), colorConv);
                 }
 #endif
