@@ -48,6 +48,10 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
                 _textRenderingHintTSCB.Items.Add(hint);
             }
             _textRenderingHintTSCB.SelectedItem = TextRenderingHint.AntiAlias.ToString();
+
+#if MONO
+            _useGdiPlusTSB.Enabled = false;
+#endif
         }
 
         private void OnSaveToFile_Click(object sender, EventArgs e)
@@ -94,21 +98,21 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         {
             if (_backgroundColorTSB.SelectedItem != null && _textRenderingHintTSCB.SelectedItem != null)
             {
-                var backgroundColor = Color.FromName(_backgroundColorTSB.SelectedItem.ToString());
                 TextRenderingHint textRenderingHint = (TextRenderingHint)Enum.Parse(typeof(TextRenderingHint), _textRenderingHintTSCB.SelectedItem.ToString());
+#if MONO
+                Image img = HtmlRender.RenderToImageGdiPlus(_html, _pictureBox.ClientSize, textRenderingHint, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);
+#else
                 Image img;
+                var backgroundColor = Color.FromName(_backgroundColorTSB.SelectedItem.ToString());
                 if (_useGdiPlusTSB.Checked)
                 {
                     img = HtmlRender.RenderToImageGdiPlus(_html, _pictureBox.ClientSize, textRenderingHint, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);
                 }
                 else
                 {
-#if !MONO
                     img = HtmlRender.RenderToImage(_html, _pictureBox.ClientSize, backgroundColor, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);
-#else
-                    throw new InvalidProgramException("Not Mono");
-#endif
                 }
+#endif
                 _pictureBox.Image = img;
             }
         }
