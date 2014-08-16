@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.WinForms.Adapters;
@@ -473,8 +474,14 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                 using (Graphics g = CreateGraphics())
                 using (var ig = new GraphicsAdapter(g, _htmlContainer.UseGdiPlusTextRendering))
                 {
-                    var newSize = HtmlRendererUtils.Layout(ig, _htmlContainer.HtmlContainerInt, Utils.Convert(ClientSize), Utils.Convert(MinimumSize), Utils.Convert(MaximumSize), AutoSize, AutoSizeHeightOnly);
-                    ClientSize = Utils.ConvertRound(newSize);
+                    var newSize = HtmlRendererUtils.Layout(ig,
+                        _htmlContainer.HtmlContainerInt,
+                        new RSize(ClientSize.Width - Padding.Horizontal, ClientSize.Height - Padding.Vertical),
+                        new RSize(MinimumSize.Width - Padding.Horizontal, MinimumSize.Height - Padding.Vertical),
+                        new RSize(MaximumSize.Width - Padding.Horizontal, MaximumSize.Height - Padding.Vertical),
+                        AutoSize,
+                        AutoSizeHeightOnly);
+                    ClientSize = Utils.ConvertRound(new RSize(newSize.Width + Padding.Horizontal, newSize.Height + Padding.Vertical));
                 }
             }
             base.OnLayout(levent);
@@ -490,6 +497,8 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             if (_htmlContainer != null)
             {
                 e.Graphics.TextRenderingHint = _textRenderingHint;
+
+                _htmlContainer.Location = new PointF(Padding.Left, Padding.Top);
                 _htmlContainer.PerformPaint(e.Graphics);
             }
         }

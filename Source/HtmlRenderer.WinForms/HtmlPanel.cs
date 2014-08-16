@@ -455,14 +455,14 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         {
             if (_htmlContainer != null)
             {
-                _htmlContainer.MaxSize = new SizeF(ClientSize.Width, 0);
+                _htmlContainer.MaxSize = new SizeF(ClientSize.Width - Padding.Horizontal, 0);
 
                 using (var g = CreateGraphics())
                 {
                     _htmlContainer.PerformLayout(g);
                 }
 
-                AutoScrollMinSize = Size.Round(_htmlContainer.ActualSize);
+                AutoScrollMinSize = Size.Round(new SizeF(_htmlContainer.ActualSize.Width + Padding.Horizontal, _htmlContainer.ActualSize.Height));
             }
         }
 
@@ -478,6 +478,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                 e.Graphics.TextRenderingHint = _textRenderingHint;
                 e.Graphics.SetClip(ClientRectangle);
 
+                _htmlContainer.Location = new PointF(Padding.Left, Padding.Top);
                 _htmlContainer.ScrollOffset = AutoScrollPosition;
                 _htmlContainer.PerformPaint(e.Graphics);
 

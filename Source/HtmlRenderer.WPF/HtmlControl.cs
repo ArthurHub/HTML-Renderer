@@ -276,8 +276,8 @@ namespace TheArtOfDev.HtmlRenderer.WPF
             var htmlHeight = HtmlHeight(RenderSize);
             if (_htmlContainer != null && htmlWidth > 0 && htmlHeight > 0)
             {
-                context.PushClip(new RectangleGeometry(new Rect(BorderThickness.Left, BorderThickness.Top, htmlWidth, htmlHeight)));
-                _htmlContainer.Location = new Point(BorderThickness.Left, BorderThickness.Top);
+                context.PushClip(new RectangleGeometry(new Rect(Padding.Left + BorderThickness.Left, Padding.Top + BorderThickness.Top, htmlWidth, htmlHeight)));
+                _htmlContainer.Location = new Point(Padding.Left + BorderThickness.Left, Padding.Top + BorderThickness.Top);
                 _htmlContainer.PerformPaint(context, new Rect(new Size(htmlWidth, htmlHeight)));
                 context.Pop();
 
@@ -400,7 +400,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// </summary>
         protected virtual double HtmlWidth(Size size)
         {
-            return size.Width - BorderThickness.Left - BorderThickness.Right;
+            return size.Width - Padding.Left - Padding.Right - BorderThickness.Left - BorderThickness.Right;
         }
 
         /// <summary>
@@ -408,7 +408,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// </summary>
         protected virtual double HtmlHeight(Size size)
         {
-            return size.Height - BorderThickness.Top - BorderThickness.Bottom;
+            return size.Height - Padding.Top - Padding.Bottom - BorderThickness.Top - BorderThickness.Bottom;
         }
 
         /// <summary>

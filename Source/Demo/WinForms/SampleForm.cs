@@ -56,5 +56,11 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         {
             _htmlToolTip.SetToolTip(_changeTooltipButton, _htmlLabel.Text);
         }
+
+        private void OnPropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            ((Control)_pGrid.SelectedObject).Refresh();
+            Refresh();
+        }
     }
 }
