@@ -176,9 +176,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         private RFont CreateFont(string family, double size, RFontStyle style)
         {
             RFontFamily fontFamily;
-            return _existingFontFamilies.TryGetValue(family, out fontFamily)
-                ? _adapter.CreateFont(fontFamily, size, style)
-                : _adapter.CreateFont(family, size, style);
+            try
+            {
+                return _existingFontFamilies.TryGetValue(family, out fontFamily)
+                    ? _adapter.CreateFont(fontFamily, size, style)
+                    : _adapter.CreateFont(family, size, style);
+            }
+            catch
+            {
+                // handle possibility of no requested style exists for the font, use regular then
+                return _existingFontFamilies.TryGetValue(family, out fontFamily)
+                    ? _adapter.CreateFont(fontFamily, size, RFontStyle.Regular)
+                    : _adapter.CreateFont(family, size, RFontStyle.Regular);
+            }
         }
 
         #endregion
