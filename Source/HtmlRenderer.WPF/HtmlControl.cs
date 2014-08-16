@@ -278,7 +278,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
             {
                 context.PushClip(new RectangleGeometry(new Rect(Padding.Left + BorderThickness.Left, Padding.Top + BorderThickness.Top, htmlWidth, htmlHeight)));
                 _htmlContainer.Location = new Point(Padding.Left + BorderThickness.Left, Padding.Top + BorderThickness.Top);
-                _htmlContainer.PerformPaint(context, new Rect(new Size(htmlWidth, htmlHeight)));
+                _htmlContainer.PerformPaint(context, new Rect(Padding.Left + BorderThickness.Left, Padding.Top + BorderThickness.Top, htmlWidth, htmlHeight));
                 context.Pop();
 
                 if (!_lastScrollOffset.Equals(_htmlContainer.ScrollOffset))
