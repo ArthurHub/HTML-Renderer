@@ -970,12 +970,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 // calculate the min and max sum for all the words in the box
                 foreach (CssRect word in box.Words)
                 {
-                    maxSum += word.FullWidth + word.ActualWordSpacing + (word.HasSpaceBefore ? word.OwnerBox.ActualWordSpacing : 0);
+                    maxSum += word.FullWidth + (word.HasSpaceBefore ? word.OwnerBox.ActualWordSpacing : 0);
                     min = Math.Max(min, word.Width);
                 }
 
                 // remove the last word padding
-                if (box.Words.Count > 0)
+                if (box.Words.Count > 0 && !box.Words[box.Words.Count - 1].HasSpaceAfter)
                     maxSum -= box.Words[box.Words.Count - 1].ActualWordSpacing;
             }
             else
