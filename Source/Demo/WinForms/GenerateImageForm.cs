@@ -17,6 +17,8 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Reflection;
 using System.Windows.Forms;
+using TheArtOfDev.HtmlRenderer.Core;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Demo.Common;
 using TheArtOfDev.HtmlRenderer.WinForms;
 
@@ -48,6 +50,9 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
                 _textRenderingHintTSCB.Items.Add(hint);
             }
             _textRenderingHintTSCB.SelectedItem = TextRenderingHint.AntiAlias.ToString();
+
+            _useGdiPlusTSB.Enabled = !HtmlRenderingHelper.IsRunningOnMono();
+            _backgroundColorTSB.Enabled = !HtmlRenderingHelper.IsRunningOnMono();
         }
 
         private void OnSaveToFile_Click(object sender, EventArgs e)
@@ -96,18 +101,21 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             {
                 var backgroundColor = Color.FromName(_backgroundColorTSB.SelectedItem.ToString());
                 TextRenderingHint textRenderingHint = (TextRenderingHint)Enum.Parse(typeof(TextRenderingHint), _textRenderingHintTSCB.SelectedItem.ToString());
+
                 Image img;
-                if (_useGdiPlusTSB.Checked)
+                if (_useGdiPlusTSB.Checked || HtmlRenderingHelper.IsRunningOnMono())
                 {
                     img = HtmlRender.RenderToImageGdiPlus(_html, _pictureBox.ClientSize, textRenderingHint, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);
                 }
                 else
                 {
-#if !MONO
-                    img = HtmlRender.RenderToImage(_html, _pictureBox.ClientSize, backgroundColor, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);
-#else
-                    throw new InvalidProgramException("Not Mono");
-#endif
+                    EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = DemoUtils.OnStylesheetLoad;
+                    EventHandler<HtmlImageLoadEventArgs> imageLoad = HtmlRenderingHelper.OnImageLoad;
+                    var objects = new object[] { _html, _pictureBox.ClientSize, backgroundColor, null, stylesheetLoad, imageLoad };
+
+                    var types = new[] { typeof(String), typeof(Size), typeof(Color), typeof(CssData), typeof(EventHandler<HtmlStylesheetLoadEventArgs>), typeof(EventHandler<HtmlImageLoadEventArgs>) };
+                    var m = typeof(HtmlRender).GetMethod("RenderToImage", BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.Public, null, types, null);
+                    img = (Image)m.Invoke(null, objects);
                 }
                 _pictureBox.Image = img;
             }

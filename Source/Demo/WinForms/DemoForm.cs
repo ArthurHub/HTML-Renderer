@@ -40,7 +40,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         /// </summary>
         public DemoForm()
         {
-            SamplesLoader.Init("WinForms", typeof(HtmlRender).Assembly.GetName().Version.ToString());
+            SamplesLoader.Init(HtmlRenderingHelper.IsRunningOnMono() ? "Mono" : "WinForms", typeof(HtmlRender).Assembly.GetName().Version.ToString());
 
             InitializeComponent();
 
@@ -58,6 +58,8 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             Size = new Size((int)(size.Width * 0.7), (int)(size.Height * 0.8));
 
             LoadCustomFonts();
+
+            _showIEViewTSSB.Enabled = !HtmlRenderingHelper.IsRunningOnMono();
         }
 
         /// <summary>

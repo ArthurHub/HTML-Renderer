@@ -150,9 +150,9 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// </summary>
         protected override Size ArrangeOverride(Size bounds)
         {
-            var scrollHeight = HtmlHeight(bounds);
+            var scrollHeight = HtmlHeight(bounds) + Padding.Top + Padding.Bottom;
             scrollHeight = scrollHeight > 1 ? scrollHeight : 1;
-            var scrollWidth = HtmlWidth(bounds);
+            var scrollWidth = HtmlWidth(bounds) + Padding.Left + Padding.Right;
             scrollWidth = scrollWidth > 1 ? scrollWidth : 1;
             _verticalScrollBar.Arrange(new Rect(System.Math.Max(bounds.Width - _verticalScrollBar.Width - BorderThickness.Right, 0), BorderThickness.Top, _verticalScrollBar.Width, scrollHeight));
             _horizontalScrollBar.Arrange(new Rect(BorderThickness.Left, System.Math.Max(bounds.Height - _horizontalScrollBar.Height - BorderThickness.Bottom, 0), scrollWidth, _horizontalScrollBar.Height));

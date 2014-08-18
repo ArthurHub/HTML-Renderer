@@ -33,6 +33,14 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
 
 
         /// <summary>
+        /// Check if currently running in mono.
+        /// </summary>
+        public static bool IsRunningOnMono()
+        {
+            return Type.GetType("Mono.Runtime") != null;
+        }
+
+        /// <summary>
         /// Create image to be used to fill background so it will be clear that what's on top is transparent.
         /// </summary>
         public static Bitmap CreateImageForTransparentBackground()

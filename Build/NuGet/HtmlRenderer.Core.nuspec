@@ -14,7 +14,7 @@
       Cross platform (WinForms/WPF/PDF/Metro/Mono/etc.), Multipurpose (UI Controls / Image generation / PDF generation / etc.), 100% managed (C#) HTML Rendering library.
     </summary>
     <description>
-      The rich formatting power of HTML in your .NET applications in any platform using controls or static rendering.
+      The rich formatting power of HTML in .NET applications in any platform using controls or static rendering.
       The Core assembly of HTML Renderer not bound to any rendering platform (WinForms/WPF/PDF/etc.).
       Can be used to create platform specific renderer using adapter extensibility object model.
       For existing implementations see: HtmlRenderer.WinForms, HtmlRenderer.WPF and HtmlRenderer.PdfSharp.

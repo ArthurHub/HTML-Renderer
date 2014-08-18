@@ -60,7 +60,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 root.HtmlContainer = htmlContainer;
 
                 bool cssDataChanged = false;
-                CascadeStyles(root, htmlContainer, ref cssData, ref cssDataChanged);
+                CascadeParseStyles(root, htmlContainer, ref cssData, ref cssDataChanged);
+
+                CascadeApplyStyles(root, cssData);
 
                 SetTextSelectionStyle(htmlContainer, cssData);
 
@@ -84,23 +86,65 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         #region Private methods
 
         /// <summary>
+        /// Read styles defined inside the dom structure in links and style elements.<br/>
+        /// If the html tag is "style" tag parse it content and add to the css data for all future tags parsing.<br/>
+        /// If the html tag is "link" that point to style data parse it content and add to the css data for all future tags parsing.<br/>
+        /// </summary>
+        /// <param name="box">the box to parse style data in</param>
+        /// <param name="htmlContainer">the html container to use for reference resolve</param>
+        /// <param name="cssData">the style data to fill with found styles</param>
+        /// <param name="cssDataChanged">check if the css data has been modified by the handled html not to change the base css data</param>
+        private void CascadeParseStyles(CssBox box, HtmlContainerInt htmlContainer, ref CssData cssData, ref bool cssDataChanged)
+        {
+            if (box.HtmlTag != null)
+            {
+                // Check for the <link rel=stylesheet> tag
+                if (box.HtmlTag.Name.Equals("link", StringComparison.CurrentCultureIgnoreCase) &&
+                    box.GetAttribute("rel", string.Empty).Equals("stylesheet", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    CloneCssData(ref cssData, ref cssDataChanged);
+                    string stylesheet;
+                    CssData stylesheetData;
+                    StylesheetLoadHandler.LoadStylesheet(htmlContainer, box.GetAttribute("href", string.Empty), box.HtmlTag.Attributes, out stylesheet, out stylesheetData);
+                    if (stylesheet != null)
+                        _cssParser.ParseStyleSheet(cssData, stylesheet);
+                    else if (stylesheetData != null)
+                        cssData.Combine(stylesheetData);
+                }
+
+                // Check for the <style> tag
+                if (box.HtmlTag.Name.Equals("style", StringComparison.CurrentCultureIgnoreCase) && box.Boxes.Count > 0)
+                {
+                    CloneCssData(ref cssData, ref cssDataChanged);
+                    foreach (var child in box.Boxes)
+                        _cssParser.ParseStyleSheet(cssData, child.Text.CutSubstring());
+                }
+            }
+
+            foreach (var childBox in box.Boxes)
+            {
+                CascadeParseStyles(childBox, htmlContainer, ref cssData, ref cssDataChanged);
+            }
+        }
+
+
+        /// <summary>
         /// Applies style to all boxes in the tree.<br/>
         /// If the html tag has style defined for each apply that style to the css box of the tag.<br/>
         /// If the html tag has "class" attribute and the class name has style defined apply that style on the tag css box.<br/>
         /// If the html tag has "style" attribute parse it and apply the parsed style on the tag css box.<br/>
-        /// If the html tag is "style" tag parse it content and add to the css data for all future tags parsing.<br/>
-        /// If the html tag is "link" that point to style data parse it content and add to the css data for all future tags parsing.<br/>
         /// </summary>
-        /// <param name="box"></param>
-        /// <param name="htmlContainer">the html container to use for reference resolve</param>
-        /// <param name="cssData"> </param>
-        /// <param name="cssDataChanged">check if the css data has been modified by the handled html not to change the base css data</param>
-        private void CascadeStyles(CssBox box, HtmlContainerInt htmlContainer, ref CssData cssData, ref bool cssDataChanged)
+        /// <param name="box">the box to apply the style to</param>
+        /// <param name="cssData">the style data for the html</param>
+        private void CascadeApplyStyles(CssBox box, CssData cssData)
         {
             box.InheritStyle();
 
             if (box.HtmlTag != null)
             {
+                // try assign style using all wildcard
+                AssignCssBlocks(box, cssData, "*");
+
                 // try assign style using the html element tag
                 AssignCssBlocks(box, cssData, box.HtmlTag.Name);
 
@@ -126,28 +170,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                     if (block != null)
                         AssignCssBlock(box, block);
                 }
-
-                // Check for the <style> tag
-                if (box.HtmlTag.Name.Equals("style", StringComparison.CurrentCultureIgnoreCase) && box.Boxes.Count > 0)
-                {
-                    CloneCssData(ref cssData, ref cssDataChanged);
-                    foreach (var child in box.Boxes)
-                        _cssParser.ParseStyleSheet(cssData, child.Text.CutSubstring());
-                }
-
-                // Check for the <link rel=stylesheet> tag
-                if (box.HtmlTag.Name.Equals("link", StringComparison.CurrentCultureIgnoreCase) &&
-                    box.GetAttribute("rel", string.Empty).Equals("stylesheet", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    CloneCssData(ref cssData, ref cssDataChanged);
-                    string stylesheet;
-                    CssData stylesheetData;
-                    StylesheetLoadHandler.LoadStylesheet(htmlContainer, box.GetAttribute("href", string.Empty), box.HtmlTag.Attributes, out stylesheet, out stylesheetData);
-                    if (stylesheet != null)
-                        _cssParser.ParseStyleSheet(cssData, stylesheet);
-                    else if (stylesheetData != null)
-                        cssData.Combine(stylesheetData);
-                }
             }
 
             // cascade text decoration only to boxes that actually have text so it will be handled correctly.
@@ -160,7 +182,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
             foreach (var childBox in box.Boxes)
             {
-                CascadeStyles(childBox, htmlContainer, ref cssData, ref cssDataChanged);
+                CascadeApplyStyles(childBox, cssData);
             }
         }
 

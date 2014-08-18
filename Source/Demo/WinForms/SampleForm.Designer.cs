@@ -30,13 +30,13 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         /// </summary>
         private void InitializeComponent()
         {
-            this._htmlToolTip = new HtmlRenderer.WinForms.HtmlToolTip();
+            this._htmlToolTip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this._changeTooltipButton = new System.Windows.Forms.Button();
             this._splitContainer = new System.Windows.Forms.SplitContainer();
-            this._htmlPanel = new HtmlRenderer.WinForms.HtmlPanel();
+            this._htmlPanel = new TheArtOfDev.HtmlRenderer.WinForms.HtmlPanel();
             this.label2 = new System.Windows.Forms.Label();
             this._htmlLabelHostingPanel = new System.Windows.Forms.Panel();
-            this._htmlLabel = new HtmlRenderer.WinForms.HtmlLabel();
+            this._htmlLabel = new TheArtOfDev.HtmlRenderer.WinForms.HtmlLabel();
             this.label1 = new System.Windows.Forms.Label();
             this._pGrid = new System.Windows.Forms.PropertyGrid();
             this._splitContainer.Panel1.SuspendLayout();
@@ -47,6 +47,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             // 
             // _htmlToolTip
             // 
+            this._htmlToolTip.AllowLinksHandling = true;
             this._htmlToolTip.BaseStylesheet = null;
             this._htmlToolTip.MaximumSize = new System.Drawing.Size(0, 0);
             this._htmlToolTip.OwnerDraw = true;
@@ -100,6 +101,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             this._htmlPanel.Name = "_htmlPanel";
             this._htmlPanel.Size = new System.Drawing.Size(407, 225);
             this._htmlPanel.TabIndex = 10;
+            this._htmlPanel.Text = null;
             this._htmlPanel.UseSystemCursors = true;
             this._htmlPanel.Click += new System.EventHandler(this.OnHtmlPanelClick);
             // 
@@ -155,6 +157,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             this._pGrid.Name = "_pGrid";
             this._pGrid.Size = new System.Drawing.Size(293, 496);
             this._pGrid.TabIndex = 3;
+            this._pGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.OnPropertyValueChanged);
             // 
             // SampleForm
             // 

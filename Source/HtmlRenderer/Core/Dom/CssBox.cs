@@ -970,19 +970,20 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 // calculate the min and max sum for all the words in the box
                 foreach (CssRect word in box.Words)
                 {
-                    maxSum += word.FullWidth;
+                    maxSum += word.FullWidth + (word.HasSpaceBefore ? word.OwnerBox.ActualWordSpacing : 0);
                     min = Math.Max(min, word.Width);
                 }
 
                 // remove the last word padding
-                if (box.Words.Count > 0)
+                if (box.Words.Count > 0 && !box.Words[box.Words.Count - 1].HasSpaceAfter)
                     maxSum -= box.Words[box.Words.Count - 1].ActualWordSpacing;
             }
             else
             {
                 // recursively on all the child boxes
-                foreach (CssBox childBox in box.Boxes)
+                for (int i = 0; i < box.Boxes.Count; i++)
                 {
+                    CssBox childBox = box.Boxes[i];
                     marginSum += childBox.ActualMarginLeft + childBox.ActualMarginRight;
 
                     //maxSum += childBox.ActualMarginLeft + childBox.ActualMarginRight;

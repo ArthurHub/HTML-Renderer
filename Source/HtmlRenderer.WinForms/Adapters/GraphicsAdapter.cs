@@ -62,10 +62,12 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
         /// </summary>
         private readonly bool _useGdiPlusTextRendering;
 
+#if !MONO
         /// <summary>
         /// the initialized HDC used
         /// </summary>
         private IntPtr _hdc;
+#endif
 
         /// <summary>
         /// if to release the graphics object on dispose

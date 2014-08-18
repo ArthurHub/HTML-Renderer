@@ -83,12 +83,16 @@ namespace TheArtOfDev.HtmlRenderer.WPF
             {
                 using (var ig = new GraphicsAdapter())
                 {
-                    var size = new RSize(constraint.Width < Double.PositiveInfinity ? constraint.Width - BorderThickness.Left - BorderThickness.Right : 0,
-                        constraint.Height < Double.PositiveInfinity ? constraint.Height - BorderThickness.Top - BorderThickness.Bottom : 0);
-                    var minSize = new RSize(MinWidth < Double.PositiveInfinity ? MinWidth : 0, MinHeight < Double.PositiveInfinity ? MinHeight : 0);
-                    var maxSize = new RSize(MaxWidth < Double.PositiveInfinity ? MaxWidth : 0, MaxHeight < Double.PositiveInfinity ? MaxHeight : 0);
+                    var horizontal = Padding.Left + Padding.Right + BorderThickness.Left + BorderThickness.Right;
+                    var vertical = Padding.Top + Padding.Bottom + BorderThickness.Top + BorderThickness.Bottom;
+
+                    var size = new RSize(constraint.Width < Double.PositiveInfinity ? constraint.Width - horizontal : 0, constraint.Height < Double.PositiveInfinity ? constraint.Height - vertical : 0);
+                    var minSize = new RSize(MinWidth < Double.PositiveInfinity ? MinWidth - horizontal : 0, MinHeight < Double.PositiveInfinity ? MinHeight - vertical : 0);
+                    var maxSize = new RSize(MaxWidth < Double.PositiveInfinity ? MaxWidth - horizontal : 0, MaxHeight < Double.PositiveInfinity ? MaxHeight - vertical : 0);
+
                     var newSize = HtmlRendererUtils.Layout(ig, _htmlContainer.HtmlContainerInt, size, minSize, maxSize, AutoSize, AutoSizeHeightOnly);
-                    constraint = new Size(newSize.Width + BorderThickness.Left + BorderThickness.Right, newSize.Height + BorderThickness.Top + BorderThickness.Bottom);
+
+                    constraint = new Size(newSize.Width + horizontal, newSize.Height + vertical);
                 }
             }
 
