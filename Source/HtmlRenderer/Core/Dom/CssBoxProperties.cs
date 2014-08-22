@@ -61,7 +61,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _emptyCells = "show";
         private string _direction = "ltr";
         private string _display = "inline";
-        private string _fontFamily = "serif";
+        private string _fontFamily;
         private string _fontSize = "medium";
         private string _fontStyle = "normal";
         private string _fontVariant = "normal";

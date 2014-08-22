@@ -67,7 +67,17 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
 
             GlyphTypeface typeface;
             if (font.TryGetGlyphTypeface(out typeface))
+            {
                 _glyphTypeface = typeface;
+            }
+            else
+            {
+                foreach (var sysTypeface in Fonts.SystemTypefaces)
+                {
+                    if (sysTypeface.TryGetGlyphTypeface(out typeface))
+                        break;
+                }
+            }
         }
 
         /// <summary>
