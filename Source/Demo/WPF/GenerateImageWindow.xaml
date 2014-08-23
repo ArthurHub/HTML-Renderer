@@ -9,7 +9,7 @@
             <Button Content="Save to File" Click="OnSaveToFile_click"/>
         </ToolBar>
         <DockPanel x:Name="_imageBoxBorder" Background="{StaticResource TransBackBrush}">
-            <Image x:Name="_imageBox" Stretch="None" SnapsToDevicePixels="True" />
+            <Image x:Name="_imageBox" Stretch="None" />
         </DockPanel>
     </DockPanel>
 </Window>
