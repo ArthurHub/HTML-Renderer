@@ -90,12 +90,14 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         #endregion
 
 
-
         /// <summary>
         /// Creates a new HtmlPanel and sets a basic css for it's styling.
         /// </summary>
         protected HtmlControl()
         {
+            // shitty WPF rendering, have no idea why this actually makes everything sharper =/
+            SnapsToDevicePixels = false;
+
             _htmlContainer = new HtmlContainer();
             _htmlContainer.LinkClicked += OnLinkClicked;
             _htmlContainer.RenderError += OnRenderError;
