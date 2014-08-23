@@ -67,7 +67,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
             _htmlTooltipLabel.AvoidImagesLateLoading = true;
             _htmlTooltipLabel.StylesheetLoad += HtmlRenderingHelper.OnStylesheetLoad;
             _htmlTooltipLabel.ImageLoad += HtmlRenderingHelper.OnImageLoad;
-            _htmlTooltipLabel.Text = Common.Resources.Tooltip;
+            _htmlTooltipLabel.Text = "<div class='htmltooltip'>" + Common.Resources.Tooltip + "</div>";
 
 
             LoadSamples();
