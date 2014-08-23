@@ -278,7 +278,18 @@ namespace TheArtOfDev.HtmlRenderer.WPF
             var htmlHeight = HtmlHeight(RenderSize);
             if (_htmlContainer != null && htmlWidth > 0 && htmlHeight > 0)
             {
-                context.PushClip(new RectangleGeometry(new Rect(Padding.Left + BorderThickness.Left, Padding.Top + BorderThickness.Top, htmlWidth, htmlHeight)));
+                var windows = Window.GetWindow(this);
+                if (windows != null)
+                {
+                    // adjust render location to round point so we won't get anti-alias smugness
+                    var wPoint = TranslatePoint(new Point(0, 0), windows);
+                    wPoint.Offset(-(int)wPoint.X, -(int)wPoint.Y);
+                    var xTrans = wPoint.X < .5 ? -wPoint.X : 1 - wPoint.X;
+                    var yTrans = wPoint.Y < .5 ? -wPoint.Y : 1 - wPoint.Y;
+                    context.PushTransform(new TranslateTransform(xTrans, yTrans));
+                }
+
+                context.PushClip(new RectangleGeometry(new Rect(Padding.Left + BorderThickness.Left, Padding.Top + BorderThickness.Top, htmlWidth, (int)htmlHeight)));
                 _htmlContainer.Location = new Point(Padding.Left + BorderThickness.Left, Padding.Top + BorderThickness.Top);
                 _htmlContainer.PerformPaint(context, new Rect(Padding.Left + BorderThickness.Left, Padding.Top + BorderThickness.Top, htmlWidth, htmlHeight));
                 context.Pop();
