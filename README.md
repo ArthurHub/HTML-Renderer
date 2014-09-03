@@ -1,4 +1,4 @@
-HTML Renderer
+HTML Renderer [![Build status](https://ci.appveyor.com/api/projects/status/cm8xpf8ebt3hyi3e)](https://ci.appveyor.com/project/ArthurHub/html-renderer)
 =============
 
 #### Documentation, Discussion and Issue tracking is on [CodePlex](https://htmlrenderer.codeplex.com/).
@@ -38,3 +38,6 @@ The library is *100% managed C# code* without any external dependencies (no WebB
 
 ### NuGet package install
 [![NuGet package](http://download-codeplex.sec.s-msft.com/Download?ProjectName=HtmlRenderer&DownloadId=731229)](https://www.nuget.org/packages/HtmlRenderer.WinForms)
+
+#### HTML Renderer on my blog
+[TheArtOfDev / HTML Renderer](http://theartofdev.com/html-renderer/)
