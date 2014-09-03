@@ -263,11 +263,6 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
 
         public override void DrawRectangle(RPen pen, double x, double y, double width, double height)
         {
-            x = (int)x;
-            y = (int)y;
-            width = (int)width;
-            height = (int)height;
-
             var adj = pen.Width;
             if (Math.Abs(adj % 2 - 1) < .1)
             {
@@ -280,7 +275,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
 
         public override void DrawRectangle(RBrush brush, double x, double y, double width, double height)
         {
-            _g.DrawRectangle(((BrushAdapter)brush).Brush, null, new Rect((int)x, (int)y, (int)width, (int)height));
+            _g.DrawRectangle(((BrushAdapter)brush).Brush, null, new Rect(x, y, width, height));
         }
 
         public override void DrawImage(RImage image, RRect destRect, RRect srcRect)
@@ -311,9 +306,9 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
                 var g = new StreamGeometry();
                 using (var context = g.Open())
                 {
-                    context.BeginFigure(Utils.ConvertRound(points[0]), true, true);
+                    context.BeginFigure(Utils.Convert(points[0]), true, true);
                     for (int i = 1; i < points.Length; i++)
-                        context.LineTo(Utils.ConvertRound(points[i]), true, true);
+                        context.LineTo(Utils.Convert(points[i]), true, true);
                 }
                 g.Freeze();
 
