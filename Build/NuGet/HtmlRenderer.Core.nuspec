@@ -15,7 +15,7 @@
     </summary>
     <description>
       The rich formatting power of HTML in .NET applications on any framework using controls or static rendering.
-      The Core assembly of HTML Renderer not bound to any rendering framework (WinForms/WPF/PDF/etc.).
+      The Core assembly of HTML Renderer does not bound to any rendering framework (WinForms/WPF/PDF/etc.).
       Can be used to create framework specific renderer using adapter extensibility object model.
       For existing implementations see: HtmlRenderer.WinForms, HtmlRenderer.WPF and HtmlRenderer.PdfSharp.
     </description>

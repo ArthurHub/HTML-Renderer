@@ -3,7 +3,7 @@
   <metadata>
     <id>HtmlRenderer.PdfSharp</id>
     <version>0.0.0.1</version>
-    <title>HTML Renderer for PDF generation using PdfSharp</title>
+    <title>HTML Renderer for PDF using PdfSharp</title>
     <authors>Arthur Teplitzki</authors>
     <owners>Arthur Teplitzki</owners>
     <licenseUrl>https://htmlrenderer.codeplex.com/license</licenseUrl>
@@ -35,6 +35,7 @@
     </frameworkAssemblies>
     <dependencies>
       <dependency id="HtmlRenderer.Core" version="1.5.0.0"/>
+      <dependency id="PDFsharp" version="1.32.3057.0"/>
     </dependencies>
   </metadata>
   <files>

@@ -185,7 +185,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             {
                 _updateLock = true;
 
-                if (e.Node.Parent.Text != PerformanceSamplesTreeNodeName)
+                if (!HtmlRenderingHelper.IsRunningOnMono() && e.Node.Parent.Text != PerformanceSamplesTreeNodeName)
                     SetColoredText(sample.Html);
                 else
                     _htmlEditor.Text = sample.Html;
