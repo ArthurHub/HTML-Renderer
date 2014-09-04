@@ -457,10 +457,15 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             {
                 _htmlContainer.MaxSize = new SizeF(ClientSize.Width - Padding.Horizontal, 0);
 
-                using (var g = CreateGraphics())
+                try
                 {
-                    _htmlContainer.PerformLayout(g);
+                    using (var g = CreateGraphics())
+                    {
+                        _htmlContainer.PerformLayout(g);
+                    }
                 }
+                catch
+                { }
 
                 AutoScrollMinSize = Size.Round(new SizeF(_htmlContainer.ActualSize.Width + Padding.Horizontal, _htmlContainer.ActualSize.Height));
             }
@@ -676,8 +681,13 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         protected virtual void InvokeMouseMove()
         {
-            var mp = PointToClient(MousePosition);
-            _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
+            try
+            {
+                var mp = PointToClient(MousePosition);
+                _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
+            }
+            catch
+            { }
         }
 
         /// <summary>
