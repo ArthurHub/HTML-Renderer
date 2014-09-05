@@ -83,7 +83,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         /// </summary>
         internal static Icon GetIcon()
         {
-            var stream = typeof(DemoForm).Assembly.GetManifestResourceStream("HtmlRenderer.Demo.WinForms.html.ico");
+            var stream = typeof(DemoForm).Assembly.GetManifestResourceStream("TheArtOfDev.HtmlRenderer.Demo.WinForms.html.ico");
             return stream != null ? new Icon(stream) : null;
         }
 
