@@ -107,6 +107,11 @@ namespace TheArtOfDev.HtmlRenderer.Core
         private SelectionHandler _selectionHandler;
 
         /// <summary>
+        /// Handler for downloading of images in the html
+        /// </summary>
+        private ImageDownloader _imageDownloader;
+
+        /// <summary>
         /// the text fore color use for selected text
         /// </summary>
         private RColor _selectionForeColor;
@@ -429,9 +434,14 @@ namespace TheArtOfDev.HtmlRenderer.Core
             {
                 _root.Dispose();
                 _root = null;
+                
                 if (_selectionHandler != null)
                     _selectionHandler.Dispose();
                 _selectionHandler = null;
+                
+                if (_imageDownloader != null)
+                    _imageDownloader.Dispose();
+                _imageDownloader = null;
             }
         }
 
@@ -861,6 +871,17 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 _hoverBoxes = new List<HoverBoxBlock>();
 
             _hoverBoxes.Add(new HoverBoxBlock(box, block));
+        }
+
+        /// <summary>
+        /// Get image downloader to be used to download images for the current html rendering.<br/>
+        /// Lazy create single downloader to be used for all images in the current html.
+        /// </summary>
+        internal ImageDownloader GetImageDownloader()
+        {
+            if (_imageDownloader == null)
+                _imageDownloader = new ImageDownloader();
+            return _imageDownloader;
         }
 
         /// <summary>

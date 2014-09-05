@@ -36,7 +36,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         /// <summary>
         /// Table to convert numbers into roman digits
         /// </summary>
-        private static readonly string[,] _romanDigitsTable = new[,]
+        private static readonly string[,] _romanDigitsTable =
         {
             { "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" },
             { "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC" },
@@ -47,21 +47,21 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             }
         };
 
-        private static readonly string[,] _hebrewDigitsTable = new[,]
+        private static readonly string[,] _hebrewDigitsTable =
         {
             { "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט" },
             { "י", "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ" },
             { "ק", "ר", "ש", "ת", "תק", "תר", "תש", "תת", "תתק", }
         };
 
-        private static readonly string[,] _georgianDigitsTable = new[,]
+        private static readonly string[,] _georgianDigitsTable =
         {
             { "ა", "ბ", "გ", "დ", "ე", "ვ", "ზ", "ჱ", "თ" },
             { "ი", "პ", "ლ", "მ", "ნ", "ჲ", "ო", "პ", "ჟ" },
             { "რ", "ს", "ტ", "ჳ", "ფ", "ქ", "ღ", "ყ", "შ" }
         };
 
-        private static readonly string[,] _armenianDigitsTable = new[,]
+        private static readonly string[,] _armenianDigitsTable =
         {
             { "Ա", "Բ", "Գ", "Դ", "Ե", "Զ", "Է", "Ը", "Թ" },
             { "Ժ", "Ի", "Լ", "Խ", "Ծ", "Կ", "Հ", "Ձ", "Ղ" },
@@ -77,6 +77,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         {
             "ア", "イ", "ウ", "エ", "オ", "カ", "キ", "ク", "ケ", "コ", "サ", "シ", "ス", "セ", "ソ", "タ", "チ", "ツ", "テ", "ト", "ナ", "ニ", "ヌ", "ネ", "ノ", "ハ", "ヒ", "フ", "ヘ", "ホ", "マ", "ミ", "ム", "メ", "モ", "ヤ", "ユ", "ヨ", "ラ", "リ", "ル", "レ", "ロ", "ワ", "ヰ", "ヱ", "ヲ", "ン"
         };
+
+        /// <summary>
+        /// the temp path to use for local files
+        /// </summary>
+        public static String _tempPath;
 
         #endregion
 
@@ -224,7 +229,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             int indexOfParams = restOfUri.IndexOf('?');
             if (indexOfParams == -1)
             {
-                string ext = ".cache";
+                string ext = ".png";
                 int indexOfDot = restOfUri.IndexOf('.');
                 if (indexOfDot > -1)
                 {
@@ -242,7 +247,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                 {
                     //The uri is not for a filename
                     fileNameBuilder.Append(restOfUri);
-                    fileNameBuilder.Append(".cache");
+                    fileNameBuilder.Append(".png");
                 }
                 else if (indexOfParams > indexOfDot)
                 {
@@ -261,11 +266,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                 validFileName = validFileName.Substring(0, 24) + validFileName.Substring(24).GetHashCode() + Path.GetExtension(validFileName);
             }
 
-            return new FileInfo(Path.Combine(Path.GetTempPath(), validFileName));
+            if (_tempPath == null)
+            {
+                _tempPath = Path.Combine(Path.GetTempPath(), "HtmlRenderer");
+                if (!Directory.Exists(_tempPath))
+                    Directory.CreateDirectory(_tempPath);
+            }
+
+            return new FileInfo(Path.Combine(_tempPath, validFileName));
         }
 
         /// <summary>
-        /// Get substring seperated by whitespace starting from the given idex.
+        /// Get substring separated by whitespace starting from the given idex.
         /// </summary>
         /// <param name="str">the string to get substring in</param>
         /// <param name="idx">the index to start substring search from</param>
