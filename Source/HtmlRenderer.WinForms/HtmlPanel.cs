@@ -457,15 +457,15 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             {
                 _htmlContainer.MaxSize = new SizeF(ClientSize.Width - Padding.Horizontal, 0);
 
-                try
+                Graphics g = Utils.CreateGraphics(this);
+                if (g != null)
                 {
-                    using (var g = CreateGraphics())
+                    using (g)
                     {
                         _htmlContainer.PerformLayout(g);
                     }
                 }
-                catch
-                { }
+
 
                 AutoScrollMinSize = Size.Round(new SizeF(_htmlContainer.ActualSize.Width + Padding.Horizontal, _htmlContainer.ActualSize.Height));
             }
@@ -683,11 +683,16 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         {
             try
             {
+                // mono has issue throwing exception for no reason
                 var mp = PointToClient(MousePosition);
                 _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
             }
             catch
-            { }
+            {
+#if !MONO
+                throw;
+#endif
+            }
         }
 
         /// <summary>

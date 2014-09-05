@@ -471,17 +471,21 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         {
             if (_htmlContainer != null)
             {
-                using (Graphics g = CreateGraphics())
-                using (var ig = new GraphicsAdapter(g, _htmlContainer.UseGdiPlusTextRendering))
+                Graphics g = Utils.CreateGraphics(this);
+                if (g != null)
                 {
-                    var newSize = HtmlRendererUtils.Layout(ig,
-                        _htmlContainer.HtmlContainerInt,
-                        new RSize(ClientSize.Width - Padding.Horizontal, ClientSize.Height - Padding.Vertical),
-                        new RSize(MinimumSize.Width - Padding.Horizontal, MinimumSize.Height - Padding.Vertical),
-                        new RSize(MaximumSize.Width - Padding.Horizontal, MaximumSize.Height - Padding.Vertical),
-                        AutoSize,
-                        AutoSizeHeightOnly);
-                    ClientSize = Utils.ConvertRound(new RSize(newSize.Width + Padding.Horizontal, newSize.Height + Padding.Vertical));
+                    using (g)
+                    using (var ig = new GraphicsAdapter(g, _htmlContainer.UseGdiPlusTextRendering))
+                    {
+                        var newSize = HtmlRendererUtils.Layout(ig,
+                            _htmlContainer.HtmlContainerInt,
+                            new RSize(ClientSize.Width - Padding.Horizontal, ClientSize.Height - Padding.Vertical),
+                            new RSize(MinimumSize.Width - Padding.Horizontal, MinimumSize.Height - Padding.Vertical),
+                            new RSize(MaximumSize.Width - Padding.Horizontal, MaximumSize.Height - Padding.Vertical),
+                            AutoSize,
+                            AutoSizeHeightOnly);
+                        ClientSize = Utils.ConvertRound(new RSize(newSize.Width + Padding.Horizontal, newSize.Height + Padding.Vertical));
+                    }
                 }
             }
             base.OnLayout(levent);
