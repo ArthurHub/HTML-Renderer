@@ -60,6 +60,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             LoadCustomFonts();
 
             _showIEViewTSSB.Enabled = !HtmlRenderingHelper.IsRunningOnMono();
+            _generatePdfTSB.Enabled = !HtmlRenderingHelper.IsRunningOnMono();
         }
 
         /// <summary>
