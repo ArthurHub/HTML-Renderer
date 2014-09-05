@@ -421,6 +421,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 if (_root != null)
                 {
                     _selectionHandler = new SelectionHandler(_root);
+                    _imageDownloader = new ImageDownloader();
                 }
             }
         }
@@ -879,8 +880,6 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// </summary>
         internal ImageDownloader GetImageDownloader()
         {
-            if (_imageDownloader == null)
-                _imageDownloader = new ImageDownloader();
             return _imageDownloader;
         }
 

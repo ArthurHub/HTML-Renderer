@@ -301,9 +301,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         {
             try
             {
-                _imageFileStream = File.Open(source, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                _image = _htmlContainer.Adapter.ImageFromStream(_imageFileStream);
-                _releaseImageObject = true;
+                var imageFileStream = File.Open(source, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                lock (_loadCompleteCallback)
+                {
+                    _imageFileStream = imageFileStream;
+                    if (!_disposed)
+                        _image = _htmlContainer.Adapter.ImageFromStream(_imageFileStream);
+                    _releaseImageObject = true;
+                }
                 ImageLoadComplete();
             }
             catch (Exception ex)
@@ -368,15 +373,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// </summary>
         private void ReleaseObjects()
         {
-            if (_releaseImageObject && _image != null)
+            lock (_loadCompleteCallback)
             {
-                _image.Dispose();
-                _image = null;
-            }
-            if (_imageFileStream != null)
-            {
-                _imageFileStream.Dispose();
-                _imageFileStream = null;
+                if (_releaseImageObject && _image != null)
+                {
+                    _image.Dispose();
+                    _image = null;
+                }
+                if (_imageFileStream != null)
+                {
+                    _imageFileStream.Dispose();
+                    _imageFileStream = null;
+                }
             }
         }
 

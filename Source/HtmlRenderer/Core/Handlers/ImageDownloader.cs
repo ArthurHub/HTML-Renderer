@@ -30,7 +30,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
     public delegate void DownloadFileAsyncCallback(Uri imageUri, string filePath, Exception error, bool canceled);
 
     /// <summary>
-    /// 
+    /// Handler for downloading images from the web.<br/>
+    /// Single instance of the handler used for all images downloaded in a single html, this way if the html contains more
+    /// than one reference to the same image it will be downloaded only once.<br/>
+    /// Also handles corrupt, partial and canceled downloads by first downloading to temp file and only if successful moving to cached 
+    /// file location.
     /// </summary>
     internal sealed class ImageDownloader : IDisposable
     {
@@ -193,18 +197,21 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             List<DownloadFileAsyncCallback> callbacksList;
             lock (_imageDownloadCallbacks)
             {
-                callbacksList = _imageDownloadCallbacks[filePath];
-                _imageDownloadCallbacks.Remove(filePath);
+                if (_imageDownloadCallbacks.TryGetValue(filePath, out callbacksList))
+                    _imageDownloadCallbacks.Remove(filePath);
             }
 
-            foreach (var cachedFileCallback in callbacksList)
+            if (callbacksList != null)
             {
-                try
+                foreach (var cachedFileCallback in callbacksList)
                 {
-                    cachedFileCallback(source, filePath, error, cancelled);
+                    try
+                    {
+                        cachedFileCallback(source, filePath, error, cancelled);
+                    }
+                    catch
+                    { }
                 }
-                catch
-                { }
             }
         }
 
