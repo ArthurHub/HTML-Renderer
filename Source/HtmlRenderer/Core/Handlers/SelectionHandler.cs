@@ -379,6 +379,26 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
+        /// Clear the current selection.
+        /// </summary>
+        public void ClearSelection()
+        {
+            // clear drag and drop
+            _dragDropData = null;
+
+            ClearSelection(_root);
+
+            _selectionStartOffset = -1;
+            _selectionStartIndex = -1;
+            _selectionEndOffset = -1;
+            _selectionEndIndex = -1;
+
+            _selectionStartPoint = RPoint.Empty;
+            _selectionStart = null;
+            _selectionEnd = null;
+        }
+
+        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         /// <filterpriority>2</filterpriority>
@@ -459,26 +479,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                     control.Invalidate();
                 }
             }
-        }
-
-        /// <summary>
-        /// Clear the current selection.
-        /// </summary>
-        private void ClearSelection()
-        {
-            // clear drag and drop
-            _dragDropData = null;
-
-            ClearSelection(_root);
-
-            _selectionStartOffset = -1;
-            _selectionStartIndex = -1;
-            _selectionEndOffset = -1;
-            _selectionEndIndex = -1;
-
-            _selectionStartPoint = RPoint.Empty;
-            _selectionStart = null;
-            _selectionEnd = null;
         }
 
         /// <summary>

@@ -402,6 +402,15 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             }
         }
 
+        /// <summary>
+        /// Clear the current selection.
+        /// </summary>
+        public void ClearSelection()
+        {
+            if (_htmlContainer != null)
+                _htmlContainer.ClearSelection();
+        }
+
 
         #region Private methods
 

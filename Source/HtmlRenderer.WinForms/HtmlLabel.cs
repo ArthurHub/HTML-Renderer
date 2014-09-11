@@ -435,6 +435,15 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             return _htmlContainer != null ? _htmlContainer.GetElementRectangle(elementId) : null;
         }
 
+        /// <summary>
+        /// Clear the current selection.
+        /// </summary>
+        public void ClearSelection()
+        {
+            if (_htmlContainer != null)
+                _htmlContainer.ClearSelection();
+        }
+
 
         #region Private methods
 

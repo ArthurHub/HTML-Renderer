@@ -435,14 +435,26 @@ namespace TheArtOfDev.HtmlRenderer.Core
             {
                 _root.Dispose();
                 _root = null;
-                
+
                 if (_selectionHandler != null)
                     _selectionHandler.Dispose();
                 _selectionHandler = null;
-                
+
                 if (_imageDownloader != null)
                     _imageDownloader.Dispose();
                 _imageDownloader = null;
+            }
+        }
+
+        /// <summary>
+        /// Clear the current selection.
+        /// </summary>
+        public void ClearSelection()
+        {
+            if (_selectionHandler != null)
+            {
+                _selectionHandler.ClearSelection();
+                RequestRefresh(false);
             }
         }
 

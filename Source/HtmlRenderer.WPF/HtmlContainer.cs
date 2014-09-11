@@ -249,6 +249,14 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         }
 
         /// <summary>
+        /// Clear the current selection.
+        /// </summary>
+        public void ClearSelection()
+        {
+            HtmlContainerInt.ClearSelection();
+        }
+
+        /// <summary>
         /// Init with optional document and stylesheet.
         /// </summary>
         /// <param name="htmlSource">the html to init with, init empty if not given</param>
