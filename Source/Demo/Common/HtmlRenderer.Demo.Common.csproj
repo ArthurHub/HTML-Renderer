@@ -141,7 +141,7 @@
     <EmbeddedResource Include="Resources\form.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\IE.png" />
+    <EmbeddedResource Include="Resources\ie2.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\image.png" />
