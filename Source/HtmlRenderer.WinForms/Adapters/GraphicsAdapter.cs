@@ -167,7 +167,12 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
                 {
                     var height = realFont.Height;
                     var descent = realFont.Size * realFont.FontFamily.GetCellDescent(realFont.Style) / realFont.FontFamily.GetEmHeight(realFont.Style);
+#if !MONO
                     fontAdapter.SetMetrics(height, (int)Math.Round((height - descent + .5f)));
+#else
+                    fontAdapter.SetMetrics(height, (int)Math.Round((height - descent + 1f)));
+#endif
+
                 }
 
                 return Utils.Convert(size);
