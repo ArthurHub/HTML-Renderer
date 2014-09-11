@@ -109,7 +109,6 @@
     <EmbeddedResource Include="Samples\02.Text.htm" />
     <EmbeddedResource Include="Samples\01.History.htm" />
     <EmbeddedResource Include="Samples\00.Intro.htm" />
-    <EmbeddedResource Include="Resources\Window.gif" />
     <EmbeddedResource Include="Resources\web_pallete.gif" />
     <EmbeddedResource Include="Resources\refreshdocument32.png" />
     <EmbeddedResource Include="Resources\property32.png" />
