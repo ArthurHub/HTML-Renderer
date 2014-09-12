@@ -155,7 +155,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             int idx = 0;
             while (idx >= 0 && idx < stylesheet.Length)
             {
-                idx = stylesheet.IndexOf("url", idx, StringComparison.OrdinalIgnoreCase);
+                idx = stylesheet.IndexOf("url(", idx, StringComparison.OrdinalIgnoreCase);
                 if (idx >= 0)
                 {
                     int endIdx = stylesheet.IndexOf(')', idx);
@@ -170,8 +170,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                             url = new Uri(baseUri, url);
                             stylesheet = stylesheet.Remove(idx + 4, endIdx - idx - 4);
                             stylesheet = stylesheet.Insert(idx + 4, url.AbsoluteUri);
+                            idx += url.AbsoluteUri.Length + 4;
                         }
-                        idx = endIdx + 1;
+                        else
+                        {
+                            idx = endIdx + 1;
+                        }
                     }
                     else
                     {
