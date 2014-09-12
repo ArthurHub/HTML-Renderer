@@ -153,13 +153,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         private static string CorrectRelativeUrls(string stylesheet, Uri baseUri)
         {
             int idx = 0;
-            while (idx != -1 && idx < stylesheet.Length)
+            while (idx >= 0 && idx < stylesheet.Length)
             {
                 idx = stylesheet.IndexOf("url", idx, StringComparison.OrdinalIgnoreCase);
-                if (idx > 0)
+                if (idx >= 0)
                 {
-                    int endIdx = stylesheet.IndexOf(")", idx, StringComparison.OrdinalIgnoreCase);
-                    if (endIdx > 0)
+                    int endIdx = stylesheet.IndexOf(')', idx);
+                    if (endIdx > idx + 4)
                     {
                         var offset1 = 4 + (stylesheet[idx + 4] == '\'' ? 1 : 0);
                         var offset2 = (stylesheet[endIdx - 1] == '\'' ? 1 : 0);
@@ -170,12 +170,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                             url = new Uri(baseUri, url);
                             stylesheet = stylesheet.Remove(idx + 4, endIdx - idx - 4);
                             stylesheet = stylesheet.Insert(idx + 4, url.AbsoluteUri);
-                            idx += url.AbsoluteUri.Length + 4;
                         }
-                        else
-                        {
-                            idx = endIdx + 1;
-                        }
+                        idx = endIdx + 1;
+                    }
+                    else
+                    {
+                        idx += 4;
                     }
                 }
             }
