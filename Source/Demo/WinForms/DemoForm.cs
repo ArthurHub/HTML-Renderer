@@ -46,7 +46,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
 
             Icon = GetIcon();
             _openSampleFormTSB.Image = Common.Properties.Resources.form;
-            _showIEViewTSSB.Image = Common.Properties.Resources.IE;
+            _showIEViewTSSB.Image = Common.Properties.Resources.browser;
             _openInExternalViewTSB.Image = Common.Properties.Resources.chrome;
             _useGeneratedHtmlTSB.Image = Common.Properties.Resources.code;
             _generateImageSTB.Image = Common.Properties.Resources.image;
