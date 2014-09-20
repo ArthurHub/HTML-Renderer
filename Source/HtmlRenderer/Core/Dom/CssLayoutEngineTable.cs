@@ -613,6 +613,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             double maxBottom = 0f;
             int currentrow = 0;
 
+            // change start X by if the table should align to center or right
+            if (_tableBox.TextAlign == CssConstants.Center || _tableBox.TextAlign == CssConstants.Right)
+            {
+                double maxRightCalc = GetWidthSum();
+                startx = _tableBox.TextAlign == CssConstants.Right
+                    ? GetAvailableTableWidth() - maxRightCalc
+                    : startx + (GetAvailableTableWidth() - maxRightCalc) / 2;
+
+                _tableBox.Location = new RPoint(startx - _tableBox.ActualBorderLeftWidth - _tableBox.ActualPaddingLeft - GetHorizontalSpacing(), _tableBox.Location.Y);
+            }
+
             for (int i = 0; i < _allRows.Count; i++)
             {
                 var row = _allRows[i];
