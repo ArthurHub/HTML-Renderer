@@ -58,6 +58,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             _htmlPanel.StylesheetLoad += DemoUtils.OnStylesheetLoad;
             _htmlPanel.ImageLoad += HtmlRenderingHelper.OnImageLoad;
             _htmlToolTip.ImageLoad += HtmlRenderingHelper.OnImageLoad;
+            _htmlPanel.LoadComplete += (sender, args) => _htmlPanel.ScrollToElement("C4");
 
             _htmlToolTip.SetToolTip(_htmlPanel, Resources.Tooltip);
 

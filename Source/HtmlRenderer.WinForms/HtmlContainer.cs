@@ -56,6 +56,16 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         }
 
         /// <summary>
+        /// Raised when the set html document has been fully loaded.<br/>
+        /// Allows manipulation of the html dom, scroll position, etc.
+        /// </summary>
+        public event EventHandler LoadComplete
+        {
+            add { HtmlContainerInt.LoadComplete += value; }
+            remove { HtmlContainerInt.LoadComplete -= value; }
+        }
+
+        /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
         /// Allows canceling the execution of the link.
         /// </summary>

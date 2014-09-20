@@ -63,6 +63,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
             _htmlPanel.LinkClicked += OnLinkClicked;
             _htmlPanel.StylesheetLoad += HtmlRenderingHelper.OnStylesheetLoad;
             _htmlPanel.ImageLoad += HtmlRenderingHelper.OnImageLoad;
+            _htmlPanel.LoadComplete += (sender, args) => _htmlPanel.ScrollToElement("C4");
 
             _htmlTooltipLabel.AvoidImagesLateLoading = true;
             _htmlTooltipLabel.StylesheetLoad += HtmlRenderingHelper.OnStylesheetLoad;

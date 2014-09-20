@@ -81,6 +81,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         public static readonly DependencyProperty BaseStylesheetProperty = DependencyProperty.Register("BaseStylesheet", typeof(string), typeof(HtmlControl), new PropertyMetadata(null, OnDependencyProperty_valueChanged));
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(HtmlControl), new PropertyMetadata(null, OnDependencyProperty_valueChanged));
 
+        public static readonly RoutedEvent LoadCompleteEvent = EventManager.RegisterRoutedEvent("LoadComplete", RoutingStrategy.Bubble, typeof(RoutedEventHandler<EventArgs>), typeof(HtmlControl));
         public static readonly RoutedEvent LinkClickedEvent = EventManager.RegisterRoutedEvent("LinkClicked", RoutingStrategy.Bubble, typeof(RoutedEventHandler<HtmlLinkClickedEventArgs>), typeof(HtmlControl));
         public static readonly RoutedEvent RenderErrorEvent = EventManager.RegisterRoutedEvent("RenderError", RoutingStrategy.Bubble, typeof(RoutedEventHandler<HtmlRenderErrorEventArgs>), typeof(HtmlControl));
         public static readonly RoutedEvent RefreshEvent = EventManager.RegisterRoutedEvent("Refresh", RoutingStrategy.Bubble, typeof(RoutedEventHandler<HtmlRefreshEventArgs>), typeof(HtmlControl));
@@ -99,11 +100,22 @@ namespace TheArtOfDev.HtmlRenderer.WPF
             SnapsToDevicePixels = false;
 
             _htmlContainer = new HtmlContainer();
+            _htmlContainer.LoadComplete += OnLoadComplete;
             _htmlContainer.LinkClicked += OnLinkClicked;
             _htmlContainer.RenderError += OnRenderError;
             _htmlContainer.Refresh += OnRefresh;
             _htmlContainer.StylesheetLoad += OnStylesheetLoad;
             _htmlContainer.ImageLoad += OnImageLoad;
+        }
+
+        /// <summary>
+        /// Raised when the set html document has been fully loaded.<br/>
+        /// Allows manipulation of the html dom, scroll position, etc.
+        /// </summary>
+        public event RoutedEventHandler LoadComplete
+        {
+            add { AddHandler(LoadCompleteEvent, value); }
+            remove { RemoveHandler(LoadCompleteEvent, value); }
         }
 
         /// <summary>
@@ -372,6 +384,15 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         }
 
         /// <summary>
+        /// Propagate the LoadComplete event from root container.
+        /// </summary>
+        protected virtual void OnLoadComplete(EventArgs e)
+        {
+            RoutedEventArgs newEventArgs = new RoutedEvenArgs<EventArgs>(LoadCompleteEvent, this, e);
+            RaiseEvent(newEventArgs);
+        }
+
+        /// <summary>
         /// Propagate the LinkClicked event from root container.
         /// </summary>
         protected virtual void OnLinkClicked(HtmlLinkClickedEventArgs e)
@@ -481,6 +502,14 @@ namespace TheArtOfDev.HtmlRenderer.WPF
 
 
         #region Private event handlers
+
+        private void OnLoadComplete(object sender, EventArgs e)
+        {
+            if (CheckAccess())
+                OnLoadComplete(e);
+            else
+                Dispatcher.Invoke(new Action<HtmlLinkClickedEventArgs>(OnLinkClicked), e);
+        }
 
         private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
         {

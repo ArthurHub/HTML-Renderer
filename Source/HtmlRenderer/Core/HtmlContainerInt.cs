@@ -82,7 +82,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         #region Fields and Consts
 
         /// <summary>
-        /// 
+        /// Main adapter to framework specific logic.
         /// </summary>
         private readonly RAdapter _adapter;
 
@@ -154,6 +154,11 @@ namespace TheArtOfDev.HtmlRenderer.Core
         private bool _avoidImagesLateLoading;
 
         /// <summary>
+        /// is the load of the html document is complete
+        /// </summary>
+        private bool _loadComplete;
+
+        /// <summary>
         /// the top-left most location of the rendered html
         /// </summary>
         private RPoint _location;
@@ -203,6 +208,12 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             get { return _cssParser; }
         }
+
+        /// <summary>
+        /// Raised when the set html document has been fully loaded.<br/>
+        /// Allows manipulation of the html dom, scroll position, etc.
+        /// </summary>
+        public event EventHandler LoadComplete;
 
         /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
@@ -414,6 +425,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             Clear();
             if (!string.IsNullOrEmpty(htmlSource))
             {
+                _loadComplete = false;
                 _cssData = baseCssData ?? _adapter.DefaultCssData;
 
                 DomParser parser = new DomParser(_cssParser);
@@ -548,6 +560,14 @@ namespace TheArtOfDev.HtmlRenderer.Core
                     _root.Size = new RSize((int)Math.Ceiling(_actualSize.Width), 0);
                     _actualSize = RSize.Empty;
                     _root.PerformLayout(g);
+                }
+
+                if (!_loadComplete)
+                {
+                    _loadComplete = true;
+                    EventHandler handler = LoadComplete;
+                    if (handler != null)
+                        handler(this, EventArgs.Empty);
                 }
             }
         }
@@ -756,10 +776,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             try
             {
-                if (StylesheetLoad != null)
-                {
-                    StylesheetLoad(this, args);
-                }
+                EventHandler<HtmlStylesheetLoadEventArgs> handler = StylesheetLoad;
+                if (handler != null)
+                    handler(this, args);
             }
             catch (Exception ex)
             {
@@ -775,10 +794,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             try
             {
-                if (ImageLoad != null)
-                {
-                    ImageLoad(this, args);
-                }
+                EventHandler<HtmlImageLoadEventArgs> handler = ImageLoad;
+                if (handler != null)
+                    handler(this, args);
             }
             catch (Exception ex)
             {
@@ -794,10 +812,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             try
             {
-                if (Refresh != null)
-                {
-                    Refresh(this, new HtmlRefreshEventArgs(layout));
-                }
+                EventHandler<HtmlRefreshEventArgs> handler = Refresh;
+                if (handler != null)
+                    handler(this, new HtmlRefreshEventArgs(layout));
             }
             catch (Exception ex)
             {
@@ -815,10 +832,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             try
             {
-                if (RenderError != null)
-                {
-                    RenderError(this, new HtmlRenderErrorEventArgs(type, message, exception));
-                }
+                EventHandler<HtmlRenderErrorEventArgs> handler = RenderError;
+                if (handler != null)
+                    handler(this, new HtmlRenderErrorEventArgs(type, message, exception));
             }
             catch
             { }
@@ -832,12 +848,13 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// <param name="link">the link that was clicked</param>
         internal void HandleLinkClicked(RControl parent, RPoint location, CssBox link)
         {
-            if (LinkClicked != null)
+            EventHandler<HtmlLinkClickedEventArgs> clickHandler = LinkClicked;
+            if (clickHandler != null)
             {
                 var args = new HtmlLinkClickedEventArgs(link.HrefLink, link.HtmlTag.Attributes);
                 try
                 {
-                    LinkClicked(this, args);
+                    clickHandler(this, args);
                 }
                 catch (Exception ex)
                 {
@@ -851,12 +868,13 @@ namespace TheArtOfDev.HtmlRenderer.Core
             {
                 if (link.HrefLink.StartsWith("#") && link.HrefLink.Length > 1)
                 {
-                    if (ScrollChange != null)
+                    EventHandler<HtmlScrollEventArgs> scrollHandler = ScrollChange;
+                    if (scrollHandler != null)
                     {
                         var rect = GetElementRectangle(link.HrefLink.Substring(1));
                         if (rect.HasValue)
                         {
-                            ScrollChange(this, new HtmlScrollEventArgs(rect.Value.Location));
+                            scrollHandler(this, new HtmlScrollEventArgs(rect.Value.Location));
                             HandleMouseMove(parent, location);
                         }
                     }

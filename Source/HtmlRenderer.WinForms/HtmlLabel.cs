@@ -132,6 +132,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             _htmlContainer = new HtmlContainer();
             _htmlContainer.AvoidImagesLateLoading = true;
             _htmlContainer.MaxSize = MaximumSize;
+            _htmlContainer.LoadComplete += OnLoadComplete;
             _htmlContainer.LinkClicked += OnLinkClicked;
             _htmlContainer.RenderError += OnRenderError;
             _htmlContainer.Refresh += OnRefresh;
@@ -146,6 +147,12 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         [Category("Property Changed")]
         public event EventHandler BorderStyleChanged;
+
+        /// <summary>
+        /// Raised when the set html document has been fully loaded.<br/>
+        /// Allows manipulation of the html dom, scroll position, etc.
+        /// </summary>
+        public event EventHandler LoadComplete;
 
         /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
@@ -579,6 +586,16 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         }
 
         /// <summary>
+        /// Propagate the LoadComplete event from root container.
+        /// </summary>
+        protected virtual void OnLoadComplete(EventArgs e)
+        {
+            var handler = LoadComplete;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        /// <summary>
         /// Propagate the LinkClicked event from root container.
         /// </summary>
         protected virtual void OnLinkClicked(HtmlLinkClickedEventArgs e)
@@ -661,6 +678,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         {
             if (_htmlContainer != null)
             {
+                _htmlContainer.LoadComplete -= OnLoadComplete;
                 _htmlContainer.LinkClicked -= OnLinkClicked;
                 _htmlContainer.RenderError -= OnRenderError;
                 _htmlContainer.Refresh -= OnRefresh;
@@ -674,6 +692,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
 
 
         #region Private event handlers
+
+        private void OnLoadComplete(object sender, EventArgs e)
+        {
+            OnLoadComplete(e);
+        }
 
         private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
         {
