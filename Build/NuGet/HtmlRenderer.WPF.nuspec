@@ -11,10 +11,10 @@
     <iconUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/html.ico?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>
-      Multipurpose (UI Controls / Image generation) 100% managed (C#) HTML Rendering library for WPF.
+      Multipurpose (UI Controls / Image generation), 100% managed (C#), High performance HTML Rendering library for WPF.
     </summary>
     <description>
-      Multipurpose (UI Controls / Image generation) 100% managed (C#) HTML Rendering library for WPF.
+      Multipurpose (UI Controls / Image generation), 100% managed (C#), High performance HTML Rendering library for WPF.
 
       HTML UI in .NET WPF applications using controls or static rendering.
 
@@ -39,7 +39,7 @@
       <frameworkAssembly assemblyName="System.Drawing" targetFramework="" />
     </frameworkAssemblies>
     <dependencies>
-      <dependency id="HtmlRenderer.Core" version="1.5.0.0"/>
+      <dependency id="HtmlRenderer.Core" version="1.5.0.5"/>
     </dependencies>
   </metadata>
   <files>

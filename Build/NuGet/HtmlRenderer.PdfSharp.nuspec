@@ -11,10 +11,10 @@
     <iconUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/html.ico?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>
-      PDF document generator from HTML snippet, 100% managed (C#) library using PdfSharp.
+      PDF document generator from HTML snippet, 100% managed (C#), High performance library using PdfSharp.
     </summary>
     <description>
-      PDF document generator from HTML snippet, 100% managed (C#) library using PdfSharp.
+      PDF document generator from HTML snippet, 100% managed (C#), High performance library using PdfSharp.
 
       Features and Benefits:
       ---
@@ -34,7 +34,7 @@
       <frameworkAssembly assemblyName="System.Drawing" targetFramework="" />
     </frameworkAssemblies>
     <dependencies>
-      <dependency id="HtmlRenderer.Core" version="1.5.0.0"/>
+      <dependency id="HtmlRenderer.Core" version="1.5.0.5"/>
       <dependency id="PDFsharp" version="1.32.3057.0"/>
     </dependencies>
   </metadata>
