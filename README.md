@@ -25,7 +25,7 @@ The library is 100% managed *C#* code without any external dependencies (no WebB
 * Lightweight, just two DLLs (~300K).
 * High performance and low memory footprint.
 * Extendable and configurable.
-* Powerful [Demo application] to explore and learn the library.
+* Powerful [Demo application](https://htmlrenderer.codeplex.com/wikipage?title=Demo%20application&referringTitle=Home) to explore and learn the library.
 
 ### WinForms/WPF controls
 * *HtmlPanel* - The full power of HTML control build to replace WebBrowser control, accepts HTML, text selection, scrollbars, link click intercept, image load intercept and much more.
