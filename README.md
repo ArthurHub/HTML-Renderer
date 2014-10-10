@@ -40,11 +40,11 @@ The library is 100% managed *C#* code without any external dependencies (no WebB
 * Create PDF document from HTML code snippets.
 
 ### NuGet packages
-* [HTML Renderer for WinForms][https://www.nuget.org/packages/HtmlRenderer.WinForms]
-* [HTML Renderer for WPF][https://www.nuget.org/packages/HtmlRenderer.WPF]
-* [HTML Renderer for Mono][https://www.nuget.org/packages/HtmlRenderer.Mono]
-* [HTML Renderer for PDF using PdfSharp][https://www.nuget.org/packages/HtmlRenderer.PdfSharp]
-* [HTML Renderer Core][https://www.nuget.org/packages/HtmlRenderer.Core]  
+* [HtmlRenderer.WinForms](https://www.nuget.org/packages/HtmlRenderer.WinForms)
+* [HtmlRenderer.WPF](https://www.nuget.org/packages/HtmlRenderer.WPF)
+* [HtmlRenderer.Mono](https://www.nuget.org/packages/HtmlRenderer.Mono)
+* [HtmlRenderer.PdfSharp](https://www.nuget.org/packages/HtmlRenderer.PdfSharp)
+* [HtmlRenderer.Core](https://www.nuget.org/packages/HtmlRenderer.Core)
 
 #### HTML Renderer on my blog
 [TheArtOfDev / HTML Renderer](http://theartofdev.com/html-renderer/)
