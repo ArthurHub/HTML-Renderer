@@ -624,10 +624,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     word.Left += diff;
                 }
 
-                foreach (CssBox b in line.Rectangles.Keys)
+                foreach (CssBox b in ToList(line.Rectangles.Keys))
                 {
-                    RRect r = b.Rectangles[line];
-                    b.Rectangles[line] = new RRect(r.X + diff, r.Y, r.Width, r.Height);
+                    RRect r = line.Rectangles[b];
+                    line.Rectangles[b] = new RRect(r.X + diff, r.Y, r.Width, r.Height);
                 }
             }
         }
@@ -654,10 +654,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     word.Left += diff;
                 }
 
-                foreach (CssBox b in line.Rectangles.Keys)
+                foreach (CssBox b in ToList(line.Rectangles.Keys))
                 {
-                    RRect r = b.Rectangles[line];
-                    b.Rectangles[line] = new RRect(r.X + diff, r.Y, r.Width, r.Height);
+                    RRect r = line.Rectangles[b];
+                    line.Rectangles[b] = new RRect(r.X + diff, r.Y, r.Width, r.Height);
                 }
             }
         }
@@ -685,6 +685,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             //        curx = word.Right + r.OwnerBox.ActualWordSpacing;
             //    }
             //}
+        }
+
+        private static List<T> ToList<T>(IEnumerable<T> collection)
+        {
+            List<T> result = new List<T>();
+            foreach (T item in collection)
+            {
+                result.Add(item);
+            }
+            return result;
         }
 
         #endregion
