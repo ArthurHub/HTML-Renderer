@@ -31,37 +31,82 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+        <h1>
+<a name="html-renderer-" class="anchor" href="#html-renderer-"><span class="octicon octicon-link"></span></a>HTML Renderer <a href="https://ci.appveyor.com/project/ArthurHub/html-renderer"><img src="https://ci.appveyor.com/api/projects/status/cm8xpf8ebt3hyi3e" alt="Build status"></a>
+</h1>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<h4>
+<a name="documentation-discussion-and-issue-tracking-is-on-codeplex" class="anchor" href="#documentation-discussion-and-issue-tracking-is-on-codeplex"><span class="octicon octicon-link"></span></a>Documentation, Discussion and Issue tracking is on <a href="https://htmlrenderer.codeplex.com/">CodePlex</a>.</h4>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<p><strong>Cross framework</strong> (WinForms/WPF/PDF/Metro/Mono/etc.), <strong>Multipurpose</strong> (UI Controls / Image generation / PDF generation / etc.), <strong>100% managed</strong> (C#), High performance HTML Rendering library.</p>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p>The library is 100% managed <strong>C#</strong> code without any external dependencies (no WebBrowser control, ActiveX / COM or MSHTML dll), the only requirement is <strong>.NET 2.0 or higher</strong>.</p>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<h4>
+<a name="download-the-demo-application-to-explore-html-renderer-capabilities" class="anchor" href="#download-the-demo-application-to-explore-html-renderer-capabilities"><span class="octicon octicon-link"></span></a>
+<a href="https://htmlrenderer.codeplex.com/releases/">Download</a> the <a href="https://htmlrenderer.codeplex.com/wikipage?title=Demo%20application&amp;referringTitle=Home">Demo application</a> to explore HTML Renderer capabilities.</h4>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p><img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=HtmlRenderer&amp;DownloadId=919513" alt="Renderer1.png"></p>
 
 <h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<a name="features-and-benefits" class="anchor" href="#features-and-benefits"><span class="octicon octicon-link"></span></a>Features and Benefits</h3>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<ul>
+<li>Extensive HTML 4.01 and CSS level 2 specifications support.</li>
+<li>Support separating CSS from HTML by loading stylesheet code separately.</li>
+<li>Support text selection, copy-paste and context menu.</li>
+<li>WinForms controls: HtmlPanel, HtmlLabel and HtmlToolTip.</li>
+<li>WPF controls: HtmlPanel and HtmlLabel.</li>
+<li>Works on Mono.</li>
+<li>Create images/PDFs from HTML snippets.</li>
+<li>Handles "real world" malformed HTML, it doesn't have to be XHTML.</li>
+<li>100% managed code and no external dependencies.</li>
+<li>Supports .NET 2.0 or higher including Client Profile.</li>
+<li>Lightweight, just two DLLs (~300K).</li>
+<li>High performance and low memory footprint.</li>
+<li>Extendable and configurable.</li>
+<li>Powerful <a href="https://htmlrenderer.codeplex.com/wikipage?title=Demo%20application&amp;referringTitle=Home">Demo application</a> to explore and learn the library.</li>
+</ul>
 
 <h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<a name="winformswpf-controls" class="anchor" href="#winformswpf-controls"><span class="octicon octicon-link"></span></a>WinForms/WPF controls</h3>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<ul>
+<li>
+<em>HtmlPanel</em> - The full power of HTML control build to replace WebBrowser control, accepts HTML, text selection, scrollbars, link click intercept, image load intercept and much more.</li>
+<li>
+<em>HtmlLabel</em> - As WinForms label but accepts HTML, text selection, auto-size capabilities, transparent background and more.</li>
+<li>
+<em>HtmlToolTip</em> - As WinForms ToolTip control but accepts HTML and ability to handle links (WinForms only).</li>
+</ul>
+
+<h3>
+<a name="sample-applications" class="anchor" href="#sample-applications"><span class="octicon octicon-link"></span></a>Sample application's</h3>
+
+<ul>
+<li>Render HTML content generated by rich web editors like forums, blogs, etc.</li>
+<li>Render Office documents converted to HTML.</li>
+<li>Create WinForms UI that requires text selection with clipboard support.</li>
+<li>
+<a href="https://htmlrenderer.codeplex.com/wikipage?title=Image%20generation&amp;referringTitle=Home">Create images from HTML code snippets</a>.</li>
+<li>Create PDF document from HTML code snippets.</li>
+</ul>
+
+<h3>
+<a name="nuget-packages" class="anchor" href="#nuget-packages"><span class="octicon octicon-link"></span></a>NuGet packages</h3>
+
+<ul>
+<li><a href="https://www.nuget.org/packages/HtmlRenderer.WinForms">HtmlRenderer.WinForms</a></li>
+<li><a href="https://www.nuget.org/packages/HtmlRenderer.WPF">HtmlRenderer.WPF</a></li>
+<li><a href="https://www.nuget.org/packages/HtmlRenderer.Mono">HtmlRenderer.Mono</a></li>
+<li><a href="https://www.nuget.org/packages/HtmlRenderer.PdfSharp">HtmlRenderer.PdfSharp</a></li>
+<li><a href="https://www.nuget.org/packages/HtmlRenderer.Core">HtmlRenderer.Core</a></li>
+</ul>
+
+<h4>
+<a name="html-renderer-on-my-blog" class="anchor" href="#html-renderer-on-my-blog"><span class="octicon octicon-link"></span></a>HTML Renderer on my blog</h4>
+
+<p><a href="http://theartofdev.com/html-renderer/">TheArtOfDev / HTML Renderer</a></p>
       </section>
     </div>
 
