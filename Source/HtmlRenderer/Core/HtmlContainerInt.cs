@@ -443,8 +443,6 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// </summary>
         public void Clear()
         {
-            _hoverBoxes.Clear();
-
             if (_root != null)
             {
                 _root.Dispose();
@@ -457,6 +455,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 if (_imageDownloader != null)
                     _imageDownloader.Dispose();
                 _imageDownloader = null;
+
+                _hoverBoxes = null;
             }
         }
 
