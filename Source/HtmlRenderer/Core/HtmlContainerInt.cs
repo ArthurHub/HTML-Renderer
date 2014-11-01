@@ -425,6 +425,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// </summary>
         public void Clear()
         {
+            _hoverBoxes.Clear();
+
             if (_root != null)
             {
                 _root.Dispose();
