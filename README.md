@@ -9,7 +9,7 @@ The library is 100% managed **C#** code without any external dependencies (no We
 
 #### [Download](https://htmlrenderer.codeplex.com/releases/) the [Demo application](https://htmlrenderer.codeplex.com/wikipage?title=Demo%20application&referringTitle=Home) to explore HTML Renderer capabilities.
 
-![Renderer1.png](http://download-codeplex.sec.s-msft.com/Download?ProjectName=HtmlRenderer&DownloadId=919513)
+![Renderer.png](https://raw.githubusercontent.com/ArthurHub/HTML-Renderer/master/Art/demo_winforms.png)
 
 ### Features and Benefits
 * Extensive HTML 4.01 and CSS level 2 specifications support.
