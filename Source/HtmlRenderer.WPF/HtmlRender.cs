@@ -338,6 +338,8 @@ namespace TheArtOfDev.HtmlRenderer.WPF
             using (var mg = new GraphicsAdapter())
             {
                 var sizeInt = HtmlRendererUtils.MeasureHtmlByRestrictions(mg, htmlContainer.HtmlContainerInt, Utils.Convert(minSize), Utils.Convert(maxSize));
+                if (maxSize.Width < 1 && sizeInt.Width > 4096)
+                    sizeInt.Width = 4096;
                 return Utils.ConvertRound(sizeInt);
             }
         }
