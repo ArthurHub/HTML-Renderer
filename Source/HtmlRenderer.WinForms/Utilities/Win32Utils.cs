@@ -146,16 +146,16 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Utilities
         [DllImport("gdi32.dll")]
         public static extern int SetTextColor(IntPtr hdc, int color);
 
-        [DllImport("gdi32.dll", CharSet = CharSet.Auto)]
+        [DllImport("gdi32.dll", CharSet = CharSet.Unicode)]
         public static extern bool GetTextMetrics(IntPtr hdc, out TextMetric lptm);
 
-        [DllImport("gdi32.dll", EntryPoint = "GetTextExtentPoint32W")]
+        [DllImport("gdi32.dll", EntryPoint = "GetTextExtentPoint32W", CharSet = CharSet.Unicode)]
         public static extern int GetTextExtentPoint32(IntPtr hdc, [MarshalAs(UnmanagedType.LPWStr)] string str, int len, ref Size size);
 
-        [DllImport("gdi32.dll", EntryPoint = "GetTextExtentExPointW")]
+        [DllImport("gdi32.dll", EntryPoint = "GetTextExtentExPointW", CharSet = CharSet.Unicode)]
         public static extern bool GetTextExtentExPoint(IntPtr hDc, [MarshalAs(UnmanagedType.LPWStr)] string str, int nLength, int nMaxExtent, int[] lpnFit, int[] alpDx, ref Size size);
 
-        [DllImport("gdi32.dll", EntryPoint = "TextOutW")]
+        [DllImport("gdi32.dll", EntryPoint = "TextOutW", CharSet = CharSet.Unicode)]
         public static extern bool TextOut(IntPtr hdc, int x, int y, [MarshalAs(UnmanagedType.LPWStr)] string str, int len);
 
         [DllImport("gdi32.dll")]
@@ -224,7 +224,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Utilities
         public byte bmiColors_rgbReserved;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct TextMetric
     {
         public int tmHeight;
