@@ -624,10 +624,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     word.Left += diff;
                 }
 
-                foreach (CssBox b in ToList(line.Rectangles.Keys))
+                if (line.Rectangles.Count > 0)
                 {
-                    RRect r = line.Rectangles[b];
-                    line.Rectangles[b] = new RRect(r.X + diff, r.Y, r.Width, r.Height);
+                    foreach (CssBox b in ToList(line.Rectangles.Keys))
+                    {
+                        RRect r = line.Rectangles[b];
+                        line.Rectangles[b] = new RRect(r.X + diff, r.Y, r.Width, r.Height);
+                    }
                 }
             }
         }
@@ -654,10 +657,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     word.Left += diff;
                 }
 
-                foreach (CssBox b in ToList(line.Rectangles.Keys))
+                if (line.Rectangles.Count > 0)
                 {
-                    RRect r = line.Rectangles[b];
-                    line.Rectangles[b] = new RRect(r.X + diff, r.Y, r.Width, r.Height);
+                    foreach (CssBox b in ToList(line.Rectangles.Keys))
+                    {
+                        RRect r = line.Rectangles[b];
+                        line.Rectangles[b] = new RRect(r.X + diff, r.Y, r.Width, r.Height);
+                    }
                 }
             }
         }
@@ -687,6 +693,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             //}
         }
 
+        /// <summary>
+        /// todo: optimizate, not creating a list each time
+        /// </summary>
         private static List<T> ToList<T>(IEnumerable<T> collection)
         {
             List<T> result = new List<T>();
