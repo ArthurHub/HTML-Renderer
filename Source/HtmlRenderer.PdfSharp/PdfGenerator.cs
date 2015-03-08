@@ -90,8 +90,13 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
             // create PDF document to render the HTML into
             var document = new PdfDocument();
             
+            XSize orgPageSize;
             // get the size of each page to layout the HTML in
-            var orgPageSize = PageSizeConverter.ToSize(config.PageSize);
+            if (config.PageSize != PageSize.Undefined)
+                orgPageSize = PageSizeConverter.ToSize(config.PageSize);
+            else
+                orgPageSize = config.ManualPageSize;
+            
             var pageSize = new XSize(orgPageSize.Width - config.MarginLeft - config.MarginRight, orgPageSize.Height - config.MarginTop - config.MarginBottom);
 
             if (!string.IsNullOrEmpty(html))
@@ -118,7 +123,13 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                     while (scrollOffset > -container.ActualSize.Height)
                     {
                         var page = document.AddPage();
-                        page.Size = config.PageSize;
+                        if (config.PageSize != PageSize.Undefined) {
+                            page.Size = config.PageSize;
+                        }else {
+                            page.Height = config.ManualPageSize.Height;
+                            page.Width = config.ManualPageSize.Width;
+                        }
+
                         using (var g = XGraphics.FromPdfPage(page))
                         {
                             g.IntersectClip(new XRect(config.MarginLeft, config.MarginTop, pageSize.Width, pageSize.Height));
