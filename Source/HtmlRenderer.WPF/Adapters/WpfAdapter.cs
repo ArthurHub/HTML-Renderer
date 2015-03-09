@@ -11,7 +11,9 @@
 // "The Art of War"
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -34,8 +36,22 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
         /// </summary>
         private static readonly WpfAdapter _instance = new WpfAdapter();
 
+        /// <summary>
+        /// List of valid predefined color names in lower-case
+        /// </summary>
+        private static readonly List<string> ValidColorNamesLc; 
+
         #endregion
 
+        static WpfAdapter()
+        {
+            ValidColorNamesLc = new List<string>();
+            var colorList = new List<PropertyInfo>(typeof(Colors).GetProperties());
+            foreach (var colorProp in colorList)
+            {
+                ValidColorNamesLc.Add(colorProp.Name.ToLower());
+            }
+        }
 
         /// <summary>
         /// Init installed font families and set default font families mapping.
@@ -61,6 +77,10 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
 
         protected override RColor GetColorInt(string colorName)
         {
+            // check if color name is valid to avoid ColorConverter throwing an exception
+            if (!ValidColorNamesLc.Contains(colorName.ToLower()))
+                return RColor.Empty;
+
             var convertFromString = ColorConverter.ConvertFromString(colorName) ?? Colors.Black;
             return Utils.Convert((Color)convertFromString);
         }
