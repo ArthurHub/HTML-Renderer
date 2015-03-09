@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using PdfSharp;
+using PdfSharp.Drawing;
 
 namespace TheArtOfDev.HtmlRenderer.PdfSharp
 {
@@ -25,6 +26,11 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// the page size to use for each page in the generated pdf
         /// </summary>
         private PageSize _pageSize;
+
+        /// <summary>
+        /// if the page size is undefined this allow you to set manually the page size
+        /// </summary>
+        private XSize _xsize;
 
         /// <summary>
         /// the top margin between the page start and the text
@@ -56,6 +62,14 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         {
             get { return _pageSize; }
             set { _pageSize = value; }
+        }
+
+        /// <summary>
+        /// if the page size is undefined this allow you to set manually the page size
+        /// </summary>
+        public XSize ManualPageSize {
+            get { return _xsize; }
+            set { _xsize = value; }
         }
 
         /// <summary>
@@ -118,6 +132,30 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         {
             if (value > -1)
                 _marginBottom = _marginLeft = _marginTop = _marginRight = value;
+        }
+
+        // The international definitions are:
+        //   1 inch == 25.4 mm
+        //   1 inch == 72 point
+
+        /// <summary>
+        /// Convert the units passed in milimiters to the units used in PdfSharp
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        public static XSize MilimitersToUnits(double width, double height) {
+            return new XSize(width / 25.4 * 72, height / 25.4 * 72);
+        }
+
+        /// <summary>
+        /// Convert the units passed in inches to the units used in PdfSharp
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        public static XSize InchesToUnits(double width, double height) {
+            return new XSize(width * 72, height * 72);
         }
     }
 }
