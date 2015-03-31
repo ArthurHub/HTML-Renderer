@@ -555,7 +555,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            base.OnMouseClick(e);
+			base.OnMouseUp(e);
             if (_htmlContainer != null)
                 _htmlContainer.HandleMouseUp(this, e);
         }
