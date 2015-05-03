@@ -96,7 +96,13 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                 orgPageSize = PageSizeConverter.ToSize(config.PageSize);
             else
                 orgPageSize = config.ManualPageSize;
-            
+
+            if (config.PageOrientation == PageOrientation.Landscape)
+            {
+                // invert pagesize for landscape
+                orgPageSize = new XSize(orgPageSize.Height, orgPageSize.Width);
+            }
+
             var pageSize = new XSize(orgPageSize.Width - config.MarginLeft - config.MarginRight, orgPageSize.Height - config.MarginTop - config.MarginBottom);
 
             if (!string.IsNullOrEmpty(html))
@@ -123,12 +129,8 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                     while (scrollOffset > -container.ActualSize.Height)
                     {
                         var page = document.AddPage();
-                        if (config.PageSize != PageSize.Undefined) {
-                            page.Size = config.PageSize;
-                        }else {
-                            page.Height = config.ManualPageSize.Height;
-                            page.Width = config.ManualPageSize.Width;
-                        }
+                        page.Height = orgPageSize.Height;
+                        page.Width = orgPageSize.Width;
 
                         using (var g = XGraphics.FromPdfPage(page))
                         {

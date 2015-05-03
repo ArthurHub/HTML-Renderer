@@ -33,6 +33,11 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         private XSize _xsize;
 
         /// <summary>
+        /// the orientation of each page of the generated pdf
+        /// </summary>
+        private PageOrientation _pageOrientation;
+
+        /// <summary>
         /// the top margin between the page start and the text
         /// </summary>
         private int _marginTop;
@@ -70,6 +75,15 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         public XSize ManualPageSize {
             get { return _xsize; }
             set { _xsize = value; }
+        }
+
+        /// <summary>
+        /// the orientation of each page of the generated pdf
+        /// </summary>
+        public PageOrientation PageOrientation
+        {
+            get { return _pageOrientation; }
+            set { _pageOrientation = value; }
         }
 
         /// <summary>
