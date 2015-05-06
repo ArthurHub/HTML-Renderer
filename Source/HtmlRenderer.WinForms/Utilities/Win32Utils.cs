@@ -141,10 +141,10 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Utilities
         public static extern int SetBkMode(IntPtr hdc, int mode);
 
         [DllImport("gdi32.dll")]
-        public static extern int SelectObject(IntPtr hdc, IntPtr hgdiObj);
+        public static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiObj);
 
         [DllImport("gdi32.dll")]
-        public static extern int SetTextColor(IntPtr hdc, int color);
+        public static extern uint SetTextColor(IntPtr hdc, int color);
 
         [DllImport("gdi32.dll", CharSet = CharSet.Unicode)]
         public static extern bool GetTextMetrics(IntPtr hdc, out TextMetric lptm);
@@ -172,7 +172,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Utilities
 
         [DllImport("gdi32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool BitBlt(IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight, IntPtr hdcSrc, int nXSrc, int nYSrc, int dwRop);
+        public static extern bool BitBlt(IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight, IntPtr hdcSrc, int nXSrc, int nYSrc, uint dwRop);
 
         [DllImport("gdi32.dll", EntryPoint = "GdiAlphaBlend")]
         public static extern bool AlphaBlend(IntPtr hdcDest, int nXOriginDest, int nYOriginDest, int nWidthDest, int nHeightDest, IntPtr hdcSrc, int nXOriginSrc, int nYOriginSrc, int nWidthSrc, int nHeightSrc, BlendFunction blendFunction);
