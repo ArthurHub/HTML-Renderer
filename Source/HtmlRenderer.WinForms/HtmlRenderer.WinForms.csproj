@@ -87,6 +87,7 @@
     <Compile Include="HtmlToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="MetafileExtensions.cs" />
     <Compile Include="Utilities\ClipboardHelper.cs" />
     <Compile Include="Utilities\Utils.cs" />
     <Compile Include="Utilities\Win32Utils.cs" />

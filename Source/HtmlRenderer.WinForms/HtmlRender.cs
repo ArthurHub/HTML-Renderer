@@ -273,6 +273,29 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         }
 
 #if !MONO
+
+        public static Metafile RenderToMetafile(string html, float left = 0, float top = 0, float maxWidth = 0, CssData cssData = null,
+            EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+        {
+            Metafile image;
+            IntPtr dib;
+            var memoryHdc = Win32Utils.CreateMemoryHdc(IntPtr.Zero, 1, 1, out dib);
+            try
+            {
+                image = new Metafile(memoryHdc, EmfType.EmfPlusDual, "..");
+
+                using (var g = Graphics.FromImage(image))
+                {
+                    Render(g, html, left, top, maxWidth, cssData, stylesheetLoad, imageLoad);
+                }
+            }
+            finally
+            {
+                Win32Utils.ReleaseMemoryHdc(memoryHdc, dib);
+            }
+            return image;
+        }
+
         /// <summary>
         /// Renders the specified HTML on top of the given image.<br/>
         /// <paramref name="image"/> will contain the rendered html in it on top of original content.<br/>
