@@ -179,8 +179,11 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                         scrollOffset -= pageSize.Height;
                     }
 
+                    // SL: Temporarily remove as it crashed on html links
+                    // TODO: update to allow non-processing based on config option. (or just fix it?)
+
                     // add web links and anchors
-                    HandleLinks(document, container, orgPageSize, pageSize);
+                    //HandleLinks(document, container, orgPageSize, pageSize);
                 }
             }
         }
