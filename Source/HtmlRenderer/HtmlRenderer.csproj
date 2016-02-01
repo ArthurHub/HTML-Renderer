@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FE611685-391F-4E3E-B27E-D3150E51E49B}</ProjectGuid>
+    <ProjectGuid>{B1D0ECB6-3D40-4F6B-A59B-5370EDE51946}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TheArtOfDev.HtmlRenderer</RootNamespace>
+    <RootNamespace>HtmlRenderer</RootNamespace>
     <AssemblyName>HtmlRenderer</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,21 +30,46 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Utils\ImageError.png" />
-    <EmbeddedResource Include="Core\Utils\ImageLoad.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\SharedAssemblyInfo.cs">
-      <Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
+    <Compile Include="Adapters\Entities\RColor.cs" />
+    <Compile Include="Adapters\Entities\RDashStyle.cs" />
+    <Compile Include="Adapters\Entities\RFontStyle.cs" />
+    <Compile Include="Adapters\Entities\RKeyEvent.cs" />
+    <Compile Include="Adapters\Entities\RMouseEvent.cs" />
+    <Compile Include="Adapters\Entities\RPoint.cs" />
+    <Compile Include="Adapters\Entities\RRect.cs" />
+    <Compile Include="Adapters\Entities\RSize.cs" />
+    <Compile Include="Adapters\RAdapter.cs" />
+    <Compile Include="Adapters\RBrush.cs" />
+    <Compile Include="Adapters\RContextMenu.cs" />
+    <Compile Include="Adapters\RControl.cs" />
+    <Compile Include="Adapters\RFont.cs" />
+    <Compile Include="Adapters\RFontFamily.cs" />
+    <Compile Include="Adapters\RGraphics.cs" />
+    <Compile Include="Adapters\RGraphicsPath.cs" />
+    <Compile Include="Adapters\RImage.cs" />
+    <Compile Include="Adapters\RPen.cs" />
+    <Compile Include="Core\CssData.cs" />
     <Compile Include="Core\CssDefaults.cs" />
+    <Compile Include="Core\Dom\Border.cs" />
     <Compile Include="Core\Dom\CssBox.cs" />
     <Compile Include="Core\Dom\CssBoxFrame.cs" />
     <Compile Include="Core\Dom\CssBoxHr.cs" />
@@ -60,7 +86,6 @@
     <Compile Include="Core\Dom\CssUnit.cs" />
     <Compile Include="Core\Dom\HoverBoxBlock.cs" />
     <Compile Include="Core\Dom\HtmlTag.cs" />
-    <Compile Include="Core\Dom\Border.cs" />
     <Compile Include="Core\Entities\CssBlock.cs" />
     <Compile Include="Core\Entities\CssBlockSelectorItem.cs" />
     <Compile Include="Core\Entities\HtmlGenerationStyle.cs" />
@@ -81,11 +106,13 @@
     <Compile Include="Core\Handlers\ImageLoadHandler.cs" />
     <Compile Include="Core\Handlers\SelectionHandler.cs" />
     <Compile Include="Core\Handlers\StylesheetLoadHandler.cs" />
+    <Compile Include="Core\HtmlContainerInt.cs" />
     <Compile Include="Core\HtmlRendererUtils.cs" />
     <Compile Include="Core\Parse\CssParser.cs" />
     <Compile Include="Core\Parse\CssValueParser.cs" />
     <Compile Include="Core\Parse\DomParser.cs" />
     <Compile Include="Core\Parse\HtmlParser.cs" />
+    <Compile Include="Core\Parse\RegexParserHelper.cs" />
     <Compile Include="Core\Parse\RegexParserUtils.cs" />
     <Compile Include="Core\Utils\ArgChecker.cs" />
     <Compile Include="Core\Utils\CommonUtils.cs" />
@@ -95,29 +122,15 @@
     <Compile Include="Core\Utils\HtmlConstants.cs" />
     <Compile Include="Core\Utils\HtmlUtils.cs" />
     <Compile Include="Core\Utils\RenderUtils.cs" />
-    <Compile Include="Core\HtmlContainerInt.cs" />
-    <Compile Include="Core\CssData.cs" />
-    <Compile Include="Adapters\Entities\RColor.cs" />
-    <Compile Include="Adapters\Entities\RDashStyle.cs" />
-    <Compile Include="Adapters\Entities\RFontStyle.cs" />
-    <Compile Include="Adapters\Entities\RKeyEvent.cs" />
-    <Compile Include="Adapters\Entities\RMouseEvent.cs" />
-    <Compile Include="Adapters\Entities\RPoint.cs" />
-    <Compile Include="Adapters\Entities\RRect.cs" />
-    <Compile Include="Adapters\Entities\RSize.cs" />
-    <Compile Include="Adapters\RAdapter.cs" />
-    <Compile Include="Adapters\RBrush.cs" />
-    <Compile Include="Adapters\RContextMenu.cs" />
-    <Compile Include="Adapters\RControl.cs" />
-    <Compile Include="Adapters\RFont.cs" />
-    <Compile Include="Adapters\RFontFamily.cs" />
-    <Compile Include="Adapters\RGraphics.cs" />
-    <Compile Include="Adapters\RGraphicsPath.cs" />
-    <Compile Include="Adapters\RImage.cs" />
-    <Compile Include="Adapters\RPen.cs" />
     <Compile Include="Core\Utils\SubString.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Core\Utils\ImageError.png" />
+    <Content Include="Core\Utils\ImageLoad.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
