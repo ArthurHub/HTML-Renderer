@@ -106,7 +106,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
             {
                 var height = realFont.Height;
                 var descent = realFont.Size * realFont.FontFamily.GetCellDescent(realFont.Style) / realFont.FontFamily.GetEmHeight(realFont.Style);
-                fontAdapter.SetMetrics(height, (int)Math.Round((height - descent + 1f)));
+                fontAdapter.SetMetrics(height, height - descent + 1f);
             }
 
             return Utils.Convert(size);
@@ -122,6 +122,41 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
         {
             var xBrush = ((BrushAdapter)_adapter.GetSolidBrush(color)).Brush;
             _g.DrawString(str, ((FontAdapter)font).Font, (XBrush)xBrush, point.X, point.Y, _stringFormat);
+        }
+        
+        public override void DrawSmallCapString(string str, RFont regularFont, RFont reducedFont, RColor color, RPoint point, bool rtl)
+        {
+            var xBrush = ((BrushAdapter)_adapter.GetSolidBrush(color)).Brush;
+            double additionalOffsetForSmallCaps = regularFont.UnderlineOffset - reducedFont.UnderlineOffset;
+
+            int i = 0;
+            int len = str.Length;
+            while (i < len)
+            {
+                int j = i;
+                while (j < len && !char.IsLower(str, j))
+                    j++;
+                if (j != i)
+                {
+                    _g.DrawString(str.Substring(i, j - i), ((FontAdapter)regularFont).Font, (XBrush)xBrush, point.X, point.Y, _stringFormat);
+                    point.X += MeasureString(str.Substring(i, j - i), regularFont).Width;
+
+                    i = j;
+                }
+
+                while (j < len && char.IsLower(str, j))
+                    j++;
+                if (j != i)
+                {
+                    point.Y += additionalOffsetForSmallCaps;
+
+                    _g.DrawString(str.Substring(i, j - i).ToUpper(), ((FontAdapter)reducedFont).Font, (XBrush)xBrush, point.X, point.Y, _stringFormat);
+                    point.X += MeasureString(str.Substring(i, j - i).ToUpper(), reducedFont).Width;
+
+                    point.Y -= additionalOffsetForSmallCaps;
+                    i = j;
+                }
+            }
         }
 
         public override RBrush GetTextureBrush(RImage image, RRect dstRect, RPoint translateTransformLocation)

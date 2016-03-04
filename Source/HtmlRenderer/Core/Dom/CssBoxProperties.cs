@@ -152,6 +152,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private RColor _actualBorderRightColor = RColor.Empty;
         private RColor _actualBackgroundColor = RColor.Empty;
         private RFont _actualFont;
+        private RFont _actualFontForSmallCaps;
 
         #endregion
 
@@ -1328,9 +1329,23 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     }
 
                     _actualFont = GetCachedFont(FontFamily, fsize, st);
+
+                    if (FontVariant == CssConstants.SmallCaps)
+                    {
+                        double fsizeForSmallCaps = CssValueParser.ParseLength(CssConstants.FakeSmallCapReduction_em, fsize, fsize, null, true, true);
+                        _actualFontForSmallCaps = GetCachedFont(FontFamily, fsizeForSmallCaps, st);
+                    }
                 }
                 return _actualFont;
             }
+        }
+
+        /// <summary>
+        /// Gets the font that should be actually used to paint small-uppercase chars in the text of the box (small-caps variant)
+        /// </summary>
+        public RFont ActualFontForSmallCaps
+        {
+            get { return _actualFontForSmallCaps; }
         }
 
         protected abstract RFont GetCachedFont(string fontFamily, double fsize, RFontStyle st);
@@ -1479,6 +1494,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     string len = RegexParserUtils.Search(RegexParserUtils.CssLength, WordSpacing);
                     _actualWordSpacing += CssValueParser.ParseLength(len, 1, this);
                 }
+                if (FontVariant == CssConstants.SmallCaps)
+                    ActualFontForSmallCaps.GetWhitespaceWidth(g); // Set metrics of the font
             }
         }
 
