@@ -80,6 +80,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         public const string Show = "show";
         public const string Small = "small";
         public const string Smaller = "smaller";
+        public const string SmallCaps = "small-caps";
+        public const string FakeSmallCapReduction_em = ".75em";
         public const string Solid = "solid";
         public const string Sub = "sub";
         public const string Super = "super";

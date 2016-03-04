@@ -96,7 +96,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         /// <param name="height">the full height of the font</param>
         /// <param name="underlineOffset">the vertical offset of the font underline location from the top of the font.</param>
-        internal void SetMetrics(int height, int underlineOffset)
+        internal void SetMetrics(int height, double underlineOffset)
         {
             _height = height;
             _underlineOffset = underlineOffset;
