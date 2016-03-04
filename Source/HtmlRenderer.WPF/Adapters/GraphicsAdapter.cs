@@ -212,6 +212,78 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
                 _g.DrawText(formattedText, Utils.ConvertRound(point));
             }
         }
+        
+        public override void DrawSmallCapString(string str, RFont regularFont, RFont reducedFont, RColor color, RPoint point, bool rtl)
+        {
+            int i = 0;
+            int len = str.Length;
+            while (i < len)
+            {
+                int j = i;
+                while (j < len && !char.IsLower(str, j))
+                    j++;
+                if (j != i)
+                {
+                    DrawSmallCapString(str.Substring(i, j - i), regularFont, color, point, regularFont.Size, rtl);
+                    point.X += MeasureString(str.Substring(i, j - i), regularFont).Width;
+
+                    i = j;
+                }
+
+                while (j < len && char.IsLower(str, j))
+                    j++;
+                if (j != i)
+                {
+                    DrawSmallCapString(str.Substring(i, j - i).ToUpper(), reducedFont, color, point, regularFont.Size, rtl);
+                    point.X += MeasureString(str.Substring(i, j - i).ToUpper(), reducedFont).Width;
+
+                    i = j;
+                }
+            }
+        }
+
+        private void DrawSmallCapString(string str, RFont reducedFont, RColor color, RPoint point, double regularFontSize, bool rtl)
+        {
+            var colorConv = ((BrushAdapter)_adapter.GetSolidBrush(color)).Brush;
+
+            bool glyphRendered = false;
+            GlyphTypeface glyphTypeface = ((FontAdapter)reducedFont).GlyphTypeface;
+            if (glyphTypeface != null)
+            {
+                double width = 0;
+                ushort[] glyphs = new ushort[str.Length];
+                double[] widths = new double[str.Length];
+
+                int i = 0;
+                for (; i < str.Length; i++)
+                {
+                    ushort glyph;
+                    if (!glyphTypeface.CharacterToGlyphMap.TryGetValue(str[i], out glyph))
+                        break;
+
+                    glyphs[i] = glyph;
+                    width += glyphTypeface.AdvanceWidths[glyph];
+                    widths[i] = 96d / 72d * reducedFont.Size * glyphTypeface.AdvanceWidths[glyph];
+                }
+
+                if (i >= str.Length)
+                {
+                    point.Y += glyphTypeface.Baseline * regularFontSize * 96d / 72d; // Align vertically reduced (small-cap) chars to regular (uppercase) chars
+                    point.X += rtl ? 96d / 72d * reducedFont.Size * width : 0;
+
+                    glyphRendered = true;
+                    var glyphRun = new GlyphRun(glyphTypeface, rtl ? 1 : 0, false, 96d / 72d * reducedFont.Size, glyphs, Utils.ConvertRound(point), widths, null, null, null, null, null, null);
+                    _g.DrawGlyphRun(colorConv, glyphRun);
+                }
+            }
+
+            if (!glyphRendered) // Untested...
+            {
+                var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, rtl ? FlowDirection.RightToLeft : FlowDirection.LeftToRight, ((FontAdapter)reducedFont).Font, 96d / 72d * reducedFont.Size, colorConv);
+                point.X += rtl ? formattedText.Width : 0;
+                _g.DrawText(formattedText, Utils.ConvertRound(point));
+            }
+        }
 
         public override RBrush GetTextureBrush(RImage image, RRect dstRect, RPoint translateTransformLocation)
         {

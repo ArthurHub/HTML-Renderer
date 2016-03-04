@@ -263,6 +263,41 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
 #endif
             }
         }
+        
+        public override void DrawSmallCapString(string str, RFont regularFont, RFont reducedFont, RColor color, RPoint point, bool rtl)
+        {
+            double additionalOffsetForSmallCaps = regularFont.UnderlineOffset - reducedFont.UnderlineOffset;
+            int i = 0;
+            int len = str.Length;
+            while (i < len)
+            {
+                int j = i;
+                while (j < len && !char.IsLower(str, j))
+                    j++;
+                if (j != i)
+                {
+                    RSize normalSize = MeasureString(str.Substring(i, j - i), regularFont);
+                    DrawString(str.Substring(i, j - i), regularFont, color, point, new RSize(normalSize.Width, normalSize.Height), rtl);
+                    point.X += normalSize.Width;
+
+                    i = j;
+                }
+
+                while (j < len && char.IsLower(str, j))
+                    j++;
+                if (j != i)
+                {
+                    point.Y += additionalOffsetForSmallCaps;
+
+                    RSize reducedSize = MeasureString(str.Substring(i, j - i).ToUpper(), reducedFont);
+                    DrawString(str.Substring(i, j - i).ToUpper(), reducedFont, color, point, new RSize(reducedSize.Width, reducedSize.Height), rtl);
+                    point.X += reducedSize.Width;
+
+                    point.Y -= additionalOffsetForSmallCaps;
+                    i = j;
+                }
+            }
+        }
 
         public override RBrush GetTextureBrush(RImage image, RRect dstRect, RPoint translateTransformLocation)
         {

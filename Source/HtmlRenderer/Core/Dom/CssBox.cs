@@ -661,6 +661,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 {
                     foreach (var boxWord in Words)
                     {
+                        if (FontVariant == CssConstants.SmallCaps)
+                            boxWord.Width = boxWord.Text != "\n" ? g.MeasureSmallCapString(boxWord.Text, ActualFont, ActualFontForSmallCaps).Width : 0;
+                        else
                         boxWord.Width = boxWord.Text != "\n" ? g.MeasureString(boxWord.Text, ActualFont).Width : 0;
                         boxWord.Height = ActualFont.Height;
                     }
@@ -1271,19 +1274,31 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                             if (HtmlContainer.SelectionForeColor != RColor.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
                             {
                                 g.PushClipExclude(rect);
+                                if (FontVariant == CssConstants.SmallCaps)
+                                    g.DrawSmallCapString(word.Text, ActualFont, ActualFontForSmallCaps, ActualColor, wordPoint, isRtl);
+                                else
                                 g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
                                 g.PopClip();
                                 g.PushClip(rect);
+                                if (FontVariant == CssConstants.SmallCaps)
+                                    g.DrawSmallCapString(word.Text, ActualFont, ActualFontForSmallCaps, GetSelectionForeBrush(), wordPoint, isRtl);
+                                else
                                 g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
                                 g.PopClip();
                             }
                             else
                             {
+                                if (FontVariant == CssConstants.SmallCaps)
+                                    g.DrawSmallCapString(word.Text, ActualFont, ActualFontForSmallCaps, GetSelectionForeBrush(), wordPoint, isRtl);
+                                else
                                 g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
                             }
                         }
                         else
                         {
+                            if (FontVariant == CssConstants.SmallCaps)
+                                g.DrawSmallCapString(word.Text, ActualFont, ActualFontForSmallCaps, ActualColor, wordPoint, isRtl);
+                            else
                             //                            g.DrawRectangle(HtmlContainer.Adapter.GetPen(RColor.Black), wordPoint.X, wordPoint.Y, word.Width - 1, word.Height - 1);
                             g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
                         }
@@ -1307,7 +1322,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             double y = 0f;
             if (TextDecoration == CssConstants.Underline)
             {
-                y = Math.Round(rectangle.Top + ActualFont.UnderlineOffset);
+                y = rectangle.Top + ActualFont.UnderlineOffset;
             }
             else if (TextDecoration == CssConstants.LineThrough)
             {
