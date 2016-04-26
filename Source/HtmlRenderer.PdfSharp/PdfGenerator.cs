@@ -10,14 +10,14 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using PdfSharp;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 using System;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 using TheArtOfDev.HtmlRenderer.PdfSharp.Adapters;
-using PdfSharp;
-using PdfSharp.Drawing;
-using PdfSharp.Pdf;
 
 namespace TheArtOfDev.HtmlRenderer.PdfSharp
 {
@@ -154,6 +154,11 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                     container.Location = new XPoint(config.MarginLeft, config.MarginTop);
                     container.MaxSize = new XSize(pageSize.Width, 0);
                     container.SetHtml(html, cssData);
+                    container.PageSize = pageSize;
+                    container.MarginBottom = config.MarginBottom;
+                    container.MarginLeft = config.MarginLeft;
+                    container.MarginRight = config.MarginRight;
+                    container.MarginTop = config.MarginTop;
 
                     // layout the HTML with the page width restriction to know how many pages are required
                     using (var measure = XGraphics.CreateMeasureContext(pageSize, XGraphicsUnit.Point, XPageDirection.Downwards))
@@ -171,7 +176,8 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
 
                         using (var g = XGraphics.FromPdfPage(page))
                         {
-                            g.IntersectClip(new XRect(config.MarginLeft, config.MarginTop, pageSize.Width, pageSize.Height));
+                            //g.IntersectClip(new XRect(config.MarginLeft, config.MarginTop, pageSize.Width, pageSize.Height));
+                            g.IntersectClip(new XRect(0, 0, page.Width, page.Height));
 
                             container.ScrollOffset = new XPoint(0, scrollOffset);
                             container.PerformPaint(g);

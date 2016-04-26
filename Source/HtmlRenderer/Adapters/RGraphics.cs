@@ -32,9 +32,14 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         protected readonly RAdapter _adapter;
 
         /// <summary>
-        /// Te clipping bound stack as clips are pushed/poped to/from the graphics
+        /// The clipping bound stack as clips are pushed/poped to/from the graphics
         /// </summary>
         protected readonly Stack<RRect> _clipStack = new Stack<RRect>();
+
+        /// <summary>
+        /// The suspended clips
+        /// </summary>
+        private Stack<RRect> _suspendedClips = new Stack<RRect>();
 
         #endregion
 
@@ -108,6 +113,32 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         /// </summary>
         /// <param name="rect">Rectangle to exclude clipping in.</param>
         public abstract void PushClipExclude(RRect rect);
+
+
+        /// <summary>
+        /// Restore the clipping region to the initial clip.
+        /// </summary>
+        public void SuspendClipping()
+        {
+            while (_clipStack.Count > 1)
+            {
+                var clip = GetClip();
+                _suspendedClips.Push(clip);
+                PopClip();
+            }
+        }
+
+        /// <summary>
+        /// Resumes the suspended clips.
+        /// </summary>
+        public void ResumeClipping()
+        {
+            while (_suspendedClips.Count > 0)
+            {
+                var clip = _suspendedClips.Pop();
+                PushClip(clip);
+            }
+        }
 
         /// <summary>
         /// Set the graphics smooth mode to use anti-alias.<br/>

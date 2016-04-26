@@ -10,14 +10,15 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using PdfSharp.Drawing;
 using System;
 using System.Collections.Generic;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 using TheArtOfDev.HtmlRenderer.PdfSharp.Adapters;
 using TheArtOfDev.HtmlRenderer.PdfSharp.Utilities;
-using PdfSharp.Drawing;
 
 namespace TheArtOfDev.HtmlRenderer.PdfSharp
 {
@@ -159,6 +160,79 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         {
             get { return Utils.Convert(_htmlContainerInt.ActualSize); }
             internal set { _htmlContainerInt.ActualSize = Utils.Convert(value); }
+        }
+
+        public XSize PageSize {
+            get
+            {
+                return new XSize(_htmlContainerInt.PageSize.Width, _htmlContainerInt.PageSize.Height);
+            }
+            set
+            {
+                _htmlContainerInt.PageSize = new RSize(value.Width, value.Height);
+            }
+        }
+
+        /// <summary>
+        /// the top margin between the page start and the text
+        /// </summary>
+        public int MarginTop
+        {
+            get { return _htmlContainerInt.MarginTop; }
+            set
+            {
+                if (value > -1)
+                    _htmlContainerInt.MarginTop = value;
+            }
+        }
+
+        /// <summary>
+        /// the bottom margin between the page end and the text
+        /// </summary>
+        public int MarginBottom
+        {
+            get { return _htmlContainerInt.MarginBottom; }
+            set
+            {
+                if (value > -1)
+                    _htmlContainerInt.MarginBottom = value;
+            }
+        }
+
+        /// <summary>
+        /// the left margin between the page start and the text
+        /// </summary>
+        public int MarginLeft
+        {
+            get { return _htmlContainerInt.MarginLeft; }
+            set
+            {
+                if (value > -1)
+                    _htmlContainerInt.MarginLeft = value;
+            }
+        }
+
+        /// <summary>
+        /// the right margin between the page end and the text
+        /// </summary>
+        public int MarginRight
+        {
+            get { return _htmlContainerInt.MarginRight; }
+            set
+            {
+                if (value > -1)
+                    _htmlContainerInt.MarginRight = value;
+            }
+        }
+
+        /// <summary>
+        /// Set all 4 margins to the given value.
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetMargins(int value)
+        {
+            if (value > -1)
+                _htmlContainerInt.SetMargins(value);
         }
 
         /// <summary>

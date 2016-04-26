@@ -629,6 +629,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 var row = _allRows[i];
                 double curx = startx;
                 int curCol = 0;
+                bool breakPage = false;
 
                 for (int j = 0; j < row.Boxes.Count; j++)
                 {
@@ -675,9 +676,32 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         spacer.ExtendedBox.ActualBottom = maxBottom;
                         CssLayoutEngine.ApplyCellVerticalAlignment(g, spacer.ExtendedBox);
                     }
+
+                    // If one cell crosses page borders then don't need to check other cells in the row
+                    if (_tableBox.PageBreakInside == CssConstants.Avoid)
+                    {
+                        breakPage = cell.BreakPage();
+                        if (breakPage)
+                        {
+                            cury = cell.Location.Y;
+                            break;
+                        }
+                    }
+                }
+
+                if (breakPage) // go back to move the whole row to the next page
+                {
+                    if (i == 1) // do not leave single row in previous page
+                        i = -1; // Start layout from the first row on new page
+                    else
+                        i--;
+
+                    maxBottom = 0;
+                    continue;
                 }
 
                 cury = maxBottom + GetVerticalSpacing();
+
                 currentrow++;
             }
 

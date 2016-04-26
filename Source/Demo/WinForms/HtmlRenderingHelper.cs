@@ -10,13 +10,14 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using PdfSharp.Drawing;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Threading;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Demo.Common;
-using PdfSharp.Drawing;
 
 namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
 {
@@ -79,7 +80,18 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         public static XImage TryLoadResourceXImage(string src)
         {
             var img = TryLoadResourceImage(src);
-            return img != null ? XImage.FromGdiPlusImage(img) : null;
+            XImage xImg;
+
+            if (img == null)
+                return null;
+
+            using (var ms = new MemoryStream())
+            {
+                img.Save(ms, img.RawFormat);
+                xImg = img != null ? XImage.FromStream(ms) : null;
+            }
+
+            return xImg;
         }
 
         /// <summary>
@@ -104,7 +116,17 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         public static void ImageLoad(HtmlImageLoadEventArgs e, bool pdfSharp)
         {
             var img = TryLoadResourceImage(e.Src);
-            var xImg = img != null ? XImage.FromGdiPlusImage(img) : null;
+            XImage xImg = null;
+
+            if (img != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    img.Save(ms, img.RawFormat);
+                    xImg = img != null ? XImage.FromStream(ms) : null;
+                }
+            }
+
             object imgObj;
             if (pdfSharp)
                 imgObj = xImg;

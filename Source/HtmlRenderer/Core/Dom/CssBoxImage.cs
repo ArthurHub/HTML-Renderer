@@ -77,7 +77,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
 
             var rect = CommonUtils.GetFirstValueOrDefault(Rectangles);
-            RPoint offset = HtmlContainer.ScrollOffset;
+            RPoint offset = RPoint.Empty;
+
+            if (!IsFixed)
+                offset = HtmlContainer.ScrollOffset;
+
             rect.Offset(offset);
 
             var clipped = RenderUtils.ClipGraphicsByOverflow(g, this);

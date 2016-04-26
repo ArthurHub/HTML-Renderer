@@ -135,6 +135,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             //Reminds the maximum bottom reached
             double maxRight = startx;
             double maxBottom = starty;
+            double offset = 0;
 
             //First line box
             CssLineBox line = new CssLineBox(blockBox);
@@ -153,7 +154,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 ApplyHorizontalAlignment(g, linebox);
                 ApplyRightToLeft(blockBox, linebox);
-                BubbleRectangles(blockBox, linebox);
+                BubbleRectangles(blockBox, linebox, ref offset);
                 ApplyVerticalAlignment(g, linebox);
                 linebox.AssignRectanglesToBoxes();
             }
@@ -250,8 +251,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             foreach (CssBox b in box.Boxes)
             {
-                double leftspacing = b.Position != CssConstants.Absolute ? b.ActualMarginLeft + b.ActualBorderLeftWidth + b.ActualPaddingLeft : 0;
-                double rightspacing = b.Position != CssConstants.Absolute ? b.ActualMarginRight + b.ActualBorderRightWidth + b.ActualPaddingRight : 0;
+                double leftspacing = (b.Position != CssConstants.Absolute && b.Position != CssConstants.Fixed) ? b.ActualMarginLeft + b.ActualBorderLeftWidth + b.ActualPaddingLeft : 0;
+                double rightspacing = (b.Position != CssConstants.Absolute && b.Position != CssConstants.Fixed) ? b.ActualMarginRight + b.ActualBorderRightWidth + b.ActualPaddingRight : 0;
 
                 b.RectanglesReset();
                 b.MeasureWordsSize(g);
@@ -303,6 +304,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                         word.Left = curx;
                         word.Top = cury;
+
+                        if (!box.IsFixed && box.PageBreakInside == CssConstants.Avoid)
+                        {
+                            word.BreakPage();
+                        }
 
                         curx = word.Left + word.FullWidth;
 
@@ -382,7 +388,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Recursively creates the rectangles of the blockBox, by bubbling from deep to outside of the boxes 
         /// in the rectangle structure
         /// </summary>
-        private static void BubbleRectangles(CssBox box, CssLineBox line)
+        private static void BubbleRectangles(CssBox box, CssLineBox line, ref double offset)
         {
             if (box.Words.Count > 0)
             {
@@ -395,8 +401,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     {
                         // handle if line is wrapped for the first text element where parent has left margin\padding
                         var left = word.Left;
+
                         if (box == box.ParentBox.Boxes[0] && word == box.Words[0] && word == line.Words[0] && line != line.OwnerBox.LineBoxes[0] && !word.IsLineBreak)
                             left -= box.ParentBox.ActualMarginLeft + box.ParentBox.ActualBorderLeftWidth + box.ParentBox.ActualPaddingLeft;
+
 
                         x = Math.Min(x, left);
                         r = Math.Max(r, word.Right);
@@ -410,7 +418,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 foreach (CssBox b in box.Boxes)
                 {
-                    BubbleRectangles(b, line);
+                    BubbleRectangles(b, line, ref offset);
                 }
             }
         }

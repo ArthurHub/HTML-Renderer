@@ -122,6 +122,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.PaddingRight;
                 case "padding-top":
                     return cssBox.PaddingTop;
+                case "page-break-inside":
+                    return cssBox.PageBreakInside;
                 case "left":
                     return cssBox.Left;
                 case "top":
@@ -144,10 +146,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.BackgroundGradient;
                 case "background-gradient-angle":
                     return cssBox.BackgroundGradientAngle;
-                case "color":
-                    return cssBox.Color;
                 case "content":
                     return cssBox.Content;
+                case "color":
+                    return cssBox.Color;
                 case "display":
                     return cssBox.Display;
                 case "direction":
@@ -291,6 +293,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     break;
                 case "padding-top":
                     cssBox.PaddingTop = value;
+                    break;
+                case "page-break-inside":
+                    cssBox.PageBreakInside = value;
                     break;
                 case "left":
                     cssBox.Left = value;
