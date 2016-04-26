@@ -146,6 +146,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.BackgroundGradientAngle;
                 case "color":
                     return cssBox.Color;
+                case "content":
+                    return cssBox.Content;
                 case "display":
                     return cssBox.Display;
                 case "direction":
@@ -325,6 +327,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     break;
                 case "color":
                     cssBox.Color = value;
+                    break;
+                case "content":
+                    cssBox.Content = value;
                     break;
                 case "display":
                     cssBox.Display = value;

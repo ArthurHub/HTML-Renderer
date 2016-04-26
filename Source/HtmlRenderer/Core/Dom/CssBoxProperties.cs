@@ -53,6 +53,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _borderCollapse = "separate";
         private string _bottom;
         private string _color = "black";
+        private string _content = "normal";
         private string _cornerNwRadius = "0";
         private string _cornerNeRadius = "0";
         private string _cornerSeRadius = "0";
@@ -474,6 +475,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
         }
 
+        public string Content
+        {
+            get { return _content; }
+            set { _content = value; }
+        }
+
         public string Display
         {
             get { return _display; }
@@ -646,8 +653,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             set { _listStyleType = value; }
         }
 
-        #endregion
-
+        #endregion CSS Properties
 
         /// <summary>
         /// Gets or sets the location of the box

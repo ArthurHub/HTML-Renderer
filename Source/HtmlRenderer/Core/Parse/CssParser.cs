@@ -395,6 +395,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             while (startIdx < blockSource.Length)
             {
                 int endIdx = blockSource.IndexOfAny(_cssBlockSplitters, startIdx);
+
+                // If blockSource contains "data:image" then skip first semicolon since it is a part of image definition
+                // example: "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA......"
+                if (startIdx >= 0 && endIdx - startIdx >= 10 && blockSource.Length - startIdx >= 10 && blockSource.IndexOf("data:image", startIdx, endIdx - startIdx) >= 0)
+                    endIdx = blockSource.IndexOfAny(_cssBlockSplitters, endIdx + 1);
+
                 if (endIdx < 0)
                     endIdx = blockSource.Length - 1;
 
@@ -485,7 +491,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             }
             else if (propName == "background-image")
             {
-                properties["background-image"] = ParseBackgroundImageProperty(propValue);
+                properties["background-image"] = ParseImageProperty(propValue);
+            }
+            else if (propName == "content")
+            {
+                properties["content"] = ParseImageProperty(propValue);
             }
             else if (propName == "font-family")
             {
@@ -584,7 +594,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="propValue">the value of the property to parse</param>
         /// <returns>parsed value</returns>
-        private static string ParseBackgroundImageProperty(string propValue)
+        private static string ParseImageProperty(string propValue)
         {
             int startIdx = propValue.IndexOf("url(", StringComparison.InvariantCultureIgnoreCase);
             if (startIdx > -1)
