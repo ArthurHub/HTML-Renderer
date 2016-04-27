@@ -53,6 +53,8 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         public HtmlContainer()
         {
             _htmlContainerInt = new HtmlContainerInt(WinFormsAdapter.Instance);
+            _htmlContainerInt.SetMargins(0);
+            _htmlContainerInt.PageSize = new RSize(99999, 99999);
         }
 
         /// <summary>

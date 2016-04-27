@@ -95,7 +95,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="g">the device to draw to</param>
         protected override void PaintImp(RGraphics g)
         {
-            var offset = HtmlContainer != null ? HtmlContainer.ScrollOffset : RPoint.Empty;
+            var offset = (HtmlContainer != null && !IsFixed) ? HtmlContainer.ScrollOffset : RPoint.Empty;
             var rect = new RRect(Bounds.X + offset.X, Bounds.Y + offset.Y, Bounds.Width, Bounds.Height);
 
             if (rect.Height > 2 && RenderUtils.IsColorVisible(ActualBackgroundColor))

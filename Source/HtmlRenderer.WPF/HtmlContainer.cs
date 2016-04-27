@@ -19,7 +19,6 @@ using System.Windows.Media;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
-using TheArtOfDev.HtmlRenderer.Core.Parse;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 using TheArtOfDev.HtmlRenderer.WPF.Adapters;
 using TheArtOfDev.HtmlRenderer.WPF.Utilities;
@@ -49,6 +48,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         public HtmlContainer()
         {
             _htmlContainerInt = new HtmlContainerInt(WpfAdapter.Instance);
+            _htmlContainerInt.PageSize = new RSize(99999, 99999);
         }
 
         /// <summary>

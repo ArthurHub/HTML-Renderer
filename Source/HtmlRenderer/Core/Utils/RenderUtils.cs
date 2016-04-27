@@ -50,7 +50,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     var rect = box.ContainingBlock.ClientRectangle;
                     rect.X -= 2; // TODO:a find better way to fix it
                     rect.Width += 2;
-                    rect.Offset(box.HtmlContainer.ScrollOffset);
+
+                    if (!box.IsFixed)
+                        rect.Offset(box.HtmlContainer.ScrollOffset);
+
                     rect.Intersect(prevClip);
                     g.PushClip(rect);
                     return true;

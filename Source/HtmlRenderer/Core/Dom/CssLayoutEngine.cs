@@ -250,8 +250,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             foreach (CssBox b in box.Boxes)
             {
-                double leftspacing = b.Position != CssConstants.Absolute ? b.ActualMarginLeft + b.ActualBorderLeftWidth + b.ActualPaddingLeft : 0;
-                double rightspacing = b.Position != CssConstants.Absolute ? b.ActualMarginRight + b.ActualBorderRightWidth + b.ActualPaddingRight : 0;
+                double leftspacing = (b.Position != CssConstants.Absolute && b.Position != CssConstants.Fixed) ? b.ActualMarginLeft + b.ActualBorderLeftWidth + b.ActualPaddingLeft : 0;
+                double rightspacing = (b.Position != CssConstants.Absolute && b.Position != CssConstants.Fixed) ? b.ActualMarginRight + b.ActualBorderRightWidth + b.ActualPaddingRight : 0;
 
                 b.RectanglesReset();
                 b.MeasureWordsSize(g);
@@ -303,6 +303,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                         word.Left = curx;
                         word.Top = cury;
+
+                        if (!box.IsFixed && box.PageBreakInside == CssConstants.Avoid)
+                        {
+                            word.BreakPage();
+                        }
 
                         curx = word.Left + word.FullWidth;
 
@@ -395,8 +400,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     {
                         // handle if line is wrapped for the first text element where parent has left margin\padding
                         var left = word.Left;
+
                         if (box == box.ParentBox.Boxes[0] && word == box.Words[0] && word == line.Words[0] && line != line.OwnerBox.LineBoxes[0] && !word.IsLineBreak)
                             left -= box.ParentBox.ActualMarginLeft + box.ParentBox.ActualBorderLeftWidth + box.ParentBox.ActualPaddingLeft;
+
 
                         x = Math.Min(x, left);
                         r = Math.Max(r, word.Right);

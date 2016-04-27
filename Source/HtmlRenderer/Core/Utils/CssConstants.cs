@@ -19,6 +19,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
     {
         public const string Absolute = "absolute";
         public const string Auto = "auto";
+        public const string Avoid = "avoid";
         public const string Baseline = "baseline";
         public const string Blink = "blink";
         public const string Block = "block";
@@ -36,6 +37,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         public const string DecimalLeadingZero = "decimal-leading-zero";
         public const string Disc = "disc";
         public const string Fantasy = "fantasy";
+        public const string Fixed = "fixed";
         public const string Hide = "hide";
         public const string Inherit = "inherit";
         public const string Inline = "inline";
