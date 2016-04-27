@@ -10,13 +10,14 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 using System.Drawing;
+using System.Drawing.Text;
 using System.IO;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.PdfSharp.Utilities;
-using PdfSharp.Drawing;
-using PdfSharp.Pdf;
 
 namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
 {
@@ -43,9 +44,11 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
             AddFontFamilyMapping("monospace", "Courier New");
             AddFontFamilyMapping("Helvetica", "Arial");
 
-            foreach (var family in XFontFamily.Families)
+            var families = new InstalledFontCollection();
+
+            foreach (var family in families.Families)
             {
-                AddFontFamily(new FontFamilyAdapter(family));
+                AddFontFamily(new FontFamilyAdapter(new XFontFamily(family.Name)));
             }
         }
 
@@ -59,7 +62,15 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
 
         protected override RColor GetColorInt(string colorName)
         {
-            return Utils.Convert(XColor.FromName(colorName));
+            try
+            {
+                var color = Color.FromKnownColor((KnownColor)System.Enum.Parse(typeof(KnownColor), colorName, true));
+                return Utils.Convert(color);
+            }
+            catch
+            {
+                return RColor.Empty;
+            }
         }
 
         protected override RPen CreatePen(RColor color)
@@ -103,7 +114,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
 
         protected override RImage ImageFromStreamInt(Stream memoryStream)
         {
-            return new ImageAdapter(XImage.FromGdiPlusImage(Image.FromStream(memoryStream)));
+            return new ImageAdapter(XImage.FromStream(memoryStream));
         }
 
         protected override RFont CreateFontInt(string family, double size, RFontStyle style)

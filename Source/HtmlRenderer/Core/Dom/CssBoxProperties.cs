@@ -53,6 +53,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _borderCollapse = "separate";
         private string _bottom;
         private string _color = "black";
+        private string _content = "normal";
         private string _cornerNwRadius = "0";
         private string _cornerNeRadius = "0";
         private string _cornerSeRadius = "0";
@@ -83,6 +84,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _paddingBottom = "0";
         private string _paddingRight = "0";
         private string _paddingTop = "0";
+        private string _pageBreakInside = CssConstants.Auto;
         private string _right;
         private string _textAlign = string.Empty;
         private string _textDecoration = string.Empty;
@@ -398,16 +400,41 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
         }
 
+        public string PageBreakInside
+        {
+            get { return _pageBreakInside; }
+            set
+            {
+                _pageBreakInside = value;
+            }
+        }
+
         public string Left
         {
             get { return _left; }
-            set { _left = value; }
+            set
+            {
+                _left = value;
+
+                if (Position == CssConstants.Fixed)
+                {
+                    _location = GetActualLocation(Left, Top);
+                }
+            }
         }
 
         public string Top
         {
             get { return _top; }
-            set { _top = value; }
+            set {
+                _top = value;
+
+                if (Position == CssConstants.Fixed)
+                {
+                    _location = GetActualLocation(Left, Top);
+                }
+
+            }
         }
 
         public string Width
@@ -472,6 +499,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 _color = value;
                 _actualColor = RColor.Empty;
             }
+        }
+
+        public string Content
+        {
+            get { return _content; }
+            set { _content = value; }
         }
 
         public string Display
@@ -646,16 +679,26 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             set { _listStyleType = value; }
         }
 
-        #endregion
-
+        #endregion CSS Propertier
 
         /// <summary>
         /// Gets or sets the location of the box
         /// </summary>
         public RPoint Location
         {
-            get { return _location; }
-            set { _location = value; }
+            get {
+                if (_location.IsEmpty && Position == CssConstants.Fixed)
+                {
+                    var left = Left;
+                    var top = Top;
+
+                    _location = GetActualLocation(Left, Top);
+                }
+                return _location;
+            }
+            set {
+                _location = value;
+            }
         }
 
         /// <summary>
@@ -1011,6 +1054,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 return _actualBorderTopColor;
             }
         }
+
+        protected abstract RPoint GetActualLocation(string X, string Y);
 
         protected abstract RColor GetActualColor(string colorStr);
 

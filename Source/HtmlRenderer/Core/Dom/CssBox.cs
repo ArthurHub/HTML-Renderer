@@ -141,7 +141,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         public bool IsBrElement
         {
-            get { return _htmltag != null && _htmltag.Name.Equals("br", StringComparison.InvariantCultureIgnoreCase); }
+            get {
+                return _htmltag != null && _htmltag.Name.Equals("br", StringComparison.InvariantCultureIgnoreCase);
+            }
         }
 
         /// <summary>
@@ -166,6 +168,36 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         public virtual bool IsClickable
         {
             get { return HtmlTag != null && HtmlTag.Name == HtmlConstants.A && !HtmlTag.HasAttribute("id"); }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance or one of its parents has Position = fixed.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is fixed; otherwise, <c>false</c>.
+        /// </value>
+        public virtual bool IsFixed
+        {
+            get
+            {
+                if (Position == CssConstants.Fixed)
+                    return true;
+
+                if (this.ParentBox == null)
+                    return false;
+
+                CssBox parent = this;
+
+                while (!(parent.ParentBox == null || parent == parent.ParentBox))
+                {
+                    parent = parent.ParentBox;
+
+                    if (parent.Position == CssConstants.Fixed)
+                        return true;
+                }
+
+                return false;
+            }
         }
 
         /// <summary>
@@ -431,6 +463,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 if (Display != CssConstants.None && Visibility == CssConstants.Visible)
                 {
+                    // use initial clip to draw blocks with Position = fixed. I.e. ignrore page margins
+                    if (this.Position == CssConstants.Fixed)
+                    {
+                        g.SuspendClipping();
+                    }
+
                     // don't call paint if the rectangle of the box is not in visible rectangle
                     bool visible = Rectangles.Count == 0;
                     if (!visible)
@@ -439,8 +477,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         var rect = ContainingBlock.ClientRectangle;
                         rect.X -= 2;
                         rect.Width += 2;
-                        rect.Offset(new RPoint(-HtmlContainer.Location.X, -HtmlContainer.Location.Y));
-                        rect.Offset(HtmlContainer.ScrollOffset);
+                        if (!IsFixed)
+                        {
+                            //rect.Offset(new RPoint(-HtmlContainer.Location.X, -HtmlContainer.Location.Y));
+                            rect.Offset(HtmlContainer.ScrollOffset);
+                        }
                         clip.Intersect(rect);
 
                         if (clip != RRect.Empty)
@@ -449,6 +490,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                     if (visible)
                         PaintImp(g);
+
+                    // Restore clips
+                    if (this.Position == CssConstants.Fixed)
+                    {
+                        g.ResumeClipping();
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -593,10 +641,21 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 if (Display != CssConstants.TableCell)
                 {
                     var prevSibling = DomUtils.GetPreviousSibling(this);
-                    double left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
-                    double top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
-                    Location = new RPoint(left, top);
-                    ActualBottom = top;
+                    double left;
+                    double top;
+
+                    if (Position == CssConstants.Fixed)
+                    {
+                        left = 0;
+                        top = 0;
+                    }
+                    else
+                    {
+                        left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
+                        top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+                        Location = new RPoint(left, top);
+                        ActualBottom = top;
+                    }
                 }
 
                 //If we're talking about a table here..
@@ -637,8 +696,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             CreateListItemBox(g);
 
-            var actualWidth = Math.Max(GetMinimumWidth() + GetWidthMarginDeep(this), Size.Width < 90999 ? ActualRight - HtmlContainer.Root.Location.X : 0);
-            HtmlContainer.ActualSize = CommonUtils.Max(HtmlContainer.ActualSize, new RSize(actualWidth, ActualBottom - HtmlContainer.Root.Location.Y));
+            if (!IsFixed)
+            {
+                var actualWidth = Math.Max(GetMinimumWidth() + GetWidthMarginDeep(this), Size.Width < 90999 ? ActualRight - HtmlContainer.Root.Location.X : 0);
+                HtmlContainer.ActualSize = CommonUtils.Max(HtmlContainer.ActualSize, new RSize(actualWidth, ActualBottom - HtmlContainer.Root.Location.Y));
+            }
         }
 
         /// <summary>
@@ -1056,6 +1118,26 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             return value;
         }
 
+        public bool BreakPage()
+        {
+            var container = this.HtmlContainer;
+
+            if (this.Size.Height >= container.PageSize.Height)
+                return false;
+
+            var remTop = (this.Location.Y - container.MarginTop) % container.PageSize.Height;
+            var remBottom = (this.ActualBottom - container.MarginTop) % container.PageSize.Height;
+
+            if (remTop > remBottom)
+            {
+                var diff = container.PageSize.Height - remTop;
+                this.Location = new RPoint(this.Location.X, this.Location.Y + diff + 1);
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Calculate the actual right of the box by the actual right of the child boxes if this box actual right is not set.
         /// </summary>
@@ -1135,17 +1217,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 var clipped = RenderUtils.ClipGraphicsByOverflow(g, this);
 
                 var areas = Rectangles.Count == 0 ? new List<RRect>(new[] { Bounds }) : new List<RRect>(Rectangles.Values);
-
+                var clip = g.GetClip();
                 RRect[] rects = areas.ToArray();
-                RPoint offset = HtmlContainer.ScrollOffset;
+                RPoint offset = RPoint.Empty;
+                if (!IsFixed)
+                {
+                    offset = HtmlContainer.ScrollOffset;
+                }
 
                 for (int i = 0; i < rects.Length; i++)
                 {
                     var actualRect = rects[i];
                     actualRect.Offset(offset);
 
-                    PaintBackground(g, actualRect, i == 0, i == rects.Length - 1);
-                    BordersDrawHandler.DrawBoxBorders(g, this, actualRect, i == 0, i == rects.Length - 1);
+                    if (IsRectVisible(actualRect, clip))
+                    {
+                        PaintBackground(g, actualRect, i == 0, i == rects.Length - 1);
+                        BordersDrawHandler.DrawBoxBorders(g, this, actualRect, i == 0, i == rects.Length - 1);
+                    }
                 }
 
                 PaintWords(g, offset);
@@ -1154,18 +1243,27 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 {
                     var actualRect = rects[i];
                     actualRect.Offset(offset);
-                    PaintDecoration(g, actualRect, i == 0, i == rects.Length - 1);
+
+                    if (IsRectVisible(actualRect, clip))
+                    {
+                        PaintDecoration(g, actualRect, i == 0, i == rects.Length - 1);
+                    }
                 }
 
                 // split paint to handle z-order
                 foreach (CssBox b in Boxes)
                 {
-                    if (b.Position != CssConstants.Absolute)
+                    if (b.Position != CssConstants.Absolute && !b.IsFixed)
                         b.Paint(g);
                 }
                 foreach (CssBox b in Boxes)
                 {
                     if (b.Position == CssConstants.Absolute)
+                        b.Paint(g);
+                }
+                foreach (CssBox b in Boxes)
+                {
+                    if (b.IsFixed)
                         b.Paint(g);
                 }
 
@@ -1177,6 +1275,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     _listItemBox.Paint(g);
                 }
             }
+        }
+
+        private bool IsRectVisible(RRect rect, RRect clip)
+        {
+            rect.X -= 2;
+            rect.Width += 2;
+            clip.Intersect(rect);
+
+            if (clip != RRect.Empty)
+                return true;
+
+            return false;
         }
 
         /// <summary>
@@ -1256,36 +1366,44 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 {
                     if (!word.IsLineBreak)
                     {
-                        var wordPoint = new RPoint(word.Left + offset.X, word.Top + offset.Y);
-                        if (word.Selected)
+                        var clip = g.GetClip();
+                        var wordRect = word.Rectangle;
+                        wordRect.Offset(offset);
+                        clip.Intersect(wordRect);
+
+                        if (clip != RRect.Empty)
                         {
-                            // handle paint selected word background and with partial word selection
-                            var wordLine = DomUtils.GetCssLineBoxByWord(word);
-                            var left = word.SelectedStartOffset > -1 ? word.SelectedStartOffset : (wordLine.Words[0] != word && word.HasSpaceBefore ? -ActualWordSpacing : 0);
-                            var padWordRight = word.HasSpaceAfter && !wordLine.IsLastSelectedWord(word);
-                            var width = word.SelectedEndOffset > -1 ? word.SelectedEndOffset : word.Width + (padWordRight ? ActualWordSpacing : 0);
-                            var rect = new RRect(word.Left + offset.X + left, word.Top + offset.Y, width - left, wordLine.LineHeight);
-
-                            g.DrawRectangle(GetSelectionBackBrush(g, false), rect.X, rect.Y, rect.Width, rect.Height);
-
-                            if (HtmlContainer.SelectionForeColor != RColor.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
+                            var wordPoint = new RPoint(word.Left + offset.X, word.Top + offset.Y);
+                            if (word.Selected)
                             {
-                                g.PushClipExclude(rect);
-                                g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
-                                g.PopClip();
-                                g.PushClip(rect);
-                                g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
-                                g.PopClip();
+                                // handle paint selected word background and with partial word selection
+                                var wordLine = DomUtils.GetCssLineBoxByWord(word);
+                                var left = word.SelectedStartOffset > -1 ? word.SelectedStartOffset : (wordLine.Words[0] != word && word.HasSpaceBefore ? -ActualWordSpacing : 0);
+                                var padWordRight = word.HasSpaceAfter && !wordLine.IsLastSelectedWord(word);
+                                var width = word.SelectedEndOffset > -1 ? word.SelectedEndOffset : word.Width + (padWordRight ? ActualWordSpacing : 0);
+                                var rect = new RRect(word.Left + offset.X + left, word.Top + offset.Y, width - left, wordLine.LineHeight);
+
+                                g.DrawRectangle(GetSelectionBackBrush(g, false), rect.X, rect.Y, rect.Width, rect.Height);
+
+                                if (HtmlContainer.SelectionForeColor != RColor.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
+                                {
+                                    g.PushClipExclude(rect);
+                                    g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
+                                    g.PopClip();
+                                    g.PushClip(rect);
+                                    g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
+                                    g.PopClip();
+                                }
+                                else
+                                {
+                                    g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
+                                }
                             }
                             else
                             {
-                                g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
+                                //                            g.DrawRectangle(HtmlContainer.Adapter.GetPen(RColor.Black), wordPoint.X, wordPoint.Y, word.Width - 1, word.Height - 1);
+                                g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
                             }
-                        }
-                        else
-                        {
-                            //                            g.DrawRectangle(HtmlContainer.Adapter.GetPen(RColor.Black), wordPoint.X, wordPoint.Y, word.Width - 1, word.Height - 1);
-                            g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
                         }
                     }
                 }
@@ -1405,6 +1523,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         protected override RColor GetActualColor(string colorStr)
         {
             return HtmlContainer.CssParser.ParseColor(colorStr);
+        }
+
+        protected override RPoint GetActualLocation(string X, string Y)
+        {
+            var left = CssValueParser.ParseLength(X, this.HtmlContainer.PageSize.Width, this, null);
+            var top = CssValueParser.ParseLength(Y, this.HtmlContainer.PageSize.Height, this, null);
+            return new RPoint(left, top);
         }
 
         /// <summary>

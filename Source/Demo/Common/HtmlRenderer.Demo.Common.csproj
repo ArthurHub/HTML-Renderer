@@ -155,6 +155,18 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\image32.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestSamples\32.Image in css content.htm" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestSamples\33.Fixed position.htm" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestSamples\34.Breaking pages 1 - Paragraphs.htm" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestSamples\35.Breaking pages 2 - Tables.htm" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

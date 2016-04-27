@@ -128,7 +128,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         //        public const string cols = "cols";
         //        public const string colspan = "colspan";
         //        public const string compact = "compact";
-        //        public const string content = "content";
+        public const string content = "content";
         //        public const string coords = "coords";
         //        public const string data = "data";
         //        public const string datetime = "datetime";

@@ -10,9 +10,9 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using PdfSharp.Drawing;
 using System.Drawing;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
-using PdfSharp.Drawing;
 
 namespace TheArtOfDev.HtmlRenderer.PdfSharp.Utilities
 {
@@ -81,20 +81,20 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Utilities
         }
 
         /// <summary>
-        /// Convert from WinForms color to core color.
-        /// </summary>
-        public static RColor Convert(XColor c)
-        {
-            var gc = c.ToGdiColor();
-            return RColor.FromArgb(gc.A, gc.R, gc.G, gc.B);
-        }
-
-        /// <summary>
         /// Convert from core color to WinForms color.
         /// </summary>
         public static XColor Convert(RColor c)
         {
-            return XColor.FromArgb(Color.FromArgb(c.A, c.R, c.G, c.B));
+            return XColor.FromArgb(c.A, c.R, c.G, c.B);
         }
+
+        /// <summary>
+        /// Convert from  color to WinForms color.
+        /// </summary>
+        public static RColor Convert(Color c)
+        {
+            return RColor.FromArgb(c.A, c.R, c.G, c.B);
+        }
+
     }
 }

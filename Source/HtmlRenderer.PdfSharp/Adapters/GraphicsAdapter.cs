@@ -10,12 +10,12 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using PdfSharp.Drawing;
 using System;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 using TheArtOfDev.HtmlRenderer.PdfSharp.Utilities;
-using PdfSharp.Drawing;
 
 namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
 {
@@ -49,7 +49,6 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
             _stringFormat = new XStringFormat();
             _stringFormat.Alignment = XStringAlignment.Near;
             _stringFormat.LineAlignment = XLineAlignment.Near;
-            _stringFormat.FormatFlags = XStringFormatFlags.MeasureTrailingSpaces;
         }
 
         /// <summary>

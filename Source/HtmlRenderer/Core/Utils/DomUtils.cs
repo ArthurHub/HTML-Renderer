@@ -101,12 +101,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     int diff = 1;
                     CssBox sib = b.ParentBox.Boxes[index - diff];
 
-                    while ((sib.Display == CssConstants.None || sib.Position == CssConstants.Absolute) && index - diff - 1 >= 0)
+                    while ((sib.Display == CssConstants.None || sib.Position == CssConstants.Absolute || sib.Position == CssConstants.Fixed) && index - diff - 1 >= 0)
                     {
                         sib = b.ParentBox.Boxes[index - ++diff];
                     }
 
-                    return sib.Display == CssConstants.None ? null : sib;
+                    return (sib.Display == CssConstants.None || sib.Position == CssConstants.Fixed) ? null : sib;
                 }
             }
             return null;
@@ -131,7 +131,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                 int diff = 1;
                 CssBox sib = conBlock.Boxes[index - diff];
 
-                while ((sib.Display == CssConstants.None || sib.Position == CssConstants.Absolute) && index - diff - 1 >= 0)
+                while ((sib.Display == CssConstants.None || sib.Position == CssConstants.Absolute || sib.Position == CssConstants.Fixed) && index - diff - 1 >= 0)
                 {
                     sib = conBlock.Boxes[index - ++diff];
                 }
@@ -169,7 +169,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                 while (index <= b.ParentBox.Boxes.Count - 1)
                 {
                     var pSib = b.ParentBox.Boxes[index];
-                    if (pSib.Display != CssConstants.None && pSib.Position != CssConstants.Absolute)
+                    if (pSib.Display != CssConstants.None && pSib.Position != CssConstants.Absolute && pSib.Position != CssConstants.Fixed)
                     {
                         sib = pSib;
                         break;
