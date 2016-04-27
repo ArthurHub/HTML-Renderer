@@ -135,7 +135,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             //Reminds the maximum bottom reached
             double maxRight = startx;
             double maxBottom = starty;
-            double offset = 0;
 
             //First line box
             CssLineBox line = new CssLineBox(blockBox);
@@ -154,7 +153,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 ApplyHorizontalAlignment(g, linebox);
                 ApplyRightToLeft(blockBox, linebox);
-                BubbleRectangles(blockBox, linebox, ref offset);
+                BubbleRectangles(blockBox, linebox);
                 ApplyVerticalAlignment(g, linebox);
                 linebox.AssignRectanglesToBoxes();
             }
@@ -388,7 +387,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Recursively creates the rectangles of the blockBox, by bubbling from deep to outside of the boxes 
         /// in the rectangle structure
         /// </summary>
-        private static void BubbleRectangles(CssBox box, CssLineBox line, ref double offset)
+        private static void BubbleRectangles(CssBox box, CssLineBox line)
         {
             if (box.Words.Count > 0)
             {
@@ -418,7 +417,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 foreach (CssBox b in box.Boxes)
                 {
-                    BubbleRectangles(b, line, ref offset);
+                    BubbleRectangles(b, line);
                 }
             }
         }
