@@ -1,6 +1,10 @@
 HTML Renderer [![Build status](https://ci.appveyor.com/api/projects/status/cm8xpf8ebt3hyi3e)](https://ci.appveyor.com/project/ArthurHub/html-renderer)
 =============
 
+## Help Wanted
+* Looking for a contributor(s) to take this project forward as I'm unable to continue supporting it.
+* Contribute directly to the repository and update nuget packages.
+
 #### Documentation, Discussion and Issue tracking is on [CodePlex](https://htmlrenderer.codeplex.com/).
 
 **Cross framework** (WinForms/WPF/PDF/Metro/Mono/etc.), **Multipurpose** (UI Controls / Image generation / PDF generation / etc.), **100% managed** (C#), High performance HTML Rendering library.
