@@ -145,6 +145,13 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         public bool HandleLinks { get; set; }
 
         /// <summary>
+        /// Add a page count footer to the PDF        
+        /// </summary>
+        public bool AddPageCountFoooter { get; set; }
+
+        
+
+        /// <summary>
         /// Set all 4 margins to the given value.
         /// </summary>
         /// <param name="value"></param>

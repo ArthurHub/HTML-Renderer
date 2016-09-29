@@ -154,20 +154,21 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                     container.Location = new XPoint(config.MarginLeft, config.MarginTop);
                     container.MaxSize = new XSize(pageSize.Width, 0);
                     container.SetHtml(html, cssData);
-                    container.PageSize = pageSize;
-                    container.MarginBottom = config.MarginBottom;
+                    container.PageSize = pageSize;                    
+                    container.MarginBottom = config.MarginBottom;  
                     container.MarginLeft = config.MarginLeft;
                     container.MarginRight = config.MarginRight;
                     container.MarginTop = config.MarginTop;
 
                     // layout the HTML with the page width restriction to know how many pages are required
-                    using (var measure = XGraphics.CreateMeasureContext(pageSize, XGraphicsUnit.Point, XPageDirection.Downwards))
-                    {
-                        container.PerformLayout(measure);
-                    }
+                    var measure = XGraphics.CreateMeasureContext(pageSize, XGraphicsUnit.Point, XPageDirection.Downwards);              
+                    container.PerformLayout(measure);                    
 
                     // while there is un-rendered HTML, create another PDF page and render with proper offset for the next page
                     double scrollOffset = 0;
+                    //SL: if there is more than one page, increase the bottom margin to allow space for the page number
+                    container.MarginBottom += scrollOffset > -container.ActualSize.Height ?  20 : 0;
+                    container.PerformLayout(measure); //SL: This still does not increase the margin for the first page of a multi page.. welp
                     while (scrollOffset > -container.ActualSize.Height)
                     {
                         var page = document.AddPage();
@@ -185,6 +186,9 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                         scrollOffset -= pageSize.Height;
                     }
 
+                    if (config.AddPageCountFoooter && document.PageCount > 1)  //Only add page numbers if more than one page
+                        AddPageCountFoooter(document, pageSize);
+
                     // SL: Set config option to handle links or not as it crashes for 
                     // some valid html links. 
                     // TODO: Investigate reason for crashing. 
@@ -197,6 +201,37 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
 
 
         #region Private/Protected methods
+
+        /// <summary>
+        /// Add a page count footer to the PDF
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="container"></param>
+        /// <param name="orgPageSize"></param>
+        /// <param name="pageSize"></param>
+        private static void AddPageCountFoooter(PdfDocument document, XSize pageSize)
+        {
+            
+            // Make a font and a brush to draw the page counter.
+            XFont font = new XFont("Helvetica", 8);
+            XBrush brush = XBrushes.Black;
+
+            // Add the page counter.
+            string noPages = document.Pages.Count.ToString();
+            for (int i = 0; i < document.Pages.Count; ++i)
+            {
+                PdfPage page = document.Pages[i];
+                // Make a layout rectangle.
+                XRect layoutRectangle = new XRect(0/*X*/, page.Height - font.Height - 10/*Y*/, pageSize.Width/*Width*/, font.Height/*Height*/);
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+                gfx.DrawString(
+                    "Page " + (i + 1).ToString() + " of " + noPages,
+                    font,
+                    brush,
+                    layoutRectangle,
+                    XStringFormats.CenterRight);
+            }
+        }
 
         /// <summary>
         /// Handle HTML links by create PDF Documents link either to external URL or to another page in the document.
@@ -222,7 +257,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                             // document links to the same page as the link is not allowed
                             int anchorPageIdx = (int)(anchorRect.Value.Top / pageSize.Height);
                             if (i != anchorPageIdx)
-                                document.Pages[i].AddDocumentLink(new PdfRectangle(xRect), anchorPageIdx);
+                                document.Pages[i].AddDocumentLink(new PdfRectangle(xRect), anchorPageIdx);                            
                         }
                     }
                     else
