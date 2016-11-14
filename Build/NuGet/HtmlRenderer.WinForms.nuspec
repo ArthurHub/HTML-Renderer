@@ -39,7 +39,7 @@
       <frameworkAssembly assemblyName="System.Drawing" targetFramework="" />
     </frameworkAssemblies>
     <dependencies>
-      <dependency id="HtmlRenderer.Core" version="1.5.0.5"/>
+      <dependency id="HtmlRenderer.Core" version="1.5.1"/>
     </dependencies>
   </metadata>
   <files>

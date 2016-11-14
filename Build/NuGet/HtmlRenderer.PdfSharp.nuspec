@@ -34,8 +34,8 @@
       <frameworkAssembly assemblyName="System.Drawing" targetFramework="" />
     </frameworkAssemblies>
     <dependencies>
-      <dependency id="HtmlRenderer.Core" version="1.5.0.5"/>
-      <dependency id="PDFsharp" version="1.32.3057.0"/>
+      <dependency id="HtmlRenderer.Core" version="1.5.1"/>
+      <dependency id="PDFsharp" version="1.50.4000-beta3b"/>
     </dependencies>
   </metadata>
   <files>
