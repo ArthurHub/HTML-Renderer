@@ -48,6 +48,16 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         }
 
         /// <summary>
+        /// Raised when the set html document has been fully loaded.<br/>
+        /// Allows manipulation of the html dom, scroll position, etc.
+        /// </summary>
+        public event EventHandler LoadComplete
+        {
+            add { _htmlContainerInt.LoadComplete += value; }
+            remove { _htmlContainerInt.LoadComplete -= value; }
+        }
+
+        /// <summary>
         /// Raised when an error occurred during html rendering.<br/>
         /// </summary>
         /// <remarks>

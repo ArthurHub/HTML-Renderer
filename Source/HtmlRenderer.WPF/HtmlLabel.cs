@@ -96,6 +96,9 @@ namespace TheArtOfDev.HtmlRenderer.WPF
                 }
             }
 
+            if (double.IsPositiveInfinity(constraint.Width) || double.IsPositiveInfinity(constraint.Height))
+                constraint = Size.Empty;
+
             return constraint;
         }
 

@@ -63,6 +63,16 @@ namespace TheArtOfDev.HtmlRenderer.Demo.Common.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap browser {
+            get {
+                object obj = ResourceManager.GetObject("browser", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap chrome {
             get {
                 object obj = ResourceManager.GetObject("chrome", resourceCulture);
@@ -86,16 +96,6 @@ namespace TheArtOfDev.HtmlRenderer.Demo.Common.Properties {
         public static System.Drawing.Bitmap form {
             get {
                 object obj = ResourceManager.GetObject("form", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IE {
-            get {
-                object obj = ResourceManager.GetObject("IE", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

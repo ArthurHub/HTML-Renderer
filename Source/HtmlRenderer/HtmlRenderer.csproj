@@ -77,6 +77,7 @@
     <Compile Include="Core\Handlers\BordersDrawHandler.cs" />
     <Compile Include="Core\Handlers\ContextMenuHandler.cs" />
     <Compile Include="Core\Handlers\FontsHandler.cs" />
+    <Compile Include="Core\Handlers\ImageDownloader.cs" />
     <Compile Include="Core\Handlers\ImageLoadHandler.cs" />
     <Compile Include="Core\Handlers\SelectionHandler.cs" />
     <Compile Include="Core\Handlers\StylesheetLoadHandler.cs" />

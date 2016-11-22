@@ -46,7 +46,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
 
             Icon = GetIcon();
             _openSampleFormTSB.Image = Common.Properties.Resources.form;
-            _showIEViewTSSB.Image = Common.Properties.Resources.IE;
+            _showIEViewTSSB.Image = Common.Properties.Resources.browser;
             _openInExternalViewTSB.Image = Common.Properties.Resources.chrome;
             _useGeneratedHtmlTSB.Image = Common.Properties.Resources.code;
             _generateImageSTB.Image = Common.Properties.Resources.image;
@@ -60,6 +60,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             LoadCustomFonts();
 
             _showIEViewTSSB.Enabled = !HtmlRenderingHelper.IsRunningOnMono();
+            _generatePdfTSB.Enabled = !HtmlRenderingHelper.IsRunningOnMono();
         }
 
         /// <summary>
@@ -82,7 +83,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         /// </summary>
         internal static Icon GetIcon()
         {
-            var stream = typeof(DemoForm).Assembly.GetManifestResourceStream("HtmlRenderer.Demo.WinForms.html.ico");
+            var stream = typeof(DemoForm).Assembly.GetManifestResourceStream("TheArtOfDev.HtmlRenderer.Demo.WinForms.html.ico");
             return stream != null ? new Icon(stream) : null;
         }
 

@@ -63,6 +63,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
             _htmlPanel.LinkClicked += OnLinkClicked;
             _htmlPanel.StylesheetLoad += HtmlRenderingHelper.OnStylesheetLoad;
             _htmlPanel.ImageLoad += HtmlRenderingHelper.OnImageLoad;
+            _htmlPanel.LoadComplete += (sender, args) => _htmlPanel.ScrollToElement("C4");
 
             _htmlTooltipLabel.AvoidImagesLateLoading = true;
             _htmlTooltipLabel.StylesheetLoad += HtmlRenderingHelper.OnStylesheetLoad;
@@ -325,9 +326,9 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
         /// <summary>
         /// Show error raised from html renderer.
         /// </summary>
-        private static void OnRenderError(object sender, RoutedEvenArgs<HtmlRenderErrorEventArgs> args)
+        private void OnRenderError(object sender, RoutedEvenArgs<HtmlRenderErrorEventArgs> args)
         {
-            MessageBox.Show(args.Data.Message + (args.Data.Exception != null ? "\r\n" + args.Data.Exception : null), "Error in Html Renderer", MessageBoxButton.OK);
+            Dispatcher.BeginInvoke(new Action(() => MessageBox.Show(args.Data.Message + (args.Data.Exception != null ? "\r\n" + args.Data.Exception : null), "Error in Html Renderer", MessageBoxButton.OK)));
         }
 
         /// <summary>

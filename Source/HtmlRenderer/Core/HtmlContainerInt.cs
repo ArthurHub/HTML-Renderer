@@ -82,7 +82,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         #region Fields and Consts
 
         /// <summary>
-        /// 
+        /// Main adapter to framework specific logic.
         /// </summary>
         private readonly RAdapter _adapter;
 
@@ -105,6 +105,11 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// Handler for text selection in the html. 
         /// </summary>
         private SelectionHandler _selectionHandler;
+
+        /// <summary>
+        /// Handler for downloading of images in the html
+        /// </summary>
+        private ImageDownloader _imageDownloader;
 
         /// <summary>
         /// the text fore color use for selected text
@@ -147,6 +152,11 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// Gets or sets a value indicating if image loading only when visible should be avoided (default - false).<br/>
         /// </summary>
         private bool _avoidImagesLateLoading;
+
+        /// <summary>
+        /// is the load of the html document is complete
+        /// </summary>
+        private bool _loadComplete;
 
         /// <summary>
         /// the top-left most location of the rendered html
@@ -198,6 +208,12 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             get { return _cssParser; }
         }
+
+        /// <summary>
+        /// Raised when the set html document has been fully loaded.<br/>
+        /// Allows manipulation of the html dom, scroll position, etc.
+        /// </summary>
+        public event EventHandler LoadComplete;
 
         /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
@@ -409,6 +425,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             Clear();
             if (!string.IsNullOrEmpty(htmlSource))
             {
+                _loadComplete = false;
                 _cssData = baseCssData ?? _adapter.DefaultCssData;
 
                 DomParser parser = new DomParser(_cssParser);
@@ -416,6 +433,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 if (_root != null)
                 {
                     _selectionHandler = new SelectionHandler(_root);
+                    _imageDownloader = new ImageDownloader();
                 }
             }
         }
@@ -431,9 +449,26 @@ namespace TheArtOfDev.HtmlRenderer.Core
             {
                 _root.Dispose();
                 _root = null;
+
                 if (_selectionHandler != null)
                     _selectionHandler.Dispose();
                 _selectionHandler = null;
+
+                if (_imageDownloader != null)
+                    _imageDownloader.Dispose();
+                _imageDownloader = null;
+            }
+        }
+
+        /// <summary>
+        /// Clear the current selection.
+        /// </summary>
+        public void ClearSelection()
+        {
+            if (_selectionHandler != null)
+            {
+                _selectionHandler.ClearSelection();
+                RequestRefresh(false);
             }
         }
 
@@ -527,6 +562,14 @@ namespace TheArtOfDev.HtmlRenderer.Core
                     _root.Size = new RSize((int)Math.Ceiling(_actualSize.Width), 0);
                     _actualSize = RSize.Empty;
                     _root.PerformLayout(g);
+                }
+
+                if (!_loadComplete)
+                {
+                    _loadComplete = true;
+                    EventHandler handler = LoadComplete;
+                    if (handler != null)
+                        handler(this, EventArgs.Empty);
                 }
             }
         }
@@ -735,10 +778,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             try
             {
-                if (StylesheetLoad != null)
-                {
-                    StylesheetLoad(this, args);
-                }
+                EventHandler<HtmlStylesheetLoadEventArgs> handler = StylesheetLoad;
+                if (handler != null)
+                    handler(this, args);
             }
             catch (Exception ex)
             {
@@ -754,10 +796,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             try
             {
-                if (ImageLoad != null)
-                {
-                    ImageLoad(this, args);
-                }
+                EventHandler<HtmlImageLoadEventArgs> handler = ImageLoad;
+                if (handler != null)
+                    handler(this, args);
             }
             catch (Exception ex)
             {
@@ -773,10 +814,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             try
             {
-                if (Refresh != null)
-                {
-                    Refresh(this, new HtmlRefreshEventArgs(layout));
-                }
+                EventHandler<HtmlRefreshEventArgs> handler = Refresh;
+                if (handler != null)
+                    handler(this, new HtmlRefreshEventArgs(layout));
             }
             catch (Exception ex)
             {
@@ -794,10 +834,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             try
             {
-                if (RenderError != null)
-                {
-                    RenderError(this, new HtmlRenderErrorEventArgs(type, message, exception));
-                }
+                EventHandler<HtmlRenderErrorEventArgs> handler = RenderError;
+                if (handler != null)
+                    handler(this, new HtmlRenderErrorEventArgs(type, message, exception));
             }
             catch
             { }
@@ -811,12 +850,13 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// <param name="link">the link that was clicked</param>
         internal void HandleLinkClicked(RControl parent, RPoint location, CssBox link)
         {
-            if (LinkClicked != null)
+            EventHandler<HtmlLinkClickedEventArgs> clickHandler = LinkClicked;
+            if (clickHandler != null)
             {
                 var args = new HtmlLinkClickedEventArgs(link.HrefLink, link.HtmlTag.Attributes);
                 try
                 {
-                    LinkClicked(this, args);
+                    clickHandler(this, args);
                 }
                 catch (Exception ex)
                 {
@@ -830,12 +870,13 @@ namespace TheArtOfDev.HtmlRenderer.Core
             {
                 if (link.HrefLink.StartsWith("#") && link.HrefLink.Length > 1)
                 {
-                    if (ScrollChange != null)
+                    EventHandler<HtmlScrollEventArgs> scrollHandler = ScrollChange;
+                    if (scrollHandler != null)
                     {
                         var rect = GetElementRectangle(link.HrefLink.Substring(1));
                         if (rect.HasValue)
                         {
-                            ScrollChange(this, new HtmlScrollEventArgs(rect.Value.Location));
+                            scrollHandler(this, new HtmlScrollEventArgs(rect.Value.Location));
                             HandleMouseMove(parent, location);
                         }
                     }
@@ -863,6 +904,15 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 _hoverBoxes = new List<HoverBoxBlock>();
 
             _hoverBoxes.Add(new HoverBoxBlock(box, block));
+        }
+
+        /// <summary>
+        /// Get image downloader to be used to download images for the current html rendering.<br/>
+        /// Lazy create single downloader to be used for all images in the current html.
+        /// </summary>
+        internal ImageDownloader GetImageDownloader()
+        {
+            return _imageDownloader;
         }
 
         /// <summary>

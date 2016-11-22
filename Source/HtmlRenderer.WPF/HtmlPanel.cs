@@ -142,6 +142,9 @@ namespace TheArtOfDev.HtmlRenderer.WPF
             if (relayout)
                 PerformHtmlLayout(constraint);
 
+            if (double.IsPositiveInfinity(constraint.Width) || double.IsPositiveInfinity(constraint.Height))
+                constraint = size;
+
             return constraint;
         }
 

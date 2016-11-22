@@ -100,7 +100,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     double ratio = imageWord.Width / imageWord.Image.Width;
                     imageWord.Height = imageWord.Image.Height * ratio;
                 }
-                    // If only the height was set in the html tag, ratio the width.
+                // If only the height was set in the html tag, ratio the width.
                 else if (hasImageTagHeight && !hasImageTagWidth)
                 {
                     // Divide the given tag height with the actual image height, to get the ratio.
@@ -151,9 +151,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             //Gets the rectangles for each line-box
             foreach (var linebox in blockBox.LineBoxes)
             {
-                ApplyAlignment(g, linebox);
+                ApplyHorizontalAlignment(g, linebox);
                 ApplyRightToLeft(blockBox, linebox);
                 BubbleRectangles(blockBox, linebox);
+                ApplyVerticalAlignment(g, linebox);
                 linebox.AssignRectanglesToBoxes();
             }
 
@@ -419,7 +420,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g"></param>
         /// <param name="lineBox"></param>
-        private static void ApplyAlignment(RGraphics g, CssLineBox lineBox)
+        private static void ApplyHorizontalAlignment(RGraphics g, CssLineBox lineBox)
         {
             switch (lineBox.OwnerBox.TextAlign)
             {
@@ -436,8 +437,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     ApplyLeftAlignment(g, lineBox);
                     break;
             }
-
-            ApplyVerticalAlignment(g, lineBox);
         }
 
         /// <summary>
@@ -536,7 +535,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 switch (box.VerticalAlign)
                 {
                     case CssConstants.Sub:
-                        lineBox.SetBaseLine(g, box, baseline + lineBox.Rectangles[box].Height * .2f);
+                        lineBox.SetBaseLine(g, box, baseline + lineBox.Rectangles[box].Height * .5f);
                         break;
                     case CssConstants.Super:
                         lineBox.SetBaseLine(g, box, baseline - lineBox.Rectangles[box].Height * .2f);

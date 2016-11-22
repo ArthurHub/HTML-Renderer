@@ -420,12 +420,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         {
             try
             {
-                if (_videoImageUrl != null)
-                {
-                    _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
-                    _imageLoadHandler.LoadImage(_videoImageUrl, HtmlTag != null ? HtmlTag.Attributes : null);
-                }
-                else
+                if (_videoImageUrl == null)
                 {
                     _imageLoadingComplete = true;
                     SetErrorBorder();
@@ -448,6 +443,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="g">the device to draw to</param>
         protected override void PaintImp(RGraphics g)
         {
+            if (_videoImageUrl != null && _imageLoadHandler == null)
+            {
+                _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
+                _imageLoadHandler.LoadImage(_videoImageUrl, HtmlTag != null ? HtmlTag.Attributes : null);
+            }
+
             var rects = CommonUtils.GetFirstValueOrDefault(Rectangles);
 
             RPoint offset = HtmlContainer != null ? HtmlContainer.ScrollOffset : RPoint.Empty;

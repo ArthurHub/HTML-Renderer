@@ -132,6 +132,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             _htmlContainer = new HtmlContainer();
             _htmlContainer.AvoidImagesLateLoading = true;
             _htmlContainer.MaxSize = MaximumSize;
+            _htmlContainer.LoadComplete += OnLoadComplete;
             _htmlContainer.LinkClicked += OnLinkClicked;
             _htmlContainer.RenderError += OnRenderError;
             _htmlContainer.Refresh += OnRefresh;
@@ -146,6 +147,12 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         [Category("Property Changed")]
         public event EventHandler BorderStyleChanged;
+
+        /// <summary>
+        /// Raised when the set html document has been fully loaded.<br/>
+        /// Allows manipulation of the html dom, scroll position, etc.
+        /// </summary>
+        public event EventHandler LoadComplete;
 
         /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
@@ -435,6 +442,15 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             return _htmlContainer != null ? _htmlContainer.GetElementRectangle(elementId) : null;
         }
 
+        /// <summary>
+        /// Clear the current selection.
+        /// </summary>
+        public void ClearSelection()
+        {
+            if (_htmlContainer != null)
+                _htmlContainer.ClearSelection();
+        }
+
 
         #region Private methods
 
@@ -471,17 +487,21 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         {
             if (_htmlContainer != null)
             {
-                using (Graphics g = CreateGraphics())
-                using (var ig = new GraphicsAdapter(g, _htmlContainer.UseGdiPlusTextRendering))
+                Graphics g = Utils.CreateGraphics(this);
+                if (g != null)
                 {
-                    var newSize = HtmlRendererUtils.Layout(ig,
-                        _htmlContainer.HtmlContainerInt,
-                        new RSize(ClientSize.Width - Padding.Horizontal, ClientSize.Height - Padding.Vertical),
-                        new RSize(MinimumSize.Width - Padding.Horizontal, MinimumSize.Height - Padding.Vertical),
-                        new RSize(MaximumSize.Width - Padding.Horizontal, MaximumSize.Height - Padding.Vertical),
-                        AutoSize,
-                        AutoSizeHeightOnly);
-                    ClientSize = Utils.ConvertRound(new RSize(newSize.Width + Padding.Horizontal, newSize.Height + Padding.Vertical));
+                    using (g)
+                    using (var ig = new GraphicsAdapter(g, _htmlContainer.UseGdiPlusTextRendering))
+                    {
+                        var newSize = HtmlRendererUtils.Layout(ig,
+                            _htmlContainer.HtmlContainerInt,
+                            new RSize(ClientSize.Width - Padding.Horizontal, ClientSize.Height - Padding.Vertical),
+                            new RSize(MinimumSize.Width - Padding.Horizontal, MinimumSize.Height - Padding.Vertical),
+                            new RSize(MaximumSize.Width - Padding.Horizontal, MaximumSize.Height - Padding.Vertical),
+                            AutoSize,
+                            AutoSizeHeightOnly);
+                        ClientSize = Utils.ConvertRound(new RSize(newSize.Width + Padding.Horizontal, newSize.Height + Padding.Vertical));
+                    }
                 }
             }
             base.OnLayout(levent);
@@ -561,6 +581,16 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             UpdateStyles();
 
             var handler = BorderStyleChanged;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        /// <summary>
+        /// Propagate the LoadComplete event from root container.
+        /// </summary>
+        protected virtual void OnLoadComplete(EventArgs e)
+        {
+            var handler = LoadComplete;
             if (handler != null)
                 handler(this, e);
         }
@@ -648,6 +678,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         {
             if (_htmlContainer != null)
             {
+                _htmlContainer.LoadComplete -= OnLoadComplete;
                 _htmlContainer.LinkClicked -= OnLinkClicked;
                 _htmlContainer.RenderError -= OnRenderError;
                 _htmlContainer.Refresh -= OnRefresh;
@@ -661,6 +692,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
 
 
         #region Private event handlers
+
+        private void OnLoadComplete(object sender, EventArgs e)
+        {
+            OnLoadComplete(e);
+        }
 
         private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
         {

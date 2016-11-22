@@ -12,9 +12,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Threading;
 using TheArtOfDev.HtmlRenderer.Adapters;
@@ -55,11 +53,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// callback raised when image load process is complete with image or without
         /// </summary>
         private readonly ActionInt<RImage, RRect, bool> _loadCompleteCallback;
-
-        /// <summary>
-        /// the web client used to download image from URL (to cancel on dispose)
-        /// </summary>
-        private WebClient _client;
 
         /// <summary>
         /// Must be open as long as the image is in use
@@ -289,9 +282,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             if (source.Exists)
             {
                 if (_htmlContainer.AvoidAsyncImagesLoading)
-                    LoadImageFromFile(source);
+                    LoadImageFromFile(source.FullName);
                 else
-                    ThreadPool.QueueUserWorkItem(state => LoadImageFromFile(source));
+                    ThreadPool.QueueUserWorkItem(state => LoadImageFromFile(source.FullName));
             }
             else
             {
@@ -304,14 +297,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// Calling <see cref="ImageLoadComplete"/> on the main thread and not thread-pool.
         /// </summary>
         /// <param name="source">the file path to get the image from</param>
-        private void LoadImageFromFile(FileInfo source)
+        private void LoadImageFromFile(string source)
         {
             try
             {
-                if (source.Exists)
+                var imageFileStream = File.Open(source, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                lock (_loadCompleteCallback)
                 {
-                    _imageFileStream = File.Open(source.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    _image = _htmlContainer.Adapter.ImageFromStream(_imageFileStream);
+                    _imageFileStream = imageFileStream;
+                    if (!_disposed)
+                        _image = _htmlContainer.Adapter.ImageFromStream(_imageFileStream);
                     _releaseImageObject = true;
                 }
                 ImageLoadComplete();
@@ -326,7 +321,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <summary>
         /// Load image from the given URI by downloading it.<br/>
         /// Create local file name in temp folder from the URI, if the file already exists use it as it has already been downloaded.
-        /// If not download the file using <see cref="DownloadImageFromUrlAsync"/>.
+        /// If not download the file.
         /// </summary>
         private void SetImageFromUrl(Uri source)
         {
@@ -337,52 +332,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             }
             else
             {
-                if (_htmlContainer.AvoidAsyncImagesLoading)
-                    DownloadImageFromUrl(source, filePath);
-                else
-                    ThreadPool.QueueUserWorkItem(DownloadImageFromUrlAsync, new KeyValuePair<Uri, FileInfo>(source, filePath));
-            }
-        }
-
-        /// <summary>
-        /// Download the requested file in the URI to the given file path.<br/>
-        /// Use async sockets API to download from web, <see cref="OnDownloadImageCompleted(object,System.ComponentModel.AsyncCompletedEventArgs)"/>.
-        /// </summary>
-        private void DownloadImageFromUrl(Uri source, FileInfo filePath)
-        {
-            try
-            {
-                using (var client = _client = new WebClient())
-                {
-                    client.DownloadFile(source, filePath.FullName);
-                    OnDownloadImageCompleted(false, null, filePath, client);
-                }
-            }
-            catch (Exception ex)
-            {
-                OnDownloadImageCompleted(false, ex, null, null);
-            }
-        }
-
-        /// <summary>
-        /// Download the requested file in the URI to the given file path.<br/>
-        /// Use async sockets API to download from web, <see cref="OnDownloadImageCompleted(object,System.ComponentModel.AsyncCompletedEventArgs)"/>.
-        /// </summary>
-        /// <param name="data">key value pair of URL and file info to download the file to</param>
-        private void DownloadImageFromUrlAsync(object data)
-        {
-            var uri = ((KeyValuePair<Uri, FileInfo>)data).Key;
-            var filePath = ((KeyValuePair<Uri, FileInfo>)data).Value;
-
-            try
-            {
-                _client = new WebClient();
-                _client.DownloadFileCompleted += OnDownloadImageCompleted;
-                _client.DownloadFileAsync(uri, filePath.FullName, filePath);
-            }
-            catch (Exception ex)
-            {
-                OnDownloadImageCompleted(false, ex, null, null);
+                _htmlContainer.GetImageDownloader().DownloadImage(source, filePath.FullName, !_htmlContainer.AvoidAsyncImagesLoading, OnDownloadImageCompleted);
             }
         }
 
@@ -390,48 +340,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// On download image complete to local file use <see cref="LoadImageFromFile"/> to load the image file.<br/>
         /// If the download canceled do nothing, if failed report error.
         /// </summary>
-        private void OnDownloadImageCompleted(object sender, AsyncCompletedEventArgs e)
+        private void OnDownloadImageCompleted(Uri imageUri, string filePath, Exception error, bool canceled)
         {
-            try
-            {
-                using (var client = (WebClient)sender)
-                {
-                    client.DownloadFileCompleted -= OnDownloadImageCompleted;
-                    OnDownloadImageCompleted(e.Cancelled, e.Error, (FileInfo)e.UserState, client);
-                }
-            }
-            catch (Exception ex)
-            {
-                OnDownloadImageCompleted(false, ex, null, null);
-            }
-        }
-
-        /// <summary>
-        /// On download image complete to local file use <see cref="LoadImageFromFile"/> to load the image file.<br/>
-        /// If the download canceled do nothing, if failed report error.
-        /// </summary>
-        private void OnDownloadImageCompleted(bool cancelled, Exception error, FileInfo filePath, WebClient client)
-        {
-            if (!cancelled && !_disposed)
+            if (!canceled && !_disposed)
             {
                 if (error == null)
                 {
-                    filePath.Refresh();
-                    var contentType = CommonUtils.GetResponseContentType(client);
-                    if (contentType != null && contentType.StartsWith("image", StringComparison.OrdinalIgnoreCase))
-                    {
-                        LoadImageFromFile(filePath);
-                    }
-                    else
-                    {
-                        _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image, not image content type: " + contentType);
-                        ImageLoadComplete();
-                        filePath.Delete();
-                    }
+                    LoadImageFromFile(filePath);
                 }
                 else
                 {
-                    _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image from URL: " + client.BaseAddress, error);
+                    _htmlContainer.ReportError(HtmlRenderErrorType.Image, "Failed to load image from URL: " + imageUri, error);
                     ImageLoadComplete();
                 }
             }
@@ -454,21 +373,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// </summary>
         private void ReleaseObjects()
         {
-            if (_releaseImageObject && _image != null)
+            lock (_loadCompleteCallback)
             {
-                _image.Dispose();
-                _image = null;
-            }
-            if (_imageFileStream != null)
-            {
-                _imageFileStream.Dispose();
-                _imageFileStream = null;
-            }
-            if (_client != null)
-            {
-                _client.CancelAsync();
-                _client.Dispose();
-                _client = null;
+                if (_releaseImageObject && _image != null)
+                {
+                    _image.Dispose();
+                    _image = null;
+                }
+                if (_imageFileStream != null)
+                {
+                    _imageFileStream.Dispose();
+                    _imageFileStream = null;
+                }
             }
         }
 

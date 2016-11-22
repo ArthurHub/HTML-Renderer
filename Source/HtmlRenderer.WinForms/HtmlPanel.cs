@@ -119,6 +119,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 
             _htmlContainer = new HtmlContainer();
+            _htmlContainer.LoadComplete += OnLoadComplete;
             _htmlContainer.LinkClicked += OnLinkClicked;
             _htmlContainer.RenderError += OnRenderError;
             _htmlContainer.Refresh += OnRefresh;
@@ -132,6 +133,12 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         [Category("Property Changed")]
         public event EventHandler BorderStyleChanged;
+
+        /// <summary>
+        /// Raised when the set html document has been fully loaded.<br/>
+        /// Allows manipulation of the html dom, scroll position, etc.
+        /// </summary>
+        public event EventHandler LoadComplete;
 
         /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
@@ -402,6 +409,15 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             }
         }
 
+        /// <summary>
+        /// Clear the current selection.
+        /// </summary>
+        public void ClearSelection()
+        {
+            if (_htmlContainer != null)
+                _htmlContainer.ClearSelection();
+        }
+
 
         #region Private methods
 
@@ -457,10 +473,15 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             {
                 _htmlContainer.MaxSize = new SizeF(ClientSize.Width - Padding.Horizontal, 0);
 
-                using (var g = CreateGraphics())
+                Graphics g = Utils.CreateGraphics(this);
+                if (g != null)
                 {
-                    _htmlContainer.PerformLayout(g);
+                    using (g)
+                    {
+                        _htmlContainer.PerformLayout(g);
+                    }
                 }
+
 
                 AutoScrollMinSize = Size.Round(new SizeF(_htmlContainer.ActualSize.Width + Padding.Horizontal, _htmlContainer.ActualSize.Height));
             }
@@ -604,6 +625,16 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         }
 
         /// <summary>
+        /// Propagate the LoadComplete event from root container.
+        /// </summary>
+        protected virtual void OnLoadComplete(EventArgs e)
+        {
+            var handler = LoadComplete;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        /// <summary>
         /// Propagate the LinkClicked event from root container.
         /// </summary>
         protected virtual void OnLinkClicked(HtmlLinkClickedEventArgs e)
@@ -676,8 +707,18 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         protected virtual void InvokeMouseMove()
         {
-            var mp = PointToClient(MousePosition);
-            _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
+            try
+            {
+                // mono has issue throwing exception for no reason
+                var mp = PointToClient(MousePosition);
+                _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
+            }
+            catch
+            {
+#if !MONO
+                throw;
+#endif
+            }
         }
 
         /// <summary>
@@ -734,6 +775,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         {
             if (_htmlContainer != null)
             {
+                _htmlContainer.LoadComplete -= OnLoadComplete;
                 _htmlContainer.LinkClicked -= OnLinkClicked;
                 _htmlContainer.RenderError -= OnRenderError;
                 _htmlContainer.Refresh -= OnRefresh;
@@ -748,6 +790,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
 
 
         #region Private event handlers
+
+        private void OnLoadComplete(object sender, EventArgs e)
+        {
+            OnLoadComplete(e);
+        }
 
         private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)
         {

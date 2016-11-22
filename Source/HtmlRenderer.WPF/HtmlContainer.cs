@@ -52,6 +52,16 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         }
 
         /// <summary>
+        /// Raised when the set html document has been fully loaded.<br/>
+        /// Allows manipulation of the html dom, scroll position, etc.
+        /// </summary>
+        public event EventHandler LoadComplete
+        {
+            add { _htmlContainerInt.LoadComplete += value; }
+            remove { _htmlContainerInt.LoadComplete -= value; }
+        }
+
+        /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
         /// Allows canceling the execution of the link.
         /// </summary>
@@ -249,6 +259,14 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         }
 
         /// <summary>
+        /// Clear the current selection.
+        /// </summary>
+        public void ClearSelection()
+        {
+            HtmlContainerInt.ClearSelection();
+        }
+
+        /// <summary>
         /// Init with optional document and stylesheet.
         /// </summary>
         /// <param name="htmlSource">the html to init with, init empty if not given</param>
@@ -399,7 +417,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         public void HandleMouseMove(Control parent, Point mousePos)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
-            
+
             _htmlContainerInt.HandleMouseMove(new ControlAdapter(parent), Utils.Convert(mousePos));
         }
 
