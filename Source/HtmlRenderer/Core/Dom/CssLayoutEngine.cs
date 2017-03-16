@@ -304,7 +304,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         word.Left = curx;
                         word.Top = cury;
 
-                        if (!box.IsFixed && box.PageBreakInside == CssConstants.Avoid)
+                        if (!box.IsFixed)
                         {
                             word.BreakPage();
                         }
