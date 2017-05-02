@@ -201,7 +201,15 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
 
                     glyphRendered = true;
                     var glyphRun = new GlyphRun(glyphTypeface, rtl ? 1 : 0, false, 96d / 72d * font.Size, glyphs, Utils.ConvertRound(point), widths, null, null, null, null, null, null);
+                    var rect = glyphRun.ComputeAlignmentBox();
+                    var guidelines = new GuidelineSet();
+                    guidelines.GuidelinesX.Add(rect.Left);
+                    guidelines.GuidelinesX.Add(rect.Right);
+                    guidelines.GuidelinesY.Add(rect.Top);
+                    guidelines.GuidelinesY.Add(rect.Bottom);
+                    _g.PushGuidelineSet(guidelines);
                     _g.DrawGlyphRun(colorConv, glyphRun);
+                    _g.Pop();
                 }
             }
 
@@ -269,7 +277,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
                 x += .5;
                 y += .5;
             }
-            
+
             _g.DrawRectangle(null, ((PenAdapter)pen).CreatePen(), new Rect(x, y, width, height));
         }
 
