@@ -246,7 +246,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                         value = HtmlUtils.DecodeHtml(value);
                     }
 
-                    if (!string.IsNullOrEmpty(key) && (value != null))
+                    if (key.Length != 0)
                     {
                         if (attributes == null)
                             attributes = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
