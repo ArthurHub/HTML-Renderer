@@ -370,8 +370,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     num = num * (hex ? 16 : 10) + CommonUtils.ToDigit(str[endIdx++], hex);
                 endIdx += (endIdx < str.Length && str[endIdx] == ';') ? 1 : 0;
 
+                string repl = string.Empty;
+                if (num >= 0 && num <= 0x10ffff && !(num >= 0xd800 && num <= 0xdfff))
+                    repl = Char.ConvertFromUtf32((int)num);
+                
                 str = str.Remove(idx, endIdx - idx);
-                str = str.Insert(idx, Convert.ToChar(num).ToString());
+                str = str.Insert(idx, repl);
 
                 idx = str.IndexOf("&#", idx + 1);
             }
