@@ -388,7 +388,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// </summary>
         protected virtual void OnLoadComplete(EventArgs e)
         {
-            RoutedEventArgs newEventArgs = new RoutedEvenArgs<EventArgs>(LoadCompleteEvent, this, e);
+            RoutedEventArgs newEventArgs = new RoutedEventArgs<EventArgs>(LoadCompleteEvent, this, e);
             RaiseEvent(newEventArgs);
         }
 
@@ -397,7 +397,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// </summary>
         protected virtual void OnLinkClicked(HtmlLinkClickedEventArgs e)
         {
-            RoutedEventArgs newEventArgs = new RoutedEvenArgs<HtmlLinkClickedEventArgs>(LinkClickedEvent, this, e);
+            RoutedEventArgs newEventArgs = new RoutedEventArgs<HtmlLinkClickedEventArgs>(LinkClickedEvent, this, e);
             RaiseEvent(newEventArgs);
         }
 
@@ -406,7 +406,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// </summary>
         protected virtual void OnRenderError(HtmlRenderErrorEventArgs e)
         {
-            RoutedEventArgs newEventArgs = new RoutedEvenArgs<HtmlRenderErrorEventArgs>(RenderErrorEvent, this, e);
+            RoutedEventArgs newEventArgs = new RoutedEventArgs<HtmlRenderErrorEventArgs>(RenderErrorEvent, this, e);
             RaiseEvent(newEventArgs);
         }
 
@@ -415,7 +415,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// </summary>
         protected virtual void OnStylesheetLoad(HtmlStylesheetLoadEventArgs e)
         {
-            RoutedEventArgs newEventArgs = new RoutedEvenArgs<HtmlStylesheetLoadEventArgs>(StylesheetLoadEvent, this, e);
+            RoutedEventArgs newEventArgs = new RoutedEventArgs<HtmlStylesheetLoadEventArgs>(StylesheetLoadEvent, this, e);
             RaiseEvent(newEventArgs);
         }
 
@@ -424,7 +424,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// </summary>
         protected virtual void OnImageLoad(HtmlImageLoadEventArgs e)
         {
-            RoutedEventArgs newEventArgs = new RoutedEvenArgs<HtmlImageLoadEventArgs>(ImageLoadEvent, this, e);
+            RoutedEventArgs newEventArgs = new RoutedEventArgs<HtmlImageLoadEventArgs>(ImageLoadEvent, this, e);
             RaiseEvent(newEventArgs);
         }
 

@@ -20,26 +20,26 @@ namespace TheArtOfDev.HtmlRenderer.WPF
     /// </summary>
     /// <param name="args">the event arguments object</param>
     /// <typeparam name="T">the type of the routed events args data</typeparam>
-    public delegate void RoutedEventHandler<T>(object sender, RoutedEvenArgs<T> args) where T : class;
+    public delegate void RoutedEventHandler<T>(object sender, RoutedEventArgs<T> args) where T : class;
 
     /// <summary>
     /// HTML Renderer routed event arguments containing event data.
     /// </summary>
-    public sealed class RoutedEvenArgs<T> : RoutedEventArgs where T : class
+    public sealed class RoutedEventArgs<T> : RoutedEventArgs where T : class
     {
         /// <summary>
         /// the argument data of the routed event
         /// </summary>
         private readonly T _data;
 
-        public RoutedEvenArgs(RoutedEvent routedEvent, T data)
+        public RoutedEventArgs(RoutedEvent routedEvent, T data)
             : base(routedEvent)
         {
             ArgChecker.AssertArgNotNull(data, "args");
             _data = data;
         }
 
-        public RoutedEvenArgs(RoutedEvent routedEvent, object source, T data)
+        public RoutedEventArgs(RoutedEvent routedEvent, object source, T data)
             : base(routedEvent, source)
         {
             ArgChecker.AssertArgNotNull(data, "args");

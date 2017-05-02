@@ -326,7 +326,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
         /// <summary>
         /// Show error raised from html renderer.
         /// </summary>
-        private void OnRenderError(object sender, RoutedEvenArgs<HtmlRenderErrorEventArgs> args)
+        private void OnRenderError(object sender, RoutedEventArgs<HtmlRenderErrorEventArgs> args)
         {
             Dispatcher.BeginInvoke(new Action(() => MessageBox.Show(args.Data.Message + (args.Data.Exception != null ? "\r\n" + args.Data.Exception : null), "Error in Html Renderer", MessageBoxButton.OK)));
         }
@@ -334,7 +334,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
         /// <summary>
         /// On specific link click handle it here.
         /// </summary>
-        private void OnLinkClicked(object sender, RoutedEvenArgs<HtmlLinkClickedEventArgs> args)
+        private void OnLinkClicked(object sender, RoutedEventArgs<HtmlLinkClickedEventArgs> args)
         {
             if (args.Data.Link == "SayHello")
             {

@@ -65,7 +65,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
         /// <summary>
         /// Handle stylesheet resolve.
         /// </summary>
-        public static void OnStylesheetLoad(object sender, RoutedEvenArgs<HtmlStylesheetLoadEventArgs> args)
+        public static void OnStylesheetLoad(object sender, RoutedEventArgs<HtmlStylesheetLoadEventArgs> args)
         {
             DemoUtils.OnStylesheetLoad(sender, args.Data);
         }
@@ -105,7 +105,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
         /// <summary>
         /// On image load in renderer set the image by event async.
         /// </summary>
-        public static void OnImageLoad(object sender, RoutedEvenArgs<HtmlImageLoadEventArgs> args)
+        public static void OnImageLoad(object sender, RoutedEventArgs<HtmlImageLoadEventArgs> args)
         {
             ImageLoad(args.Data);
         }
