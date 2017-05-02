@@ -222,27 +222,31 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 if (startIdx < idx + length)
                 {
                     var key = source.Substring(startIdx, endIdx - startIdx);
+                    var value = "";
 
                     startIdx = endIdx + 1;
                     while (startIdx < idx + length && (char.IsWhiteSpace(source, startIdx) || source[startIdx] == '='))
                         startIdx++;
 
                     bool hasPChar = false;
-                    char pChar = source[startIdx];
-                    if (pChar == '"' || pChar == '\'')
+                    if (startIdx < idx + length)
                     {
-                        hasPChar = true;
-                        startIdx++;
+                        char pChar = source[startIdx];
+                        if (pChar == '"' || pChar == '\'')
+                        {
+                            hasPChar = true;
+                            startIdx++;
+                        }
+
+                        endIdx = startIdx + (hasPChar ? 0 : 1);
+                        while (endIdx < idx + length && (hasPChar ? source[endIdx] != pChar : !char.IsWhiteSpace(source, endIdx)))
+                            endIdx++;
+
+                        value = source.Substring(startIdx, endIdx - startIdx);
+                        value = HtmlUtils.DecodeHtml(value);
                     }
 
-                    endIdx = startIdx + (hasPChar ? 0 : 1);
-                    while (endIdx < idx + length && (hasPChar ? source[endIdx] != pChar : !char.IsWhiteSpace(source, endIdx)))
-                        endIdx++;
-
-                    var value = source.Substring(startIdx, endIdx - startIdx);
-                    value = HtmlUtils.DecodeHtml(value);
-
-                    if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+                    if (!string.IsNullOrEmpty(key) && (value != null))
                     {
                         if (attributes == null)
                             attributes = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
