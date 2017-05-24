@@ -35,7 +35,6 @@
     <releaseNotes>See http://htmlrenderer.codeplex.com/releases.</releaseNotes>
     <tags>html render renderer draw control WPF</tags>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Windows.Forms" targetFramework="" />
       <frameworkAssembly assemblyName="System.Drawing" targetFramework="" />
     </frameworkAssemblies>
     <dependencies>
