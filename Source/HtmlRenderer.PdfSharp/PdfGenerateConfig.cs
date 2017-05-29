@@ -139,6 +139,19 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         }
 
         /// <summary>
+        /// Sets weather to Handle HTML links by create PDF 
+        /// Documents link either to external URL or to another page in the document
+        /// </summary>
+        public bool HandleLinks { get; set; }
+
+        /// <summary>
+        /// Add a page count footer to the PDF        
+        /// </summary>
+        public bool AddPageCountFoooter { get; set; }
+
+        
+
+        /// <summary>
         /// Set all 4 margins to the given value.
         /// </summary>
         /// <param name="value"></param>
