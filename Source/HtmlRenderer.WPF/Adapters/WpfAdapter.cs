@@ -207,13 +207,10 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
         /// </summary>
         private static FontStyle GetFontStyle(RFontStyle style)
         {
-            switch (style)
-            {
-                case RFontStyle.Italic:
-                    return FontStyles.Italic;
-                default:
-                    return FontStyles.Normal;
-            }
+            if ((style & RFontStyle.Italic) == RFontStyle.Italic)
+                return FontStyles.Italic;
+
+            return FontStyles.Normal;
         }
 
         /// <summary>
@@ -221,13 +218,10 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
         /// </summary>
         private static FontWeight GetFontWidth(RFontStyle style)
         {
-            switch (style)
-            {
-                case RFontStyle.Bold:
-                    return FontWeights.Bold;
-                default:
-                    return FontWeights.Normal;
-            }
+            if ((style & RFontStyle.Bold) == RFontStyle.Bold)
+                return FontWeights.Bold;
+
+            return FontWeights.Normal;
         }
 
         #endregion
