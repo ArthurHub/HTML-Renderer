@@ -200,8 +200,17 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
                     point.X += rtl ? 96d / 72d * font.Size * width : 0;
 
                     glyphRendered = true;
-                    var glyphRun = new GlyphRun(glyphTypeface, rtl ? 1 : 0, false, 96d / 72d * font.Size, glyphs, Utils.ConvertRound(point), widths, null, null, null, null, null, null);
+                    var wpfPoint = Utils.ConvertRound(point);
+                    var glyphRun = new GlyphRun(glyphTypeface, rtl ? 1 : 0,
+                        false, 96d / 72d * font.Size, glyphs,
+                        wpfPoint, widths, null, null, null, null, null, null);
+
+                    var guidelines = new GuidelineSet();
+                    guidelines.GuidelinesX.Add(wpfPoint.X);
+                    guidelines.GuidelinesY.Add(wpfPoint.Y);
+                    _g.PushGuidelineSet(guidelines);
                     _g.DrawGlyphRun(colorConv, glyphRun);
+                    _g.Pop();
                 }
             }
 
