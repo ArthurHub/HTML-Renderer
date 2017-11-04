@@ -5,7 +5,7 @@ platform: Any CPU
 install:
 - cmd: appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
 before_build:
-- cmd: nuget restore
+- cmd: nuget restore Source\HtmlRenderer.sln
 build:
   project: Source\HtmlRenderer.sln
   verbosity: minimal
