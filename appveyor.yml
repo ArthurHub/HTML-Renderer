@@ -11,3 +11,5 @@ build:
   verbosity: minimal
 artifacts:
   - path: Build\NuGet\*.nupkg
+  - path: Source\Demo\WinForms\bin\Release
+  - path: Source\Demo\WPF\bin\Release\
