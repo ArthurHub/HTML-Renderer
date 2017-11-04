@@ -1,4 +1,4 @@
-version: '{build}'
+version: 1.5.1.{build}
 image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
@@ -12,4 +12,6 @@ build:
 artifacts:
   - path: Build\NuGet\*.nupkg
   - path: Source\Demo\WinForms\bin\Release
+    name: Demo.WinForms.$(appveyor_build_version)
   - path: Source\Demo\WPF\bin\Release\
+    name: Demo.WPF.$(appveyor_build_version)
