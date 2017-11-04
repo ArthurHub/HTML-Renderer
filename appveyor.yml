@@ -9,3 +9,5 @@ before_build:
 build:
   project: Source\HtmlRenderer.sln
   verbosity: minimal
+artifacts:
+  - path: Build\NuGet\*.nupkg

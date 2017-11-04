@@ -5,19 +5,32 @@
     <OutputType>Library</OutputType>
     <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Version.props" />
+
+  <PropertyGroup>
+    <PackageId>HtmlRenderer.Core</PackageId>
+    <Title>HTML Renderer Core</Title>
+    <Summary>
+      Cross framework (WinForms/WPF/PDF/Metro/Mono/etc.), Multipurpose (UI Controls / Image generation / PDF generation / etc.), 100% managed (C#), High performance HTML Rendering library.
+    </Summary>
+    <Description>
+      Cross framework (WinForms/WPF/PDF/Metro/Mono/etc.), Multipurpose (UI Controls / Image generation / PDF generation / etc.), 100% managed (C#), High performance HTML Rendering library.
+
+      The Core assembly of HTML Renderer does not bound to any rendering framework (WinForms/WPF/PDF/etc.).
+      Can be used to create framework specific renderer using adapter extensibility object model.
+      For existing implementations see: HtmlRenderer.WinForms, HtmlRenderer.WPF and HtmlRenderer.PdfSharp.
+    </Description>
+    <PackageTags>html;render;renderer;draw;core</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\SharedAssemblyInfo.cs">
-      <Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="**\*.cs" Exclude="obj\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Core\Utils\ImageError.png" />
-    <EmbeddedResource Include="Core\Utils\ImageLoad.png" />
+    <EmbeddedResource Include="Core\Utils\*.png" />
   </ItemGroup>
 
 </Project>
