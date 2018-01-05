@@ -5,17 +5,19 @@
     <OutputType>Library</OutputType>
     <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
     <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+    <DefineConstants>$(DefineConstants);MONO</DefineConstants>
+    <AssemblyName>HtmlRenderer.WinForms</AssemblyName>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Version.props" />
 
   <PropertyGroup>
-    <PackageId>HtmlRenderer.WinForms</PackageId>
-    <Title>HTML Renderer for WinForms</Title>
+    <PackageId>HtmlRenderer.Mono</PackageId>
+    <Title>HTML Renderer for Mono</Title>
     <Description>
-      Multipurpose (UI Controls / Image generation), 100% managed (C#), High performance HTML Rendering library for WinForms.
+      Multipurpose (UI Controls / Image generation), 100% managed (C#), High performance HTML Rendering library for Mono.
 
-      HTML UI in .NET WinForms applications using controls or static rendering.
+      HTML UI in .NET Mono applications using controls or static rendering.
 
       Features and Benefits:
       ---
@@ -31,11 +33,11 @@
       * High performance and low memory footprint.
       * Extendable and configurable.
     </Description>
-    <PackageTags>html;render;renderer;draw;control;winforms</PackageTags>
+    <PackageTags>html;render;renderer;draw;control;winforms;mono</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="..\..\Build\NuGet\WinForms\readme.txt" Link="readme.txt">
+    <Content Include="..\..\Build\NuGet\Mono\readme.txt" Link="readme.txt">
       <Pack>True</Pack>
     </Content>
   </ItemGroup>
@@ -46,7 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="**\*.cs" Exclude="obj\**" />
+    <Compile Include="..\HtmlRenderer.WinForms\**\*.cs" Exclude="obj\**;..\HtmlRenderer.WinForms\obj\**" />
   </ItemGroup>
 
   <ItemGroup>

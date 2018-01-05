@@ -1,0 +1,20 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Version>1.5.1.0</Version>
+    <Authors>Arthur Teplitzki</Authors>
+    <Company>Arthur Teplitzki</Company>
+    <Copyright>Copyright © Arthur Teplitzki 2017</Copyright>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <PackageLicenseUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/ArthurHub/HTML-Renderer</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/html.ico?raw=true</PackageIconUrl>
+    <PackageReleaseNotes>https://github.com/ArthurHub/HTML-Renderer/releases</PackageReleaseNotes>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)..\Build\NuGet</PackageOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+</Project>

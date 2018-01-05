@@ -1,85 +1,59 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}</ProjectGuid>
-    <OutputType>library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TheArtOfDev.HtmlRenderer.WPF</RootNamespace>
-    <AssemblyName>HtmlRenderer.WPF</AssemblyName>
-    <TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworks>net30;net35;net40;net45;net46;net461;net462;net47</TargetFrameworks>
+    <OutputType>Library</OutputType>
+    <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Version.props" />
+
+  <PropertyGroup>
+    <PackageId>HtmlRenderer.WPF</PackageId>
+    <Title>HTML Renderer for WPF</Title>
+    <Description>
+      Multipurpose (UI Controls / Image generation), 100% managed (C#), High performance HTML Rendering library for WPF.
+
+      HTML UI in .NET WPF applications using controls or static rendering.
+
+      Features and Benefits:
+      ---
+      * Controls: HtmlPanel, HtmlLabel.
+      * Create images from HTML snippets.
+      * 100% managed code and no external dependencies, no ActiveX, no MSHTML.
+      * Extensive HTML 4.01 and CSS level 2 specifications support.
+      * Support separating CSS from HTML by loading stylesheet code separately.
+      * Support text selection, copy-paste and context menu.
+      * Handles "real world" malformed HTML, it doesn't have to be XHTML.
+      * Supports .NET 3.0 or higher including Client Profile.
+      * Lightweight, only two DLLs (~300K).
+      * High performance and low memory footprint.
+      * Extendable and configurable.
+    </Description>
+    <PackageTags>html;render;renderer;draw;control;WPF</PackageTags>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release.WPF.Net35\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Content Include="..\..\Build\NuGet\WPF\readme.txt" Link="readme.txt">
+      <Pack>True</Pack>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="System.Xaml" Condition=" '$(TargetFrameworkVersion)' == 'v4.0' Or '$(TargetFrameworkVersion)' == 'v4.5'" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xaml" Condition="$(TargetFramework.StartsWith('net4'))" />
   </ItemGroup>
+
   <ItemGroup>
-    <AppDesigner Include="Properties\" />
+    <Compile Include="**\*.cs" Exclude="obj\**" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\HtmlRenderer\HtmlRenderer.csproj">
-      <Project>{fe611685-391f-4e3e-b27e-d3150e51e49b}</Project>
-      <Name>HtmlRenderer</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\HtmlRenderer\HtmlRenderer.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\SharedAssemblyInfo.cs">
-      <Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="Adapters\BrushAdapter.cs" />
-    <Compile Include="Adapters\ContextMenuAdapter.cs" />
-    <Compile Include="Adapters\ControlAdapter.cs" />
-    <Compile Include="Adapters\FontAdapter.cs" />
-    <Compile Include="Adapters\FontFamilyAdapter.cs" />
-    <Compile Include="Adapters\GraphicsAdapter.cs" />
-    <Compile Include="Adapters\GraphicsPathAdapter.cs" />
-    <Compile Include="Adapters\ImageAdapter.cs" />
-    <Compile Include="Adapters\PenAdapter.cs" />
-    <Compile Include="Adapters\WpfAdapter.cs" />
-    <Compile Include="HtmlContainer.cs" />
-    <Compile Include="HtmlControl.cs" />
-    <Compile Include="HtmlLabel.cs" />
-    <Compile Include="HtmlPanel.cs" />
-    <Compile Include="HtmlRender.cs" />
-    <Compile Include="RoutedEventArgs.cs" />
-    <Compile Include="Utilities\ClipboardHelper.cs" />
-    <Compile Include="Utilities\Utils.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

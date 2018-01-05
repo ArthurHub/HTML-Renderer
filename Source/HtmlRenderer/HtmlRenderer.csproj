@@ -1,129 +1,36 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FE611685-391F-4E3E-B27E-D3150E51E49B}</ProjectGuid>
+    <TargetFrameworks>netstandard2.0;netcoreapp2.0;net20;net30;net35;net40;net45;net46;net461;net462;net47</TargetFrameworks>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TheArtOfDev.HtmlRenderer</RootNamespace>
-    <AssemblyName>HtmlRenderer</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Version.props" />
+
+  <PropertyGroup>
+    <PackageId>HtmlRenderer.Core</PackageId>
+    <Title>HTML Renderer Core</Title>
+    <Summary>
+      Cross framework (WinForms/WPF/PDF/Metro/Mono/etc.), Multipurpose (UI Controls / Image generation / PDF generation / etc.), 100% managed (C#), High performance HTML Rendering library.
+    </Summary>
+    <Description>
+      Cross framework (WinForms/WPF/PDF/Metro/Mono/etc.), Multipurpose (UI Controls / Image generation / PDF generation / etc.), 100% managed (C#), High performance HTML Rendering library.
+
+      The Core assembly of HTML Renderer does not bound to any rendering framework (WinForms/WPF/PDF/etc.).
+      Can be used to create framework specific renderer using adapter extensibility object model.
+      For existing implementations see: HtmlRenderer.WinForms, HtmlRenderer.WPF and HtmlRenderer.PdfSharp.
+    </Description>
+    <PackageTags>html;render;renderer;draw;core</PackageTags>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
+    <Compile Include="**\*.cs" Exclude="obj\**" />
   </ItemGroup>
+
   <ItemGroup>
-    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
+    <EmbeddedResource Include="Core\Utils\*.png" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Utils\ImageError.png" />
-    <EmbeddedResource Include="Core\Utils\ImageLoad.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\SharedAssemblyInfo.cs">
-      <Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="Core\CssDefaults.cs" />
-    <Compile Include="Core\Dom\CssBox.cs" />
-    <Compile Include="Core\Dom\CssBoxFrame.cs" />
-    <Compile Include="Core\Dom\CssBoxHr.cs" />
-    <Compile Include="Core\Dom\CssBoxImage.cs" />
-    <Compile Include="Core\Dom\CssBoxProperties.cs" />
-    <Compile Include="Core\Dom\CssLayoutEngine.cs" />
-    <Compile Include="Core\Dom\CssLayoutEngineTable.cs" />
-    <Compile Include="Core\Dom\CssLength.cs" />
-    <Compile Include="Core\Dom\CssLineBox.cs" />
-    <Compile Include="Core\Dom\CssRect.cs" />
-    <Compile Include="Core\Dom\CssRectImage.cs" />
-    <Compile Include="Core\Dom\CssRectWord.cs" />
-    <Compile Include="Core\Dom\CssSpacingBox.cs" />
-    <Compile Include="Core\Dom\CssUnit.cs" />
-    <Compile Include="Core\Dom\HoverBoxBlock.cs" />
-    <Compile Include="Core\Dom\HtmlTag.cs" />
-    <Compile Include="Core\Dom\Border.cs" />
-    <Compile Include="Core\Entities\CssBlock.cs" />
-    <Compile Include="Core\Entities\CssBlockSelectorItem.cs" />
-    <Compile Include="Core\Entities\HtmlGenerationStyle.cs" />
-    <Compile Include="Core\Entities\HtmlImageLoadEventArgs.cs" />
-    <Compile Include="Core\Entities\HtmlLinkClickedEventArgs.cs" />
-    <Compile Include="Core\Entities\HtmlLinkClickedException.cs" />
-    <Compile Include="Core\Entities\HtmlRefreshEventArgs.cs" />
-    <Compile Include="Core\Entities\HtmlRenderErrorEventArgs.cs" />
-    <Compile Include="Core\Entities\HtmlRenderErrorType.cs" />
-    <Compile Include="Core\Entities\HtmlScrollEventArgs.cs" />
-    <Compile Include="Core\Entities\HtmlStylesheetLoadEventArgs.cs" />
-    <Compile Include="Core\Entities\LinkElementData.cs" />
-    <Compile Include="Core\Handlers\BackgroundImageDrawHandler.cs" />
-    <Compile Include="Core\Handlers\BordersDrawHandler.cs" />
-    <Compile Include="Core\Handlers\ContextMenuHandler.cs" />
-    <Compile Include="Core\Handlers\FontsHandler.cs" />
-    <Compile Include="Core\Handlers\ImageDownloader.cs" />
-    <Compile Include="Core\Handlers\ImageLoadHandler.cs" />
-    <Compile Include="Core\Handlers\SelectionHandler.cs" />
-    <Compile Include="Core\Handlers\StylesheetLoadHandler.cs" />
-    <Compile Include="Core\HtmlRendererUtils.cs" />
-    <Compile Include="Core\Parse\CssParser.cs" />
-    <Compile Include="Core\Parse\CssValueParser.cs" />
-    <Compile Include="Core\Parse\DomParser.cs" />
-    <Compile Include="Core\Parse\HtmlParser.cs" />
-    <Compile Include="Core\Parse\RegexParserUtils.cs" />
-    <Compile Include="Core\Utils\ArgChecker.cs" />
-    <Compile Include="Core\Utils\CommonUtils.cs" />
-    <Compile Include="Core\Utils\CssConstants.cs" />
-    <Compile Include="Core\Utils\CssUtils.cs" />
-    <Compile Include="Core\Utils\DomUtils.cs" />
-    <Compile Include="Core\Utils\HtmlConstants.cs" />
-    <Compile Include="Core\Utils\HtmlUtils.cs" />
-    <Compile Include="Core\Utils\RenderUtils.cs" />
-    <Compile Include="Core\HtmlContainerInt.cs" />
-    <Compile Include="Core\CssData.cs" />
-    <Compile Include="Adapters\Entities\RColor.cs" />
-    <Compile Include="Adapters\Entities\RDashStyle.cs" />
-    <Compile Include="Adapters\Entities\RFontStyle.cs" />
-    <Compile Include="Adapters\Entities\RKeyEvent.cs" />
-    <Compile Include="Adapters\Entities\RMouseEvent.cs" />
-    <Compile Include="Adapters\Entities\RPoint.cs" />
-    <Compile Include="Adapters\Entities\RRect.cs" />
-    <Compile Include="Adapters\Entities\RSize.cs" />
-    <Compile Include="Adapters\RAdapter.cs" />
-    <Compile Include="Adapters\RBrush.cs" />
-    <Compile Include="Adapters\RContextMenu.cs" />
-    <Compile Include="Adapters\RControl.cs" />
-    <Compile Include="Adapters\RFont.cs" />
-    <Compile Include="Adapters\RFontFamily.cs" />
-    <Compile Include="Adapters\RGraphics.cs" />
-    <Compile Include="Adapters\RGraphicsPath.cs" />
-    <Compile Include="Adapters\RImage.cs" />
-    <Compile Include="Adapters\RPen.cs" />
-    <Compile Include="Core\Utils\SubString.cs" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
