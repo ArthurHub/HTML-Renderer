@@ -48,7 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\HtmlRenderer.WinForms\**\*.cs" Exclude="obj\**" />
+    <Compile Include="..\HtmlRenderer.WinForms\**\*.cs" Exclude="obj\**;..\HtmlRenderer.WinForms\obj\**" />
   </ItemGroup>
 
   <ItemGroup>
