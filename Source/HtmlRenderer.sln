@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{E263EA16-2E6A-4269-A319-AA2F97ADA8E1}"
 EndProject
@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{AA47D1
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Demo.ConsoleApplication", "Demo\ConsoleApplication\HtmlRenderer.Demo.ConsoleApplication.csproj", "{7CA59714-E309-4285-A3E9-F2C66D222649}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -106,6 +108,18 @@ Global
 		{CA249F5D-9285-40A6-B217-5889EF79FD7E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CA249F5D-9285-40A6-B217-5889EF79FD7E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CA249F5D-9285-40A6-B217-5889EF79FD7E}.Release|x86.ActiveCfg = Release|Any CPU
+		{7CA59714-E309-4285-A3E9-F2C66D222649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CA59714-E309-4285-A3E9-F2C66D222649}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CA59714-E309-4285-A3E9-F2C66D222649}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{7CA59714-E309-4285-A3E9-F2C66D222649}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{7CA59714-E309-4285-A3E9-F2C66D222649}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7CA59714-E309-4285-A3E9-F2C66D222649}.Debug|x86.Build.0 = Debug|Any CPU
+		{7CA59714-E309-4285-A3E9-F2C66D222649}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CA59714-E309-4285-A3E9-F2C66D222649}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CA59714-E309-4285-A3E9-F2C66D222649}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{7CA59714-E309-4285-A3E9-F2C66D222649}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{7CA59714-E309-4285-A3E9-F2C66D222649}.Release|x86.ActiveCfg = Release|Any CPU
+		{7CA59714-E309-4285-A3E9-F2C66D222649}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -114,5 +128,9 @@ Global
 		{2390B71F-9400-47F4-B23A-7F2649C87D35} = {E263EA16-2E6A-4269-A319-AA2F97ADA8E1}
 		{8AD34FE8-8382-4A8A-B3AA-A0392ED42423} = {E263EA16-2E6A-4269-A319-AA2F97ADA8E1}
 		{F02E0216-4AE3-474F-9381-FCB93411CDB0} = {E263EA16-2E6A-4269-A319-AA2F97ADA8E1}
+		{7CA59714-E309-4285-A3E9-F2C66D222649} = {E263EA16-2E6A-4269-A319-AA2F97ADA8E1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {16CE6CC4-C826-4C57-A251-0DB95B282DDB}
 	EndGlobalSection
 EndGlobal
