@@ -107,9 +107,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 int endIdx = stylesheet.IndexOf('{', startIdx);
                 if (endIdx > -1)
                 {
+                    endIdx++; // to prevent IndexOutOfRangeException at line 113. When '}' is last character in 'stylesheet' variable
                     while (count > 0 && endIdx < stylesheet.Length)
                     {
-                        endIdx++;
                         if (stylesheet[endIdx] == '{')
                         {
                             count++;
@@ -118,6 +118,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                         {
                             count--;
                         }
+                        endIdx++;
                     }
                     if (endIdx < stylesheet.Length)
                     {
