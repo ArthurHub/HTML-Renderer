@@ -1499,7 +1499,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 _visibility = p._visibility;
                 _textIndent = p._textIndent;
                 _textAlign = p._textAlign;
-                _verticalAlign = p._verticalAlign;
                 _fontFamily = p._fontFamily;
                 _fontSize = p._fontSize;
                 _fontStyle = p._fontStyle;
@@ -1557,6 +1556,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     _textDecoration = p._textDecoration;
                     _top = p._top;
                     _position = p._position;
+                    _verticalAlign = p._verticalAlign;
                     _width = p._width;
                     _maxWidth = p._maxWidth;
                     _wordSpacing = p._wordSpacing;
