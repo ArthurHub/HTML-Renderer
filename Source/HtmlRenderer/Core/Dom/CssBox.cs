@@ -901,7 +901,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             CssRect maxWidthWord = null;
             GetMinimumWidth_LongestWord(this, ref maxWidth, ref maxWidthWord);
 
-            double padding = 0f;
+            double padding = 0;
             if (maxWidthWord != null)
             {
                 var box = maxWidthWord.OwnerBox;
@@ -949,7 +949,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <returns>the total margin</returns>
         private static double GetWidthMarginDeep(CssBox box)
         {
-            double sum = 0f;
+            double sum = 0;
             if (box.Size.Width > 90999 || (box.ParentBox != null && box.ParentBox.Size.Width > 90999))
             {
                 while (box != null)
@@ -989,10 +989,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="maxWidth">The total width the content can take without line wrapping (with padding).</param>
         internal void GetMinMaxWidth(out double minWidth, out double maxWidth)
         {
-            double min = 0f;
-            double maxSum = 0f;
-            double paddingSum = 0f;
-            double marginSum = 0f;
+            double min = 0;
+            double maxSum = 0;
+            double paddingSum = 0;
+            double marginSum = 0;
             GetMinMaxSumWords(this, ref min, ref maxSum, ref paddingSum, ref marginSum);
 
             maxWidth = paddingSum + maxSum;
@@ -1112,7 +1112,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             // fix for hr tag
             if (value < 0.1 && HtmlTag != null && HtmlTag.Name == "hr")
             {
-                value = GetEmHeight() * 1.1f;
+                value = GetEmHeight() * 1.1;
             }
 
             return value;
@@ -1422,14 +1422,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             if (string.IsNullOrEmpty(TextDecoration) || TextDecoration == CssConstants.None)
                 return;
 
-            double y = 0f;
+            double y = 0;
             if (TextDecoration == CssConstants.Underline)
             {
                 y = Math.Round(rectangle.Top + ActualFont.UnderlineOffset);
             }
             else if (TextDecoration == CssConstants.LineThrough)
             {
-                y = rectangle.Top + rectangle.Height / 2f;
+                y = rectangle.Top + rectangle.Height / 2;
             }
             else if (TextDecoration == CssConstants.Overline)
             {

@@ -641,7 +641,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         private static void CalculateWordCharIndexAndOffset(RControl control, CssRect word, RPoint loc, bool inclusive, out int selectionIndex, out double selectionOffset)
         {
             selectionIndex = 0;
-            selectionOffset = 0f;
+            selectionOffset = 0.0;
             var offset = loc.X - word.Left;
             if (word.Text == null)
             {
@@ -660,7 +660,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                 // calculate partial word selection
                 int charFit;
                 double charFitWidth;
-                var maxWidth = offset + (inclusive ? 0 : 1.5f * word.LeftGlyphPadding);
+                var maxWidth = offset + (inclusive ? 0 : 1.5 * word.LeftGlyphPadding);
                 control.MeasureString(word.Text, word.OwnerBox.ActualFont, maxWidth, out charFit, out charFitWidth);
 
                 selectionIndex = charFit;

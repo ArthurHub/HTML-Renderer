@@ -361,8 +361,8 @@ namespace TheArtOfDev.HtmlRenderer.Adapters.Entities
         {
             X -= x;
             Y -= y;
-            Width += 2f * x;
-            Height += 2f * y;
+            Width += 2 * x;
+            Height += 2 * y;
         }
 
         /// <summary>

@@ -516,7 +516,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         {
             if (_videoTitle != null && _imageWord.Width > 40 && _imageWord.Height > 40)
             {
-                var font = HtmlContainer.Adapter.GetFont("Arial", 9f, RFontStyle.Regular);
+                var font = HtmlContainer.Adapter.GetFont("Arial", 9.0, RFontStyle.Regular);
                 g.DrawRectangle(g.GetSolidBrush(RColor.FromArgb(160, 0, 0, 0)), rect.Left, rect.Top, rect.Width, ActualFont.Height + 7);
 
                 var titleRect = new RRect(rect.Left + 3, rect.Top + 3, rect.Width - 6, rect.Height - 6);
@@ -540,9 +540,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                 RPoint[] points =
                 {
-                    new RPoint(left + size.Width / 3f + 1,top + 3 * size.Height / 4f),
-                    new RPoint(left + size.Width / 3f + 1, top + size.Height / 4f),
-                    new RPoint(left + 2 * size.Width / 3f + 1, top + size.Height / 2f)
+                    new RPoint(left + size.Width / 3.0 + 1,top + 3 * size.Height / 4.0),
+                    new RPoint(left + size.Width / 3.0 + 1, top + size.Height / 4.0),
+                    new RPoint(left + 2 * size.Width / 3.0 + 1, top + size.Height / 2.0)
                 };
                 g.DrawPolygon(g.GetSolidBrush(RColor.White), points);
                 

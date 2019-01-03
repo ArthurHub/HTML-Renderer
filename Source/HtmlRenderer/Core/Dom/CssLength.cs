@@ -32,7 +32,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         public CssLength(string length)
         {
             _length = length;
-            _number = 0f;
+            _number = 0.0;
             _unit = CssUnit.None;
             _isPercentage = false;
 
