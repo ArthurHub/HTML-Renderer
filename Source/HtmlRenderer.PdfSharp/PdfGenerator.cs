@@ -218,6 +218,11 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                         {
                             // document links to the same page as the link is not allowed
                             int anchorPageIdx = (int)(anchorRect.Value.Top / pageSize.Height);
+                            
+                            // in case that not find the page index, set to the first page.
+                            if (anchorPageIdx == 0)
+                                anchorPageIdx = 1;
+                            
                             if (i != anchorPageIdx)
                                 document.Pages[i].AddDocumentLink(new PdfRectangle(xRect), anchorPageIdx);
                         }
