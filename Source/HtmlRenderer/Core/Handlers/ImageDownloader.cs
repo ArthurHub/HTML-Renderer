@@ -48,6 +48,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// </summary>
         private readonly Dictionary<string, List<DownloadFileAsyncCallback>> _imageDownloadCallbacks = new Dictionary<string, List<DownloadFileAsyncCallback>>();
 
+        public ImageDownloader()
+        {
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+        }
+
         /// <summary>
         /// Makes a request to download the image from the server and raises the <see cref="cachedFileCallback"/> when it's down.<br/>
         /// </summary>
