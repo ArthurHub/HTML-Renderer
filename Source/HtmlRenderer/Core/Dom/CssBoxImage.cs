@@ -113,7 +113,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
             else if (_imageLoadingComplete)
             {
-                if (_imageLoadingComplete && r.Width > 19 && r.Height > 19)
+                if (r.Width > 19 && r.Height > 19)
                 {
                     RenderUtils.DrawImageErrorIcon(g, HtmlContainer, r);
                 }
