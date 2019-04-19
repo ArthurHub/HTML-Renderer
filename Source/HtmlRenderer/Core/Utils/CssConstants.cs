@@ -29,6 +29,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         public const string Bottom = "bottom";
         public const string BreakAll = "break-all";
         public const string KeepAll = "keep-all";
+        public const string Capitalize = "capitalize";
         public const string Center = "center";
         public const string Collapse = "collapse";
         public const string Cursive = "cursive";
@@ -38,6 +39,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         public const string Disc = "disc";
         public const string Fantasy = "fantasy";
         public const string Fixed = "fixed";
+        public const string FullSizeKana = "full-size-kana";
+        public const string FullWidth = "full-width";
         public const string Hide = "hide";
         public const string Inherit = "inherit";
         public const string Inline = "inline";
@@ -53,6 +56,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         public const string ListItem = "list-item";
         public const string Ltr = "ltr";
         public const string LowerAlpha = "lower-alpha";
+        public const string LowerCase = "lower-case";
         public const string LowerLatin = "lower-latin";
         public const string LowerRoman = "lower-roman";
         public const string LowerGreek = "lower-greek";
@@ -102,6 +106,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         public const string Top = "top";
         public const string Underline = "underline";
         public const string UpperAlpha = "upper-alpha";
+        public const string Uppercase = "uppercase";
         public const string UpperLatin = "upper-latin";
         public const string UpperRoman = "upper-roman";
         public const string XLarge = "x-large";

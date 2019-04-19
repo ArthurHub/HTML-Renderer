@@ -96,6 +96,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.BorderSpacing;
                 case "border-collapse":
                     return cssBox.BorderCollapse;
+                case "border-radius":
+                    return cssBox.CornerRadius;
                 case "corner-radius":
                     return cssBox.CornerRadius;
                 case "corner-nw-radius":
@@ -170,6 +172,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.TextAlign;
                 case "text-decoration":
                     return cssBox.TextDecoration;
+                case "text-transform":
+                    return cssBox.TextTransform;
                 case "white-space":
                     return cssBox.WhiteSpace;
                 case "word-break":
@@ -254,6 +258,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     break;
                 case "border-collapse":
                     cssBox.BorderCollapse = value;
+                    break;
+                case "border-radius":
+                    cssBox.CornerRadius = value;
                     break;
                 case "corner-radius":
                     cssBox.CornerRadius = value;
@@ -362,6 +369,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     break;
                 case "text-align":
                     cssBox.TextAlign = value;
+                    break;
+                case "text-transform":
+                    cssBox.TextTransform = value;
                     break;
                 case "text-decoration":
                     cssBox.TextDecoration = value;

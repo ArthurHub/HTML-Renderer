@@ -547,6 +547,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 while (startIdx < _text.Length && _text[startIdx] == '\r')
                     startIdx++;
 
+                
+
                 if (startIdx < _text.Length)
                 {
                     var endIdx = startIdx;
@@ -556,7 +558,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     if (endIdx > startIdx)
                     {
                         if (preserveSpaces)
-                            _boxWords.Add(new CssRectWord(this, HtmlUtils.DecodeHtml(_text.Substring(startIdx, endIdx - startIdx)), false, false));
+                        {
+                            _boxWords.Add(new CssRectWord(this, ApplyTextTransForm(HtmlUtils.DecodeHtml(_text.Substring(startIdx, endIdx - startIdx))), false, false));
+                        }
                     }
                     else
                     {
@@ -571,7 +575,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         {
                             var hasSpaceBefore = !preserveSpaces && (startIdx > 0 && _boxWords.Count == 0 && char.IsWhiteSpace(_text[startIdx - 1]));
                             var hasSpaceAfter = !preserveSpaces && (endIdx < _text.Length && char.IsWhiteSpace(_text[endIdx]));
-                            _boxWords.Add(new CssRectWord(this, HtmlUtils.DecodeHtml(_text.Substring(startIdx, endIdx - startIdx)), hasSpaceBefore, hasSpaceAfter));
+                            _boxWords.Add(new CssRectWord(this, ApplyTextTransForm(HtmlUtils.DecodeHtml(_text.Substring(startIdx, endIdx - startIdx))), hasSpaceBefore, hasSpaceAfter));
                         }
                     }
 
@@ -585,6 +589,21 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                     startIdx = endIdx;
                 }
+            }
+        }
+
+        private string ApplyTextTransForm(string v)
+        {
+            switch(TextTransform)
+            {
+                case CssConstants.Uppercase:
+                    return v.ToUpper();
+                case CssConstants.LowerCase:
+                    return v.ToLower();
+                case CssConstants.Capitalize:
+                    return char.ToUpper(v[0]) + v.Substring(1);
+                default:
+                    return v;
             }
         }
 
@@ -1370,6 +1389,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         var wordRect = word.Rectangle;
                         wordRect.Offset(offset);
                         clip.Intersect(wordRect);
+                        
 
                         if (clip != RRect.Empty)
                         {

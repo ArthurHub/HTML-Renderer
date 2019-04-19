@@ -88,6 +88,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _right;
         private string _textAlign = string.Empty;
         private string _textDecoration = string.Empty;
+        private string _textTransform = string.Empty;
         private string _textIndent = "0";
         private string _top = "auto";
         private string _position = "static";
@@ -565,6 +566,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         {
             get { return _textDecoration; }
             set { _textDecoration = value; }
+        }
+
+        public string TextTransform
+        {
+            get { return _textTransform; }
+            set { _textTransform = value; }
         }
 
         public string WhiteSpace
@@ -1555,6 +1562,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     _paddingTop = p._paddingTop;
                     _right = p._right;
                     _textDecoration = p._textDecoration;
+                    _textTransform = p._textTransform;
                     _top = p._top;
                     _position = p._position;
                     _width = p._width;

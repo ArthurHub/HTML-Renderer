@@ -180,6 +180,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 box.TextDecoration = string.Empty;
             }
 
+            // cascade text Transform only to boxes that actually have text so it will be handled correctly.
+            if (box.TextTransform != String.Empty && box.Text == null)
+            {
+                foreach (var childBox in box.Boxes)
+                    childBox.TextTransform = box.TextTransform;
+                box.TextTransform = string.Empty;
+            }
+
             foreach (var childBox in box.Boxes)
             {
                 CascadeApplyStyles(childBox, cssData);

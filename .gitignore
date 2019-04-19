@@ -108,3 +108,4 @@ Backup*/
 UpgradeLog*.XML
 
 *.DotSettings
+/Source/.vs/HtmlRenderer/v15/Server/sqlite3

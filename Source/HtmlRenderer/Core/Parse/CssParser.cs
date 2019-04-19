@@ -536,6 +536,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
+        /// Parse TextTransform Property to add only valid values
+        /// </summary>
+        /// <param name="propValue">the value of the property to parse to specific values</param>
+        /// <param name="properties">the properties collection to add the specific properties to</param>
+        private void ParseTextTransformProperty(string propName, string propValue, Dictionary<string, string> properties)
+        {
+            //TODO: Validate this is A VALID pROPERTY
+            properties[propName] = propValue;
+        }
+
+
+        /// <summary>
         /// Parse a complex font property value that contains multiple css properties into specific css properties.
         /// </summary>
         /// <param name="propValue">the value of the property to parse to specific values</param>
