@@ -141,8 +141,8 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         private void OnGeneratePdf_Click(object sender, EventArgs e)
         {
             PdfGenerateConfig config = new PdfGenerateConfig();
-            config.PageSize = PageSize.A4;
-            config.SetMargins(20);
+            config.PageSize = PageSize.Letter;
+            config.SetMargins(40);
 
             var doc = PdfGenerator.GeneratePdf(_mainControl.GetHtml(), config, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoadPdfSharp);
             var tmpFile = Path.GetTempFileName();

@@ -565,6 +565,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     else
                     {
                         endIdx = startIdx;
+                        //This gets characters up until it reaches a space (so basically gets a word)
                         while (endIdx < _text.Length && !char.IsWhiteSpace(_text[endIdx]) && _text[endIdx] != '-' && WordBreak != CssConstants.BreakAll && !CommonUtils.IsAsianCharecter(_text[endIdx]))
                             endIdx++;
 
@@ -573,7 +574,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                         if (endIdx > startIdx)
                         {
-                            var hasSpaceBefore = !preserveSpaces && (startIdx > 0 && _boxWords.Count == 0 && char.IsWhiteSpace(_text[startIdx - 1]));
+                            var hasSpaceBefore = !preserveSpaces && (startIdx > 0  && char.IsWhiteSpace(_text[startIdx - 1]));
                             var hasSpaceAfter = !preserveSpaces && (endIdx < _text.Length && char.IsWhiteSpace(_text[endIdx]));
                             _boxWords.Add(new CssRectWord(this, ApplyTextTransForm(HtmlUtils.DecodeHtml(_text.Substring(startIdx, endIdx - startIdx))), hasSpaceBefore, hasSpaceAfter));
                         }
@@ -670,9 +671,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     }
                     else
                     {
+                        //TOD: add float logic
+                        //if previous sibling has left float and both add up to less than 100% of the parent width then this block should remain on same line as sibling
+
                         left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
                         top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+                        
                         Location = new RPoint(left, top);
+
+                        AdjustPositionForFloat(prevSibling);
+
                         ActualBottom = top;
                     }
                 }
@@ -719,6 +727,35 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 var actualWidth = Math.Max(GetMinimumWidth() + GetWidthMarginDeep(this), Size.Width < 90999 ? ActualRight - HtmlContainer.Root.Location.X : 0);
                 HtmlContainer.ActualSize = CommonUtils.Max(HtmlContainer.ActualSize, new RSize(actualWidth, ActualBottom - HtmlContainer.Root.Location.Y));
+            }
+        }
+
+        /// <summary>
+        /// Checks for Float ositioning and adjusts the Location accordingly
+        /// </summary>
+        /// <param name="b">Previous Sibling</param>
+        internal virtual void AdjustPositionForFloat(CssBox b)
+        {
+            //TODO: Implement Float = right
+
+            if (b == null) return;
+            
+            //PArseNumber will take the width from the CSS (which is a string) and convert it to an int, if it is a percentage it it return the percentage of "hundredPercent"
+            //ex: 50% of 900px (parentBox width) = 450
+            var siblingWidth = CssValueParser.ParseNumber(b.Width, ParentBox.ActualWidth);
+            var width = CssValueParser.ParseNumber(this.Width, ParentBox.ActualWidth);
+            var totalWidth = siblingWidth + width;
+
+            //if previous sibling is float left and the width of both blocks is not greater than parent width
+            if(b.Float == CssConstants.Left && totalWidth <= ParentBox.ActualWidth)
+            {
+                //We want to position this bad boy beside the prevSibling since we have determined it is a valid float
+                //set top to the same as the sibling since it's supposed to float right beside it and left to the ActualRight of sibling
+                var top = b.Location.Y;
+                var left = b.ActualRight;
+
+                //Update the position
+                Location = new RPoint(left, top);
             }
         }
 

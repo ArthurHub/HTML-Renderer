@@ -97,17 +97,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                 case "border-collapse":
                     return cssBox.BorderCollapse;
                 case "border-radius":
-                    return cssBox.CornerRadius;
-                case "corner-radius":
-                    return cssBox.CornerRadius;
-                case "corner-nw-radius":
-                    return cssBox.CornerNwRadius;
-                case "corner-ne-radius":
-                    return cssBox.CornerNeRadius;
-                case "corner-se-radius":
-                    return cssBox.CornerSeRadius;
-                case "corner-sw-radius":
-                    return cssBox.CornerSwRadius;
+                    return cssBox.BorderRadius;
+                case "border-top-left-radius":
+                    return cssBox.BorderTopLeftRadius;
+                case "border-top-right-radius":
+                    return cssBox.BorderTopRightRadius;
+                case "border-bottom-right-radius":
+                    return cssBox.BorderBottomRightRadius;
+                case "border-bottom-left-radius":
+                    return cssBox.BorderBottomLeftRadius;
                 case "margin-bottom":
                     return cssBox.MarginBottom;
                 case "margin-left":
@@ -260,22 +258,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     cssBox.BorderCollapse = value;
                     break;
                 case "border-radius":
-                    cssBox.CornerRadius = value;
+                    cssBox.BorderRadius = value;
                     break;
-                case "corner-radius":
-                    cssBox.CornerRadius = value;
+                case "border-top-left-radius":
+                    cssBox.BorderTopLeftRadius = value;
                     break;
-                case "corner-nw-radius":
-                    cssBox.CornerNwRadius = value;
+                case "border-top-right-radius":
+                    cssBox.BorderTopRightRadius = value;
                     break;
-                case "corner-ne-radius":
-                    cssBox.CornerNeRadius = value;
+                case "border-bottom-right-radius":
+                    cssBox.BorderBottomRightRadius = value;
                     break;
-                case "corner-se-radius":
-                    cssBox.CornerSeRadius = value;
-                    break;
-                case "corner-sw-radius":
-                    cssBox.CornerSwRadius = value;
+                case "border-bottom-left-radius":
+                    cssBox.BorderBottomLeftRadius = value;
                     break;
                 case "margin-bottom":
                     cssBox.MarginBottom = value;
