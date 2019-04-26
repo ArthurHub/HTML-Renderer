@@ -20,6 +20,7 @@ using TheArtOfDev.HtmlRenderer.Demo.Common;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 using TheArtOfDev.HtmlRenderer.WinForms;
 using PdfSharp;
+using PdfSharp.Drawing;
 
 namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
 {
@@ -142,6 +143,9 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         {
             PdfGenerateConfig config = new PdfGenerateConfig();
             config.PageSize = PageSize.Letter;
+            //config.ManualPageSize = new XSize(900, 1584);
+
+
             config.SetMargins(40);
 
             var doc = PdfGenerator.GeneratePdf(_mainControl.GetHtml(), config, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoadPdfSharp);

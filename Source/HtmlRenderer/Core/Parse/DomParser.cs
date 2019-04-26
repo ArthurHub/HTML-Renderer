@@ -74,10 +74,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 CorrectLineBreaksBlocks(root, ref followingBlock);
 
                 CorrectInlineBoxesParent(root);
+                
+                //CorrectBlockInsideInline(root);
 
-                CorrectBlockInsideInline(root);
-
-                CorrectInlineBoxesParent(root);
+                //CorrectInlineBoxesParent(root);
             }
             return root;
         }
@@ -707,7 +707,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                         if (DomUtils.ContainsInlinesOnly(tempRightBox) && !ContainsInlinesOnlyDeep(tempRightBox))
                             newTempRightBox = CorrectBlockInsideInlineImp(tempRightBox);
 
+                        //DA NOTE: Ok for some reason this takes the inline elements (ie: display: inline-block) and
+                        //puts them alongside the actual containing div (makes them previous siblings of the container) and makes them block elements 
+                        // we do not want this as a DIV should be able to contain inline-block elements!!!
                         tempRightBox.ParentBox.SetAllBoxes(tempRightBox);
+
                         tempRightBox.ParentBox = null;
                         tempRightBox = newTempRightBox;
                     }
@@ -782,7 +786,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         private static void CorrectBlockSplitBadBox(CssBox parentBox, CssBox badBox, CssBox leftBlock)
         {
             CssBox leftbox = null;
-            while (badBox.Boxes[0].IsInline && ContainsInlinesOnlyDeep(badBox.Boxes[0]))
+
+            //Bad box is apparently the box that has Display : inline or inline-block (they arent bad!)
+            
+            //This checks if the first child of badbox isInline and if it has only inline elements
+            while (badBox.Boxes[0].IsInline && ContainsInlinesOnlyDeep(badBox.Boxes[0])) 
             {
                 if (leftbox == null)
                 {
@@ -790,6 +798,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                     leftbox = CssBox.CreateBox(leftBlock, badBox.HtmlTag);
                     leftbox.InheritStyle(badBox, true);
                 }
+                //puts the HTML of leftbox (which is a new box?) into the parent ofbadbox (it's previous parent)
                 badBox.Boxes[0].ParentBox = leftbox;
             }
 
@@ -838,16 +847,23 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// Inline boxes should live in a pool of Inline boxes only so they will define a single block.<br/>
         /// At the end of this process a block box will have only block siblings and inline box will have
         /// only inline siblings.
+        /// 
+        /// DA NOTE: THis is not correct if we have a display: inline-block or inline element they should still be displayed
+        /// with the parent div that they have (why would we split them out??)
+        /// 
         /// </summary>
         /// <param name="box">the current box to correct its sub-tree</param>
         private static void CorrectInlineBoxesParent(CssBox box)
         {
-            if (ContainsVariantBoxes(box))
+            if (ContainsVariantBoxes(box)) //if this box contains inline and block elements
             {
                 for (int i = 0; i < box.Boxes.Count; i++)
                 {
+                    //if the child isInline box take the child and add it to newbox
+                    // then set newbox as the parentbox
                     if (box.Boxes[i].IsInline)
                     {
+                        //creates new box in parent(box) at position it was in currently in
                         var newbox = CssBox.CreateBlock(box, null, box.Boxes[i++]);
                         while (i < box.Boxes.Count && box.Boxes[i].IsInline)
                         {

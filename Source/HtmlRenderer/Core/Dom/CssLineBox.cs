@@ -185,10 +185,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     Math.Max(f.Right, r), Math.Max(f.Bottom, b));
             }
 
-            if (box.ParentBox != null && box.ParentBox.IsInline)
+            //DA NOTE: Need to figure out how to get this to also redraw border correctly
+            if (box.ParentBox != null && box.ParentBox.IsInline || box.ParentBox.ParentBox != null && box.ParentBox.ParentBox.IsInline)
             {
                 UpdateRectangle(box.ParentBox, x, y, r, b);
             }
+            
         }
 
         /// <summary>

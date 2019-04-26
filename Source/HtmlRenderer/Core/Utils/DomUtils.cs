@@ -56,8 +56,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         {
             foreach (CssBox b in box.Boxes)
             {
+                if (b.ParentBox != null && b.ParentBox.HtmlTag != null && b.ParentBox.HtmlTag.Attributes != null && b.ParentBox.HtmlTag.Attributes.ContainsValue("HalfColumn"))
+                {
+                    b.IsInline = true;
+                }
+
                 if (!b.IsInline)
                 {
+                    
                     return false;
                 }
             }

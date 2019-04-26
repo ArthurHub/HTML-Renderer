@@ -102,6 +102,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// <param name="curBox">the current box in html tree parsing</param>
         private static void AddTextBox(string source, int startIdx, int tagIdx, ref CssBox curBox)
         {
+            if (curBox.ParentBox != null && curBox.ParentBox.HtmlTag != null && curBox.ParentBox.HtmlTag.Attributes != null && curBox.ParentBox.HtmlTag.Attributes.ContainsValue("HalfColumn"))
+            {
+                var test = "";
+            }
             var text = tagIdx > startIdx ? new SubString(source, startIdx, tagIdx - startIdx) : null;
             if (text != null)
             {

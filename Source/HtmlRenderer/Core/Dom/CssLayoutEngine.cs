@@ -260,6 +260,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             foreach (CssBox b in box.Boxes)
             {
+                var test = b.HtmlTag.Name;
+                Argjhhhhh!!!!
+
                 double leftspacing = (b.Position != CssConstants.Absolute && b.Position != CssConstants.Fixed) ? b.ActualMarginLeft + b.ActualBorderLeftWidth + b.ActualPaddingLeft : 0;
                 double rightspacing = (b.Position != CssConstants.Absolute && b.Position != CssConstants.Fixed) ? b.ActualMarginRight + b.ActualBorderRightWidth + b.ActualPaddingRight : 0;
 
@@ -297,7 +300,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                             // handle if line is wrapped for the first text element where parent has left margin\padding
                             if (b == box.Boxes[0] && !word.IsLineBreak && (word == b.Words[0] || (box.ParentBox != null && box.ParentBox.IsBlock)))
+                            {
+                                Console.WriteLine($"CssLayoutEngine Line 300{box.ToString()}");
                                 curx += box.ActualMarginLeft + box.ActualBorderLeftWidth + box.ActualPaddingLeft;
+                            }
 
                             cury = maxbottom + linespacing;
 

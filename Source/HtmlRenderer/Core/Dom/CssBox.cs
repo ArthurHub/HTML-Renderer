@@ -152,6 +152,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         public bool IsInline
         {
             get { return (Display == CssConstants.Inline || Display == CssConstants.InlineBlock) && !IsBrElement; }
+            set { }
         }
 
         /// <summary>
@@ -221,8 +222,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 }
 
                 var box = ParentBox;
-                while (!box.IsBlock &&
-                       box.Display != CssConstants.ListItem &&
+                if (box.IsInline)
+                {
+                    var test = "";
+                }
+                //DA NOTE: Commented out !box.IsBlock because an inline-block element CAN be a parent too!
+                //This may mess with some layout(ie: the samples lost some indentions
+                //Still need to figure out where the border went
+                while ((!box.IsBlock || box.ParentBox != null && !box.ParentBox.IsBlock) && box.Display != CssConstants.ListItem &&
                        box.Display != CssConstants.Table &&
                        box.Display != CssConstants.TableCell &&
                        box.ParentBox != null)
@@ -366,7 +373,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
             else if (tag.Name == HtmlConstants.Hr)
             {
-                return new CssBoxHr(parent, tag);
+            return new CssBoxHr(parent, tag);
             }
             else
             {
@@ -632,16 +639,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="g">Device context to use</param>
         protected virtual void PerformLayoutImp(RGraphics g)
         {
+            var test = this;
+
             if (Display != CssConstants.None)
             {
                 RectanglesReset();
                 MeasureWordsSize(g);
             }
 
-            if (IsBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell)
+            if (IsBlock || ParentBox.IsBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell)
             {
                 // Because their width and height are set by CssTable
-                if (Display != CssConstants.TableCell && Display != CssConstants.Table)
+                //if (Display != CssConstants.TableCell && Display != CssConstants.Table)
                 {
                     double width = ContainingBlock.Size.Width
                                    - ContainingBlock.ActualPaddingLeft - ContainingBlock.ActualPaddingRight
@@ -671,9 +680,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     }
                     else
                     {
-                        //TOD: add float logic
-                        //if previous sibling has left float and both add up to less than 100% of the parent width then this block should remain on same line as sibling
-
                         left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
                         top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
                         
@@ -684,6 +690,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         ActualBottom = top;
                     }
                 }
+               
 
                 //If we're talking about a table here..
                 if (Display == CssConstants.Table || Display == CssConstants.InlineTable)
@@ -697,6 +704,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     {
                         ActualBottom = Location.Y;
                         CssLayoutEngine.CreateLineBoxes(g, this); //This will automatically set the bottom of this block
+                        //this box may have inline elements with children that still need to be rendered
+                        //foreach(var childBox in Boxes)
+                        //{
+                        //    childBox.PerformLayout(g);
+                        //}
                     }
                     else if (_boxes.Count > 0)
                     {
@@ -1227,7 +1239,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 var lastChildBottomMargin = _boxes[_boxes.Count - 1].ActualMarginBottom;
                 margin = Height == "auto" ? Math.Max(ActualMarginBottom, lastChildBottomMargin) : lastChildBottomMargin;
             }
-            return Math.Max(ActualBottom, _boxes[_boxes.Count - 1].ActualBottom + margin + ActualPaddingBottom + ActualBorderBottomWidth);
+            var prevBox = _boxes[_boxes.Count - 1];
+
+            ///due to the possibility of the last item (if this has children) being floated but having a smaller "Actual bottomt than a previous child we need to check for the biggest one and us it
+            var bottom = _boxes[_boxes.Count - 1].ActualBottom;
+            if (_boxes.Count > 1)
+            {
+                foreach(var box in _boxes)
+                {
+                    if(box.ActualBottom > bottom)
+                    {
+                        bottom = box.ActualBottom;
+                    }
+                }
+            }
+
+            return Math.Max(ActualBottom, bottom + margin + ActualPaddingBottom + ActualBorderBottomWidth);
         }
 
         /// <summary>
