@@ -647,7 +647,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 MeasureWordsSize(g);
             }
 
-            if (IsBlock || ParentBox.IsBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell)
+            if (IsBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell)
             {
                 // Because their width and height are set by CssTable
                 //if (Display != CssConstants.TableCell && Display != CssConstants.Table)

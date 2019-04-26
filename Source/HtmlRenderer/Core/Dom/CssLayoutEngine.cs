@@ -260,8 +260,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             foreach (CssBox b in box.Boxes)
             {
-                var test = b.HtmlTag.Name;
-                Argjhhhhh!!!!
+                var test = b.HtmlTag?.Name;
 
                 double leftspacing = (b.Position != CssConstants.Absolute && b.Position != CssConstants.Fixed) ? b.ActualMarginLeft + b.ActualBorderLeftWidth + b.ActualPaddingLeft : 0;
                 double rightspacing = (b.Position != CssConstants.Absolute && b.Position != CssConstants.Fixed) ? b.ActualMarginRight + b.ActualBorderRightWidth + b.ActualPaddingRight : 0;
@@ -271,7 +270,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                 curx += leftspacing;
 
-                if (b.Words.Count > 0)
+                //DA NOTE: this is a stupid hack because inline divs arent handled properly
+                if(b.HtmlTag != null && b.HtmlTag.Name == "hr")
+                {
+                    b.PerformLayout(g);
+                }
+                else if (b.Words.Count > 0)
                 {
                     bool wrapNoWrapBox = false;
                     if (b.WhiteSpace == CssConstants.NoWrap && curx > startx)
