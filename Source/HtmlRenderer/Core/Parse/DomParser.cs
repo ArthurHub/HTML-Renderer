@@ -706,10 +706,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                         CssBox newTempRightBox = null;
                         if (DomUtils.ContainsInlinesOnly(tempRightBox) && !ContainsInlinesOnlyDeep(tempRightBox))
                             newTempRightBox = CorrectBlockInsideInlineImp(tempRightBox);
-
-                        //DA NOTE: Ok for some reason this takes the inline elements (ie: display: inline-block) and
-                        //puts them alongside the actual containing div (makes them previous siblings of the container) and makes them block elements 
-                        // we do not want this as a DIV should be able to contain inline-block elements!!!
+                        
                         tempRightBox.ParentBox.SetAllBoxes(tempRightBox);
 
                         tempRightBox.ParentBox = null;
@@ -786,9 +783,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         private static void CorrectBlockSplitBadBox(CssBox parentBox, CssBox badBox, CssBox leftBlock)
         {
             CssBox leftbox = null;
-
-            //Bad box is apparently the box that has Display : inline or inline-block (they arent bad!)
-            
+                      
             //This checks if the first child of badbox isInline and if it has only inline elements
             while (badBox.Boxes[0].IsInline && ContainsInlinesOnlyDeep(badBox.Boxes[0])) 
             {
