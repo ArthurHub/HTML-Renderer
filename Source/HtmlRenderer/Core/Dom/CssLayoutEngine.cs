@@ -260,8 +260,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             foreach (CssBox b in box.Boxes)
             {
-                var test = b.HtmlTag?.Name;
-
                 double leftspacing = (b.Position != CssConstants.Absolute && b.Position != CssConstants.Fixed) ? b.ActualMarginLeft + b.ActualBorderLeftWidth + b.ActualPaddingLeft : 0;
                 double rightspacing = (b.Position != CssConstants.Absolute && b.Position != CssConstants.Fixed) ? b.ActualMarginRight + b.ActualBorderRightWidth + b.ActualPaddingRight : 0;
 
@@ -270,12 +268,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                 curx += leftspacing;
 
-                //DA NOTE: this is a stupid hack because inline divs arent handled properly
-                if(b.HtmlTag != null && b.HtmlTag.Name == "hr")
-                {
-                    b.PerformLayout(g);
-                }
-                else if (b.Words.Count > 0)
+                if (b.Words.Count > 0)
                 {
                     bool wrapNoWrapBox = false;
                     if (b.WhiteSpace == CssConstants.NoWrap && curx > startx)
@@ -305,7 +298,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                             // handle if line is wrapped for the first text element where parent has left margin\padding
                             if (b == box.Boxes[0] && !word.IsLineBreak && (word == b.Words[0] || (box.ParentBox != null && box.ParentBox.IsBlock)))
                             {
-                                Console.WriteLine($"CssLayoutEngine Line 300{box.ToString()}");
                                 curx += box.ActualMarginLeft + box.ActualBorderLeftWidth + box.ActualPaddingLeft;
                             }
 

@@ -227,12 +227,12 @@ body {
   height: 19px;
 }
 .HalfColumn {
-    width: 500px;
+    width: 50%;
     padding:0 15px 20px 0;
     display: inline-block;
 	border: 1px solid black;
 	vertical-align: top;
-	height: 50px;
+	display: inline-block;
 }
 .LeftColumn{
     width: 30%;

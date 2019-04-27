@@ -223,9 +223,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 var box = ParentBox;
                
                 //DA NOTE: added check to see if parent is block
-                //This may mess with some layout(ie: the samples lost some indentions
-                //Still need to figure out where the border went
-                while ((!box.IsBlock || box.ParentBox != null && !box.ParentBox.IsBlock) && box.Display != CssConstants.ListItem &&
+               
+                //while ((!box.IsBlock || box.ParentBox != null && !box.ParentBox.IsBlock) && box.Display != CssConstants.ListItem &&
+                //       box.Display != CssConstants.Table &&
+                //       box.Display != CssConstants.TableCell &&
+                //       box.ParentBox != null)
+                //Removing !box.IsBlock messes up indents for some reason
+                 while (box.Display != CssConstants.ListItem &&
                        box.Display != CssConstants.Table &&
                        box.Display != CssConstants.TableCell &&
                        box.ParentBox != null)
@@ -697,6 +701,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     //If there's just inline boxes, create LineBoxes
                     if (DomUtils.ContainsInlinesOnly(this))
                     {
+                        //DA Note: we need to do something here because it is possible that the inline elements
+                        // inside of "this" contain block elements that need to be rendered, but I dont think this accounts for that
                         ActualBottom = Location.Y;
                         CssLayoutEngine.CreateLineBoxes(g, this); //This will automatically set the bottom of this block
                     }
