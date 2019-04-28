@@ -151,7 +151,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         public bool IsInline
         {
-            get { return (Display == CssConstants.Inline || Display == CssConstants.InlineBlock) && !IsBrElement; }
+            get { return (Display == CssConstants.Inline) && !IsBrElement; }
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         public bool IsBlock
         {
-            get { return Display == CssConstants.Block; }
+            get { return Display == CssConstants.Block || Display == CssConstants.InlineBlock; }
         }
 
         /// <summary>
@@ -229,7 +229,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 //       box.Display != CssConstants.TableCell &&
                 //       box.ParentBox != null)
                 //Removing !box.IsBlock messes up indents for some reason
-                 while (box.Display != CssConstants.ListItem &&
+                //But if we check the parent as well this fixes inline element display
+                 while (!box.IsBlock && box.Display != CssConstants.ListItem &&
                        box.Display != CssConstants.Table &&
                        box.Display != CssConstants.TableCell &&
                        box.ParentBox != null)
@@ -645,8 +646,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 RectanglesReset();
                 MeasureWordsSize(g);
             }
-
-            if (IsBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell)
+            var test = this;
+            if (IsBlock || Display == CssConstants.InlineBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell)
             {
                 // Because their width and height are set by CssTable
                 if (Display != CssConstants.TableCell && Display != CssConstants.Table)
@@ -684,7 +685,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         
                         Location = new RPoint(left, top);
 
-                        AdjustPositionForFloat(prevSibling);
+                        AdjustPositionForFloatOrInlineBLock(prevSibling);
 
                         ActualBottom = top;
                     }
@@ -717,6 +718,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     }
                 }
             }
+            else if (IsInline)
+            {
+                //nothing will get ere currently
+            }
             else
             {
                 var prevSibling = DomUtils.GetPreviousSibling(this);
@@ -742,28 +747,30 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Checks for Float ositioning and adjusts the Location accordingly
         /// </summary>
         /// <param name="b">Previous Sibling</param>
-        internal virtual void AdjustPositionForFloat(CssBox b)
+        internal virtual void AdjustPositionForFloatOrInlineBLock(CssBox b)
         {
             //TODO: Implement Float = right
 
             if (b == null) return;
-            
-            //PArseNumber will take the width from the CSS (which is a string) and convert it to an int, if it is a percentage it it return the percentage of "hundredPercent"
-            //ex: 50% of 900px (parentBox width) = 450
-            var siblingWidth = CssValueParser.ParseNumber(b.Width, ParentBox.ActualWidth);
-            var width = CssValueParser.ParseNumber(this.Width, ParentBox.ActualWidth);
-            var totalWidth = siblingWidth + width;
 
-            //if previous sibling is float left and the width of both blocks is not greater than parent width
-            if(b.Float == CssConstants.Left && totalWidth <= ParentBox.ActualWidth)
-            {
-                //We want to position this bad boy beside the prevSibling since we have determined it is a valid float
-                //set top to the same as the sibling since it's supposed to float right beside it and left to the ActualRight of sibling
-                var top = b.Location.Y;
-                var left = b.ActualRight;
+            if (b.Float == CssConstants.Left || (b.Display == CssConstants.InlineBlock)){
+                //PArseNumber will take the width from the CSS (which is a string) and convert it to an int, if it is a percentage it it return the percentage of "hundredPercent"
+                //ex: 50% of 900px (parentBox width) = 450
+                var siblingWidth = CssValueParser.ParseNumber(b.Width, ParentBox.ActualWidth);
+                var width = CssValueParser.ParseNumber(this.Width, ParentBox.ActualWidth);
+                var totalWidth = siblingWidth + width;
 
-                //Update the position
-                Location = new RPoint(left, top);
+                //if previous sibling is float left and the width of both blocks is not greater than parent width
+                if (totalWidth <= ParentBox.ActualWidth)
+                {
+                    //We want to position this bad boy beside the prevSibling since we have determined it is a valid float
+                    //set top to the same as the sibling since it's supposed to float right beside it and left to the ActualRight of sibling
+                    var top = b.Location.Y;
+                    var left = b.ActualRight;
+
+                    //Update the position
+                    Location = new RPoint(left, top);
+                }
             }
         }
 
@@ -1621,7 +1628,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         {
             var tag = HtmlTag != null ? string.Format("<{0}>", HtmlTag.Name) : "anon";
 
-            if (IsBlock)
+            if (IsBlock || Display == CssConstants.InlineBlock)
             {
                 return string.Format("{0}{1} Block {2}, Children:{3}", ParentBox == null ? "Root: " : string.Empty, tag, FontSize, Boxes.Count);
             }

@@ -220,6 +220,7 @@ body {
     border-radius: 0px;
     border: 1px solid #d1d1d1;
     padding: 15px 15px 0 15px;
+	width: 100%;
 }
 
 .ContentShadow {
@@ -232,7 +233,6 @@ body {
     display: inline-block;
 	border: 1px solid black;
 	vertical-align: top;
-	display: inline-block;
 }
 .LeftColumn{
     width: 30%;
