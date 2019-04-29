@@ -649,12 +649,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             var test = this;
             if (IsBlock || Display == CssConstants.InlineBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell)
             {
+                var prevSibling = DomUtils.GetPreviousSibling(this);
                 // Because their width and height are set by CssTable
                 if (Display != CssConstants.TableCell && Display != CssConstants.Table)
                 {
                     double width = ContainingBlock.Size.Width
                                    - ContainingBlock.ActualPaddingLeft - ContainingBlock.ActualPaddingRight
                                    - ContainingBlock.ActualBorderLeftWidth - ContainingBlock.ActualBorderRightWidth;
+                    
+                    AdjustWidthForFloatOrInlineBlock(prevSibling);
 
                     if (Width != CssConstants.Auto && !string.IsNullOrEmpty(Width))
                     {
@@ -669,7 +672,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                 if (Display != CssConstants.TableCell)
                 {
-                    var prevSibling = DomUtils.GetPreviousSibling(this);
+                    
                     double left;
                     double top;
 
@@ -685,7 +688,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         
                         Location = new RPoint(left, top);
 
-                        AdjustPositionForFloatOrInlineBLock(prevSibling);
+                        AdjustPositionForFloatOrInlineBlock(prevSibling);
 
                         ActualBottom = top;
                     }
@@ -743,34 +746,57 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
         }
 
+        internal virtual void AdjustWidthForFloatOrInlineBlock(CssBox b)
+        {
+            if (b == null) return;
+            //if previous sibling is float left or Previous sibling is display inline and this is display inline
+            if ((b.Float == CssConstants.Left) || (b.Display == CssConstants.InlineBlock && this.Display == CssConstants.InlineBlock))
+            {
+                //If this.Width is set to auto and since the sibling is floated we need to set the width of this to fit in the space available
+                if (Width == "auto")
+                {
+                    //this gets the space left that we can use for this block
+                    var spaceAvailable = ParentBox.AvailableWidth - b.AvailableWidth;
+                    Width = $"{spaceAvailable.ToString()}px";
+                }
+            }
+        }
+
         /// <summary>
         /// Checks for Float ositioning and adjusts the Location accordingly
         /// </summary>
         /// <param name="b">Previous Sibling</param>
-        internal virtual void AdjustPositionForFloatOrInlineBLock(CssBox b)
+        internal virtual void AdjustPositionForFloatOrInlineBlock(CssBox b)
         {
             //TODO: Implement Float = right
 
             if (b == null) return;
-
-            if (b.Float == CssConstants.Left || (b.Display == CssConstants.InlineBlock)){
+            //if previous sibling is float left or Previous sibling is display inline and this is display inline
+            if (b.Float == CssConstants.Left  || b.Float == CssConstants.Right || (b.Display == CssConstants.InlineBlock && this.Display == CssConstants.InlineBlock)){
                 //PArseNumber will take the width from the CSS (which is a string) and convert it to an int, if it is a percentage it it return the percentage of "hundredPercent"
                 //ex: 50% of 900px (parentBox width) = 450
-                var siblingWidth = CssValueParser.ParseNumber(b.Width, ParentBox.ActualWidth);
-                var width = CssValueParser.ParseNumber(this.Width, ParentBox.ActualWidth);
-                var totalWidth = siblingWidth + width;
+                var width = CssValueParser.ParseNumber(Width, ParentBox.AvailableWidth);
+                
+                //The actual right of this sibling plus the width of this will determine if this can fit on the same line
+                var totalWidth = b.ActualRight + width;
 
-                //if previous sibling is float left and the width of both blocks is not greater than parent width
-                if (totalWidth <= ParentBox.ActualWidth)
+                //if width of both blocks is not greater than parent width
+                if (totalWidth <= ParentBox.ActualRight)
                 {
-                    //We want to position this bad boy beside the prevSibling since we have determined it is a valid float
-                    //set top to the same as the sibling since it's supposed to float right beside it and left to the ActualRight of sibling
+                    //set top to the same as the sibling since it's supposed to float at the same level
                     var top = b.Location.Y;
-                    var left = b.ActualRight;
-
+                    //If float left or Inline Block (or is not float right)
+                    //We want to position this bad boy beside the prevSibling since we have determined it is a valid float left
+                    // or if Float Right We want to position this bad boy on the right side of parent
+                    var left = b.Float != CssConstants.Right ? b.ActualRight : ParentBox.ActualRight - width;
+                    
                     //Update the position
                     Location = new RPoint(left, top);
                 }
+            }
+            if(b.Float == CssConstants.Right)
+            {
+
             }
         }
 
