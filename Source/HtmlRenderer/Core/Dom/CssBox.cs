@@ -151,7 +151,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         public bool IsInline
         {
-            get { return (Display == CssConstants.Inline) && !IsBrElement; }
+            get { return (Display == CssConstants.Inline || Display == CssConstants.InlineBlock) && !IsBrElement; }
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         public bool IsBlock
         {
-            get { return Display == CssConstants.Block || Display == CssConstants.InlineBlock; }
+            get { return Display == CssConstants.Block; }//|| Display == CssConstants.InlineBlock; }
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 //       box.ParentBox != null)
                 //Removing !box.IsBlock messes up indents for some reason
                 //But if we check the parent as well this fixes inline element display
-                 while (!box.IsBlock && box.Display != CssConstants.ListItem &&
+                 while ((!box.IsBlock && DomUtils.ContainsInlinesOnly(box)) && box.Display != CssConstants.ListItem &&
                        box.Display != CssConstants.Table &&
                        box.Display != CssConstants.TableCell &&
                        box.ParentBox != null)
@@ -647,7 +647,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 MeasureWordsSize(g);
             }
             var test = this;
-            if (IsBlock || Display == CssConstants.InlineBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell)
+            if (IsBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell)
             {
                 var prevSibling = DomUtils.GetPreviousSibling(this);
                 // Because their width and height are set by CssTable
@@ -705,8 +705,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     //If there's just inline boxes, create LineBoxes
                     if (DomUtils.ContainsInlinesOnly(this))
                     {
-                        //DA Note: we need to do something here because it is possible that the inline elements
-                        // inside of "this" contain block elements that need to be rendered, but I dont think this accounts for that
                         ActualBottom = Location.Y;
                         CssLayoutEngine.CreateLineBoxes(g, this); //This will automatically set the bottom of this block
                     }
@@ -721,9 +719,78 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     }
                 }
             }
+            //if this is an inline block with blocks inside of it 
+
             else if (IsInline)
             {
-                //nothing will get ere currently
+                var prevSibling = DomUtils.GetPreviousSibling(this);
+                // Because their width and height are set by CssTable
+                if (Display != CssConstants.TableCell && Display != CssConstants.Table)
+                {
+                    double width = ContainingBlock.Size.Width
+                                   - ContainingBlock.ActualPaddingLeft - ContainingBlock.ActualPaddingRight
+                                   - ContainingBlock.ActualBorderLeftWidth - ContainingBlock.ActualBorderRightWidth;
+
+                    AdjustWidthForFloatOrInlineBlock(prevSibling);
+
+                    if (Width != CssConstants.Auto && !string.IsNullOrEmpty(Width))
+                    {
+                        width = CssValueParser.ParseLength(Width, width, this);
+                    }
+
+                    Size = new RSize(width, Size.Height);
+
+                    // must be separate because the margin can be calculated by percentage of the width
+                    Size = new RSize(width - ActualMarginLeft - ActualMarginRight, Size.Height);
+                }
+
+                if (Display != CssConstants.TableCell)
+                {
+
+                    double left;
+                    double top;
+
+                    if (Position == CssConstants.Fixed)
+                    {
+                        left = 0;
+                        top = 0;
+                    }
+                    else
+                    {
+                        left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
+                        top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+
+                        Location = new RPoint(left, top);
+
+                        AdjustPositionForFloatOrInlineBlock(prevSibling);
+
+                        ActualBottom = top;
+                    }
+                }
+                
+                //If we're talking about a table here..
+                if (Display == CssConstants.Table || Display == CssConstants.InlineTable)
+                {
+                    CssLayoutEngineTable.PerformLayout(g, this);
+                }
+                else
+                {
+                    //If there's just inline boxes, create LineBoxes
+                    if (DomUtils.ContainsInlinesOnly(this))
+                    {
+                        ActualBottom = Location.Y;
+                        CssLayoutEngine.CreateLineBoxes(g, this); //This will automatically set the bottom of this block
+                    }
+                    else if (_boxes.Count > 0)
+                    {
+                        foreach (var childBox in Boxes)
+                        {
+                            childBox.PerformLayout(g);
+                        }
+                        ActualRight = CalculateActualRight();
+                        ActualBottom = MarginBottomCollapse();
+                    }
+                }
             }
             else
             {

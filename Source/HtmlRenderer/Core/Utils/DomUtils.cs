@@ -48,7 +48,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Check if the given box contains only inline child boxes.
+        /// Check if the given box contains only inline child boxes and it
+        /// s child boxes only contain inline boxes
         /// </summary>
         /// <param name="box">the box to check</param>
         /// <returns>true - only inline child boxes, false - otherwise</returns>
@@ -58,8 +59,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             {
                 if (!b.IsInline)
                 {
-                    
                     return false;
+                }
+                //if this box has children we need to check if they are inline as well
+                else if (b.Boxes.Count > 0)
+                {
+                    foreach(var cb in b.Boxes)
+                    {
+                        if (!ContainsInlinesOnly(cb))
+                        {
+                            return false;
+                        }
+                    }
                 }
             }
 
