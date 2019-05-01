@@ -141,7 +141,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         public bool IsBrElement
         {
-            get {
+            get
+            {
                 return _htmltag != null && _htmltag.Name.Equals("br", StringComparison.InvariantCultureIgnoreCase);
             }
         }
@@ -151,7 +152,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         public bool IsInline
         {
-            get { return (Display == CssConstants.Inline || Display == CssConstants.InlineBlock) && !IsBrElement; }
+            get { return (Display == CssConstants.Inline) && !IsBrElement; }
         }
 
         /// <summary>
@@ -159,7 +160,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         public bool IsBlock
         {
-            get { return Display == CssConstants.Block; }//|| Display == CssConstants.InlineBlock; }
+            get { return Display == CssConstants.Block || Display == CssConstants.InlineBlock; }
         }
 
         /// <summary>
@@ -221,19 +222,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 }
 
                 var box = ParentBox;
-               
+
                 //DA NOTE: added check to see if parent is block
-               
+
                 //while ((!box.IsBlock || box.ParentBox != null && !box.ParentBox.IsBlock) && box.Display != CssConstants.ListItem &&
                 //       box.Display != CssConstants.Table &&
                 //       box.Display != CssConstants.TableCell &&
                 //       box.ParentBox != null)
                 //Removing !box.IsBlock messes up indents for some reason
                 //But if we check the parent as well this fixes inline element display
-                 while ((!box.IsBlock && DomUtils.ContainsInlinesOnly(box)) && box.Display != CssConstants.ListItem &&
-                       box.Display != CssConstants.Table &&
-                       box.Display != CssConstants.TableCell &&
-                       box.ParentBox != null)
+                while (!box.IsBlock && box.Display != CssConstants.ListItem &&
+                      box.Display != CssConstants.Table &&
+                      box.Display != CssConstants.TableCell &&
+                      box.ParentBox != null)
                 {
                     box = box.ParentBox;
                 }
@@ -555,7 +556,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 while (startIdx < _text.Length && _text[startIdx] == '\r')
                     startIdx++;
 
-                
+
 
                 if (startIdx < _text.Length)
                 {
@@ -582,7 +583,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                         if (endIdx > startIdx)
                         {
-                            var hasSpaceBefore = !preserveSpaces && (startIdx > 0  && char.IsWhiteSpace(_text[startIdx - 1]));
+                            var hasSpaceBefore = !preserveSpaces && (startIdx > 0 && char.IsWhiteSpace(_text[startIdx - 1]));
                             var hasSpaceAfter = !preserveSpaces && (endIdx < _text.Length && char.IsWhiteSpace(_text[endIdx]));
                             _boxWords.Add(new CssRectWord(this, ApplyTextTransForm(HtmlUtils.DecodeHtml(_text.Substring(startIdx, endIdx - startIdx))), hasSpaceBefore, hasSpaceAfter));
                         }
@@ -603,7 +604,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
         private string ApplyTextTransForm(string v)
         {
-            switch(TextTransform)
+            switch (TextTransform)
             {
                 case CssConstants.Uppercase:
                     return v.ToUpper();
@@ -640,14 +641,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="g">Device context to use</param>
         protected virtual void PerformLayoutImp(RGraphics g)
         {
-            
+
             if (Display != CssConstants.None)
             {
                 RectanglesReset();
                 MeasureWordsSize(g);
             }
             var test = this;
-            if (IsBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell)
+            if (IsBlock || Display == CssConstants.InlineBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell)
             {
                 var prevSibling = DomUtils.GetPreviousSibling(this);
                 // Because their width and height are set by CssTable
@@ -656,7 +657,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     double width = ContainingBlock.Size.Width
                                    - ContainingBlock.ActualPaddingLeft - ContainingBlock.ActualPaddingRight
                                    - ContainingBlock.ActualBorderLeftWidth - ContainingBlock.ActualBorderRightWidth;
-                    
+
                     AdjustWidthForFloatOrInlineBlock(prevSibling);
 
                     if (Width != CssConstants.Auto && !string.IsNullOrEmpty(Width))
@@ -672,7 +673,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                 if (Display != CssConstants.TableCell)
                 {
-                    
+
                     double left;
                     double top;
 
@@ -685,89 +686,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     {
                         left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
                         top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+
+                        Location = new RPoint(left, top);
+
+                        AdjustPositionForFloatOrInlineBlock(prevSibling);
                         
-                        Location = new RPoint(left, top);
-
-                        AdjustPositionForFloatOrInlineBlock(prevSibling);
-
-                        ActualBottom = top;
-                    }
-                }
-               
-
-                //If we're talking about a table here..
-                if (Display == CssConstants.Table || Display == CssConstants.InlineTable)
-                {
-                    CssLayoutEngineTable.PerformLayout(g, this);
-                }
-                else
-                {
-                    //If there's just inline boxes, create LineBoxes
-                    if (DomUtils.ContainsInlinesOnly(this))
-                    {
                         ActualBottom = Location.Y;
-                        CssLayoutEngine.CreateLineBoxes(g, this); //This will automatically set the bottom of this block
-                    }
-                    else if (_boxes.Count > 0)
-                    {
-                        foreach (var childBox in Boxes)
-                        {
-                            childBox.PerformLayout(g);
-                        }
-                        ActualRight = CalculateActualRight();
-                        ActualBottom = MarginBottomCollapse();
                     }
                 }
-            }
-            //if this is an inline block with blocks inside of it 
 
-            else if (IsInline)
-            {
-                var prevSibling = DomUtils.GetPreviousSibling(this);
-                // Because their width and height are set by CssTable
-                if (Display != CssConstants.TableCell && Display != CssConstants.Table)
-                {
-                    double width = ContainingBlock.Size.Width
-                                   - ContainingBlock.ActualPaddingLeft - ContainingBlock.ActualPaddingRight
-                                   - ContainingBlock.ActualBorderLeftWidth - ContainingBlock.ActualBorderRightWidth;
-
-                    AdjustWidthForFloatOrInlineBlock(prevSibling);
-
-                    if (Width != CssConstants.Auto && !string.IsNullOrEmpty(Width))
-                    {
-                        width = CssValueParser.ParseLength(Width, width, this);
-                    }
-
-                    Size = new RSize(width, Size.Height);
-
-                    // must be separate because the margin can be calculated by percentage of the width
-                    Size = new RSize(width - ActualMarginLeft - ActualMarginRight, Size.Height);
-                }
-
-                if (Display != CssConstants.TableCell)
-                {
-
-                    double left;
-                    double top;
-
-                    if (Position == CssConstants.Fixed)
-                    {
-                        left = 0;
-                        top = 0;
-                    }
-                    else
-                    {
-                        left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
-                        top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
-
-                        Location = new RPoint(left, top);
-
-                        AdjustPositionForFloatOrInlineBlock(prevSibling);
-
-                        ActualBottom = top;
-                    }
-                }
-                
                 //If we're talking about a table here..
                 if (Display == CssConstants.Table || Display == CssConstants.InlineTable)
                 {
@@ -778,6 +705,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     //If there's just inline boxes, create LineBoxes
                     if (DomUtils.ContainsInlinesOnly(this))
                     {
+                        //DA Note: we need to do something here because it is possible that the inline elements
+                        // inside of "this" contain block elements that need to be rendered, but I dont think this accounts for that
                         ActualBottom = Location.Y;
                         CssLayoutEngine.CreateLineBoxes(g, this); //This will automatically set the bottom of this block
                     }
@@ -802,8 +731,37 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     ActualBottom = prevSibling.ActualBottom;
                 }
             }
-            ActualBottom = Math.Max(ActualBottom, Location.Y + ActualHeight);
 
+            //if this thing is set not to break inside and it would go over the end of the page
+            // then we need to repostion it to start on the next page
+            if (this.PageBreakInside == CssConstants.Avoid)// || PageBreakAfter == CssConstants.Always)
+            {
+                //yeah this should start on the next page
+                if (BreakPage())
+                {
+                    //if we broke the page then we need to re-render this item because everything in it needs moved
+                    //If there's just inline boxes, create LineBoxes
+                    if (DomUtils.ContainsInlinesOnly(this))
+                    {
+                        //DA Note: we need to do something here because it is possible that the inline elements
+                        // inside of "this" contain block elements that need to be rendered, but I dont think this accounts for that
+                        ActualBottom = Location.Y;
+                        CssLayoutEngine.CreateLineBoxes(g, this); //This will automatically set the bottom of this block
+                    }
+                    else if (_boxes.Count > 0)
+                    {
+                        foreach (var childBox in Boxes)
+                        {
+                            childBox.PerformLayout(g);
+                        }
+                        ActualRight = CalculateActualRight();
+                        ActualBottom = MarginBottomCollapse();
+                    }
+                }
+            }
+
+            ActualBottom = Math.Max(ActualBottom, Location.Y + ActualHeight);
+            
             CreateListItemBox(g);
 
             if (!IsFixed)
@@ -839,11 +797,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             if (b == null) return;
             //if previous sibling is float left or Previous sibling is display inline and this is display inline
-            if (b.Float == CssConstants.Left  || b.Float == CssConstants.Right || (b.Display == CssConstants.InlineBlock && this.Display == CssConstants.InlineBlock)){
+            if (b.Float == CssConstants.Left || b.Float == CssConstants.Right || (b.Display == CssConstants.InlineBlock && this.Display == CssConstants.InlineBlock))
+            {
                 //PArseNumber will take the width from the CSS (which is a string) and convert it to an int, if it is a percentage it it return the percentage of "hundredPercent"
                 //ex: 50% of 900px (parentBox width) = 450
                 var width = CssValueParser.ParseNumber(Width, ParentBox.AvailableWidth);
-                
+
                 //The actual right of this sibling plus the width of this will determine if this can fit on the same line
                 var totalWidth = b.ActualRight + width;
 
@@ -856,12 +815,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     //We want to position this bad boy beside the prevSibling since we have determined it is a valid float left
                     // or if Float Right We want to position this bad boy on the right side of parent
                     var left = b.Float != CssConstants.Right ? b.ActualRight : ParentBox.ActualRight - width;
-                    
+
                     //Update the position
                     Location = new RPoint(left, top);
                 }
             }
-            if(b.Float == CssConstants.Right)
+            if (b.Float == CssConstants.Right)
             {
 
             }
@@ -1295,7 +1254,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             if (remTop > remBottom)
             {
                 var diff = container.PageSize.Height - remTop;
-                this.Location = new RPoint(this.Location.X, this.Location.Y + diff + 1);
+                Location = new RPoint(Location.X, Location.Y + diff + 1);
+                
                 return true;
             }
 
@@ -1342,9 +1302,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             var bottom = _boxes[_boxes.Count - 1].ActualBottom;
             if (_boxes.Count > 1)
             {
-                foreach(var box in _boxes)
+                foreach (var box in _boxes)
                 {
-                    if(box.ActualBottom > bottom)
+                    if (box.ActualBottom > bottom)
                     {
                         bottom = box.ActualBottom;
                     }
@@ -1550,7 +1510,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         var wordRect = word.Rectangle;
                         wordRect.Offset(offset);
                         clip.Intersect(wordRect);
-                        
+
 
                         if (clip != RRect.Empty)
                         {

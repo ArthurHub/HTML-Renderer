@@ -129,7 +129,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             //Get the start x and y of the blockBox
             double startx = blockBox.Location.X + blockBox.ActualPaddingLeft - 0 + blockBox.ActualBorderLeftWidth;
             double starty = blockBox.Location.Y + blockBox.ActualPaddingTop - 0 + blockBox.ActualBorderTopWidth;
-            if(blockBox.ActualLineHeight != 0)
+            
+            if (blockBox.ActualLineHeight != 0)
             {
                 starty += (blockBox.ActualLineHeight / 2 - blockBox.ActualFont.Height / 2);
             }
