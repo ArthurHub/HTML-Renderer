@@ -843,9 +843,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// At the end of this process a block box will have only block siblings and inline box will have
         /// only inline siblings.
         /// 
-        /// DA NOTE: THis is not correct if we have a display: inline-block or inline element they should still be displayed
-        /// with the parent div that they have (why would we split them out??)
-        /// 
         /// </summary>
         /// <param name="box">the current box to correct its sub-tree</param>
         private static void CorrectInlineBoxesParent(CssBox box)

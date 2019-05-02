@@ -186,7 +186,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
 
             //DA NOTE: Need to check prents parent to re-draw inline borders
-            if (box.ParentBox != null && box.ParentBox.IsInline || box.ParentBox.ParentBox != null && box.ParentBox.ParentBox.IsInline)
+            if (box.ParentBox != null && box.ParentBox.IsInline)// || box.ParentBox.ParentBox != null && box.ParentBox.ParentBox.IsInline)
             {
                 UpdateRectangle(box.ParentBox, x, y, r, b);
             }

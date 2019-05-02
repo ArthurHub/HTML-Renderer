@@ -222,15 +222,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 }
 
                 var box = ParentBox;
-
-                //DA NOTE: added check to see if parent is block
-
-                //while ((!box.IsBlock || box.ParentBox != null && !box.ParentBox.IsBlock) && box.Display != CssConstants.ListItem &&
-                //       box.Display != CssConstants.Table &&
-                //       box.Display != CssConstants.TableCell &&
-                //       box.ParentBox != null)
-                //Removing !box.IsBlock messes up indents for some reason
-                //But if we check the parent as well this fixes inline element display
+                
                 while (!box.IsBlock && box.Display != CssConstants.ListItem &&
                       box.Display != CssConstants.Table &&
                       box.Display != CssConstants.TableCell &&
@@ -685,13 +677,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     else
                     {
                         left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
-                        top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+                        top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom : 0);
 
                         Location = new RPoint(left, top);
-
-                        AdjustPositionForFloatOrInlineBlock(prevSibling);
                         
-                        ActualBottom = Location.Y;
+                        AdjustPositionForFloatOrInlineBlock(prevSibling);
                     }
                 }
 
@@ -705,8 +695,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     //If there's just inline boxes, create LineBoxes
                     if (DomUtils.ContainsInlinesOnly(this))
                     {
-                        //DA Note: we need to do something here because it is possible that the inline elements
-                        // inside of "this" contain block elements that need to be rendered, but I dont think this accounts for that
                         ActualBottom = Location.Y;
                         CssLayoutEngine.CreateLineBoxes(g, this); //This will automatically set the bottom of this block
                     }
@@ -717,7 +705,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                             childBox.PerformLayout(g);
                         }
                         ActualRight = CalculateActualRight();
-                        ActualBottom = MarginBottomCollapse();
+                        ActualBottom = Math.Max(MarginBottomCollapse(), ActualBottom);
                     }
                 }
             }
@@ -743,8 +731,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     //If there's just inline boxes, create LineBoxes
                     if (DomUtils.ContainsInlinesOnly(this))
                     {
-                        //DA Note: we need to do something here because it is possible that the inline elements
-                        // inside of "this" contain block elements that need to be rendered, but I dont think this accounts for that
                         ActualBottom = Location.Y;
                         CssLayoutEngine.CreateLineBoxes(g, this); //This will automatically set the bottom of this block
                     }
@@ -811,6 +797,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 {
                     //set top to the same as the sibling since it's supposed to float at the same level
                     var top = b.Location.Y;
+                    
                     //If float left or Inline Block (or is not float right)
                     //We want to position this bad boy beside the prevSibling since we have determined it is a valid float left
                     // or if Float Right We want to position this bad boy on the right side of parent
@@ -818,11 +805,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                     //Update the position
                     Location = new RPoint(left, top);
+
+                    //set bottom to be the same as well if it is greater than this one so if the next item flows to the next line it will be positioned correctly
+                    ActualBottom = Math.Max(b.ActualBottom, Location.Y);
                 }
             }
-            if (b.Float == CssConstants.Right)
+            else if (b.Float == CssConstants.Right)
             {
 
+            }
+            else
+            {
+                ActualBottom = Location.Y;
             }
         }
 
@@ -1218,9 +1212,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         protected double MarginTopCollapse(CssBoxProperties prevSibling)
         {
             double value;
+            //if there is a prevSibling we need to get the bigger margin as only the larger one applies
             if (prevSibling != null)
             {
                 value = Math.Max(prevSibling.ActualMarginBottom, ActualMarginTop);
+                //if the ActualMarginTop is a negative number we do need to account for that
+                value = ActualMarginTop < 0 ? value + ActualMarginTop : value;
                 CollapsedMarginTop = value;
             }
             else if (_parentBox != null && ActualPaddingTop < 0.1 && ActualPaddingBottom < 0.1 && _parentBox.ActualPaddingTop < 0.1 && _parentBox.ActualPaddingBottom < 0.1)
