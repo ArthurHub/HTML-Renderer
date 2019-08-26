@@ -123,7 +123,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         {
             if (string.IsNullOrEmpty(number))
             {
-                return 0f;
+                return 0.0;
             }
 
             string toParse = number;
@@ -135,12 +135,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
             if (!double.TryParse(toParse, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out result))
             {
-                return 0f;
+                return 0.0;
             }
 
             if (isPercent)
             {
-                result = (result / 100f) * hundredPercent;
+                result = (result / 100.0) * hundredPercent;
             }
 
             return result;
@@ -212,31 +212,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                     factor = emFactor / 2;
                     break;
                 case CssConstants.Px:
-                    factor = fontAdjust ? 72f / 96f : 1f; //TODO:a check support for hi dpi
+                    factor = fontAdjust ? 72.0 / 96.0 : 1.0; //TODO:a check support for hi dpi
                     break;
                 case CssConstants.Mm:
-                    factor = 3.779527559f; //3 pixels per millimeter
+                    factor = 3.779527559; //3 pixels per millimeter
                     break;
                 case CssConstants.Cm:
-                    factor = 37.795275591f; //37 pixels per centimeter
+                    factor = 37.795275591; //37 pixels per centimeter
                     break;
                 case CssConstants.In:
-                    factor = 96f; //96 pixels per inch
+                    factor = 96.0; //96 pixels per inch
                     break;
                 case CssConstants.Pt:
-                    factor = 96f / 72f; // 1 point = 1/72 of inch
-
-                    if (returnPoints)
-                    {
-                        return ParseNumber(number, hundredPercent);
-                    }
-
-                    break;
+                    return ParseNumber(number, hundredPercent) / (returnPoints ? 1.0 : (72.0 / 96.0));
                 case CssConstants.Pc:
-                    factor = 16f; // 1 pica = 12 points
+                    factor = 16.0; // 1 pica = 12 points
                     break;
                 default:
-                    factor = 0f;
+                    factor = 0.0;
                     break;
             }
 
@@ -346,11 +339,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             switch (borderValue)
             {
                 case CssConstants.Thin:
-                    return 1f;
+                    return 1.0;
                 case CssConstants.Medium:
-                    return 2f;
+                    return 2.0;
                 case CssConstants.Thick:
-                    return 4f;
+                    return 4.0;
                 default:
                     return Math.Abs(ParseLength(borderValue, 1, b));
             }

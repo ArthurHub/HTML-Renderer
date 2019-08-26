@@ -116,22 +116,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
 
             path.LineTo(rect.Right - neRadius, rect.Y);
 
-            if (neRadius > 0f)
+            if (neRadius > 0.0)
                 path.ArcTo(rect.Right, rect.Top + neRadius, neRadius, RGraphicsPath.Corner.TopRight);
 
             path.LineTo(rect.Right, rect.Bottom - seRadius);
 
-            if (seRadius > 0f)
+            if (seRadius > 0.0)
                 path.ArcTo(rect.Right - seRadius, rect.Bottom, seRadius, RGraphicsPath.Corner.BottomRight);
 
             path.LineTo(rect.Left + swRadius, rect.Bottom);
 
-            if (swRadius > 0f)
+            if (swRadius > 0.0)
                 path.ArcTo(rect.Left, rect.Bottom - swRadius, swRadius, RGraphicsPath.Corner.BottomLeft);
 
             path.LineTo(rect.Left, rect.Top + nwRadius);
 
-            if (nwRadius > 0f)
+            if (nwRadius > 0.0)
                 path.ArcTo(rect.Left + nwRadius, rect.Top, nwRadius, RGraphicsPath.Corner.TopLeft);
 
             return path;

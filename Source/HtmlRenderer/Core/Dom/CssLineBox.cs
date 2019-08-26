@@ -219,7 +219,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             RRect r = Rectangles[b];
 
             //Save top of words related to the top of rectangle
-            double gap = 0f;
+            double gap = 0.0;
 
             if (ws.Count > 0)
             {

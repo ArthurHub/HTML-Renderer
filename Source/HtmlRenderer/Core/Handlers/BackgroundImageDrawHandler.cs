@@ -85,7 +85,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             double left = rectangle.Left;
             if (backgroundPosition.IndexOf("left", StringComparison.OrdinalIgnoreCase) > -1)
             {
-                left = (rectangle.Left + .5f);
+                left = (rectangle.Left + .5);
             }
             else if (backgroundPosition.IndexOf("right", StringComparison.OrdinalIgnoreCase) > -1)
             {
@@ -93,7 +93,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             }
             else if (backgroundPosition.IndexOf("0", StringComparison.OrdinalIgnoreCase) < 0)
             {
-                left = (rectangle.Left + (rectangle.Width - imgSize.Width) / 2 + .5f);
+                left = (rectangle.Left + (rectangle.Width - imgSize.Width) / 2 + .5);
             }
 
             double top = rectangle.Top;
@@ -107,7 +107,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             }
             else if (backgroundPosition.IndexOf("0", StringComparison.OrdinalIgnoreCase) < 0)
             {
-                top = (rectangle.Top + (rectangle.Height - imgSize.Height) / 2 + .5f);
+                top = (rectangle.Top + (rectangle.Height - imgSize.Height) / 2 + .5);
             }
 
             return new RPoint(left, top);

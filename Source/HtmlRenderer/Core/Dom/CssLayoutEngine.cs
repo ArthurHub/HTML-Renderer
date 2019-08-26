@@ -55,7 +55,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
             else
             {
-                imageWord.Width = hasImageTagHeight ? height.Number / 1.14f : 20;
+                imageWord.Width = hasImageTagHeight ? height.Number / 1.14 : 20.0;
             }
 
             var maxWidth = new CssLength(imageWord.OwnerBox.MaxWidth);
@@ -88,7 +88,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
             else
             {
-                imageWord.Height = imageWord.Width > 0 ? imageWord.Width * 1.14f : 22.8f;
+                imageWord.Height = imageWord.Width > 0 ? imageWord.Width * 1.14 : 22.8;
             }
 
             if (imageWord.Image != null)
@@ -181,8 +181,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 return;
 
             double cellbot = cell.ClientBottom;
-            double bottom = cell.GetMaximumBottom(cell, 0f);
-            double dist = 0f;
+            double bottom = cell.GetMaximumBottom(cell, 0.0);
+            double dist = 0.0;
 
             if (cell.VerticalAlign == CssConstants.Bottom)
             {
@@ -542,10 +542,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 switch (box.VerticalAlign)
                 {
                     case CssConstants.Sub:
-                        lineBox.SetBaseLine(g, box, baseline + lineBox.Rectangles[box].Height * .5f);
+                        lineBox.SetBaseLine(g, box, baseline + lineBox.Rectangles[box].Height * .5);
                         break;
                     case CssConstants.Super:
-                        lineBox.SetBaseLine(g, box, baseline - lineBox.Rectangles[box].Height * .2f);
+                        lineBox.SetBaseLine(g, box, baseline - lineBox.Rectangles[box].Height * .2);
                         break;
                     case CssConstants.TextTop:
 
@@ -580,19 +580,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             if (lineBox.Equals(lineBox.OwnerBox.LineBoxes[lineBox.OwnerBox.LineBoxes.Count - 1]))
                 return;
 
-            double indent = lineBox.Equals(lineBox.OwnerBox.LineBoxes[0]) ? lineBox.OwnerBox.ActualTextIndent : 0f;
-            double textSum = 0f;
-            double words = 0f;
+            double indent = lineBox.Equals(lineBox.OwnerBox.LineBoxes[0]) ? lineBox.OwnerBox.ActualTextIndent : 0.0;
+            double textSum = 0.0;
+            double words = 0.0;
             double availWidth = lineBox.OwnerBox.ClientRectangle.Width - indent;
 
             // Gather text sum
             foreach (CssRect w in lineBox.Words)
             {
                 textSum += w.Width;
-                words += 1f;
+                words += 1.0;
             }
 
-            if (words <= 0f)
+            if (words <= 0.0)
                 return; //Avoid Zero division
             double spacing = (availWidth - textSum) / words; //Spacing that will be used
             double curx = lineBox.OwnerBox.ClientLeft + indent;
