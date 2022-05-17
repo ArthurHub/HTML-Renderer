@@ -625,9 +625,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         private string ParseFontFamilyProperty(string propValue)
         {
             int start = 0;
-            while (start > -1 && start < propValue.Length)
+
+            while (start < propValue.Length)
             {
-                while (char.IsWhiteSpace(propValue[start]) || propValue[start] == ',' || propValue[start] == '\'' || propValue[start] == '"')
+                while (start < propValue.Length && (char.IsWhiteSpace(propValue[start]) || propValue[start] == ',' || propValue[start] == '\'' || propValue[start] == '"'))
                     start++;
                 var end = propValue.IndexOf(',', start);
                 if (end < 0)
@@ -639,9 +640,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 var font = propValue.Substring(start, adjEnd - start + 1);
 
                 if (_adapter.IsFontExists(font))
-                {
                     return font;
-                }
 
                 start = end;
             }
