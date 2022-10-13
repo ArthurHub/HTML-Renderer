@@ -108,3 +108,5 @@ Backup*/
 UpgradeLog*.XML
 
 *.DotSettings
+
+.vs

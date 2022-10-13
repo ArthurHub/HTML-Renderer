@@ -10,10 +10,8 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using PdfSharp.Drawing;
-using PdfSharp.Pdf;
-using System.Drawing;
-using System.Drawing.Text;
+using PdfSharpCore.Drawing;
+using PdfSharpCore.Pdf;
 using System.IO;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
@@ -44,12 +42,13 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
             AddFontFamilyMapping("monospace", "Courier New");
             AddFontFamilyMapping("Helvetica", "Arial");
 
-            var families = new InstalledFontCollection();
+            ////TODO: fixed set of supported fonts or other way of getting supported fonts.  For POC, just supporting the fixed ones above.
+            //var families = new InstalledFontCollection();
 
-            foreach (var family in families.Families)
-            {
-                AddFontFamily(new FontFamilyAdapter(new XFontFamily(family.Name)));
-            }
+            //foreach (var family in families.Families)
+            //{
+            //    AddFontFamily(new FontFamilyAdapter(new XFontFamily(family.Name)));
+            //}
         }
 
         /// <summary>
@@ -64,7 +63,9 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
         {
             try
             {
-                var color = Color.FromKnownColor((KnownColor)System.Enum.Parse(typeof(KnownColor), colorName, true));
+                //TODO: check that this is equiv.
+                //var color = Color.FromKnownColor((KnownColor)System.Enum.Parse(typeof(KnownColor), colorName, true));
+                var color = System.Drawing.Color.FromName(colorName);
                 return Utils.Convert(color);
             }
             catch
@@ -114,7 +115,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
 
         protected override RImage ImageFromStreamInt(Stream memoryStream)
         {
-            return new ImageAdapter(XImage.FromStream(memoryStream));
+            return new ImageAdapter(XImage.FromStream(() => memoryStream));
         }
 
         protected override RFont CreateFontInt(string family, double size, RFontStyle style)

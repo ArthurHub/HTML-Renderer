@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.32804.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer", "HtmlRenderer\HtmlRenderer.csproj", "{BCED2468-700D-4BBB-951E-21C0187B08F8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.PdfSharp", "HtmlRenderer.PdfSharp\HtmlRenderer.PdfSharp.csproj", "{7ADB8C59-CCC1-4375-AAEF-551837C9679E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{872835EE-A6FE-413B-806A-30EFA164BDC2}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BCED2468-700D-4BBB-951E-21C0187B08F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCED2468-700D-4BBB-951E-21C0187B08F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCED2468-700D-4BBB-951E-21C0187B08F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCED2468-700D-4BBB-951E-21C0187B08F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ADB8C59-CCC1-4375-AAEF-551837C9679E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ADB8C59-CCC1-4375-AAEF-551837C9679E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ADB8C59-CCC1-4375-AAEF-551837C9679E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ADB8C59-CCC1-4375-AAEF-551837C9679E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A49853C7-07D4-453D-8C44-FB311B3D2F62}
+	EndGlobalSection
+EndGlobal

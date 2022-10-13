@@ -1,0 +1,9 @@
+<Project>
+	<PropertyGroup>
+		<Version>1.5.1.0</Version>
+		<Company>Open source hosted on HitHub</Company>
+		<Product>HTML Renderer</Product>
+		<Copyright>Copyright ©  2008</Copyright>
+		<PackageOutputPath>$(SolutionDir)\..\Packages</PackageOutputPath>
+	</PropertyGroup>
+</Project>

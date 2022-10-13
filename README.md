@@ -1,6 +1,18 @@
-HTML Renderer [![Build status](https://ci.appveyor.com/api/projects/status/cm8xpf8ebt3hyi3e)](https://ci.appveyor.com/project/ArthurHub/html-renderer)
 =============
 
+# Update
+This is a port to the latest .net version **just** for the PDF generating portion.
+
+The benefits of using this is that a pdf can be generated from a html project completely in process, even in client side Blazor!
+
+The downside is obviously that the html support is very limited compared to modern html, however, for print templates this can be a reasonable tradeoff to the flexibility and resource usage on offer.
+
+### Changes from the original
+* Build process is using native github pipelines for building and packaging
+* Winforms and Wpf project have been removed.
+
+
+# Original Project Documentation
 ## Help Wanted
 * Looking for a contributor(s) to take this project forward as I'm unable to continue supporting it.
 * Contribute directly to the repository and update nuget packages.
