@@ -131,11 +131,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <param name="src">the source of the image to load</param>
         /// <param name="attributes">the collection of attributes on the element to use in event</param>
         /// <returns>the image object (null if failed)</returns>
-        public void LoadImage(string src, Dictionary<string, string> attributes)
+        public async Task LoadImageAsync(string src, Dictionary<string, string> attributes)
         {
             try
             {
-                var args = new HtmlImageLoadEventArgs(src, attributes, OnHtmlImageLoadEventCallback);
+                var args = new HtmlImageLoadEventArgs(src, attributes, OnHtmlImageLoadEventCallbackAsync);
                 _htmlContainer.RaiseHtmlImageLoadEvent(args);
                 _asyncCallback = !_htmlContainer.AvoidAsyncImagesLoading;
 
@@ -149,7 +149,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                         }
                         else
                         {
-                            SetImageFromPath(src);
+                            await SetImageFromPathAsync(src);
                         }
                     }
                     else
@@ -183,7 +183,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <param name="path">the path to the image to load (file path or uri)</param>
         /// <param name="image">the image to load</param>
         /// <param name="imageRectangle">optional: limit to specific rectangle of the image and not all of it</param>
-        private void OnHtmlImageLoadEventCallback(string path, object image, RRect imageRectangle)
+        private async Task OnHtmlImageLoadEventCallbackAsync(string path, object image, RRect imageRectangle)
         {
             if (!_disposed)
             {
@@ -196,7 +196,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                 }
                 else if (!string.IsNullOrEmpty(path))
                 {
-                    SetImageFromPath(path);
+                    await SetImageFromPathAsync(path);
                 }
                 else
                 {
@@ -251,12 +251,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// Load image from path of image file or URL.
         /// </summary>
         /// <param name="path">the file path or uri to load image from</param>
-        private void SetImageFromPath(string path)
+        private async Task SetImageFromPathAsync(string path)
         {
             var uri = CommonUtils.TryGetUri(path);
             if (uri != null && uri.Scheme != "file")
             {
-                SetImageFromUrl(uri);
+                await SetImageFromUrlAsync(uri);
             }
             else
             {
@@ -323,7 +323,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// Create local file name in temp folder from the URI, if the file already exists use it as it has already been downloaded.
         /// If not download the file.
         /// </summary>
-        private void SetImageFromUrl(Uri source)
+        private async Task SetImageFromUrlAsync(Uri source)
         {
             var filePath = CommonUtils.GetLocalfileName(source);
             if (filePath.Exists && filePath.Length > 0)
@@ -332,7 +332,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             }
             else
             {
-                _htmlContainer.GetImageDownloader().DownloadImage(source, filePath.FullName, !_htmlContainer.AvoidAsyncImagesLoading, OnDownloadImageCompleted);
+                await _htmlContainer.GetImageDownloader().DownloadImageAsync(source, filePath.FullName, !_htmlContainer.AvoidAsyncImagesLoading, OnDownloadImageCompleted);
             }
         }
 

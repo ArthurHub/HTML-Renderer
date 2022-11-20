@@ -441,11 +441,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Performs layout of the DOM structure creating lines by set bounds restrictions.
         /// </summary>
         /// <param name="g">Device context to use</param>
-        public void PerformLayout(RGraphics g)
+        public async Task PerformLayoutAsync(RGraphics g)
         {
             try
             {
-                PerformLayoutImp(g);
+                await PerformLayoutImpAsync(g);
             }
             catch (Exception ex)
             {
@@ -457,7 +457,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Paints the fragment
         /// </summary>
         /// <param name="g">Device context to use</param>
-        public void Paint(RGraphics g)
+        public async Task PaintAsync(RGraphics g)
         {
             try
             {
@@ -489,7 +489,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     }
 
                     if (visible)
-                        PaintImp(g);
+                        await PaintImpAsync(g);
 
                     // Restore clips
                     if (this.Position == CssConstants.Fixed)
@@ -610,12 +610,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Performs layout of the DOM structure creating lines by set bounds restrictions.<br/>
         /// </summary>
         /// <param name="g">Device context to use</param>
-        protected virtual void PerformLayoutImp(RGraphics g)
+        protected virtual async Task PerformLayoutImpAsync(RGraphics g)
         {
             if (Display != CssConstants.None)
             {
                 RectanglesReset();
-                MeasureWordsSize(g);
+                await MeasureWordsSizeAsync(g);
             }
 
             if (IsBlock || Display == CssConstants.ListItem || Display == CssConstants.Table || Display == CssConstants.InlineTable || Display == CssConstants.TableCell)
@@ -661,7 +661,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 //If we're talking about a table here..
                 if (Display == CssConstants.Table || Display == CssConstants.InlineTable)
                 {
-                    CssLayoutEngineTable.PerformLayout(g, this);
+                    await CssLayoutEngineTable.PerformLayoutAsync(g, this);
                 }
                 else
                 {
@@ -669,13 +669,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     if (DomUtils.ContainsInlinesOnly(this))
                     {
                         ActualBottom = Location.Y;
-                        CssLayoutEngine.CreateLineBoxes(g, this); //This will automatically set the bottom of this block
+                        await CssLayoutEngine.CreateLineBoxesAsync(g, this); //This will automatically set the bottom of this block
                     }
                     else if (_boxes.Count > 0)
                     {
                         foreach (var childBox in Boxes)
                         {
-                            childBox.PerformLayout(g);
+                            await childBox.PerformLayoutAsync(g);
                         }
                         ActualRight = CalculateActualRight();
                         ActualBottom = MarginBottomCollapse();
@@ -694,7 +694,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
             ActualBottom = Math.Max(ActualBottom, Location.Y + ActualHeight);
 
-            CreateListItemBox(g);
+            await CreateListItemBoxAsync(g);
 
             if (!IsFixed)
             {
@@ -707,14 +707,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Assigns words its width and height
         /// </summary>
         /// <param name="g"></param>
-        internal virtual void MeasureWordsSize(RGraphics g)
+        internal virtual async Task MeasureWordsSizeAsync(RGraphics g)
         {
             if (!_wordsSizeMeasured)
             {
                 if (BackgroundImage != CssConstants.None && _imageLoadHandler == null)
                 {
                     _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnImageLoadComplete);
-                    _imageLoadHandler.LoadImage(BackgroundImage, HtmlTag != null ? HtmlTag.Attributes : null);
+                    await _imageLoadHandler.LoadImageAsync(BackgroundImage, HtmlTag != null ? HtmlTag.Attributes : null);
                 }
 
                 MeasureWordSpacing(g);
@@ -782,7 +782,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Creates the <see cref="_listItemBox"/>
         /// </summary>
         /// <param name="g"></param>
-        private void CreateListItemBox(RGraphics g)
+        private async Task CreateListItemBoxAsync(RGraphics g)
         {
             if (Display == CssConstants.ListItem && ListStyleType != CssConstants.None)
             {
@@ -820,7 +820,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                     _listItemBox.ParseToWords();
 
-                    _listItemBox.PerformLayoutImp(g);
+                    await _listItemBox.PerformLayoutImpAsync(g);
                     _listItemBox.Size = new RSize(_listItemBox.Words[0].Width, _listItemBox.Words[0].Height);
                 }
                 _listItemBox.Words[0].Left = Location.X - _listItemBox.Size.Width - 5;
@@ -1210,7 +1210,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Paints the fragment
         /// </summary>
         /// <param name="g">the device to draw to</param>
-        protected virtual void PaintImp(RGraphics g)
+        protected virtual async Task PaintImpAsync(RGraphics g)
         {
             if (Display != CssConstants.None && (Display != CssConstants.TableCell || EmptyCells != CssConstants.Hide || !IsSpaceOrEmpty))
             {
@@ -1254,17 +1254,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 foreach (CssBox b in Boxes)
                 {
                     if (b.Position != CssConstants.Absolute && !b.IsFixed)
-                        b.Paint(g);
+                        await b.PaintAsync(g);
                 }
                 foreach (CssBox b in Boxes)
                 {
                     if (b.Position == CssConstants.Absolute)
-                        b.Paint(g);
+                        await b.PaintAsync(g);
                 }
                 foreach (CssBox b in Boxes)
                 {
                     if (b.IsFixed)
-                        b.Paint(g);
+                        await b.PaintAsync(g);
                 }
 
                 if (clipped)
@@ -1272,7 +1272,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                 if (_listItemBox != null)
                 {
-                    _listItemBox.Paint(g);
+                    await _listItemBox.PaintAsync(g);
                 }
             }
         }

@@ -121,7 +121,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g"></param>
         /// <param name="tableBox"> </param>
-        public static void PerformLayout(RGraphics g, CssBox tableBox)
+        public static async Task PerformLayoutAsync(RGraphics g, CssBox tableBox)
         {
             ArgChecker.AssertArgNotNull(g, "g");
             ArgChecker.AssertArgNotNull(tableBox, "tableBox");
@@ -129,7 +129,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             try
             {
                 var table = new CssLayoutEngineTable(tableBox);
-                table.Layout(g);
+                await table.LayoutAsync(g);
             }
             catch (Exception ex)
             {
@@ -144,9 +144,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Analyzes the Table and assigns values to this CssTable object.
         /// To be called from the constructor
         /// </summary>
-        private void Layout(RGraphics g)
+        private async Task LayoutAsync(RGraphics g)
         {
-            MeasureWords(_tableBox, g);
+            await MeasureWordsAsync(_tableBox, g);
 
             // get the table boxes into the proper fields
             AssignBoxKinds();
@@ -169,7 +169,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             _tableBox.PaddingLeft = _tableBox.PaddingTop = _tableBox.PaddingRight = _tableBox.PaddingBottom = "0";
 
             //Actually layout cells!
-            LayoutCells(g);
+            await LayoutCellsAsync(g);
         }
 
         /// <summary>
@@ -604,7 +604,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Layout the cells by the calculated table layout
         /// </summary>
         /// <param name="g"></param>
-        private void LayoutCells(RGraphics g)
+        private async Task LayoutCellsAsync(RGraphics g)
         {
             double startx = Math.Max(_tableBox.ClientLeft + GetHorizontalSpacing(), 0);
             double starty = Math.Max(_tableBox.ClientTop + GetVerticalSpacing(), 0);
@@ -642,7 +642,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     double width = GetCellWidth(columnIndex, cell);
                     cell.Location = new RPoint(curx, cury);
                     cell.Size = new RSize(width, 0f);
-                    cell.PerformLayout(g); //That will automatically set the bottom of the cell
+                    await cell.PerformLayoutAsync(g); //That will automatically set the bottom of the cell
 
                     //Alter max bottom only if row is cell's row + cell's rowspan - 1
                     CssSpacingBox sb = cell as CssSpacingBox;
@@ -808,14 +808,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="box">the box to measure</param>
         /// <param name="g">Device to use</param>
-        private static void MeasureWords(CssBox box, RGraphics g)
+        private static async Task MeasureWordsAsync(CssBox box, RGraphics g)
         {
             if (box != null)
             {
                 foreach (var childBox in box.Boxes)
                 {
-                    childBox.MeasureWordsSize(g);
-                    MeasureWords(childBox, g);
+                    await childBox.MeasureWordsSizeAsync(g);
+                    await MeasureWordsAsync(childBox, g);
                 }
             }
         }

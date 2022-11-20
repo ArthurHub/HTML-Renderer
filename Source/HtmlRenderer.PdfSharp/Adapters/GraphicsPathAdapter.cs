@@ -13,7 +13,7 @@
 using System;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
-using PdfSharp.Drawing;
+using PdfSharpCore.Drawing;
 
 namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
 {

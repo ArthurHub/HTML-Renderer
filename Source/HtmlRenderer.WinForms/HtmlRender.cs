@@ -435,10 +435,10 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
         /// <exception cref="ArgumentOutOfRangeException">if <paramref name="backgroundColor"/> is <see cref="Color.Transparent"/></exception>.
-        public static Image RenderToImage(string html, int maxWidth = 0, int maxHeight = 0, Color backgroundColor = new Color(), CssData cssData = null,
+        public static async Task<Image> RenderToImageAsync(string html, int maxWidth = 0, int maxHeight = 0, Color backgroundColor = new Color(), CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
-            return RenderToImage(html, Size.Empty, new Size(maxWidth, maxHeight), backgroundColor, cssData, stylesheetLoad, imageLoad);
+            return await RenderToImageAsync(html, Size.Empty, new Size(maxWidth, maxHeight), backgroundColor, cssData, stylesheetLoad, imageLoad);
         }
 
         /// <summary>
@@ -462,7 +462,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
         /// <exception cref="ArgumentOutOfRangeException">if <paramref name="backgroundColor"/> is <see cref="Color.Transparent"/></exception>.
-        public static Image RenderToImage(string html, Size minSize, Size maxSize, Color backgroundColor = new Color(), CssData cssData = null,
+        public static async Task<Image> RenderToImageAsync(string html, Size minSize, Size maxSize, Color backgroundColor = new Color(), CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             if (backgroundColor == Color.Transparent)
@@ -482,7 +482,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                     container.ImageLoad += imageLoad;
                 container.SetHtml(html, cssData);
 
-                var finalSize = MeasureHtmlByRestrictions(container, minSize, maxSize);
+                var finalSize = await MeasureHtmlByRestrictionsAsync(container, minSize, maxSize);
                 container.MaxSize = finalSize;
 
                 // create the final image to render into by measured size
@@ -559,10 +559,10 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
-        public static Image RenderToImageGdiPlus(string html, int maxWidth = 0, int maxHeight = 0, TextRenderingHint textRenderingHint = TextRenderingHint.AntiAlias, CssData cssData = null,
+        public static async Task<Image> RenderToImageGdiPlusAsync(string html, int maxWidth = 0, int maxHeight = 0, TextRenderingHint textRenderingHint = TextRenderingHint.AntiAlias, CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
-            return RenderToImageGdiPlus(html, Size.Empty, new Size(maxWidth, maxHeight), textRenderingHint, cssData, stylesheetLoad, imageLoad);
+            return await RenderToImageGdiPlusAsync(html, Size.Empty, new Size(maxWidth, maxHeight), textRenderingHint, cssData, stylesheetLoad, imageLoad);
         }
 
         /// <summary>
@@ -584,7 +584,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
-        public static Image RenderToImageGdiPlus(string html, Size minSize, Size maxSize, TextRenderingHint textRenderingHint = TextRenderingHint.AntiAlias, CssData cssData = null,
+        public static async Task<Image> RenderToImageGdiPlusAsync(string html, Size minSize, Size maxSize, TextRenderingHint textRenderingHint = TextRenderingHint.AntiAlias, CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             if (string.IsNullOrEmpty(html))
@@ -602,7 +602,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                     container.ImageLoad += imageLoad;
                 container.SetHtml(html, cssData);
 
-                var finalSize = MeasureHtmlByRestrictions(container, minSize, maxSize);
+                var finalSize = await MeasureHtmlByRestrictionsAsync(container, minSize, maxSize);
                 container.MaxSize = finalSize;
 
                 // create the final image to render into by measured size
@@ -667,13 +667,13 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <param name="minSize">the minimal size of the rendered html (zero - not limit the width/height)</param>
         /// <param name="maxSize">the maximum size of the rendered html, if not zero and html cannot be layout within the limit it will be clipped (zero - not limit the width/height)</param>
         /// <returns>return: the size of the html to be rendered within the min/max limits</returns>
-        private static Size MeasureHtmlByRestrictions(HtmlContainer htmlContainer, Size minSize, Size maxSize)
+        private static async Task<Size> MeasureHtmlByRestrictionsAsync(HtmlContainer htmlContainer, Size minSize, Size maxSize)
         {
             // use desktop created graphics to measure the HTML
             using (var g = Graphics.FromHwnd(IntPtr.Zero))
             using (var mg = new GraphicsAdapter(g, htmlContainer.UseGdiPlusTextRendering))
             {
-                var sizeInt = HtmlRendererUtils.MeasureHtmlByRestrictions(mg, htmlContainer.HtmlContainerInt, Utils.Convert(minSize), Utils.Convert(maxSize));
+                var sizeInt = await HtmlRendererUtils.MeasureHtmlByRestrictionsAsync(mg, htmlContainer.HtmlContainerInt, Utils.Convert(minSize), Utils.Convert(maxSize));
                 if (maxSize.Width < 1 && sizeInt.Width > 4096)
                     sizeInt.Width = 4096;
                 return Utils.ConvertRound(sizeInt);

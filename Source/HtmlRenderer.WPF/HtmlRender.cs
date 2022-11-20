@@ -255,10 +255,10 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
-        public static BitmapFrame RenderToImage(string html, int maxWidth = 0, int maxHeight = 0, Color backgroundColor = new Color(), CssData cssData = null,
+        public static async Task<BitmapFrame> RenderToImageAsync(string html, int maxWidth = 0, int maxHeight = 0, Color backgroundColor = new Color(), CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
-            return RenderToImage(html, Size.Empty, new Size(maxWidth, maxHeight), backgroundColor, cssData, stylesheetLoad, imageLoad);
+            return await RenderToImageAsync(html, Size.Empty, new Size(maxWidth, maxHeight), backgroundColor, cssData, stylesheetLoad, imageLoad);
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
-        public static BitmapFrame RenderToImage(string html, Size minSize, Size maxSize, Color backgroundColor = new Color(), CssData cssData = null,
+        public static async Task<BitmapFrame> RenderToImageAsync(string html, Size minSize, Size maxSize, Color backgroundColor = new Color(), CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             RenderTargetBitmap renderTarget;
@@ -298,7 +298,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
                         container.ImageLoad += imageLoad;
                     container.SetHtml(html, cssData);
 
-                    var finalSize = MeasureHtmlByRestrictions(container, minSize, maxSize);
+                    var finalSize = await MeasureHtmlByRestrictionsAsync(container, minSize, maxSize);
                     container.MaxSize = finalSize;
 
                     renderTarget = new RenderTargetBitmap((int)finalSize.Width, (int)finalSize.Height, 96, 96, PixelFormats.Pbgra32);
@@ -332,12 +332,12 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// <param name="minSize">the minimal size of the rendered html (zero - not limit the width/height)</param>
         /// <param name="maxSize">the maximum size of the rendered html, if not zero and html cannot be layout within the limit it will be clipped (zero - not limit the width/height)</param>
         /// <returns>return: the size of the html to be rendered within the min/max limits</returns>
-        private static Size MeasureHtmlByRestrictions(HtmlContainer htmlContainer, Size minSize, Size maxSize)
+        private static async Task<Size> MeasureHtmlByRestrictionsAsync(HtmlContainer htmlContainer, Size minSize, Size maxSize)
         {
             // use desktop created graphics to measure the HTML
             using (var mg = new GraphicsAdapter())
             {
-                var sizeInt = HtmlRendererUtils.MeasureHtmlByRestrictions(mg, htmlContainer.HtmlContainerInt, Utils.Convert(minSize), Utils.Convert(maxSize));
+                var sizeInt = await HtmlRendererUtils.MeasureHtmlByRestrictionsAsync(mg, htmlContainer.HtmlContainerInt, Utils.Convert(minSize), Utils.Convert(maxSize));
                 if (maxSize.Width < 1 && sizeInt.Width > 4096)
                     sizeInt.Width = 4096;
                 return Utils.ConvertRound(sizeInt);
