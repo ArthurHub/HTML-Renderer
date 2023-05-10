@@ -64,7 +64,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
         {
             try
             {
-                var color = Color.FromKnownColor((KnownColor)System.Enum.Parse(typeof(KnownColor), colorName, true));
+                var color =  Color.FromName(colorName);
                 return Utils.Convert(color);
             }
             catch
