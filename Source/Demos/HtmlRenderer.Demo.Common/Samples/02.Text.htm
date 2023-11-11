@@ -1,0 +1,183 @@
+﻿<html>
+    <head>
+        <title>Text</title>
+        <link rel="Stylesheet" href="StyleSheet" />
+        <style type="text/css">
+            ::selection {
+                color: #bb5555;
+                background-color: #aaddaa;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Text
+        </h1>
+        <blockquote>
+            <h2>Formatting
+            </h2>
+            <p>
+                You can use all the well known tags and CSS properties to format text, fonts and
+                colors.
+            </p>
+            <ul>
+                <li><span style="color: red">Colors</span>, <span style="color: #8dd">Colors</span>,
+                    <span style="color: rgb(160, 80, 90)">Colors</span></li>
+                <li><span style="background-color: red">Back colors</span>, <span style="background-color: #8dd">Back colors</span>, <span style="background-color: rgb(160, 80, 90)">Back colors</span></li>
+                <li><span style="font-style: normal">Font style</span>, <span style="font-style: italic">Font style</span>, <span style="font-weight: bolder">Font style</span>, <span style="font-style: italic;font-weight: bolder">Font style</span>, <span style="text-decoration: underline">Font style</span>, <span style="text-decoration: line-through">Font style</span></li>
+            </ul>
+            <p>
+                Lorem ipsum <span style="font-style: italic; text-decoration: underline">dolor sit amet</span>,
+                consectetur adipiscing elit. <b>Curabitur</b> ornare mollis elit. Integer sagittis.
+                Fusce elementum commodo felis. <span bgcolor="yellow">Vivamus lacinia eleifend libero.
+                                                   Donec lacus. Nam sit amet urna.</span> Nullam nulla. Donec accumsan porta magna.
+                <span style="color: blue">Mauris a <b>dolor</b></span> eu elit rutrum commodo. Nam
+                iaculis turpis non augue. Nullam lobortis egestas risus. Nulla elementum dolor ac
+                mauris. Ut tristique. In varius volutpat metus. Integer leo dolor, tristique a,
+                <span style="text-decoration: line-through">dignissim ac, iaculis eget</span>, elit.
+                Donec arcu.
+            </p>
+            <hr />
+            <h2>Custom fonts
+            </h2>
+            <p style="font: 20px '1 Smoothy DNA'">
+                This is a custom font that is not installed on the system.
+            </p>
+            <hr />
+            <h2>Alignment
+            </h2>
+            <p>
+                Simple paragraphs can be used to create a document. Alignment can be used as you
+                already know.
+            </p>
+            <h3>Left aligned
+            </h3>
+            <p align="left" class="gray">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ornare mollis
+                elit. Integer sagittis. Fusce elementum commodo felis. Vivamus lacinia eleifend
+                libero. Donec lacus. Nam sit amet urna. Nullam nulla. Donec accumsan porta magna.
+                Mauris a dolor eu elit rutrum commodo. Nam iaculis turpis non augue.
+            </p>
+            <h3>Center aligned</h3>
+            <p align="center" class="gray">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ornare mollis
+                elit. Integer sagittis. Fusce elementum commodo felis. Vivamus lacinia eleifend
+                libero. Donec lacus. Nam sit amet urna. Nullam nulla. Donec accumsan porta magna.
+                Mauris a dolor eu elit rutrum commodo. Nam iaculis turpis non augue.
+            </p>
+            <h3>Right aligned</h3>
+            <p class="gray" align="right">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ornare mollis
+                elit. Integer sagittis. Fusce elementum commodo felis. Vivamus lacinia eleifend
+                libero. Donec lacus. Nam sit amet urna. Nullam nulla. Donec accumsan porta magna.
+                Mauris a dolor eu elit rutrum commodo. Nam iaculis turpis non augue.
+            </p>
+            <h3>Justifed</h3>
+            <p class="gray" align="justify">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ornare mollis
+                elit. Integer sagittis. Fusce elementum commodo felis. Vivamus lacinia eleifend
+                libero. Donec lacus. Nam sit amet urna. Nullam nulla. Donec accumsan porta magna.
+                Mauris a dolor eu elit rutrum commodo. Nam iaculis turpis non augue.
+            </p>
+            <hr />
+            <h2>Breakable lines</h2>
+            <span style="word-break: break-all;">http://www.google.com/sjkdhgfasdfgfg/asdfadfsgaefg/adfgafdgadfg/asdfgaedfgsdfg/dasfgasfdgasdfg/adfgadfgasfdg/adfsgafgafg/afdgaddfgadfg/afsdgafdgaddfg/afsdgafgadqfdgaeddfg</span>
+            <hr />
+            <h2>Transparent text</h2>
+            <p style="background-image: url('ImageIcon')">
+                <span style="font-size: 2.5em; font-weight: bold; color: rgba(0, 0, 0, 100); padding: 0 10px">Lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
+            </p>
+            <hr />
+            <h2>Preformatted text</h2>
+            <p>
+                The preformatted text is fully supported, like this C# code demo:
+            </p>
+            <pre style="background-color: white">
+<span style="color: green">//Example of code using preformatted text</span>
+<span style="color: blue">public class</span> HelloWorld
+{
+    <span style="color: blue">public</span> HelloWorld()
+    {
+        <span style="color: #099">MessageBox</span>.Show(<span color="maroon">"Hello World"</span>);
+    }
+}</pre>
+            <br />
+            <hr />
+            <h2>Lists</h2>
+            <p>
+                Both UL and OL tags are supported, though, all the CSS properties related with lists
+                are not still <i>fully supported.</i>. The maximum you will get is bullets and numbers.
+                Image bullets and better numbering support may be added by next release.
+            </p>
+            <h3>Unordered list
+            </h3>
+            <ul>
+                <li>Item one</li>
+                <li>Item two
+                    <ul>
+                        <li>Sub item one</li>
+                        <li>Sub item two</li>
+                        <ul>
+                            <li>Sub-sub item two</li>
+                            <li>Sub-sub item two</li>
+                        </ul>
+                    </ul>
+                </li>
+                <li>Item three</li>
+                <li>Item four</li>
+            </ul>
+            <h3>Ordered list
+            </h3>
+            <ol>
+                <li>Item one</li>
+                <li>Item two</li>
+                <li>Item three</li>
+            </ol>
+            <h3>List nesting</h3>
+            <ol style="list-style-type: upper-roman">
+                <li>Item one</li>
+                <li>Item two</li>
+                <li>Item three
+                    <ul style="margin-top: 0; margin-bottom: 0">
+                        <li>Item one</li>
+                        <li>Item two</li>
+                        <li>Item three</li>
+                    </ul>
+                </li>
+                <li>Item four</li>
+                <li>Item five</li>
+            </ol>
+            <br />
+            <hr />
+            <h2>Right to left direction
+            </h2>
+            <p>
+                It may not behave exactly like the specification says, but it can be useful if you
+                use it for right-to-left languages. All you have to do is to alter the <code>direction</code>
+                property like this:
+            </p>
+            <pre>.myparagraph { <span color="maroon">direction:rtl;</span> }</pre>
+            <h3>Left aligned
+            </h3>
+            <p class="gray" align="left" style="direction: rtl">
+                בניגוד לטענה הרווחת, Lorem Ipsum אינו סתם טקסט רנדומלי. יש לו שורשים וחלקים מתוך הספרות הלטינית הקלאסית מאז 45 לפני הספירה. מה שהופך אותו לעתיק מעל 2000 שנה. ריצ'רד מקלינטוק, פרופסור לטיני בקולג' של המפדן-סידני בורג'יניה, חיפש את אחת המילים המעורפלות ביותר בלטינית - consectetur - מתוך פסקאות של Lorem Ipsum ודרך ציטוטים של המילה מתוך הספרות הקלאסית, הוא גילה מקור בלתי ניתן לערעור. Lorem Ipsum מגיע מתוך מקטע 1.10.32 ו- 1.10.33 של "de Finibus Bonorum et Malorum" (הקיצוניות של הטוב והרע) שנכתב על ידי קיקרו ב-45 לפני הספירה. ספר זה הוא מאמר על תאוריית האתיקה, שהיה מאוד מפורסם בתקופת הרנסנס. השורה הראשונה של "Lorem ipsum dolor sit amet", שמופיעה בטקסטים של Lorem Ipsum, באה משורה במקטע 1.10.32
+            </p>
+            <h3>Center aligned
+            </h3>
+            <p class="gray" align="center" style="direction: rtl">
+                בניגוד לטענה הרווחת, Lorem Ipsum אינו סתם טקסט רנדומלי. יש לו שורשים וחלקים מתוך הספרות הלטינית הקלאסית מאז 45 לפני הספירה. מה שהופך אותו לעתיק מעל 2000 שנה. ריצ'רד מקלינטוק, פרופסור לטיני בקולג' של המפדן-סידני בורג'יניה, חיפש את אחת המילים המעורפלות ביותר בלטינית - consectetur - מתוך פסקאות של Lorem Ipsum ודרך ציטוטים של המילה מתוך הספרות הקלאסית, הוא גילה מקור בלתי ניתן לערעור. Lorem Ipsum מגיע מתוך מקטע 1.10.32 ו- 1.10.33 של "de Finibus Bonorum et Malorum" (הקיצוניות של הטוב והרע) שנכתב על ידי קיקרו ב-45 לפני הספירה. ספר זה הוא מאמר על תאוריית האתיקה, שהיה מאוד מפורסם בתקופת הרנסנס. השורה הראשונה של "Lorem ipsum dolor sit amet", שמופיעה בטקסטים של Lorem Ipsum, באה משורה במקטע 1.10.32
+            </p>
+            <h3>Right aligned
+            </h3>
+            <p class="gray" align="right" style="direction: rtl">
+                בניגוד לטענה הרווחת, Lorem Ipsum אינו סתם טקסט רנדומלי. יש לו שורשים וחלקים מתוך הספרות הלטינית הקלאסית מאז 45 לפני הספירה. מה שהופך אותו לעתיק מעל 2000 שנה. ריצ'רד מקלינטוק, פרופסור לטיני בקולג' של המפדן-סידני בורג'יניה, חיפש את אחת המילים המעורפלות ביותר בלטינית - consectetur - מתוך פסקאות של Lorem Ipsum ודרך ציטוטים של המילה מתוך הספרות הקלאסית, הוא גילה מקור בלתי ניתן לערעור. Lorem Ipsum מגיע מתוך מקטע 1.10.32 ו- 1.10.33 של "de Finibus Bonorum et Malorum" (הקיצוניות של הטוב והרע) שנכתב על ידי קיקרו ב-45 לפני הספירה. ספר זה הוא מאמר על תאוריית האתיקה, שהיה מאוד מפורסם בתקופת הרנסנס. השורה הראשונה של "Lorem ipsum dolor sit amet", שמופיעה בטקסטים של Lorem Ipsum, באה משורה במקטע 1.10.32
+            </p>
+            <h3>Justifed
+            </h3>
+            <p class="gray" align="justify" style="direction: rtl">
+                בניגוד לטענה הרווחת, Lorem Ipsum אינו סתם טקסט רנדומלי. יש לו שורשים וחלקים מתוך הספרות הלטינית הקלאסית מאז 45 לפני הספירה. מה שהופך אותו לעתיק מעל 2000 שנה. ריצ'רד מקלינטוק, פרופסור לטיני בקולג' של המפדן-סידני בורג'יניה, חיפש את אחת המילים המעורפלות ביותר בלטינית - consectetur - מתוך פסקאות של Lorem Ipsum ודרך ציטוטים של המילה מתוך הספרות הקלאסית, הוא גילה מקור בלתי ניתן לערעור. Lorem Ipsum מגיע מתוך מקטע 1.10.32 ו- 1.10.33 של "de Finibus Bonorum et Malorum" (הקיצוניות של הטוב והרע) שנכתב על ידי קיקרו ב-45 לפני הספירה. ספר זה הוא מאמר על תאוריית האתיקה, שהיה מאוד מפורסם בתקופת הרנסנס. השורה הראשונה של "Lorem ipsum dolor sit amet", שמופיעה בטקסטים של Lorem Ipsum, באה משורה במקטע 1.10.32
+            </p>
+            <blockquote>
+            </blockquote>
+        </blockquote>
+    </body>
+</html>

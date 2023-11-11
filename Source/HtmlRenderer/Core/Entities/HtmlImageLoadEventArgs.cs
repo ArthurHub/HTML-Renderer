@@ -26,7 +26,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Entities
     /// <param name="path">the path to the image to load (file path or URL)</param>
     /// <param name="image">the image to use</param>
     /// <param name="imageRectangle">optional: limit to specific rectangle in the loaded image</param>
-    public delegate void HtmlImageLoadCallback(string path, Object image, RRect imageRectangle);
+    public delegate Task HtmlImageLoadCallbackAsync(string path, Object image, RRect imageRectangle);
 
     /// <summary>
     /// Invoked when an image is about to be loaded by file path, URL or inline data in 'img' element or background-image CSS style.<br/>
@@ -59,7 +59,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Entities
         /// <summary>
         /// Callback used to allow setting image externally and async.
         /// </summary>
-        private readonly HtmlImageLoadCallback _callback;
+        private readonly HtmlImageLoadCallbackAsync _callback;
 
         #endregion
 
@@ -70,7 +70,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Entities
         /// <param name="src">the source of the image (file path or Uri)</param>
         /// <param name="attributes">collection of all the attributes that are defined on the image element</param>
         /// <param name="callback">Callback used to allow setting image externally and async.</param>
-        internal HtmlImageLoadEventArgs(string src, Dictionary<string, string> attributes, HtmlImageLoadCallback callback)
+        internal HtmlImageLoadEventArgs(string src, Dictionary<string, string> attributes, HtmlImageLoadCallbackAsync callback)
         {
             _src = src;
             _attributes = attributes;

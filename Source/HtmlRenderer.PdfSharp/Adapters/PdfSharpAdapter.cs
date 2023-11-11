@@ -10,8 +10,8 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using PdfSharp.Drawing;
-using PdfSharp.Pdf;
+using PdfSharpCore.Drawing;
+using PdfSharpCore.Pdf;
 using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
@@ -114,7 +114,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
 
         protected override RImage ImageFromStreamInt(Stream memoryStream)
         {
-            return new ImageAdapter(XImage.FromStream(memoryStream));
+            return new ImageAdapter(XImage.FromStream(() => memoryStream));
         }
 
         protected override RFont CreateFontInt(string family, double size, RFontStyle style)

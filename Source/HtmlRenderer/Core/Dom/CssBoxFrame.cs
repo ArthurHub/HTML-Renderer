@@ -12,6 +12,7 @@
 
 using System;
 using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading;
 using TheArtOfDev.HtmlRenderer.Adapters;
@@ -142,16 +143,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         private void LoadYoutubeDataAsync(Uri uri)
         {
-            ThreadPool.QueueUserWorkItem(state =>
+            ThreadPool.QueueUserWorkItem(async state =>
             {
                 try
                 {
                     var apiUri = new Uri(string.Format("http://gdata.youtube.com/feeds/api/videos/{0}?v=2&alt=json", uri.Segments[2]));
 
-                    var client = new WebClient();
-                    client.Encoding = Encoding.UTF8;
-                    client.DownloadStringCompleted += OnDownloadYoutubeApiCompleted;
-                    client.DownloadStringAsync(apiUri);
+                    var client = new HttpClient();
+                    //client.Encoding = Encoding.UTF8;
+                    var response = await client.GetAsync(apiUri);
+                    //client.DownloadStringCompleted += OnDownloadYoutubeApiCompleted;
+                    //client.DownloadStringAsync(apiUri);
                 }
                 catch (Exception ex)
                 {
@@ -278,16 +280,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         private void LoadVimeoDataAsync(Uri uri)
         {
-            ThreadPool.QueueUserWorkItem(state =>
+            ThreadPool.QueueUserWorkItem(async state =>
             {
                 try
                 {
                     var apiUri = new Uri(string.Format("http://vimeo.com/api/v2/video/{0}.json", uri.Segments[2]));
 
-                    var client = new WebClient();
-                    client.Encoding = Encoding.UTF8;
-                    client.DownloadStringCompleted += OnDownloadVimeoApiCompleted;
-                    client.DownloadStringAsync(apiUri);
+                    var client = new HttpClient();
+                    var response = await client.GetAsync(apiUri);
+                    //client.Encoding = Encoding.UTF8;
+                    //client.DownloadStringCompleted += OnDownloadVimeoApiCompleted;
+                    //client.DownloadStringAsync(apiUri);
                 }
                 catch (Exception ex)
                 {
@@ -441,12 +444,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Paints the fragment
         /// </summary>
         /// <param name="g">the device to draw to</param>
-        protected override void PaintImp(RGraphics g)
+        protected override async Task PaintImpAsync(RGraphics g)
         {
             if (_videoImageUrl != null && _imageLoadHandler == null)
             {
                 _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
-                _imageLoadHandler.LoadImage(_videoImageUrl, HtmlTag != null ? HtmlTag.Attributes : null);
+                await _imageLoadHandler.LoadImageAsync(_videoImageUrl, HtmlTag != null ? HtmlTag.Attributes : null);
             }
 
             var rects = CommonUtils.GetFirstValueOrDefault(Rectangles);
@@ -554,7 +557,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Assigns words its width and height
         /// </summary>
         /// <param name="g">the device to use</param>
-        internal override void MeasureWordsSize(RGraphics g)
+        internal override async Task MeasureWordsSizeAsync(RGraphics g)
         {
             if (!_wordsSizeMeasured)
             {

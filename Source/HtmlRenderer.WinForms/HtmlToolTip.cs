@@ -18,6 +18,7 @@ using System.Windows.Forms;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.WinForms.Utilities;
+using Timer = System.Windows.Forms.Timer;
 
 namespace TheArtOfDev.HtmlRenderer.WinForms
 {

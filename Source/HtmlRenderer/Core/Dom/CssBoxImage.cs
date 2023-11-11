@@ -67,13 +67,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Paints the fragment
         /// </summary>
         /// <param name="g">the device to draw to</param>
-        protected override void PaintImp(RGraphics g)
+        protected override async Task PaintImpAsync(RGraphics g)
         {
             // load image if it is in visible rectangle
             if (_imageLoadHandler == null)
             {
                 _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
-                _imageLoadHandler.LoadImage(GetAttribute("src"), HtmlTag != null ? HtmlTag.Attributes : null);
+                await _imageLoadHandler.LoadImageAsync(GetAttribute("src"), HtmlTag != null ? HtmlTag.Attributes : null);
             }
 
             var rect = CommonUtils.GetFirstValueOrDefault(Rectangles);
@@ -135,7 +135,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Assigns words its width and height
         /// </summary>
         /// <param name="g">the device to use</param>
-        internal override void MeasureWordsSize(RGraphics g)
+        internal override async Task MeasureWordsSizeAsync(RGraphics g)
         {
             if (!_wordsSizeMeasured)
             {
@@ -144,9 +144,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
 
                     if (this.Content != null && this.Content != CssConstants.Normal)
-                        _imageLoadHandler.LoadImage(this.Content, HtmlTag != null ? HtmlTag.Attributes : null);
+                        await _imageLoadHandler.LoadImageAsync(this.Content, HtmlTag != null ? HtmlTag.Attributes : null);
                     else
-                        _imageLoadHandler.LoadImage(GetAttribute("src"), HtmlTag != null ? HtmlTag.Attributes : null);
+                        await _imageLoadHandler.LoadImageAsync(GetAttribute("src"), HtmlTag != null ? HtmlTag.Attributes : null);
                 }
 
                 MeasureWordSpacing(g);

@@ -504,7 +504,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// </summary>
         /// <param name="htmlSource">the html to init with, init empty if not given</param>
         /// <param name="baseCssData">optional: the stylesheet to init with, init default if not given</param>
-        public void SetHtml(string htmlSource, CssData baseCssData = null)
+        public async Task SetHtml(string htmlSource, CssData baseCssData = null)
         {
             Clear();
             if (!string.IsNullOrEmpty(htmlSource))
@@ -513,7 +513,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 _cssData = baseCssData ?? _adapter.DefaultCssData;
 
                 DomParser parser = new DomParser(_cssParser);
-                _root = parser.GenerateCssTree(htmlSource, this, ref _cssData);
+                (_root, _cssData) = await parser.GenerateCssTreeAsync(htmlSource, this, _cssData);
                 if (_root != null)
                 {
                     _selectionHandler = new SelectionHandler(_root);
@@ -628,7 +628,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// Measures the bounds of box and children, recursively.
         /// </summary>
         /// <param name="g">Device context to draw</param>
-        public void PerformLayout(RGraphics g)
+        public async Task PerformLayout(RGraphics g)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
@@ -638,14 +638,14 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 // if width is not restricted we set it to large value to get the actual later
                 _root.Size = new RSize(_maxSize.Width > 0 ? _maxSize.Width : 99999, 0);
                 _root.Location = _location;
-                _root.PerformLayout(g);
+                await _root.PerformLayoutAsync(g);
 
                 if (_maxSize.Width <= 0.1)
                 {
                     // in case the width is not restricted we need to double layout, first will find the width so second can layout by it (center alignment)
                     _root.Size = new RSize((int)Math.Ceiling(_actualSize.Width), 0);
                     _actualSize = RSize.Empty;
-                    _root.PerformLayout(g);
+                    await _root.PerformLayoutAsync(g);
                 }
 
                 if (!_loadComplete)
@@ -662,7 +662,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// Render the html using the given device.
         /// </summary>
         /// <param name="g">the device to use to render</param>
-        public void PerformPaint(RGraphics g)
+        public async Task PerformPaint(RGraphics g)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
@@ -677,7 +677,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
             if (_root != null)
             {
-                _root.Paint(g);
+                await _root.PaintAsync(g);
             }
 
             g.PopClip();
