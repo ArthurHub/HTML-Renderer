@@ -186,13 +186,13 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp
                     {
                         await container.PerformLayout(g);
 
-                        using (var image = s.Snapshot())
-                        using (var data = image.Encode(SKEncodedImageFormat.Png, 80))
-                        using (var stream = File.OpenWrite(Path.Combine(@"c:\temp\SkiaSharpTests", "layout.png")))
-                        {
-                            // save the data to a stream
-                            data.SaveTo(stream);
-                        }
+                        //using (var image = s.Snapshot())
+                        //using (var data = image.Encode(SKEncodedImageFormat.Png, 80))
+                        //using (var stream = File.OpenWrite(Path.Combine(@"c:\temp\SkiaSharpTests", "layout.png")))
+                        //{
+                        //    // save the data to a stream
+                        //    data.SaveTo(stream);
+                        //}
                     }
 
 

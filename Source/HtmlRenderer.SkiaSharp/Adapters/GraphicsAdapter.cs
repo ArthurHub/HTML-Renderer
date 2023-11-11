@@ -82,6 +82,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
         public override void PushClipExclude(RRect rect)
         { }
 
+        bool _antiAlias = true;
         public override Object SetAntiAliasSmoothingMode()
         {
             /*
@@ -90,7 +91,10 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 
             return prevMode;
             */
-            throw new NotImplementedException();
+
+            var prevMode = _antiAlias;
+            _antiAlias = true;
+            return prevMode;
         }
 
         public override void ReturnPreviousSmoothingMode(Object prevMode)
@@ -100,7 +104,10 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
             {
                 _g.SmoothingMode = (XSmoothingMode)prevMode;
             }*/
-            throw new NotImplementedException();
+            if (prevMode != null)
+            {
+                _antiAlias = (bool)prevMode;
+            }
         }
 
         public override RSize MeasureString(string str, RFont font)
@@ -109,12 +116,12 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
             var realFont = fontAdapter.Font;
             var p = new SKPaint(realFont);
             var width = p.MeasureText(str);
-            var height = realFont.Metrics.XHeight;
+            var height = -realFont.Metrics.Top + realFont.Metrics.Descent;
 
             if (font.Height < 0)
             {
                 var descent = realFont.Metrics.Descent;
-                fontAdapter.SetMetrics((int)height, (int)Math.Round((height - descent + 1f)));
+                fontAdapter.SetMetrics((int)Math.Round(height, MidpointRounding.AwayFromZero), (int)Math.Round((height - descent + 1f), MidpointRounding.AwayFromZero));
             }
 
             return new RSize(width, height);
@@ -128,14 +135,14 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 
         public override void DrawString(string str, RFont font, RColor color, RPoint point, RSize size, bool rtl)
         {
-            //var xBrush = ((BrushAdapter)_adapter.GetSolidBrush(color)).Brush;
+            var skiaFont = ((FontAdapter)font).Font;
             var p = new SKPaint
             {
-                IsAntialias = true,
+                IsAntialias = _antiAlias,
                 FilterQuality = SKFilterQuality.Medium,
                 Color = Utils.Convert(color)
             };
-            _g.DrawText(str, (float)point.X, (float)point.Y, ((FontAdapter)font).Font, p);
+            _g.DrawText(str, (float)point.X, (float)point.Y - skiaFont.Metrics.Ascent, skiaFont, p);
         }
 
         public override RBrush GetTextureBrush(RImage image, RRect dstRect, RPoint translateTransformLocation)
@@ -161,7 +168,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
         {
             var p = new SKPaint
             {
-                IsAntialias = true
+                IsAntialias = _antiAlias
             };
 
             _g.DrawLine((float)x1, (float)y1, (float)x2, (float)y2, p);
@@ -171,7 +178,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
         {
             var p = new SKPaint
             {
-                IsAntialias = true
+                IsAntialias = _antiAlias
             };
 
             _g.DrawRect((float)x, (float)y, (float)width, (float)height, p);
@@ -189,7 +196,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
             {
                 var p = new SKPaint
                 {
-                    IsAntialias = true
+                    IsAntialias = _antiAlias
                 };
                 _g.DrawRect((float)x, (float)y, (float)width, (float)height, p);
             }
@@ -209,7 +216,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
         {
             var p = new SKPaint
             {
-                IsAntialias = true
+                IsAntialias = _antiAlias
             };
             _g.DrawPath(((GraphicsPathAdapter)path).GraphicsPath, p);
         }
@@ -219,7 +226,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
             //(XBrush)((BrushAdapter)brush).Brush, 
             var p = new SKPaint
             {
-                IsAntialias = true
+                IsAntialias = _antiAlias
             };
 
             _g.DrawPath(((GraphicsPathAdapter)path).GraphicsPath, p);
@@ -229,7 +236,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
         {
             var p = new SKPaint
             {
-                IsAntialias = true
+                IsAntialias = _antiAlias
             };
 
             if (points != null && points.Length > 0)

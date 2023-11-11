@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\HtmlRenderer.PdfSharp\HtmlRenderer.PdfSharp.csproj" />
+    <ProjectReference Include="..\..\HtmlRenderer.SkiaSharp\HtmlRenderer.SkiaSharp.csproj" />
+    <ProjectReference Include="..\..\HtmlRenderer\HtmlRenderer.csproj" />
+    <ProjectReference Include="..\HtmlRenderer.Demo.Common\HtmlRenderer.Demo.Common.csproj" />
+  </ItemGroup>
+
+</Project>

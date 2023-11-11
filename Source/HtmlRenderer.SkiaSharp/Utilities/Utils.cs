@@ -69,7 +69,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Utilities
         /// </summary>
         public static RRect Convert(SKRect r)
         {
-            return new RRect(r.Left, r.Bottom, r.Width, r.Height);
+            return new RRect(r.Left, r.Top, r.Width, r.Height);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Utilities
         /// </summary>
         public static SKRect Convert(RRect r)
         {
-            return new SKRect((float)r.Left, (float)r.Bottom, (float)r.Width, (float)r.Height);
+            return new SKRect((float)r.X, (float)r.Y, (float)(r.X + r.Width), (float)(r.Y + r.Height));
         }
 
         /// <summary>
