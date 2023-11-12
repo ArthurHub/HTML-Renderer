@@ -7,6 +7,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!--When debugging, we'll have this folder here that we really don't care about.  Probs should put it under 'bin'-->
+  <ItemGroup>
+    <Compile Remove="Output\**" />
+    <EmbeddedResource Remove="Output\**" />
+    <None Remove="Output\**" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\HtmlRenderer.PdfSharp\HtmlRenderer.PdfSharp.csproj" />
     <ProjectReference Include="..\..\HtmlRenderer.SkiaSharp\HtmlRenderer.SkiaSharp.csproj" />

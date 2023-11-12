@@ -33,6 +33,25 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
         public static SKBrush White = new SKBrush(SKColors.White);
         public static SKBrush Transparent = new SKBrush(SKColors.Transparent);
 
+        public SKPaint GetPaint()
+        {
+            if (this.Type == Types.Solid)
+            {
+                return new SKPaint
+                {
+                    Color = Color
+                };
+            }
+            else
+            {
+                //TODO: linear gradient.
+                return new SKPaint
+                {
+                    Color = Color
+                };
+            }
+        }
+
         public Types Type { get; set; }
 
         public SKColor Color { get; set; }

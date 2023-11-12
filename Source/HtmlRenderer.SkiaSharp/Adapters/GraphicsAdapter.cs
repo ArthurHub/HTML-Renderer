@@ -115,8 +115,21 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
             var fontAdapter = (FontAdapter)font;
             var realFont = fontAdapter.Font;
             var p = new SKPaint(realFont);
-            var width = p.MeasureText(str);
-            var height = -realFont.Metrics.Top + realFont.Metrics.Descent;
+            var boundingRect = new SKRect();
+            var measuredWidth = p.MeasureText(str, ref boundingRect);
+
+            float width;
+            if (str == " ")
+            {
+                width = measuredWidth;
+            }
+            else
+            {
+                //The bounding rect width looks a bit odd.  We'll take the midpoint until I can work out why this is.
+                width = measuredWidth;// measuredWidth;// (boundingRect.Width + measuredWidth) / 2;
+            }
+
+            var height = realFont.Metrics.XMax + realFont.Metrics.XMin;
 
             if (font.Height < 0)
             {
@@ -135,6 +148,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 
         public override void DrawString(string str, RFont font, RColor color, RPoint point, RSize size, bool rtl)
         {
+            //var xBrush = ((BrushAdapter)_adapter.GetSolidBrush(color)).Brush;
             var skiaFont = ((FontAdapter)font).Font;
             var p = new SKPaint
             {
@@ -166,78 +180,52 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 
         public override void DrawLine(RPen pen, double x1, double y1, double x2, double y2)
         {
-            var p = new SKPaint
-            {
-                IsAntialias = _antiAlias
-            };
-
-            _g.DrawLine((float)x1, (float)y1, (float)x2, (float)y2, p);
+            _g.DrawLine((float)x1, (float)y1, (float)x2, (float)y2, GetPaint(pen));
         }
 
         public override void DrawRectangle(RPen pen, double x, double y, double width, double height)
         {
-            var p = new SKPaint
-            {
-                IsAntialias = _antiAlias
-            };
-
-            _g.DrawRect((float)x, (float)y, (float)width, (float)height, p);
+            _g.DrawRect((float)x, (float)y, (float)width, (float)height, GetPaint(pen));
         }
 
         public override void DrawRectangle(RBrush brush, double x, double y, double width, double height)
         {
-            var xBrush = ((BrushAdapter)brush).Brush;
-            var xTextureBrush = xBrush as XTextureBrush;
-            if (xTextureBrush != null)
+            var untypedBrush = ((BrushAdapter)brush).Brush;
+            if (untypedBrush is XTextureBrush textureBrush)
             {
-                xTextureBrush.DrawRectangle(_g, (float)x, (float)y, (float)width, (float)height);
+                textureBrush.DrawRectangle(_g, (float)x, (float)y, (float)width, (float)height);
             }
-            else
+            else if (untypedBrush is SKBrush skBrush)
             {
-                var p = new SKPaint
-                {
-                    IsAntialias = _antiAlias
-                };
+                var p = skBrush.GetPaint().Clone();
+                p.IsAntialias = _antiAlias;
                 _g.DrawRect((float)x, (float)y, (float)width, (float)height, p);
             }
         }
 
         public override void DrawImage(RImage image, RRect destRect, RRect srcRect)
         {
-            _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect), Utils.Convert(srcRect));
+            ((ImageAdapter)image).DrawImage(_g, Utils.Convert(destRect), Utils.Convert(srcRect));
         }
 
         public override void DrawImage(RImage image, RRect destRect)
         {
-            _g.DrawImage(((ImageAdapter)image).Image, Utils.Convert(destRect));
+            ((ImageAdapter)image).DrawImage(_g, Utils.Convert(destRect));
         }
 
         public override void DrawPath(RPen pen, RGraphicsPath path)
         {
-            var p = new SKPaint
-            {
-                IsAntialias = _antiAlias
-            };
-            _g.DrawPath(((GraphicsPathAdapter)path).GraphicsPath, p);
+            _g.DrawPath(((GraphicsPathAdapter)path).GraphicsPath, GetPaint(pen));
         }
 
         public override void DrawPath(RBrush brush, RGraphicsPath path)
         {
-            //(XBrush)((BrushAdapter)brush).Brush, 
-            var p = new SKPaint
-            {
-                IsAntialias = _antiAlias
-            };
-
-            _g.DrawPath(((GraphicsPathAdapter)path).GraphicsPath, p);
+            _g.DrawPath(((GraphicsPathAdapter)path).GraphicsPath, GetPaint(brush));
         }
 
         public override void DrawPolygon(RBrush brush, RPoint[] points)
         {
-            var p = new SKPaint
-            {
-                IsAntialias = _antiAlias
-            };
+            var p = GetPaint(brush);
 
             if (points != null && points.Length > 0)
             {
@@ -246,6 +234,21 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
                 path.AddPoly(Utils.Convert(points));
                 _g.DrawPath(path, p);
             }
+        }
+
+        private SKPaint GetPaint(RBrush brush)
+        {
+            SKBrush skBrush = (SKBrush)((BrushAdapter)brush).Brush;
+            var p = skBrush.GetPaint().Clone();
+            p.IsAntialias = _antiAlias;
+            return p;
+        }
+
+        private SKPaint GetPaint(RPen pen)
+        {
+            var skPaint =((PenAdapter)pen).Pen.Clone();
+            skPaint.IsAntialias = _antiAlias;
+            return skPaint;
         }
 
         #endregion

@@ -12,6 +12,8 @@
 
 using SkiaSharp;
 using TheArtOfDev.HtmlRenderer.Adapters;
+using static System.Net.Mime.MediaTypeNames;
+using TheArtOfDev.HtmlRenderer.SkiaSharp.Utilities;
 
 
 namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
@@ -42,6 +44,11 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
             get { return _image; }
         }
 
+        /// <summary>
+        /// Picture if this represents a structured image, eg, SVG.  Not implemented yet!!
+        /// </summary>
+        public SKPicture Picture { get; set; }
+
         public override double Width
         {
             get { return _image.Width; }
@@ -55,6 +62,27 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
         public override void Dispose()
         {
             _image.Dispose();
+        }
+
+        internal void DrawImage(SKCanvas canvas, SKRect dstRect, SKRect? srcRect = null)
+        {
+
+            if (Picture != null)
+            {
+                //TODO: support the overload that passes a source rect.   Using Matrix overload perhaps?..
+                canvas.DrawPicture(Picture, dstRect.Location);
+            }
+            else
+            {
+                if (srcRect != null)
+                {
+                    canvas.DrawImage(Image, dstRect, srcRect.Value);
+                }
+                else
+                {
+                    canvas.DrawImage(Image, dstRect);
+                }
+            }
         }
     }
 }

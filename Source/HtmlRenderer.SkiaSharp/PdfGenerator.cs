@@ -10,12 +10,14 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using HtmlRenderer.Core.Dom;
 using SkiaSharp;
 using System;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 using TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters;
+using TheArtOfDev.HtmlRenderer.SkiaSharp.Utilities;
 
 namespace TheArtOfDev.HtmlRenderer.SkiaSharp
 {
@@ -24,6 +26,8 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp
     /// </summary>
     public static class PdfGenerator
     {
+        public static readonly float DefaultDPI = 72f;
+
         /// <summary>
         /// Adds a font mapping from <paramref name="fromFamily"/> to <paramref name="toFamily"/> iff the <paramref name="fromFamily"/> is not found.<br/>
         /// When the <paramref name="fromFamily"/> font is used in rendered html and is not found in existing 
@@ -100,7 +104,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp
             EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             // create PDF document to render the HTML into
-            var document = SKDocument.CreatePdf(outputStream, 72f);
+            var document = SKDocument.CreatePdf(outputStream, DefaultDPI);
 
             // add rendered PDF pages to document
             await AddPdfPagesAsync(document, html, config, cssData, stylesheetLoad, imageLoad);
@@ -148,8 +152,10 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp
             SKSize orgPageSize;
             // get the size of each page to layout the HTML in
             if (config.PageSize == PageSize.A4)
-                //8.3 x 11.7 inches in Portrait
-                orgPageSize = new SKSize(8.3f * 72, 11.7f * 72);
+                //210 * 297
+                orgPageSize = new SKSize(
+                    CssUnitConversion.Convert(210f, Core.Dom.CssUnit.Milimeters, Core.Dom.CssUnit.Inches) * DefaultDPI,
+                    CssUnitConversion.Convert(297f, Core.Dom.CssUnit.Milimeters, Core.Dom.CssUnit.Inches) * DefaultDPI);
             else
                 orgPageSize = config.ManualPageSize;
 

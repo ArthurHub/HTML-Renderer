@@ -75,7 +75,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 
         protected override RPen CreatePen(RColor color)
         {
-            return new PenAdapter(new SKPen(Utils.Convert(color)));
+            return new PenAdapter(new SKPaint { Color = Utils.Convert(color) });
         }
 
         protected override RBrush CreateSolidBrush(RColor color)
@@ -134,9 +134,12 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 
             var typeface = SKTypeface.FromFamilyName(family, fontStyle);
 
-            var xFont = new SKFont(typeface, (float)size);
+            var skFont = new SKFont(typeface, (float)size);
+            skFont.LinearMetrics = true;
+            skFont.Subpixel = true;
+            
 
-            return new FontAdapter(xFont);
+            return new FontAdapter(skFont);
         }
 
         protected override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style)

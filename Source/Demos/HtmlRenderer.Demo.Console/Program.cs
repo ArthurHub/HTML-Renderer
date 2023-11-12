@@ -22,7 +22,7 @@ var samples = SamplesLoader.TestSamples;
 
 foreach (var htmlSample in samples)
 {
-    skia.GenerateSampleAsync(htmlSample);
+    await skia.GenerateSampleAsync(htmlSample);
     await pdfSharp.GenerateSampleAsync(htmlSample);
 }
 
