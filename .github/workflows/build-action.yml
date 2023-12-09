@@ -1,0 +1,26 @@
+#Builds on every commit to main.
+name: CI Build
+
+on:
+  push:
+    branches: [ features/net60 ]
+  pull_request:
+    branches: [ features/net60 ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    
+    - name: Restore dependencies
+      run: dotnet restore Source/HtmlRenderer.sln
+
+    - name: Debug Build
+      run: dotnet build Source/HtmlRenderer.sln --no-restore -p:Version=${{ format('0.9.{0}', github.run_number) }}

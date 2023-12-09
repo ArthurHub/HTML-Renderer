@@ -1,17 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<PackageId>ThreeCS.HtmlRenderer.SkiaSharp</PackageId>
+		<Description>Skia Sharp target for HtmlRenderer.</Description>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="SkiaSharp" Version="2.88.6" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" Version="2.88.6" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\HtmlRenderer\HtmlRenderer.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\HtmlRenderer\HtmlRenderer.csproj" />
+	</ItemGroup>
 
 </Project>

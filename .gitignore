@@ -111,3 +111,4 @@ UpgradeLog*.XML
 
 Source/.vs/
 /Source/Demos/HtmlRenderer.Demo.Console/Output
+dist/

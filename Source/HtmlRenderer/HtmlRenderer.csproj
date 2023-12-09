@@ -1,23 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<PackageId>ThreeCS.HtmlRenderer</PackageId>
+		<Description>'new' .net port of HtmlRenderer.  Would be nice to merge back to arthub one day.</Description>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Core\Utils\ImageError.png" />
-    <None Remove="Core\Utils\ImageLoad.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Core\Utils\ImageError.png" />
+		<None Remove="Core\Utils\ImageLoad.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Utils\ImageError.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Core\Utils\ImageLoad.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Core\Utils\ImageError.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Core\Utils\ImageLoad.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+	</ItemGroup>
 
 </Project>
