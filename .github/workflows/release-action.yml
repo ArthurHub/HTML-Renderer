@@ -65,4 +65,4 @@ jobs:
         asset_content_type: application/octet-stream
 
     - name: Push to Nuget
-      run: dotnet nuget push dist/ThreeCS.HtmlRenderer.*.${{ steps.version.outputs.version_str }}.nupkg --api-key ${{ secrets.NUGET_ORG_MSTANCOMBE_KEY }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push dist/ThreeCS.HtmlRenderer*.${{ steps.version.outputs.version_str }}.nupkg --api-key ${{ secrets.NUGET_ORG_MSTANCOMBE_KEY }} --source https://api.nuget.org/v3/index.json
