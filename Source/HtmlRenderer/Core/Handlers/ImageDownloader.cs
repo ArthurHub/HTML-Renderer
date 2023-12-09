@@ -84,7 +84,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             {
                 var tempPath = Path.GetTempFileName();
                 if (async)
-                    ThreadPool.QueueUserWorkItem(DownloadImageFromUrlAsync, new DownloadData(imageUri, tempPath, filePath));
+                {
+                    //Don't wait for the image to be downloaded, just start the task.  TODO: cancellation tokens.
+                    var task = DownloadImageFromUrl(imageUri, tempPath, filePath);
+                }
                 else
                     await DownloadImageFromUrl(imageUri, tempPath, filePath);
             }
@@ -107,84 +110,54 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// </summary>
         private async Task DownloadImageFromUrl(Uri source, string tempPath, string filePath)
         {
+            Exception downloadException = null;
             try
             {
                 using (var client = new HttpClient())
                 {
                     _clients.Add(client);
-                    //client.DownloadFile(source, tempPath);
-                    var response = await client.GetStreamAsync(source);
-                    //OnDownloadImageCompleted(client, source, tempPath, filePath, null, false);
+                    var response = await client.GetAsync(source);
+                    response.EnsureSuccessStatusCode();
+                    OnDownloadImageCompleted(response, source, tempPath, filePath, downloadException, false);
                 }
             }
-            catch (Exception ex)
+            catch (TaskCanceledException)
             {
-                OnDownloadImageCompleted(null, source, tempPath, filePath, ex, false);
-            }
-        }
-
-        /// <summary>
-        /// Download the requested file in the URI to the given file path.<br/>
-        /// Use async sockets API to download from web, <see cref="OnDownloadImageAsyncCompleted"/>.
-        /// </summary>
-        /// <param name="data">key value pair of URL and file info to download the file to</param>
-        private async void DownloadImageFromUrlAsync(object data)
-        {
-            var downloadData = (DownloadData)data;
-            try
-            {
-                var client = new HttpClient();
-                _clients.Add(client);
-                //client.DownloadFileCompleted += OnDownloadImageAsyncCompleted;
-                //client.DownloadFileAsync(downloadData._uri, downloadData._tempPath, downloadData);
-                var response = await client.GetStreamAsync(downloadData._uri);
+                //If the download was cancelled, don't fire anything
+                return;
             }
             catch (Exception ex)
             {
-                OnDownloadImageCompleted(null, downloadData._uri, downloadData._tempPath, downloadData._filePath, ex, false);
+                downloadException = ex;
             }
-        }
-
-        /// <summary>
-        /// On download image complete to local file.<br/>
-        /// If the download canceled do nothing, if failed report error.
-        /// </summary>
-        private void OnDownloadImageAsyncCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            var downloadData = (DownloadData)e.UserState;
-            try
-            {
-                using (var client = (WebClient)sender)
-                {
-                    client.DownloadFileCompleted -= OnDownloadImageAsyncCompleted;
-                    OnDownloadImageCompleted(client, downloadData._uri, downloadData._tempPath, downloadData._filePath, e.Error, e.Cancelled);
-                }
-            }
-            catch (Exception ex)
-            {
-                OnDownloadImageCompleted(null, downloadData._uri, downloadData._tempPath, downloadData._filePath, ex, false);
-            }
+            
+            
         }
 
         /// <summary>
         /// Checks if the file was downloaded and raises the cachedFileCallback from <see cref="_imageDownloadCallbacks"/>
         /// </summary>
-        private void OnDownloadImageCompleted(WebClient client, Uri source, string tempPath, string filePath, Exception error, bool cancelled)
+        private async Task OnDownloadImageCompleted(HttpResponseMessage response, Uri source, string tempPath, string filePath, Exception error, bool cancelled)
         {
             if (!cancelled)
             {
                 if (error == null)
                 {
-                    var contentType = CommonUtils.GetResponseContentType(client);
-                    if (contentType == null || !contentType.StartsWith("image", StringComparison.OrdinalIgnoreCase))
+                    var mediaType = response.Content.Headers.ContentType?.MediaType;
+                    if (mediaType == null || !mediaType.StartsWith("image", StringComparison.OrdinalIgnoreCase))
                     {
-                        error = new Exception("Failed to load image, not image content type: " + contentType);
+                        error = new Exception("Failed to load image, not image content type: " + mediaType);
                     }
 
-                }
+                    //Save the content to the temp path.
+                    using (var responseStream = response.Content.ReadAsStream())
+                    {
+                        using (var tempFile = File.OpenWrite(tempPath))
+                        {
+                            await responseStream.CopyToAsync(tempFile);
+                        }
+                    }
 
-                if (error == null)
-                {
                     if (File.Exists(tempPath))
                     {
                         try

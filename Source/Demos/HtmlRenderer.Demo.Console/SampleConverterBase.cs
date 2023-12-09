@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -21,6 +23,9 @@ namespace HtmlRenderer.Demo.Console
             _sampleRunIdentifier = sampleRunIdentifier;
             _basePath = basePath;
             _thisTypeName = this.GetType().Name;
+
+            this.OnImageLoaded += ImageLoad;
+            this.OnStyleLoaded += StylesheetLoad;
         }
 
         public CssData CssData => null;
@@ -32,9 +37,18 @@ namespace HtmlRenderer.Demo.Console
             return Path.Combine(path, sample.FullName + _thisTypeName + "_" + ".pdf");
         }
 
-        internal void ImageLoad(object? sender, HtmlStylesheetLoadEventArgs e)
+        protected EventHandler<HtmlImageLoadEventArgs> OnImageLoaded;
+        protected EventHandler<HtmlStylesheetLoadEventArgs> OnStyleLoaded;
+
+        internal void ImageLoad(object? sender, HtmlImageLoadEventArgs e)
         {
-            throw new NotImplementedException();
+            //The samples use some well known image resources, so do that here.
+            var imageStream = DemoUtils.GetImageStream(e.Src);
+            if (imageStream != null)
+            {
+                e.Handled = true;
+                e.Callback(imageStream);
+            }
         }
 
         internal void StylesheetLoad(object? sender, HtmlStylesheetLoadEventArgs e)

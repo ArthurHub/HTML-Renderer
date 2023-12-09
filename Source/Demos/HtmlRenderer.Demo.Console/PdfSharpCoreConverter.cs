@@ -24,7 +24,7 @@ namespace HtmlRenderer.Demo.Console
             config.MarginTop = 0;
             config.MarginBottom = 0;
 
-            var pdf = await PdfGenerator.GeneratePdfAsync(sample.Html, config);
+            var pdf = await PdfGenerator.GeneratePdfAsync(sample.Html, config, imageLoad: OnImageLoaded);
             pdf.Save(GetSamplePath(sample));
         }
     }

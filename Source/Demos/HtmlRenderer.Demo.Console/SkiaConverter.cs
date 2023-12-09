@@ -27,7 +27,7 @@ namespace HtmlRenderer.Demo.Console
 
             using (var fileStream = File.Open(GetSamplePath(sample), FileMode.CreateNew))
             {
-                await PdfGenerator.GeneratePdfAsync(sample.Html, fileStream, config);
+                await PdfGenerator.GeneratePdfAsync(sample.Html, fileStream, config, imageLoad: OnImageLoaded);
                 fileStream.Flush();
             }
         }
