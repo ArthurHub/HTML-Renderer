@@ -6,6 +6,7 @@
 		<Nullable>disable</Nullable>
 		<PackageId>ThreeCS.HtmlRenderer</PackageId>
 		<Description>'new' .net port of HtmlRenderer.  Would be nice to merge back to arthub one day.</Description>
+		<PackageProjectUrl>https://github.com/mstancombe/HTML-Renderer/tree/features/net60</PackageProjectUrl>
 	</PropertyGroup>
 
 	<ItemGroup>

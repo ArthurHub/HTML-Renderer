@@ -6,6 +6,7 @@
 		<Nullable>enable</Nullable>
 		<PackageId>ThreeCS.HtmlRenderer.SkiaSharp</PackageId>
 		<Description>Skia Sharp target for HtmlRenderer.</Description>
+		<PackageProjectUrl>https://github.com/mstancombe/HTML-Renderer/tree/features/net60</PackageProjectUrl>
 	</PropertyGroup>
 
 	<ItemGroup>
