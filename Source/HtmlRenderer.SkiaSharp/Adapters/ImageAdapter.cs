@@ -12,8 +12,7 @@
 
 using SkiaSharp;
 using TheArtOfDev.HtmlRenderer.Adapters;
-using static System.Net.Mime.MediaTypeNames;
-using TheArtOfDev.HtmlRenderer.SkiaSharp.Utilities;
+using SKSvg = SkiaSharp.Extended.Svg.SKSvg;
 
 
 namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
@@ -24,9 +23,11 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
     internal sealed class ImageAdapter : RImage
     {
         /// <summary>
-        /// the underline win-forms image.
+        /// the underlying image.  This may be either a bitmap (_image) or an svg (_svg).
         /// </summary>
-        private readonly SKImage _image;
+        private SKImage _image;
+
+        private readonly SKSvg? _svg;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object"/> class.
@@ -36,51 +37,70 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
             _image = image;
         }
 
+        public ImageAdapter(SKSvg svg)
+        {
+            _svg = svg;
+        }
+
+
         /// <summary>
         /// the underline SkiaSharp image.
         /// </summary>
         public SKImage Image
         {
-            get { return _image; }
+            get 
+            { 
+                if (_image == null && _svg != null) 
+                {
+                    //Render the image from the picture, as this is being used in a texture brush.
+                    _image = SKImage.FromBitmap(new SKBitmap((int)_svg.CanvasSize.Width, (int)_svg.CanvasSize.Height));
+                }
+                return _image;
+            }
         }
 
         /// <summary>
-        /// Picture if this represents a structured image, eg, SVG.  Not implemented yet!!
+        /// Picture if this represents a structured image, eg, SVG.
         /// </summary>
         public SKPicture Picture { get; set; }
 
         public override double Width
         {
-            get { return _image.Width; }
+            get { return _image?.Width ?? ((int?)_svg?.CanvasSize.Width) ?? 0; }
         }
 
         public override double Height
         {
-            get { return _image.Height; }
+            get { return _image?.Height ?? ((int?)_svg?.CanvasSize.Height) ?? 0; }
         }
 
         public override void Dispose()
         {
-            _image.Dispose();
+            _image?.Dispose();
+            _svg?.Picture?.Dispose();
         }
 
         internal void DrawImage(SKCanvas canvas, SKRect dstRect, SKRect? srcRect = null)
         {
 
-            if (Picture != null)
+            if (_svg != null)
             {
                 //TODO: support the overload that passes a source rect.   Using Matrix overload perhaps?..
-                canvas.DrawPicture(Picture, dstRect.Location);
+                var matrix = SKMatrix.CreateTranslation(dstRect.Left, dstRect.Top);
+                matrix.ScaleX = dstRect.Width / _svg.Picture.CullRect.Width;
+                matrix.ScaleY = dstRect.Height / _svg.Picture.CullRect.Height;
+
+                canvas.DrawPicture(_svg.Picture, ref matrix);
             }
             else
             {
                 if (srcRect != null)
                 {
-                    canvas.DrawImage(Image, dstRect, srcRect.Value);
+                    canvas.DrawImage(_image, dstRect, srcRect.Value);
                 }
                 else
                 {
-                    canvas.DrawImage(Image, dstRect);
+                    canvas.DrawImage(_image, dstRect);
                 }
             }
         }

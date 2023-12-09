@@ -114,8 +114,19 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 
         protected override RImage ImageFromStreamInt(Stream memoryStream)
         {
-            SKBitmap bitmap = SKBitmap.Decode(memoryStream);
-            return new ImageAdapter(SKImage.FromBitmap(bitmap));
+            var image = SKImage.FromEncodedData(memoryStream);
+            if (image == null)
+            {
+                //Maybe an SVG?  In future, let's make the html renderer pass media type if it's available.
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                var skSvg = new global::SkiaSharp.Extended.Svg.SKSvg();
+                skSvg.Load(memoryStream);
+                return new ImageAdapter(skSvg);
+            }
+            else
+            {
+                return new ImageAdapter(image);
+            }
         }
 
         protected override RFont CreateFontInt(string family, double size, RFontStyle style)

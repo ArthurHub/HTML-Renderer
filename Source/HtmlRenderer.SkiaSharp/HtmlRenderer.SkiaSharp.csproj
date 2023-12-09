@@ -11,6 +11,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" Version="2.88.6" />
+		<PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
 	</ItemGroup>
 
 	<ItemGroup>
