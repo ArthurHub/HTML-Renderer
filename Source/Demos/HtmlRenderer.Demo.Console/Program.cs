@@ -11,7 +11,7 @@ if (args.Length > 0)
 }
 
 //Probably won't be running a suite of tests more than once a second, so this will do.
-string runIdentifier = DateTime.Now.ToString("ddMMyyyy-hhMMss");
+string runIdentifier = DateTime.Now.ToString("ddMMyyyy-hhmmss");
 
 var skia = new SkiaConverter(runIdentifier, basePath);
 var pdfSharp = new PdfSharpCoreConverter(runIdentifier, basePath);
@@ -23,10 +23,10 @@ var samples = SamplesLoader.TestSamples;
 foreach (var htmlSample in samples)
 {
     ////Just doing one test here.  Comment this for all of them.
-    //if (!htmlSample.FullName.Contains("05")) continue;
+    if (!htmlSample.FullName.Contains("02", StringComparison.OrdinalIgnoreCase)) continue;
 
     await skia.GenerateSampleAsync(htmlSample);
-    await pdfSharp.GenerateSampleAsync(htmlSample);
+    //await pdfSharp.GenerateSampleAsync(htmlSample);
 }
 
 

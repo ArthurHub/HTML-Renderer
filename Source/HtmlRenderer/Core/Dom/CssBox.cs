@@ -13,6 +13,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
@@ -652,9 +653,25 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     else
                     {
                         left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
-                        top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+                        top = (prevSibling == null && ParentBox != null 
+                            ? ParentBox.ClientTop 
+                            : ParentBox == null 
+                                ? Location.Y 
+                                : 0) 
+                            + MarginTopCollapse(prevSibling) + 
+                            (prevSibling != null 
+                                ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth 
+                                : 0);
+
                         Location = new RPoint(left, top);
-                        ActualBottom = top;
+                        
+                        if (this.PageBreakBefore == CssConstants.Always || prevSibling?.PageBreakAfter == CssConstants.Always)
+                        {
+                            this.BreakPage(true);
+                        }
+
+                        //Start with the assumption this is zero height.
+                        ActualBottom = Location.Y;
                     }
                 }
 
@@ -1118,24 +1135,33 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             return value;
         }
 
-        public bool BreakPage()
+        public bool BreakPage(bool force = false)
         {
             var container = this.HtmlContainer;
 
+            bool shouldBreakToNextPage;
+
             if (this.Size.Height >= container.PageSize.Height)
-                return false;
-
-            var remTop = (this.Location.Y - container.MarginTop) % container.PageSize.Height;
-            var remBottom = (this.ActualBottom - container.MarginTop) % container.PageSize.Height;
-
-            if (remTop > remBottom)
+                shouldBreakToNextPage = false;
+            else
             {
+                var remTop = (this.Location.Y - container.MarginTop) % container.PageSize.Height;
+                var remBottom = (this.ActualBottom - container.MarginTop) % container.PageSize.Height;
+
+                shouldBreakToNextPage = remTop > remBottom;
+            }
+
+            if (force || shouldBreakToNextPage)
+            {
+                var remTop = (this.Location.Y - container.MarginTop) % container.PageSize.Height;
                 var diff = container.PageSize.Height - remTop;
                 this.Location = new RPoint(this.Location.X, this.Location.Y + diff + 1);
                 return true;
             }
-
-            return false;
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>

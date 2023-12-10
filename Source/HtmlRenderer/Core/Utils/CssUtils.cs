@@ -122,6 +122,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.PaddingRight;
                 case "padding-top":
                     return cssBox.PaddingTop;
+                case "page-break-before":
+                    return cssBox.PageBreakBefore;
+                case "page-break-after":
+                    return cssBox.PageBreakAfter;
                 case "page-break-inside":
                     return cssBox.PageBreakInside;
                 case "left":
@@ -293,6 +297,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     break;
                 case "padding-top":
                     cssBox.PaddingTop = value;
+                    break;
+                case "page-break-before":
+                    cssBox.PageBreakBefore = value;
+                    break;
+                case "page-break-after":
+                    cssBox.PageBreakAfter = value;
                     break;
                 case "page-break-inside":
                     cssBox.PageBreakInside = value;

@@ -84,6 +84,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _paddingBottom = "0";
         private string _paddingRight = "0";
         private string _paddingTop = "0";
+        private string _pageBreakBefore = CssConstants.Auto;
+        private string _pageBreakAfter = CssConstants.Auto;
         private string _pageBreakInside = CssConstants.Auto;
         private string _right;
         private string _textAlign = string.Empty;
@@ -397,6 +399,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 _paddingTop = value;
                 _actualPaddingTop = double.NaN;
+            }
+        }
+
+        public string PageBreakBefore
+        {
+            get { return _pageBreakBefore; }
+            set
+            {
+                _pageBreakBefore = value;
+            }
+        }
+
+        public string PageBreakAfter
+        {
+            get { return _pageBreakAfter; }
+            set
+            {
+                _pageBreakAfter = value;
             }
         }
 
