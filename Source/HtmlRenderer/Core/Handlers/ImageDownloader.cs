@@ -106,39 +106,47 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 
         /// <summary>
         /// Download the requested file in the URI to the given file path.<br/>
-        /// Use async sockets API to download from web, <see cref="OnDownloadImageAsyncCompleted"/>.
         /// </summary>
         private async Task DownloadImageFromUrl(Uri source, string tempPath, string filePath)
         {
-            Exception downloadException = null;
             try
             {
                 using (var client = new HttpClient())
                 {
                     _clients.Add(client);
                     var response = await client.GetAsync(source);
-                    response.EnsureSuccessStatusCode();
-                    OnDownloadImageCompleted(response, source, tempPath, filePath, downloadException, false);
+                    await OnDownloadImageCompleted(response, source, tempPath, filePath);
+                    _clients.Remove(client);
                 }
             }
             catch (TaskCanceledException)
             {
-                //If the download was cancelled, don't fire anything
+                //If the download was cancelled, don't bother raising this.
                 return;
             }
-            catch (Exception ex)
-            {
-                downloadException = ex;
-            }
-            
-            
         }
 
         /// <summary>
         /// Checks if the file was downloaded and raises the cachedFileCallback from <see cref="_imageDownloadCallbacks"/>
         /// </summary>
-        private async Task OnDownloadImageCompleted(HttpResponseMessage response, Uri source, string tempPath, string filePath, Exception error, bool cancelled)
+        private async Task OnDownloadImageCompleted(HttpResponseMessage response, Uri source, string tempPath, string filePath)
         {
+            Exception error = null;
+            bool cancelled = false;
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (TaskCanceledException)
+            {
+                cancelled = true;
+            }
+            catch(Exception ex)
+            { 
+                error = ex;
+            }
+
             if (!cancelled)
             {
                 if (error == null)

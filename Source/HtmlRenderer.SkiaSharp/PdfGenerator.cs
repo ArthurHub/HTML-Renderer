@@ -149,6 +149,11 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, 
             EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
+            //TODO: https://github.com/mono/SkiaSharp/issues/848
+            //Perhaps we could subset the fonts so the pdf's generated weren't as large.  Success has been reported
+            //with this aproach:
+            //https://github.com/mono/SkiaSharp/issues/848#issuecomment-1013134644
+
             SKSize orgPageSize;
             // get the size of each page to layout the HTML in
             if (config.PageSize == PageSize.A4)
@@ -186,34 +191,26 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp
                     container.MarginTop = config.MarginTop;
 
                     // layout the HTML with the page width restriction to know how many pages are required
-                    var docImageInfo = new SKImageInfo((int)orgPageSize.Width, (int)orgPageSize.Height * 7);
+                    var docImageInfo = new SKImageInfo((int)pageSize.Width, (int)pageSize.Height);
                     using (var s = SKSurface.Create(docImageInfo))
                     using (var g = s.Canvas)
                     {
                         await container.PerformLayout(g);
-
-                        //using (var image = s.Snapshot())
-                        //using (var data = image.Encode(SKEncodedImageFormat.Png, 80))
-                        //using (var stream = File.OpenWrite(Path.Combine(@"c:\temp\SkiaSharpTests", "layout.png")))
-                        //{
-                        //    // save the data to a stream
-                        //    data.SaveTo(stream);
-                        //}
                     }
-
 
                     // while there is un-rendered HTML, create another PDF page and render with proper offset for the next page
                     double scrollOffset = 0;
                     while (scrollOffset > -container.ActualSize.Height)
                     {
-                        using (var page = document.BeginPage(orgPageSize.Width, orgPageSize.Height))
+                        using (var pageCanvas = document.BeginPage(orgPageSize.Width, orgPageSize.Height))
                         {
-                            page.ClipRect(new SKRect(config.MarginLeft, config.MarginTop, pageSize.Width, pageSize.Height));
+                            pageCanvas.ClipRect(new SKRect(config.MarginLeft, config.MarginTop, config.MarginLeft + pageSize.Width, config.MarginTop + pageSize.Height));
 
                             container.ScrollOffset = new SKPoint(0, (float)scrollOffset);
 
-                            await container.PerformPaint(page);
+                            await container.PerformPaint(pageCanvas);
 
+                            pageCanvas.Flush();
                             document.EndPage();
                         }
                         scrollOffset -= pageSize.Height;
@@ -236,6 +233,9 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp
         /// </summary>
         private static void HandleLinks(SKDocument document, HtmlContainer container, SKSize orgPageSize, SKSize pageSize)
         {
+            //TODO: Annotations might work for this..
+            //https://learn.microsoft.com/en-us/dotnet/api/skiasharp.skcanvas.drawannotation?view=skiasharp-2.88
+
             /*
             foreach (var link in container.GetLinks())
             {
