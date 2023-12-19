@@ -11,7 +11,7 @@ if (args.Length > 0)
 }
 
 //Probably won't be running a suite of tests more than once a second, so this will do.
-string runIdentifier = DateTime.Now.ToString("ddMMyyyy-hhmmss");
+string runIdentifier = DateTime.Now.ToString("yyyyMMdd-hhmmss");
 
 var skia = new SkiaConverter(runIdentifier, basePath);
 var pdfSharp = new PdfSharpCoreConverter(runIdentifier, basePath);
