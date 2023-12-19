@@ -74,8 +74,8 @@ namespace TheArtOfDev.HtmlRenderer.Demo.Common
                     a:link { text-decoration: none; }
                     a:hover { text-decoration: underline; }
                     .gray    { color:gray; }
-                    .example { background-color:#efefef; corner-radius:5px; padding:0.5em; }
-                    .whitehole { background-color:white; corner-radius:10px; padding:15px; }
+                    .example { background-color:#efefef; border-radius:5px; padding:0.5em; }
+                    .whitehole { background-color:white; border-radius:10px; padding:15px; }
                     .caption { font-size: 1.1em }
                     .comment { color: green; margin-bottom: 5px; margin-left: 3px; }
                     .comment2 { color: green; }";
