@@ -119,7 +119,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
             {
                 //Maybe an SVG?  In future, let's make the html renderer pass media type if it's available.
                 memoryStream.Seek(0, SeekOrigin.Begin);
-                var skSvg = new global::SkiaSharp.Extended.Svg.SKSvg();
+                var skSvg = new Svg.Skia.SKSvg();
                 skSvg.Load(memoryStream);
                 return new ImageAdapter(skSvg);
             }

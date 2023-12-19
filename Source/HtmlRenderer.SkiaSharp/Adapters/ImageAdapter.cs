@@ -12,8 +12,7 @@
 
 using SkiaSharp;
 using TheArtOfDev.HtmlRenderer.Adapters;
-using SKSvg = SkiaSharp.Extended.Svg.SKSvg;
-
+using Svg.Skia;
 
 namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 {
@@ -25,8 +24,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
         /// <summary>
         /// the underlying image.  This may be either a bitmap (_image) or an svg (_svg).
         /// </summary>
-        private SKImage _image;
-
+        private SKImage? _image;
         private readonly SKSvg? _svg;
 
         /// <summary>
@@ -42,36 +40,31 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
             _svg = svg;
         }
 
-
         /// <summary>
         /// the underline SkiaSharp image.
         /// </summary>
         public SKImage Image
         {
             get 
-            { 
-                if (_image == null && _svg != null) 
+            {
+                if (_image == null && _svg?.Picture != null) 
                 {
                     //Render the image from the picture, as this is being used in a texture brush.
-                    _image = SKImage.FromBitmap(new SKBitmap((int)_svg.CanvasSize.Width, (int)_svg.CanvasSize.Height));
+                    _image = SKImage.FromPicture(_svg.Picture, _svg.Picture.CullRect.Size.ToSizeI());
                 }
+
                 return _image;
             }
         }
 
-        /// <summary>
-        /// Picture if this represents a structured image, eg, SVG.
-        /// </summary>
-        public SKPicture Picture { get; set; }
-
         public override double Width
         {
-            get { return _image?.Width ?? ((int?)_svg?.CanvasSize.Width) ?? 0; }
+            get { return _image?.Width ?? _svg?.Picture?.CullRect.Width ?? 0; }
         }
 
         public override double Height
         {
-            get { return _image?.Height ?? ((int?)_svg?.CanvasSize.Height) ?? 0; }
+            get { return _image?.Height ?? _svg?.Picture?.CullRect.Height ?? 0; }
         }
 
         public override void Dispose()
@@ -82,7 +75,6 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 
         internal void DrawImage(SKCanvas canvas, SKRect dstRect, SKRect? srcRect = null)
         {
-
             if (_svg != null)
             {
                 //TODO: support the overload that passes a source rect.   Using Matrix overload perhaps?..
