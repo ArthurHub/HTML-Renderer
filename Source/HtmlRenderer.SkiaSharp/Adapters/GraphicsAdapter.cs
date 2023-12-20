@@ -20,7 +20,7 @@ using TheArtOfDev.HtmlRenderer.SkiaSharp.Utilities;
 namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 {
     /// <summary>
-    /// Adapter for WinForms Graphics for core.
+    /// Adapter for Skia Graphics for core.
     /// </summary>
     internal sealed class GraphicsAdapter : RGraphics
     {

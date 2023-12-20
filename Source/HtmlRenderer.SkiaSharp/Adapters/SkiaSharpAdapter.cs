@@ -75,7 +75,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 
         protected override RPen CreatePen(RColor color)
         {
-            return new PenAdapter(new SKPaint { Color = Utils.Convert(color) });
+            return new PenAdapter(new SKPaint { Color = Utils.Convert(color), IsStroke = true });
         }
 
         protected override RBrush CreateSolidBrush(RColor color)
