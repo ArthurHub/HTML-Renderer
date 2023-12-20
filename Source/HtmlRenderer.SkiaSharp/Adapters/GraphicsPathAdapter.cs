@@ -19,14 +19,14 @@ using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 {
     /// <summary>
-    /// Adapter for WinForms graphics path object for core.
+    /// Adapter for Skia graphics path object for core.
     /// </summary>
     internal sealed class GraphicsPathAdapter : RGraphicsPath
     {
         /// <summary>
-        /// The actual PdfSharp graphics path instance.
+        /// The actual SKPath graphics path instance.
         /// </summary>
-        private readonly SKPath _graphicsPath = new SKPath();
+        private readonly SKPath _graphicsPath = new();
 
         /// <summary>
         /// the last point added to the path to begin next segment from
@@ -34,7 +34,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
         private RPoint _lastPoint;
 
         /// <summary>
-        /// The actual PdfSharp graphics path instance.
+        /// The actual SKPath graphics path instance.
         /// </summary>
         public SKPath GraphicsPath
         {
@@ -44,6 +44,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
         public override void Start(double x, double y)
         {
             _lastPoint = new RPoint(x, y);
+            _graphicsPath.MoveTo((float)x, (float)y);
         }
 
         public override void LineTo(double x, double y)
@@ -56,12 +57,16 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
         {
             float left = (float)(Math.Min(x, _lastPoint.X) - (corner == Corner.TopRight || corner == Corner.BottomRight ? size : 0));
             float top = (float)(Math.Min(y, _lastPoint.Y) - (corner == Corner.BottomLeft || corner == Corner.BottomRight ? size : 0));
-            _graphicsPath.ArcTo(left, top, (float)size * 2, (float)size * 2, GetStartAngle(corner));
+
+            var rect = SKRect.Create(left, top, (float)size * 2, (float)size * 2);
+            _graphicsPath.ArcTo(rect, GetStartAngle(corner), 90f, false);
             _lastPoint = new RPoint(x, y);
         }
 
         public override void Dispose()
-        { }
+        {
+            _graphicsPath.Dispose();
+        }
 
         /// <summary>
         /// Get arc start angle for the given corner.

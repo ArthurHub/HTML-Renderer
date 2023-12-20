@@ -1346,7 +1346,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     RGraphicsPath roundrect = null;
                     if (IsRounded)
                     {
-                        roundrect = RenderUtils.GetRoundRect(g, rect, ActualCornerNw, ActualCornerNe, ActualCornerSe, ActualCornerSw);
+                        roundrect = RenderUtils.GetRoundRect(g, rect, ActualBorderRadiusTopLeft, ActualBorderRadiusTopRight, ActualBorderRadiusBottomRight, ActualBorderRadiusBottomLeft);
                     }
 
                     Object prevMode = null;
