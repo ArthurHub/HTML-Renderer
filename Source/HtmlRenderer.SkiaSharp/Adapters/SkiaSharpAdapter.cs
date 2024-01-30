@@ -43,7 +43,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
             AddFontFamilyMapping("monospace", "Courier New");
             AddFontFamilyMapping("Helvetica", "Arial");
 
-            var manager = SKFontManager.CreateDefault();
+            var manager = SKFontManager.Default;
             var families = manager.GetFontFamilies();
 
             foreach (var family in families)
