@@ -43,7 +43,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
             AddFontFamilyMapping("monospace", "Courier New");
             AddFontFamilyMapping("Helvetica", "Arial");
 
-            var manager = SKFontManager.CreateDefault();
+            var manager = SKFontManager.Default;
             var families = manager.GetFontFamilies();
 
             foreach (var family in families)
@@ -75,7 +75,7 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 
         protected override RPen CreatePen(RColor color)
         {
-            return new PenAdapter(new SKPen(Utils.Convert(color)));
+            return new PenAdapter(new SKPaint { Color = Utils.Convert(color), IsStroke = true });
         }
 
         protected override RBrush CreateSolidBrush(RColor color)
@@ -114,8 +114,19 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 
         protected override RImage ImageFromStreamInt(Stream memoryStream)
         {
-            SKBitmap bitmap = SKBitmap.Decode(memoryStream);
-            return new ImageAdapter(SKImage.FromBitmap(bitmap));
+            var image = SKImage.FromEncodedData(memoryStream);
+            if (image == null)
+            {
+                //Maybe an SVG?  In future, let's make the html renderer pass media type if it's available.
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                var skSvg = new Svg.Skia.SKSvg();
+                skSvg.Load(memoryStream);
+                return new ImageAdapter(skSvg);
+            }
+            else
+            {
+                return new ImageAdapter(image);
+            }
         }
 
         protected override RFont CreateFontInt(string family, double size, RFontStyle style)
@@ -134,9 +145,12 @@ namespace TheArtOfDev.HtmlRenderer.SkiaSharp.Adapters
 
             var typeface = SKTypeface.FromFamilyName(family, fontStyle);
 
-            var xFont = new SKFont(typeface, (float)size);
+            var skFont = new SKFont(typeface, (float)size);
+            skFont.LinearMetrics = true;
+            skFont.Subpixel = true;
+            
 
-            return new FontAdapter(xFont);
+            return new FontAdapter(skFont);
         }
 
         protected override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style)

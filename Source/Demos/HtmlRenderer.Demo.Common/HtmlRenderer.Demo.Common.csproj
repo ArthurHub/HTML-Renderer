@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
   </PropertyGroup>
@@ -78,6 +78,7 @@
     <None Remove="TestSamples\33.Fixed position.htm" />
     <None Remove="TestSamples\34.Breaking pages 1 - Paragraphs.htm" />
     <None Remove="TestSamples\35.Breaking pages 2 - Tables.htm" />
+    <None Remove="TestSamples\36.Breaking Pages Divs.htm" />
   </ItemGroup>
 
   <ItemGroup>
@@ -277,6 +278,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="TestSamples\34.Breaking pages 1 - Paragraphs.htm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestSamples\36.Breaking Pages Divs.htm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="TestSamples\35.Breaking pages 2 - Tables.htm">

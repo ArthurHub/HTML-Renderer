@@ -96,16 +96,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.BorderSpacing;
                 case "border-collapse":
                     return cssBox.BorderCollapse;
-                case "corner-radius":
-                    return cssBox.CornerRadius;
-                case "corner-nw-radius":
-                    return cssBox.CornerNwRadius;
-                case "corner-ne-radius":
-                    return cssBox.CornerNeRadius;
-                case "corner-se-radius":
-                    return cssBox.CornerSeRadius;
-                case "corner-sw-radius":
-                    return cssBox.CornerSwRadius;
+                case "border-radius":
+                    return cssBox.BorderRadius;
+                case "border-top-left-radius":
+                    return cssBox.BorderTopLeftRadius;
+                case "border-top-right-radius":
+                    return cssBox.BorderTopRightRadius;
+                case "border-bottom-right-radius":
+                    return cssBox.BorderBottomRightRadius;
+                case "border-bottom-left-radius":
+                    return cssBox.BorderBottomLeftRadius;
                 case "margin-bottom":
                     return cssBox.MarginBottom;
                 case "margin-left":
@@ -122,6 +122,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.PaddingRight;
                 case "padding-top":
                     return cssBox.PaddingTop;
+                case "page-break-before":
+                    return cssBox.PageBreakBefore;
+                case "page-break-after":
+                    return cssBox.PageBreakAfter;
                 case "page-break-inside":
                     return cssBox.PageBreakInside;
                 case "left":
@@ -255,20 +259,20 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                 case "border-collapse":
                     cssBox.BorderCollapse = value;
                     break;
-                case "corner-radius":
-                    cssBox.CornerRadius = value;
+                case "border-radius":
+                    cssBox.BorderRadius = value;
                     break;
-                case "corner-nw-radius":
-                    cssBox.CornerNwRadius = value;
+                case "border-top-left-radius":
+                    cssBox.BorderTopLeftRadius = value;
                     break;
-                case "corner-ne-radius":
-                    cssBox.CornerNeRadius = value;
+                case "border-top-right-radius":
+                    cssBox.BorderTopRightRadius = value;
                     break;
-                case "corner-se-radius":
-                    cssBox.CornerSeRadius = value;
+                case "border-bottom-right-radius":
+                    cssBox.BorderBottomRightRadius = value;
                     break;
-                case "corner-sw-radius":
-                    cssBox.CornerSwRadius = value;
+                case "border-bottom-left-radius":
+                    cssBox.BorderBottomLeftRadius = value;
                     break;
                 case "margin-bottom":
                     cssBox.MarginBottom = value;
@@ -293,6 +297,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     break;
                 case "padding-top":
                     cssBox.PaddingTop = value;
+                    break;
+                case "page-break-before":
+                    cssBox.PageBreakBefore = value;
+                    break;
+                case "page-break-after":
+                    cssBox.PageBreakAfter = value;
                     break;
                 case "page-break-inside":
                     cssBox.PageBreakInside = value;

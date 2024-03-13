@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HtmlRenderer.Demo.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\..\\Output"
+    }
+  }
+}

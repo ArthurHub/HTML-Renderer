@@ -54,11 +54,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _bottom;
         private string _color = "black";
         private string _content = "normal";
-        private string _cornerNwRadius = "0";
-        private string _cornerNeRadius = "0";
-        private string _cornerSeRadius = "0";
-        private string _cornerSwRadius = "0";
-        private string _cornerRadius = "0";
+        private string _borderTopLeftRadius = "0";
+        private string _borderTopRightRadius = "0";
+        private string _borderBottomRightRadius = "0";
+        private string _borderBottomLeftRadius = "0";
+        private string _borderRadius = "0";
         private string _emptyCells = "show";
         private string _direction = "ltr";
         private string _display = "inline";
@@ -84,6 +84,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _paddingBottom = "0";
         private string _paddingRight = "0";
         private string _paddingTop = "0";
+        private string _pageBreakBefore = CssConstants.Auto;
+        private string _pageBreakAfter = CssConstants.Auto;
         private string _pageBreakInside = CssConstants.Auto;
         private string _right;
         private string _textAlign = string.Empty;
@@ -114,10 +116,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         private RSize _size;
 
-        private double _actualCornerNw = double.NaN;
-        private double _actualCornerNe = double.NaN;
-        private double _actualCornerSw = double.NaN;
-        private double _actualCornerSe = double.NaN;
+        private double _actualBorderRadiusTopLeft = double.NaN;
+        private double _actualBorderRadiusTopRight = double.NaN;
+        private double _actualBorderRadiusBottomLeft = double.NaN;
+        private double _actualBorderRadiusBottomRight = double.NaN;
         private RColor _actualColor = RColor.Empty;
         private double _actualBackgroundGradientAngle = double.NaN;
         private double _actualHeight = double.NaN;
@@ -274,66 +276,71 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             set { _borderCollapse = value; }
         }
 
-        public string CornerRadius
+        public string BorderRadius
         {
-            get { return _cornerRadius; }
+            get { return _borderRadius; }
             set
             {
                 MatchCollection r = RegexParserUtils.Match(RegexParserUtils.CssLength, value);
 
                 switch (r.Count)
                 {
-                    case 1:
-                        CornerNeRadius = r[0].Value;
-                        CornerNwRadius = r[0].Value;
-                        CornerSeRadius = r[0].Value;
-                        CornerSwRadius = r[0].Value;
+					// Radius is set for all 4 sides
+					case 1:
+                        BorderTopRightRadius = r[0].Value;
+                        BorderTopLeftRadius = r[0].Value;
+                        BorderBottomRightRadius = r[0].Value;
+                        BorderBottomLeftRadius = r[0].Value;
                         break;
-                    case 2:
-                        CornerNeRadius = r[0].Value;
-                        CornerNwRadius = r[0].Value;
-                        CornerSeRadius = r[1].Value;
-                        CornerSwRadius = r[1].Value;
+					// top-left-and-bottom-right | top-right-and-bottom-left
+					case 2:
+						BorderTopLeftRadius = r[0].Value;
+                        BorderBottomRightRadius = r[0].Value;
+                        BorderTopRightRadius = r[1].Value;
+                        BorderBottomLeftRadius = r[1].Value;
                         break;
-                    case 3:
-                        CornerNeRadius = r[0].Value;
-                        CornerNwRadius = r[1].Value;
-                        CornerSeRadius = r[2].Value;
+					// top-left | top-right-and-bottom-left | bottom-right
+					case 3:
+						BorderTopLeftRadius = r[0].Value;
+                        BorderTopRightRadius = r[1].Value;
+						BorderBottomLeftRadius = r[1].Value;
+                        BorderBottomRightRadius = r[2].Value;
                         break;
-                    case 4:
-                        CornerNeRadius = r[0].Value;
-                        CornerNwRadius = r[1].Value;
-                        CornerSeRadius = r[2].Value;
-                        CornerSwRadius = r[3].Value;
+					// top-left | top-right | bottom-right | bottom-left 
+					case 4:
+                        BorderTopLeftRadius = r[0].Value;
+                        BorderTopRightRadius = r[1].Value;
+                        BorderBottomRightRadius = r[2].Value;
+                        BorderBottomLeftRadius = r[3].Value;
                         break;
                 }
 
-                _cornerRadius = value;
+                _borderRadius = value;
             }
         }
 
-        public string CornerNwRadius
+        public string BorderTopLeftRadius
         {
-            get { return _cornerNwRadius; }
-            set { _cornerNwRadius = value; }
+            get { return _borderTopLeftRadius; }
+            set { _borderTopLeftRadius = value; }
         }
 
-        public string CornerNeRadius
+        public string BorderTopRightRadius
         {
-            get { return _cornerNeRadius; }
-            set { _cornerNeRadius = value; }
+            get { return _borderTopRightRadius; }
+            set { _borderTopRightRadius = value; }
         }
 
-        public string CornerSeRadius
+        public string BorderBottomRightRadius
         {
-            get { return _cornerSeRadius; }
-            set { _cornerSeRadius = value; }
+            get { return _borderBottomRightRadius; }
+            set { _borderBottomRightRadius = value; }
         }
 
-        public string CornerSwRadius
+        public string BorderBottomLeftRadius
         {
-            get { return _cornerSwRadius; }
-            set { _cornerSwRadius = value; }
+            get { return _borderBottomLeftRadius; }
+            set { _borderBottomLeftRadius = value; }
         }
 
         public string MarginBottom
@@ -397,6 +404,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 _paddingTop = value;
                 _actualPaddingTop = double.NaN;
+            }
+        }
+
+        public string PageBreakBefore
+        {
+            get { return _pageBreakBefore; }
+            set
+            {
+                _pageBreakBefore = value;
+            }
+        }
+
+        public string PageBreakAfter
+        {
+            get { return _pageBreakAfter; }
+            set
+            {
+                _pageBreakAfter = value;
             }
         }
 
@@ -1105,62 +1130,62 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Gets the actual length of the north west corner
+        /// Gets the actual length of the top left border
         /// </summary>
-        public double ActualCornerNw
+        public double ActualBorderRadiusTopLeft
         {
             get
             {
-                if (double.IsNaN(_actualCornerNw))
+                if (double.IsNaN(_actualBorderRadiusTopLeft))
                 {
-                    _actualCornerNw = CssValueParser.ParseLength(CornerNwRadius, 0, this);
+                    _actualBorderRadiusTopLeft = CssValueParser.ParseLength(BorderTopLeftRadius, 0, this);
                 }
-                return _actualCornerNw;
+                return _actualBorderRadiusTopLeft;
             }
         }
 
         /// <summary>
-        /// Gets the actual length of the north east corner
+        /// Gets the actual length of the top right border
         /// </summary>
-        public double ActualCornerNe
+        public double ActualBorderRadiusTopRight
         {
             get
             {
-                if (double.IsNaN(_actualCornerNe))
+                if (double.IsNaN(_actualBorderRadiusTopRight))
                 {
-                    _actualCornerNe = CssValueParser.ParseLength(CornerNeRadius, 0, this);
+                    _actualBorderRadiusTopRight = CssValueParser.ParseLength(BorderTopRightRadius, 0, this);
                 }
-                return _actualCornerNe;
+                return _actualBorderRadiusTopRight;
             }
         }
 
         /// <summary>
-        /// Gets the actual length of the south east corner
+        /// Gets the actual length of the bottom right border
         /// </summary>
-        public double ActualCornerSe
+        public double ActualBorderRadiusBottomRight
         {
             get
             {
-                if (double.IsNaN(_actualCornerSe))
+                if (double.IsNaN(_actualBorderRadiusBottomRight))
                 {
-                    _actualCornerSe = CssValueParser.ParseLength(CornerSeRadius, 0, this);
+                    _actualBorderRadiusBottomRight = CssValueParser.ParseLength(BorderBottomRightRadius, 0, this);
                 }
-                return _actualCornerSe;
+                return _actualBorderRadiusBottomRight;
             }
         }
 
         /// <summary>
-        /// Gets the actual length of the south west corner
+        /// Gets the actual length of the bottom left border
         /// </summary>
-        public double ActualCornerSw
+        public double ActualBorderRadiusBottomLeft
         {
             get
             {
-                if (double.IsNaN(_actualCornerSw))
+                if (double.IsNaN(_actualBorderRadiusBottomLeft))
                 {
-                    _actualCornerSw = CssValueParser.ParseLength(CornerSwRadius, 0, this);
+                    _actualBorderRadiusBottomLeft = CssValueParser.ParseLength(BorderBottomLeftRadius, 0, this);
                 }
-                return _actualCornerSw;
+                return _actualBorderRadiusBottomLeft;
             }
         }
 
@@ -1169,7 +1194,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         public bool IsRounded
         {
-            get { return ActualCornerNe > 0f || ActualCornerNw > 0f || ActualCornerSe > 0f || ActualCornerSw > 0f; }
+            get { return ActualBorderRadiusTopRight > 0f || ActualBorderRadiusTopLeft > 0f || ActualBorderRadiusBottomRight > 0f || ActualBorderRadiusBottomLeft > 0f; }
         }
 
         /// <summary>
@@ -1534,11 +1559,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     _borderBottomStyle = p._borderBottomStyle;
                     _borderLeftStyle = p._borderLeftStyle;
                     _bottom = p._bottom;
-                    _cornerNwRadius = p._cornerNwRadius;
-                    _cornerNeRadius = p._cornerNeRadius;
-                    _cornerSeRadius = p._cornerSeRadius;
-                    _cornerSwRadius = p._cornerSwRadius;
-                    _cornerRadius = p._cornerRadius;
+                    _borderTopLeftRadius = p._borderTopLeftRadius;
+                    _borderTopRightRadius = p._borderTopRightRadius;
+                    _borderBottomRightRadius = p._borderBottomRightRadius;
+                    _borderBottomLeftRadius = p._borderBottomLeftRadius;
+                    _borderRadius = p._borderRadius;
                     _display = p._display;
                     _float = p._float;
                     _height = p._height;

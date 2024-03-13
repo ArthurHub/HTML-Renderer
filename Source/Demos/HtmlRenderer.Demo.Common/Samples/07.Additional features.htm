@@ -27,16 +27,16 @@
                 vertical-align: middle;
             }
 
-            .c1 { corner-radius: 0px; }
+            .c1 { border-radius: 0px; }
 
-            .c2 { corner-radius: 10px; }
+            .c2 { border-radius: 10px; }
 
-            .c3 { corner-radius: 0px 10px 10px 0px; }
+            .c3 { border-radius: 0px 10px 10px 0px; }
 
-            .c4 { corner-radius: 18px; }
+            .c4 { border-radius: 18px; }
 
             .c5 {
-                corner-radius: 10px;
+                border-radius: 10px;
                 border: outset #BBBB00 2px;
             }
 
@@ -121,15 +121,15 @@
             <p>
                 In this renderer, the rounded corners are achieved by adding this CSS properties:</p>
             <ul>
-                <li><code>corner-ne-radius: (length)</code> Indicates the radius of the north-east corner.
+                <li><code>border-top-right-radius: (length)</code> Indicates the radius of the top-right corner.
                     Not ineritted</li>
-                <li><code>corner-se-radius: (length)</code> Indicates the radius of the south-east corner.
+                <li><code>border-bottom-right-radius: (length)</code> Indicates the radius of the bottom-right corner.
                     Not ineritted</li>
-                <li><code>corner-sw-radius: (length)</code> Indicates the radius of the south-west corner.
+                <li><code>border-bottom-left-radius: (length)</code> Indicates the radius of the bottom-left corner.
                     Not ineritted</li>
-                <li><code>corner-nw-radius: (length)</code> Indicates the radius of the north-west corner.
+                <li><code>border-top-left-radius: (length)</code> Indicates the radius of the top-left corner.
                     Not ineritted</li>
-                <li><code>corner-radius: (length){1,4}</code> Shorthand for the other corner properties.
+                <li><code>border-radius: (length){1,4}</code> Shorthand for the other corner properties.
                     Not ineritted</li>
             </ul>
             <!-- Corners table -->
@@ -160,11 +160,11 @@
                 </tr>
             </table>
             <pre>.c1, .c2, .c3, .c4, .c5 { background-color:olive; border:0px; color:white; vertical-align:middle; }
-.c1  { corner-radius: 0px }
-.c2  { corner-radius: 10px }
-.c3  { corner-radius: 0px 10px 10px 0px }
-.c4  { corner-radius: 18px }
-.c5  { corner-radius: 10px; border: outset #bb0 2px; }</pre>
+.c1  { border-radius: 0px }
+.c2  { border-radius: 10px }
+.c3  { border-radius: 0px 10px 10px 0px }
+.c4  { border-radius: 18px }
+.c5  { border-radius: 10px; border: outset #bb0 2px; }</pre>
         </blockquote>
     </body>
 </html>

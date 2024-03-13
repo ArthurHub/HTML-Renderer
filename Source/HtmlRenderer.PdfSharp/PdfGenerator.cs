@@ -68,12 +68,12 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
-        public static PdfDocument GeneratePdf(string html, PageSize pageSize, int margin = 20, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+        public static async Task<PdfDocument> GeneratePdfAsync(string html, PageSize pageSize, int margin = 20, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             var config = new PdfGenerateConfig();
             config.PageSize = pageSize;
             config.SetMargins(margin);
-            return GeneratePdf(html, config, cssData, stylesheetLoad, imageLoad);
+            return await GeneratePdfAsync(html, config, cssData, stylesheetLoad, imageLoad);
         }
 
         /// <summary>
@@ -85,13 +85,13 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
-        public static PdfDocument GeneratePdf(string html, PdfGenerateConfig config, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+        public static async Task<PdfDocument> GeneratePdfAsync(string html, PdfGenerateConfig config, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             // create PDF document to render the HTML into
             var document = new PdfDocument();
 
             // add rendered PDF pages to document
-            AddPdfPages(document, html, config, cssData, stylesheetLoad, imageLoad);
+            await AddPdfPagesAsync(document, html, config, cssData, stylesheetLoad, imageLoad);
 
             return document;
         }
@@ -107,12 +107,12 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
-        public static void AddPdfPages(PdfDocument document, string html, PageSize pageSize, int margin = 20, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+        public static async Task AddPdfPagesAsync(PdfDocument document, string html, PageSize pageSize, int margin = 20, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             var config = new PdfGenerateConfig();
             config.PageSize = pageSize;
             config.SetMargins(margin);
-            AddPdfPages(document, html, config, cssData, stylesheetLoad, imageLoad);
+            await AddPdfPagesAsync(document, html, config, cssData, stylesheetLoad, imageLoad);
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the generated image of the html</returns>
-        public static void AddPdfPages(PdfDocument document, string html, PdfGenerateConfig config, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
+        public static async Task AddPdfPagesAsync(PdfDocument document, string html, PdfGenerateConfig config, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             XSize orgPageSize;
             // get the size of each page to layout the HTML in
@@ -163,7 +163,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                     // layout the HTML with the page width restriction to know how many pages are required
                     using (var measure = XGraphics.CreateMeasureContext(pageSize, XGraphicsUnit.Point, XPageDirection.Downwards))
                     {
-                        container.PerformLayout(measure);
+                        await container.PerformLayoutAsync(measure);
                     }
 
                     // while there is un-rendered HTML, create another PDF page and render with proper offset for the next page
@@ -180,7 +180,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                             g.IntersectClip(new XRect(0, 0, page.Width, page.Height));
 
                             container.ScrollOffset = new XPoint(0, scrollOffset);
-                            container.PerformPaint(g);
+                            await container.PerformPaintAsync(g);
                         }
                         scrollOffset -= pageSize.Height;
                     }

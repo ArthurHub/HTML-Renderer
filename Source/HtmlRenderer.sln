@@ -5,23 +5,25 @@ VisualStudioVersion = 17.5.33103.201
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer", "HtmlRenderer\HtmlRenderer.csproj", "{CC492ED6-C849-4703-BCB8-3680B2B7E014}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.PdfSharp", "HtmlRenderer.PdfSharp\HtmlRenderer.PdfSharp.csproj", "{C0C1CD37-272F-4659-B7E6-953F86BEEEC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.PdfSharp", "HtmlRenderer.PdfSharp\HtmlRenderer.PdfSharp.csproj", "{C0C1CD37-272F-4659-B7E6-953F86BEEEC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.WinForms", "HtmlRenderer.WinForms\HtmlRenderer.WinForms.csproj", "{2847DA9E-DE87-4B4F-8597-9165ECAA6D58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.WinForms", "HtmlRenderer.WinForms\HtmlRenderer.WinForms.csproj", "{2847DA9E-DE87-4B4F-8597-9165ECAA6D58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.WPF", "HtmlRenderer.WPF\HtmlRenderer.WPF.csproj", "{620AC72F-BC10-44F4-8387-250F3FE765C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.WPF", "HtmlRenderer.WPF\HtmlRenderer.WPF.csproj", "{620AC72F-BC10-44F4-8387-250F3FE765C4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{CF4F888A-71EE-4EDC-99BA-8A02B4B841F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Demo.Common", "Demos\HtmlRenderer.Demo.Common\HtmlRenderer.Demo.Common.csproj", "{22D87EB2-87B0-4A83-BB9F-CFAFD7EC26D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.Demo.Common", "Demos\HtmlRenderer.Demo.Common\HtmlRenderer.Demo.Common.csproj", "{22D87EB2-87B0-4A83-BB9F-CFAFD7EC26D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Demo.WinForms", "Demos\HtmlRenderer.Demo.WinForms\HtmlRenderer.Demo.WinForms.csproj", "{1A66CBC4-0297-4928-AECC-35E3A4205609}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.Demo.WinForms", "Demos\HtmlRenderer.Demo.WinForms\HtmlRenderer.Demo.WinForms.csproj", "{1A66CBC4-0297-4928-AECC-35E3A4205609}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Demo.WPF", "Demos\HtmlRenderer.Demo.WPF\HtmlRenderer.Demo.WPF.csproj", "{46175F41-83B5-4E4E-BA90-775BA6AC144A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.Demo.WPF", "Demos\HtmlRenderer.Demo.WPF\HtmlRenderer.Demo.WPF.csproj", "{46175F41-83B5-4E4E-BA90-775BA6AC144A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.SkiaSharp", "HtmlRenderer.SkiaSharp\HtmlRenderer.SkiaSharp.csproj", "{B1054D40-9825-42B5-9BE0-55EDE79BC00B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.SkiaSharp", "HtmlRenderer.SkiaSharp\HtmlRenderer.SkiaSharp.csproj", "{B1054D40-9825-42B5-9BE0-55EDE79BC00B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Demo.SkiaSharp", "Demos\HtmlRenderer.Demo.SkiaSharp\HtmlRenderer.Demo.SkiaSharp.csproj", "{5E5E2495-4F7A-4C36-B7DF-3EBE71A5108A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.Demo.SkiaSharp", "Demos\HtmlRenderer.Demo.SkiaSharp\HtmlRenderer.Demo.SkiaSharp.csproj", "{5E5E2495-4F7A-4C36-B7DF-3EBE71A5108A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.Demo.Console", "Demos\HtmlRenderer.Demo.Console\HtmlRenderer.Demo.Console.csproj", "{7E5B30E9-34C6-4123-B8A6-B50AC078DA53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,25 +40,17 @@ Global
 		{C0C1CD37-272F-4659-B7E6-953F86BEEEC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0C1CD37-272F-4659-B7E6-953F86BEEEC7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2847DA9E-DE87-4B4F-8597-9165ECAA6D58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2847DA9E-DE87-4B4F-8597-9165ECAA6D58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2847DA9E-DE87-4B4F-8597-9165ECAA6D58}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2847DA9E-DE87-4B4F-8597-9165ECAA6D58}.Release|Any CPU.Build.0 = Release|Any CPU
 		{620AC72F-BC10-44F4-8387-250F3FE765C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{620AC72F-BC10-44F4-8387-250F3FE765C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{620AC72F-BC10-44F4-8387-250F3FE765C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{620AC72F-BC10-44F4-8387-250F3FE765C4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22D87EB2-87B0-4A83-BB9F-CFAFD7EC26D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22D87EB2-87B0-4A83-BB9F-CFAFD7EC26D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22D87EB2-87B0-4A83-BB9F-CFAFD7EC26D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22D87EB2-87B0-4A83-BB9F-CFAFD7EC26D4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1A66CBC4-0297-4928-AECC-35E3A4205609}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1A66CBC4-0297-4928-AECC-35E3A4205609}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A66CBC4-0297-4928-AECC-35E3A4205609}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1A66CBC4-0297-4928-AECC-35E3A4205609}.Release|Any CPU.Build.0 = Release|Any CPU
 		{46175F41-83B5-4E4E-BA90-775BA6AC144A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{46175F41-83B5-4E4E-BA90-775BA6AC144A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46175F41-83B5-4E4E-BA90-775BA6AC144A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{46175F41-83B5-4E4E-BA90-775BA6AC144A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B1054D40-9825-42B5-9BE0-55EDE79BC00B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B1054D40-9825-42B5-9BE0-55EDE79BC00B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1054D40-9825-42B5-9BE0-55EDE79BC00B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -65,6 +59,10 @@ Global
 		{5E5E2495-4F7A-4C36-B7DF-3EBE71A5108A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E5E2495-4F7A-4C36-B7DF-3EBE71A5108A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E5E2495-4F7A-4C36-B7DF-3EBE71A5108A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E5B30E9-34C6-4123-B8A6-B50AC078DA53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E5B30E9-34C6-4123-B8A6-B50AC078DA53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E5B30E9-34C6-4123-B8A6-B50AC078DA53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E5B30E9-34C6-4123-B8A6-B50AC078DA53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +72,7 @@ Global
 		{1A66CBC4-0297-4928-AECC-35E3A4205609} = {CF4F888A-71EE-4EDC-99BA-8A02B4B841F0}
 		{46175F41-83B5-4E4E-BA90-775BA6AC144A} = {CF4F888A-71EE-4EDC-99BA-8A02B4B841F0}
 		{5E5E2495-4F7A-4C36-B7DF-3EBE71A5108A} = {CF4F888A-71EE-4EDC-99BA-8A02B4B841F0}
+		{7E5B30E9-34C6-4123-B8A6-B50AC078DA53} = {CF4F888A-71EE-4EDC-99BA-8A02B4B841F0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B4ABBC6A-EFE0-46EB-BEED-7C8017BA004C}

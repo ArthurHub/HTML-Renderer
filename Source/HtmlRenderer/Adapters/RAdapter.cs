@@ -150,7 +150,14 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         public RImage ConvertImage(object image)
         {
             // TODO:a remove this by creating better API.
-            return ConvertImageInt(image);
+            if (image is Stream imageStream)
+            {
+                return ImageFromStream(imageStream);
+            }
+            else
+            {
+                return ConvertImageInt(image);
+            }
         }
 
         /// <summary>
