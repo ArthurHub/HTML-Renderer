@@ -18,6 +18,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
     internal static class CssConstants
     {
         public const string Absolute = "absolute";
+        public const string Always = "always";
         public const string Auto = "auto";
         public const string Avoid = "avoid";
         public const string Baseline = "baseline";

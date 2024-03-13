@@ -10,7 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using PdfSharp.Drawing;
+using PdfSharpCore.Drawing;
 using System;
 using System.Collections.Generic;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
@@ -324,13 +324,13 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// Measures the bounds of box and children, recursively.
         /// </summary>
         /// <param name="g">Device context to draw</param>
-        public void PerformLayout(XGraphics g)
+        public async Task PerformLayoutAsync(XGraphics g)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
             using (var ig = new GraphicsAdapter(g))
             {
-                _htmlContainerInt.PerformLayout(ig);
+                await _htmlContainerInt.PerformLayout(ig);
             }
         }
 
@@ -338,13 +338,13 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// Render the html using the given device.
         /// </summary>
         /// <param name="g">the device to use to render</param>
-        public void PerformPaint(XGraphics g)
+        public async Task PerformPaintAsync(XGraphics g)
         {
             ArgChecker.AssertArgNotNull(g, "g");
 
             using (var ig = new GraphicsAdapter(g))
             {
-                _htmlContainerInt.PerformPaint(ig);
+                await _htmlContainerInt.PerformPaint(ig);
             }
         }
 

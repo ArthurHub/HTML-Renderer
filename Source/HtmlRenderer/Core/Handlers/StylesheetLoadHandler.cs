@@ -35,12 +35,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <param name="attributes">the attributes of the link element</param>
         /// <param name="stylesheet">return the stylesheet string that has been loaded (null if failed or <paramref name="stylesheetData"/> is given)</param>
         /// <param name="stylesheetData">return stylesheet data object that was provided by overwrite (null if failed or <paramref name="stylesheet"/> is given)</param>
-        public static void LoadStylesheet(HtmlContainerInt htmlContainer, string src, Dictionary<string, string> attributes, out string stylesheet, out CssData stylesheetData)
+        public static async Task<(string, CssData)> LoadStylesheetAsync(HtmlContainerInt htmlContainer, string src, Dictionary<string, string> attributes)
         {
             ArgChecker.AssertArgNotNull(htmlContainer, "htmlContainer");
 
-            stylesheet = null;
-            stylesheetData = null;
+            string stylesheet = null;
+            CssData stylesheetData = null;
             try
             {
                 var args = new HtmlStylesheetLoadEventArgs(src, attributes);
@@ -56,17 +56,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                 }
                 else if (args.SetSrc != null)
                 {
-                    stylesheet = LoadStylesheet(htmlContainer, args.SetSrc);
+                    stylesheet = await LoadStylesheetAsync(htmlContainer, args.SetSrc);
                 }
                 else
                 {
-                    stylesheet = LoadStylesheet(htmlContainer, src);
+                    stylesheet = await LoadStylesheetAsync(htmlContainer, src);
                 }
             }
             catch (Exception ex)
             {
                 htmlContainer.ReportError(HtmlRenderErrorType.CssParsing, "Exception in handling stylesheet source", ex);
             }
+
+            return (stylesheet, stylesheetData);
         }
 
 
@@ -78,7 +80,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <param name="htmlContainer">the container of the html to handle load stylesheet for</param>
         /// <param name="src">the file path or uri to load the stylesheet from</param>
         /// <returns>the stylesheet string</returns>
-        private static string LoadStylesheet(HtmlContainerInt htmlContainer, string src)
+        private static async Task<string> LoadStylesheetAsync(HtmlContainerInt htmlContainer, string src)
         {
             var uri = CommonUtils.TryGetUri(src);
             if (uri == null || uri.Scheme == "file")
@@ -87,7 +89,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             }
             else
             {
-                return LoadStylesheetFromUri(htmlContainer, uri);
+                return await LoadStylesheetFromUriAsync(htmlContainer, uri);
             }
         }
 
@@ -127,19 +129,28 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <param name="htmlContainer">the container of the html to handle load stylesheet for</param>
         /// <param name="uri">the uri to download from</param>
         /// <returns>the loaded stylesheet string</returns>
-        private static string LoadStylesheetFromUri(HtmlContainerInt htmlContainer, Uri uri)
+        private static async Task<string> LoadStylesheetFromUriAsync(HtmlContainerInt htmlContainer, Uri uri)
         {
-            using (var client = new WebClient())
+            using (var client = new HttpClient())
             {
-                var stylesheet = client.DownloadString(uri);
+                //var stylesheet = client.DownloadString(uri);
+                string stylesheet = default;
+                var response = await client.GetAsync(uri);
+                if (response == null || !response.IsSuccessStatusCode)
+                {
+                    htmlContainer.ReportError(HtmlRenderErrorType.CssParsing, "Error in retrieving stylesheet");
+                }
+
                 try
                 {
+                    stylesheet = await response.Content.ReadAsStringAsync();
                     stylesheet = CorrectRelativeUrls(stylesheet, uri);
                 }
                 catch (Exception ex)
                 {
                     htmlContainer.ReportError(HtmlRenderErrorType.CssParsing, "Error in correcting relative URL in loaded stylesheet", ex);
                 }
+
                 return stylesheet;
             }
         }

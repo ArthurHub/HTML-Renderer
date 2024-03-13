@@ -1,0 +1,15 @@
+﻿<Window x:Class="TheArtOfDev.HtmlRenderer.Demo.WPF.GenerateImageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="GenerateImageWindow" Height="300" Width="500" WindowStartupLocation="CenterOwner">
+    <DockPanel Background="#BFDBFF">
+        <ToolBar DockPanel.Dock="Top">
+            <Button Content="Re-Generate" Focusable="False" ToolBar.OverflowMode="Never" Click="OnGenerateImage_Click" />
+            <Separator/>
+            <Button Content="Save to File" Click="OnSaveToFile_click"/>
+        </ToolBar>
+        <DockPanel x:Name="_imageBoxBorder" Background="{StaticResource TransBackBrush}">
+            <Image x:Name="_imageBox" Stretch="None" />
+        </DockPanel>
+    </DockPanel>
+</Window>

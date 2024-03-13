@@ -29,16 +29,16 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// <param name="minSize">the minimal size of the rendered html (zero - not limit the width/height)</param>
         /// <param name="maxSize">the maximum size of the rendered html, if not zero and html cannot be layout within the limit it will be clipped (zero - not limit the width/height)</param>
         /// <returns>return: the size of the html to be rendered within the min/max limits</returns>
-        public static RSize MeasureHtmlByRestrictions(RGraphics g, HtmlContainerInt htmlContainer, RSize minSize, RSize maxSize)
+        public static async Task<RSize> MeasureHtmlByRestrictionsAsync(RGraphics g, HtmlContainerInt htmlContainer, RSize minSize, RSize maxSize)
         {
             // first layout without size restriction to know html actual size
-            htmlContainer.PerformLayout(g);
+            await htmlContainer.PerformLayout(g);
 
             if (maxSize.Width > 0 && maxSize.Width < htmlContainer.ActualSize.Width)
             {
                 // to allow the actual size be smaller than max we need to set max size only if it is really larger
                 htmlContainer.MaxSize = new RSize(maxSize.Width, 0);
-                htmlContainer.PerformLayout(g);
+                await htmlContainer.PerformLayout(g);
             }
 
             // restrict the final size by min/max
@@ -48,7 +48,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             if (finalWidth > htmlContainer.ActualSize.Width)
             {
                 htmlContainer.MaxSize = new RSize(finalWidth, 0);
-                htmlContainer.PerformLayout(g);
+                await htmlContainer.PerformLayout(g);
             }
 
             var finalHeight = Math.Max(maxSize.Height > 0 ? Math.Min(maxSize.Height, (int)htmlContainer.ActualSize.Height) : (int)htmlContainer.ActualSize.Height, minSize.Height);
@@ -72,7 +72,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// <param name="maxSize">the max size restriction - can be empty for no restriction</param>
         /// <param name="autoSize">if to modify the size (width and height) by html content layout</param>
         /// <param name="autoSizeHeightOnly">if to modify the height by html content layout</param>
-        public static RSize Layout(RGraphics g, HtmlContainerInt htmlContainer, RSize size, RSize minSize, RSize maxSize, bool autoSize, bool autoSizeHeightOnly)
+        public static async Task<RSize> LayoutAsync(RGraphics g, HtmlContainerInt htmlContainer, RSize size, RSize minSize, RSize maxSize, bool autoSize, bool autoSizeHeightOnly)
         {
             if (autoSize)
                 htmlContainer.MaxSize = new RSize(0, 0);
@@ -81,7 +81,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             else
                 htmlContainer.MaxSize = size;
 
-            htmlContainer.PerformLayout(g);
+            await htmlContainer.PerformLayout(g);
 
             RSize newSize = size;
             if (autoSize || autoSizeHeightOnly)
@@ -92,13 +92,13 @@ namespace TheArtOfDev.HtmlRenderer.Core
                     {
                         // to allow the actual size be smaller than max we need to set max size only if it is really larger
                         htmlContainer.MaxSize = maxSize;
-                        htmlContainer.PerformLayout(g);
+                        await htmlContainer.PerformLayout(g);
                     }
                     else if (minSize.Width > 0 && minSize.Width > htmlContainer.ActualSize.Width)
                     {
                         // if min size is larger than the actual we need to re-layout so all 100% layouts will be correct
                         htmlContainer.MaxSize = new RSize(minSize.Width, 0);
-                        htmlContainer.PerformLayout(g);
+                        await htmlContainer.PerformLayout(g);
                     }
                     newSize = htmlContainer.ActualSize;
                 }
@@ -113,7 +113,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
                     // handle if changing the height of the label affects the desired width and those require re-layout
                     if (Math.Abs(prevWidth - size.Width) > 0.01)
-                        return Layout(g, htmlContainer, size, minSize, maxSize, false, true);
+                        return await LayoutAsync(g, htmlContainer, size, minSize, maxSize, false, true);
                 }
             }
 

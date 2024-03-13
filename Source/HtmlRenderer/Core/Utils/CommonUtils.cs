@@ -192,21 +192,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Get web client response content type.
-        /// </summary>
-        /// <param name="client">the web client to get the response content type from</param>
-        /// <returns>response content type or null</returns>
-        public static string GetResponseContentType(WebClient client)
-        {
-            foreach (string header in client.ResponseHeaders)
-            {
-                if (header.Equals("Content-Type", StringComparison.InvariantCultureIgnoreCase))
-                    return client.ResponseHeaders[header];
-            }
-            return null;
-        }
-
-        /// <summary>
         /// Gets the representation of the online uri on the local disk.
         /// </summary>
         /// <param name="imageUri">The online image uri.</param>

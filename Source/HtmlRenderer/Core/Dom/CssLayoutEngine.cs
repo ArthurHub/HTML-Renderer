@@ -117,7 +117,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g"></param>
         /// <param name="blockBox"></param>
-        public static void CreateLineBoxes(RGraphics g, CssBox blockBox)
+        public static async Task CreateLineBoxesAsync(RGraphics g, CssBox blockBox)
         {
             ArgChecker.AssertArgNotNull(g, "g");
             ArgChecker.AssertArgNotNull(blockBox, "blockBox");
@@ -140,7 +140,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             CssLineBox line = new CssLineBox(blockBox);
 
             //Flow words and boxes
-            FlowBox(g, blockBox, blockBox, limitRight, 0, startx, ref line, ref curx, ref cury, ref maxRight, ref maxBottom);
+            (line, curx, cury, maxRight, maxBottom) = await FlowBoxAsync(g, blockBox, blockBox, limitRight, 0, startx, line, curx, cury, maxRight, maxBottom);
 
             // if width is not restricted we need to lower it to the actual width
             if (blockBox.ActualRight >= 90999)
@@ -239,7 +239,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="cury">Current y coordinate that will be the top of the next word</param>
         /// <param name="maxRight">Maximum right reached so far</param>
         /// <param name="maxbottom">Maximum bottom reached so far</param>
-        private static void FlowBox(RGraphics g, CssBox blockbox, CssBox box, double limitRight, double linespacing, double startx, ref CssLineBox line, ref double curx, ref double cury, ref double maxRight, ref double maxbottom)
+        private static async Task<(CssLineBox line, double curx, double cury, double maxRight, double maxbottom)> FlowBoxAsync(
+            RGraphics g, 
+            CssBox blockbox, 
+            CssBox box, 
+            double limitRight, 
+            double linespacing, 
+            double startx, 
+            CssLineBox line, double curx, double cury, double maxRight, double maxbottom)
         {
             var startX = curx;
             var startY = cury;
@@ -254,7 +261,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 double rightspacing = (b.Position != CssConstants.Absolute && b.Position != CssConstants.Fixed) ? b.ActualMarginRight + b.ActualBorderRightWidth + b.ActualPaddingRight : 0;
 
                 b.RectanglesReset();
-                b.MeasureWordsSize(g);
+                await b.MeasureWordsSizeAsync(g);
 
                 curx += leftspacing;
 
@@ -323,7 +330,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 }
                 else
                 {
-                    FlowBox(g, blockbox, b, limitRight, linespacing, startx, ref line, ref curx, ref cury, ref maxRight, ref maxbottom);
+                    (line, curx, cury, maxRight, maxbottom) = await FlowBoxAsync(g, blockbox, b, limitRight, linespacing, startx, line, curx, cury, maxRight, maxbottom);
                 }
 
                 curx += rightspacing;
@@ -359,6 +366,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
 
             box.LastHostingLineBox = line;
+
+            return (line, curx, cury, maxRight, maxbottom);
         }
 
         /// <summary>

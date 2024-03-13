@@ -39,8 +39,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Entities
         /// </summary>
         /// <param name="type">the type of error to report</param>
         /// <param name="message">the error message</param>
-        /// <param name="exception">optional: the exception that occurred</param>
-        public HtmlRenderErrorEventArgs(HtmlRenderErrorType type, string message, Exception exception = null)
+        public HtmlRenderErrorEventArgs(HtmlRenderErrorType type, string message)
+        {
+            _type = type;
+            _message = message;
+            _exception = default;
+        }
+
+        public HtmlRenderErrorEventArgs(HtmlRenderErrorType type, string message, Exception exception)
         {
             _type = type;
             _message = message;

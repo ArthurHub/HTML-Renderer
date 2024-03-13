@@ -1,0 +1,62 @@
+﻿<Window x:Class="TheArtOfDev.HtmlRenderer.Demo.WPF.DemoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wpf="clr-namespace:TheArtOfDev.HtmlRenderer.Demo.WPF"
+        Title="HTML Renderer WPF Demo" Height="486" Width="900">
+    <Window.Resources>
+        <wpf:ToolStripImageConverter x:Key="Converter" />
+    </Window.Resources>
+    <DockPanel Background="#BFDBFF">
+        <Grid x:Name="_toolBar" DockPanel.Dock="Top" Background="WhiteSmoke" Margin="0 0 0 3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ToolBar Grid.Column="0">
+                <Button ToolBar.OverflowMode="Never" Click="OnOpenSampleWindow_click" >
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding ConverterParameter=form, Converter={StaticResource Converter}}" Tag="form" MaxHeight="18" Margin="0 0 5 0"/>
+                        <TextBlock Text="Open Sample Window" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Separator/>
+                <ToggleButton x:Name="_showIEView" Click="OnShowIEView_ButtonClick">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding ConverterParameter=browser, Converter={StaticResource Converter}}" MaxHeight="18" Margin="0 0 5 0"/>
+                        <TextBlock Text="Show Browser" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </ToggleButton>
+                <Button Click="OnOpenInExternalView_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding ConverterParameter=chrome, Converter={StaticResource Converter}}" MaxHeight="18" Margin="0 0 5 0"/>
+                        <TextBlock Text="Open External" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <ToggleButton x:Name="_useGeneratedHtml" Click="OnUseGeneratedHtml_Click">
+                    <Image Source="{Binding ConverterParameter=code, Converter={StaticResource Converter}}" MaxHeight="16"/>
+                </ToggleButton>
+                <Separator/>
+                <Separator/>
+                <Button Click="OnGenerateImage_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding ConverterParameter=image, Converter={StaticResource Converter}}" MaxHeight="18" Margin="0 0 5 0"/>
+                        <TextBlock Text="Generate Image" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button IsEnabled="False">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding ConverterParameter=pdf, Converter={StaticResource Converter}}" MaxHeight="18" Margin="0 0 5 0"/>
+                        <TextBlock Text="Generate PDF" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </ToolBar>
+            <Button Grid.Column="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Margin="4 0 2 0" Click="OnRunPerformance_Click" >
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{Binding ConverterParameter=stopwatch, Converter={StaticResource Converter}}" MaxHeight="18" Margin="0 0 5 0"/>
+                    <TextBlock Text="Run Performance" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+        <wpf:MainControl x:Name="_mainControl" />
+    </DockPanel>
+</Window>
