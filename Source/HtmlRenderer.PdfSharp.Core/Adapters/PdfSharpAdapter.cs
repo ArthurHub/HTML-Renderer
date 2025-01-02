@@ -127,8 +127,10 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
         protected override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style)
         {
             var fontStyle = (XFontStyle)((int)style);
-            var xFont = new XFont(((FontFamilyAdapter)family).FontFamily.Name, size, fontStyle, new XPdfFontOptions(PdfFontEncoding.Unicode));
+            string fontName = family is FontFamilyAdapter adapter ? adapter.FontFamily.Name : family.Name;
+            var xFont = new XFont(fontName, size, fontStyle, new XPdfFontOptions(PdfFontEncoding.Unicode));
             return new FontAdapter(xFont);
         }
+
     }
 }

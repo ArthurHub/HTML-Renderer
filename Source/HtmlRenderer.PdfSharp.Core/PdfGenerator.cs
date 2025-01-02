@@ -14,6 +14,7 @@ using PdfSharpCore;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
 using System;
+using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
@@ -42,6 +43,11 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
             ArgChecker.AssertArgNotNullOrEmpty(toFamily, "toFamily");
 
             PdfSharpAdapter.Instance.AddFontFamilyMapping(fromFamily, toFamily);
+        }
+
+        public static void AddFontFamily(RFontFamily fontFamily)
+        {
+            PdfSharpAdapter.Instance.AddFontFamily(fontFamily);
         }
 
         /// <summary>
