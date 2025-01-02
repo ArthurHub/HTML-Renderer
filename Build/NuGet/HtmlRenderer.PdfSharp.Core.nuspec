@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Polybioz.HtmlRenderer.PdfSharp.Core</id>
+    <version>1.0.0</version>
+    <title>HTML Renderer for PDF using PdfSharp</title>
+    <authors>Karel Hajek</authors>
+    <owners>Karel Hajek</owners>
+    <license type="file">LICENSE.txt</license>
+    <projectUrl>https://github.com/polybioz/HTML-Renderer-Core</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>
+      HtmlRenderer.PdfSharp for .NET Core
+    </summary>
+    <description>
+      HtmlRenderer.PdfSharp.Core is a partial port of HtmlRenderer.PdfSharp for .NET Core
+    </description>
+    <copyright>José Manuel Menéndez Poo, Arthur Teplitzki</copyright>
+    <tags>html render renderer draw pdfsharp .NETCore</tags>
+    <repository url="https://github.com/polybioz/HTML-Renderer-Core" />
+    <dependencies>
+      <dependency id="PdfSharpCore" version="1.1.21"/>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="LICENSE.txt" />
+    <file src="..\Release\PdfSharpCore\netcoreapp2.1\HtmlRenderer.Core.dll" target="lib\netcoreapp2.1" />
+    <file src="..\Release\PdfSharpCore\netcoreapp2.1\HtmlRenderer.PdfSharp.Core.dll" target="lib\netcoreapp2.1" />
+  </files>
+</package>
