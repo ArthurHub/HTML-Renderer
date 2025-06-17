@@ -7,7 +7,7 @@
     <authors>Arthur Teplitzki</authors>
     <owners>Arthur Teplitzki</owners>
     <licenseUrl>https://htmlrenderer.codeplex.com/license</licenseUrl>
-    <projectUrl>https://htmlrenderer.codeplex.com/</projectUrl>
+    <projectUrl>https://github.com/dem-v/HTML-Renderer/</projectUrl>
     <iconUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/html.ico?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>
@@ -24,15 +24,7 @@
     <tags>html render renderer draw core</tags>
   </metadata>
   <files>
-    <file src="..\Release\Core\net20\HtmlRenderer.dll" target="lib\net20\HtmlRenderer.dll" />
-    <file src="..\Release\Core\net20\HtmlRenderer.pdb" target="lib\net20\HtmlRenderer.pdb" />
-    <file src="..\Release\Core\net30\HtmlRenderer.dll" target="lib\net30\HtmlRenderer.dll" />
-    <file src="..\Release\Core\net30\HtmlRenderer.pdb" target="lib\net30\HtmlRenderer.pdb" />
-    <file src="..\Release\Core\net35\HtmlRenderer.dll" target="lib\net35-client\HtmlRenderer.dll" />
-    <file src="..\Release\Core\net35\HtmlRenderer.pdb" target="lib\net35-client\HtmlRenderer.pdb" />
-    <file src="..\Release\Core\net40\HtmlRenderer.dll" target="lib\net40-client\HtmlRenderer.dll" />
-    <file src="..\Release\Core\net40\HtmlRenderer.pdb" target="lib\net40-client\HtmlRenderer.pdb" />
-    <file src="..\Release\Core\net45\HtmlRenderer.dll" target="lib\net45\HtmlRenderer.dll" />
-    <file src="..\Release\Core\net45\HtmlRenderer.pdb" target="lib\net45\HtmlRenderer.pdb" />
+    <file src="..\Release\Core\NET48\HtmlRenderer.dll" target="lib\net48\HtmlRenderer.dll" />
+    <file src="..\Release\Core\NET48\HtmlRenderer.pdb" target="lib\net48\HtmlRenderer.pdb" />
   </files>
 </package>

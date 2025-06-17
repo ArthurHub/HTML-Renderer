@@ -10,6 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using PdfSharp.Fonts;
 using System;
 using System.Globalization;
 using System.IO;
@@ -27,6 +28,9 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         private static void Main()
         {
             AppDomain.CurrentDomain.AssemblyResolve += OnResolveAssembly;
+            GlobalFontSettings.UseWindowsFontsUnderWindows = true;
+            // Assign the resolver at application startup (before any PDF generation)
+            GlobalFontSettings.FontResolver = new SystemFontResolver();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

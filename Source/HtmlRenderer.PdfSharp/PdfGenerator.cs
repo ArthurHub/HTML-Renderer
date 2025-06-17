@@ -10,10 +10,13 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using PdfSharp;
-using PdfSharp.Drawing;
+// Update namespace imports if needed
 using PdfSharp.Pdf;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf.IO; // Add if needed for PDF IO operations
+using PdfSharp.Fonts; // Add if needed for font handling
 using System;
+using PdfSharp;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
@@ -70,6 +73,10 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// <returns>the generated image of the html</returns>
         public static PdfDocument GeneratePdf(string html, PageSize pageSize, int margin = 20, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
+
+            // Assign the resolver at application startup (before any PDF generation)
+            GlobalFontSettings.FontResolver = new SystemFontResolver();
+
             var config = new PdfGenerateConfig();
             config.PageSize = pageSize;
             config.SetMargins(margin);
@@ -87,6 +94,9 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// <returns>the generated image of the html</returns>
         public static PdfDocument GeneratePdf(string html, PdfGenerateConfig config, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
+            // Assign the resolver at application startup (before any PDF generation)
+            GlobalFontSettings.FontResolver = new SystemFontResolver();
+
             // create PDF document to render the HTML into
             var document = new PdfDocument();
 

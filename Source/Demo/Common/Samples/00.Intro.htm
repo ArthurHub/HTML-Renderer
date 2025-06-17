@@ -1,117 +1,127 @@
-<html>
-    <head>
-        <title>Intro</title>
-        <link rel="Stylesheet" href="StyleSheet" />
-    </head>
-    <body style="background-color: #333; background-gradient: #707; background-gradient-angle: 60; margin: 0;">
-        <h1 align="center" style="color: white">
-            HTML Renderer Project - $$Platform$$
-            <br />
-            <span style="font-size: x-small;">Release $$Release$$</span>
-        </h1>
-        <blockquote class="whitehole">
-            <p style="margin-top: 0px">
-                <table border="0" width="100%">
-                    <tr style="vertical-align: top;">
-                        <td width="32" style="padding: 2px 5px 0 0">
-                            <img src="HtmlIcon" />
-                        </td>
-                        <td>
-                            Everything you see on this panel (see samples on the left) is <b>custom-painted</b>
-                            by the <b>HTML Renderer</b>, including tables, images, links and videos.<br />
-                            This project allows you to have the rich format power of HTML on your desktop applications
-                            without <b>WebBrowser</b> control or <b>MSHTML</b>.<br />
-                            The library is <b>100% managed code</b> without any external dependencies, the only 
-                            requirement is <b>.NET 2.0 or higher</b>, including support for Client Profile.
-                        </td>
-                    </tr>
-                </table>
-            </p>
-            <h3>
-                Text selection (copy to clipboard)
-            </h3>
-            <div>
-                The rendered html has full support for <b>text selection</b> including <b>drag-and-drop</b>
-                and <b>copy</b> to clipboard of rich html and plain text to handle <b>paste</b>
-                operation to editor that support rich or/and plain text.<br />
-                Additionally there is a <b>context-menu</b> with select all, copy text, copy image,
-                save image, open link, copy link url, open video, copy video url.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intro</title>
+    <link rel="stylesheet" href="StyleSheet" />
+</head>
+<body style="background-color: #333; background-image: linear-gradient(60deg, #333, #707); margin: 0;">
+    <h1 style="text-align: center; color: white">
+        HTML Renderer Project - $$Platform$$
+        <br />
+        <span style="font-size: x-small;">Release $$Release$$</span>
+    </h1>
+    <div class="whitehole">
+        <p style="margin-top: 0px">
+            <div style="display: table; width: 100%;">
+                <div style="display: table-row; vertical-align: top;">
+                    <div style="display: table-cell; width: 32px; padding: 2px 5px 0 0">
+                        <img src="HtmlIcon" alt="HTML Icon" />
+                    </div>
+                    <div style="display: table-cell;">
+                        Everything you see on this panel (see samples on the left) is <b>custom-painted</b>
+                        by the <b>HTML Renderer</b>, including tables, images, links and videos.<br />
+                        This project allows you to have the rich format power of HTML on your desktop applications
+                        without <b>WebBrowser</b> control or <b>MSHTML</b>.<br />
+                        The library is <b>100% managed code</b> without any external dependencies, the only
+                        requirement is <b>.NET 2.0 or higher</b>, including support for Client Profile.
+                    </div>
+                </div>
             </div>
-            <h3>
-                Cascading Style Sheets (CSS) support
-            </h3>
-            <div>
-                The core layout engine of the renderer was builded according to <b>CSS Level 2 specification</b>,
-                so you can use Cascading Style Sheets to format your html documents.<br />
-                Additionally there are a couple extensions: <b>Gradients</b> on backgrounds and
-                <b>rounded corners</b>.
-            </div>
-            <h3>
-                WinForms controls
-            </h3>
-            <div>
-                It comes with handy WinForms controls (see <a href="ShowSampleForm">Sample Form</a>):
-            </div>
-            <ul>
-                <li><code>HtmlPanel</code> - The control where you are reading this, panel with scrollbars.</li>
-                <li><code>HtmlLabel</code> - Same as html panel but without scrollbars and optional
-                    auto size.</li>
-                <li><code>HtmlToolTip</code> - For ToolTip with rich html.</li>
-            </ul>
-            <h3>
-                Benefits
-            </h3>
-            <ul>
-                <li>100% managed code and no external dependencies.</li>
-                <li>Supports .NET 2.0 or higher including Client Profile.</li>
-                <li>Handles "real world" malformed HTML, it doesn't have to be XHTML.</li>
-                <li>Lightweight (~300K).</li>
-                <li>High performance and low memory footprint.</li>
-                <li>Extendable and configurable.</li>
-            </ul>
-            <h3>
-                Limitations
-            </h3>
-            <ul>
-                <li>All HTML <b>end tags</b> marked as <a href="http://www.w3.org/TR/1999/REC-html401-19991224/index/elements.html">
-                                                           optional</a> should be there. No problem with tags marked as forbidden.</li>
-            </ul>
-            <hr />
-            <h3>
-                On the roadmap</h3>
-            Of course it's not quite finished yet. Here are some of the important things to
-            do.
-            <ul>
-                <li>Better performance</li>
-                <li>Support of position CSS property</li>
-                <li>Support of height and min-height CSS property</li>
-                <li>Better tables support, especially layouts</li>
-                <li>Support image align</li>
-                <li>Handle :hover selector</li>
-                <li>Selection by shift+arrows</li>
-                <li>Better HTML tag parsing (optional closing tags)</li>
-                <li>More styles support</li>
-            </ul>
-            <h3>
-                Vision
-            </h3>
-            <ul>
-                <li>Most complete static HTML Renderer (no java script).</li>
-                <li>Commercial web browser performance level.</li>
-            </ul>
-            <hr />
-            <h3>
-                2012 - Arthur Teplitzki
-            </h3>
-            <blockquote>
-                <a href="http://theartofdev.com/">http://TheArtOfDev.com</a>
-            </blockquote>
-            <h3>
-                2009 - Jose Manuel Menendez Poo
-            </h3>
-            <blockquote>
-                <a href="http://www.menendezpoo.com">www.menendezpoo.com</a>
-            </blockquote>
+        </p>
+        <h3>
+            Text selection (copy to clipboard)
+        </h3>
+        <div>
+            The rendered html has full support for <b>text selection</b> including <b>drag-and-drop</b>
+            and <b>copy</b> to clipboard of rich html and plain text to handle <b>paste</b>
+            operation to editor that support rich or/and plain text.<br />
+            Additionally there is a <b>context-menu</b> with select all, copy text, copy image,
+            save image, open link, copy link url, open video, copy video url.
+        </div>
+        <h3>
+            Cascading Style Sheets (CSS) support
+        </h3>
+        <div>
+            The core layout engine of the renderer was builded according to <b>CSS Level 2 specification</b>,
+            so you can use Cascading Style Sheets to format your html documents.<br />
+            Additionally there are a couple extensions: <b>Gradients</b> on backgrounds and
+            <b>rounded corners</b>.
+        </div>
+        <h3>
+            WinForms controls
+        </h3>
+        <div>
+            It comes with handy WinForms controls (see <a href="ShowSampleForm">Sample Form</a>):
+        </div>
+        <ul>
+            <li><code>HtmlPanel</code> - The control where you are reading this, panel with scrollbars.</li>
+            <li>
+                <code>HtmlLabel</code> - Same as html panel but without scrollbars and optional
+                auto size.
+            </li>
+            <li><code>HtmlToolTip</code> - For ToolTip with rich html.</li>
+        </ul>
+        <h3>
+            Benefits
+        </h3>
+        <ul>
+            <li>100% managed code and no external dependencies.</li>
+            <li>Supports .NET 2.0 or higher including Client Profile.</li>
+            <li>Handles "real world" malformed HTML, it doesn't have to be XHTML.</li>
+            <li>Lightweight (~300K).</li>
+            <li>High performance and low memory footprint.</li>
+            <li>Extendable and configurable.</li>
+        </ul>
+        <h3>
+            Limitations
+        </h3>
+        <ul>
+            <li>
+                All HTML <b>end tags</b> marked as <a href="http://www.w3.org/TR/1999/REC-html401-19991224/index/elements.html">
+                    optional
+                </a> should be there. No problem with tags marked as forbidden.
+            </li>
+        </ul>
+        <hr />
+        <h3>
+            On the roadmap
+        </h3>
+        Of course it's not quite finished yet. Here are some of the important things to
+        do.
+        <ul>
+            <li>Better performance</li>
+            <li>Support of position CSS property</li>
+            <li>Support of height and min-height CSS property</li>
+            <li>Better tables support, especially layouts</li>
+            <li>Support image align</li>
+            <li>Handle :hover selector</li>
+            <li>Selection by shift+arrows</li>
+            <li>Better HTML tag parsing (optional closing tags)</li>
+            <li>More styles support</li>
+        </ul>
+        <h3>
+            Vision
+        </h3>
+        <ul>
+            <li>Most complete static HTML Renderer (no java script).</li>
+            <li>Commercial web browser performance level.</li>
+        </ul>
+        <hr />
+        <h3>
+            2012 - Arthur Teplitzki
+        </h3>
+        <blockquote>
+            <a href="http://theartofdev.com/">http://TheArtOfDev.com</a>
         </blockquote>
-    </body>
+        <h3>
+            2009 - Jose Manuel Menendez Poo
+        </h3>
+        <blockquote>
+            <a href="http://www.menendezpoo.com">www.menendezpoo.com</a>
+        </blockquote>
+        
+    </div>
+</body>
 </html>

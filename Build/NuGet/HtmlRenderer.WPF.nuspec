@@ -7,7 +7,7 @@
     <authors>Arthur Teplitzki</authors>
     <owners>Arthur Teplitzki</owners>
     <licenseUrl>https://htmlrenderer.codeplex.com/license</licenseUrl>
-    <projectUrl>https://htmlrenderer.codeplex.com/</projectUrl>
+    <projectUrl>https://github.com/dem-v/HTML-Renderer/</projectUrl>
     <iconUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/html.ico?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>
@@ -38,18 +38,12 @@
       <frameworkAssembly assemblyName="System.Drawing" targetFramework="" />
     </frameworkAssemblies>
     <dependencies>
-      <dependency id="HtmlRenderer.Core" version="1.5.1-beta1"/>
+      <dependency id="HtmlRenderer.Core" version="6.2.0.0"/>
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Release\WPF\net30\HtmlRenderer.WPF.dll" target="lib\net30\HtmlRenderer.WPF.dll" />
-    <file src="..\Release\WPF\net30\HtmlRenderer.WPF.pdb" target="lib\net30\HtmlRenderer.WPF.pdb" />
-    <file src="..\Release\WPF\net35\HtmlRenderer.WPF.dll" target="lib\net35-client\HtmlRenderer.WPF.dll" />
-    <file src="..\Release\WPF\net35\HtmlRenderer.WPF.pdb" target="lib\net35-client\HtmlRenderer.WPF.pdb" />
-    <file src="..\Release\WPF\net40\HtmlRenderer.WPF.dll" target="lib\net40-client\HtmlRenderer.WPF.dll" />
-    <file src="..\Release\WPF\net40\HtmlRenderer.WPF.pdb" target="lib\net40-client\HtmlRenderer.WPF.pdb" />
-    <file src="..\Release\WPF\net45\HtmlRenderer.WPF.dll" target="lib\net45\HtmlRenderer.WPF.dll" />
-    <file src="..\Release\WPF\net45\HtmlRenderer.WPF.pdb" target="lib\net45\HtmlRenderer.WPF.pdb" />
+    <file src="..\Release\WPF\NET48\HtmlRenderer.WPF.dll" target="lib\net48\HtmlRenderer.WPF.dll" />
+    <file src="..\Release\WPF\NET48\HtmlRenderer.WPF.pdb" target="lib\net48\HtmlRenderer.WPF.pdb" />
     <file src="HtmlRenderer.WPF.readme.txt" target="readme.txt" />
   </files>
 </package>
