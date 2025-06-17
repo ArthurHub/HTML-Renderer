@@ -1,4 +1,4 @@
-HTML Renderer [![Build status](https://ci.appveyor.com/api/projects/status/cm8xpf8ebt3hyi3e)](https://ci.appveyor.com/project/ArthurHub/html-renderer)
+HTML Renderer 
 =============
 
 ## This is a custom fork
