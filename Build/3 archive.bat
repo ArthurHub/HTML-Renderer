@@ -11,7 +11,7 @@ echo.
 echo.
 echo - Git clone...
 echo.
-"C:\Program Files (x86)\Git\bin\git.exe" clone -q --branch=v1.5 https://github.com/ArthurHub/HTML-Renderer.git Release\git
+"C:\Program Files (x86)\Git\bin\git.exe" clone -q --branch=v6.2 https://github.com/ArthurHub/HTML-Renderer.git Release\git
 xcopy Release\git\Source Release\Source /I /E
 rmdir Release\git /s /q
 

@@ -1,209 +1,243 @@
-<html>
-    <head>
-        <style type="text/css">
-            .header { font: 12pt; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tables Test Sample</title>
+    <style type="text/css">
+        .header {
+            font-size: 12pt;
+        }
 
-            .key {
-                color: #404080;
-                font-weight: bold;
-                border-style: none;
-            }
+        .key {
+            color: #404080;
+            font-weight: bold;
+            border-style: none;
+        }
 
-            .value {
-                color: #404040;
-                border-style: none;
-            }
+        .value {
+            color: #404040;
+            border-style: none;
+        }
 
-            .summary {
-                border-style: none;
-                width: 100%;
-                height: 100%;
-            }
+        .summary {
+            border-style: none;
+            width: 100%;
+            height: 100%;
+        }
 
-            .table1 td {
-                border-width: 1px;
-                border-style: solid;
-                border-color: blue;
-            }
-        </style>
-    </head>
-    <body>
-        <blockquote>
-            <table class="table1">
-                <tr>
-                    <td colspan="2" nowrap>Cell One Cell One Cell this text is not visible
-                    </td>
-                </tr>
-                <tr>
-                    <td>Cell Three
-                    </td>
-                    <td>Cell Four
-                    </td>
-                </tr>
-            </table>
-            <hr />
-            <table class="table1">
+        .table1 td {
+            border-width: 1px;
+            border-style: solid;
+            border-color: blue;
+        }
+    </style>
+</head>
+<body>
+    <blockquote>
+        <table class="table1">
+            <tr>
+                <td colspan="2" style="white-space: nowrap;">
+                    Cell One Cell One Cell this text is not visible
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cell Three
+                </td>
+                <td>
+                    Cell Four
+                </td>
+            </tr>
+        </table>
+        <hr>
+        <table class="table1">
+            <tr>
+                <td>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="white-space: nowrap;">Left Inner Cell One</td>
+                            <td style="white-space: nowrap; text-align: right;">Right Inner Cell Two</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <hr>
+        <table class="table1" style="width: 100%;">
+            <tr style="vertical-align: top;">
+                <td style="width: 32px; padding: 2px 5px 0 0;">
+                    Fixed width column
+                </td>
+                <td>
+                    column without a width so should take all the space but be close to the left column
+                </td>
+            </tr>
+        </table>
+        <hr>
+        <table style="border-spacing: 0; padding: 8px;">
+            <tbody>
                 <tr>
                     <td>
-                        <table width="100%">
-                            <tr>
-                                <td style="white-space: nowrap;">Left Inner Cell One</td>
-                                <td style="white-space: nowrap;" align="right">Right Inner Cell Two</td>
-                            </tr>
-                        </table>
+                        <strong>A:</strong>
+                    </td>
+                    <td>
+                        1
                     </td>
                 </tr>
-            </table>
-            <hr />
-            <table class="table1" width="100%">
-                <tr style="vertical-align: top;">
-                    <td width="32" style="padding: 2px 5px 0 0">Fixed width column
-                    </td>
-                    <td>column without a width so should take all the space but be close to the left column
-                    </td>
-                </tr>
-            </table>
-            <hr />
-            <table cellpadding="8" cellspacing="0">
-                <tbody>
-                    <tr>
-                        <td>
-                            <strong>A:</strong>
-                        </td>
-                        <td>1
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>B:</strong>
-                        </td>
-                        <td>2
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>C:</strong>
-                        </td>
-                        <td>3
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <hr />
-            <!-- empty table to check that it doesn't break layout -->
-            <table>
-                <tr>
-                </tr>
-            </table>
-            <table border="1" style="width: 500px;">
                 <tr>
                     <td>
-                        <strong>Nuance
-                            <br />
-                            df</strong>
+                        <strong>B:</strong>
                     </td>
-                    <td>sdfsdf
-                    </td>
-                    <td>sdfsd
-                    </td>
-                </tr>
-            </table>
-            <hr />
-            <table border="1" style="border: 1px solid #000000; width: 100%;">
-                <tbody>
-                    <tr>
-                        <td>a
-                        </td>
-                        <td>LongStringLongStringLongStringLongStringLongStringLongStringLongString
-                        </td>
-                        <td>text
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <hr />
-            <table border="1" style="border: 1px solid #000000; width: 100%;">
-                <thead>
-                    <tr>
-                        <th colspan="3" style="width: 50%; padding: 2px; border: 1px solid #000000; color: #ffffff; background-color: #6690bc; text-align: left;">Title
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Word 1
-                        </td>
-                        <td>Word 2
-                        </td>
-                        <td>Word 3
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <hr />
-            <table border="1" style="border: 1px solid #000000; max-width: 100%">
-                <tr>
-                    <td>Word1Word1 Word1Word1Word1
-                    </td>
-                    <td>Word 2
-                    </td>
-                    <td>Word3Word3Word3Word3 Word3Word3Word3Word3Word3Word3Word3Word3Word3
-                    </td>
-                </tr>
-            </table>
-            <hr />
-            <table border="1" style="border: 1px solid #000000; max-width: 100%">
-                <tr>
-                    <td width="200px">Word1 Word1Word1
-                    </td>
-                    <td width="150px">Word 2
-                    </td>
-                    <td width="300px">Word3Word3Word3 Word3
-                    </td>
-                </tr>
-            </table>
-            <hr />
-            <table class="summary">
-                <tr>
-                    <td colspan="2" class="header">Container
+                    <td>
+                        2
                     </td>
                 </tr>
                 <tr>
-                    <td class="key">Type
+                    <td>
+                        <strong>C:</strong>
                     </td>
-                    <td class="value">$Type
+                    <td>
+                        3
                     </td>
                 </tr>
-            </table>
-            <hr />
-            <table>
+            </tbody>
+        </table>
+        <hr>
+        <!-- empty table to check that it doesn't break layout -->
+        <table>
+            <tr>
+            </tr>
+        </table>
+        <table style="width: 500px; border: 1px solid;">
+            <tr>
+                <td>
+                    <strong>
+                        Nuance
+                        <br>
+                        df
+                    </strong>
+                </td>
+                <td>
+                    sdfsdf
+                </td>
+                <td>
+                    sdfsd
+                </td>
+            </tr>
+        </table>
+        <hr>
+        <table style="border: 1px solid #000000; width: 100%;">
+            <tbody>
                 <tr>
-                    <td>this is a long message this is a long message this is a long message</td>
-                    <td>this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message </td>
+                    <td>
+                        a
+                    </td>
+                    <td>
+                        LongStringLongStringLongStringLongStringLongStringLongStringLongString
+                    </td>
+                    <td>
+                        text
+                    </td>
                 </tr>
-            </table>
-            <hr />
-            <table cellspacing="0" cellpadding="0" border="1" cols="6" lang="en-US" class="r10" style="WIDTH: 175.1543mm; background-color: red">
+            </tbody>
+        </table>
+        <hr>
+        <table style="border: 1px solid #000000; width: 100%;">
+            <thead>
                 <tr>
-                    <td style="HEIGHT: 9.49mm; WIDTH: 0.00mm; background-color: yellow"></td>
-                    <td style="WIDTH: 6.05mm; min-width: 6.05mm; background-color: blue"></td>
-                    <td style="WIDTH: 147.37mm; min-width: 147.37mm; background-color: black"></td>
-                    <td style="WIDTH: 9.00mm; min-width: 9.00mm; background-color: white"></td>
-                    <td style="WIDTH: 8.20mm; min-width: 8.20mm; background-color: yellow"></td>
-                    <td style="WIDTH: 4.53mm; min-width: 4.53mm; background-color: green"></td>
+                    <th colspan="3" style="width: 50%; padding: 2px; border: 1px solid #000000; color: #ffffff; background-color: #6690bc; text-align: left;">
+                        Title
+                    </th>
                 </tr>
-            </table>
-            <br/>
-            <table cellspacing="0" cellpadding="0" border="1" cols="6" lang="en-US" class="r10" style="WIDTH: 175.1543mm; background-color: red">
+            </thead>
+            <tbody>
                 <tr>
-                    <td style="HEIGHT: 3mm; WIDTH: 12.00mm; background-color: yellow"></td>
-                    <td style="WIDTH: 6.05mm; min-width: 6.05mm; background-color: blue"></td>
+                    <td>
+                        Word 1
+                    </td>
+                    <td>
+                        Word 2
+                    </td>
+                    <td>
+                        Word 3
+                    </td>
                 </tr>
-                <tr>
-                    <td style="HEIGHT: 3mm; WIDTH: 12.00mm; background-color: yellow"></td>
-                    <td style="WIDTH: 18.05mm; background-color: blue"></td>
-                </tr>
-            </table>
-        </blockquote>
-    </body>
+            </tbody>
+        </table>
+        <hr>
+        <table style="border: 1px solid #000000; max-width: 100%;">
+            <tr>
+                <td>
+                    Word1Word1 Word1Word1Word1
+                </td>
+                <td>
+                    Word 2
+                </td>
+                <td>
+                    Word3Word3Word3Word3 Word3Word3Word3Word3Word3Word3Word3Word3Word3
+                </td>
+            </tr>
+        </table>
+        <hr>
+        <table style="border: 1px solid #000000; max-width: 100%;">
+            <tr>
+                <td style="width: 200px;">
+                    Word1 Word1Word1
+                </td>
+                <td style="width: 150px;">
+                    Word 2
+                </td>
+                <td style="width: 300px;">
+                    Word3Word3Word3 Word3
+                </td>
+            </tr>
+        </table>
+        <hr>
+        <table class="summary">
+            <tr>
+                <td colspan="2" class="header">
+                    Container
+                </td>
+            </tr>
+            <tr>
+                <td class="key">
+                    Type
+                </td>
+                <td class="value">
+                    $Type
+                </td>
+            </tr>
+        </table>
+        <hr>
+        <table>
+            <tr>
+                <td>this is a long message this is a long message this is a long message</td>
+                <td>this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message this is a long message </td>
+            </tr>
+        </table>
+        <hr>
+        <table style="width: 175.1543mm; background-color: red; border-spacing: 0; border: 1px solid;">
+            <tr>
+                <td style="height: 9.49mm; width: 0.00mm; background-color: yellow;"></td>
+                <td style="width: 6.05mm; min-width: 6.05mm; background-color: blue;"></td>
+                <td style="width: 147.37mm; min-width: 147.37mm; background-color: black;"></td>
+                <td style="width: 9.00mm; min-width: 9.00mm; background-color: white;"></td>
+                <td style="width: 8.20mm; min-width: 8.20mm; background-color: yellow;"></td>
+                <td style="width: 4.53mm; min-width: 4.53mm; background-color: green;"></td>
+            </tr>
+        </table>
+        <br>
+        <table style="width: 175.1543mm; background-color: red; border-spacing: 0; border: 1px solid;">
+            <tr>
+                <td style="height: 3mm; width: 12.00mm; background-color: yellow;"></td>
+                <td style="width: 6.05mm; min-width: 6.05mm; background-color: blue;"></td>
+            </tr>
+            <tr>
+                <td style="height: 3mm; width: 12.00mm; background-color: yellow;"></td>
+                <td style="width: 18.05mm; background-color: blue;"></td>
+            </tr>
+        </table>
+    </blockquote>
+</body>
 </html>
