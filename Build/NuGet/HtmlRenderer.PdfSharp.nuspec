@@ -7,7 +7,7 @@
     <authors>Arthur Teplitzki</authors>
     <owners>Arthur Teplitzki</owners>
     <licenseUrl>https://htmlrenderer.codeplex.com/license</licenseUrl>
-    <projectUrl>https://htmlrenderer.codeplex.com/</projectUrl>
+    <projectUrl>https://github.com/dem-v/HTML-Renderer/</projectUrl>
     <iconUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/html.ico?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>
@@ -34,19 +34,13 @@
       <frameworkAssembly assemblyName="System.Drawing" targetFramework="" />
     </frameworkAssemblies>
     <dependencies>
-      <dependency id="HtmlRenderer.Core" version="1.5.1-beta1"/>
-      <dependency id="PDFsharp" version="1.50.4000-beta3b"/>
+      <dependency id="HtmlRenderer.Core" version="6.2.0.0"/>
+      <dependency id="PDFsharp" version="6.2.0.0"/>
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Release\PdfSharp\net20\HtmlRenderer.PdfSharp.dll" target="lib\net20\HtmlRenderer.PdfSharp.dll" />
-    <file src="..\Release\PdfSharp\net20\HtmlRenderer.PdfSharp.pdb" target="lib\net20\HtmlRenderer.PdfSharp.pdb" />
-    <file src="..\Release\PdfSharp\net35\HtmlRenderer.PdfSharp.dll" target="lib\net35-client\HtmlRenderer.PdfSharp.dll" />
-    <file src="..\Release\PdfSharp\net35\HtmlRenderer.PdfSharp.pdb" target="lib\net35-client\HtmlRenderer.PdfSharp.pdb" />
-    <file src="..\Release\PdfSharp\net40\HtmlRenderer.PdfSharp.dll" target="lib\net40-client\HtmlRenderer.PdfSharp.dll" />
-    <file src="..\Release\PdfSharp\net40\HtmlRenderer.PdfSharp.pdb" target="lib\net40-client\HtmlRenderer.PdfSharp.pdb" />
-    <file src="..\Release\PdfSharp\net45\HtmlRenderer.PdfSharp.dll" target="lib\net45\HtmlRenderer.PdfSharp.dll" />
-    <file src="..\Release\PdfSharp\net45\HtmlRenderer.PdfSharp.pdb" target="lib\net45\HtmlRenderer.PdfSharp.pdb" />
+    <file src="..\Release\PdfSharp\NET48\HtmlRenderer.PdfSharp.dll" target="lib\net48\HtmlRenderer.PdfSharp.dll" />
+    <file src="..\Release\PdfSharp\NET48\HtmlRenderer.PdfSharp.pdb" target="lib\net48\HtmlRenderer.PdfSharp.pdb" />
     <file src="HtmlRenderer.PdfSharp.readme.txt" target="readme.txt" />
   </files>
 </package>

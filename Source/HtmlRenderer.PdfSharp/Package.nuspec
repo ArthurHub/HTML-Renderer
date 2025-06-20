@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>Package</id>
+    <version>6.2.0</version>
+    <authors>dem-v</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <!-- <icon>icon.png</icon> -->
+    <projectUrl>https://github.com/dem-v/HTML-Renderer/</projectUrl>
+    <description>Package description</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>Tag1 Tag2</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.8">
+        <dependency id="PdfSharp" version="6.2.0" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
