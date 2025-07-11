@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("HTML Renderer")]
+//[assembly: AssemblyTitle("HTML Renderer")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Open source hosted on CodePlex")]
-[assembly: AssemblyProduct("HTML Renderer")]
+//[assembly: AssemblyConfiguration("")]
+//[assembly: AssemblyCompany("Open source hosted on CodePlex")]
+//[assembly: AssemblyProduct("HTML Renderer")]
 [assembly: AssemblyCopyright("Copyright ©  2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -26,4 +26,4 @@ using System.Runtime.InteropServices;
 
 // Version information for an assembly consists of the following four values:
 
-[assembly: AssemblyVersion("1.5.1.0")]
+//[assembly: AssemblyVersion("1.5.1.0")]

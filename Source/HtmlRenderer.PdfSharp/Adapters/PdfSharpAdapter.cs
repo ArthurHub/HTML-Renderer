@@ -64,7 +64,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
         {
             try
             {
-                var color = Color.FromKnownColor((KnownColor)System.Enum.Parse(typeof(KnownColor), colorName, true));
+                var color = Color.FromName(colorName);
                 return Utils.Convert(color);
             }
             catch
@@ -119,14 +119,14 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
 
         protected override RFont CreateFontInt(string family, double size, RFontStyle style)
         {
-            var fontStyle = (XFontStyle)((int)style);
+            var fontStyle = (XFontStyleEx)((int)style);
             var xFont = new XFont(family, size, fontStyle, new XPdfFontOptions(PdfFontEncoding.Unicode));
             return new FontAdapter(xFont);
         }
 
         protected override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style)
         {
-            var fontStyle = (XFontStyle)((int)style);
+            var fontStyle = (XFontStyleEx)((int)style);
             var xFont = new XFont(((FontFamilyAdapter)family).FontFamily.Name, size, fontStyle, new XPdfFontOptions(PdfFontEncoding.Unicode));
             return new FontAdapter(xFont);
         }
