@@ -148,7 +148,14 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             var tmpFile = Path.GetTempFileName();
             tmpFile = Path.GetFileNameWithoutExtension(tmpFile) + ".pdf";
             doc.Save(tmpFile);
-            Process.Start(tmpFile);
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo(tmpFile)
+                {
+                    UseShellExecute = true
+                }
+            };
+            process.Start();
         }
 
         /// <summary>
