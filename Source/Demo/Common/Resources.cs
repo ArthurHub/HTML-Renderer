@@ -40,7 +40,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.Common
 
         public static Stream Comment16
         {
-            get { return GetManifestResourceStream("comment16.gif"); }
+            get { return GetManifestResourceStream("comment16.png"); }
         }
 
         public static Stream Event16
@@ -70,17 +70,17 @@ namespace TheArtOfDev.HtmlRenderer.Demo.Common
 
         public static Stream Method16
         {
-            get { return GetManifestResourceStream("method16.gif"); }
+            get { return GetManifestResourceStream("method16.png"); }
         }
 
         public static Stream Property16
         {
-            get { return GetManifestResourceStream("property16.gif"); }
+            get { return GetManifestResourceStream("property16.png"); }
         }
 
         public static Stream WebPallete
         {
-            get { return GetManifestResourceStream("web_pallete.gif"); }
+            get { return GetManifestResourceStream("web_pallete.png"); }
         }
 
         public static string Tooltip
