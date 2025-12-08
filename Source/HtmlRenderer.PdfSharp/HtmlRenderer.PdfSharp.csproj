@@ -4,11 +4,31 @@
     <OutputType>Library</OutputType>
     <RootNamespace>TheArtOfDev.HtmlRenderer.PdfSharp</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
+  <!-- NuGet Package Properties -->
+  <PropertyGroup>
+    <PackageId>HtmlRenderer.PdfSharp</PackageId>
+    <Title>HTML Renderer for PDF using PdfSharp</Title>
+    <PackageTags>html render renderer draw pdfsharp</PackageTags>
+    <Description>PDF document generator from HTML snippet, 100% managed (C#), High performance library using PdfSharp.
+
+Features and Benefits:
+---
+* 100% managed code depends only on PdfSharp library, no ActiveX, no MSHTML.
+* Extensive HTML 4.01 and CSS level 2 specifications support.
+* Support separating CSS from HTML by loading stylesheet code separately.
+* Handles "real world" malformed HTML, it doesn't have to be XHTML.
+* Lightweight, only two DLLs (~300K).
+* High performance and low memory footprint.
+* Extendable and configurable.</Description>
+    <Summary>PDF document generator from HTML snippet, 100% managed (C#), High performance library using PdfSharp.</Summary>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <None Include="README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HtmlRenderer\HtmlRenderer.csproj" />
