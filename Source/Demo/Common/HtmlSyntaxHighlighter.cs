@@ -26,7 +26,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.Common
     /// </summary>
     /// <remarks>
     /// The MIT License (MIT) Copyright (c) 2014 Arthur Teplitzki.<br/>
-    /// Based on work by Alun Evans 2006 (http://www.codeproject.com/Articles/15038/C-Formatting-Text-in-a-RichTextBox-by-Parsing-the).
+    /// Based on work by Alun Evans 2006 (https://web.archive.org/web/20170426121905/http://www.codeproject.com/Articles/15038/C-Formatting-Text-in-a-RichTextBox-by-Parsing-the).
     /// </remarks>
     public static class HtmlSyntaxHighlighter
     {

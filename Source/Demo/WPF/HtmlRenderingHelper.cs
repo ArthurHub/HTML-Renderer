@@ -136,13 +136,13 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
                         ThreadPool.QueueUserWorkItem(state =>
                         {
                             Thread.Sleep(delay);
-                            e.Callback("https://fbcdn-sphotos-a-a.akamaihd.net/hphotos-ak-snc7/c0.44.403.403/p403x403/318890_10151195988833836_1081776452_n.jpg");
+                            e.Callback("https://images.unsplash.com/photo-1608848461950-0fe51dfc41cb?w=500&q=80");
                         });
                         return;
                     }
                     else
                     {
-                        e.Callback("http://sphotos-a.xx.fbcdn.net/hphotos-ash4/c22.0.403.403/p403x403/263440_10152243591765596_773620816_n.jpg");
+                        e.Callback("https://images.unsplash.com/photo-1608848461950-0fe51dfc41cb?w=500&q=80");
                         return;
                     }
                 }

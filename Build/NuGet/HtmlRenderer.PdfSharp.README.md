@@ -1,0 +1,35 @@
+# Welcome to the HTML Renderer PdfSharp library!
+
+This library provides the ability to generate PDF documents from HTML snippets using static rendering code.
+For more info see HTML Renderer on GitHub: https://github.com/ArthurHub/HTML-Renderer
+
+## DEMO APPLICATION
+
+HTML Renderer Demo application showcases HTML Renderer capabilities, use it to explore and learn
+on the library: https://codeplexarchive.org/ProjectTab/Wiki/HtmlRenderer/Documentation/Demo%20application
+
+## FEEDBACK / RELEASE NOTES
+
+If you have problems, wish to report a bug, or have a suggestion, please open an issue on the
+HTML Renderer issue page: https://github.com/ArthurHub/HTML-Renderer/issues
+
+For full release notes and all versions see: https://github.com/ArthurHub/HTML-Renderer/releases
+
+## QUICK START
+
+For more Quick Start see: https://codeplexarchive.org/ProjectTab/Wiki/HtmlRenderer/Documentation/Documentation
+
+---
+
+## Quick Start: Create PDF from HTML snippet using PdfSharp
+
+```csharp
+class Program
+{
+    private static void Main(string[] args)
+    {
+        PdfDocument pdf = PdfGenerator.GeneratePdf("<p><h1>Hello World</h1>This is html rendered text</p>", PageSize.A4);
+        pdf.Save("document.pdf");
+    }
+}
+```

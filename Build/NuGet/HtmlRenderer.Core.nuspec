@@ -6,9 +6,9 @@
     <title>HTML Renderer Core</title>
     <authors>Arthur Teplitzki</authors>
     <owners>Arthur Teplitzki</owners>
-    <licenseUrl>https://htmlrenderer.codeplex.com/license</licenseUrl>
-    <projectUrl>https://htmlrenderer.codeplex.com/</projectUrl>
-    <iconUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/html.ico?raw=true</iconUrl>
+    <licenseUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://codeplexarchive.org/project/HtmlRenderer</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/ArthurHub/HTML-Renderer/refs/heads/master/html.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>
       Cross framework (WinForms/WPF/PDF/Metro/Mono/etc.), Multipurpose (UI Controls / Image generation / PDF generation / etc.), 100% managed (C#), High performance HTML Rendering library.
@@ -20,7 +20,7 @@
       Can be used to create framework specific renderer using adapter extensibility object model.
       For existing implementations see: HtmlRenderer.WinForms, HtmlRenderer.WPF and HtmlRenderer.PdfSharp.
     </description>
-    <releaseNotes>See http://htmlrenderer.codeplex.com/releases.</releaseNotes>
+    <releaseNotes>See https://github.com/ArthurHub/HTML-Renderer/releases.</releaseNotes>
     <tags>html render renderer draw core</tags>
   </metadata>
   <files>
@@ -34,5 +34,6 @@
     <file src="..\Release\Core\net40\HtmlRenderer.pdb" target="lib\net40-client\HtmlRenderer.pdb" />
     <file src="..\Release\Core\net45\HtmlRenderer.dll" target="lib\net45\HtmlRenderer.dll" />
     <file src="..\Release\Core\net45\HtmlRenderer.pdb" target="lib\net45\HtmlRenderer.pdb" />
+    <file src="..\..\README.md" target="README.md" />
   </files>
 </package>
