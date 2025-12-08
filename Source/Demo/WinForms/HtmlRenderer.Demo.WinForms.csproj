@@ -27,14 +27,4 @@
   <ItemGroup>
     <EmbeddedResource Include="html.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="PDFsharp" Version="1.50.4000-beta3b" />
-  </ItemGroup>
-  <Target Name="AfterResolveReferences">
-    <ItemGroup>
-      <EmbeddedResource Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.Extension)' == '.dll'">
-        <LogicalName>%(ReferenceCopyLocalPaths.Filename)%(ReferenceCopyLocalPaths.Extension)</LogicalName>
-      </EmbeddedResource>
-    </ItemGroup>
-  </Target>
 </Project>

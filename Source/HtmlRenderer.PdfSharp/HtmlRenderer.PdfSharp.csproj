@@ -28,12 +28,12 @@ Features and Benefits:
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <None Include="README.md" Pack="true" PackagePath="\"/>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HtmlRenderer\HtmlRenderer.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="PDFsharp" Version="1.50.4000-beta3b" />
+    <PackageReference Include="PDFsharp" Version="1.50.5147" />
   </ItemGroup>
 </Project>
