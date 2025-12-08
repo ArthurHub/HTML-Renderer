@@ -9,7 +9,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
     {
         public static void SaveAsEmf(Metafile me, string fileName)
         {
-            /* http://social.msdn.microsoft.com/Forums/en-US/csharpgeneral/thread/12a1c749-b320-4ce9-aff7-9de0d7fd30ea 
+            /* https://social.msdn.microsoft.com/Forums/en-US/csharpgeneral/thread/12a1c749-b320-4ce9-aff7-9de0d7fd30ea 
                 How to save or serialize a Metafile: Solution found 
                 by : SWAT Team member _1 
                 Date : Friday, February 01, 2008 1:38 PM 

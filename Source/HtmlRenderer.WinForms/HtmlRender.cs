@@ -39,7 +39,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
     /// </para>
     /// <para>
     /// <b>Rendering to image</b><br/>
-    /// See https://htmlrenderer.codeplex.com/wikipage?title=Image%20generation <br/>
+    /// See https://codeplexarchive.org/ProjectTab/Wiki/HtmlRenderer/Documentation/Image%20generation <br/>
     /// Because of GDI text rendering issue with alpha channel clear type text rendering rendering to image requires special handling.<br/>
     /// <u>Solid color background -</u> generate an image where the background is filled with solid color and all the html is rendered on top
     /// of the background color, GDI text rendering will be used. (RenderToImage method where the first argument is html string)<br/>

@@ -29,7 +29,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.Common
             get
             {
                 return "This is an <b>HtmlLabel</b> on transparent background with <span style=\"color: red\">colors</span> and links: " +
-                       "<a href=\"http://htmlrenderer.codeplex.com/\">HTML Renderer</a>";
+                       "<a href=\"https://github.com/ArthurHub/HTML-Renderer\">HTML Renderer</a>";
             }
         }
 
@@ -40,7 +40,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.Common
         {
             get
             {
-                return "This is an <b>HtmlPanel</b> with <span style=\"color: red\">colors</span> and links: <a href=\"http://htmlrenderer.codeplex.com/\">HTML Renderer</a>" +
+                return "This is an <b>HtmlPanel</b> with <span style=\"color: red\">colors</span> and links: <a href=\"https://github.com/ArthurHub/HTML-Renderer\">HTML Renderer</a>" +
                        "<div style=\"font-size: 1.2em; padding-top: 10px;\" >If there is more text than the size of the control scrollbars will appear.</div>" +
                        "<br/>Click me to change my <code>Text</code> property.";
             }

@@ -6,9 +6,9 @@
     <title>HTML Renderer for Mono</title>
     <authors>Arthur Teplitzki</authors>
     <owners>Arthur Teplitzki</owners>
-    <licenseUrl>https://htmlrenderer.codeplex.com/license</licenseUrl>
-    <projectUrl>https://htmlrenderer.codeplex.com/</projectUrl>
-    <iconUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/html.ico?raw=true</iconUrl>
+    <licenseUrl>https://github.com/ArthurHub/HTML-Renderer/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://codeplexarchive.org/project/HtmlRenderer</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/ArthurHub/HTML-Renderer/refs/heads/master/html.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>
       Multipurpose (UI Controls / Image generation), 100% managed (C#), High performance HTML Rendering library for Mono.
@@ -32,7 +32,7 @@
       * High performance and low memory footprint.
       * Extendable and configurable.
     </description>
-    <releaseNotes>See http://htmlrenderer.codeplex.com/releases.</releaseNotes>
+    <releaseNotes>See https://github.com/ArthurHub/HTML-Renderer/releases.</releaseNotes>
     <tags>html render renderer draw control winforms mono</tags>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Windows.Forms" targetFramework="" />
@@ -51,6 +51,6 @@
     <file src="..\Release\Mono\net40\HtmlRenderer.WinForms.pdb" target="lib\net40-client\HtmlRenderer.WinForms.pdb" />
     <file src="..\Release\Mono\net45\HtmlRenderer.WinForms.dll" target="lib\net45\HtmlRenderer.WinForms.dll" />
     <file src="..\Release\Mono\net45\HtmlRenderer.WinForms.pdb" target="lib\net45\HtmlRenderer.WinForms.pdb" />
-    <file src="HtmlRenderer.Mono.readme.txt" target="readme.txt" />
+    <file src="HtmlRenderer.Mono.README.md" target="README.md" />
   </files>
 </package>

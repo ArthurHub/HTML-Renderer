@@ -18,7 +18,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Utilities
 {
     /// <summary>
     /// Helper to encode and set HTML fragment to clipboard.<br/>
-    /// See http://theartofdev.com/2012/11/11/setting-html-and-plain-text-formatting-to-clipboard/.<br/>
+    /// See https://theartofdev.com/2012/11/11/setting-html-and-plain-text-formatting-to-clipboard/.<br/>
     /// <seealso cref="CreateDataObject"/>.
     /// </summary>
     /// <remarks>
@@ -91,7 +91,7 @@ EndSelection:<<<<<<<<4";
         /// <html><body><!--StartFragment-->hello <b>world</b><!--EndFragment--></body></html>
         /// ]]>
         /// </code>
-        /// See format specification here: http://msdn.microsoft.com/library/default.asp?url=/workshop/networking/clipboard/htmlclipboard.asp
+        /// See format specification here: https://msdn.microsoft.com/library/default.asp?url=/workshop/networking/clipboard/htmlclipboard.asp
         /// </para>
         /// </remarks>
         /// <param name="html">a html fragment</param>

@@ -146,7 +146,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 try
                 {
-                    var apiUri = new Uri(string.Format("http://gdata.youtube.com/feeds/api/videos/{0}?v=2&alt=json", uri.Segments[2]));
+                    var apiUri = new Uri(string.Format("https://gdata.youtube.com/feeds/api/videos/{0}?v=2&alt=json", uri.Segments[2]));
 
                     var client = new WebClient();
                     client.Encoding = Encoding.UTF8;
@@ -282,7 +282,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 try
                 {
-                    var apiUri = new Uri(string.Format("http://vimeo.com/api/v2/video/{0}.json", uri.Segments[2]));
+                    var apiUri = new Uri(string.Format("https://vimeo.com/api/v2/video/{0}.json", uri.Segments[2]));
 
                     var client = new WebClient();
                     client.Encoding = Encoding.UTF8;
