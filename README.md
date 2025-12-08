@@ -2,7 +2,7 @@
 
 **Cross framework** (WinForms/WPF/PDF/Metro/Mono/etc.), **Multipurpose** (UI Controls / Image generation / PDF generation / etc.), **100% managed** (C#), High performance HTML Rendering library.
 
-The library is 100% managed **C#** code without any external dependencies (no WebBrowser control, ActiveX / COM or MSHTML dll), the only requirement is **.NET 2.0 or higher**.
+The library is 100% managed **C#** code without any external dependencies (no WebBrowser control, ActiveX / COM or MSHTML dll), the only requirement is **.NET Framework 4.6.2 or higher**.
 
 ![Renderer.png](https://raw.githubusercontent.com/ArthurHub/HTML-Renderer/master/Art/demo_winforms.png)
 
@@ -38,7 +38,6 @@ The latest NuGet packages can be found on NuGet.org:
 * Create images/PDFs from HTML snippets.
 * Handles "real world" malformed HTML, it doesn't have to be XHTML.
 * 100% managed code and no external dependencies.
-* Supports .NET 2.0 or higher including Client Profile.
 * Lightweight, just two DLLs (~300K).
 * High performance and low memory footprint.
 * Extendable and configurable.

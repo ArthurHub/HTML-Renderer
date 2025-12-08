@@ -27,7 +27,6 @@
       * Support separating CSS from HTML by loading stylesheet code separately.
       * Support text selection, copy-paste and context menu.
       * Handles "real world" malformed HTML, it doesn't have to be XHTML.
-      * Supports .NET 2.0 or higher including Client Profile.
       * Lightweight, only two DLLs (~300K).
       * High performance and low memory footprint.
       * Extendable and configurable.
