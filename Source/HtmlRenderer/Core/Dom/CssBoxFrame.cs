@@ -146,7 +146,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 try
                 {
-                    var apiUri = new Uri(string.Format("https://gdata.youtube.com/feeds/api/videos/{0}?v=2&alt=json", uri.Segments[2]));
+                    var apiUri = new Uri(string.Format("https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={0}&format=json", uri.Segments[2]));
 
                     var client = new WebClient();
                     client.Encoding = Encoding.UTF8;
@@ -172,89 +172,93 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 {
                     if (e.Error == null)
                     {
-                        var idx = e.Result.IndexOf("\"media$title\"", StringComparison.Ordinal);
+                        var idx = e.Result.IndexOf("\"title\"", StringComparison.Ordinal);
                         if (idx > -1)
                         {
-                            idx = e.Result.IndexOf("\"$t\"", idx);
+                            idx = e.Result.IndexOf('"', idx + 7);
                             if (idx > -1)
                             {
-                                idx = e.Result.IndexOf('"', idx + 4);
+                                var endIdx = e.Result.IndexOf('"', idx + 1);
+                                while (endIdx > 0 && e.Result[endIdx - 1] == '\\')
+                                    endIdx = e.Result.IndexOf('"', endIdx + 1);
+                                if (endIdx > -1)
+                                {
+                                    _videoTitle = e.Result.Substring(idx + 1, endIdx - idx - 1).Replace("\\\"", "\"");
+                                }
+                            }
+                        }
+
+                        idx = e.Result.IndexOf("\"thumbnail_url\"", StringComparison.Ordinal);
+                        if (idx > -1)
+                        {
+                            idx = e.Result.IndexOf('"', idx + 15);
+                            if (idx > -1)
+                            {
+                                var endIdx = e.Result.IndexOf('"', idx + 1);
+                                while (endIdx > 0 && e.Result[endIdx - 1] == '\\')
+                                    endIdx = e.Result.IndexOf('"', endIdx + 1);
+                                if (endIdx > -1)
+                                {
+                                    _videoImageUrl = e.Result.Substring(idx + 1, endIdx - idx - 1).Replace("\\\"", "\"");
+                                }
+                            }
+
+                            idx = e.Result.IndexOf("\"thumbnail_width\"", StringComparison.Ordinal);
+                            if (idx > -1)
+                            {
+                                idx = e.Result.IndexOf(':', idx);
                                 if (idx > -1)
                                 {
-                                    var endIdx = e.Result.IndexOf('"', idx + 1);
-                                    while (e.Result[endIdx - 1] == '\\')
-                                        endIdx = e.Result.IndexOf('"', endIdx + 1);
+                                    var endIdx = e.Result.IndexOf(',', idx);
                                     if (endIdx > -1)
                                     {
-                                        _videoTitle = e.Result.Substring(idx + 1, endIdx - idx - 1).Replace("\\\"", "\"");
-                                    }
-                                }
-                            }
-                        }
-
-                        idx = e.Result.IndexOf("\"media$thumbnail\"", StringComparison.Ordinal);
-                        if (idx > -1)
-                        {
-                            var iidx = e.Result.IndexOf("sddefault", idx);
-                            if (iidx > -1)
-                            {
-                                if (string.IsNullOrEmpty(Width))
-                                    Width = "640px";
-                                if (string.IsNullOrEmpty(Height))
-                                    Height = "480px";
-                            }
-                            else
-                            {
-                                iidx = e.Result.IndexOf("hqdefault", idx);
-                                if (iidx > -1)
-                                {
-                                    if (string.IsNullOrEmpty(Width))
-                                        Width = "480px";
-                                    if (string.IsNullOrEmpty(Height))
-                                        Height = "360px";
-                                }
-                                else
-                                {
-                                    iidx = e.Result.IndexOf("mqdefault", idx);
-                                    if (iidx > -1)
-                                    {
-                                        if (string.IsNullOrEmpty(Width))
-                                            Width = "320px";
-                                        if (string.IsNullOrEmpty(Height))
-                                            Height = "180px";
-                                    }
-                                    else
-                                    {
-                                        iidx = e.Result.IndexOf("default", idx);
-                                        if (string.IsNullOrEmpty(Width))
-                                            Width = "120px";
-                                        if (string.IsNullOrEmpty(Height))
-                                            Height = "90px";
+                                        var widthStr = e.Result.Substring(idx + 1, endIdx - idx - 1).Trim();
+                                        if (int.TryParse(widthStr, out int width))
+                                        {
+                                            if (string.IsNullOrEmpty(Width))
+                                                Width = width + "px";
+                                        }
                                     }
                                 }
                             }
 
-                            iidx = e.Result.LastIndexOf("http:", iidx, StringComparison.Ordinal);
-                            if (iidx > -1)
-                            {
-                                var endIdx = e.Result.IndexOf('"', iidx);
-                                if (endIdx > -1)
-                                {
-                                    _videoImageUrl = e.Result.Substring(iidx, endIdx - iidx).Replace("\\\"", "\"").Replace("\\", "");
-                                }
-                            }
-                        }
-
-                        idx = e.Result.IndexOf("\"link\"", StringComparison.Ordinal);
-                        if (idx > -1)
-                        {
-                            idx = e.Result.IndexOf("http:", idx);
+                            idx = e.Result.IndexOf("\"thumbnail_height\"", StringComparison.Ordinal);
                             if (idx > -1)
                             {
-                                var endIdx = e.Result.IndexOf('"', idx);
-                                if (endIdx > -1)
+                                idx = e.Result.IndexOf(':', idx);
+                                if (idx > -1)
                                 {
-                                    _videoLinkUrl = e.Result.Substring(idx, endIdx - idx).Replace("\\\"", "\"").Replace("\\", "");
+                                    var endIdx = e.Result.IndexOf(',', idx);
+                                    if (endIdx == -1)
+                                        endIdx = e.Result.IndexOf('}', idx);
+                                    if (endIdx > -1)
+                                    {
+                                        var heightStr = e.Result.Substring(idx + 1, endIdx - idx - 1).Trim();
+                                        if (int.TryParse(heightStr, out int height))
+                                        {
+                                            if (string.IsNullOrEmpty(Height))
+                                                Height = height + "px";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        idx = e.Result.IndexOf("\"html\"", StringComparison.Ordinal);
+                        if (idx > -1)
+                        {
+                            idx = e.Result.IndexOf("src=", idx);
+                            if (idx > -1)
+                            {
+                                idx = e.Result.IndexOf("embed/", idx);
+                                if (idx > -1)
+                                {
+                                    var endIdx = e.Result.IndexOf('?', idx);
+                                    if (endIdx > -1)
+                                    {
+                                        var videoId = e.Result.Substring(idx + 6, endIdx - idx - 6);
+                                        _videoLinkUrl = "https://www.youtube.com/watch?v=" + videoId;
+                                    }
                                 }
                             }
                         }
