@@ -321,7 +321,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                             if (idx > -1)
                             {
                                 var endIdx = e.Result.IndexOf('"', idx + 1);
-                                while (e.Result[endIdx - 1] == '\\')
+                                while (endIdx > 0 && e.Result[endIdx - 1] == '\\')
                                     endIdx = e.Result.IndexOf('"', endIdx + 1);
                                 if (endIdx > -1)
                                 {
@@ -337,49 +337,59 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                                 Width = "640";
                             if (string.IsNullOrEmpty(Height))
                                 Height = "360";
+                            var urlIdx = e.Result.IndexOf("\"https:\\/\\/", idx);
+                            if (urlIdx != -1)
+                                idx = urlIdx;
                         }
                         else
                         {
-                            idx = e.Result.IndexOf("thumbnail_medium", idx);
+                            idx = e.Result.IndexOf("\"thumbnail_medium\"", StringComparison.Ordinal);
                             if (idx > -1)
                             {
                                 if (string.IsNullOrEmpty(Width))
                                     Width = "200";
                                 if (string.IsNullOrEmpty(Height))
                                     Height = "150";
+                                var urlIdx = e.Result.IndexOf("\"https:\\/\\/", idx);
+                                if (urlIdx != -1)
+                                    idx = urlIdx;
                             }
                             else
                             {
-                                idx = e.Result.IndexOf("thumbnail_small", idx);
-                                if (string.IsNullOrEmpty(Width))
-                                    Width = "100";
-                                if (string.IsNullOrEmpty(Height))
-                                    Height = "75";
+                                idx = e.Result.IndexOf("\"thumbnail_small\"", StringComparison.Ordinal);
+                                if (idx > -1)
+                                {
+                                    if (string.IsNullOrEmpty(Width))
+                                        Width = "100";
+                                    if (string.IsNullOrEmpty(Height))
+                                        Height = "75";
+                                    var urlIdx = e.Result.IndexOf("\"https:\\/\\/", idx);
+                                    if (urlIdx != -1)
+                                        idx = urlIdx;
+                                }
                             }
                         }
                         if (idx > -1)
                         {
-                            idx = e.Result.IndexOf("http:", idx);
-                            if (idx > -1)
+                            idx = idx + 1;
+                            var endIdx = e.Result.IndexOf('"', idx);
+                            if (endIdx > -1)
                             {
-                                var endIdx = e.Result.IndexOf('"', idx);
-                                if (endIdx > -1)
-                                {
-                                    _videoImageUrl = e.Result.Substring(idx, endIdx - idx).Replace("\\\"", "\"").Replace("\\", "");
-                                }
+                                _videoImageUrl = e.Result.Substring(idx, endIdx - idx).Replace("\\/", "/");
                             }
                         }
 
                         idx = e.Result.IndexOf("\"url\"", StringComparison.Ordinal);
                         if (idx > -1)
                         {
-                            idx = e.Result.IndexOf("http:", idx);
+                            idx = e.Result.IndexOf("\"https:\\/\\/", idx);
                             if (idx > -1)
                             {
+                                idx = idx + 1;
                                 var endIdx = e.Result.IndexOf('"', idx);
                                 if (endIdx > -1)
                                 {
-                                    _videoLinkUrl = e.Result.Substring(idx, endIdx - idx).Replace("\\\"", "\"").Replace("\\", "");
+                                    _videoLinkUrl = e.Result.Substring(idx, endIdx - idx).Replace("\\/", "/");
                                 }
                             }
                         }
