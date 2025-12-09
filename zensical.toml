@@ -1,0 +1,44 @@
+[project]
+site_name = "HTML Renderer"
+site_description = ""
+docs_dir = "Documentation"
+site_dir = "Site"
+copyright = "&copy; 2025 Arthur"
+nav = [
+    {"Home" = [
+        "index.md",
+        "quickstart.md",
+        "demos.md",
+        "installation.md",
+        "faq.md",
+    ]},
+    {"Documentation" = [
+        "docs/image-generation.md",
+        "docs/pdf-generation.md",
+        "docs/rendering-svg-images.md",
+    ]},
+    {"Development" = [
+        "dev/html-css-support.md"
+    ]}
+]
+
+[project.theme]
+logo = "images/logo.png"
+favicon = "images/favicon.ico"
+features = [
+    "navigation.tabs"
+]
+
+# Palette toggle for light mode
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+# Palette toggle for dark mode
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
