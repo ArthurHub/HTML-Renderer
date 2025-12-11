@@ -52,6 +52,9 @@ jobs:
     - name: Create HtmlRenderer.Core NuGet package
       run: dotnet pack Source/HtmlRenderer/HtmlRenderer.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --no-build --verbosity normal --output ${{ env.NuGetDirectory }}
 
+    - name: Create HtmlRenderer.PdfSharp NuGet package
+      run: dotnet pack Source/HtmlRenderer.PdfSharp/HtmlRenderer.PdfSharp.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --no-build --verbosity normal --output ${{ env.NuGetDirectory }}
+
     - name: Create HtmlRenderer.WinForms NuGet package
       run: dotnet pack Source/HtmlRenderer.WinForms/HtmlRenderer.WinForms.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --no-build --verbosity normal --output ${{ env.NuGetDirectory }}
 
@@ -63,3 +66,14 @@ jobs:
       with:
         name: "HTML Renderer (${{ matrix.platform.name }} ${{ matrix.dotnet.name }})"
         path: ${{ env.NuGetDirectory }}/*.*nupkg
+
+    - name: NuGet Login
+      if: startsWith(github.ref, 'refs/tags/') && matrix.dotnet.name == '.NET 8' && runner.os == 'Windows'
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: eXpl0it3r
+    
+    - name: NuGet Push
+      if: startsWith(github.ref, 'refs/tags/') && matrix.dotnet.name == '.NET 8' && runner.os == 'Windows'
+      run: dotnet nuget push ${{ env.NuGetDirectory }}/*.*nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
