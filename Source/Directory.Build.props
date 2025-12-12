@@ -9,7 +9,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/ArthurHub/HTML-Renderer/refs/heads/master/html.ico</PackageIconUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>See https://github.com/ArthurHub/HTML-Renderer/releases.</PackageReleaseNotes>
-    <Version>1.5.1-beta1</Version>
+    <Version>1.5.1</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 </Project>
