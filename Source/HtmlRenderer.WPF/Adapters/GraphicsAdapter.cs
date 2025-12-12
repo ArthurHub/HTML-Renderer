@@ -122,7 +122,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
 
             if (width <= 0)
             {
-                var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, Brushes.Red);
+                var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, Brushes.Red, 1.0);
                 return new RSize(formattedText.WidthIncludingTrailingWhitespace, formattedText.Height);
             }
 
@@ -164,7 +164,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
 
             if (!handled)
             {
-                var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, Brushes.Red);
+                var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, Brushes.Red, 1.0);
                 charFit = str.Length;
                 charFitWidth = formattedText.WidthIncludingTrailingWhitespace;
             }
@@ -202,7 +202,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
                     glyphRendered = true;
                     var wpfPoint = Utils.ConvertRound(point);
                     var glyphRun = new GlyphRun(glyphTypeface, rtl ? 1 : 0,
-                        false, 96d / 72d * font.Size, glyphs,
+                        false, 96d / 72d * font.Size, 1.0f, glyphs,
                         wpfPoint, widths, null, null, null, null, null, null);
 
                     var guidelines = new GuidelineSet();
@@ -216,7 +216,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
 
             if (!glyphRendered)
             {
-                var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, rtl ? FlowDirection.RightToLeft : FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, colorConv);
+                var formattedText = new FormattedText(str, CultureInfo.CurrentCulture, rtl ? FlowDirection.RightToLeft : FlowDirection.LeftToRight, ((FontAdapter)font).Font, 96d / 72d * font.Size, colorConv, 1.0);
                 point.X += rtl ? formattedText.Width : 0;
                 _g.DrawText(formattedText, Utils.ConvertRound(point));
             }
