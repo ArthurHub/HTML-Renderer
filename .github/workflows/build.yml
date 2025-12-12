@@ -78,4 +78,7 @@ jobs:
     
     - name: NuGet Push
       if: startsWith(github.ref, 'refs/tags/') && matrix.dotnet.name == '.NET 8' && runner.os == 'Windows'
-      run: dotnet nuget push ${{ env.NuGetDirectory }}/*.*nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+      run: |
+        foreach ($file in (Get-ChildItem ${{ env.NuGetDirectory }} -Recurse -Include *.*nupkg)) {
+          dotnet nuget push $file --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        }
