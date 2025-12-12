@@ -16,6 +16,8 @@ jobs:
   build:
     name: ${{ matrix.platform.name }} ${{ matrix.dotnet.name }}
     runs-on: ${{ matrix.platform.os }}
+    permissions:
+      id-token: write
 
     strategy:
       fail-fast: false
