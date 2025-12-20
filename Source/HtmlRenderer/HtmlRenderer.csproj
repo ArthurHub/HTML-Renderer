@@ -1,34 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <RootNamespace>TheArtOfDev.HtmlRenderer</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+	<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+	<EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
   <!-- NuGet Package Properties -->
   <PropertyGroup>
     <PackageId>HtmlRenderer.Core</PackageId>
     <Title>HTML Renderer Core</Title>
     <PackageTags>html render renderer draw core</PackageTags>
-    <Description>Cross framework (WinForms/WPF/PDF/Metro/Mono/etc.), Multipurpose (UI Controls / Image generation / PDF generation / etc.), 100% managed (C#), High performance HTML Rendering library.
+    <Description>Cross framework (WinForms/WPF/PDF/Metro/etc.), Multipurpose (UI Controls / Image generation / PDF generation / etc.), 100% managed (C#), High performance HTML Rendering library.
 
 The Core assembly of HTML Renderer does not bound to any rendering framework (WinForms/WPF/PDF/etc.).
 Can be used to create framework specific renderer using adapter extensibility object model.
 For existing implementations see: HtmlRenderer.WinForms, HtmlRenderer.WPF and HtmlRenderer.PdfSharp.</Description>
-    <Summary>Cross framework (WinForms/WPF/PDF/Metro/Mono/etc.), Multipurpose (UI Controls / Image generation / PDF generation / etc.), 100% managed (C#), High performance HTML Rendering library.</Summary>
+    <Summary>Cross framework (WinForms/WPF/PDF/Metro/etc.), Multipurpose (UI Controls / Image generation / PDF generation / etc.), 100% managed (C#), High performance HTML Rendering library.</Summary>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Core\Utils\ImageError.png" />
     <EmbeddedResource Include="Core\Utils\ImageLoad.png" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\SharedAssemblyInfo.cs">
-      <Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Resources.Extensions" Version="10.0.0" />
+	<PackageReference Include="System.Resources.Extensions" Version="10.0.1" />
   </ItemGroup>
 </Project>

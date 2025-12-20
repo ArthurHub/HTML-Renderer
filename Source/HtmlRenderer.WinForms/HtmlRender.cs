@@ -134,7 +134,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             return CssData.Parse(WinFormsAdapter.Instance, stylesheet, combineWithDefault);
         }
 
-#if !MONO
         /// <summary>
         /// Measure the size (width and height) required to draw the given html under given max width restriction.<br/>
         /// If no max width restriction is given the layout will use the maximum possible width required by the content,
@@ -154,7 +153,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(g, "g");
             return Measure(g, html, maxWidth, cssData, false, stylesheetLoad, imageLoad);
         }
-#endif
 
         /// <summary>
         /// Measure the size (width and height) required to draw the given html under given max width restriction.<br/>
@@ -176,7 +174,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             return Measure(g, html, maxWidth, cssData, true, stylesheetLoad, imageLoad);
         }
 
-#if !MONO
         /// <summary>
         /// Renders the specified HTML source on the specified location and max width restriction.<br/>
         /// Use GDI text rendering, note <see cref="Graphics.TextRenderingHint"/> has no effect.<br/>
@@ -223,7 +220,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(g, "g");
             return RenderClip(g, html, location, maxSize, cssData, false, stylesheetLoad, imageLoad);
         }
-#endif
 
         /// <summary>
         /// Renders the specified HTML source on the specified location and max size restriction.<br/>
@@ -271,8 +267,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             ArgChecker.AssertArgNotNull(g, "g");
             return RenderClip(g, html, location, maxSize, cssData, true, stylesheetLoad, imageLoad);
         }
-
-#if !MONO
 
         public static Metafile RenderToMetafile(string html, float left = 0, float top = 0, float maxWidth = 0, CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
@@ -511,7 +505,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                 return image;
             }
         }
-#endif
 
         /// <summary>
         /// Renders the specified HTML into a new image of the requested size.<br/>
@@ -764,7 +757,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             return actualSize;
         }
 
-#if !MONO
         /// <summary>
         /// Copy all the bitmap bits from memory bitmap buffer to the given image.
         /// </summary>
@@ -779,7 +771,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                 imageGraphics.ReleaseHdc(imgHdc);
             }
         }
-#endif
 
         #endregion
     }

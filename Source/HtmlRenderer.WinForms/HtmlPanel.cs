@@ -303,6 +303,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         [Browsable(true)]
         [Category("Appearance")]
         [Description("Set base stylesheet to be used by html rendered in the control.")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public virtual string BaseStylesheet
         {
@@ -418,10 +419,8 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                 _htmlContainer.ClearSelection();
         }
 
-
         #region Private methods
 
-#if !MONO
         /// <summary>
         /// Override to support border for the control.
         /// </summary>
@@ -445,7 +444,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                 return createParams;
             }
         }
-#endif
 
         /// <summary>
         /// Perform the layout of the html in the control.
@@ -473,7 +471,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             {
                 _htmlContainer.MaxSize = new SizeF(ClientSize.Width - Padding.Horizontal, 0);
 
-                Graphics g = Utils.CreateGraphics(this);
+                Graphics g = CreateGraphics();
                 if (g != null)
                 {
                     using (g)
@@ -481,7 +479,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                         _htmlContainer.PerformLayout(g);
                     }
                 }
-
 
                 AutoScrollMinSize = Size.Round(new SizeF(_htmlContainer.ActualSize.Width + Padding.Horizontal, _htmlContainer.ActualSize.Height));
             }
@@ -708,15 +705,12 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         {
             try
             {
-                // mono has issue throwing exception for no reason
                 var mp = PointToClient(MousePosition);
                 _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
             }
             catch
             {
-#if !MONO
                 throw;
-#endif
             }
         }
 
@@ -741,7 +735,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             return base.IsInputKey(keyData);
         }
 
-#if !MONO
         /// <summary>
         /// Override the proc processing method to set OS specific hand cursor.
         /// </summary>
@@ -765,7 +758,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             }
             base.WndProc(ref m);
         }
-#endif
 
         /// <summary>
         /// Release the html container resources.
@@ -890,6 +882,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// Not applicable.
         /// </summary>
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new bool UseWaitCursor
         {
             get { return base.UseWaitCursor; }

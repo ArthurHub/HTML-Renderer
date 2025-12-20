@@ -1,23 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.1.11312.151 d18.0
+VisualStudioVersion = 18.1.11312.151
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{E263EA16-2E6A-4269-A319-AA2F97ADA8E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Demo.Common", "Demo\Common\HtmlRenderer.Demo.Common.csproj", "{2390B71F-9400-47F4-B23A-7F2649C87D35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.Demo.Common", "Demo\Common\HtmlRenderer.Demo.Common.csproj", "{2390B71F-9400-47F4-B23A-7F2649C87D35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Demo.WinForms", "Demo\WinForms\HtmlRenderer.Demo.WinForms.csproj", "{8AD34FE8-8382-4A8A-B3AA-A0392ED42423}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.Demo.WinForms", "Demo\WinForms\HtmlRenderer.Demo.WinForms.csproj", "{8AD34FE8-8382-4A8A-B3AA-A0392ED42423}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.Demo.WPF", "Demo\WPF\HtmlRenderer.Demo.WPF.csproj", "{F02E0216-4AE3-474F-9381-FCB93411CDB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.Demo.WPF", "Demo\WPF\HtmlRenderer.Demo.WPF.csproj", "{F02E0216-4AE3-474F-9381-FCB93411CDB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.WinForms", "HtmlRenderer.WinForms\HtmlRenderer.WinForms.csproj", "{1B058920-24B4-4140-8AE7-C8C6C38CA52D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.WinForms", "HtmlRenderer.WinForms\HtmlRenderer.WinForms.csproj", "{1B058920-24B4-4140-8AE7-C8C6C38CA52D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.WPF", "HtmlRenderer.WPF\HtmlRenderer.WPF.csproj", "{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.WPF", "HtmlRenderer.WPF\HtmlRenderer.WPF.csproj", "{7E4E8DB5-85AD-4388-BDCB-38C6F423B8B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer", "HtmlRenderer\HtmlRenderer.csproj", "{FE611685-391F-4E3E-B27E-D3150E51E49B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer", "HtmlRenderer\HtmlRenderer.csproj", "{FE611685-391F-4E3E-B27E-D3150E51E49B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRenderer.PdfSharp", "HtmlRenderer.PdfSharp\HtmlRenderer.PdfSharp.csproj", "{CA249F5D-9285-40A6-B217-5889EF79FD7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRenderer.PdfSharp", "HtmlRenderer.PdfSharp\HtmlRenderer.PdfSharp.csproj", "{CA249F5D-9285-40A6-B217-5889EF79FD7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,5 +107,8 @@ Global
 		{2390B71F-9400-47F4-B23A-7F2649C87D35} = {E263EA16-2E6A-4269-A319-AA2F97ADA8E1}
 		{8AD34FE8-8382-4A8A-B3AA-A0392ED42423} = {E263EA16-2E6A-4269-A319-AA2F97ADA8E1}
 		{F02E0216-4AE3-474F-9381-FCB93411CDB0} = {E263EA16-2E6A-4269-A319-AA2F97ADA8E1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {902788D6-3165-491D-B860-DF2F74E66C1D}
 	EndGlobalSection
 EndGlobal

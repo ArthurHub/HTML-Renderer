@@ -51,8 +51,8 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             }
             _textRenderingHintTSCB.SelectedItem = TextRenderingHint.AntiAlias.ToString();
 
-            _useGdiPlusTSB.Enabled = !HtmlRenderingHelper.IsRunningOnMono();
-            _backgroundColorTSB.Enabled = !HtmlRenderingHelper.IsRunningOnMono();
+            _useGdiPlusTSB.Enabled = true;
+            _backgroundColorTSB.Enabled = true;
         }
 
         private void OnSaveToFile_Click(object sender, EventArgs e)
@@ -103,7 +103,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
                 TextRenderingHint textRenderingHint = (TextRenderingHint)Enum.Parse(typeof(TextRenderingHint), _textRenderingHintTSCB.SelectedItem.ToString());
 
                 Image img;
-                if (_useGdiPlusTSB.Checked || HtmlRenderingHelper.IsRunningOnMono())
+                if (_useGdiPlusTSB.Checked)
                 {
                     img = HtmlRender.RenderToImageGdiPlus(_html, _pictureBox.ClientSize, textRenderingHint, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoad);
                 }

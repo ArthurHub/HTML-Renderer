@@ -1,15 +1,19 @@
 <Project>
   <PropertyGroup>
-    <!-- Common NuGet package properties -->
+    <Product>HTML Renderer</Product>
     <Authors>Arthur Teplitzki</Authors>
     <Owners>Arthur Teplitzki</Owners>
+    <Company>Open source hosted on GitHub</Company>
+    <Copyright>Copyright © 2008-2025</Copyright>
+    <Version>1.6.0-dev</Version>
+    <AssemblyVersion>1.6.0.0</AssemblyVersion>
+    <FileVersion>1.6.0.0</FileVersion>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://codeplexarchive.org/project/HtmlRenderer</PackageProjectUrl>
     <PackageIcon>html.png</PackageIcon>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>See https://github.com/ArthurHub/HTML-Renderer/releases.</PackageReleaseNotes>
-    <Version>1.6.0-dev</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>

@@ -43,7 +43,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
                 if (stream != null)
                 {
                     byte[] assemblyRawBytes = new byte[stream.Length];
-                    stream.Read(assemblyRawBytes, 0, assemblyRawBytes.Length);
+                    stream.ReadExactly(assemblyRawBytes);
                     return Assembly.Load(assemblyRawBytes);
                 }
                 return null;

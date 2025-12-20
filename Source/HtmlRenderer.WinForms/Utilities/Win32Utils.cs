@@ -10,7 +10,6 @@
 // - Sun Tsu,
 // "The Art of War"
 
-#if !MONO
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -249,4 +248,3 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Utilities
         public byte tmCharSet;
     }
 }
-#endif

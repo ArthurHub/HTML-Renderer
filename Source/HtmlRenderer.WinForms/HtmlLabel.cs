@@ -295,6 +295,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         [Browsable(true)]
         [Description("Set base stylesheet to be used by html rendered in the control.")]
         [Category("Appearance")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public virtual string BaseStylesheet
         {
@@ -487,7 +488,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         {
             if (_htmlContainer != null)
             {
-                Graphics g = Utils.CreateGraphics(this);
+                Graphics g = CreateGraphics();
                 if (g != null)
                 {
                     using (g)
@@ -788,6 +789,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// Not applicable.
         /// </summary>
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new bool UseWaitCursor
         {
             get { return base.UseWaitCursor; }

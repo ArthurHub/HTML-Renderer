@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -72,6 +73,8 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         /// <summary>
         /// used ignore html editor updates when updating separately
         /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool UpdateLock
         {
             get { return _updateLock; }
@@ -81,6 +84,8 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         /// <summary>
         /// In IE view if to show original html or the html generated from the html control
         /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool UseGeneratedHtml
         {
             get { return _useGeneratedHtml; }
@@ -186,7 +191,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             {
                 _updateLock = true;
 
-                if (!HtmlRenderingHelper.IsRunningOnMono() && e.Node.Parent.Text != PerformanceSamplesTreeNodeName)
+                if (e.Node.Parent.Text != PerformanceSamplesTreeNodeName)
                     SetColoredText(sample.Html);
                 else
                     _htmlEditor.Text = sample.Html;

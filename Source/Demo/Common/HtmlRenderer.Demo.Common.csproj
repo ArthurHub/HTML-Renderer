@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <RootNamespace>TheArtOfDev.HtmlRenderer.Demo.Common</RootNamespace>
     <AssemblyName>HtmlRendererDemoCommon</AssemblyName>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+	<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+	<EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -90,6 +90,9 @@
     <EmbeddedResource Include="Samples\20.About.htm" />
     <EmbeddedResource Include="PerfSamples\1.Big table.htm" />
     <EmbeddedResource Include="PerfSamples\2.Lots blocks in inline.htm" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="10.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HtmlRenderer\HtmlRenderer.csproj" />

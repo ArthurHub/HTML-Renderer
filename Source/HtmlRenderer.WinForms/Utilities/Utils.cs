@@ -12,7 +12,6 @@
 
 using System;
 using System.Drawing;
-using System.Windows.Forms;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 
 namespace TheArtOfDev.HtmlRenderer.WinForms.Utilities
@@ -119,27 +118,6 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Utilities
         public static Color Convert(RColor c)
         {
             return Color.FromArgb(c.A, c.R, c.G, c.B);
-        }
-
-        /// <summary>
-        /// mono has issue throwing exception for no reason.
-        /// </summary>
-        /// <param name="control">the control to create graphics object from</param>
-        /// <returns>new graphics object or null in mono if failed</returns>
-        public static Graphics CreateGraphics(Control control)
-        {
-#if MONO
-            try
-            {
-                return control.CreateGraphics();
-            }
-            catch
-            {
-                return null;
-            }
-#else
-            return control.CreateGraphics();
-#endif
         }
     }
 }

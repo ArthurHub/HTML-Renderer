@@ -40,7 +40,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         /// </summary>
         public DemoForm()
         {
-            SamplesLoader.Init(HtmlRenderingHelper.IsRunningOnMono() ? "Mono" : "WinForms", typeof(HtmlRender).Assembly.GetName().Version.ToString());
+            SamplesLoader.Init("WinForms", typeof(HtmlRender).Assembly.GetName().Version.ToString());
 
             InitializeComponent();
 
@@ -59,8 +59,8 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
 
             LoadCustomFonts();
 
-            _showIEViewTSSB.Enabled = !HtmlRenderingHelper.IsRunningOnMono();
-            _generatePdfTSB.Enabled = !HtmlRenderingHelper.IsRunningOnMono();
+            _showIEViewTSSB.Enabled = true;
+            _generatePdfTSB.Enabled = true;
         }
 
         /// <summary>
@@ -145,10 +145,12 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             config.SetMargins(20);
 
             var doc = PdfGenerator.GeneratePdf(_mainControl.GetHtml(), config, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoadPdfSharp);
+
             var tmpFile = Path.GetTempFileName();
-            tmpFile = Path.GetFileNameWithoutExtension(tmpFile) + ".pdf";
-            doc.Save(tmpFile);
-            Process.Start(tmpFile);
+            var pdfFile = Path.ChangeExtension(tmpFile, ".pdf");  // Preserves the full path
+            doc.Save(pdfFile);
+
+            Process.Start(new ProcessStartInfo(pdfFile) { UseShellExecute = true });
         }
 
         /// <summary>

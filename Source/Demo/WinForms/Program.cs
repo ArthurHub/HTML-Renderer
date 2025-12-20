@@ -14,6 +14,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 
 namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
@@ -27,6 +28,8 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         private static void Main()
         {
             AppDomain.CurrentDomain.AssemblyResolve += OnResolveAssembly;
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -52,7 +55,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
                 if (stream != null)
                 {
                     byte[] assemblyRawBytes = new byte[stream.Length];
-                    stream.Read(assemblyRawBytes, 0, assemblyRawBytes.Length);
+                    stream.ReadExactly(assemblyRawBytes);
                     return Assembly.Load(assemblyRawBytes);
                 }
                 return null;

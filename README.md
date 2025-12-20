@@ -2,7 +2,7 @@
 
 **Cross framework** (WinForms/WPF/PDF/Metro/Mono/etc.), **Multipurpose** (UI Controls / Image generation / PDF generation / etc.), **100% managed** (C#), High performance HTML Rendering library.
 
-The library is 100% managed **C#** code without any external dependencies (no WebBrowser control, ActiveX / COM or MSHTML dll), the only requirement is **.NET Framework 4.6.2 or higher**.
+The library is 100% managed **C#** code without any external dependencies (no WebBrowser control, ActiveX / COM or MSHTML dll), the only requirement is **.NET Standard 2.0 / .NET 8.0 or higher**.
 
 ![Renderer.png](https://raw.githubusercontent.com/ArthurHub/HTML-Renderer/master/Art/demo_winforms.png)
 
@@ -22,7 +22,6 @@ The latest NuGet packages can be found on NuGet.org:
 
 * [HtmlRenderer.WinForms](https://www.nuget.org/packages/HtmlRenderer.WinForms)
 * [HtmlRenderer.WPF](https://www.nuget.org/packages/HtmlRenderer.WPF)
-* [HtmlRenderer.Mono](https://www.nuget.org/packages/HtmlRenderer.Mono)
 * [HtmlRenderer.PdfSharp](https://www.nuget.org/packages/HtmlRenderer.PdfSharp)
 * [HtmlRenderer.Core](https://www.nuget.org/packages/HtmlRenderer.Core)
 
