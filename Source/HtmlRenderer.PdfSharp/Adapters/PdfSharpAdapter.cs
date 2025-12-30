@@ -12,11 +12,11 @@
 
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
-using System.Drawing;
-using System.Drawing.Text;
+using System;
 using System.IO;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.PdfSharp.FontResolution;
 using TheArtOfDev.HtmlRenderer.PdfSharp.Utilities;
 
 namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
@@ -41,14 +41,16 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         private PdfSharpAdapter()
         {
+            var fontResolver = FontResolver.Register();
+
             AddFontFamilyMapping("monospace", "Courier New");
             AddFontFamilyMapping("Helvetica", "Arial");
 
-            var families = new InstalledFontCollection();
-
-            foreach (var family in families.Families)
+            var fontFamilies = fontResolver.DiscoverFontFamilies();
+            
+            foreach (var fontFamily in fontFamilies)
             {
-                AddFontFamily(new FontFamilyAdapter(new XFontFamily(family.Name)));
+                AddFontFamily(new FontFamilyAdapter(new XFontFamily(fontFamily)));
             }
         }
 
@@ -64,8 +66,23 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
         {
             try
             {
-                var color = Color.FromKnownColor((KnownColor)System.Enum.Parse(typeof(KnownColor), colorName, true));
-                return Utils.Convert(color);
+                var colorResourceManager = new XColorResourceManager();
+
+                var knownColors = XColorResourceManager.GetKnownColors(true);
+
+                foreach (var knownColor in knownColors)
+                {
+                    var name = colorResourceManager.ToColorName(knownColor);
+                    if (!string.Equals(name, colorName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    var xColor = XColor.FromKnownColor(knownColor);
+                    return xColor.IsEmpty ? RColor.Empty : Utils.Convert(xColor);
+                }
+
+                return RColor.Empty;
             }
             catch
             {
@@ -119,14 +136,14 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
 
         protected override RFont CreateFontInt(string family, double size, RFontStyle style)
         {
-            var fontStyle = (XFontStyle)((int)style);
+            var fontStyle = Utils.Convert(style);
             var xFont = new XFont(family, size, fontStyle, new XPdfFontOptions(PdfFontEncoding.Unicode));
             return new FontAdapter(xFont);
         }
 
         protected override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style)
         {
-            var fontStyle = (XFontStyle)((int)style);
+            var fontStyle = Utils.Convert(style);
             var xFont = new XFont(((FontFamilyAdapter)family).FontFamily.Name, size, fontStyle, new XPdfFontOptions(PdfFontEncoding.Unicode));
             return new FontAdapter(xFont);
         }

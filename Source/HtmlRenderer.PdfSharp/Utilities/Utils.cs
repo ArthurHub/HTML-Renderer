@@ -11,7 +11,6 @@
 // "The Art of War"
 
 using PdfSharp.Drawing;
-using System.Drawing;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 
 namespace TheArtOfDev.HtmlRenderer.PdfSharp.Utilities
@@ -89,11 +88,33 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Utilities
         }
 
         /// <summary>
-        /// Convert from  color to WinForms color.
+        /// Convert from PDFsharp color to WinForms color.
         /// </summary>
-        public static RColor Convert(Color c)
+        public static RColor Convert(XColor c)
         {
-            return RColor.FromArgb(c.A, c.R, c.G, c.B);
+            return RColor.FromArgb((byte)(c.A * 255.0), c.R, c.G, c.B);
+        }
+
+        /// <summary>
+        /// Convert from core font style to PDFsharp font style.
+        /// </summary>
+        public static XFontStyleEx Convert(RFontStyle style)
+        {
+            var fontStyle = XFontStyleEx.Regular;
+
+            if ((style & RFontStyle.Bold) == RFontStyle.Bold)
+                fontStyle |= XFontStyleEx.Bold;
+
+            if ((style & RFontStyle.Italic) == RFontStyle.Italic)
+                fontStyle |= XFontStyleEx.Italic;
+
+            if ((style & RFontStyle.Underline) == RFontStyle.Underline)
+                fontStyle |= XFontStyleEx.Underline;
+
+            if ((style & RFontStyle.Strikeout) == RFontStyle.Strikeout)
+                fontStyle |= XFontStyleEx.Strikeout;
+
+            return fontStyle;
         }
 
     }

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <RootNamespace>TheArtOfDev.HtmlRenderer.PdfSharp</RootNamespace>
 	<UseWinForms>true</UseWinForms>
@@ -10,20 +10,20 @@
   <!-- NuGet Package Properties -->
   <PropertyGroup>
     <PackageId>HtmlRenderer.PdfSharp</PackageId>
-    <Title>HTML Renderer for PDF using PdfSharp</Title>
+    <Title>HTML Renderer for PDF using PDFsharp</Title>
     <PackageTags>html render renderer draw pdfsharp</PackageTags>
-    <Description>PDF document generator from HTML snippet, 100% managed (C#), High performance library using PdfSharp.
+    <Description>PDF document generator from HTML snippet, 100% managed (C#), High performance library using PDFsharp.
 
 Features and Benefits:
 ---
-* 100% managed code depends only on PdfSharp library, no ActiveX, no MSHTML.
+* 100% managed code depends only on the PDFsharp library, no ActiveX, no MSHTML.
 * Extensive HTML 4.01 and CSS level 2 specifications support.
 * Support separating CSS from HTML by loading stylesheet code separately.
 * Handles "real world" malformed HTML, it doesn't have to be XHTML.
 * Lightweight, only two DLLs (~300K).
 * High performance and low memory footprint.
 * Extendable and configurable.</Description>
-    <Summary>PDF document generator from HTML snippet, 100% managed (C#), High performance library using PdfSharp.</Summary>
+    <Summary>PDF document generator from HTML snippet, 100% managed (C#), High performance library using PDFsharp.</Summary>
   </PropertyGroup>
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
@@ -32,7 +32,18 @@ Features and Benefits:
     <ProjectReference Include="..\HtmlRenderer\HtmlRenderer.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="PDFsharp" Version="1.50.5147" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.10" />
+    <PackageReference Include="PDFsharp" Version="6.2.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="FontResolver\Fallback\Tuffy.ttf" />
+    <EmbeddedResource Include="FontResolution\Fallback\Tuffy.ttf" />
+    <None Remove="FontResolver\Fallback\Tuffy Bold.ttf" />
+    <EmbeddedResource Include="FontResolution\Fallback\Tuffy Bold.ttf" />
+    <None Remove="FontResolver\Fallback\Tuffy Bold Italic.ttf" />
+    <EmbeddedResource Include="FontResolution\Fallback\Tuffy Bold Italic.ttf" />
+    <None Remove="FontResolver\Fallback\Tuffy Italic.ttf" />
+    <EmbeddedResource Include="FontResolution\Fallback\Tuffy Italic.ttf" />
   </ItemGroup>
 </Project>
