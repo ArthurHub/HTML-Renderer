@@ -171,13 +171,13 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                     while (scrollOffset > -container.ActualSize.Height)
                     {
                         var page = document.AddPage();
-                        page.Height = orgPageSize.Height;
-                        page.Width = orgPageSize.Width;
+                        page.Height = XUnit.FromPoint(orgPageSize.Height);
+                        page.Width = XUnit.FromPoint(orgPageSize.Width);
 
                         using (var g = XGraphics.FromPdfPage(page))
                         {
                             //g.IntersectClip(new XRect(config.MarginLeft, config.MarginTop, pageSize.Width, pageSize.Height));
-                            g.IntersectClip(new XRect(0, 0, page.Width, page.Height));
+                            g.IntersectClip(new XRect(0, 0, page.Width.Point, page.Height.Point));
 
                             container.ScrollOffset = new XPoint(0, scrollOffset);
                             container.PerformPaint(g);
