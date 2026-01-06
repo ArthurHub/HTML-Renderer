@@ -1,7 +1,8 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>HtmlLabel</title>
-        <link rel="Stylesheet" href="StyleSheet" />
+        <link rel="Stylesheet" href="StyleSheet">
     </head>
     <body>
         <h1>
@@ -99,24 +100,24 @@
             <h1>
                 Remarks
             </h1>
+            <h3>
+                Differences between HtmlPanel and HtmlLabel
+            </h3>
             <p>
-                <h3>
-                    Differences between HtmlPanel and HtmlLabel
-                </h3>
                 The major differential to use HtmlPanel or HtmlLabel is size and scrollbars.<br />
                 If the size of the control depends on the html content the HtmlLabel should be used.<br />
                 If the size is set by some kind of layout then HtmlPanel is more suitable, also
-                shows scrollbars if the html contents is larger than the control client rectangle.<br />
-                <ul>
-                    <li>HtmlPanel has scrollbars support</li>
-                    <li>HtmlLabel can be <i>autosized</i></li>
-                    <li>HtmlLabel can have transparent background</li>
-                </ul>
+                shows scrollbars if the html contents is larger than the control client rectangle.
             </p>
+            <ul>
+                <li>HtmlPanel has scrollbars support</li>
+                <li>HtmlLabel can be <i>autosized</i></li>
+                <li>HtmlLabel can have transparent background</li>
+            </ul>
+            <h3>
+                AutoSize
+            </h3>
             <p>
-                <h3>
-                    AutoSize
-                </h3>
                 <b>AutoSize = AutoSizeHeightOnly = false</b><br />
                 The label size will not change by the html content. MaximumSize and MinimumSize
                 are ignored.<br />
@@ -128,34 +129,34 @@
                 adjustable by the html content with restrictions to the MaximumSize.Height and MinimumSize.Height
                 values.<br />
             </p>
+            <h3>
+                LinkClicked event
+            </h3>
             <p>
-                <h3>
-                    LinkClicked event
-                </h3>
                 Raised when the user clicks on a link in the html.<br />
                 Allows canceling the execution of the link.
             </p>
+            <h3>
+                StylesheetLoad event
+            </h3>
             <p>
-                <h3>
-                    StylesheetLoad event
-                </h3>
                 Raised when aa stylesheet is about to be loaded by file path or URI by link element.<br />
                 This event allows to provide the stylesheet manually or provide new source (file
                 or uri) to load from.<br />
                 If no alternative data is provided the original source will be used.<br />
             </p>
+            <h3>
+                ImageLoad event
+            </h3>
             <p>
-                <h3>
-                    ImageLoad event
-                </h3>
                 Raised when an image is about to be loaded by file path or URI.<br />
                 This event allows to provide the image manually, if not handled the image will be
                 loaded from file or download from URI.
             </p>
+            <h3>
+                RenderError event
+            </h3>
             <p>
-                <h3>
-                    RenderError event
-                </h3>
                 Raised when an error occured during html rendering.<br />
             </p>
         </blockquote>
