@@ -1,4 +1,4 @@
-name: Build
+name: Build, Package & Publish
 
 on: [push, pull_request, workflow_dispatch]
 
