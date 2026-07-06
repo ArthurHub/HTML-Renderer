@@ -31,17 +31,17 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <summary>
         /// the container to render and handle the html shown in the tooltip
         /// </summary>
-        protected HtmlContainer _htmlContainer;
+        protected HtmlContainer? _htmlContainer;
 
         /// <summary>
         /// the raw base stylesheet data used in the control
         /// </summary>
-        protected string _baseRawCssData;
+        protected string? _baseRawCssData;
 
         /// <summary>
         /// the base stylesheet data used in the panel
         /// </summary>
-        protected CssData _baseCssData;
+        protected CssData? _baseCssData;
 
         /// <summary>
         /// The text rendering hint to be used for text rendering.
@@ -57,13 +57,13 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// the control that the tooltip is currently showing on.<br/>
         /// Used for link handling.
         /// </summary>
-        private Control _associatedControl;
+        private Control? _associatedControl;
 
         /// <summary>
         /// timer used to handle mouse move events when mouse is over the tooltip.<br/>
         /// Used for link handling.
         /// </summary>
-        private Timer _linkHandlingTimer;
+        private Timer? _linkHandlingTimer;
 
         /// <summary>
         /// the handle of the actual tooltip window used to know when the tooltip is hidden<br/>
@@ -175,7 +175,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         [Description("Set base stylesheet to be used by html rendered in the tooltip.")]
         [Category("Appearance")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Windows.Forms.Design, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", "System.Drawing.Design.UITypeEditor, System.Windows.Forms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
         public virtual string BaseStylesheet
         {
             get { return _baseRawCssData; }
@@ -238,6 +238,9 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         protected virtual void OnToolTipPopup(PopupEventArgs e)
         {
+            if (e.AssociatedControl == null)
+                return;
+
             //Create fragment container
             var cssClass = string.IsNullOrEmpty(_tooltipCssClass) ? null : string.Format(" class=\"{0}\"", _tooltipCssClass);
             var toolipHtml = string.Format("<div{0}>{1}</div>", cssClass, GetToolTip(e.AssociatedControl));
@@ -276,7 +279,8 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                 _tooltipHandle = Win32Utils.WindowFromDC(hdc);
                 e.Graphics.ReleaseHdc(hdc);
 
-                AdjustTooltipPosition(e.AssociatedControl, e.Bounds.Size);
+                if (e.AssociatedControl != null)
+                    AdjustTooltipPosition(e.AssociatedControl, e.Bounds.Size);
             }
 
             e.Graphics.Clear(Color.White);
@@ -373,16 +377,19 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                     _linkHandlingTimer.Stop();
                     _tooltipHandle = IntPtr.Zero;
 
-                    var mPos = Control.MousePosition;
-                    var mButtons = Control.MouseButtons;
-                    var rect = Win32Utils.GetWindowRectangle(handle);
-                    if (rect.Contains(mPos))
+                    if (handle != IntPtr.Zero && _associatedControl != null)
                     {
-                        if (mButtons == MouseButtons.Left)
+                        var mPos = Control.MousePosition;
+                        var mButtons = Control.MouseButtons;
+                        var rect = Win32Utils.GetWindowRectangle(handle);
+                        if (rect.Contains(mPos))
                         {
-                            var args = new MouseEventArgs(mButtons, 1, mPos.X - rect.X, mPos.Y - rect.Y, 0);
-                            _htmlContainer.HandleMouseDown(_associatedControl, args);
-                            _htmlContainer.HandleMouseUp(_associatedControl, args);
+                            if (mButtons == MouseButtons.Left)
+                            {
+                                var args = new MouseEventArgs(mButtons, 1, mPos.X - rect.X, mPos.Y - rect.Y, 0);
+                                _htmlContainer.HandleMouseDown(_associatedControl, args);
+                                _htmlContainer.HandleMouseUp(_associatedControl, args);
+                            }
                         }
                     }
                 }
@@ -402,22 +409,21 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             Draw -= OnToolTipDraw;
             Disposed -= OnToolTipDisposed;
 
+            if (_linkHandlingTimer != null)
+            {
+                _linkHandlingTimer.Tick -= OnLinkHandlingTimerTick;
+                _linkHandlingTimer.Dispose();
+                _linkHandlingTimer = null;
+            }
+
             if (_htmlContainer != null)
             {
+                _htmlContainer.LinkClicked -= OnLinkClicked;
                 _htmlContainer.RenderError -= OnRenderError;
                 _htmlContainer.StylesheetLoad -= OnStylesheetLoad;
                 _htmlContainer.ImageLoad -= OnImageLoad;
                 _htmlContainer.Dispose();
                 _htmlContainer = null;
-            }
-
-            if (_linkHandlingTimer != null)
-            {
-                _linkHandlingTimer.Dispose();
-                _linkHandlingTimer = null;
-
-                if (_htmlContainer != null)
-                    _htmlContainer.LinkClicked -= OnLinkClicked;
             }
         }
 

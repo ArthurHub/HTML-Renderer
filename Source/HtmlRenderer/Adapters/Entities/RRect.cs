@@ -284,7 +284,7 @@ namespace TheArtOfDev.HtmlRenderer.Adapters.Entities
         /// <param name="obj">
         ///     The <see cref="T:System.Object" /> to test.
         /// </param>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (!(obj is RRect))
                 return false;

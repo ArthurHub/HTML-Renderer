@@ -286,7 +286,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <summary>
         /// Get the currently selected text segment in the html.
         /// </summary>
-        public string SelectedText
+        public string? SelectedText
         {
             get { return _htmlContainerInt.SelectedText; }
         }
@@ -294,7 +294,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <summary>
         /// Copy the currently selected html segment with style.
         /// </summary>
-        public string SelectedHtml
+        public string? SelectedHtml
         {
             get { return _htmlContainerInt.SelectedHtml; }
         }
@@ -312,7 +312,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         /// <param name="htmlSource">the html to init with, init empty if not given</param>
         /// <param name="baseCssData">optional: the stylesheet to init with, init default if not given</param>
-        public void SetHtml(string htmlSource, CssData baseCssData = null)
+        public void SetHtml(string? htmlSource, CssData? baseCssData = null)
         {
             _htmlContainerInt.SetHtml(htmlSource, baseCssData);
         }
@@ -322,7 +322,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         /// <param name="styleGen">Optional: controls the way styles are generated when html is generated (default: <see cref="HtmlGenerationStyle.Inline"/>)</param>
         /// <returns>generated html</returns>
-        public string GetHtml(HtmlGenerationStyle styleGen = HtmlGenerationStyle.Inline)
+        public string? GetHtml(HtmlGenerationStyle styleGen = HtmlGenerationStyle.Inline)
         {
             return _htmlContainerInt.GetHtml(styleGen);
         }
@@ -334,7 +334,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <param name="location">the location to find the attribute at</param>
         /// <param name="attribute">the attribute key to get value by</param>
         /// <returns>found attribute value or null if not found</returns>
-        public string GetAttributeAt(Point location, string attribute)
+        public string? GetAttributeAt(Point location, string attribute)
         {
             return _htmlContainerInt.GetAttributeAt(Utils.Convert(location), attribute);
         }
@@ -358,7 +358,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         /// <param name="location">the location to find the link at</param>
         /// <returns>css link href if exists or null</returns>
-        public string GetLinkAt(Point location)
+        public string? GetLinkAt(Point location)
         {
             return _htmlContainerInt.GetLinkAt(Utils.Convert(location));
         }

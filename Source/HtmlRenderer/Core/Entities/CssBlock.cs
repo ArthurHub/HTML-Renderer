@@ -196,7 +196,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Entities
         /// </summary>
         /// <param name="obj">the other block to compare to</param>
         /// <returns>true - the two blocks are the same, false - otherwise</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj))
                 return false;
