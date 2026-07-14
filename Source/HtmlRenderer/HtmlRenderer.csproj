@@ -28,7 +28,4 @@ For existing implementations see: HtmlRenderer.WinForms, HtmlRenderer.WPF and Ht
 	<PackageReference Include="System.Resources.Extensions" Version="10.0.10" />
 	<PackageReference Include="HtmlKit" Version="1.2.0" />
   </ItemGroup>
-  <ItemGroup>
-    <InternalsVisibleTo Include="HtmlParserVerify" />
-  </ItemGroup>
 </Project>
