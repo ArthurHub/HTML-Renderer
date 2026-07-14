@@ -97,6 +97,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
+        /// Check if the given string is non-empty and contains only whitespace characters.<br/>
+        /// Unlike <see cref="string.IsNullOrWhiteSpace"/>, this returns false for an empty string.
+        /// </summary>
+        /// <param name="s">the string to check</param>
+        /// <returns>true - non-empty and all whitespace, false - otherwise</returns>
+        public static bool IsNonEmptyWhitespace(string s)
+        {
+            return s.Length > 0 && string.IsNullOrWhiteSpace(s);
+        }
+
+        /// <summary>
         /// Check if the given char is a digit character (0-9) and (0-9, a-f for HEX)
         /// </summary>
         /// <param name="ch">the character to check</param>

@@ -60,7 +60,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <summary>
         /// the inner text of the box
         /// </summary>
-        private SubString _text;
+        private string _text;
 
         /// <summary>
         /// Do not use or alter this flag
@@ -144,6 +144,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             get {
                 return _htmltag != null && _htmltag.Name.Equals("br", StringComparison.InvariantCultureIgnoreCase);
             }
+        }
+
+        /// <summary>
+        /// Is the box "Display" is one of the table-row-group/table-header-group/table-footer-group values.
+        /// </summary>
+        public bool IsTableRowGroupBox
+        {
+            get { return Display == CssConstants.TableRowGroup || Display == CssConstants.TableHeaderGroup || Display == CssConstants.TableFooterGroup; }
         }
 
         /// <summary>
@@ -278,7 +286,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <summary>
         /// Gets or sets the inner text of the box
         /// </summary>
-        public SubString Text
+        public string Text
         {
             get { return _text; }
             set
@@ -541,7 +549,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             int startIdx = 0;
             bool preserveSpaces = WhiteSpace == CssConstants.Pre || WhiteSpace == CssConstants.PreWrap;
-            bool respoctNewline = preserveSpaces || WhiteSpace == CssConstants.PreLine;
+            bool respoctNewline = preserveSpaces || WhiteSpace == CssConstants.PreLine || IsBrElement;
             while (startIdx < _text.Length)
             {
                 while (startIdx < _text.Length && _text[startIdx] == '\r')
@@ -795,27 +803,27 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                     if (ListStyleType.Equals(CssConstants.Disc, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        _listItemBox.Text = new SubString("•");
+                        _listItemBox.Text = "•";
                     }
                     else if (ListStyleType.Equals(CssConstants.Circle, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        _listItemBox.Text = new SubString("o");
+                        _listItemBox.Text = "o";
                     }
                     else if (ListStyleType.Equals(CssConstants.Square, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        _listItemBox.Text = new SubString("♠");
+                        _listItemBox.Text = "♠";
                     }
                     else if (ListStyleType.Equals(CssConstants.Decimal, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        _listItemBox.Text = new SubString(GetIndexForList().ToString(CultureInfo.InvariantCulture) + ".");
+                        _listItemBox.Text = GetIndexForList().ToString(CultureInfo.InvariantCulture) + ".";
                     }
                     else if (ListStyleType.Equals(CssConstants.DecimalLeadingZero, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        _listItemBox.Text = new SubString(GetIndexForList().ToString("00", CultureInfo.InvariantCulture) + ".");
+                        _listItemBox.Text = GetIndexForList().ToString("00", CultureInfo.InvariantCulture) + ".";
                     }
                     else
                     {
-                        _listItemBox.Text = new SubString(CommonUtils.ConvertToAlphaNumber(GetIndexForList(), ListStyleType) + ".");
+                        _listItemBox.Text = CommonUtils.ConvertToAlphaNumber(GetIndexForList(), ListStyleType) + ".";
                     }
 
                     _listItemBox.ParseToWords();
