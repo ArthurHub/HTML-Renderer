@@ -12,6 +12,7 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
@@ -70,14 +71,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
                 CorrectImgBoxes(root);
 
-                bool followingBlock = true;
-                CorrectLineBreaksBlocks(root, ref followingBlock);
+                CorrectLineBreaksBlocks(root);
 
                 CorrectInlineBoxesParent(root);
 
                 CorrectBlockInsideInline(root);
 
                 CorrectInlineBoxesParent(root);
+
+                CorrectAnonymousTables(root);
             }
             return root;
         }
@@ -117,7 +119,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 {
                     CloneCssData(ref cssData, ref cssDataChanged);
                     foreach (var child in box.Boxes)
-                        _cssParser.ParseStyleSheet(cssData, child.Text.CutSubstring());
+                        _cssParser.ParseStyleSheet(cssData, child.Text);
                 }
             }
 
@@ -576,7 +578,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 if (childBox.Text != null)
                 {
                     // is the box has text
-                    var keepBox = !childBox.Text.IsEmptyOrWhitespace();
+                    var keepBox = !string.IsNullOrWhiteSpace(childBox.Text);
+
+                    // is the box a "br" element (its Text is a forced "\n" line break, not real content)
+                    keepBox = keepBox || childBox.IsBrElement;
 
                     // is the box is pre-formatted
                     keepBox = keepBox || childBox.WhiteSpace == CssConstants.Pre || childBox.WhiteSpace == CssConstants.PreWrap;
@@ -633,51 +638,30 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Correct the DOM tree recursively by replacing  "br" html boxes with anonymous blocks that respect br spec.<br/>
-        /// If the "br" tag is after inline box then the anon block will have zero height only acting as newline,
-        /// but if it is after block box then it will have min-height of the font size so it will create empty line.
+        /// Correct the DOM tree recursively by turning "br" html boxes that should force a line break
+        /// into a "\n" text word on the box itself, reusing the same forced-newline mechanism used for
+        /// "white-space: pre/pre-line" content.
         /// </summary>
         /// <param name="box">the current box to correct its sub-tree</param>
-        /// <param name="followingBlock">used to know if the br is following a box so it should create an empty line or not so it only
-        /// move to a new line</param>
-        private static void CorrectLineBreaksBlocks(CssBox box, ref bool followingBlock)
+        private static void CorrectLineBreaksBlocks(CssBox box)
         {
-            followingBlock = followingBlock || box.IsBlock;
             foreach (var childBox in box.Boxes)
             {
-                CorrectLineBreaksBlocks(childBox, ref followingBlock);
-                followingBlock = childBox.Words.Count == 0 && (followingBlock || childBox.IsBlock);
+                CorrectLineBreaksBlocks(childBox);
             }
 
-            int lastBr = -1;
-            CssBox brBox;
-            do
-            {
-                brBox = null;
-                for (int i = 0; i < box.Boxes.Count && brBox == null; i++)
-                {
-                    if (i > lastBr && box.Boxes[i].IsBrElement)
-                    {
-                        brBox = box.Boxes[i];
-                        lastBr = i;
-                    }
-                    else if (box.Boxes[i].Words.Count > 0)
-                    {
-                        followingBlock = false;
-                    }
-                    else if (box.Boxes[i].IsBlock)
-                    {
-                        followingBlock = true;
-                    }
-                }
+            if (!box.IsBrElement) return;
 
-                if (brBox != null)
+            var previousSibling = DomUtils.GetPreviousSibling(box);
+            if (previousSibling == null || previousSibling.IsBlock)
+            {
+                var nextSibling = DomUtils.GetFollowingSiblings(box, b => b.IsInline && !b.IsBrElement, true).FirstOrDefault();
+                if (nextSibling == null)
                 {
-                    brBox.Display = CssConstants.Block;
-                    if (followingBlock)
-                        brBox.Height = ".95em"; // TODO:a check the height to min-height when it is supported
+                    box.Text = "\n";
+                    box.ParseToWords();
                 }
-            } while (brBox != null);
+            }
         }
 
         /// <summary>
@@ -893,6 +877,146 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             }
 
             return hasBlock && hasInline;
+        }
+
+        /// <summary>
+        /// Corrects the missing elements in tables per https://www.w3.org/TR/CSS2/tables.html#anonymous-boxes
+        /// </summary>
+        /// <param name="box">the current box to correct its sub-tree</param>
+        private static void CorrectAnonymousTables(CssBox box)
+        {
+            // 1. Remove irrelevant boxes
+            CorrectAnonymousTablesRemoveIrrelevantBoxes(box);
+
+            foreach (var childBox in box.Boxes.ToArray())
+            {
+                CorrectAnonymousTablesRemoveIrrelevantBoxes(childBox);
+            }
+
+            // 2. Generate missing child wrappers
+            CorrectAnonymousTablesGenerateMissingChildWrappers(box);
+
+            foreach (var childBox in box.Boxes.ToArray())
+            {
+                CorrectAnonymousTablesGenerateMissingChildWrappers(childBox);
+            }
+
+            // 3. Generate missing parents
+            CorrectAnonymousTablesGenerateMissingParents(box);
+
+            foreach (var childBox in box.Boxes.ToArray())
+            {
+                CorrectAnonymousTablesGenerateMissingParents(childBox);
+            }
+
+            foreach (var childBox in box.Boxes.ToArray())
+            {
+                CorrectAnonymousTables(childBox);
+            }
+        }
+
+        private static void CorrectAnonymousTablesRemoveIrrelevantBoxes(CssBox box)
+        {
+            // 1.1 All child boxes of a 'table-column' parent are treated as if they had 'display: none'
+            if (box.Display == CssConstants.TableColumn)
+            {
+                foreach (var childBox in box.Boxes)
+                {
+                    childBox.Display = CssConstants.None;
+                }
+            }
+
+            // 1.2 If a child of a 'table-column-group' parent is not a 'table-column' box, it is treated as if it had 'display: none'.
+            if (box.ParentBox != null && box.ParentBox.Display == CssConstants.TableColumnGroup && box.Display != CssConstants.TableColumn)
+            {
+                box.Display = CssConstants.None;
+            }
+        }
+
+        private static void CorrectAnonymousTablesGenerateMissingChildWrappers(CssBox box)
+        {
+            // 2.1 If a child of a 'table'/'inline-table' box is not a proper table child, generate an anonymous 'table-row' box around it
+            // and all consecutive siblings that are not proper table children.
+            if (box.ParentBox != null && box.ParentBox.Display == CssConstants.Table)
+            {
+                if (!DomUtils.IsProperTableChild(box))
+                {
+                    var tableRowBox = new CssBox(box.ParentBox, null);
+                    tableRowBox.Display = CssConstants.TableRow;
+                    box.ParentBox = tableRowBox;
+                }
+            }
+
+            // 2.2 If a child of a row group box is not a 'table-row' box, generate an anonymous 'table-row' box around it
+            // and all consecutive siblings that are not 'table-row' boxes.
+            if (box.ParentBox != null && box.ParentBox.IsTableRowGroupBox)
+            {
+                if (box.Display != CssConstants.TableRow)
+                {
+                    var tableRowBox = new CssBox(box.ParentBox, null);
+                    tableRowBox.Display = CssConstants.TableRow;
+                    box.ParentBox = tableRowBox;
+                }
+            }
+
+            // 2.3 If a child of a 'table-row' box is not a 'table-cell', generate an anonymous 'table-cell' box around it
+            // and all consecutive siblings that are not 'table-cell' boxes.
+            if (box.ParentBox != null && box.ParentBox.Display == CssConstants.TableRow)
+            {
+                if (box.Display != CssConstants.TableCell)
+                {
+                    var followingMatchingSiblings = DomUtils.GetFollowingSiblings(box, sibling => sibling.Display == CssConstants.TableCell, true).ToList();
+
+                    var tableCellBox = new CssBox(box.ParentBox, null);
+                    tableCellBox.Display = CssConstants.TableCell;
+                    box.ParentBox = tableCellBox;
+
+                    followingMatchingSiblings.ForEach(sib => sib.ParentBox = tableCellBox);
+                }
+            }
+        }
+
+        private static void CorrectAnonymousTablesGenerateMissingParents(CssBox box)
+        {
+            // 3.1 For each 'table-cell' box in a sequence of consecutive internal table and 'table-caption' siblings, if its parent
+            // is not a 'table-row' then generate an anonymous 'table-row' box around it and all consecutive 'table-cell' siblings.
+            if (box.Display == CssConstants.TableCell)
+            {
+                if (box.ParentBox == null || box.ParentBox.Display != CssConstants.TableRow)
+                {
+                    var followingMatchingSiblings = DomUtils.GetFollowingSiblings(box, sibling => sibling.Display == CssConstants.TableCell, true).ToList();
+
+                    var tableRowBox = new CssBox(box.ParentBox, null);
+                    tableRowBox.Display = CssConstants.TableRow;
+                    box.ParentBox = tableRowBox;
+
+                    followingMatchingSiblings.ForEach(sib => sib.ParentBox = tableRowBox);
+                }
+            }
+
+            // 3.2 For each proper table child in a sequence of consecutive proper table children, if it is misparented then generate
+            // an anonymous 'table'/'inline-table' box around it and all consecutive proper-table-child siblings.
+            if (DomUtils.IsProperTableChild(box))
+            {
+                var isMissingParent = box.ParentBox == null;
+                var isParentNotTable = box.ParentBox == null || box.ParentBox.Display != CssConstants.Table;
+                var isParentNotInlineTable = box.ParentBox == null || box.ParentBox.Display != CssConstants.InlineTable;
+
+                var isMisparented = isMissingParent && isParentNotTable && isParentNotInlineTable;
+
+                if (isMisparented)
+                {
+                    var parentDisplay = (box.ParentBox == null || box.ParentBox.IsBlock) ? CssConstants.Table : CssConstants.InlineTable;
+
+                    var followingMatchingSiblings = DomUtils.GetFollowingSiblings(box, DomUtils.IsProperTableChild, true).ToList();
+
+                    var tableBox = new CssBox(box.ParentBox, null);
+                    tableBox.Display = parentDisplay;
+                    box.ParentBox = tableBox;
+
+                    followingMatchingSiblings.ForEach(sib => sib.ParentBox = tableBox);
+                }
+            }
         }
 
         #endregion

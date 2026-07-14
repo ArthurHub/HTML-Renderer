@@ -1,0 +1,124 @@
+<html>
+    <head>
+        <title>HTML5 Parsing</title>
+        <link rel="Stylesheet" href="StyleSheet" />
+    </head>
+    <body>
+        <h1>HTML5 Parsing
+        </h1>
+        <blockquote>
+            <p>
+                The html is parsed using a real <b>HTML5 tokenizer</b> (from the
+                <a href="https://github.com/jstedfast/HtmlKit">HtmlKit</a> library) instead of a hand-rolled
+                scanner, so the pages below - all of which are <i>intentionally malformed</i> - render
+                correctly instead of breaking the layout. Every example shows the raw (broken) html
+                source followed by the actual <b>live rendering</b> of that exact same markup.
+            </p>
+            <hr />
+            <h2>Optional / omitted end tags
+            </h2>
+            <p>
+                Real world html is full of tags whose closing tag was never written. The parser now
+                follows the <a href="https://html.spec.whatwg.org/dev/dom.html#concept-element-tag-omission">
+                                 HTML5 end-tag omission rules</a> and automatically closes them at the right
+                place, instead of nesting everything into one deep, broken tree.
+            </p>
+            <div class="comment">Source:</div>
+            <pre>&lt;p&gt;First paragraph, never closed
+&lt;p&gt;Second paragraph, never closed
+&lt;p&gt;Third paragraph, never closed</pre>
+            <div class="comment">Live result:</div>
+            <div class="example">
+                <p>First paragraph, never closed
+                <p>Second paragraph, never closed
+                <p>Third paragraph, never closed
+            </div>
+            <hr />
+            <h2>Tables with missing &lt;tr&gt;/&lt;td&gt; end tags
+            </h2>
+            <p>
+                The same omission rules apply to table rows and cells, so a table written without a
+                single closing <code>&lt;/tr&gt;</code> or <code>&lt;/td&gt;</code> still comes out as
+                a proper grid.
+            </p>
+            <div class="comment">Source:</div>
+            <pre>&lt;table border="1" cellpadding="4"&gt;
+&lt;tr&gt;&lt;td&gt;A&lt;td&gt;B
+&lt;tr&gt;&lt;td&gt;C&lt;td&gt;D
+&lt;/table&gt;</pre>
+            <div class="comment">Live result:</div>
+            <div class="example">
+                <table border="1" cellpadding="4">
+                <tr><td>A<td>B
+                <tr><td>C<td>D
+                </table>
+            </div>
+            <hr />
+            <h2>Anonymous table boxes
+            </h2>
+            <p>
+                Per the <a href="https://www.w3.org/TR/CSS2/tables.html#anonymous-boxes">CSS 2.1 anonymous
+                                                                                           table object rules</a>, a stray <code>&lt;td&gt;</code> with no <code>&lt;tr&gt;</code>
+                (or even no <code>&lt;table&gt;</code>) around it is automatically wrapped in the missing
+                row/table boxes, rather than producing a broken or invisible layout.
+            </p>
+            <div class="comment">Source:</div>
+            <pre>&lt;table border="1"&gt;&lt;td&gt;Anonymous row generated around me&lt;/td&gt;&lt;/table&gt;</pre>
+            <div class="comment">Live result:</div>
+            <div class="example">
+                <table border="1"><td>Anonymous row generated around me</td></table>
+            </div>
+            <hr />
+            <h2>Comments containing "&gt;"
+            </h2>
+            <p>
+                A real tokenizer knows where a comment actually ends, so a stray <code>&gt;</code> character
+                inside a comment no longer truncates it early or corrupts the rest of the page.
+            </p>
+            <div class="comment">Source:</div>
+            <pre>&lt;!-- a comment that contains a &gt; character right here --&gt;
+&lt;p&gt;This paragraph renders normally right after it.&lt;/p&gt;</pre>
+            <div class="comment">Live result:</div>
+            <div class="example">
+                <!-- a comment that contains a > character right here -->
+                <p>This paragraph renders normally right after it.</p>
+            </div>
+            <hr />
+            <h2>&lt;script&gt; content is not mistaken for markup
+            </h2>
+            <p>
+                <code>&lt;script&gt;</code> content is tokenized as raw text (this renderer does not execute
+                script, so the code itself is not shown), which means <code>&lt;</code> and <code>&gt;</code>
+                characters used for comparisons inside the script can no longer be misread as the start
+                of a nested tag and swallow the rest of the document.
+            </p>
+            <div class="comment">Source:</div>
+            <pre>&lt;script&gt;
+    if (1 &lt; 2 &amp;&amp; 3 &gt; 2) { runDemo('&lt;b&gt;this looks like a tag but is just a string&lt;/b&gt;'); }
+&lt;/script&gt;
+&lt;p&gt;This paragraph still renders correctly right after the script block.&lt;/p&gt;</pre>
+            <div class="comment">Live result:</div>
+            <div class="example">
+                <script>
+                    if (1 < 2 && 3 > 2) { runDemo('<b>this looks like a tag but is just a string</b>'); }
+                </script>
+                <p>This paragraph still renders correctly right after the script block.</p>
+            </div>
+            <hr />
+            <h2>&lt;noscript&gt; content is parsed as real markup
+            </h2>
+            <p>
+                Per the HTML5 tokenizer spec, <code>&lt;noscript&gt;</code> content is normally tokenized
+                as raw text too. Since this renderer never runs script, its <code>&lt;noscript&gt;</code>
+                content is specifically re-parsed as nested html, so tags placed inside it render as real
+                elements instead of showing up as literal text.
+            </p>
+            <div class="comment">Source:</div>
+            <pre>&lt;noscript&gt;&lt;p&gt;This is &lt;b&gt;real, nested markup&lt;/b&gt; inside noscript.&lt;/p&gt;&lt;/noscript&gt;</pre>
+            <div class="comment">Live result:</div>
+            <div class="example">
+                <noscript><p>This is <b>real, nested markup</b> inside noscript.</p></noscript>
+            </div>
+        </blockquote>
+    </body>
+</html>

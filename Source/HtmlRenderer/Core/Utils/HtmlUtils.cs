@@ -310,6 +310,84 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             return _list.Contains(tagName);
         }
 
+        // https://html.spec.whatwg.org/dev/dom.html#concept-element-tag-omission
+        public static bool CanEndTagBeOmitted(string currentTagName, string tagName)
+        {
+            switch (currentTagName)
+            {
+                case "p":
+                    return ShouldTagCloseParagraph(tagName);
+                case "td":
+                    return ShouldTagCloseTableCell(tagName);
+                case "tr":
+                    return ShouldTagCloseTableRow(tagName);
+                default:
+                    return false;
+            }
+        }
+
+        // Close <p> tags per https://html.spec.whatwg.org/dev/grouping-content.html#the-p-element
+        public static bool ShouldTagCloseParagraph(string tagName)
+        {
+            switch (tagName)
+            {
+                case "address":
+                case "article":
+                case "aside":
+                case "blockquote":
+                case "details":
+                case "dialog":
+                case "div":
+                case "dl":
+                case "fieldset":
+                case "figcaption":
+                case "figure":
+                case "footer":
+                case "form":
+                case "h1":
+                case "h2":
+                case "h3":
+                case "h4":
+                case "h5":
+                case "h6":
+                case "header":
+                case "hgroup":
+                case "hr":
+                case "main":
+                case "menu":
+                case "nav":
+                case "ol":
+                case "p":
+                case "pre":
+                case "search":
+                case "section":
+                case "table":
+                case "ul":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        // Close <td> tags per https://html.spec.whatwg.org/dev/tables.html#the-td-element
+        public static bool ShouldTagCloseTableCell(string tagName)
+        {
+            switch (tagName)
+            {
+                case "td":
+                case "th":
+                case "tr":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool ShouldTagCloseTableRow(string tagName)
+        {
+            return tagName == "tr";
+        }
+
         /// <summary>
         /// Decode HTML encoded string to regular string.<br/>
         /// Handles &lt;, &gt;, "&amp;.

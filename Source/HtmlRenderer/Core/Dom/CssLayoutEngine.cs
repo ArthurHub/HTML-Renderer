@@ -344,7 +344,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
 
             // handle box that is only a whitespace
-            if (box.Text != null && box.Text.IsWhitespace() && !box.IsImage && box.IsInline && box.Boxes.Count == 0 && box.Words.Count == 0)
+            if (box.Text != null && CommonUtils.IsNonEmptyWhitespace(box.Text) && !box.IsImage && box.IsInline && box.Boxes.Count == 0 && box.Words.Count == 0)
             {
                 curx += box.ActualWordSpacing;
             }

@@ -86,6 +86,7 @@
     <EmbeddedResource Include="Samples\12.HtmlToolTip.htm" />
     <EmbeddedResource Include="Samples\13.HtmlRender.htm" />
     <EmbeddedResource Include="Samples\14.HtmlContainer.htm" />
+    <EmbeddedResource Include="Samples\15.HTML5 Parsing.htm" />
     <EmbeddedResource Include="Samples\20.About.htm" />
     <EmbeddedResource Include="PerfSamples\1.Big table.htm" />
     <EmbeddedResource Include="PerfSamples\2.Lots blocks in inline.htm" />

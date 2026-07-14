@@ -113,6 +113,50 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
+        /// Get all following siblings of the given box that match the given predicate.<br/>
+        /// If <paramref name="isConsecutive"/> is true, stops at the first non-matching sibling.
+        /// </summary>
+        /// <param name="box">the box to get the following siblings of</param>
+        /// <param name="matcher">predicate to filter siblings by</param>
+        /// <param name="isConsecutive">true - stop enumeration at the first non-matching sibling, false - skip non-matching siblings</param>
+        /// <returns>matching following siblings</returns>
+        public static IEnumerable<CssBox> GetFollowingSiblings(CssBox box, Predicate<CssBox> matcher, bool isConsecutive)
+        {
+            if (box.ParentBox == null) yield break;
+
+            var index = box.ParentBox.Boxes.IndexOf(box);
+            const int diff = 1;
+
+            while (box.ParentBox.Boxes.Count > index + diff)
+            {
+                var sib = box.ParentBox.Boxes[index + diff];
+
+                if (matcher(sib))
+                {
+                    yield return sib;
+                }
+                else if (isConsecutive)
+                {
+                    yield break;
+                }
+
+                index += diff;
+            }
+        }
+
+        /// <summary>
+        /// Check if the given box is a "proper table child" per https://www.w3.org/TR/CSS2/tables.html#anonymous-boxes
+        /// </summary>
+        /// <param name="box">the box to check</param>
+        /// <returns>true - proper table child, false - otherwise</returns>
+        public static bool IsProperTableChild(CssBox box)
+        {
+            return box.IsTableRowGroupBox || box.Display == CssConstants.TableRow ||
+                   box.Display == CssConstants.TableColumn || box.Display == CssConstants.TableColumnGroup ||
+                   box.Display == CssConstants.TableCaption;
+        }
+
+        /// <summary>
         /// Gets the previous sibling of this box.
         /// </summary>
         /// <returns>Box before this one on the tree. Null if its the first</returns>
@@ -502,7 +546,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             }
 
             // empty span box
-            if (box.Boxes.Count < 1 && box.Text != null && box.Text.IsWhitespace())
+            if (box.Boxes.Count < 1 && box.Text != null && CommonUtils.IsNonEmptyWhitespace(box.Text))
             {
                 sb.Append(' ');
             }
