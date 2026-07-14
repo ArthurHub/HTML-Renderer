@@ -94,13 +94,17 @@
             </p>
             <div class="comment">Source:</div>
             <pre>&lt;script&gt;
-    if (1 &lt; 2 &amp;&amp; 3 &gt; 2) { runDemo('&lt;b&gt;this looks like a tag but is just a string&lt;/b&gt;'); }
+    if (1 &lt; 2 &amp;&amp; 3 &gt; 2) {
+        runDemo('&lt;b&gt;looks like a tag&lt;/b&gt;, but is just a string');
+    }
 &lt;/script&gt;
 &lt;p&gt;This paragraph still renders correctly right after the script block.&lt;/p&gt;</pre>
             <div class="comment">Live result:</div>
             <div class="example">
                 <script>
-                    if (1 < 2 && 3 > 2) { runDemo('<b>this looks like a tag but is just a string</b>'); }
+                    if (1 < 2 && 3 > 2) {
+                        runDemo('<b>looks like a tag</b>, but is just a string');
+                    }
                 </script>
                 <p>This paragraph still renders correctly right after the script block.</p>
             </div>
