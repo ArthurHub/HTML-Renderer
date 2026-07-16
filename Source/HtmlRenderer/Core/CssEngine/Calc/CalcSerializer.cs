@@ -48,7 +48,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 case UnaryCalcNode unary:
                 {
                     var value = FoldAngle(unary.Operand);
-                    return value is null ? null : unary.Negative ? -value.Value : value.Value;
+                    return value is null ? null : (double?)(unary.Negative ? -value.Value : value.Value);
                 }
 
                 case BinaryCalcNode binary when binary.Operator == '+' || binary.Operator == '-':
