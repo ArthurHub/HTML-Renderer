@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using TheArtOfDev.HtmlRenderer.Adapters;
@@ -98,6 +99,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _wordBreak = "normal";
         private string _whiteSpace = "normal";
         private string _visibility = "visible";
+
+        /// <summary>
+        /// Specified (not var()-resolved) values of this box's CSS custom properties (--foo), keyed by
+        /// their case-sensitive name. Lazily created; null when no custom property has been declared or inherited.
+        /// </summary>
+        internal Dictionary<string, string> CustomProperties;
 
         #endregion
 
@@ -1491,6 +1498,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         {
             if (p != null)
             {
+                // Custom properties are always inherited, regardless of the "everything" special case.
+                // Cloned (not shared) so a child's local override never mutates the parent's or a sibling's dictionary.
+                CustomProperties = p.CustomProperties != null && p.CustomProperties.Count > 0
+                    ? new Dictionary<string, string>(p.CustomProperties)
+                    : null;
+
                 _borderSpacing = p._borderSpacing;
                 _borderCollapse = p._borderCollapse;
                 _color = p._color;

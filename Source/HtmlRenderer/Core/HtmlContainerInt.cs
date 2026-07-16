@@ -977,16 +977,16 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// Add css box that has ":hover" selector to be handled on mouse hover.
         /// </summary>
         /// <param name="box">the box that has the hover selector</param>
-        /// <param name="block">the css block with the css data with the selector</param>
-        internal void AddHoverBox(CssBox box, CssBlock block)
+        /// <param name="styleRule">the style rule whose selector included the hover pseudo-class</param>
+        internal void AddHoverBox(CssBox box, TheArtOfDev.HtmlRenderer.Core.CssEngine.IStyleRule styleRule)
         {
             ArgChecker.AssertArgNotNull(box, "box");
-            ArgChecker.AssertArgNotNull(block, "block");
+            ArgChecker.AssertArgNotNull(styleRule, "styleRule");
 
             if (_hoverBoxes == null)
                 _hoverBoxes = new List<HoverBoxBlock>();
 
-            _hoverBoxes.Add(new HoverBoxBlock(box, block));
+            _hoverBoxes.Add(new HoverBoxBlock(box, styleRule));
         }
 
         /// <summary>

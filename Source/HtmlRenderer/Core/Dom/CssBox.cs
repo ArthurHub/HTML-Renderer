@@ -147,6 +147,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
+        /// Is this box a synthesized <c>::before</c> pseudo-element (see <see cref="CssData"/>'s selector-matching synthesis).
+        /// </summary>
+        public bool IsBeforePseudoElement { get; set; }
+
+        /// <summary>
+        /// Is this box a synthesized <c>::after</c> pseudo-element (see <see cref="CssData"/>'s selector-matching synthesis).
+        /// </summary>
+        public bool IsAfterPseudoElement { get; set; }
+
+        /// <summary>
+        /// Is this box a synthesized <c>::before</c>/<c>::after</c> pseudo-element.
+        /// </summary>
+        public bool IsPseudoElement
+        {
+            get { return IsBeforePseudoElement || IsAfterPseudoElement; }
+        }
+
+        /// <summary>
         /// Is the box "Display" is one of the table-row-group/table-header-group/table-footer-group values.
         /// </summary>
         public bool IsTableRowGroupBox

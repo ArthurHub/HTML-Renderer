@@ -11,6 +11,7 @@
 // "The Art of War"
 
 using System;
+using System.Collections.Generic;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
@@ -29,6 +30,33 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         /// Brush for selection background
         /// </summary>
         private static readonly RColor _defaultSelectionBackcolor = RColor.FromArgb(0xa9, 0x33, 0x99, 0xFF);
+
+        /// <summary>
+        /// Every CSS property name this engine recognizes (the exact case list <see cref="GetPropertyValue"/>/
+        /// <see cref="SetPropertyValue"/> handle) - used by <see cref="SnapshotProperties"/> to capture a
+        /// box's full known-property state as a revert/revert-layer target for the six-phase cascade.
+        /// Deliberately the same whitelist as the switch statements below: adding a property here without
+        /// a matching case (or vice versa) would only ever affect revert targets, not what's supported.
+        /// </summary>
+        private static readonly string[] _knownPropertyNames =
+        {
+            "border-bottom-width", "border-left-width", "border-right-width", "border-top-width",
+            "border-bottom-style", "border-left-style", "border-right-style", "border-top-style",
+            "border-bottom-color", "border-left-color", "border-right-color", "border-top-color",
+            "border-spacing", "border-collapse",
+            "corner-radius", "corner-nw-radius", "corner-ne-radius", "corner-se-radius", "corner-sw-radius",
+            "margin-bottom", "margin-left", "margin-right", "margin-top",
+            "padding-bottom", "padding-left", "padding-right", "padding-top",
+            "page-break-inside", "left", "top", "width", "max-width", "height",
+            "background-color", "background-image", "background-position", "background-repeat",
+            "background-gradient", "background-gradient-angle",
+            "content", "color", "display", "direction", "empty-cells", "float", "position",
+            "line-height", "vertical-align", "text-indent", "text-align", "text-decoration",
+            "white-space", "word-break", "visibility", "word-spacing",
+            "font-family", "font-size", "font-style", "font-variant", "font-weight",
+            "list-style", "list-style-position", "list-style-image", "list-style-type",
+            "overflow"
+        };
 
         #endregion
 
@@ -409,6 +437,31 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     cssBox.Overflow = value;
                     break;
             }
+        }
+
+        /// <summary>
+        /// Snapshots all known property values from a CssBox into a dictionary. Used by the six-phase
+        /// cascade (<see cref="Parse.DomParser"/>) to capture a box's state at the start of a cascade
+        /// origin phase, so a later "revert"/"revert-layer" declaration in that phase can roll back to it.
+        /// </summary>
+        public static Dictionary<string, string> SnapshotProperties(CssBox box)
+        {
+            var snapshot = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var name in _knownPropertyNames)
+                snapshot[name] = GetPropertyValue(box, name);
+            return snapshot;
+        }
+
+        /// <summary>
+        /// Snapshots this box's custom property values, for use as the revert/revert-layer target of a
+        /// later cascade phase. Custom property names are case-sensitive, unlike <see cref="SnapshotProperties"/>'s
+        /// known-property snapshot, so this uses a separate, ordinal-case-sensitive dictionary.
+        /// </summary>
+        public static Dictionary<string, string> SnapshotCustomProperties(CssBox box)
+        {
+            return box.CustomProperties != null && box.CustomProperties.Count > 0
+                ? new Dictionary<string, string>(box.CustomProperties)
+                : null;
         }
     }
 }

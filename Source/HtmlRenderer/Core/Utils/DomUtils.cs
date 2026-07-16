@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Parse;
@@ -25,6 +26,32 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
     /// </summary>
     internal sealed class DomUtils
     {
+        /// <summary>
+        /// Walks up the box tree starting at (but not including) <paramref name="box"/>'s parent,
+        /// skipping anonymous boxes (no <see cref="HtmlTag"/>), returning the nearest ancestor that
+        /// corresponds to a real HTML element. Used by structural pseudo-class selector matching
+        /// (:nth-child, :only-child, :only-of-type) which needs to reason about element siblings,
+        /// not the layout engine's anonymous box wrappers.
+        /// </summary>
+        /// <param name="box">the box to start the walk from</param>
+        /// <returns>the nearest ancestor box with a non-null HtmlTag, or null if none exists</returns>
+        public static CssBox GetNearestParentElementBox(CssBox box)
+        {
+            var parentBox = box.ParentBox;
+
+            while (parentBox != null)
+            {
+                if (parentBox.HtmlTag != null)
+                {
+                    return parentBox;
+                }
+
+                parentBox = parentBox.ParentBox;
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Check if the given location is inside the given box deep.<br/>
         /// Check inner boxes and all lines that the given box spans to.
@@ -788,16 +815,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             sb.AppendFormat("<{0}", box.HtmlTag.Name);
 
             // collect all element style properties including from stylesheet
+            // Note: only matches rules whose selector is a bare tag/class simple selector (same
+            // simplification the pre-backport implementation used) - not a full cascade, this is
+            // export/clipboard-serialization cosmetics, not the style-application pipeline.
             var tagStyles = new Dictionary<string, string>();
-            var cssData = box.HtmlContainer.CssData;
-            var tagCssBlock = cssData != null ? cssData.GetCssBlock(box.HtmlTag.Name) : null;
-            if (tagCssBlock != null)
-            {
-                // TODO:a handle selectors
-                foreach (var cssBlock in tagCssBlock)
-                    foreach (var prop in cssBlock.Properties)
-                        tagStyles[prop.Key] = prop.Value;
-            }
+            CollectSimpleSelectorStyles(box.HtmlContainer.CssData, s => SelectorIsBareTag(s, box.HtmlTag.Name), tagStyles);
 
             if (box.HtmlTag.HasAttributes())
             {
@@ -808,24 +830,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     if (styleGen == HtmlGenerationStyle.Inline && att.Key == HtmlConstants.Style)
                     {
                         // if inline style add the styles to the collection
-                        var block = cssParser != null ? cssParser.ParseCssBlock(box.HtmlTag.Name, box.HtmlTag.TryGetAttribute("style")) : null;
+                        var block = cssParser.ParseInlineStyle(box.HtmlTag.TryGetAttribute("style"));
                         if (block != null)
-                        {
-                            foreach (var prop in block.Properties)
-                                tagStyles[prop.Key] = prop.Value;
-                        }
+                            foreach (var prop in block.Style)
+                                tagStyles[prop.Name] = prop.Value;
                     }
                     else if (styleGen == HtmlGenerationStyle.Inline && att.Key == HtmlConstants.Class)
                     {
                         // if inline style convert the style class to actual properties and add to collection
-                        var cssBlocks = cssData != null ? cssData.GetCssBlock("." + att.Value) : null;
-                        if (cssBlocks != null)
-                        {
-                            // TODO:a handle selectors
-                            foreach (var cssBlock in cssBlocks)
-                                foreach (var prop in cssBlock.Properties)
-                                    tagStyles[prop.Key] = prop.Value;
-                        }
+                        CollectSimpleSelectorStyles(box.HtmlContainer.CssData, s => SelectorIsBareClass(s, att.Value), tagStyles);
                     }
                     else
                     {
@@ -864,25 +877,57 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         {
             // ReSharper disable PossibleMultipleEnumeration
             var cleanTagStyles = new Dictionary<string, string>();
-            var defaultBlocks = box.HtmlContainer.Adapter.DefaultCssData.GetCssBlock(box.HtmlTag.Name);
+            var defaultStyles = new Dictionary<string, string>();
+            CollectSimpleSelectorStyles(box.HtmlContainer.Adapter.DefaultCssData, s => SelectorIsBareTag(s, box.HtmlTag.Name), defaultStyles);
             foreach (var style in tagStyles)
             {
-                bool isDefault = false;
-                foreach (var defaultBlock in defaultBlocks)
-                {
-                    string value;
-                    if (defaultBlock.Properties.TryGetValue(style.Key, out value) && value.Equals(style.Value, StringComparison.OrdinalIgnoreCase))
-                    {
-                        isDefault = true;
-                        break;
-                    }
-                }
+                string value;
+                bool isDefault = defaultStyles.TryGetValue(style.Key, out value) && value.Equals(style.Value, StringComparison.OrdinalIgnoreCase);
 
                 if (!isDefault)
                     cleanTagStyles[style.Key] = style.Value;
             }
             return cleanTagStyles;
             // ReSharper restore PossibleMultipleEnumeration
+        }
+
+        /// <summary>
+        /// Merges the declared properties of every style rule in <paramref name="cssData"/> whose
+        /// selector matches <paramref name="selectorMatches"/>, in stylesheet/document order (later
+        /// rules overwrite earlier ones for the same property name) - a crude approximation of the
+        /// cascade (no specificity, no combinators) sufficient for HTML export/clipboard cosmetics.
+        /// </summary>
+        private static void CollectSimpleSelectorStyles(CssData cssData, Func<ISelector, bool> selectorMatches, Dictionary<string, string> into)
+        {
+            foreach (var stylesheet in cssData.Stylesheets)
+            {
+                foreach (var rule in stylesheet.StyleRules)
+                {
+                    if (!selectorMatches(rule.Selector)) continue;
+                    foreach (var prop in rule.Style)
+                        into[prop.Name] = prop.Value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// True if the selector is exactly a bare tag-name simple selector (e.g. "div"), not a compound
+        /// or combinator chain - matches the pre-backport implementation's lookup semantics.
+        /// </summary>
+        private static bool SelectorIsBareTag(ISelector selector, string tagName)
+        {
+            var type = selector as TypeSelector;
+            return type != null && type.Name.Equals(tagName, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        /// <summary>
+        /// True if the selector is exactly a bare class simple selector (e.g. ".foo"), not a compound
+        /// or combinator chain - matches the pre-backport implementation's lookup semantics.
+        /// </summary>
+        private static bool SelectorIsBareClass(ISelector selector, string className)
+        {
+            var cls = selector as ClassSelector;
+            return cls != null && cls.Class.Equals(className, StringComparison.InvariantCultureIgnoreCase);
         }
 
         /// <summary>
@@ -893,20 +938,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         private static void WriteStylesheet(StringBuilder sb, CssData cssData)
         {
             sb.AppendLine("<style type=\"text/css\">");
-            foreach (var cssBlocks in cssData.MediaBlocks["all"])
+            foreach (var stylesheet in cssData.Stylesheets)
             {
-                sb.Append(cssBlocks.Key);
-                sb.Append(" { ");
-                foreach (var cssBlock in cssBlocks.Value)
+                foreach (var rule in stylesheet.StyleRules)
                 {
-                    foreach (var property in cssBlock.Properties)
+                    sb.Append(rule.SelectorText);
+                    sb.Append(" { ");
+                    foreach (var property in rule.Style)
                     {
-                        // TODO:a handle selectors
-                        sb.AppendFormat("{0}: {1};", property.Key, property.Value);
+                        sb.AppendFormat("{0}: {1};", property.Name, property.Value);
                     }
+                    sb.Append(" }");
+                    sb.AppendLine();
                 }
-                sb.Append(" }");
-                sb.AppendLine();
             }
             sb.AppendLine("</style>");
         }

@@ -124,5 +124,116 @@ namespace TheArtOfDev.HtmlRenderer.Core
             padding: 8px; 
             Font: 9pt Tahoma;
         }";
+
+        /// <summary>
+        /// The initial value of every property this engine recognizes (<see cref="Utils.CssUtils"/>'s exact
+        /// whitelist), used to resolve the <c>initial</c>/<c>unset</c>/<c>revert</c>/<c>revert-layer</c>
+        /// CSS-wide keywords in the six-phase cascade (<see cref="Parse.DomParser"/>). Deliberately matches
+        /// this engine's own existing field defaults (<see cref="Dom.CssBoxProperties"/>'s private field
+        /// initializers) rather than the CSS spec's initial values where the two differ (e.g. this engine's
+        /// border-color default is "black", not the spec's "currentcolor"; text-align/text-decoration/
+        /// list-style-image default to an empty string here, not "left"/"none"/"none") - so resolving
+        /// "initial" produces exactly what an unstyled box already looks like today, not a new value.
+        /// </summary>
+        internal static readonly System.Collections.Generic.Dictionary<string, string> InitialValues =
+            new System.Collections.Generic.Dictionary<string, string>(System.StringComparer.OrdinalIgnoreCase)
+        {
+            { "background-color", "transparent" },
+            { "background-gradient", "none" },
+            { "background-gradient-angle", "90" },
+            { "background-image", "none" },
+            { "background-position", "0% 0%" },
+            { "background-repeat", "repeat" },
+            { "border-top-width", "medium" },
+            { "border-right-width", "medium" },
+            { "border-bottom-width", "medium" },
+            { "border-left-width", "medium" },
+            { "border-top-color", "black" },
+            { "border-right-color", "black" },
+            { "border-bottom-color", "black" },
+            { "border-left-color", "black" },
+            { "border-top-style", "none" },
+            { "border-right-style", "none" },
+            { "border-bottom-style", "none" },
+            { "border-left-style", "none" },
+            { "border-spacing", "0" },
+            { "border-collapse", "separate" },
+            { "color", "black" },
+            { "content", "normal" },
+            { "corner-nw-radius", "0" },
+            { "corner-ne-radius", "0" },
+            { "corner-se-radius", "0" },
+            { "corner-sw-radius", "0" },
+            { "corner-radius", "0" },
+            { "empty-cells", "show" },
+            { "direction", "ltr" },
+            { "display", "inline" },
+            { "font-size", "medium" },
+            { "font-style", "normal" },
+            { "font-variant", "normal" },
+            { "font-weight", "normal" },
+            { "float", "none" },
+            { "height", "auto" },
+            { "margin-bottom", "0" },
+            { "margin-left", "0" },
+            { "margin-right", "0" },
+            { "margin-top", "0" },
+            { "left", "auto" },
+            { "line-height", "normal" },
+            { "list-style-type", "disc" },
+            { "list-style-image", "" },
+            { "list-style-position", "outside" },
+            { "list-style", "" },
+            { "overflow", "visible" },
+            { "padding-left", "0" },
+            { "padding-bottom", "0" },
+            { "padding-right", "0" },
+            { "padding-top", "0" },
+            { "page-break-inside", "auto" },
+            { "text-align", "" },
+            { "text-decoration", "" },
+            { "text-indent", "0" },
+            { "top", "auto" },
+            { "position", "static" },
+            { "vertical-align", "baseline" },
+            { "width", "auto" },
+            { "max-width", "none" },
+            { "word-spacing", "normal" },
+            { "word-break", "normal" },
+            { "visibility", "visible" },
+            { "white-space", "normal" },
+        };
+
+        /// <summary>
+        /// Properties inherited from parent to child during cascade - kept exactly in sync with the set
+        /// <see cref="Dom.CssBoxProperties.InheritStyle"/> already (independently) copies, since this is
+        /// used only to decide whether the <c>unset</c> keyword should behave like <c>inherit</c> or
+        /// <c>initial</c> for a given property, and the two must agree for "unset" to make sense.
+        /// </summary>
+        internal static readonly System.Collections.Generic.HashSet<string> InheritedProperties =
+            new System.Collections.Generic.HashSet<string>(System.StringComparer.OrdinalIgnoreCase)
+        {
+            "border-spacing", "border-collapse",
+            "color",
+            "empty-cells",
+            "white-space",
+            "visibility",
+            "text-indent", "text-align",
+            "font-family", "font-size", "font-style", "font-variant", "font-weight",
+            "list-style-image", "list-style-position", "list-style-type", "list-style",
+            "line-height",
+            "word-break",
+            "direction",
+        };
+
+        /// <summary>
+        /// Returns the initial value for the given property name, or null if this engine doesn't
+        /// recognize the property at all.
+        /// </summary>
+        internal static string GetInitialValue(string propertyName)
+        {
+            string value;
+            return InitialValues.TryGetValue(propertyName, out value) ? value : null;
+        }
     }
 }

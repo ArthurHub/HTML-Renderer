@@ -85,7 +85,16 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         /// </summary>
         public CssData DefaultCssData
         {
-            get { return _defaultCssData ?? (_defaultCssData = CssData.Parse(this, CssDefaults.DefaultStyleSheet, false)); }
+            get
+            {
+                if (_defaultCssData == null)
+                {
+                    _defaultCssData = CssData.Parse(this, CssDefaults.DefaultStyleSheet, false);
+                    foreach (var stylesheet in _defaultCssData.Stylesheets)
+                        stylesheet.IsUserAgent = true;
+                }
+                return _defaultCssData;
+            }
         }
 
         /// <summary>

@@ -11,9 +11,11 @@
 // "The Art of War"
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 
@@ -96,6 +98,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// <returns>true - valid, false - invalid</returns>
         public static bool IsValidLength(string value)
         {
+            if (IsCalcFunction(value))
+                return true;
+
             if (value.Length > 1)
             {
                 string number = string.Empty;
@@ -110,6 +115,57 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 double stub;
                 return double.TryParse(number, out stub);
             }
+            return false;
+        }
+
+        /// <summary>
+        /// Tokenizes <paramref name="value"/> using the vendored CSS lexer (Core/CssEngine/Parser/Lexer.cs),
+        /// skipping whitespace/end-of-file tokens - the same "just enough tokenization to recognize a
+        /// single top-level function call" approach used to detect calc()-family expressions.
+        /// </summary>
+        private static List<Token> GetCssTokens(string value)
+        {
+            var lexer = new Lexer(value);
+            var tokens = new List<Token>();
+            Token token;
+            do
+            {
+                token = lexer.Get();
+                if (token.Type != TokenType.EndOfFile && token.Type != TokenType.Whitespace)
+                {
+                    tokens.Add(token);
+                }
+            } while (token.Type != TokenType.EndOfFile);
+
+            return tokens;
+        }
+
+        /// <summary>
+        /// Recognizes a length string that is a single calc-family (calc/min/max/clamp) function call.
+        /// Real grammar/type validation happens in the vendored CSS-OM's CalcValueConverter at parse
+        /// time (for any value that didn't arrive via var() substitution); this is a syntactic
+        /// recognizer only, used to gate the evaluation branch in <see cref="ParseLength(string, double, double, string, bool, bool)"/>.
+        /// </summary>
+        public static bool IsCalcFunction(string value)
+        {
+            FunctionToken function;
+            return TryGetCalcFunction(value, out function);
+        }
+
+        private static bool TryGetCalcFunction(string value, out FunctionToken function)
+        {
+            var tokens = GetCssTokens(value);
+            if (tokens.Count == 1)
+            {
+                var fn = tokens[0] as FunctionToken;
+                if (fn != null && CalcParser.IsCalcFamily(fn.Data))
+                {
+                    function = fn;
+                    return true;
+                }
+            }
+
+            function = null;
             return false;
         }
 
@@ -191,6 +247,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             //If percentage, use ParseNumber
             if (length.EndsWith("%"))
                 return ParseNumber(length, hundredPercent);
+
+            // calc()/min()/max()/clamp(): evaluate via the vendored Calc engine (Core/CssEngine/Calc/)
+            // instead of falling through to the unit-suffix parsing below, which doesn't understand
+            // function syntax at all.
+            FunctionToken calcFunction;
+            if (TryGetCalcFunction(length, out calcFunction))
+            {
+                var node = CalcParser.Parse(calcFunction);
+                var context = new CalcContext(hundredPercent, emFactor, emFactor, fontAdjust, returnPoints);
+                var pixels = node != null ? CalcEvaluator.Evaluate(node, context) : null;
+                return pixels ?? 0d;
+            }
 
             //Get units of the length
             bool hasUnit;
@@ -317,6 +385,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                     else if (length > 13 && CommonUtils.SubStringEquals(str, idx, 5, "rgba(") && str[length - 1] == ')')
                     {
                         return GetColorByRgba(str, idx, length, out color);
+                    }
+                    else if (length > 9 && CommonUtils.SubStringEquals(str, idx, 4, "hsl(") && str[length - 1] == ')')
+                    {
+                        return GetColorByHsl(str, idx, length, false, out color);
+                    }
+                    else if (length > 10 && CommonUtils.SubStringEquals(str, idx, 5, "hsla(") && str[length - 1] == ')')
+                    {
+                        return GetColorByHsl(str, idx, length, true, out color);
                     }
                     else
                     {
@@ -451,7 +527,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 }
                 if (s < idx + length)
                 {
-                    a = ParseIntAtIndex(str, ref s);
+                    a = ParseAlphaAtIndex(str, ref s);
                 }
             }
 
@@ -462,6 +538,144 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             }
             color = RColor.Empty;
             return false;
+        }
+
+        /// <summary>
+        /// Parses an rgba()/hsla()-style alpha component, per CSS syntax a fractional number in [0,1]
+        /// (e.g. "0.5") or a percentage (e.g. "50%") - unlike R/G/B, never a bare 0-255 integer. This is
+        /// also the canonical form the vendored CSS engine's Color.ToString() emits for any color with
+        /// partial transparency (hex-alpha, hsl()/hsla(), hwb(), modern space-separated rgb() syntax -
+        /// all normalized to "rgba(r, g, b, alpha)" at CSS-OM parse time), so this is the path that
+        /// makes those all resolve correctly here, not just literal author-written rgba().
+        /// </summary>
+        /// <returns>alpha as a 0-255 byte value, or -1 if invalid</returns>
+        private static int ParseAlphaAtIndex(string str, ref int startIdx)
+        {
+            while (startIdx < str.Length && char.IsWhiteSpace(str, startIdx))
+                startIdx++;
+
+            var start = startIdx;
+            var len = 0;
+            while (start + len < str.Length && (char.IsDigit(str, start + len) || str[start + len] == '.'))
+                len++;
+
+            var isPercent = start + len < str.Length && str[start + len] == '%';
+
+            if (len < 1)
+            {
+                startIdx = start + len + (isPercent ? 1 : 0) + 1;
+                return -1;
+            }
+
+            double value;
+            if (!double.TryParse(str.Substring(start, len), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out value))
+            {
+                startIdx = start + len + (isPercent ? 1 : 0) + 1;
+                return -1;
+            }
+
+            if (isPercent)
+            {
+                value = value / 100.0;
+                len++; // include the '%' when advancing startIdx below
+            }
+
+            startIdx = start + len + 1;
+
+            var alpha = (int)Math.Round(value * 255.0);
+            return alpha < 0 ? 0 : (alpha > 255 ? 255 : alpha);
+        }
+
+        /// <summary>
+        /// Get color by parsing given HSL/HSLA value color string (hsl(210, 100%, 50%), hsla(210, 100%, 50%, 0.5)).<br/>
+        /// Unlike hex and rgb()/rgba(), the vendored CSS-OM's HslColorConverter/HslaColorConverter only
+        /// validate hsl() syntax at parse time (hue is a valid angle, saturation/lightness are
+        /// percentages) - they never actually convert it to an RGB Color the way rgb()/rgba()/hex do
+        /// (see Core/CssEngine/Model/Converters.cs's HslColorConverter/HslaColorConverter, and compare
+        /// to Color.ToString() which only ever emits rgb()/rgba()). So unlike those, the raw string this
+        /// engine sees for an hsl()-declared color is still the literal hsl() text (with hue normalized
+        /// to a "Ndeg" suffix), not a canonical rgba() - this method does the actual hue/sat/light -> RGB
+        /// conversion, reusing the vendored Color.FromHsla for the math.
+        /// </summary>
+        /// <returns>true - valid color, false - otherwise</returns>
+        private static bool GetColorByHsl(string str, int idx, int length, bool hasAlpha, out RColor color)
+        {
+            var openLen = hasAlpha ? 5 : 4; // "hsla(" or "hsl("
+            var inner = str.Substring(idx + openLen, length - openLen - 1);
+            var parts = inner.Split(',');
+            if (parts.Length != (hasAlpha ? 4 : 3))
+            {
+                color = RColor.Empty;
+                return false;
+            }
+
+            double hueDegrees;
+            if (!TryParseAngleDegrees(parts[0].Trim(), out hueDegrees))
+            {
+                color = RColor.Empty;
+                return false;
+            }
+
+            double saturation, lightness;
+            if (!double.TryParse(parts[1].Trim().TrimEnd('%'), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out saturation) ||
+                !double.TryParse(parts[2].Trim().TrimEnd('%'), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out lightness))
+            {
+                color = RColor.Empty;
+                return false;
+            }
+
+            var alpha = 1.0;
+            if (hasAlpha)
+            {
+                var alphaStr = parts[3].Trim();
+                if (alphaStr.EndsWith("%"))
+                {
+                    double a;
+                    double.TryParse(alphaStr.TrimEnd('%'), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out a);
+                    alpha = a / 100.0;
+                }
+                else
+                {
+                    double.TryParse(alphaStr, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out alpha);
+                }
+            }
+
+            var hueFraction = ((hueDegrees % 360.0) + 360.0) % 360.0 / 360.0;
+            var vendored = CssEngine.Color.FromHsla((float)hueFraction, (float)(saturation / 100.0), (float)(lightness / 100.0), (float)alpha);
+            color = RColor.FromArgb(vendored.A, vendored.R, vendored.G, vendored.B);
+            return true;
+        }
+
+        /// <summary>
+        /// Parses an hsl() hue component - a bare number (treated as degrees, per CSS) or a number with
+        /// an explicit angle unit (deg/rad/grad/turn).
+        /// </summary>
+        private static bool TryParseAngleDegrees(string value, out double degrees)
+        {
+            string unit = null;
+            foreach (var candidate in new[] { "turn", "grad", "deg", "rad" })
+            {
+                if (value.EndsWith(candidate, StringComparison.OrdinalIgnoreCase))
+                {
+                    unit = candidate;
+                    break;
+                }
+            }
+
+            var numberPart = unit != null ? value.Substring(0, value.Length - unit.Length) : value;
+            double number;
+            if (!double.TryParse(numberPart, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out number))
+            {
+                degrees = 0;
+                return false;
+            }
+
+            if (unit == "turn") degrees = number * 360.0;
+            else if (unit == "grad") degrees = number * 0.9;
+            else if (unit == "rad") degrees = number * 180.0 / Math.PI;
+            else degrees = number; // "deg" or bare number
+
+            return true;
         }
 
         /// <summary>
