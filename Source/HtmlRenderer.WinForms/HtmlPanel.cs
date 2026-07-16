@@ -59,6 +59,12 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
     /// <h4>RenderError event:</h4>
     /// Raised when an error occurred during html rendering.<br/>
     /// </para>
+    /// <para>
+    /// <h4>Zoom and pan:</h4>
+    /// Ctrl+MouseWheel zooms the content with anchor-to-cursor behavior (also Ctrl+/− and Ctrl+0).<br/>
+    /// Middle-mouse button drag pans the canvas via scroll position.<br/>
+    /// See <see cref="Zoom"/> for programmatic control.
+    /// </para>
     /// </summary>
     public class HtmlPanel : ScrollableControl
     {
@@ -104,6 +110,41 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         protected Point _lastScrollOffset;
 
+        /// <summary>
+        /// The zoom factor of the rendered HTML (1.0 = 100%).
+        /// </summary>
+        protected float _zoom = 1f;
+
+        /// <summary>
+        /// True while middle-mouse button pan is active.
+        /// </summary>
+        private bool _isPanning;
+
+        /// <summary>
+        /// Last client mouse position during middle-mouse pan.
+        /// </summary>
+        private Point _panLastPoint;
+
+        /// <summary>
+        /// Cursor to restore when middle-mouse pan ends.
+        /// </summary>
+        private Cursor? _cursorBeforePan;
+
+        /// <summary>
+        /// Minimum allowed zoom factor.
+        /// </summary>
+        private const float MinZoom = 0.25f;
+
+        /// <summary>
+        /// Maximum allowed zoom factor.
+        /// </summary>
+        private const float MaxZoom = 5f;
+
+        /// <summary>
+        /// Zoom change per Ctrl+wheel / Ctrl+/- step.
+        /// </summary>
+        private const float ZoomStep = 0.1f;
+
         #endregion
 
 
@@ -133,6 +174,12 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         [Category("Property Changed")]
         public event EventHandler BorderStyleChanged;
+
+        /// <summary>
+        /// Raised when the <see cref="Zoom"/> property value changes.
+        /// </summary>
+        [Category("Property Changed")]
+        public event EventHandler ZoomChanged;
 
         /// <summary>
         /// Raised when the set html document has been fully loaded.<br/>
@@ -245,6 +292,19 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         {
             get { return _useSystemCursors; }
             set { _useSystemCursors = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the zoom factor of the rendered HTML (1.0 = 100%).<br/>
+        /// Values are clamped to the range 0.25–5.0. Setting this property anchors zoom to the viewport center.
+        /// </summary>
+        [Category("Behavior")]
+        [DefaultValue(1f)]
+        [Description("The zoom factor of the rendered HTML (1.0 = 100%).")]
+        public virtual float Zoom
+        {
+            get { return _zoom; }
+            set { SetZoom(value, null); }
         }
 
         /// <summary>
@@ -404,8 +464,9 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                 var rect = _htmlContainer.GetElementRectangle(elementId);
                 if (rect.HasValue)
                 {
-                    UpdateScroll(Point.Round(rect.Value.Location));
-                    _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons, 0, MousePosition.X, MousePosition.Y, 0));
+                    var location = rect.Value.Location;
+                    UpdateScroll(Point.Round(new PointF(location.X * _zoom, location.Y * _zoom)));
+                    InvokeMouseMove();
                 }
             }
         }
@@ -417,6 +478,55 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         {
             if (_htmlContainer != null)
                 _htmlContainer.ClearSelection();
+        }
+
+        /// <summary>
+        /// Set the zoom factor, optionally anchoring the scroll so the document point under
+        /// <paramref name="anchorClientPoint"/> stays fixed on screen (browser-style zoom).
+        /// </summary>
+        /// <param name="zoom">desired zoom factor (clamped to 0.25–5.0)</param>
+        /// <param name="anchorClientPoint">client-space anchor; null uses the viewport center</param>
+        public virtual void SetZoom(float zoom, Point? anchorClientPoint)
+        {
+            float z1 = Math.Max(MinZoom, Math.Min(MaxZoom, zoom));
+            if (Math.Abs(z1 - _zoom) < 0.0001f)
+                return;
+
+            float z0 = _zoom;
+            Point anchor = anchorClientPoint ?? new Point(ClientSize.Width / 2, ClientSize.Height / 2);
+
+            // AutoScrollPosition is negative when scrolled; convert anchor to logical document coords
+            double docX = (anchor.X - AutoScrollPosition.X) / z0;
+            double docY = (anchor.Y - AutoScrollPosition.Y) / z0;
+
+            _zoom = z1;
+            PerformLayout();
+
+            // Keep the same document point under the anchor after zoom
+            int scrollX = (int)Math.Round(docX * z1 - anchor.X);
+            int scrollY = (int)Math.Round(docY * z1 - anchor.Y);
+            scrollX = ClampScroll(scrollX, AutoScrollMinSize.Width, ClientSize.Width);
+            scrollY = ClampScroll(scrollY, AutoScrollMinSize.Height, ClientSize.Height);
+            AutoScrollPosition = new Point(scrollX, scrollY);
+            SyncHtmlScrollOffset();
+            Invalidate();
+            OnZoomChanged(EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Increase zoom by one step, anchored at the given client point (or viewport center).
+        /// </summary>
+        public void ZoomIn(Point? anchorClientPoint = null)
+        {
+            SetZoom(_zoom + ZoomStep, anchorClientPoint);
+        }
+
+        /// <summary>
+        /// Decrease zoom by one step, anchored at the given client point (or viewport center).
+        /// </summary>
+        public void ZoomOut(Point? anchorClientPoint = null)
+        {
+            SetZoom(_zoom - ZoomStep, anchorClientPoint);
         }
 
         #region Private methods
@@ -455,7 +565,8 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             base.OnLayout(levent);
 
             // to handle if vertical scrollbar is appearing or disappearing
-            if (_htmlContainer != null && Math.Abs(_htmlContainer.MaxSize.Width - ClientSize.Width) > 0.1)
+            float layoutWidth = (ClientSize.Width - Padding.Horizontal) / _zoom;
+            if (_htmlContainer != null && Math.Abs(_htmlContainer.MaxSize.Width - layoutWidth) > 0.1)
             {
                 PerformHtmlLayout();
                 base.OnLayout(levent);
@@ -463,20 +574,22 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         }
 
         /// <summary>
-        /// Perform html container layout by the current panel client size.
+        /// Perform html container layout by the current panel client size and zoom.
         /// </summary>
         protected void PerformHtmlLayout()
         {
             if (_htmlContainer != null)
             {
-                _htmlContainer.MaxSize = new SizeF(ClientSize.Width - Padding.Horizontal, 0);
+                _htmlContainer.MaxSize = new SizeF((ClientSize.Width - Padding.Horizontal) / _zoom, 0);
 
                 using (var g = CreateGraphics())
                 {
                     _htmlContainer.PerformLayout(g);
                 }
 
-                AutoScrollMinSize = Size.Round(new SizeF(_htmlContainer.ActualSize.Width + Padding.Horizontal, _htmlContainer.ActualSize.Height));
+                AutoScrollMinSize = Size.Round(new SizeF(
+                    (_htmlContainer.ActualSize.Width + Padding.Horizontal) * _zoom,
+                    _htmlContainer.ActualSize.Height * _zoom));
             }
         }
 
@@ -491,8 +604,9 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             {
                 e.Graphics.TextRenderingHint = _textRenderingHint;
                 e.Graphics.SetClip(ClientRectangle);
-                _htmlContainer.Location = new PointF(Padding.Left, Padding.Top);
-                _htmlContainer.ScrollOffset = AutoScrollPosition;
+                e.Graphics.ScaleTransform(_zoom, _zoom);
+                _htmlContainer.Location = new PointF(Padding.Left / _zoom, Padding.Top / _zoom);
+                SyncHtmlScrollOffset();
                 _htmlContainer.PerformPaint(e.Graphics);
 
                 if (!_lastScrollOffset.Equals(_htmlContainer.ScrollOffset))
@@ -513,13 +627,28 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         }
 
         /// <summary>
-        /// Handle mouse move to handle hover cursor and text selection. 
+        /// Handle mouse move for middle-mouse pan, hover cursor and text selection.
         /// </summary>
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            if (_isPanning)
+            {
+                int dx = e.X - _panLastPoint.X;
+                int dy = e.Y - _panLastPoint.Y;
+                int scrollX = -AutoScrollPosition.X - dx;
+                int scrollY = -AutoScrollPosition.Y - dy;
+                scrollX = ClampScroll(scrollX, AutoScrollMinSize.Width, ClientSize.Width);
+                scrollY = ClampScroll(scrollY, AutoScrollMinSize.Height, ClientSize.Height);
+                AutoScrollPosition = new Point(scrollX, scrollY);
+                SyncHtmlScrollOffset();
+                _panLastPoint = e.Location;
+                Invalidate();
+                return;
+            }
+
             base.OnMouseMove(e);
             if (_htmlContainer != null)
-                _htmlContainer.HandleMouseMove(this, e);
+                _htmlContainer.HandleMouseMove(this, CreateHtmlMouseEventArgs(e));
         }
 
         /// <summary>
@@ -528,38 +657,80 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            if (_htmlContainer != null)
+            if (!_isPanning && _htmlContainer != null)
                 _htmlContainer.HandleMouseLeave(this);
         }
 
         /// <summary>
-        /// Handle mouse down to handle selection. 
+        /// Handle mouse down for middle-mouse pan and selection.
         /// </summary>
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.Middle)
+            {
+                StartPan(e.Location);
+                return;
+            }
+
             base.OnMouseDown(e);
             if (_htmlContainer != null)
-                _htmlContainer.HandleMouseDown(this, e);
+                _htmlContainer.HandleMouseDown(this, CreateHtmlMouseEventArgs(e));
         }
 
         /// <summary>
-        /// Handle mouse up to handle selection and link click. 
+        /// Handle mouse up for middle-mouse pan, selection and link click.
         /// </summary>
         protected override void OnMouseUp(MouseEventArgs e)
         {
-			base.OnMouseUp(e);
+            if (_isPanning && e.Button == MouseButtons.Middle)
+            {
+                EndPan();
+                return;
+            }
+
+            base.OnMouseUp(e);
             if (_htmlContainer != null)
-                _htmlContainer.HandleMouseUp(this, e);
+                _htmlContainer.HandleMouseUp(this, CreateHtmlMouseEventArgs(e));
         }
 
         /// <summary>
-        /// Handle mouse double click to select word under the mouse. 
+        /// Handle mouse double click to select word under the mouse.
         /// </summary>
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
             base.OnMouseDoubleClick(e);
             if (_htmlContainer != null)
-                _htmlContainer.HandleMouseDoubleClick(this, e);
+                _htmlContainer.HandleMouseDoubleClick(this, CreateHtmlMouseEventArgs(e));
+        }
+
+        /// <summary>
+        /// Ctrl+MouseWheel zooms (anchor-to-cursor); otherwise normal scroll.
+        /// </summary>
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            if ((ModifierKeys & Keys.Control) == Keys.Control)
+            {
+                if (e.Delta > 0)
+                    ZoomIn(e.Location);
+                else if (e.Delta < 0)
+                    ZoomOut(e.Location);
+
+                if (e is HandledMouseEventArgs handled)
+                    handled.Handled = true;
+                return;
+            }
+
+            base.OnMouseWheel(e);
+        }
+
+        /// <summary>
+        /// End middle-mouse pan if mouse capture is lost.
+        /// </summary>
+        protected override void OnMouseCaptureChanged(EventArgs e)
+        {
+            base.OnMouseCaptureChanged(e);
+            if (_isPanning && !Capture)
+                EndPan();
         }
 
         /// <summary>
@@ -603,6 +774,34 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         }
 
         /// <summary>
+        /// Handle Ctrl+/-, Ctrl+=, and Ctrl+0 zoom shortcuts.
+        /// </summary>
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if ((keyData & Keys.Control) == Keys.Control)
+            {
+                Keys key = keyData & ~(Keys.Control | Keys.Shift);
+                Point anchor = GetZoomAnchorFromCursor();
+                if (key == Keys.Oemplus || key == Keys.Add)
+                {
+                    ZoomIn(anchor);
+                    return true;
+                }
+                if (key == Keys.OemMinus || key == Keys.Subtract)
+                {
+                    ZoomOut(anchor);
+                    return true;
+                }
+                if (key == Keys.D0 || key == Keys.NumPad0)
+                {
+                    SetZoom(1f, anchor);
+                    return true;
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        /// <summary>
         ///   Raises the <see cref="BorderStyleChanged" /> event.
         /// </summary>
         protected virtual void OnBorderStyleChanged(EventArgs e)
@@ -614,6 +813,16 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             {
                 handler(this, e);
             }
+        }
+
+        /// <summary>
+        /// Raises the <see cref="ZoomChanged"/> event.
+        /// </summary>
+        protected virtual void OnZoomChanged(EventArgs e)
+        {
+            var handler = ZoomChanged;
+            if (handler != null)
+                handler(this, e);
         }
 
         /// <summary>
@@ -685,13 +894,13 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         }
 
         /// <summary>
-        /// Adjust the scrolling of the panel to the requested location.
+        /// Adjust the scrolling of the panel to the requested location (client / zoomed space).
         /// </summary>
         /// <param name="location">the location to adjust the scroll to</param>
         protected virtual void UpdateScroll(Point location)
         {
             AutoScrollPosition = location;
-            _htmlContainer.ScrollOffset = AutoScrollPosition;
+            SyncHtmlScrollOffset();
         }
 
         /// <summary>
@@ -699,15 +908,102 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         protected virtual void InvokeMouseMove()
         {
+            if (_isPanning || _htmlContainer == null)
+                return;
+
             try
             {
-                var mp = PointToClient(MousePosition);
+                var mp = PointToHtml(PointToClient(MousePosition));
                 _htmlContainer.HandleMouseMove(this, new MouseEventArgs(MouseButtons.None, 0, mp.X, mp.Y, 0));
             }
             catch
             {
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Convert client-space point to HTML logical coordinates (accounts for zoom).
+        /// </summary>
+        private Point PointToHtml(Point clientPoint)
+        {
+            if (Math.Abs(_zoom - 1f) < 0.0001f)
+                return clientPoint;
+            return new Point(
+                (int)Math.Round(clientPoint.X / _zoom),
+                (int)Math.Round(clientPoint.Y / _zoom));
+        }
+
+        /// <summary>
+        /// Create mouse args with location converted to HTML logical coordinates.
+        /// </summary>
+        private MouseEventArgs CreateHtmlMouseEventArgs(MouseEventArgs e)
+        {
+            var p = PointToHtml(e.Location);
+            return new MouseEventArgs(e.Button, e.Clicks, p.X, p.Y, e.Delta);
+        }
+
+        /// <summary>
+        /// Sync html container scroll offset from AutoScrollPosition in logical units.
+        /// </summary>
+        private void SyncHtmlScrollOffset()
+        {
+            if (_htmlContainer == null)
+                return;
+            var sp = AutoScrollPosition;
+            _htmlContainer.ScrollOffset = new Point(
+                (int)Math.Round(sp.X / _zoom),
+                (int)Math.Round(sp.Y / _zoom));
+        }
+
+        /// <summary>
+        /// Clamp a positive scroll offset to the valid range for the current content size.
+        /// </summary>
+        private static int ClampScroll(int offset, int contentSize, int viewportSize)
+        {
+            int max = Math.Max(0, contentSize - viewportSize);
+            if (offset < 0)
+                return 0;
+            if (offset > max)
+                return max;
+            return offset;
+        }
+
+        /// <summary>
+        /// Start middle-mouse pan at the given client point.
+        /// </summary>
+        private void StartPan(Point clientPoint)
+        {
+            _isPanning = true;
+            _panLastPoint = clientPoint;
+            _cursorBeforePan = Cursor;
+            Cursor = Cursors.SizeAll;
+            Capture = true;
+            Focus();
+        }
+
+        /// <summary>
+        /// End middle-mouse pan and restore cursor/capture.
+        /// </summary>
+        private void EndPan()
+        {
+            if (!_isPanning)
+                return;
+            _isPanning = false;
+            Capture = false;
+            Cursor = _cursorBeforePan ?? Cursors.Default;
+            InvokeMouseMove();
+        }
+
+        /// <summary>
+        /// Client point under the cursor if it is over this control; otherwise viewport center.
+        /// </summary>
+        private Point GetZoomAnchorFromCursor()
+        {
+            var client = PointToClient(MousePosition);
+            if (ClientRectangle.Contains(client))
+                return client;
+            return new Point(ClientSize.Width / 2, ClientSize.Height / 2);
         }
 
         /// <summary>
