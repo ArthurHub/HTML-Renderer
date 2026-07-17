@@ -119,9 +119,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /*This is the background of the HtmlToolTip*/
         .htmltooltip {
             border:solid 1px #767676;
-            background-color:white;
-            background-gradient:#E4E5F0;
-            padding: 8px; 
+            background-color:#E4E5F0;
+            padding: 8px;
             Font: 9pt Tahoma;
         }";
 
@@ -139,8 +138,6 @@ namespace TheArtOfDev.HtmlRenderer.Core
             new System.Collections.Generic.Dictionary<string, string>(System.StringComparer.OrdinalIgnoreCase)
         {
             { "background-color", "transparent" },
-            { "background-gradient", "none" },
-            { "background-gradient-angle", "90" },
             { "background-image", "none" },
             { "background-position", "0% 0%" },
             { "background-repeat", "repeat" },
@@ -160,11 +157,10 @@ namespace TheArtOfDev.HtmlRenderer.Core
             { "border-collapse", "separate" },
             { "color", "black" },
             { "content", "normal" },
-            { "corner-nw-radius", "0" },
-            { "corner-ne-radius", "0" },
-            { "corner-se-radius", "0" },
-            { "corner-sw-radius", "0" },
-            { "corner-radius", "0" },
+            { "border-top-left-radius", "0 0" },
+            { "border-top-right-radius", "0 0" },
+            { "border-bottom-right-radius", "0 0" },
+            { "border-bottom-left-radius", "0 0" },
             { "empty-cells", "show" },
             { "direction", "ltr" },
             { "display", "inline" },

@@ -95,44 +95,42 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Creates a rounded rectangle using the specified corner radius<br/>
-        /// NW-----NE
+        /// Creates a rounded rectangle path. Each corner has independent horizontal (X) and vertical (Y)
+        /// radii, supporting elliptical corners per the CSS border-radius spec.<br/>
+        /// TL-----TR
         ///  |       |
         ///  |       |
-        /// SW-----SE
+        /// BL-----BR
         /// </summary>
         /// <param name="g">the device to draw into</param>
         /// <param name="rect">Rectangle to round</param>
-        /// <param name="nwRadius">Radius of the north east corner</param>
-        /// <param name="neRadius">Radius of the north west corner</param>
-        /// <param name="seRadius">Radius of the south east corner</param>
-        /// <param name="swRadius">Radius of the south west corner</param>
         /// <returns>GraphicsPath with the lines of the rounded rectangle ready to be painted</returns>
-        public static RGraphicsPath GetRoundRect(RGraphics g, RRect rect, double nwRadius, double neRadius, double seRadius, double swRadius)
+        public static RGraphicsPath GetRoundRect(RGraphics g, RRect rect,
+            double tlX, double tlY, double trX, double trY,
+            double brX, double brY, double blX, double blY)
         {
             var path = g.GetGraphicsPath();
 
-            path.Start(rect.Left + nwRadius, rect.Top);
+            // Top edge: start after TL corner, end before TR corner.
+            path.Start(rect.Left + tlX, rect.Top);
+            path.LineTo(rect.Right - trX, rect.Top);
+            if (trX > 0 || trY > 0)
+                path.ArcTo(rect.Right, rect.Top + trY, trX, trY, RGraphicsPath.Corner.TopRight);
 
-            path.LineTo(rect.Right - neRadius, rect.Y);
+            // Right edge.
+            path.LineTo(rect.Right, rect.Bottom - brY);
+            if (brX > 0 || brY > 0)
+                path.ArcTo(rect.Right - brX, rect.Bottom, brX, brY, RGraphicsPath.Corner.BottomRight);
 
-            if (neRadius > 0f)
-                path.ArcTo(rect.Right, rect.Top + neRadius, neRadius, RGraphicsPath.Corner.TopRight);
+            // Bottom edge.
+            path.LineTo(rect.Left + blX, rect.Bottom);
+            if (blX > 0 || blY > 0)
+                path.ArcTo(rect.Left, rect.Bottom - blY, blX, blY, RGraphicsPath.Corner.BottomLeft);
 
-            path.LineTo(rect.Right, rect.Bottom - seRadius);
-
-            if (seRadius > 0f)
-                path.ArcTo(rect.Right - seRadius, rect.Bottom, seRadius, RGraphicsPath.Corner.BottomRight);
-
-            path.LineTo(rect.Left + swRadius, rect.Bottom);
-
-            if (swRadius > 0f)
-                path.ArcTo(rect.Left, rect.Bottom - swRadius, swRadius, RGraphicsPath.Corner.BottomLeft);
-
-            path.LineTo(rect.Left, rect.Top + nwRadius);
-
-            if (nwRadius > 0f)
-                path.ArcTo(rect.Left + nwRadius, rect.Top, nwRadius, RGraphicsPath.Corner.TopLeft);
+            // Left edge.
+            path.LineTo(rect.Left, rect.Top + tlY);
+            if (tlX > 0 || tlY > 0)
+                path.ArcTo(rect.Left + tlX, rect.Top, tlX, tlY, RGraphicsPath.Corner.TopLeft);
 
             return path;
         }

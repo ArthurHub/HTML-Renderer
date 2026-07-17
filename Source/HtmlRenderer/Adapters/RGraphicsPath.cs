@@ -30,10 +30,19 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         public abstract void LineTo(double x, double y);
         
         /// <summary>
-        /// Add circular arc of the given size to the given point from the last point.
+        /// Add an elliptical arc with independent horizontal (X) and vertical (Y) radii to the given
+        /// point from the last point - supports elliptical border-radius corners.
         /// </summary>
-        public abstract void ArcTo(double x, double y, double size, Corner corner);
-        
+        public abstract void ArcTo(double x, double y, double radiusX, double radiusY, Corner corner);
+
+        /// <summary>
+        /// Add a circular arc of the given size to the given point from the last point.
+        /// </summary>
+        public void ArcTo(double x, double y, double size, Corner corner)
+        {
+            ArcTo(x, y, size, size, corner);
+        }
+
         /// <summary>
         /// Release path resources.
         /// </summary>

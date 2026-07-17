@@ -10,6 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -83,9 +84,32 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
             return new BrushAdapter(solidBrush, false);
         }
 
-        protected override RBrush CreateLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        protected override RBrush CreateLinearGradientBrush(RPoint p1, RPoint p2, (RColor Color, double Position)[] stops)
         {
-            return new BrushAdapter(new LinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), (float)angle), true);
+            var brush = new LinearGradientBrush(Utils.Convert(p1), Utils.Convert(p2), Color.Black, Color.Black);
+
+            var colors = new Color[stops.Length];
+            var positions = new float[stops.Length];
+            for (int i = 0; i < stops.Length; i++)
+            {
+                colors[i] = Utils.Convert(stops[i].Color);
+                var pos = (float)Math.Min(Math.Max(stops[i].Position, 0.0), 1.0);
+                // GDI+ requires strictly increasing positions - nudge any duplicate up by an epsilon.
+                positions[i] = i > 0 && pos <= positions[i - 1] ? positions[i - 1] + 0.0001f : pos;
+            }
+            // GDI+ requires the first/last position to be exactly 0/1 - forcing them here (rather than
+            // requiring the caller to pre-normalize) also matches spec behavior for a gradient whose
+            // outermost stops aren't at the very ends: the outermost color simply extends flat to the edge.
+            positions[0] = 0f;
+            positions[positions.Length - 1] = 1f;
+
+            brush.InterpolationColors = new ColorBlend
+            {
+                Colors = colors,
+                Positions = positions
+            };
+
+            return new BrushAdapter(brush, true);
         }
 
         protected override RImage ConvertImageInt(object image)

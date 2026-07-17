@@ -16,6 +16,7 @@ using System.Linq;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.CssEngine;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Handlers;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 
@@ -153,6 +154,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         public bool IsColorValid(string colorValue)
         {
             return _valueParser.IsColorValid(colorValue);
+        }
+
+        /// <summary>
+        /// Parses a "background-image" value into a url() reference or a linear-gradient() - see
+        /// <see cref="CssValueParser.ParseImage"/>.
+        /// </summary>
+        public CssImage ParseBackgroundImage(string value)
+        {
+            return _valueParser.ParseImage(value);
         }
 
         /// <summary>

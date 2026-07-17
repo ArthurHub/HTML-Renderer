@@ -51,11 +51,11 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
             _lastPoint = new RPoint(x, y);
         }
 
-        public override void ArcTo(double x, double y, double size, Corner corner)
+        public override void ArcTo(double x, double y, double radiusX, double radiusY, Corner corner)
         {
-            float left = (float)(Math.Min(x, _lastPoint.X) - (corner == Corner.TopRight || corner == Corner.BottomRight ? size : 0));
-            float top = (float)(Math.Min(y, _lastPoint.Y) - (corner == Corner.BottomLeft || corner == Corner.BottomRight ? size : 0));
-            _graphicsPath.AddArc(left, top, (float)size * 2, (float)size * 2, GetStartAngle(corner), 90);
+            float left = (float)(Math.Min(x, _lastPoint.X) - (corner == Corner.TopRight || corner == Corner.BottomRight ? radiusX : 0));
+            float top = (float)(Math.Min(y, _lastPoint.Y) - (corner == Corner.BottomLeft || corner == Corner.BottomRight ? radiusY : 0));
+            _graphicsPath.AddArc(left, top, (float)radiusX * 2, (float)radiusY * 2, GetStartAngle(corner), 90);
             _lastPoint = new RPoint(x, y);
         }
 

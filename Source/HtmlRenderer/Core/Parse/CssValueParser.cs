@@ -13,10 +13,13 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 
 namespace TheArtOfDev.HtmlRenderer.Core.Parse
@@ -750,6 +753,218 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 num = num * 16 + (c <= 57 ? c - 48 : (10 + c - (c <= 70 ? 65 : 97)));
             }
             return num;
+        }
+
+        #endregion
+
+
+        #region Background image / gradient parsing
+
+        /// <summary>
+        /// Parses a single <c>background-image</c> value: either a <c>url()</c> reference or a
+        /// <c>linear-gradient()</c>/<c>repeating-linear-gradient()</c> function. Returns null for "none",
+        /// an empty value, or anything else this engine doesn't recognize (matching this engine's existing
+        /// silent-failure behavior for unsupported values).<br/>
+        /// Ported from PeachPDF's Html/Core/Parse/CssValueParser.ParseImage, trimmed to the single-value,
+        /// linear-gradient-only case this engine supports (no layered background-image, no radial/conic).
+        /// </summary>
+        public CssImage ParseImage(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value) || string.Equals(value, CssConstants.None, StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            var tokens = GetCssTokens(value);
+
+            var urlToken = tokens.OfType<UrlToken>().FirstOrDefault();
+            if (urlToken != null)
+                return new CssImage.Url(urlToken.Data);
+
+            var funcToken = tokens.OfType<FunctionToken>().FirstOrDefault();
+            if (funcToken == null)
+                return null;
+
+            if (string.Equals(funcToken.Data, FunctionNames.LinearGradient, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(funcToken.Data, FunctionNames.RepeatingLinearGradient, StringComparison.OrdinalIgnoreCase))
+            {
+                var gradient = ParseLinearGradient(value);
+                return gradient != null ? new CssImage.LinearGradient(gradient) : null;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Parses a <c>linear-gradient()</c>/<c>repeating-linear-gradient()</c> function value: an
+        /// optional angle or "to &lt;side&gt;" direction (default 180deg, top to bottom), followed by 2+
+        /// comma-separated color stops (each optionally followed by 1-2 length/percent positions), and
+        /// bare-position color hints between stops. Returns null if the value isn't a recognized gradient
+        /// function or doesn't have at least 2 real color stops.<br/>
+        /// Ported from PeachPDF's Html/Core/Parse/CssValueParser.ParseLinearGradient, minus CSS Color 4
+        /// interpolation-color-space ("in oklab" etc.) support - see ParsedLinearGradient.
+        /// </summary>
+        private ParsedLinearGradient ParseLinearGradient(string value)
+        {
+            var tokens = GetCssTokens(value);
+
+            var funcToken = tokens.OfType<FunctionToken>().FirstOrDefault(t =>
+                string.Equals(t.Data, FunctionNames.LinearGradient, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(t.Data, FunctionNames.RepeatingLinearGradient, StringComparison.OrdinalIgnoreCase));
+
+            if (funcToken == null)
+                return null;
+
+            bool isRepeating = string.Equals(funcToken.Data, FunctionNames.RepeatingLinearGradient, StringComparison.OrdinalIgnoreCase);
+
+            var args = funcToken.ArgumentTokens.ToList();
+            if (args.Count == 0)
+                return null;
+
+            double angleRad = Math.PI; // default: 180deg = top to bottom
+            int stopOffset = 0;
+
+            var firstGroup = args[0];
+            var firstIdents = firstGroup.Where(t => t.Type == TokenType.Ident).Select(t => t.Data.ToLowerInvariant()).ToList();
+
+            if (firstIdents.Count > 0 && firstIdents[0] == "to")
+            {
+                // keyword direction: "to right", "to bottom left", etc.
+                angleRad = SideKeywordsToAngleRad(firstIdents.Skip(1).ToList());
+                stopOffset = 1;
+            }
+            else
+            {
+                var angle = firstGroup.ToAngle();
+                if (angle.HasValue)
+                {
+                    angleRad = angle.Value.ToRadian();
+                    stopOffset = 1;
+                }
+                // else no angle token, stopOffset stays 0 - first group is already the first color stop
+            }
+
+            var stopGroups = args.Skip(stopOffset).ToList();
+            if (stopGroups.Count < 2)
+                return null;
+
+            var stops = new List<(RColor? Color, Length? Position, bool IsHint)>();
+
+            foreach (var group in stopGroups)
+            {
+                var items = group.ToItems();
+                if (items.Count == 0)
+                    continue;
+
+                Length? position1 = null;
+                Length? position2 = null;
+                int colorItemCount = items.Count;
+
+                // Last item may be a length/percent position.
+                var lastItem = items[items.Count - 1];
+                var pv = lastItem.ToDistance();
+                if (pv.HasValue)
+                {
+                    position1 = pv.Value;
+                    colorItemCount--;
+
+                    // Two-position shorthand (e.g. "red 0 50%").
+                    if (colorItemCount > 0)
+                    {
+                        var pv2 = items[colorItemCount - 1].ToDistance();
+                        if (pv2.HasValue)
+                        {
+                            position2 = position1;
+                            position1 = pv2.Value;
+                            colorItemCount--;
+                        }
+                    }
+                }
+
+                if (colorItemCount == 0)
+                {
+                    // Bare position with no color - a color hint.
+                    if (position1.HasValue && !position2.HasValue)
+                        stops.Add((null, position1, true));
+                    continue;
+                }
+
+                var colorText = BuildColorText(items.Take(colorItemCount));
+                if (string.IsNullOrWhiteSpace(colorText))
+                    continue;
+
+                var color = GetActualColor(colorText);
+                stops.Add((color, position1, false));
+                if (position2.HasValue)
+                    stops.Add((color, position2, false));
+            }
+
+            if (stops.Count(s => !s.IsHint) < 2)
+                return null;
+
+            return new ParsedLinearGradient
+            {
+                AngleRad = angleRad,
+                Stops = stops.ToArray(),
+                IsRepeating = isRepeating,
+            };
+        }
+
+        /// <summary>
+        /// Converts "to &lt;side&gt; [&lt;side&gt;]" direction keywords (e.g. "right", "bottom left") to
+        /// the equivalent gradient-line angle in radians, per the CSS Images spec's side/corner table.
+        /// </summary>
+        private static double SideKeywordsToAngleRad(List<string> sides)
+        {
+            bool hasTop = sides.Contains("top");
+            bool hasBottom = sides.Contains("bottom");
+            bool hasLeft = sides.Contains("left");
+            bool hasRight = sides.Contains("right");
+
+            if (hasTop && hasRight) return Math.PI / 4;         // 45deg
+            if (hasBottom && hasRight) return 3 * Math.PI / 4;  // 135deg
+            if (hasBottom && hasLeft) return 5 * Math.PI / 4;   // 225deg
+            if (hasTop && hasLeft) return 7 * Math.PI / 4;      // 315deg
+            if (hasTop) return 0;                                // 0deg
+            if (hasRight) return Math.PI / 2;                    // 90deg
+            if (hasBottom) return Math.PI;                       // 180deg
+            if (hasLeft) return 3 * Math.PI / 2;                // 270deg
+
+            return Math.PI; // default
+        }
+
+        /// <summary>
+        /// Re-serializes a color stop's token groups (everything before its trailing position token(s))
+        /// back to CSS text so it can be handed to <see cref="GetActualColor"/> as a normal color string.
+        /// </summary>
+        private static string BuildColorText(IEnumerable<IEnumerable<Token>> itemGroups)
+        {
+            var sb = new StringBuilder();
+            foreach (var group in itemGroups)
+            {
+                sb.Append(group.ToText());
+            }
+            return sb.ToString().Trim();
+        }
+
+        /// <summary>
+        /// Splits a CSS value string on top-level whitespace (paren-depth-aware, so a calc()/gradient()
+        /// value's internal spaces aren't mistaken for a delimiter). Used to split a "border-radius"
+        /// corner value like "10px 5%" into its horizontal/vertical components.
+        /// </summary>
+        internal static IEnumerable<string> SplitTopLevelWhitespace(string value)
+        {
+            int depth = 0, start = 0;
+            for (int i = 0; i < value.Length; i++)
+            {
+                char c = value[i];
+                if (c == '(') depth++;
+                else if (c == ')') depth--;
+                else if (char.IsWhiteSpace(c) && depth == 0)
+                {
+                    if (i > start) yield return value.Substring(start, i - start);
+                    start = i + 1;
+                }
+            }
+            if (start < value.Length) yield return value.Substring(start);
         }
 
         #endregion

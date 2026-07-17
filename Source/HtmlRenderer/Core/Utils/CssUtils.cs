@@ -44,12 +44,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             "border-bottom-style", "border-left-style", "border-right-style", "border-top-style",
             "border-bottom-color", "border-left-color", "border-right-color", "border-top-color",
             "border-spacing", "border-collapse",
-            "corner-radius", "corner-nw-radius", "corner-ne-radius", "corner-se-radius", "corner-sw-radius",
+            "border-top-left-radius", "border-top-right-radius", "border-bottom-right-radius", "border-bottom-left-radius",
             "margin-bottom", "margin-left", "margin-right", "margin-top",
             "padding-bottom", "padding-left", "padding-right", "padding-top",
             "page-break-inside", "left", "top", "width", "max-width", "height",
             "background-color", "background-image", "background-position", "background-repeat",
-            "background-gradient", "background-gradient-angle",
             "content", "color", "display", "direction", "empty-cells", "float", "position",
             "line-height", "vertical-align", "text-indent", "text-align", "text-decoration",
             "white-space", "word-break", "visibility", "word-spacing",
@@ -124,16 +123,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.BorderSpacing;
                 case "border-collapse":
                     return cssBox.BorderCollapse;
-                case "corner-radius":
-                    return cssBox.CornerRadius;
-                case "corner-nw-radius":
-                    return cssBox.CornerNwRadius;
-                case "corner-ne-radius":
-                    return cssBox.CornerNeRadius;
-                case "corner-se-radius":
-                    return cssBox.CornerSeRadius;
-                case "corner-sw-radius":
-                    return cssBox.CornerSwRadius;
+                case "border-top-left-radius":
+                    return cssBox.BorderTopLeftRadius;
+                case "border-top-right-radius":
+                    return cssBox.BorderTopRightRadius;
+                case "border-bottom-right-radius":
+                    return cssBox.BorderBottomRightRadius;
+                case "border-bottom-left-radius":
+                    return cssBox.BorderBottomLeftRadius;
                 case "margin-bottom":
                     return cssBox.MarginBottom;
                 case "margin-left":
@@ -170,10 +167,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.BackgroundPosition;
                 case "background-repeat":
                     return cssBox.BackgroundRepeat;
-                case "background-gradient":
-                    return cssBox.BackgroundGradient;
-                case "background-gradient-angle":
-                    return cssBox.BackgroundGradientAngle;
                 case "content":
                     return cssBox.Content;
                 case "color":
@@ -283,20 +276,20 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                 case "border-collapse":
                     cssBox.BorderCollapse = value;
                     break;
-                case "corner-radius":
-                    cssBox.CornerRadius = value;
+                case "border-radius":
+                    cssBox.BorderRadius = value;
                     break;
-                case "corner-nw-radius":
-                    cssBox.CornerNwRadius = value;
+                case "border-top-left-radius":
+                    cssBox.BorderTopLeftRadius = value;
                     break;
-                case "corner-ne-radius":
-                    cssBox.CornerNeRadius = value;
+                case "border-top-right-radius":
+                    cssBox.BorderTopRightRadius = value;
                     break;
-                case "corner-se-radius":
-                    cssBox.CornerSeRadius = value;
+                case "border-bottom-right-radius":
+                    cssBox.BorderBottomRightRadius = value;
                     break;
-                case "corner-sw-radius":
-                    cssBox.CornerSwRadius = value;
+                case "border-bottom-left-radius":
+                    cssBox.BorderBottomLeftRadius = value;
                     break;
                 case "margin-bottom":
                     cssBox.MarginBottom = value;
@@ -351,12 +344,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     break;
                 case "background-repeat":
                     cssBox.BackgroundRepeat = value;
-                    break;
-                case "background-gradient":
-                    cssBox.BackgroundGradient = value;
-                    break;
-                case "background-gradient-angle":
-                    cssBox.BackgroundGradientAngle = value;
                     break;
                 case "color":
                     cssBox.Color = value;

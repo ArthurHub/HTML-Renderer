@@ -102,14 +102,19 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
             return new BrushAdapter(solidBrush);
         }
 
-        protected override RBrush CreateLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        protected override RBrush CreateLinearGradientBrush(RPoint p1, RPoint p2, (RColor Color, double Position)[] stops)
         {
-            var startColor = angle <= 180 ? Utils.Convert(color1) : Utils.Convert(color2);
-            var endColor = angle <= 180 ? Utils.Convert(color2) : Utils.Convert(color1);
-            angle = angle <= 180 ? angle : angle - 180;
-            double x = angle < 135 ? Math.Max((angle - 45) / 90, 0) : 1;
-            double y = angle <= 45 ? Math.Max(0.5 - angle / 90, 0) : angle > 135 ? Math.Abs(1.5 - angle / 90) : 0;
-            return new BrushAdapter(new LinearGradientBrush(startColor, endColor, new Point(x, y), new Point(1 - x, 1 - y)));
+            var gradientStops = new GradientStopCollection(stops.Length);
+            foreach (var stop in stops)
+                gradientStops.Add(new GradientStop(Utils.Convert(stop.Color), stop.Position));
+
+            var brush = new LinearGradientBrush(gradientStops, 0)
+            {
+                MappingMode = BrushMappingMode.Absolute,
+                StartPoint = Utils.Convert(p1),
+                EndPoint = Utils.Convert(p2)
+            };
+            return new BrushAdapter(brush);
         }
 
         protected override RImage ConvertImageInt(object image)

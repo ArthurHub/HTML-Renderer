@@ -16,6 +16,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Parse;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 
@@ -33,8 +34,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         #region CSS Fields
 
         private string _backgroundColor = "transparent";
-        private string _backgroundGradient = "none";
-        private string _backgroundGradientAngle = "90";
         private string _backgroundImage = "none";
         private string _backgroundPosition = "0% 0%";
         private string _backgroundRepeat = "repeat";
@@ -55,11 +54,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _bottom;
         private string _color = "black";
         private string _content = "normal";
-        private string _cornerNwRadius = "0";
-        private string _cornerNeRadius = "0";
-        private string _cornerSeRadius = "0";
-        private string _cornerSwRadius = "0";
-        private string _cornerRadius = "0";
+        private string _borderTopLeftRadius = "0 0";
+        private string _borderTopRightRadius = "0 0";
+        private string _borderBottomRightRadius = "0 0";
+        private string _borderBottomLeftRadius = "0 0";
         private string _emptyCells = "show";
         private string _direction = "ltr";
         private string _display = "inline";
@@ -121,12 +119,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         private RSize _size;
 
-        private double _actualCornerNw = double.NaN;
-        private double _actualCornerNe = double.NaN;
-        private double _actualCornerSw = double.NaN;
-        private double _actualCornerSe = double.NaN;
+        private double _actualBorderTopLeftRadiusX = double.NaN;
+        private double _actualBorderTopLeftRadiusY = double.NaN;
+        private double _actualBorderTopRightRadiusX = double.NaN;
+        private double _actualBorderTopRightRadiusY = double.NaN;
+        private double _actualBorderBottomRightRadiusX = double.NaN;
+        private double _actualBorderBottomRightRadiusY = double.NaN;
+        private double _actualBorderBottomLeftRadiusX = double.NaN;
+        private double _actualBorderBottomLeftRadiusY = double.NaN;
         private RColor _actualColor = RColor.Empty;
-        private double _actualBackgroundGradientAngle = double.NaN;
         private double _actualHeight = double.NaN;
         private double _actualWidth = double.NaN;
         private double _actualPaddingTop = double.NaN;
@@ -152,7 +153,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private double _actualTextIndent = double.NaN;
         private double _actualBorderSpacingHorizontal = double.NaN;
         private double _actualBorderSpacingVertical = double.NaN;
-        private RColor _actualBackgroundGradient = RColor.Empty;
+        private bool _actualBackgroundImageComputed;
+        private CssImage _actualBackgroundImage;
         private RColor _actualBorderTopColor = RColor.Empty;
         private RColor _actualBorderLeftColor = RColor.Empty;
         private RColor _actualBorderBottomColor = RColor.Empty;
@@ -281,66 +283,96 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             set { _borderCollapse = value; }
         }
 
-        public string CornerRadius
+        /// <summary>
+        /// The "border-radius" shorthand: sets all four corners at once, with an optional "/" separating
+        /// horizontal and vertical radii for elliptical corners (e.g. "10px 5px / 20px 10px"). Each side
+        /// of the "/" independently follows the standard 1/2/3/4-value CSS expansion rule
+        /// (1=all, 2=TL+BR/TR+BL, 3=TL/TR+BL/BR, 4=TL/TR/BR/BL). Write-only, like the other border-*
+        /// shorthands in this class - the four longhand properties below hold the actual state.
+        /// </summary>
+        public string BorderRadius
         {
-            get { return _cornerRadius; }
             set
             {
-                MatchCollection r = RegexParserUtils.Match(RegexParserUtils.CssLength, value);
+                int slash = value.IndexOf('/');
+                string hGroup = (slash >= 0 ? value.Substring(0, slash) : value).Trim();
+                string vGroup = (slash >= 0 ? value.Substring(slash + 1) : hGroup).Trim();
 
-                switch (r.Count)
-                {
-                    case 1:
-                        CornerNeRadius = r[0].Value;
-                        CornerNwRadius = r[0].Value;
-                        CornerSeRadius = r[0].Value;
-                        CornerSwRadius = r[0].Value;
-                        break;
-                    case 2:
-                        CornerNeRadius = r[0].Value;
-                        CornerNwRadius = r[0].Value;
-                        CornerSeRadius = r[1].Value;
-                        CornerSwRadius = r[1].Value;
-                        break;
-                    case 3:
-                        CornerNeRadius = r[0].Value;
-                        CornerNwRadius = r[1].Value;
-                        CornerSeRadius = r[2].Value;
-                        break;
-                    case 4:
-                        CornerNeRadius = r[0].Value;
-                        CornerNwRadius = r[1].Value;
-                        CornerSeRadius = r[2].Value;
-                        CornerSwRadius = r[3].Value;
-                        break;
-                }
+                string[] h = ExpandRadiusShorthand(hGroup);
+                string[] v = ExpandRadiusShorthand(vGroup);
 
-                _cornerRadius = value;
+                BorderTopLeftRadius = h[0] + " " + v[0];
+                BorderTopRightRadius = h[1] + " " + v[1];
+                BorderBottomRightRadius = h[2] + " " + v[2];
+                BorderBottomLeftRadius = h[3] + " " + v[3];
             }
         }
 
-        public string CornerNwRadius
+        /// <summary>
+        /// Expands a 1-4 value length group into [TopLeft, TopRight, BottomRight, BottomLeft] per the
+        /// standard CSS shorthand rule.
+        /// </summary>
+        private static string[] ExpandRadiusShorthand(string group)
         {
-            get { return _cornerNwRadius; }
-            set { _cornerNwRadius = value; }
+            MatchCollection r = RegexParserUtils.Match(RegexParserUtils.CssLength, group);
+
+            switch (r.Count)
+            {
+                case 1:
+                    return new[] { r[0].Value, r[0].Value, r[0].Value, r[0].Value };
+                case 2:
+                    return new[] { r[0].Value, r[1].Value, r[0].Value, r[1].Value };
+                case 3:
+                    return new[] { r[0].Value, r[1].Value, r[2].Value, r[1].Value };
+                case 4:
+                    return new[] { r[0].Value, r[1].Value, r[2].Value, r[3].Value };
+                default:
+                    return new[] { "0", "0", "0", "0" };
+            }
         }
 
-        public string CornerNeRadius
+        public string BorderTopLeftRadius
         {
-            get { return _cornerNeRadius; }
-            set { _cornerNeRadius = value; }
+            get { return _borderTopLeftRadius; }
+            set
+            {
+                _borderTopLeftRadius = value;
+                _actualBorderTopLeftRadiusX = double.NaN;
+                _actualBorderTopLeftRadiusY = double.NaN;
+            }
         }
 
-        public string CornerSeRadius
+        public string BorderTopRightRadius
         {
-            get { return _cornerSeRadius; }
-            set { _cornerSeRadius = value; }
+            get { return _borderTopRightRadius; }
+            set
+            {
+                _borderTopRightRadius = value;
+                _actualBorderTopRightRadiusX = double.NaN;
+                _actualBorderTopRightRadiusY = double.NaN;
+            }
         }
 
-        public string CornerSwRadius
+        public string BorderBottomRightRadius
         {
-            get { return _cornerSwRadius; }
-            set { _cornerSwRadius = value; }
+            get { return _borderBottomRightRadius; }
+            set
+            {
+                _borderBottomRightRadius = value;
+                _actualBorderBottomRightRadiusX = double.NaN;
+                _actualBorderBottomRightRadiusY = double.NaN;
+            }
+        }
+
+        public string BorderBottomLeftRadius
+        {
+            get { return _borderBottomLeftRadius; }
+            set
+            {
+                _borderBottomLeftRadius = value;
+                _actualBorderBottomLeftRadiusX = double.NaN;
+                _actualBorderBottomLeftRadiusY = double.NaN;
+            }
         }
 
         public string MarginBottom
@@ -471,7 +503,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         public string BackgroundImage
         {
             get { return _backgroundImage; }
-            set { _backgroundImage = value; }
+            set
+            {
+                _backgroundImage = value;
+                _actualBackgroundImageComputed = false;
+            }
         }
 
         public string BackgroundPosition
@@ -484,18 +520,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         {
             get { return _backgroundRepeat; }
             set { _backgroundRepeat = value; }
-        }
-
-        public string BackgroundGradient
-        {
-            get { return _backgroundGradient; }
-            set { _backgroundGradient = value; }
-        }
-
-        public string BackgroundGradientAngle
-        {
-            get { return _backgroundGradientAngle; }
-            set { _backgroundGradientAngle = value; }
         }
 
         public string Color
@@ -1066,6 +1090,26 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
         protected abstract RColor GetActualColor(string colorStr);
 
+        protected abstract CssImage GetActualBackgroundImageValue(string value);
+
+        /// <summary>
+        /// Gets the parsed "background-image" value - either a url() reference or a linear-gradient(),
+        /// lazily resolved (needs adapter-dependent named-color lookup for gradient stops, see
+        /// <see cref="GetActualBackgroundImageValue"/>) and cached until <see cref="BackgroundImage"/> is set again.
+        /// </summary>
+        public CssImage ActualBackgroundImage
+        {
+            get
+            {
+                if (!_actualBackgroundImageComputed)
+                {
+                    _actualBackgroundImage = GetActualBackgroundImageValue(BackgroundImage);
+                    _actualBackgroundImageComputed = true;
+                }
+                return _actualBackgroundImage;
+            }
+        }
+
         /// <summary>
         /// Gets the actual Left border Color
         /// </summary>
@@ -1111,72 +1155,147 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
         }
 
-        /// <summary>
-        /// Gets the actual length of the north west corner
-        /// </summary>
-        public double ActualCornerNw
+        public double ActualBorderTopLeftRadiusX
         {
             get
             {
-                if (double.IsNaN(_actualCornerNw))
-                {
-                    _actualCornerNw = CssValueParser.ParseLength(CornerNwRadius, 0, this);
-                }
-                return _actualCornerNw;
+                if (double.IsNaN(_actualBorderTopLeftRadiusX))
+                    _actualBorderTopLeftRadiusX = CssValueParser.ParseLength(FirstCssValue(BorderTopLeftRadius), Size.Width, this);
+                return _actualBorderTopLeftRadiusX;
+            }
+        }
+
+        public double ActualBorderTopLeftRadiusY
+        {
+            get
+            {
+                if (double.IsNaN(_actualBorderTopLeftRadiusY))
+                    _actualBorderTopLeftRadiusY = CssValueParser.ParseLength(SecondCssValue(BorderTopLeftRadius), Size.Height, this);
+                return _actualBorderTopLeftRadiusY;
+            }
+        }
+
+        public double ActualBorderTopRightRadiusX
+        {
+            get
+            {
+                if (double.IsNaN(_actualBorderTopRightRadiusX))
+                    _actualBorderTopRightRadiusX = CssValueParser.ParseLength(FirstCssValue(BorderTopRightRadius), Size.Width, this);
+                return _actualBorderTopRightRadiusX;
+            }
+        }
+
+        public double ActualBorderTopRightRadiusY
+        {
+            get
+            {
+                if (double.IsNaN(_actualBorderTopRightRadiusY))
+                    _actualBorderTopRightRadiusY = CssValueParser.ParseLength(SecondCssValue(BorderTopRightRadius), Size.Height, this);
+                return _actualBorderTopRightRadiusY;
+            }
+        }
+
+        public double ActualBorderBottomRightRadiusX
+        {
+            get
+            {
+                if (double.IsNaN(_actualBorderBottomRightRadiusX))
+                    _actualBorderBottomRightRadiusX = CssValueParser.ParseLength(FirstCssValue(BorderBottomRightRadius), Size.Width, this);
+                return _actualBorderBottomRightRadiusX;
+            }
+        }
+
+        public double ActualBorderBottomRightRadiusY
+        {
+            get
+            {
+                if (double.IsNaN(_actualBorderBottomRightRadiusY))
+                    _actualBorderBottomRightRadiusY = CssValueParser.ParseLength(SecondCssValue(BorderBottomRightRadius), Size.Height, this);
+                return _actualBorderBottomRightRadiusY;
+            }
+        }
+
+        public double ActualBorderBottomLeftRadiusX
+        {
+            get
+            {
+                if (double.IsNaN(_actualBorderBottomLeftRadiusX))
+                    _actualBorderBottomLeftRadiusX = CssValueParser.ParseLength(FirstCssValue(BorderBottomLeftRadius), Size.Width, this);
+                return _actualBorderBottomLeftRadiusX;
+            }
+        }
+
+        public double ActualBorderBottomLeftRadiusY
+        {
+            get
+            {
+                if (double.IsNaN(_actualBorderBottomLeftRadiusY))
+                    _actualBorderBottomLeftRadiusY = CssValueParser.ParseLength(SecondCssValue(BorderBottomLeftRadius), Size.Height, this);
+                return _actualBorderBottomLeftRadiusY;
             }
         }
 
         /// <summary>
-        /// Gets the actual length of the north east corner
+        /// Returns the first top-level-whitespace-delimited token in a "border-*-radius" longhand value
+        /// (the horizontal radius).
         /// </summary>
-        public double ActualCornerNe
+        private static string FirstCssValue(string value)
         {
-            get
-            {
-                if (double.IsNaN(_actualCornerNe))
-                {
-                    _actualCornerNe = CssValueParser.ParseLength(CornerNeRadius, 0, this);
-                }
-                return _actualCornerNe;
-            }
+            foreach (var token in CssValueParser.SplitTopLevelWhitespace(value))
+                return token;
+            return value;
         }
 
         /// <summary>
-        /// Gets the actual length of the south east corner
+        /// Returns the second top-level-whitespace-delimited token in a "border-*-radius" longhand value
+        /// (the vertical radius), or the first if there is no second (spec: omitted v-radius = h-radius).
         /// </summary>
-        public double ActualCornerSe
+        private static string SecondCssValue(string value)
         {
-            get
-            {
-                if (double.IsNaN(_actualCornerSe))
-                {
-                    _actualCornerSe = CssValueParser.ParseLength(CornerSeRadius, 0, this);
-                }
-                return _actualCornerSe;
-            }
+            var tokens = new List<string>(CssValueParser.SplitTopLevelWhitespace(value));
+            return tokens.Count > 1 ? tokens[1] : value;
         }
 
         /// <summary>
-        /// Gets the actual length of the south west corner
+        /// Computes overlap-reduced corner radii for the given rendering rectangle, per CSS Backgrounds
+        /// §4. Horizontal and vertical axes are reduced independently so that, e.g., two large radii on
+        /// the same edge never sum to more than that edge's length.
         /// </summary>
-        public double ActualCornerSw
+        public BorderRadii ComputeRadii(RRect rect)
         {
-            get
-            {
-                if (double.IsNaN(_actualCornerSw))
-                {
-                    _actualCornerSw = CssValueParser.ParseLength(CornerSwRadius, 0, this);
-                }
-                return _actualCornerSw;
-            }
+            double tlX = ActualBorderTopLeftRadiusX, tlY = ActualBorderTopLeftRadiusY;
+            double trX = ActualBorderTopRightRadiusX, trY = ActualBorderTopRightRadiusY;
+            double brX = ActualBorderBottomRightRadiusX, brY = ActualBorderBottomRightRadiusY;
+            double blX = ActualBorderBottomLeftRadiusX, blY = ActualBorderBottomLeftRadiusY;
+
+            // Horizontal reduction: check top side and bottom side independently.
+            double fTop = tlX + trX > 0 && rect.Width > 0 ? rect.Width / (tlX + trX) : 1.0;
+            double fBot = blX + brX > 0 && rect.Width > 0 ? rect.Width / (blX + brX) : 1.0;
+            double fX = Math.Min(1.0, Math.Min(fTop, fBot));
+
+            // Vertical reduction: check left side and right side independently.
+            double fLeft = tlY + blY > 0 && rect.Height > 0 ? rect.Height / (tlY + blY) : 1.0;
+            double fRight = trY + brY > 0 && rect.Height > 0 ? rect.Height / (trY + brY) : 1.0;
+            double fY = Math.Min(1.0, Math.Min(fLeft, fRight));
+
+            return new BorderRadii(tlX * fX, tlY * fY, trX * fX, trY * fY,
+                brX * fX, brY * fY, blX * fX, blY * fY);
         }
 
         /// <summary>
-        /// Gets a value indicating if at least one of the corners of the box is rounded
+        /// Gets a value indicating if at least one of the corners of the box is rounded. A fast,
+        /// rect-independent pre-check using the raw (not overlap-reduced) actual radii - use
+        /// <see cref="ComputeRadii"/> when the actual per-corner values are needed for painting.
         /// </summary>
         public bool IsRounded
         {
-            get { return ActualCornerNe > 0f || ActualCornerNw > 0f || ActualCornerSe > 0f || ActualCornerSw > 0f; }
+            get
+            {
+                return ActualBorderTopLeftRadiusX > 0 || ActualBorderTopLeftRadiusY > 0 ||
+                    ActualBorderTopRightRadiusX > 0 || ActualBorderTopRightRadiusY > 0 ||
+                    ActualBorderBottomRightRadiusX > 0 || ActualBorderBottomRightRadiusY > 0 ||
+                    ActualBorderBottomLeftRadiusX > 0 || ActualBorderBottomLeftRadiusY > 0;
+            }
         }
 
         /// <summary>
@@ -1217,37 +1336,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 }
 
                 return _actualBackgroundColor;
-            }
-        }
-
-        /// <summary>
-        /// Gets the second color that creates a gradient for the background
-        /// </summary>
-        public RColor ActualBackgroundGradient
-        {
-            get
-            {
-                if (_actualBackgroundGradient.IsEmpty)
-                {
-                    _actualBackgroundGradient = GetActualColor(BackgroundGradient);
-                }
-                return _actualBackgroundGradient;
-            }
-        }
-
-        /// <summary>
-        /// Gets the actual angle specified for the background gradient
-        /// </summary>
-        public double ActualBackgroundGradientAngle
-        {
-            get
-            {
-                if (double.IsNaN(_actualBackgroundGradientAngle))
-                {
-                    _actualBackgroundGradientAngle = CssValueParser.ParseNumber(BackgroundGradientAngle, 360f);
-                }
-
-                return _actualBackgroundGradientAngle;
             }
         }
 
@@ -1528,8 +1616,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 if (everything)
                 {
                     _backgroundColor = p._backgroundColor;
-                    _backgroundGradient = p._backgroundGradient;
-                    _backgroundGradientAngle = p._backgroundGradientAngle;
                     _backgroundImage = p._backgroundImage;
                     _backgroundPosition = p._backgroundPosition;
                     _backgroundRepeat = p._backgroundRepeat;
@@ -1546,11 +1632,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     _borderBottomStyle = p._borderBottomStyle;
                     _borderLeftStyle = p._borderLeftStyle;
                     _bottom = p._bottom;
-                    _cornerNwRadius = p._cornerNwRadius;
-                    _cornerNeRadius = p._cornerNeRadius;
-                    _cornerSeRadius = p._cornerSeRadius;
-                    _cornerSwRadius = p._cornerSwRadius;
-                    _cornerRadius = p._cornerRadius;
+                    _borderTopLeftRadius = p._borderTopLeftRadius;
+                    _borderTopRightRadius = p._borderTopRightRadius;
+                    _borderBottomRightRadius = p._borderBottomRightRadius;
+                    _borderBottomLeftRadius = p._borderBottomLeftRadius;
                     _display = p._display;
                     _float = p._float;
                     _height = p._height;
@@ -1575,6 +1660,29 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     _wordSpacing = p._wordSpacing;
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Holds the eight computed (overlap-reduced) corner radii for a box rectangle - see
+    /// <see cref="CssBoxProperties.ComputeRadii"/>.
+    /// </summary>
+    internal struct BorderRadii
+    {
+        public readonly double TLX, TLY, TRX, TRY, BRX, BRY, BLX, BLY;
+
+        public BorderRadii(double tlX, double tlY, double trX, double trY,
+            double brX, double brY, double blX, double blY)
+        {
+            TLX = tlX; TLY = tlY;
+            TRX = trX; TRY = trY;
+            BRX = brX; BRY = brY;
+            BLX = blX; BLY = blY;
+        }
+
+        public bool IsRounded
+        {
+            get { return TLX > 0 || TLY > 0 || TRX > 0 || TRY > 0 || BRX > 0 || BRY > 0 || BLX > 0 || BLY > 0; }
         }
     }
 }
