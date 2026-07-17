@@ -126,7 +126,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// skipping whitespace/end-of-file tokens - the same "just enough tokenization to recognize a
         /// single top-level function call" approach used to detect calc()-family expressions.
         /// </summary>
-        private static List<Token> GetCssTokens(string value)
+        internal static List<Token> GetCssTokens(string value)
         {
             var lexer = new Lexer(value);
             var tokens = new List<Token>();

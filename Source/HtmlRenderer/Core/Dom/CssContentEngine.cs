@@ -10,7 +10,11 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System;
+using System.Linq;
 using System.Text;
+using TheArtOfDev.HtmlRenderer.Core.CssEngine;
+using TheArtOfDev.HtmlRenderer.Core.Parse;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 
 namespace TheArtOfDev.HtmlRenderer.Core.Dom
@@ -23,7 +27,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
     /// <c>attr()</c>, and the four quote keywords are supported; <c>counter()</c>/<c>counters()</c>/
     /// <c>string()</c>/<c>content()</c> are not (CSS counters and named strings remain out of scope
     /// for this backport - an unrecognized component is simply skipped, the same graceful-ignore
-    /// behavior this engine already applies to unsupported CSS elsewhere).
+    /// behavior this engine already applies to unsupported CSS elsewhere).<br/>
+    /// Tokenizes via the shared CSS lexer (<see cref="CssValueParser.GetCssTokens"/>) rather than
+    /// hand-parsing the CSS text, so string literals (e.g. <c>"\A"</c>, the standard UA-stylesheet
+    /// line-break trick used by <c>br:before</c>) get the same correct escape decoding the lexer
+    /// already applies when the stylesheet is first parsed - see CalcParser/BackgroundPositionGrammar
+    /// for the same "don't write two independent parsers for the same grammar" precedent.
     /// </summary>
     internal static class CssContentEngine
     {
@@ -50,81 +59,40 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private static string Resolve(CssBox box, string content)
         {
             var sb = new StringBuilder();
-            var i = 0;
-            while (i < content.Length)
+
+            foreach (var token in CssValueParser.GetCssTokens(content))
             {
-                if (char.IsWhiteSpace(content[i]))
+                if (token is StringToken stringToken)
                 {
-                    i++;
-                    continue;
+                    sb.Append(stringToken.Data);
                 }
-
-                if (content[i] == '"' || content[i] == '\'')
+                else if (token is FunctionToken functionToken &&
+                         functionToken.Data.Equals(FunctionNames.Attr, StringComparison.OrdinalIgnoreCase))
                 {
-                    var quote = content[i];
-                    var start = i + 1;
-                    var j = start;
-                    while (j < content.Length && content[j] != quote)
+                    if (functionToken.ArgumentTokens.FirstOrDefault() is KeywordToken attrNameToken)
                     {
-                        if (content[j] == '\\' && j + 1 < content.Length)
-                            j++;
-                        j++;
+                        var sourceBox = box.IsPseudoElement && box.ParentBox != null ? box.ParentBox : box;
+                        var attrValue = sourceBox.GetAttribute(attrNameToken.Data, string.Empty);
+                        sb.Append(attrValue);
                     }
-                    sb.Append(Unescape(content.Substring(start, j - start)));
-                    i = j + 1;
-                    continue;
                 }
-
-                var tokenEnd = i;
-                while (tokenEnd < content.Length && !char.IsWhiteSpace(content[tokenEnd]))
-                    tokenEnd++;
-                var token = content.Substring(i, tokenEnd - i);
-                i = tokenEnd;
-
-                if (token.StartsWith("attr(", System.StringComparison.OrdinalIgnoreCase) && token.EndsWith(")"))
+                else if (token is KeywordToken keywordToken)
                 {
-                    var attrName = token.Substring(5, token.Length - 6).Trim();
-                    var sourceBox = box.IsPseudoElement && box.ParentBox != null ? box.ParentBox : box;
-                    var attrValue = sourceBox.GetAttribute(attrName, string.Empty);
-                    sb.Append(attrValue);
-                }
-                else if (token.Equals("open-quote", System.StringComparison.OrdinalIgnoreCase))
-                {
-                    sb.Append('“');
-                }
-                else if (token.Equals("close-quote", System.StringComparison.OrdinalIgnoreCase))
-                {
-                    sb.Append('”');
-                }
-                else if (token.Equals("no-open-quote", System.StringComparison.OrdinalIgnoreCase) ||
-                         token.Equals("no-close-quote", System.StringComparison.OrdinalIgnoreCase))
-                {
-                    // produces no text, but still counts as a quoting depth change per spec - depth
-                    // tracking isn't implemented here (no "quotes" property support), so this is a no-op.
+                    if (keywordToken.Data.Equals(Keywords.OpenQuote, StringComparison.OrdinalIgnoreCase))
+                    {
+                        sb.Append('“');
+                    }
+                    else if (keywordToken.Data.Equals(Keywords.CloseQuote, StringComparison.OrdinalIgnoreCase))
+                    {
+                        sb.Append('”');
+                    }
+                    // no-open-quote/no-close-quote produce no text, but still count as a quoting depth
+                    // change per spec - depth tracking isn't implemented here (no "quotes" property
+                    // support), so they (like any other unrecognized keyword) are a no-op.
                 }
                 // counter()/counters()/string()/content() and anything else unrecognized: skip.
             }
 
-            return sb.ToString();
-        }
-
-        private static string Unescape(string s)
-        {
-            if (s.IndexOf('\\') < 0) return s;
-
-            var sb = new StringBuilder(s.Length);
-            for (var i = 0; i < s.Length; i++)
-            {
-                if (s[i] == '\\' && i + 1 < s.Length)
-                {
-                    i++;
-                    sb.Append(s[i]);
-                }
-                else
-                {
-                    sb.Append(s[i]);
-                }
-            }
             return sb.ToString();
         }
     }
