@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-        - { name: Windows x64, os: windows-2025 }
+        - { name: Windows x64, os: windows-2025-vs2026 }
         - { name: Ubuntu x64, os: ubuntu-24.04 }
         - { name: macOS arm64, os: macos-15 }
         dotnet:
@@ -33,11 +33,11 @@ jobs:
 
     steps:
     - name: Checkout HTML Renderer
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Setup .NET ${{ matrix.dotnet.version }} SDK
       id: setup-dotnet
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: ${{ matrix.dotnet.version }}
     - name: Enforce SDK Version
@@ -64,7 +64,7 @@ jobs:
       run: dotnet pack Source/HtmlRenderer.WPF/HtmlRenderer.WPF.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --no-build --verbosity normal --output ${{ env.NuGetDirectory }}
 
     - name: Upload NuGet package artifacts
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         name: "HTML Renderer (${{ matrix.platform.name }} ${{ matrix.dotnet.name }})"
         path: ${{ env.NuGetDirectory }}/*.*nupkg
