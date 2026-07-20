@@ -92,7 +92,7 @@
     <EmbeddedResource Include="PerfSamples\2.Lots blocks in inline.htm" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="10.0.1" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.10" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HtmlRenderer\HtmlRenderer.csproj" />

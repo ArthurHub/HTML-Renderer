@@ -26,6 +26,6 @@
     <Resource Include="fonts\CustomFont.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="5.0.0" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="5.1.2" />
   </ItemGroup>
 </Project>
