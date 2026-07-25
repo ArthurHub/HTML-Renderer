@@ -81,6 +81,25 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         }
 
         /// <summary>
+        /// The CSS media type this adapter renders for, used to evaluate <c>@media</c> queries -
+        /// <c>"screen"</c> for on-screen adapters (the default), <c>"print"</c> for paged output.
+        /// </summary>
+        public virtual string DefaultMediaType
+        {
+            get { return "screen"; }
+        }
+
+        /// <summary>
+        /// The colour scheme the rendering surface presents, answering the <c>prefers-color-scheme</c>
+        /// media feature. Defaults to <see cref="RColorScheme.Light"/>; an adapter that renders onto a
+        /// themed surface should report the system setting instead.
+        /// </summary>
+        public virtual RColorScheme SystemColorScheme
+        {
+            get { return RColorScheme.Light; }
+        }
+
+        /// <summary>
         /// Get the default CSS stylesheet data.
         /// </summary>
         public CssData DefaultCssData

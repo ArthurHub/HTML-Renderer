@@ -48,6 +48,12 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
             {
                 AddFontFamily(new FontFamilyAdapter(family));
             }
+
+            Microsoft.Win32.SystemEvents.UserPreferenceChanged += (sender, e) =>
+            {
+                if (e.Category == Microsoft.Win32.UserPreferenceCategory.General)
+                    _colorScheme = null;
+            };
         }
 
         /// <summary>
@@ -57,6 +63,26 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
         {
             get { return _instance; }
         }
+
+        /// <summary>
+        /// Rendering onto a Windows control, so the document should follow the user's app theme.
+        /// Cached and invalidated on a system preference change rather than read per query.
+        /// </summary>
+        public override RColorScheme SystemColorScheme
+        {
+            get
+            {
+                if (!_colorScheme.HasValue)
+                    _colorScheme = WindowsTheme.GetAppsColorScheme();
+                return _colorScheme.Value;
+            }
+        }
+
+        /// <summary>
+        /// Cached app theme; null when it needs to be re-read.
+        /// </summary>
+        private RColorScheme? _colorScheme;
+
 
         protected override RColor GetColorInt(string colorName)
         {

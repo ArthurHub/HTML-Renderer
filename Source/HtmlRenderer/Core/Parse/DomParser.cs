@@ -32,14 +32,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         #region Fields and Consts
 
         /// <summary>
-        /// The media type this engine always cascades against. Non-"all" @media rules (e.g. "@media
-        /// screen") are parsed and indexed but never actually queried/applied, matching this engine's
-        /// pre-existing behavior (there has never been a live "what device/media are we rendering for"
-        /// concept here) - not a regression introduced by this backport.
-        /// </summary>
-        private const string Media = "all";
-
-        /// <summary>
         /// Parser for CSS
         /// </summary>
         private readonly CssParser _cssParser;
@@ -74,7 +66,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 bool cssDataChanged = false;
                 CascadeParseStyles(root, htmlContainer, ref cssData, ref cssDataChanged);
 
-                CascadeApplyStyles(root, cssData);
+                // The device @media queries are evaluated against: media type and colour scheme come
+                // from the platform adapter, the viewport from the container's max size (which is the
+                // available width/height at this point; zero means "not known yet", and geometry
+                // conditions then match permissively).
+                var media = MediaQueryContext.FromAdapter(
+                    htmlContainer.Adapter, htmlContainer.MaxSize.Width, htmlContainer.MaxSize.Height);
+
+                CascadeApplyStyles(root, cssData, media);
 
                 SetTextSelectionStyle(htmlContainer, cssData);
 
@@ -150,7 +149,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// </summary>
         /// <param name="box">the box to apply the style to</param>
         /// <param name="cssData">the style data for the html</param>
-        private void CascadeApplyStyles(CssBox box, CssData cssData)
+        private void CascadeApplyStyles(CssBox box, CssData cssData, MediaQueryContext media)
         {
             // Every box's fields already start at their initial value (CssBoxProperties's private
             // field initializers, which CssDefaults.InitialValues was itself built to mirror exactly -
@@ -180,8 +179,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             // purpose is to receive the declarations from the rule whose selector synthesized them
             // (e.g. "li::before { content: ... }"), matched via CssData's PseudoElementSelector check.
             var canMatchRules = box.HtmlTag != null || box.IsPseudoElement;
-            var uaRules = canMatchRules ? cssData.GetUserAgentStyleRules(Media, box).ToList() : new List<IStyleRule>();
-            var authorRules = canMatchRules ? cssData.GetAuthorStyleRules(Media, box).ToList() : new List<IStyleRule>();
+            var uaRules = canMatchRules ? cssData.GetUserAgentStyleRules(media, box).ToList() : new List<IStyleRule>();
+            var authorRules = canMatchRules ? cssData.GetAuthorStyleRules(media, box).ToList() : new List<IStyleRule>();
 
             // Inline style is parsed up front - parsing is pure text -> rule with no cascade side
             // effects, so hoisting it here (ahead of TranslateAttributes, which still runs at its
@@ -270,7 +269,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
             foreach (var childBox in box.Boxes)
             {
-                CascadeApplyStyles(childBox, cssData);
+                CascadeApplyStyles(childBox, cssData, media);
             }
         }
 

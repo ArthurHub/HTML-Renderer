@@ -68,6 +68,22 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
         }
 
         /// <summary>
+        /// Paged output, so @media print applies and @media screen does not.
+        /// </summary>
+        public override string DefaultMediaType
+        {
+            get { return "print"; }
+        }
+
+        /// <summary>
+        /// A PDF has no system theme to follow, so prefers-color-scheme always reports light.
+        /// </summary>
+        public override RColorScheme SystemColorScheme
+        {
+            get { return RColorScheme.Light; }
+        }
+
+        /// <summary>
         /// Get the FontResolver instance for advanced font management.
         /// </summary>
         internal FontResolver FontResolver

@@ -266,34 +266,6 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// True if every level of a rule's enclosing <c>@media</c> chain matches <paramref name="media"/>
-        /// (nesting is conjunctive - all levels must match), or if the rule isn't nested in any
-        /// <c>@media</c> block at all.
-        /// </summary>
-        private static bool EnclosingMediaMatches(MediaList[] enclosingMedia, string media)
-        {
-            if (enclosingMedia == null) return true;
-
-            foreach (var mediaList in enclosingMedia)
-            {
-                var anyMatches = false;
-                foreach (var medium in mediaList)
-                {
-                    var typeMatches = medium.Type == media || medium.Type == "all";
-                    if (medium.IsInverse ? !typeMatches : typeMatches)
-                    {
-                        anyMatches = true;
-                        break;
-                    }
-                }
-
-                if (!anyMatches) return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
         /// Determines which bucket(s) a rule's selector should be indexed under, based on the simple
         /// selector that must match the box itself (for <see cref="ComplexSelector"/>, that's its
         /// rightmost/subject selector - see the reversal in <see cref="DoesSelectorMatch(ComplexSelector, CssBox)"/>).
@@ -366,7 +338,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// All style rules (any origin) matching <paramref name="box"/> under <paramref name="media"/>,
         /// ordered by specificity then document order.
         /// </summary>
-        internal IEnumerable<IStyleRule> GetStyleRules(string media, CssBox box)
+        internal IEnumerable<IStyleRule> GetStyleRules(MediaQueryContext media, CssBox box)
         {
             return GetStyleRulesByOrigin(media, box, null);
         }
@@ -374,7 +346,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// <summary>
         /// Only the user-agent (default stylesheet) rules matching <paramref name="box"/>.
         /// </summary>
-        internal IEnumerable<IStyleRule> GetUserAgentStyleRules(string media, CssBox box)
+        internal IEnumerable<IStyleRule> GetUserAgentStyleRules(MediaQueryContext media, CssBox box)
         {
             return GetStyleRulesByOrigin(media, box, true);
         }
@@ -382,12 +354,12 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// <summary>
         /// Only the author (non-default) rules matching <paramref name="box"/>.
         /// </summary>
-        internal IEnumerable<IStyleRule> GetAuthorStyleRules(string media, CssBox box)
+        internal IEnumerable<IStyleRule> GetAuthorStyleRules(MediaQueryContext media, CssBox box)
         {
             return GetStyleRulesByOrigin(media, box, false);
         }
 
-        private IEnumerable<IStyleRule> GetStyleRulesByOrigin(string media, CssBox box, bool? userAgentOnly)
+        private IEnumerable<IStyleRule> GetStyleRulesByOrigin(MediaQueryContext media, CssBox box, bool? userAgentOnly)
         {
             EnsureIndex();
 
@@ -400,7 +372,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             Action<IndexedRule> collect = indexed =>
             {
                 if (userAgentOnly.HasValue && indexed.IsUserAgent != userAgentOnly.Value) return;
-                if (!EnclosingMediaMatches(indexed.EnclosingMedia, media)) return;
+                if (!MediaQueryMatcher.Matches(indexed.EnclosingMedia, media)) return;
                 if (!DoesSelectorMatch(indexed.Rule.Selector, box)) return;
                 seen = seen ?? new HashSet<IStyleRule>();
                 if (!seen.Add(indexed.Rule)) return;

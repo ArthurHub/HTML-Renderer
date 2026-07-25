@@ -66,6 +66,7 @@
     <EmbeddedResource Include="TestSamples\20.Fonts decorations.htm" />
     <EmbeddedResource Include="TestSamples\21.Bullets.htm" />
     <EmbeddedResource Include="TestSamples\22.RTL.htm" />
+    <EmbeddedResource Include="TestSamples\23.Media queries and color scheme.htm" />
     <EmbeddedResource Include="TestSamples\30.Misc.htm" />
     <EmbeddedResource Include="TestSamples\31.ACID 1.htm" />
     <EmbeddedResource Include="TestSamples\32.Image in css content.htm" />

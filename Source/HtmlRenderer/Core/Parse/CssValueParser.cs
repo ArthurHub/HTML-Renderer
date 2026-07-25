@@ -126,9 +126,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// skipping whitespace/end-of-file tokens - the same "just enough tokenization to recognize a
         /// single top-level function call" approach used to detect calc()-family expressions.
         /// </summary>
-        internal static List<Token> GetCssTokens(string value)
+        internal static List<Token> GetCssTokens(string value, bool isInValue = false)
         {
-            var lexer = new Lexer(value);
+            var lexer = new Lexer(value) { IsInValue = isInValue };
             var tokens = new List<Token>();
             Token token;
             do
@@ -702,7 +702,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             color = _adapter.GetColor(text);
             if (color.A > 0) return true;
 
-            var resolved = GetCssTokens(text).ToResolvedColor();
+            // Value mode, so a hex colour lexes as a single colour token. Outside it, a digit-leading
+            // hex such as #0000ff splits into a "#" delimiter plus a dimension ("0000" + unit "ff"),
+            // which then fails to resolve as an operand inside color-mix().
+            var resolved = GetCssTokens(text, true).ToResolvedColor();
             if (resolved != null)
             {
                 var value = resolved.Value;
