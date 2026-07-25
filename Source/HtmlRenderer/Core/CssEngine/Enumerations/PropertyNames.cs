@@ -40,6 +40,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string BorderBottomRightRadius = "border-bottom-right-radius";
         public static readonly string BoxShadow = "box-shadow";
         public static readonly string BoxSizing = "box-sizing";
+        public static readonly string AspectRatio = "aspect-ratio";
         public static readonly string BoxDecorationBreak = "box-decoration-break";
         public static readonly string BreakAfter = "break-after";
         public static readonly string BreakBefore = "break-before";
@@ -116,6 +117,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Float = "float";
         public static readonly string FontFamily = "font-family";
         public static readonly string FontFeatureSettings = "font-feature-settings";
+        public static readonly string FontPalette = "font-palette";
         public static readonly string FontSize = "font-size";
         public static readonly string FontSizeAdjust = "font-size-adjust";
         public static readonly string FontStyle = "font-style";
@@ -124,6 +126,26 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string FontWeight = "font-weight";
         public static readonly string Font = "font";
         public static readonly string Gap = "gap";
+        public static readonly string Grid = "grid";
+        public static readonly string GridTemplate = "grid-template";
+        public static readonly string GridTemplateColumns = "grid-template-columns";
+        public static readonly string GridTemplateRows = "grid-template-rows";
+        public static readonly string GridTemplateAreas = "grid-template-areas";
+        public static readonly string GridAutoColumns = "grid-auto-columns";
+        public static readonly string GridAutoRows = "grid-auto-rows";
+        public static readonly string GridAutoFlow = "grid-auto-flow";
+        public static readonly string GridColumn = "grid-column";
+        public static readonly string GridColumnStart = "grid-column-start";
+        public static readonly string GridColumnEnd = "grid-column-end";
+        public static readonly string GridRow = "grid-row";
+        public static readonly string GridRowStart = "grid-row-start";
+        public static readonly string GridRowEnd = "grid-row-end";
+        public static readonly string GridArea = "grid-area";
+        public static readonly string JustifyItems = "justify-items";
+        public static readonly string JustifySelf = "justify-self";
+        public static readonly string PlaceItems = "place-items";
+        public static readonly string PlaceContent = "place-content";
+        public static readonly string PlaceSelf = "place-self";
         public static readonly string GlyphOrientationHorizontal = "glyph-orientation-horizontal";
         public static readonly string GlyphOrientationVertical = "glyph-orientation-vertical";
         public static readonly string Height = "height";
@@ -241,8 +263,67 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Zoom = "zoom";
         public static readonly string UnicodeRange = "unicode-range";
         public static readonly string Src = "src";
+        // @property descriptors (CSS Properties & Values API Level 1 §3)
+        public static readonly string Syntax = "syntax";
+        public static readonly string InitialValue = "initial-value";
+        public static readonly string Inherits = "inherits";
+        public static readonly string BasePalette = "base-palette";
+        public static readonly string OverrideColors = "override-colors";
         public static readonly string ObjectFit = "object-fit";
         public static readonly string ObjectPosition = "object-position";
         public static readonly string Size = "size";
+
+        // CSS Logical Properties and Values Level 1. Layout here is always LTR / horizontal-tb,
+        // so each logical property maps 1:1 to a physical one (block-start = top,
+        // block-end = bottom, inline-start = left, inline-end = right) and is registered to
+        // produce/export the existing physical longhands.
+        public static readonly string MarginBlock = "margin-block";
+        public static readonly string MarginBlockStart = "margin-block-start";
+        public static readonly string MarginBlockEnd = "margin-block-end";
+        public static readonly string MarginInline = "margin-inline";
+        public static readonly string MarginInlineStart = "margin-inline-start";
+        public static readonly string MarginInlineEnd = "margin-inline-end";
+
+        public static readonly string PaddingBlock = "padding-block";
+        public static readonly string PaddingBlockStart = "padding-block-start";
+        public static readonly string PaddingBlockEnd = "padding-block-end";
+        public static readonly string PaddingInline = "padding-inline";
+        public static readonly string PaddingInlineStart = "padding-inline-start";
+        public static readonly string PaddingInlineEnd = "padding-inline-end";
+
+        public static readonly string Inset = "inset";
+        public static readonly string InsetBlock = "inset-block";
+        public static readonly string InsetBlockStart = "inset-block-start";
+        public static readonly string InsetBlockEnd = "inset-block-end";
+        public static readonly string InsetInline = "inset-inline";
+        public static readonly string InsetInlineStart = "inset-inline-start";
+        public static readonly string InsetInlineEnd = "inset-inline-end";
+
+        public static readonly string BorderBlock = "border-block";
+        public static readonly string BorderBlockStart = "border-block-start";
+        public static readonly string BorderBlockEnd = "border-block-end";
+        public static readonly string BorderInline = "border-inline";
+        public static readonly string BorderInlineStart = "border-inline-start";
+        public static readonly string BorderInlineEnd = "border-inline-end";
+
+        public static readonly string BorderBlockWidth = "border-block-width";
+        public static readonly string BorderBlockStyle = "border-block-style";
+        public static readonly string BorderBlockColor = "border-block-color";
+        public static readonly string BorderInlineWidth = "border-inline-width";
+        public static readonly string BorderInlineStyle = "border-inline-style";
+        public static readonly string BorderInlineColor = "border-inline-color";
+
+        public static readonly string BorderBlockStartWidth = "border-block-start-width";
+        public static readonly string BorderBlockStartStyle = "border-block-start-style";
+        public static readonly string BorderBlockStartColor = "border-block-start-color";
+        public static readonly string BorderBlockEndWidth = "border-block-end-width";
+        public static readonly string BorderBlockEndStyle = "border-block-end-style";
+        public static readonly string BorderBlockEndColor = "border-block-end-color";
+        public static readonly string BorderInlineStartWidth = "border-inline-start-width";
+        public static readonly string BorderInlineStartStyle = "border-inline-start-style";
+        public static readonly string BorderInlineStartColor = "border-inline-start-color";
+        public static readonly string BorderInlineEndWidth = "border-inline-end-width";
+        public static readonly string BorderInlineEndStyle = "border-inline-end-style";
+        public static readonly string BorderInlineEndColor = "border-inline-end-color";
     }
 }

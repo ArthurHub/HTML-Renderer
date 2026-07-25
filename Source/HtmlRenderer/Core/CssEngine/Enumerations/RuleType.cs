@@ -19,6 +19,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         FontFeatureValues,
         Viewport,
         RegionStyle,
-        Container
+        Container,
+        Property,
+        Layer,
+        LayerStatement,
+        FontPaletteValues
     }
 }

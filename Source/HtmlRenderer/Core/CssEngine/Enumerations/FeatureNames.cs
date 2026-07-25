@@ -44,5 +44,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Hover = "hover";
         public static readonly string BlockSize = "block-size";
         public static readonly string InlineSize = "inline-size";
+        public static readonly string PrefersColorScheme = "prefers-color-scheme";
+        public static readonly string PrefersReducedMotion = "prefers-reduced-motion";
+        public static readonly string PrefersContrast = "prefers-contrast";
+        public static readonly string PrefersReducedTransparency = "prefers-reduced-transparency";
+        public static readonly string Update = "update";
+        public static readonly string AnyHover = "any-hover";
+        public static readonly string AnyPointer = "any-pointer";
     }
 }

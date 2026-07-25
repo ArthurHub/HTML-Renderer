@@ -11,6 +11,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Hsl = "hsl";
         public static readonly string Hsla = "hsla";
         public static readonly string Rect = "rect";
+        public static readonly string Polygon = "polygon";
+        public static readonly string Circle = "circle";
+        public static readonly string Ellipse = "ellipse";
+        public static readonly string Inset = "inset";
+        public static readonly string Repeat = "repeat";
+        public static readonly string Minmax = "minmax";
+        public static readonly string FitContent = "fit-content";
         public static readonly string Attr = "attr";
         public static readonly string LinearGradient = "linear-gradient";
         public static readonly string RadialGradient = "radial-gradient";
@@ -50,8 +57,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Perspective = "perspective";
         public static readonly string Gray = "gray";
         public static readonly string Hwb = "hwb";
+        public static readonly string Lab = "lab";
+        public static readonly string Oklab = "oklab";
+        public static readonly string Lch = "lch";
+        public static readonly string Oklch = "oklch";
+        public static readonly string ColorMix = "color-mix";
         public static readonly string ConicGradient = "conic-gradient";
         public static readonly string RepeatingConicGradient = "repeating-conic-gradient";
         public static readonly string Var = "var";
+        public static readonly string ImageSet = "image-set";
+        public static readonly string CrossFade = "cross-fade";
+        public static readonly string Element = "element";
     }
 }

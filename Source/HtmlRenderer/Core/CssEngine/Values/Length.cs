@@ -176,7 +176,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 return true;
             }
 
-            if (value == 0f)
+            // Only a genuinely parsed bare "0" may omit its unit (CSS Values & Units §5.1) -
+            // StylesheetUnit returns an empty unit string for a plain number but null when it
+            // couldn't tokenize a number at all, and both leave value at 0, so the unit string
+            // must be checked to avoid accepting arbitrary non-length input as zero.
+            if (unitString != null && unitString.Length == 0 && value == 0f)
             {
                 result = Zero;
                 return true;
@@ -229,27 +233,26 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         /// <param name="fontAdjust">If the length is in pixels and font related, apply the 72/96 factor.</param>
         internal double ToPixels(double emFactor, double remFactor, double hundredPercent, bool fontAdjust = false)
         {
-            // Physical units (in/cm/mm/pc/pt) resolve directly against points, not the browser's
-            // 96dpi CSS-px convention: this engine's native "pixel" unit already equals 1 point at
-            // the default PixelsPerInch=72 (matching @page's own mm->pt conversion in DomParser and
-            // font-size resolution in FontSizeResolver), so no 96dpi scaling belongs here - applying
-            // one inflated every pt/in/cm/mm length by 96/72 relative to the rest of the engine.
+            // The layout unit here is the CSS pixel, so absolute units resolve against 96dpi
+            // (CSS Values & Units §5.2: 1in = 96px, 1pt = 1/72in, 1pc = 12pt). These factors must
+            // stay identical to the ones CssValueParser.ParseLength applies to non-calc() lengths,
+            // otherwise `calc(1in)` and `width: 1in` would disagree.
             switch (Type)
             {
                 case Unit.Em: return emFactor * Value;
                 case Unit.Rem: return remFactor * Value;
                 case Unit.Ex: return emFactor / 2 * Value;
                 case Unit.Px: return (fontAdjust ? 72d / 96d : 1d) * Value; //TODO: a check support for hi dpi
-                case Unit.In: // 1 in = 72 pt
-                    return 72d * Value;
-                case Unit.Mm: // 1 mm = 72/25.4 pt
-                    return (72d / 25.4d) * Value;
-                case Unit.Pc: // 1 pc = 12 pt
-                    return 12d * Value;
-                case Unit.Pt: // 1 pt = 1 pt
-                    return Value;
-                case Unit.Cm: // 1 cm = 72/2.54 pt
-                    return (72d / 2.54d) * Value;
+                case Unit.In: // 1 in = 96 px
+                    return 96d * Value;
+                case Unit.Mm: // 1 mm = 96/25.4 px
+                    return (96d / 25.4d) * Value;
+                case Unit.Pc: // 1 pc = 12 pt = 16 px
+                    return 16d * Value;
+                case Unit.Pt: // 1 pt = 1/72 in = 96/72 px
+                    return (96d / 72d) * Value;
+                case Unit.Cm: // 1 cm = 96/2.54 px
+                    return (96d / 2.54d) * Value;
                 case Unit.Percent: return hundredPercent / 100d * Value;
                 default: return 0d;
             }
@@ -259,19 +262,20 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var value = ToPixel();
 
+            // Inverse of ToPixels' absolute-unit factors: `value` is in CSS pixels.
             switch (unit)
             {
-                case Unit.In: // 1 in = 72 pt
-                    return value / 72f;
-                case Unit.Mm: // 1 mm = 72/25.4 pt
-                    return value * 25.4f / 72f;
-                case Unit.Pc: // 1 pc = 12 pt
-                    return value / 12f;
-                case Unit.Pt: // 1 pt = 1 pt
-                    return value;
-                case Unit.Cm: // 1 cm = 72/2.54 pt
-                    return value * 2.54f / 72f;
-                case Unit.Px: // 1 px = 1 pt
+                case Unit.In: // 1 in = 96 px
+                    return value / 96f;
+                case Unit.Mm: // 1 mm = 96/25.4 px
+                    return value * 25.4f / 96f;
+                case Unit.Pc: // 1 pc = 16 px
+                    return value / 16f;
+                case Unit.Pt: // 1 pt = 96/72 px
+                    return value * 72f / 96f;
+                case Unit.Cm: // 1 cm = 96/2.54 px
+                    return value * 2.54f / 96f;
+                case Unit.Px: // px is the layout unit
                     return value;
                 default:
                     throw new InvalidOperationException("An absolute unit cannot be converted to a relative one.");

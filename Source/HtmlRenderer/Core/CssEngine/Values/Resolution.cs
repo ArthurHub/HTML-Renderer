@@ -55,6 +55,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     return Unit.Dpi;
                 case "dppx":
                     return Unit.Dppx;
+                case "x": // `x` is the canonical alias for `dppx` (CSS Values 4 §7.4)
+                    return Unit.Dppx;
                 default:
                     return Unit.None;
             }
