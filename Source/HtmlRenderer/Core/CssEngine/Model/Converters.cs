@@ -264,7 +264,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static readonly IValueConverter DefaultFontFamiliesConverter = Map.DefaultFontFamilies.ToConverter();
         public static readonly IValueConverter LineStyleConverter = Map.LineStyles.ToConverter();
-        public static readonly IValueConverter PdfTagTypeConverter = Map.PdfTagTypes.ToConverter();
         public static readonly IValueConverter BackgroundAttachmentConverter = Map.BackgroundAttachments.ToConverter();
         public static readonly IValueConverter BackgroundRepeatConverter = Map.BackgroundRepeats.ToConverter();
         public static readonly IValueConverter BoxModelConverter = Map.BoxModels.ToConverter();

@@ -104,53 +104,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Groove, LineStyle.Groove},
                 {Keywords.Hidden, LineStyle.Hidden}
             };
-        public static readonly Dictionary<string, PdfTagType> PdfTagTypes =
-            new Dictionary<string, PdfTagType>(StringComparer.OrdinalIgnoreCase)
-            {
-                {Keywords.Auto, PdfTagType.Auto},
-                {Keywords.None, PdfTagType.None},
-                {Keywords.Part, PdfTagType.Part},
-                {Keywords.Art, PdfTagType.Art},
-                {Keywords.Sect, PdfTagType.Sect},
-                {Keywords.Div, PdfTagType.Div},
-                {Keywords.Index, PdfTagType.Index},
-                {Keywords.BlockQuote, PdfTagType.BlockQuote},
-                {Keywords.Caption, PdfTagType.Caption},
-                {Keywords.Toc, PdfTagType.Toc},
-                {Keywords.Toci, PdfTagType.Toci},
-                {Keywords.P, PdfTagType.P},
-                {Keywords.H1, PdfTagType.H1},
-                {Keywords.H2, PdfTagType.H2},
-                {Keywords.H3, PdfTagType.H3},
-                {Keywords.H4, PdfTagType.H4},
-                {Keywords.H5, PdfTagType.H5},
-                {Keywords.H6, PdfTagType.H6},
-                {Keywords.L, PdfTagType.L},
-                {Keywords.Li, PdfTagType.Li},
-                {Keywords.Lbl, PdfTagType.Lbl},
-                {Keywords.LBody, PdfTagType.LBody},
-                {Keywords.Dl, PdfTagType.Dl},
-                {Keywords.DlDiv, PdfTagType.DlDiv},
-                {Keywords.Dt, PdfTagType.Dt},
-                {Keywords.Dd, PdfTagType.Dd},
-                {Keywords.Span, PdfTagType.Span},
-                {Keywords.Quote, PdfTagType.Quote},
-                {Keywords.Table, PdfTagType.Table},
-                {Keywords.Tr, PdfTagType.Tr},
-                {Keywords.Th, PdfTagType.Th},
-                {Keywords.Td, PdfTagType.Td},
-                {Keywords.THead, PdfTagType.THead},
-                {Keywords.TBody, PdfTagType.TBody},
-                {Keywords.TFoot, PdfTagType.TFoot},
-                {Keywords.BibEntry, PdfTagType.BibEntry},
-                {Keywords.Code, PdfTagType.Code},
-                {Keywords.Figure, PdfTagType.Figure},
-                {Keywords.Formula, PdfTagType.Formula},
-                {Keywords.Artifact, PdfTagType.Artifact},
-                {Keywords.Note, PdfTagType.Note},
-                {Keywords.Reference, PdfTagType.Reference},
-                {Keywords.Link, PdfTagType.Link}
-            };
         public static readonly Dictionary<string, BoxModel> BoxModels =
             new Dictionary<string, BoxModel>(StringComparer.OrdinalIgnoreCase)
             {

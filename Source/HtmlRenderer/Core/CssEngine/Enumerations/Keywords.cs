@@ -319,45 +319,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Size = "size";
         public static readonly string InlineSize = "inline-size";
 
-        // -peachpdf-pdf-tag-type keyword values (PDF standard structure type names).
-        public static readonly string Part = "Part";
-        public static readonly string Art = "Art";
-        public static readonly string Sect = "Sect";
-        public static readonly string Div = "Div";
-        public static readonly string Index = "Index";
-        public static readonly string BlockQuote = "BlockQuote";
-        public static readonly string Toc = "TOC";
-        public static readonly string Toci = "TOCI";
-        public static readonly string P = "P";
-        public static readonly string H1 = "H1";
-        public static readonly string H2 = "H2";
-        public static readonly string H3 = "H3";
-        public static readonly string H4 = "H4";
-        public static readonly string H5 = "H5";
-        public static readonly string H6 = "H6";
-        public static readonly string L = "L";
-        public static readonly string Li = "LI";
-        public static readonly string Lbl = "Lbl";
-        public static readonly string LBody = "LBody";
-        public static readonly string Dl = "DL";
-        public static readonly string DlDiv = "DL-Div";
-        public static readonly string Dt = "DT";
-        public static readonly string Dd = "DD";
-        public static readonly string Span = "Span";
-        public static readonly string Quote = "Quote";
-        public static readonly string Tr = "TR";
-        public static readonly string Th = "TH";
-        public static readonly string Td = "TD";
-        public static readonly string THead = "THead";
-        public static readonly string TBody = "TBody";
-        public static readonly string TFoot = "TFoot";
-        public static readonly string BibEntry = "BibEntry";
-        public static readonly string Code = "Code";
-        public static readonly string Figure = "Figure";
-        public static readonly string Formula = "Formula";
-        public static readonly string Artifact = "Artifact";
-        public static readonly string Note = "Note";
-        public static readonly string Reference = "Reference";
-        public static readonly string Link = "Link";
+        // The `span` keyword of a grid-placement value (CSS Grid 1 §8.3).
+        public static readonly string Span = "span";
     }
 }
