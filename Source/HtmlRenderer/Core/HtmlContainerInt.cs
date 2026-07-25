@@ -127,6 +127,19 @@ namespace TheArtOfDev.HtmlRenderer.Core
         private CssData _cssData;
 
         /// <summary>
+        /// The html and base stylesheet last given to <see cref="SetHtml"/>, kept so the cascade can be
+        /// re-run when a viewport change alters which <c>@media</c> rules apply.
+        /// </summary>
+        private string _htmlSource;
+
+        private CssData _baseCssData;
+
+        /// <summary>
+        /// The device the current cascade was computed against.
+        /// </summary>
+        private MediaQueryContext _cascadeMedia;
+
+        /// <summary>
         /// Is content selection is enabled for the rendered html (default - true).<br/>
         /// If set to 'false' the rendered html will be static only with ability to click on links.
         /// </summary>
@@ -507,6 +520,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         public void SetHtml(string htmlSource, CssData baseCssData = null)
         {
             Clear();
+            _htmlSource = htmlSource;
+            _baseCssData = baseCssData;
+
             if (!string.IsNullOrEmpty(htmlSource))
             {
                 _loadComplete = false;
@@ -514,12 +530,30 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
                 DomParser parser = new DomParser(_cssParser);
                 _root = parser.GenerateCssTree(htmlSource, this, ref _cssData);
+                _cascadeMedia = MediaQueryContext.FromAdapter(_adapter, _maxSize.Width, _maxSize.Height);
                 if (_root != null)
                 {
                     _selectionHandler = new SelectionHandler(_root);
                     _imageDownloader = new ImageDownloader();
                 }
             }
+        }
+
+        /// <summary>
+        /// Re-runs the cascade if the viewport has changed in a way that changes which <c>@media</c>
+        /// rules apply - a resize crossing a <c>min-width</c> breakpoint, say. Nothing happens for a
+        /// document whose stylesheets have no viewport-dependent <c>@media</c> (the common case), or for
+        /// a resize that stays within the same breakpoint, so this costs one cheap condition test per
+        /// layout rather than a re-parse.
+        /// </summary>
+        private void RefreshMediaDependentCascade()
+        {
+            if (_root == null || string.IsNullOrEmpty(_htmlSource) || _cssData == null) return;
+
+            var media = MediaQueryContext.FromAdapter(_adapter, _maxSize.Width, _maxSize.Height);
+            if (!_cssData.MediaOutcomeChanged(_cascadeMedia, media)) return;
+
+            SetHtml(_htmlSource, _baseCssData);
         }
 
         /// <summary>
@@ -631,6 +665,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
         public void PerformLayout(RGraphics g)
         {
             ArgChecker.AssertArgNotNull(g, "g");
+
+            RefreshMediaDependentCascade();
 
             _actualSize = RSize.Empty;
             if (_root != null)

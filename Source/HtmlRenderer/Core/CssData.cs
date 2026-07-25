@@ -124,10 +124,61 @@ namespace TheArtOfDev.HtmlRenderer.Core
             public MediaList[] EnclosingMedia { get; }
         }
 
+        private List<MediaList[]> _mediaConditions;
         private Dictionary<string, List<IndexedRule>> _tagIndex;
         private Dictionary<string, List<IndexedRule>> _classIndex;
         private Dictionary<string, List<IndexedRule>> _idIndex;
         private List<IndexedRule> _universalRules;
+
+        /// <summary>
+        /// The distinct <c>@media</c> chains any indexed rule is nested under. Small (one entry per
+        /// distinct <c>@media</c> block), and only used to test whether a change of device would change
+        /// which rules apply - see <see cref="MediaOutcomeChanged"/>.
+        /// </summary>
+        private static List<MediaList[]> CollectMediaConditions(
+            Dictionary<string, List<IndexedRule>> tagIndex,
+            Dictionary<string, List<IndexedRule>> classIndex,
+            Dictionary<string, List<IndexedRule>> idIndex,
+            List<IndexedRule> universal)
+        {
+            var conditions = new List<MediaList[]>();
+
+            Action<IEnumerable<IndexedRule>> collect = rules =>
+            {
+                foreach (var indexed in rules)
+                {
+                    if (indexed.EnclosingMedia == null) continue;
+                    if (conditions.Contains(indexed.EnclosingMedia)) continue;   // reference compare: one array per block
+                    conditions.Add(indexed.EnclosingMedia);
+                }
+            };
+
+            foreach (var bucket in tagIndex.Values) collect(bucket);
+            foreach (var bucket in classIndex.Values) collect(bucket);
+            foreach (var bucket in idIndex.Values) collect(bucket);
+            collect(universal);
+
+            return conditions;
+        }
+
+        /// <summary>
+        /// Whether moving from <paramref name="before"/> to <paramref name="after"/> changes the outcome
+        /// of any <c>@media</c> condition in these stylesheets - i.e. whether the cascade needs to be
+        /// re-run. False for a resize that doesn't cross any breakpoint, and for documents with no
+        /// viewport-dependent <c>@media</c> at all (the common case), so the caller can skip the work.
+        /// </summary>
+        internal bool MediaOutcomeChanged(MediaQueryContext before, MediaQueryContext after)
+        {
+            EnsureIndex();
+
+            foreach (var condition in _mediaConditions)
+            {
+                if (MediaQueryMatcher.Matches(condition, before) != MediaQueryMatcher.Matches(condition, after))
+                    return true;
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// Every style rule in a rule list, in document order, descending into <c>@media</c> and
@@ -180,6 +231,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             _tagIndex = tagIndex;
             _classIndex = classIndex;
             _idIndex = idIndex;
+            _mediaConditions = CollectMediaConditions(tagIndex, classIndex, idIndex, universal);
             _universalRules = universal;
         }
 
