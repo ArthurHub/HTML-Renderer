@@ -366,6 +366,47 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             _fontsBuilder.Add(PropertyNames.Src, () => new SrcProperty());
             _fontsBuilder.Add(PropertyNames.UnicodeRange, () => new UnicodeRangeProperty());
 
+            // CSS Grid Layout Level 1/2. The engine parses and validates the full grid property set;
+            // the renderer has no grid layout engine yet, so these cascade and are then ignored at the
+            // box boundary.
+            AddLonghand(PropertyNames.GridTemplateColumns, () => new GridTemplateColumnsProperty());
+            AddLonghand(PropertyNames.GridTemplateRows, () => new GridTemplateRowsProperty());
+            AddLonghand(PropertyNames.GridTemplateAreas, () => new GridTemplateAreasProperty());
+            AddLonghand(PropertyNames.GridColumnStart, () => new GridColumnStartProperty());
+            AddLonghand(PropertyNames.GridColumnEnd, () => new GridColumnEndProperty());
+            AddLonghand(PropertyNames.GridRowStart, () => new GridRowStartProperty());
+            AddLonghand(PropertyNames.GridRowEnd, () => new GridRowEndProperty());
+
+            AddShorthand(PropertyNames.GridColumn, () => new GridColumnProperty(),
+                PropertyNames.GridColumnStart, PropertyNames.GridColumnEnd);
+            AddShorthand(PropertyNames.GridRow, () => new GridRowProperty(),
+                PropertyNames.GridRowStart, PropertyNames.GridRowEnd);
+            AddShorthand(PropertyNames.GridArea, () => new GridAreaProperty(),
+                PropertyNames.GridRowStart, PropertyNames.GridColumnStart,
+                PropertyNames.GridRowEnd, PropertyNames.GridColumnEnd);
+
+            AddLonghand(PropertyNames.GridAutoFlow, () => new GridAutoFlowProperty());
+            AddLonghand(PropertyNames.GridAutoColumns, () => new GridAutoColumnsProperty());
+            AddLonghand(PropertyNames.GridAutoRows, () => new GridAutoRowsProperty());
+
+            // The grid mega-shorthands parse/expand like any other, but are excluded from serialization
+            // reconstruction (via _logicalShorthands) - reconstructing a `grid`/`grid-template` from its
+            // longhands is not worth the complexity and could change existing output.
+            AddLogicalShorthand(PropertyNames.GridTemplate, () => new GridTemplateProperty(),
+                PropertyNames.GridTemplateRows, PropertyNames.GridTemplateColumns, PropertyNames.GridTemplateAreas);
+            AddLogicalShorthand(PropertyNames.Grid, () => new GridProperty(),
+                PropertyNames.GridTemplateRows, PropertyNames.GridTemplateColumns, PropertyNames.GridTemplateAreas,
+                PropertyNames.GridAutoFlow, PropertyNames.GridAutoRows, PropertyNames.GridAutoColumns);
+
+            AddLonghand(PropertyNames.JustifyItems, () => new JustifyItemsProperty());
+            AddLonghand(PropertyNames.JustifySelf, () => new JustifySelfProperty());
+            AddShorthand(PropertyNames.PlaceItems, () => new PlaceItemsProperty(),
+                PropertyNames.AlignItems, PropertyNames.JustifyItems);
+            AddShorthand(PropertyNames.PlaceContent, () => new PlaceContentProperty(),
+                PropertyNames.AlignContent, PropertyNames.JustifyContent);
+            AddShorthand(PropertyNames.PlaceSelf, () => new PlaceSelfProperty(),
+                PropertyNames.AlignSelf, PropertyNames.JustifySelf);
+
             // CSS Logical Properties and Values Level 1. Layout here is always LTR / horizontal-tb,
             // so each logical property is registered to produce/export the existing physical
             // longhands (block-start = top, block-end = bottom, inline-start = left,
