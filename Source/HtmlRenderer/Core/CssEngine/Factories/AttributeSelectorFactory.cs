@@ -1,22 +1,10 @@
 using System;
-using System.Collections.Generic;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal sealed class AttributeSelectorFactory
     {
         private static readonly Lazy<AttributeSelectorFactory> Lazy = new Lazy<AttributeSelectorFactory>(() => new AttributeSelectorFactory());
-
-        private readonly Dictionary<string, Type> _types = new Dictionary<string, Type>()
-        {
-            { Combinators.Exactly, typeof(AttrMatchSelector) },
-            { Combinators.InList, typeof(AttrListSelector) },
-            { Combinators.InToken, typeof(AttrHyphenSelector) },
-            { Combinators.Begins, typeof(AttrBeginsSelector) },
-            { Combinators.Ends, typeof(AttrEndsSelector) },
-            { Combinators.InText, typeof(AttrContainsSelector) },
-            { Combinators.Unlike, typeof(AttrNotMatchSelector) },
-        };
 
         private AttributeSelectorFactory()
         {
@@ -34,9 +22,20 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 _ = AttributeSelectorFactory.FormMatch(prefix, match);
             }
 
-            return _types.TryGetValue(combinator, out var type)
-                ? (IAttrSelector)Activator.CreateInstance(type, name, value)
-                : new AttrAvailableSelector(name, value);
+            // A reflection-free dispatch (no Activator.CreateInstance) so the two-arg Attr*Selector
+            // constructors are statically reachable and survive trimming/AOT (IsTrimmable=true) - see
+            // upstream ExCSS commit c497ca7. Unknown combinators fall back to a presence selector.
+            switch (combinator)
+            {
+                case Combinators.Exactly: return new AttrMatchSelector(name, value);
+                case Combinators.InList: return new AttrListSelector(name, value);
+                case Combinators.InToken: return new AttrHyphenSelector(name, value);
+                case Combinators.Begins: return new AttrBeginsSelector(name, value);
+                case Combinators.Ends: return new AttrEndsSelector(name, value);
+                case Combinators.InText: return new AttrContainsSelector(name, value);
+                case Combinators.Unlike: return new AttrNotMatchSelector(name, value);
+                default: return new AttrAvailableSelector(name, value);
+            }
         }
 
         private static string FormFront(string prefix, string match)

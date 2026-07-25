@@ -245,8 +245,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Large, FontSize.Large},
                 {Keywords.XLarge, FontSize.Big},
                 {Keywords.XxLarge, FontSize.Huge},
-                {Keywords.Larger, FontSize.Smaller},
-                {Keywords.Smaller, FontSize.Larger}
+                {Keywords.Larger, FontSize.Larger},
+                {Keywords.Smaller, FontSize.Smaller}
             };
         public static readonly Dictionary<string, TextDecorationStyle> TextDecorationStyles =
             new Dictionary<string, TextDecorationStyle>(StringComparer.OrdinalIgnoreCase)

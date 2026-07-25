@@ -50,6 +50,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 case TokenType.Dimension:
                 case TokenType.Percentage:
                 case TokenType.Color:
+                case TokenType.Hash:
                 case TokenType.Delim:
                 case TokenType.String:
                 case TokenType.Url:
@@ -59,6 +60,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 case TokenType.GreaterThanOrEqual:
                 case TokenType.LessThan:
                 case TokenType.LessThanOrEqual:
+                case TokenType.Range:
+                    // A U+... unicode-range value (an @font-face descriptor) is a sequence of Range tokens;
+                    // without this they'd hit the default arm and mark the whole value invalid, so the
+                    // descriptor would be dropped under strict (non-tolerant) parsing - the pipeline default.
+                    Add(token);
+                    break;
+                case TokenType.SquareBracketOpen:
+                case TokenType.SquareBracketClose:
+                    // Square brackets are valid in a value: grid line names, e.g.
+                    // `grid-template-columns: [sidebar-start] 200px [sidebar-end]`. Without this they'd hit
+                    // the default arm and the whole declaration would be dropped under strict parsing.
                     Add(token);
                     break;
                 case TokenType.Comment:

@@ -2,7 +2,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal sealed class FillProperty : Property
     {
-        private static readonly IValueConverter StyleConverter = Converters.PaintConverter;
+        private static readonly IValueConverter StyleConverter = Converters.PaintConverter.OrGlobalValue();
 
         internal FillProperty()
             : base(PropertyNames.Fill, PropertyFlags.Animatable)
