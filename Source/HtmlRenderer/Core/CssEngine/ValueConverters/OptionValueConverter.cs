@@ -19,7 +19,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public IPropertyValue Construct(Property[] properties)
         {
-            return _converter.Construct(properties) ?? new OptionValue(Enumerable.Empty<Token>());
+            var value = _converter.Construct(properties);
+            // A longhand this optional shorthand slot maps to may carry the literal "initial"
+            // sentinel (see ShorthandProperty.Export) when the original shorthand text omitted it -
+            // that's correct for cascade purposes, but re-serializing the shorthand must omit it
+            // entirely (matching real browser serialization of e.g. "border: 1px outset" - the never-
+            // specified color must not round-trip as "1px outset initial"), the same as if this slot
+            // had never been set at all.
+            return value is null || value.CssText == Keywords.Initial ? new OptionValue(Enumerable.Empty<Token>()) : value;
         }
 
         private sealed class OptionValue : IPropertyValue
@@ -56,7 +63,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public IPropertyValue Construct(Property[] properties)
         {
-            return _converter.Construct(properties) ?? new OptionValue(Enumerable.Empty<Token>());
+            var value = _converter.Construct(properties);
+            // See OptionValueConverter.Construct above for why the "initial" sentinel must be
+            // suppressed here rather than serialized literally.
+            return value is null || value.CssText == Keywords.Initial ? new OptionValue(Enumerable.Empty<Token>()) : value;
         }
 
         private sealed class OptionValue : IPropertyValue

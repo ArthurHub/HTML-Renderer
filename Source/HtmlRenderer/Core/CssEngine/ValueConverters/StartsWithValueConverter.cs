@@ -37,10 +37,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             using (var enumerator = values.GetEnumerator())
             {
-                while (enumerator.MoveNext() && enumerator.Current.Type == TokenType.Whitespace)
+                bool hasCurrent;
+                while ((hasCurrent = enumerator.MoveNext()) && enumerator.Current.Type == TokenType.Whitespace)
                 {
                     //Empty on purpose.
                 }
+
+                // An empty (or whitespace-only) input - e.g. ConvertDefault()'s Enumerable.Empty<Token>() -
+                // must resolve to "no match", not throw, exactly like every other converter's empty-input
+                // behavior (e.g. DictionaryValueConverter's ToIdentifier() returning null).
+                if (!hasCurrent) return null;
 
                 if (enumerator.Current.Type != _type || !enumerator.Current.Data.Isi(_data)) return null;
                 var list = new List<Token>();

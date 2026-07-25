@@ -68,6 +68,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly IValueConverter PureColorConverter =
             new StructValueConverter<Color>(ValueExtensions.ToColor);
 
+        public static IValueConverter Any = new AnyValueConverter();
+
         public static readonly IValueConverter LengthOrPercentConverter =
             new StructValueConverter<Length>(ValueExtensions.ToDistance)
                 .Or(new CalcValueConverter(CalcCategory.LengthPercentage));
@@ -179,6 +181,39 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return new FunctionValueConverter(FunctionNames.Hwb, WithArgs(hue, percent, percent, alpha));
         });
 
+        // CSS Color 4/5 function forms. These validate the function name and accept its argument list
+        // leniently (preserving the specified text for serialization and shorthand expansion); the
+        // exact grammar check and the sRGB resolution happen in the render layer
+        // (ColorFunctionExtensions), so a `background: oklch(...)` shorthand still carries its color
+        // through to the background-color longhand. Construct(...) defers the `Any` reference until
+        // first use, avoiding a static-init ordering dependency.
+        public static readonly IValueConverter LabColorConverter =
+            Construct(() => new FunctionValueConverter(FunctionNames.Lab, Any));
+        public static readonly IValueConverter OklabColorConverter =
+            Construct(() => new FunctionValueConverter(FunctionNames.Oklab, Any));
+        public static readonly IValueConverter LchColorConverter =
+            Construct(() => new FunctionValueConverter(FunctionNames.Lch, Any));
+        public static readonly IValueConverter OklchColorConverter =
+            Construct(() => new FunctionValueConverter(FunctionNames.Oklch, Any));
+        public static readonly IValueConverter ColorMixConverter =
+            Construct(() => new FunctionValueConverter(FunctionNames.ColorMix, Any));
+
+        // Lenient fallbacks for the CSS Color 4 space/slash syntax of the legacy functions. The strict
+        // comma-form converters above run first (so their canonical serialization is preserved); these
+        // catch the space-separated / slash-alpha forms the strict grammars reject, so e.g.
+        // `background: hsl(280 70% 55%)` or `rgb(1 2 3 / .5)` still populate the color longhand and get
+        // resolved in the render layer.
+        public static readonly IValueConverter RgbLenientConverter =
+            Construct(() => new FunctionValueConverter(FunctionNames.Rgb, Any));
+        public static readonly IValueConverter RgbaLenientConverter =
+            Construct(() => new FunctionValueConverter(FunctionNames.Rgba, Any));
+        public static readonly IValueConverter HslLenientConverter =
+            Construct(() => new FunctionValueConverter(FunctionNames.Hsl, Any));
+        public static readonly IValueConverter HslaLenientConverter =
+            Construct(() => new FunctionValueConverter(FunctionNames.Hsla, Any));
+        public static readonly IValueConverter HwbLenientConverter =
+            Construct(() => new FunctionValueConverter(FunctionNames.Hwb, Any));
+
         public static readonly IValueConverter PerspectiveConverter =
             Construct(() => new FunctionValueConverter(FunctionNames.Perspective, WithArgs(LengthConverter)));
 
@@ -265,7 +300,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly IValueConverter ContainerTypeConverter = Map.ContainerTypes.ToConverter();
         public static readonly IValueConverter ClearModeConverter = Map.ClearModes.ToConverter();
         public static readonly IValueConverter FontStretchConverter = Map.FontStretches.ToConverter();
-        public static readonly IValueConverter FontStyleConverter = Map.FontStyles.ToConverter();
+        // "oblique" alone matches via the plain keyword map (tried first); "oblique <angle>" (CSS Fonts
+        // Level 4 - e.g. "oblique 10deg") only reaches the StartsWithValueConverter branch once the
+        // plain single-identifier match has already failed, i.e. there are more tokens to account for.
+        // AngleConverter is intentionally NOT Option()-wrapped here (unlike e.g. LineHeightConverter's
+        // own StartsWithDelimiter().Option() composition elsewhere) - StartsWithValueConverter.Construct
+        // trusts "the wrapped converter returned non-null" as its own "matched" signal, and an Option()
+        // converter's Construct never returns null, which would make every OTHER possible font-style
+        // value (plain keywords, initial, absent) falsely reconstruct as "oblique" whenever the "font"
+        // shorthand needs to be re-serialized from its decomposed longhand properties.
+        public static readonly IValueConverter FontStyleConverter = Map.FontStyles.ToConverter()
+            .Or(new StartsWithValueConverter(TokenType.Ident, Keywords.Oblique, AngleConverter));
         public static readonly IValueConverter FontWeightConverter = Map.FontWeights.ToConverter();
         public static readonly IValueConverter SystemFontConverter = Map.SystemFonts.ToConverter();
         public static readonly IValueConverter StrokeLinecapConverter = Map.StrokeLinecaps.ToConverter();
@@ -304,6 +349,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         });
 
         public static readonly IValueConverter AlignSelfConverter = AlignItemsConverter.OrAuto();
+
+        // justify-items / justify-self share align-items/align-self's value grammar for the keywords the
+        // grid engine honors (start/end/center/stretch/normal; baseline falls back to start at layout).
+        public static readonly IValueConverter JustifyItemsConverter = AlignItemsConverter;
+        public static readonly IValueConverter JustifySelfConverter = AlignSelfConverter;
+
+        // place-items / place-content / place-self: <align> <justify>? — one value applies to both axes.
+        public static readonly IValueConverter PlaceItemsConverter =
+            AlignItemsConverter.Periodic(PropertyNames.AlignItems, PropertyNames.JustifyItems);
+        public static readonly IValueConverter PlaceContentConverter =
+            JustifyContentConverter.Periodic(PropertyNames.AlignContent, PropertyNames.JustifyContent);
+        public static readonly IValueConverter PlaceSelfConverter =
+            AlignSelfConverter.Periodic(PropertyNames.AlignSelf, PropertyNames.JustifySelf);
 
         #region Specific
 
@@ -349,9 +407,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             var directionConverter = FlexDirectionConverter.For(PropertyNames.FlexDirection);
             var wrapConverter = FlexWrapConverter.For(PropertyNames.FlexWrap);
 
+            // flex-flow is "<'flex-direction'> || <'flex-wrap'>" (CSS Flexbox 1 §5.1): the double bar means
+            // the two values may appear in either order, so the pair has to be WithAny, not WithOrder.
             return directionConverter
                   .Or(wrapConverter)
-                  .Or(WithOrder(directionConverter, wrapConverter));
+                  .Or(WithAny(directionConverter, wrapConverter));
 
         });
 
@@ -393,7 +453,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly IValueConverter ColorConverter = PureColorConverter
             .Or(RgbColorConverter.Or(RgbaColorConverter))
             .Or(HslColorConverter.Or(HslaColorConverter))
-            .Or(GrayColorConverter.Or(HwbColorConverter));
+            .Or(GrayColorConverter.Or(HwbColorConverter))
+            .Or(LabColorConverter.Or(OklabColorConverter))
+            .Or(LchColorConverter.Or(OklchColorConverter))
+            .Or(ColorMixConverter)
+            .Or(RgbLenientConverter.Or(RgbaLenientConverter))
+            .Or(HslLenientConverter.Or(HslaLenientConverter))
+            .Or(HwbLenientConverter);
 
         public static readonly IValueConverter CurrentColorConverter = ColorConverter.WithCurrentColor();
         public static readonly IValueConverter InvertedColorConverter = CurrentColorConverter.Or(Keywords.Invert);
@@ -409,13 +475,45 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             IntegerConverter.Required(),
             IntegerConverter.StartsWithDelimiter().Required());
 
+        // A single grid <grid-line> (auto | <integer> | span <integer>), validated by GridLineGrammar.
+        public static readonly IValueConverter GridLineConverter = new GridLineValueConverter();
+
+        // grid-column / grid-row / grid-area: slash-separated <grid-line> components with the CSS Grid
+        // §8.3.1 omitted-value copy rule (a bare <custom-ident> propagates to the paired/all edges) — the
+        // generic WithOrder(...).Option() DSL resets omitted slots to auto, which is wrong for named areas.
+        public static readonly IValueConverter GridColumnConverter =
+            new GridColumnRowShorthandValueConverter(PropertyNames.GridColumnStart, PropertyNames.GridColumnEnd);
+
+        public static readonly IValueConverter GridRowConverter =
+            new GridColumnRowShorthandValueConverter(PropertyNames.GridRowStart, PropertyNames.GridRowEnd);
+
+        public static readonly IValueConverter GridAreaConverter = new GridAreaShorthandValueConverter();
+
+        public static readonly IValueConverter GridTemplateConverter = new GridTemplateShorthandValueConverter();
+
+        public static readonly IValueConverter GridConverter = new GridShorthandValueConverter();
+
         public static readonly IValueConverter ShadowConverter = WithAny(
             Assign(Keywords.Inset, true).Option(false),
             LengthConverter.Many(2, 4).Required(),
             ColorConverter.WithCurrentColor().Option(Color.Black));
 
         public static readonly IValueConverter MultipleShadowConverter = ShadowConverter.FromList().OrNone();
-        public static readonly IValueConverter ImageSourceConverter = UrlConverter.Or(GradientConverter);
+
+        // The image functions PeachPDF validates but does not render (CSS Images 4). Composed into
+        // ImageSourceConverter so every <image> property (background-image, list-style-image, cursor,
+        // content, and @property syntax:"<image>") accepts them syntactically; the render path
+        // (CssValueParser.ParseImage → CssImagePainter) still handles only url()/gradients, so they paint
+        // nothing (an unchanged engine-wide gap). See ExtendedImageConverters.cs.
+        public static readonly IValueConverter ImageSetImageConverter =
+            Construct(() => new FunctionValueConverter(FunctionNames.ImageSet, new ImageSetConverter()));
+        public static readonly IValueConverter CrossFadeImageConverter =
+            Construct(() => new FunctionValueConverter(FunctionNames.CrossFade, new CrossFadeConverter()));
+        public static readonly IValueConverter ElementImageConverter =
+            Construct(() => new FunctionValueConverter(FunctionNames.Element, new ElementImageConverter()));
+
+        public static readonly IValueConverter ImageSourceConverter = UrlConverter.Or(GradientConverter)
+            .Or(ImageSetImageConverter).Or(CrossFadeImageConverter).Or(ElementImageConverter);
         public static readonly IValueConverter OptionalImageSourceConverter = ImageSourceConverter.OrNone();
         public static readonly IValueConverter MultipleImageSourceConverter = OptionalImageSourceConverter.FromList();
         public static readonly IValueConverter BorderRadiusShorthandConverter = new BorderRadiusConverter();
@@ -452,7 +550,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         #region Misc
 
-        public static IValueConverter Any = new AnyValueConverter();
 
         public static IValueConverter Assign<T>(string identifier, T result)
         {
@@ -476,6 +573,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static IValueConverter WithAny(params IValueConverter[] converters)
         {
             return new UnorderedOptionsConverter(converters);
+        }
+
+        public static IValueConverter WithAnyOrderIndependent(params IValueConverter[] converters)
+        {
+            return new OrderIndependentOptionsConverter(converters);
         }
 
         public static IValueConverter Continuous(IValueConverter converter)

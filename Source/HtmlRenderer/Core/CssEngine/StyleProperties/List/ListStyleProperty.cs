@@ -4,7 +4,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
     internal sealed class ListStyleProperty : ShorthandProperty
     {
-        private static readonly IValueConverter StyleConverter = WithAny(
+        // list-style's operands are order-independent (CSS Lists 3 - "in any order"), so a token such as
+        // "none" that both list-style-type and list-style-image accept must not be claimed positionally
+        // ("list-style: none square" must parse like "list-style: square none").
+        private static readonly IValueConverter StyleConverter = WithAnyOrderIndependent(
             ListStyleConverter.Option().For(PropertyNames.ListStyleType),
             ListPositionConverter.Option().For(PropertyNames.ListStylePosition),
             OptionalImageSourceConverter.Option().For(PropertyNames.ListStyleImage)).OrDefault();
