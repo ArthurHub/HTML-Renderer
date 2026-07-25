@@ -243,8 +243,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                         data.Combine(importedCssData);
                     }
                 }
-                else
+                else if (!(rule is LayerStatementRule))
                 {
+                    // A bare `@layer a, b;` statement is allowed before @import (CSS Cascade 5 §6.4.1), so
+                    // it must not close the @import prologue - otherwise every following @import is skipped.
                     hasReachedNonImportRules = true;
                 }
             }

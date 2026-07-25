@@ -901,7 +901,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         {
             foreach (var stylesheet in cssData.Stylesheets)
             {
-                foreach (var rule in stylesheet.StyleRules)
+                foreach (var rule in CssData.FlattenStyleRules(stylesheet.Rules))
                 {
                     if (!selectorMatches(rule.Selector)) continue;
                     foreach (var prop in rule.Style)
@@ -940,7 +940,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             sb.AppendLine("<style type=\"text/css\">");
             foreach (var stylesheet in cssData.Stylesheets)
             {
-                foreach (var rule in stylesheet.StyleRules)
+                foreach (var rule in CssData.FlattenStyleRules(stylesheet.Rules))
                 {
                     sb.Append(rule.SelectorText);
                     sb.Append(" { ");

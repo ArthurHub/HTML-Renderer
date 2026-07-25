@@ -682,13 +682,35 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Get color by given name, including .NET name.
+        /// Get color by given name (including .NET names), or by any color function the CSS engine
+        /// understands.
         /// </summary>
+        /// <remarks>
+        /// The adapter's palette is tried first because a bare name is by far the common case and a
+        /// dictionary lookup is cheaper than tokenizing. Anything it doesn't recognize - a CSS Color 4/5
+        /// function such as <c>lab()</c>/<c>oklch()</c>/<c>color-mix()</c>, or a fully transparent color,
+        /// which the palette reports with a zero alpha and is indistinguishable from "unknown" here - is
+        /// then resolved through the engine, which is the same code path the cascade validated the value
+        /// with. Hex/rgb()/rgba()/hsl()/hsla() never reach this method; they keep their own fast paths in
+        /// <see cref="TryGetColor"/>.
+        /// </remarks>
         /// <returns>true - valid color, false - otherwise</returns>
         private bool GetColorByName(string str, int idx, int length, out RColor color)
         {
-            color = _adapter.GetColor(str.Substring(idx, length));
-            return color.A > 0;
+            var text = str.Substring(idx, length);
+
+            color = _adapter.GetColor(text);
+            if (color.A > 0) return true;
+
+            var resolved = GetCssTokens(text).ToResolvedColor();
+            if (resolved != null)
+            {
+                var value = resolved.Value;
+                color = RColor.FromArgb(value.A, value.R, value.G, value.B);
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

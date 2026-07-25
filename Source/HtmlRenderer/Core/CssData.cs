@@ -129,6 +129,38 @@ namespace TheArtOfDev.HtmlRenderer.Core
         private Dictionary<string, List<IndexedRule>> _idIndex;
         private List<IndexedRule> _universalRules;
 
+        /// <summary>
+        /// Every style rule in a rule list, in document order, descending into <c>@media</c> and
+        /// <c>@layer</c> blocks and into CSS-Nesting child rules. <see cref="Stylesheet.StyleRules"/>
+        /// only sees the top level, so callers that scan for a rule by selector (rather than matching
+        /// against a box) need this or they miss anything nested. <c>@supports</c>/<c>@container</c> are
+        /// deliberately not descended into: their conditions are not evaluated, so their contents do not
+        /// apply.
+        /// </summary>
+        internal static IEnumerable<IStyleRule> FlattenStyleRules(IEnumerable<IRule> rules)
+        {
+            foreach (var rule in rules)
+            {
+                if (rule is IStyleRule styleRule)
+                {
+                    yield return styleRule;
+
+                    foreach (var nested in FlattenStyleRules(styleRule.NestedRules))
+                        yield return nested;
+                }
+                else if (rule is IMediaRule mediaRule)
+                {
+                    foreach (var nested in FlattenStyleRules(mediaRule.Rules))
+                        yield return nested;
+                }
+                else if (rule is ILayerRule layerRule)
+                {
+                    foreach (var nested in FlattenStyleRules(layerRule.Rules))
+                        yield return nested;
+                }
+            }
+        }
+
         private void EnsureIndex()
         {
             if (_universalRules != null) return;
@@ -152,10 +184,10 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// Walks a rule list in true document order, recursing into <c>@media</c> blocks (any
-        /// nesting depth) in place, and buckets every style rule found - assigning each an
-        /// ever-increasing <see cref="IndexedRule.DocumentOrder"/> and recording the chain of
-        /// enclosing media conditions it's nested under, if any.
+        /// Walks a rule list in true document order, recursing into <c>@media</c> blocks, <c>@layer</c>
+        /// blocks and CSS-Nesting child rules (any nesting depth) in place, and buckets every style rule
+        /// found - assigning each an ever-increasing <see cref="IndexedRule.DocumentOrder"/> and recording
+        /// the chain of enclosing media conditions it's nested under, if any.
         /// </summary>
         private static void IndexRules(
             IEnumerable<IRule> rules,
@@ -200,6 +232,16 @@ namespace TheArtOfDev.HtmlRenderer.Core
                             list.Add(indexedRule);
                         }
                     }
+
+                    // CSS Nesting: a nested rule lives in its parent's NestedRules, deliberately not in
+                    // Children, so it is invisible to Stylesheet.Rules and would otherwise never be
+                    // indexed. Its selector was already resolved against the parent at parse time, so it
+                    // indexes like any other rule - under the same media context, and with a document
+                    // order that continues from the parent so it tie-breaks after it.
+                    if (styleRule.NestedRules.Count > 0)
+                    {
+                        IndexRules(styleRule.NestedRules, isUserAgent, enclosingMedia, tagIndex, classIndex, idIndex, universal, keys, ref order);
+                    }
                 }
                 else if (rule is IMediaRule mediaRule)
                 {
@@ -208,6 +250,18 @@ namespace TheArtOfDev.HtmlRenderer.Core
                         : enclosingMedia.Concat(new[] { mediaRule.Media }).ToArray();
                     IndexRules(mediaRule.Rules, isUserAgent, nestedMedia, tagIndex, classIndex, idIndex, universal, keys, ref order);
                 }
+                else if (rule is ILayerRule layerRule)
+                {
+                    // @layer's contents are indexed as ordinary, unlayered rules: they apply, ordered by
+                    // source position and specificity. Layer precedence, !important layer reversal and
+                    // revert-layer are deliberately not implemented - that needs a layer-banded cascade,
+                    // which is separate work. Without this branch the block would fall through and every
+                    // rule inside a layer would silently stop applying.
+                    IndexRules(layerRule.Rules, isUserAgent, enclosingMedia, tagIndex, classIndex, idIndex, universal, keys, ref order);
+                }
+                // Everything else (@layer statements, @property, @font-palette-values, @supports,
+                // @container, ...) contributes no style rules to the cascade, so falling through is the
+                // correct handling rather than an oversight.
             }
         }
 

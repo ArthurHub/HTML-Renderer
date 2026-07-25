@@ -778,7 +778,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
             foreach (var stylesheet in cssData.Stylesheets)
             {
-                foreach (var rule in stylesheet.StyleRules)
+                foreach (var rule in CssData.FlattenStyleRules(stylesheet.Rules))
                 {
                     if (!SelectorIsSelectionPseudoElement(rule.Selector)) continue;
 
