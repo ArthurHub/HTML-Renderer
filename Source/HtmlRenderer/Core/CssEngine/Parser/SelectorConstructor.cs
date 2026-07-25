@@ -56,6 +56,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {PseudoClassNames.Has, ctx => new HasFunctionState(ctx)},
                 {PseudoClassNames.Matches, ctx => new MatchesFunctionState(ctx, PseudoClassNames.Matches)},
                 {PseudoClassNames.Is, ctx => new MatchesFunctionState(ctx, PseudoClassNames.Is)},
+                {PseudoClassNames.Where, ctx => new MatchesFunctionState(ctx, PseudoClassNames.Where)},
                 {PseudoClassNames.HostContext, ctx => new HostContextFunctionState(ctx)}
             };
 
@@ -375,7 +376,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
                     var combinator = GetCombinator();
                     _complex.AppendSelector(_temp, combinator);
-                    _temp = selector;
+                    _temp = WrapPseudoElement(selector);
                 }
             }
             else
@@ -384,6 +385,27 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 _temp = selector;
             }
         }
+
+        // CssData.DoesSelectorMatch(CompoundSelector, box) is the only place that synthesizes
+        // ::before/::after (and ::marker) child boxes as a match side effect, and it only runs for a
+        // pseudo-element that's the last member of a CompoundSelector. A pseudo-element preceded by a
+        // combinator (e.g. "E :after", with whitespace) would otherwise become a bare, unwrapped _temp
+        // here - which CssData's ComplexSelector subject-match dispatches straight to the plain
+        // DoesSelectorMatch(PseudoElementSelector, box) overload (which only checks whether the flag is
+        // already set, never sets it), so the pseudo-element box would never actually get created.
+        // Wrapping it in a single-member CompoundSelector as soon as it becomes a standalone selector
+        // routes it through the one, already-correct synthesis path instead of needing a second
+        // implementation of the same logic in CssData.
+        //
+        // Deliberately NOT applied in the other "_temp == null" branch above (a pseudo-element with no
+        // combinator at all, i.e. it's the entire selector - "*:before" written as bare ":before"): that
+        // shape has no ancestor restriction, so synthesizing on every match would mean synthesizing on
+        // literally every element in the document. The UA stylesheet's own
+        // ":before, :after { white-space: pre-line }" rule (CssDefaults.cs) is exactly this shape and
+        // relies on the existing non-synthesizing behavior - it exists to style already-synthesized
+        // pseudo-element boxes, not to create one on every element.
+        private static ISelector WrapPseudoElement(ISelector selector) =>
+            selector is PseudoElementSelector ? new CompoundSelector { selector } : selector;
 
         private Combinator GetCombinator()
         {
@@ -478,7 +500,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             }
 
             return null;
-
         }
 
         private SelectorConstructor CreateChild()
@@ -682,7 +703,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             protected override bool OnToken(Token token)
             {
-                if (token.Type == TokenType.Ident || token.Type == TokenType.String)
+                if ((token.Type == TokenType.Ident || token.Type == TokenType.String))
                 {
                     _value = token.Data;
                 }
@@ -787,16 +808,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             {
                 switch (_state)
                 {
-                    case ParseState.Initial:
-                        return OnInitial(token);
-                    case ParseState.AfterInitialSign:
-                        return OnAfterInitialSign(token);
-                    case ParseState.Offset:
-                        return OnOffset(token);
-                    case ParseState.BeforeOf:
-                        return OnBeforeOf(token);
-                    default:
-                        return OnAfter(token);
+                    case ParseState.Initial: return OnInitial(token);
+                    case ParseState.AfterInitialSign: return OnAfterInitialSign(token);
+                    case ParseState.Offset: return OnOffset(token);
+                    case ParseState.AfterOffsetSign: return OnAfterOffsetSign(token);
+                    case ParseState.BeforeOf: return OnBeforeOf(token);
+                    default: return OnAfter(token);
                 }
             }
 
@@ -866,6 +883,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {
                     case TokenType.Whitespace:
                         return false;
+                    case TokenType.Delim when token.Data.IsOneOf("+", "-"):
+                        // The An+B offset's sign is a standalone delim token when whitespace separates it
+                        // from B - the "<n-dimension> ['+' | '-'] <signless-integer>" production of
+                        // <a-n-plus-b> (CSS Syntax 3 §6.2); §6.1 gives `3n + 1` as a valid example. The
+                        // compact form `10n+1` instead arrives as a single signed <number>, handled by the
+                        // Number case below. Without this branch a spaced sign fell through to OnBeforeOf
+                        // and invalidated the selector.
+                        _sign = token.Data == "-" ? -1 : 1;
+                        _state = ParseState.AfterOffsetSign;
+                        return false;
                     case TokenType.Number:
                         _valid = _valid && ((NumberToken)token).IsInteger && int.TryParse(token.Data, out _offset);
                         _offset *= _sign;
@@ -873,6 +900,26 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                         return false;
                     default:
                         return OnBeforeOf(token);
+                }
+            }
+
+            private bool OnAfterOffsetSign(Token token)
+            {
+                switch (token.Type)
+                {
+                    case TokenType.Whitespace:
+                        return false;
+                    case TokenType.Number when !token.Data.StartsWith("+", StringComparison.Ordinal) && !token.Data.StartsWith("-", StringComparison.Ordinal):
+                        // The production requires a <signless-integer> here, defined as "a <number-token>
+                        // with its type flag set to integer, and no sign character" (CSS Syntax 3 §6.2), so
+                        // `10n + -1` and `10n + +1` are invalid - §6.1 lists `3n + -6` as an invalid example.
+                        _valid = _valid && ((NumberToken)token).IsInteger && int.TryParse(token.Data, out _offset);
+                        _offset *= _sign;
+                        _state = ParseState.BeforeOf;
+                        return false;
+                    default:
+                        _valid = false;
+                        return token.Type == TokenType.RoundBracketClose;
                 }
             }
 
@@ -910,6 +957,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 Initial,
                 AfterInitialSign,
                 Offset,
+                AfterOffsetSign,
                 BeforeOf,
                 AfterOf
             }

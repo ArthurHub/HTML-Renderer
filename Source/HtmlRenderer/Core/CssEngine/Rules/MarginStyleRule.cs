@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -5,6 +6,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal sealed class MarginStyleRule : Rule, IStyleRule
     {
+        // @page margin boxes don't participate in CSS Nesting.
+        public IReadOnlyList<IStyleRule> NestedRules
+        {
+            get { return new IStyleRule[0]; }
+        }
+
         public MarginStyleRule(StylesheetParser parser) : base(RuleType.Style, parser)
         {
             AppendChild(new StyleDeclaration(this));

@@ -32,6 +32,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         // UnknownProperty (Converters.Any) and validated later against the syntax string.
         private readonly Dictionary<string, LonghandCreator> _propertyDescriptors;
 
+        // @font-palette-values descriptors (font-family / base-palette / override-colors). Stored raw via
+        // UnknownProperty and validated later when the palette is resolved.
+        private readonly Dictionary<string, LonghandCreator> _fontPaletteDescriptors;
+
         private readonly Dictionary<string, LonghandCreator> _longhands;
 
         private readonly Dictionary<string, string[]> _mappings;
@@ -230,6 +234,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 PropertyNames.FontWeight,
                 PropertyNames.LineHeight);
             AddLonghand(PropertyNames.FontFamily, () => new FontFamilyProperty(), false, true);
+            AddLonghand(PropertyNames.FontPalette, () => new FontPaletteProperty());
             AddLonghand(PropertyNames.FontSize, () => new FontSizeProperty(), true);
             AddLonghand(PropertyNames.FontSizeAdjust, () => new FontSizeAdjustProperty(), true);
             AddLonghand(PropertyNames.FontStyle, () => new FontStyleProperty(), false, true);
@@ -534,6 +539,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 { PropertyNames.Inherits, () => new UnknownProperty(PropertyNames.Inherits) },
             };
 
+            _fontPaletteDescriptors = new Dictionary<string, LonghandCreator>(StringComparer.OrdinalIgnoreCase)
+            {
+                { PropertyNames.FontFamily, () => new UnknownProperty(PropertyNames.FontFamily) },
+                { PropertyNames.BasePalette, () => new UnknownProperty(PropertyNames.BasePalette) },
+                { PropertyNames.OverrideColors, () => new UnknownProperty(PropertyNames.OverrideColors) },
+            };
+
             _longhands = _longhandsBuilder;
             _mappings = _mappingsBuilder;
             _shorthands = _shorthandsBuilder;
@@ -587,6 +599,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public Property CreatePropertyDescriptor(string name)
         {
             return _propertyDescriptors.TryGetValue(name, out var propertyCreator) ? propertyCreator() : null;
+        }
+
+        public Property CreateFontPaletteDescriptor(string name)
+        {
+            return _fontPaletteDescriptors.TryGetValue(name, out var propertyCreator) ? propertyCreator() : null;
         }
 
         public Property CreateViewport(string name)

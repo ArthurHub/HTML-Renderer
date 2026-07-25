@@ -10,6 +10,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         private readonly StylesheetParser _parser;
         private readonly Stack<StylesheetNode> _nodes;
 
+        // The source index (raw, into _lexer.Source) immediately before the most recently read token.
+        // Captured by NextToken so a CSS-Nesting classification look-ahead can rewind to a construct's
+        // exact start without any position arithmetic (which is unreliable across \r\n normalization and
+        // unicode escapes) and can slice the nested prelude's source text.
+        private int _markBeforeLastToken;
+
         public StylesheetComposer(Lexer lexer, StylesheetParser parser)
         {
             _lexer = lexer;
@@ -40,6 +46,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             if (token.Data.Is(RuleNames.Container)) return CreateContainer(token);
 
             if (token.Data.Is(RuleNames.Property)) return CreateProperty(token);
+
+            if (token.Data.Is(RuleNames.FontPaletteValues)) return CreateFontPaletteValues(token);
+
+            if (token.Data.Is(RuleNames.Layer)) return CreateLayer(token);
 
             return token.Data.Is(RuleNames.Document) ? CreateDocument(token) : CreateUnknown(token);
         }
@@ -162,6 +172,28 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             if (token.Type == TokenType.CurlyBracketOpen)
             {
                 var end = FillDeclarations(rule, PropertyFactory.Instance.CreatePropertyDescriptor);
+                rule.StylesheetText = CreateView(start, end);
+                _nodes.Pop();
+                return rule;
+            }
+
+            _nodes.Pop();
+            return SkipDeclarations(token);
+        }
+
+        public Rule CreateFontPaletteValues(Token current)
+        {
+            var rule = new FontPaletteValuesRule(_parser);
+            var start = current.Position;
+            var token = NextToken();
+            _nodes.Push(rule);
+            ParseComments(ref token);
+            rule.Name = GetRuleName(ref token);
+            ParseComments(ref token);
+
+            if (token.Type == TokenType.CurlyBracketOpen)
+            {
+                var end = FillDeclarations(rule, PropertyFactory.Instance.CreateFontPaletteDescriptor);
                 rule.StylesheetText = CreateView(start, end);
                 _nodes.Pop();
                 return rule;
@@ -300,6 +332,78 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             //_nodes.Pop();
             //return rule;
         }
+        public Rule CreateLayer(Token current)
+        {
+            var start = current.Position;
+            var token = NextToken();
+            ParseComments(ref token);
+
+            // Read the (optional) comma-separated layer name list, stopping at '{' (block form) or
+            // ';'/EOF (statement form).
+            var names = ReadLayerNames(ref token);
+
+            if (token.Type == TokenType.CurlyBracketOpen)
+            {
+                // Block form: `@layer name { rules }` (at most one name; anonymous if none).
+                var rule = new LayerRule(_parser)
+                {
+                    Name = names.Count > 0 ? names[0] : string.Empty
+                };
+                _nodes.Push(rule);
+                var end = FillRules(rule);
+                rule.StylesheetText = CreateView(start, end);
+                _nodes.Pop();
+                return rule;
+            }
+
+            // Statement form: `@layer a, b, c;` — declares layer order only, no rules. token is at ';'/EOF.
+            var statement = new LayerStatementRule(_parser);
+            statement.Names.AddRange(names);
+            statement.StylesheetText = CreateView(start, token.Position);
+            return statement;
+        }
+
+        /// <summary>
+        /// Reads a <c>@layer</c> prelude: zero or more comma-separated layer names, each a dotted
+        /// ident sequence (e.g. <c>framework.utilities</c>). Advances <paramref name="token"/> up to
+        /// (but not past) the terminating <c>{</c>, <c>;</c>, or end of file.
+        /// </summary>
+        private List<string> ReadLayerNames(ref Token token)
+        {
+            var names = new List<string>();
+            var current = new System.Text.StringBuilder();
+
+            void Flush()
+            {
+                if (current.Length <= 0) return;
+                names.Add(current.ToString());
+                current.Clear();
+            }
+
+            while (token.IsNot(TokenType.EndOfFile, TokenType.CurlyBracketOpen, TokenType.Semicolon))
+            {
+                switch (token.Type)
+                {
+                    case TokenType.Ident:
+                        current.Append(token.Data);
+                        break;
+                    case TokenType.Delim when token.Data == ".":
+                        current.Append('.');
+                        break;
+                    case TokenType.Comma:
+                        Flush();
+                        break;
+                    // Whitespace/comments and anything else separating names are ignored.
+                }
+
+                token = NextToken();
+                ParseComments(ref token);
+            }
+
+            Flush();
+            return names;
+        }
+
         public Rule CreateNamespace(Token current)
         {
             var rule = new NamespaceRule(_parser);
@@ -663,8 +767,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     else
                     {
                         // Advance to the next token or this is an endless loop
-                        token = _lexer.Get();
+                        token = NextToken();
                     }
+                }
+                else if (TryCreateNestedRule(ref token))
+                {
+                    // CSS Nesting: a nested style rule was parsed and attached to the enclosing rule.
                 }
                 else
                 {
@@ -678,7 +786,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                         // and determine which one takes priority over the other.
                         // Example 1: "margin-left: 5px !important; text-align:center; margin: 3px;";
                         // Example 2: "margin: 5px !important; text-align:center; margin-left: 3px;";
-
                         if (sourceProperty is ShorthandProperty shorthandProperty)
                         {
                             if (shorthandProperty.DeclaredValue.Original.ContainsFunction(FunctionNames.Var))
@@ -729,6 +836,168 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             _nodes.Pop();
             return token.Position;
+        }
+
+        /// <summary>
+        /// CSS Nesting ([CSS Nesting 1](https://www.w3.org/TR/css-nesting-1/)): if the current construct
+        /// in a declaration block is a nested style rule (a selector prelude followed by a <c>{ }</c>
+        /// block) rather than a declaration, parses it, resolves its selector against the enclosing rule,
+        /// attaches it, and returns true (with <paramref name="token"/> advanced past the block). Returns
+        /// false for an ordinary declaration, having rewound the lexer so the caller re-reads it.
+        /// </summary>
+        private bool TryCreateNestedRule(ref Token token)
+        {
+            // Raw source index just before the current (first) token — the construct start, captured by
+            // NextToken. Faithful across \r\n normalization, unlike deriving it from token.Position.
+            var preludeStart = _markBeforeLastToken;
+
+            if (!IsNestedRuleAhead(ref token, out var braceStart))
+                return false;
+
+            CreateNestedStyleRule(preludeStart, braceStart);
+            token = NextToken();
+            return true;
+        }
+
+        /// <summary>
+        /// Looks ahead (bracket-aware) to classify the construct starting at <paramref name="token"/> as a
+        /// nested style rule vs a declaration: the first top-level <c>{</c> means a nested rule (the stream
+        /// is left just after it and its source index returned via <paramref name="braceStart"/>); a
+        /// top-level <c>;</c>/<c>}</c>/EOF means a declaration, in which case the lexer is rewound to the
+        /// construct start and <paramref name="token"/> re-read so the unchanged declaration path re-lexes
+        /// it in value mode (avoiding the <c>#</c> value-mode tokenization hazard a token buffer would hit).
+        /// Custom properties (<c>--x</c>) are always declarations, even with a <c>{</c> in their value.
+        /// Function tokens (e.g. <c>url(…)</c>) are opaque — the lexer already consumed their parentheses —
+        /// so only bare round/square brackets contribute to depth.
+        /// </summary>
+        private bool IsNestedRuleAhead(ref Token token, out int braceStart)
+        {
+            braceStart = 0;
+
+            if (token.Type == TokenType.Ident && token.Data != null &&
+                token.Data.StartsWith("--", StringComparison.Ordinal))
+                return false;
+
+            var rewindMark = _markBeforeLastToken;   // raw source index before `token` (the first token)
+            var depth = 0;
+            var scan = token;
+            var scanStart = rewindMark;              // raw source index before `scan`
+
+            while (scan.Type != TokenType.EndOfFile)
+            {
+                switch (scan.Type)
+                {
+                    case TokenType.RoundBracketOpen:
+                    case TokenType.SquareBracketOpen:
+                        depth++;
+                        break;
+                    case TokenType.RoundBracketClose:
+                    case TokenType.SquareBracketClose:
+                        if (depth > 0) depth--;
+                        break;
+                    case TokenType.CurlyBracketOpen when depth == 0:
+                        braceStart = scanStart;
+                        token = scan;
+                        return true;
+                    case TokenType.CurlyBracketClose when depth == 0:
+                    case TokenType.Semicolon when depth == 0:
+                        _lexer.RewindTo(rewindMark);
+                        token = NextToken();
+                        return false;
+                }
+
+                scanStart = _lexer.InsertionPoint;   // raw index just before the next token
+                scan = _lexer.Get();
+            }
+
+            _lexer.RewindTo(rewindMark);
+            token = NextToken();
+            return false;
+        }
+
+        /// <summary>
+        /// Builds a <see cref="StyleRule"/> from a nested prelude (source span
+        /// <c>[preludeStart, bracePosition)</c>) resolved against the enclosing rule's selector, consumes
+        /// its declaration block from the live stream, and attaches it to the parent rule via
+        /// <see cref="StyleRule.AddNestedRule"/>. The resolved selector is absolute (<c>&amp;</c> →
+        /// <c>:is(parent)</c>) so the cascade/matcher need no nesting awareness.
+        /// </summary>
+        private void CreateNestedStyleRule(int preludeStart, int braceStart)
+        {
+            var parent = _nodes.OfType<StyleRule>().FirstOrDefault();
+            var preludeText = _lexer.Source.Text.Substring(preludeStart, braceStart - preludeStart);
+
+            var selector = parent is null
+                ? null
+                : _parser.ParseSelector(ResolveNestedSelector(preludeText, parent.SelectorText));
+
+            // Always consume the block (via a rule pushed on _nodes so nested-within-nested resolves) to
+            // keep the parser in sync; only attach it when the selector actually resolved.
+            var rule = new StyleRule(_parser);
+
+            if (selector != null)
+                rule.Selector = selector;
+
+            _nodes.Push(rule);
+            FillDeclarations(rule.Style);
+            _nodes.Pop();
+
+            if (parent != null && selector != null)
+                parent.AddNestedRule(rule);
+        }
+
+        /// <summary>
+        /// Resolves a nested selector's prelude text against its parent's selector text per CSS Nesting:
+        /// each <c>&amp;</c> becomes <c>:is(parent)</c> (giving <c>&amp;</c> the parent's specificity); a
+        /// prelude with no <c>&amp;</c> is made relative to the parent (<c>:is(parent) &lt;prelude&gt;</c>),
+        /// which correctly yields both the implicit-descendant (<c>.b</c> → <c>:is(parent) .b</c>) and the
+        /// leading-combinator (<c>&gt; .b</c> → <c>:is(parent) &gt; .b</c>) forms.
+        /// </summary>
+        private static string ResolveNestedSelector(string prelude, string parentText)
+        {
+            var trimmed = prelude.Trim();
+            var parentIs = ":is(" + (string.IsNullOrEmpty(parentText) ? "*" : parentText) + ")";
+
+            // Substitute `&` token-aware: only a `&` that is a real nesting selector is replaced, never a
+            // `&` inside a string/attribute value (e.g. `[data-x="a&b"]`), which must be preserved. This
+            // also decides the "has &" branch correctly, so a prelude whose only `&` is inside a string is
+            // still scoped under the parent (:is(parent) <prelude>) rather than mis-taking the replace path.
+            var sb = Pool.NewStringBuilder();
+            var hasNestingSelector = false;
+            var quote = '\0';
+
+            for (var i = 0; i < trimmed.Length; i++)
+            {
+                var c = trimmed[i];
+
+                if (quote != '\0')
+                {
+                    sb.Append(c);
+                    if (c == '\\' && i + 1 < trimmed.Length)
+                        sb.Append(trimmed[++i]);   // escaped char inside a string — copy verbatim
+                    else if (c == quote)
+                        quote = '\0';
+                    continue;
+                }
+
+                switch (c)
+                {
+                    case '"':
+                    case '\'':
+                        quote = c;
+                        sb.Append(c);
+                        break;
+                    case '&':
+                        hasNestingSelector = true;
+                        sb.Append(parentIs);
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+            }
+
+            return hasNestingSelector ? sb.ToPool() : parentIs + " " + sb.ToPool();
         }
 
         public Property CreateDeclarationWith(Func<string, Property> createProperty, ref Token token)
@@ -928,6 +1197,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private Token NextToken()
         {
+            _markBeforeLastToken = _lexer.InsertionPoint;
             return _lexer.Get();
         }
 
@@ -954,7 +1224,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     current.AppendChild(comment);
                 }
 
-                token = _lexer.Get();
+                token = NextToken();
             }
         }
 
@@ -1133,6 +1403,26 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             while (token.IsNot(TokenType.EndOfFile, TokenType.CurlyBracketClose))
             {
+                // "Consume a block's contents" discards a <semicolon-token> outright, exactly as it does a
+                // <whitespace-token> (CSS Syntax 3 §5.5.5). Passing it on to CreateStyle instead feeds it to
+                // SelectorConstructor, which has no recovery for an unexpected semicolon: it folds the token
+                // into the next rule's selector and invalidates it, and because the run-on rule keeps
+                // consuming, the block's own closing brace is swallowed and the following sibling rule is
+                // lost with it.
+                //
+                // Deliberately NOT done in CreateRules: "consume a stylesheet's contents" (§5.5.1) has no
+                // <semicolon-token> case, so a stray semicolon at the top level falls to "anything else" and
+                // is consumed into the next qualified rule's prelude, invalidating it. Only a block passes
+                // <semicolon-token> as the stop token to "consume a qualified rule" (§5.5.3). The Acid2
+                // parser-torture block relies on that: its ".parser { m\argin: 2em; };" is followed by
+                // ".parser { height: 3em; }", which must NOT apply.
+                if (token.Type == TokenType.Semicolon)
+                {
+                    token = NextToken();
+                    ParseComments(ref token);
+                    continue;
+                }
+
                 var rule = CreateRule(token);
                 token = NextToken();
                 ParseComments(ref token);

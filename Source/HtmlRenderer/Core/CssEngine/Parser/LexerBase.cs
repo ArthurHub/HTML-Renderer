@@ -42,6 +42,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return new TextPosition(Line, Column, Position);
         }
 
+        /// <summary>
+        /// Repositions the lexer so the next token is re-lexed from character index
+        /// <paramref name="sourceIndex"/> (a raw <see cref="Source"/> index, as returned by
+        /// <see cref="InsertionPoint"/>). Unlike setting <see cref="InsertionPoint"/> (whose
+        /// <c>BackNative</c> loop is not a faithful inverse across <c>\r\n</c> normalization), this
+        /// restores the character stream exactly — line/column tracking is not rewound (it only affects
+        /// reported positions, never token content). Used by <see cref="StylesheetComposer"/> to rewind a
+        /// CSS-Nesting classification look-ahead so a declaration re-lexes cleanly in value mode.
+        /// </summary>
+        public void RewindTo(int sourceIndex)
+        {
+            Source.Index = sourceIndex;
+            // Non-EOF so the next Advance() actually reads Source[sourceIndex] rather than short-circuiting.
+            Current = Symbols.Null;
+        }
+
         protected char SkipSpaces()
         {
             var c = GetNext();
