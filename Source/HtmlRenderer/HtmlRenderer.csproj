@@ -26,6 +26,6 @@ For existing implementations see: HtmlRenderer.WinForms, HtmlRenderer.WPF and Ht
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="System.Resources.Extensions" Version="10.0.1" />
+	<PackageReference Include="System.Resources.Extensions" Version="10.0.10" />
   </ItemGroup>
 </Project>
