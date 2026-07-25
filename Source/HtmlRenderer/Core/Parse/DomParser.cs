@@ -154,7 +154,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         {
             // Every box's fields already start at their initial value (CssBoxProperties's private
             // field initializers, which CssDefaults.InitialValues was itself built to mirror exactly -
-            // see CssDefaults.cs) - so unlike PeachPDF's cascade, there is no separate "set every
+            // see CssDefaults.cs) - so unlike a from-initial cascade, there is no separate "set every
             // property to its initial value" pass here. Deliberately: a handful of this engine's
             // property setters (e.g. LineHeight, CssBoxProperties.cs:550) are eager - they immediately
             // resolve the assigned value to an absolute pixel string using the box's CURRENT font/size,

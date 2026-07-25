@@ -21,7 +21,7 @@ using TheArtOfDev.HtmlRenderer.Core.Entities;
 namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 {
     /// <summary>
-    /// Turns a parsed <c>linear-gradient()</c> value into a brush ready to paint. Ported from PeachPDF's
+    /// Turns a parsed <c>linear-gradient()</c> value into a brush ready to paint. Derived from
     /// Html/Core/Handlers/CssImagePainter.cs, trimmed to the linear-gradient-only, single (non-layered)
     /// background-image case this engine supports - see <see cref="ParsedLinearGradient"/>.
     /// </summary>

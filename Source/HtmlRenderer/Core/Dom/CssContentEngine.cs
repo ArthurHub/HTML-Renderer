@@ -23,7 +23,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
     /// Resolves a synthesized <c>::before</c>/<c>::after</c> pseudo-element box's <see cref="CssBox.Content"/>
     /// value into literal text, so it renders through the box's normal <see cref="CssBox.Text"/>/
     /// <see cref="CssBox.ParseToWords"/> machinery like any other text box.<br/>
-    /// Deliberately a small, self-contained subset of PeachPDF's CssContentEngine: literal strings,
+    /// Deliberately a small, self-contained subset of the full content grammar: literal strings,
     /// <c>attr()</c>, and the four quote keywords are supported; <c>counter()</c>/<c>counters()</c>/
     /// <c>string()</c>/<c>content()</c> are not (CSS counters and named strings remain out of scope
     /// for this backport - an unrecognized component is simply skipped, the same graceful-ignore

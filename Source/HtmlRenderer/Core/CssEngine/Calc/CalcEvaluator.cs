@@ -34,7 +34,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
     /// <summary>
     /// Evaluates a validated calc-family AST to a pixel-space number. This is the one place calc()
-    /// numbers actually get computed — called only from Layer B (<see cref="PeachPDF.Html.Core.Parse.CssValueParser.ParseLength(string, double, double, double, string, bool, bool)"/>),
+    /// numbers actually get computed — called only from Layer B (<c>CssValueParser.ParseLength</c>),
     /// since only layout has the <see cref="CalcContext"/> a percentage/em/rem leaf needs to resolve.
     /// Reuses <see cref="Length.ToPixels"/> for every leaf, so no unit-conversion arithmetic is duplicated
     /// here. A null result signals a divide-by-zero; per the type-checker's rules every legal divisor is

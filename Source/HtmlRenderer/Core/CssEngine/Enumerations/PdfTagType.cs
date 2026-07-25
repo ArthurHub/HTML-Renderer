@@ -1,7 +1,7 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Values for the PeachPDF-specific <c>-peachpdf-pdf-tag-type</c> property, which controls
+    /// Values for the vendor-prefixed <c>-peachpdf-pdf-tag-type</c> property, which controls
     /// the PDF structure (tag) type an element maps to when tagged PDF output is enabled.
     /// </summary>
     internal enum PdfTagType

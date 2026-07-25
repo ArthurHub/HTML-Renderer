@@ -24,7 +24,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 {
     /// <summary>
     /// Parser to parse CSS stylesheet source string into CSS objects.<br/>
-    /// Ported from PeachPDF's Html/Core/Parse/CssParser.cs, adapted to stay fully synchronous
+    /// Derived from the same CSS-OM lineage as the vendored engine, adapted to stay fully synchronous
     /// (HTML-Renderer's whole SetHtml/DomParser pipeline is synchronous, and <see cref="StylesheetLoadHandler"/>
     /// already does its own blocking I/O) - the recursive @import-walk logic is kept, just without
     /// any Task/await plumbing.

@@ -765,7 +765,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// <c>linear-gradient()</c>/<c>repeating-linear-gradient()</c> function. Returns null for "none",
         /// an empty value, or anything else this engine doesn't recognize (matching this engine's existing
         /// silent-failure behavior for unsupported values).<br/>
-        /// Ported from PeachPDF's Html/Core/Parse/CssValueParser.ParseImage, trimmed to the single-value,
+        /// Trimmed to the single-value,
         /// linear-gradient-only case this engine supports (no layered background-image, no radial/conic).
         /// </summary>
         public CssImage ParseImage(string value)
@@ -799,7 +799,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// comma-separated color stops (each optionally followed by 1-2 length/percent positions), and
         /// bare-position color hints between stops. Returns null if the value isn't a recognized gradient
         /// function or doesn't have at least 2 real color stops.<br/>
-        /// Ported from PeachPDF's Html/Core/Parse/CssValueParser.ParseLinearGradient, minus CSS Color 4
+        /// Linear-gradient parsing, minus CSS Color 4
         /// interpolation-color-space ("in oklab" etc.) support - see ParsedLinearGradient.
         /// </summary>
         private ParsedLinearGradient ParseLinearGradient(string value)

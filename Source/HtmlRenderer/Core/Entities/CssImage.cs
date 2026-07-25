@@ -2,7 +2,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Entities
 {
     /// <summary>
     /// The parsed form of a single <c>background-image</c> value: either a <c>url()</c> reference or a
-    /// gradient function. Unlike PeachPDF's <c>CssImage</c> (which this is a trimmed-down port of, same
+    /// gradient function. Unlike the fuller model this is trimmed down from (same
     /// name for an easy diff), <c>background-image</c> here is a single value, not a comma-separated
     /// layered list - this project only backports enough to replace the old non-standard
     /// "background-gradient" property.

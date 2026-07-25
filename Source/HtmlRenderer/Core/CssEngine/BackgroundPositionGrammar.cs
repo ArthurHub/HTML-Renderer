@@ -6,7 +6,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     /// Shared grammar for the CSS <c>background-position</c> value (the 1/2/3/4-token forms,
     /// including the edge-relative offset syntax, e.g. "right 20px bottom 10px"). Used by both
     /// <see cref="Converters.PointConverter"/> (CSS-OM grammar validation/serialization) and
-    /// PeachPDF.Html.Core.Utils.BackgroundLayerResolver (render-time pixel-offset arithmetic) so
+    /// the render-time background-layer resolution (pixel-offset arithmetic) so
     /// there is one parser for this grammar, not two independent re-implementations - mirroring how
     /// CalcParser is shared between CalcValueConverter and CssValueParser rather than re-parsed twice.
     /// </summary>

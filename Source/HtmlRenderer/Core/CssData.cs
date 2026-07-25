@@ -26,8 +26,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
     /// specificity-ordered selector matching against the box tree.<br/>
     /// </summary>
     /// <remarks>
-    /// Ported from PeachPDF's Html/Core/CssData.cs (itself a fork of Tyler Brinks' ExCSS), adapted to
-    /// HTML-Renderer's CssBox/HtmlTag shape. One deliberate omission from the source: the
+    /// Derived from the same ExCSS lineage as the vendored CSS-OM (originally Tyler Brinks' ExCSS),
+    /// adapted to HTML-Renderer's CssBox/HtmlTag shape. One deliberate omission from the source: the
     /// <c>::marker</c> pseudo-element box-synthesis path is removed - <c>::before</c>/<c>::after</c>
     /// synthesis is kept, but this codebase has no <c>CssBox.IsMarkerPseudoElement</c> concept and no
     /// consumer for it (list markers are painted procedurally, not via a synthesized box).
