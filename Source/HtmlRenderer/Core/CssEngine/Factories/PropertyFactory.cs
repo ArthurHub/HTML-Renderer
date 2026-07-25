@@ -20,6 +20,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private readonly Dictionary<string, LonghandCreator> _fonts;
 
+        // @property descriptors (syntax / initial-value / inherits). Their values have no fixed CSS grammar
+        // (initial-value depends on the syntax; syntax is an arbitrary string), so each is stored raw via an
+        // UnknownProperty (Converters.Any) and validated later against the syntax string.
+        private readonly Dictionary<string, LonghandCreator> _propertyDescriptors;
+
         private readonly Dictionary<string, LonghandCreator> _longhands;
 
         private readonly Dictionary<string, string[]> _mappings;
@@ -353,6 +358,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             _fontsBuilder.Add(PropertyNames.UnicodeRange, () => new UnicodeRangeProperty());
 
             _fonts = _fontsBuilder;
+
+            _propertyDescriptors = new Dictionary<string, LonghandCreator>(StringComparer.OrdinalIgnoreCase)
+            {
+                { PropertyNames.Syntax, () => new UnknownProperty(PropertyNames.Syntax) },
+                { PropertyNames.InitialValue, () => new UnknownProperty(PropertyNames.InitialValue) },
+                { PropertyNames.Inherits, () => new UnknownProperty(PropertyNames.Inherits) },
+            };
+
             _longhands = _longhandsBuilder;
             _mappings = _mappingsBuilder;
             _shorthands = _shorthandsBuilder;
@@ -393,6 +406,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public Property CreateFont(string name)
         {
             return _fonts.TryGetValue(name, out var propertyCreator) ? propertyCreator() : null;
+        }
+
+        public Property CreatePropertyDescriptor(string name)
+        {
+            return _propertyDescriptors.TryGetValue(name, out var propertyCreator) ? propertyCreator() : null;
         }
 
         public Property CreateViewport(string name)

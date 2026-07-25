@@ -39,6 +39,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             if (token.Data.Is(RuleNames.Container)) return CreateContainer(token);
 
+            if (token.Data.Is(RuleNames.Property)) return CreateProperty(token);
+
             return token.Data.Is(RuleNames.Document) ? CreateDocument(token) : CreateUnknown(token);
         }
 
@@ -138,6 +140,28 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             if (token.Type == TokenType.CurlyBracketOpen)
             {
                 var end = FillDeclarations(rule, PropertyFactory.Instance.CreateFont);
+                rule.StylesheetText = CreateView(start, end);
+                _nodes.Pop();
+                return rule;
+            }
+
+            _nodes.Pop();
+            return SkipDeclarations(token);
+        }
+
+        public Rule CreateProperty(Token current)
+        {
+            var rule = new PropertyRule(_parser);
+            var start = current.Position;
+            var token = NextToken();
+            _nodes.Push(rule);
+            ParseComments(ref token);
+            rule.Name = GetRuleName(ref token);
+            ParseComments(ref token);
+
+            if (token.Type == TokenType.CurlyBracketOpen)
+            {
+                var end = FillDeclarations(rule, PropertyFactory.Instance.CreatePropertyDescriptor);
                 rule.StylesheetText = CreateView(start, end);
                 _nodes.Pop();
                 return rule;

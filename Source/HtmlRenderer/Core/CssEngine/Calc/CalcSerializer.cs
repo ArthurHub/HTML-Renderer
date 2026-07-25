@@ -141,6 +141,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 case PercentageCalcNode percentage:
                     return new Length((float)percentage.Value, Length.Unit.Percent).ToString(null, CultureInfo.InvariantCulture);
 
+                // Time/Resolution leaves are only produced by @property `<time>`/`<resolution>` validation,
+                // which type-checks rather than serializes, so these arms are defensive completeness. A
+                // Time/Resolution-category Serialize() (were one ever created) folds through neither the Number
+                // nor Angle branch nor TryFoldPixels, so it reaches SerializeExpression and re-serializes to
+                // normalized calc() text using these leaf renderings.
+                case TimeCalcNode time:
+                    return new Time((float)time.Value, time.Unit).ToString(null, CultureInfo.InvariantCulture);
+
+                case ResolutionCalcNode resolution:
+                    return new Resolution((float)resolution.Value, resolution.Unit).ToString(null, CultureInfo.InvariantCulture);
+
                 case UnaryCalcNode unary:
                 {
                     var operand = SerializeOperand(unary.Operand, false, 3);

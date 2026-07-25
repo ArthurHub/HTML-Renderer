@@ -20,6 +20,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         /// convert via fixed constants), so a valid Angle-category expression always folds fully at
         /// Layer A parse time - see CalcSerializer.
         /// </summary>
-        Angle = 8
+        Angle = 8,
+
+        /// <summary>
+        /// &lt;time&gt; (s/ms). Like Angle, it resolves without layout context. Currently produced only by
+        /// <c>@property</c> <c>syntax: "&lt;time&gt;"</c> validation - no layout property consumes a time
+        /// calc(), so it never reaches CalcEvaluator during a render.
+        /// </summary>
+        Time = 16,
+
+        /// <summary>
+        /// &lt;resolution&gt; (dpi/dpcm/dppx). Context-free like Angle/Time; same @property-only provenance.
+        /// </summary>
+        Resolution = 32
     }
 }

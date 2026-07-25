@@ -28,6 +28,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 case AngleCalcNode _:
                     return CalcCategory.Angle;
 
+                case TimeCalcNode _:
+                    return CalcCategory.Time;
+
+                case ResolutionCalcNode _:
+                    return CalcCategory.Resolution;
+
                 case UnaryCalcNode unary:
                     return Check(unary.Operand);
 

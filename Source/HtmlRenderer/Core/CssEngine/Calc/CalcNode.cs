@@ -55,6 +55,30 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public Angle.Unit Unit { get; }
     }
 
+    internal sealed class TimeCalcNode : CalcNode
+    {
+        public TimeCalcNode(double value, Time.Unit unit)
+        {
+            Value = value;
+            Unit = unit;
+        }
+
+        public double Value { get; }
+        public Time.Unit Unit { get; }
+    }
+
+    internal sealed class ResolutionCalcNode : CalcNode
+    {
+        public ResolutionCalcNode(double value, Resolution.Unit unit)
+        {
+            Value = value;
+            Unit = unit;
+        }
+
+        public double Value { get; }
+        public Resolution.Unit Unit { get; }
+    }
+
     /// <summary>A leading unary sign directly before a parenthesized group or a nested function call.</summary>
     internal sealed class UnaryCalcNode : CalcNode
     {
