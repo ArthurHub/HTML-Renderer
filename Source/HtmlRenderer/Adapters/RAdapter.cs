@@ -92,11 +92,33 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         /// <summary>
         /// The colour scheme the rendering surface presents, answering the <c>prefers-color-scheme</c>
         /// media feature. Defaults to <see cref="RColorScheme.Light"/>; an adapter that renders onto a
-        /// themed surface should report the system setting instead.
+        /// themed surface should report the system setting instead, and raise
+        /// <see cref="ColorSchemeChanged"/> when it changes.
         /// </summary>
         public virtual RColorScheme SystemColorScheme
         {
             get { return RColorScheme.Light; }
+        }
+
+        /// <summary>
+        /// Raised when <see cref="SystemColorScheme"/> has changed, so anything rendered against it can
+        /// re-evaluate its <c>prefers-color-scheme</c> rules and repaint. Never raised by an adapter
+        /// whose scheme is fixed.
+        /// </summary>
+        /// <remarks>
+        /// Handlers are held for the lifetime of the adapter, which is typically a process-wide
+        /// singleton, so a subscriber must unsubscribe when it is disposed.
+        /// </remarks>
+        public event EventHandler ColorSchemeChanged;
+
+        /// <summary>
+        /// Raises <see cref="ColorSchemeChanged"/>. For adapters that track a system theme.
+        /// </summary>
+        protected void OnColorSchemeChanged()
+        {
+            var handler = ColorSchemeChanged;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
         }
 
         /// <summary>

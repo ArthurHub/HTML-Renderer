@@ -74,8 +74,15 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
 
             SystemEvents.UserPreferenceChanged += (sender, e) =>
             {
-                if (e.Category == UserPreferenceCategory.General)
-                    _colorScheme = null;
+                if (e.Category != UserPreferenceCategory.General) return;
+
+                // The General category covers far more than the theme, so re-read and only report a
+                // change if the scheme really moved - otherwise every unrelated preference change
+                // would force a re-cascade and repaint.
+                var previous = _colorScheme;
+                _colorScheme = null;
+                if (previous.HasValue && previous.Value != SystemColorScheme)
+                    OnColorSchemeChanged();
             };
         }
 

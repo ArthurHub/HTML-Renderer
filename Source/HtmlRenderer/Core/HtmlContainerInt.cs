@@ -224,6 +224,30 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
             _adapter = adapter;
             _cssParser = new CssParser(adapter);
+
+            // A system theme change alters what prefers-color-scheme reports, which can change which
+            // rules apply. Nothing else would notice: the cascade is only re-evaluated during layout,
+            // and an idle window does not lay out.
+            _colorSchemeChangedHandler = (sender, e) => OnAdapterColorSchemeChanged();
+            _adapter.ColorSchemeChanged += _colorSchemeChangedHandler;
+        }
+
+        /// <summary>
+        /// Kept so the handler can be detached from the adapter - which is typically a process-wide
+        /// singleton, and would otherwise keep every container that ever rendered alive.
+        /// </summary>
+        private readonly EventHandler _colorSchemeChangedHandler;
+
+        /// <summary>
+        /// The colour scheme changed, so ask the host to lay out and repaint. The re-cascade itself
+        /// happens in <see cref="PerformLayout"/>, on the host's own thread - this event can arrive on
+        /// another one.
+        /// </summary>
+        private void OnAdapterColorSchemeChanged()
+        {
+            if (_root == null) return;
+
+            RequestRefresh(true);
         }
 
         /// <summary>
@@ -1080,6 +1104,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
                     StylesheetLoad = null;
                     ImageLoad = null;
                 }
+
+                _adapter.ColorSchemeChanged -= _colorSchemeChangedHandler;
 
                 _cssData = null;
                 if (_root != null)
