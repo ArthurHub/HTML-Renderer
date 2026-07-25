@@ -268,6 +268,83 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return FromRgba(red, green, blue, alpha);
         }
 
+        // CSS Color 4/5 spaces (lab/oklab/lch/oklch) and color-mix().
+        // Components are in each space's native units (L: lab/lch 0..100, oklab/oklch 0..1; a/b and C
+        // in native chroma units; H in degrees). The conversion math is shared with gradient
+        // interpolation via ColorSpaceMath so there is a single implementation of the color science.
+
+        public static Color FromLab(double l, double a, double b, float alpha = 1f)
+        {
+            return FromSpaceComponents(new[] { l, a, b }, ColorSpaceMath.Space.Lab, alpha);
+        }
+
+        public static Color FromOklab(double l, double a, double b, float alpha = 1f)
+        {
+            return FromSpaceComponents(new[] { l, a, b }, ColorSpaceMath.Space.Oklab, alpha);
+        }
+
+        public static Color FromLch(double l, double c, double h, float alpha = 1f)
+        {
+            return FromSpaceComponents(new[] { l, c, h }, ColorSpaceMath.Space.Lch, alpha);
+        }
+
+        public static Color FromOklch(double l, double c, double h, float alpha = 1f)
+        {
+            return FromSpaceComponents(new[] { l, c, h }, ColorSpaceMath.Space.Oklch, alpha);
+        }
+
+        private static Color FromSpaceComponents(double[] v, ColorSpaceMath.Space cs, float alpha)
+        {
+            var rgb = ColorSpaceMath.FromSpace(v, cs);
+            return new Color(ToByte(rgb.Item1), ToByte(rgb.Item2), ToByte(rgb.Item3), Normalize(alpha));
+        }
+
+        /// <summary>
+        /// <see href="https://www.w3.org/TR/css-color-5/#color-mix">CSS Color 5 <c>color-mix()</c></see>:
+        /// premultiplied-alpha interpolation in <paramref name="cs"/> with weight <paramref name="t"/>
+        /// toward <paramref name="c2"/>, the result alpha then scaled by <paramref name="alphaMultiplier"/>
+        /// (below 1 only when the two percentages summed to under 100%).
+        /// </summary>
+        public static Color Mix(Color c1, Color c2, double t, ColorSpaceMath.Space cs, ColorSpaceMath.HueMethod hue, double alphaMultiplier)
+        {
+            t = Math.Min(Math.Max(t, 0.0), 1.0);
+            double a1 = c1.A / 255.0, a2 = c2.A / 255.0;
+
+            var v1 = ColorSpaceMath.ToSpace(c1.R / 255.0, c1.G / 255.0, c1.B / 255.0, cs);
+            var v2 = ColorSpaceMath.ToSpace(c2.R / 255.0, c2.G / 255.0, c2.B / 255.0, cs);
+            var hueIndex = ColorSpaceMath.HueIndex(cs);
+
+            for (var i = 0; i < 3; i++)
+            {
+                if (i == hueIndex) continue;
+                v1[i] *= a1;
+                v2[i] *= a2;
+            }
+
+            var mixedAlpha = a1 + t * (a2 - a1);
+            var v = new double[3];
+            for (var i = 0; i < 3; i++)
+            {
+                if (i == hueIndex)
+                {
+                    v[i] = ColorSpaceMath.InterpolateHue(v1[i], v2[i], t, hue);
+                    continue;
+                }
+
+                var mixed = v1[i] + t * (v2[i] - v1[i]);
+                v[i] = mixedAlpha > 1e-10 ? mixed / mixedAlpha : 0;
+            }
+
+            var rgb = ColorSpaceMath.FromSpace(v, cs);
+            var outAlpha = (byte)Math.Round(Math.Min(Math.Max(mixedAlpha * alphaMultiplier, 0), 1) * 255);
+            return new Color(ToByte(rgb.Item1), ToByte(rgb.Item2), ToByte(rgb.Item3), outAlpha);
+        }
+
+        private static byte ToByte(double v)
+        {
+            return (byte)Math.Round(Math.Min(Math.Max(v, 0), 1) * 255);
+        }
+
         public int Value => _hashcode;
         public byte A => _alpha;
         public double Alpha => Math.Round(_alpha / 255.0, 2);
