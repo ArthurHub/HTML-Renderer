@@ -83,6 +83,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             AddLonghand(PropertyNames.BorderCollapse, () => new BorderCollapseProperty());
             AddLonghand(PropertyNames.BoxSizing, () => new BoxSizingProperty());
             AddLonghand(PropertyNames.BoxShadow, () => new BoxShadowProperty(), true);
+            AddLonghand(PropertyNames.AspectRatio, () => new AspectRatioProperty());
+            AddLonghand(PropertyNames.ClipPath, () => new ClipPathProperty(), true);
             AddLonghand(PropertyNames.BoxDecorationBreak, () => new BoxDecorationBreak());
             AddLonghand(PropertyNames.BreakAfter, () => new BreakAfterProperty());
             AddLonghand(PropertyNames.BreakBefore, () => new BreakBeforeProperty());
