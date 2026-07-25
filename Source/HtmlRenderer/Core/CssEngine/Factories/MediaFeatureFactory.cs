@@ -63,6 +63,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {FeatureNames.Hover, () => new HoverMediaFeature()},
                 {FeatureNames.InlineSize, () => new SizeMediaFeature(FeatureNames.InlineSize)},
                 {FeatureNames.BlockSize, () => new SizeMediaFeature(FeatureNames.BlockSize)},
+                {FeatureNames.PrefersColorScheme, () => new PrefersColorSchemeMediaFeature()},
+                {FeatureNames.PrefersReducedMotion, () => new PrefersReducedMotionMediaFeature()},
+                {FeatureNames.PrefersContrast, () => new PrefersContrastMediaFeature()},
+                {FeatureNames.PrefersReducedTransparency, () => new PrefersReducedTransparencyMediaFeature()},
+                {FeatureNames.Update, () => new UpdateMediaFeature()},
+                {FeatureNames.AnyHover, () => new AnyHoverMediaFeature()},
+                {FeatureNames.AnyPointer, () => new AnyPointerMediaFeature()},
             };
 
         #endregion
