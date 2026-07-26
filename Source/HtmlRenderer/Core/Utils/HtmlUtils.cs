@@ -301,7 +301,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Is the given html tag is single tag or can have content.
+        /// Is the given HTML tag is single tag or can have content.
         /// </summary>
         /// <param name="tagName">the tag to check (must be lower case)</param>
         /// <returns>true - is single tag, false - otherwise</returns>
@@ -311,7 +311,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Decode html encoded string to regular string.<br/>
+        /// Decode HTML encoded string to regular string.<br/>
         /// Handles &lt;, &gt;, "&amp;.
         /// </summary>
         /// <param name="str">the string to decode</param>
@@ -333,7 +333,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Encode regular string into html encoded string.<br/>
+        /// Encode regular string into HTML encoded string.<br/>
         /// Handles &lt;, &gt;, "&amp;.
         /// </summary>
         /// <param name="str">the string to encode</param>
@@ -354,7 +354,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         #region Private methods
 
         /// <summary>
-        /// Decode html special charecters encoded using char entity code (&#8364;)
+        /// Decode HTML special characters encoded using char entity code (&#8364;)
         /// </summary>
         /// <param name="str">the string to decode</param>
         /// <returns>decoded string</returns>
@@ -384,7 +384,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Decode html special charecters encoded using char entity name (&#euro;)
+        /// Decode HTML special characters encoded using char entity name (&#euro;)
         /// </summary>
         /// <param name="str">the string to decode</param>
         /// <returns>decoded string</returns>
@@ -403,7 +403,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                         str = str.Remove(idx, endIdx - idx + 1);
                         str = str.Insert(idx, c.ToString());
                     }
-                    else if(_decodeOnly.TryGetValue(key, out c))
+                    else if (_decodeOnly.TryGetValue(key, out c))
                     {
                         str = str.Remove(idx, endIdx - idx + 1);
                         str = str.Insert(idx, c.ToString());

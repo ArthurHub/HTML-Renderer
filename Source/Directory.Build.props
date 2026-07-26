@@ -15,6 +15,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>See https://github.com/ArthurHub/HTML-Renderer/releases.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <LangVersion>12.0</LangVersion>
   </PropertyGroup>
   <ItemGroup Condition="'$(IsTestProject)' != 'true'">
     <None Include="../../html.png" Pack="true" PackagePath="\"/>
