@@ -4,7 +4,7 @@
     <Authors>Arthur Teplitzki</Authors>
     <Owners>Arthur Teplitzki</Owners>
     <Company>Open source hosted on GitHub</Company>
-    <Copyright>Copyright © 2008-2025</Copyright>
+    <Copyright>Copyright © 2008-2026</Copyright>
     <Version>1.6.0-dev</Version>
     <AssemblyVersion>1.6.0.0</AssemblyVersion>
     <FileVersion>1.6.0.0</FileVersion>
@@ -16,7 +16,7 @@
     <PackageReleaseNotes>See https://github.com/ArthurHub/HTML-Renderer/releases.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(IsTestProject)' != 'true'">
     <None Include="../../html.png" Pack="true" PackagePath="\"/>
   </ItemGroup>
 </Project>
