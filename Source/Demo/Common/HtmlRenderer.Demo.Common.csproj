@@ -5,7 +5,6 @@
     <RootNamespace>TheArtOfDev.HtmlRenderer.Demo.Common</RootNamespace>
     <AssemblyName>HtmlRendererDemoCommon</AssemblyName>
 	<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-	<EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

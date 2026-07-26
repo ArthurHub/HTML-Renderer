@@ -4,7 +4,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>TheArtOfDev.HtmlRenderer</RootNamespace>
 	<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-	<EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
   <!-- NuGet Package Properties -->
   <PropertyGroup>
