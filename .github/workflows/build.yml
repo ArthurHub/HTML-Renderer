@@ -51,6 +51,11 @@ jobs:
     - name: Build
       run: dotnet build Source/HtmlRenderer.sln --configuration Release --no-restore
 
+    - name: Run Tests
+      run: dotnet test Source/HtmlRenderer.sln --configuration Release --no-build --logger trx --results-directory ${{ github.workspace }}/TestResults
+      env:
+        PDF_OUTPUT_DIRECTORY: ${{ github.workspace }}/pdf-artifacts/${{ matrix.platform.name }}-${{ matrix.dotnet.name }}
+
     - name: Create HtmlRenderer.Core NuGet package
       run: dotnet pack Source/HtmlRenderer/HtmlRenderer.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --no-build --verbosity normal --output ${{ env.NuGetDirectory }}
 
@@ -68,6 +73,14 @@ jobs:
       with:
         name: "HTML Renderer (${{ matrix.platform.name }} ${{ matrix.dotnet.name }})"
         path: ${{ env.NuGetDirectory }}/*.*nupkg
+
+    - name: Upload PDF artifacts
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: "PDF artifacts (${{ matrix.platform.name }} ${{ matrix.dotnet.name }})"
+        path: ${{ github.workspace }}/pdf-artifacts/**/*.pdf
+        if-no-files-found: ignore
 
     - name: NuGet Login
       if: startsWith(github.ref, 'refs/tags/') && matrix.dotnet.name == '.NET 8' && runner.os == 'Windows'
