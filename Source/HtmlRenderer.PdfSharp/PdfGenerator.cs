@@ -14,6 +14,7 @@ using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using System;
+using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
@@ -28,11 +29,11 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
     {
         /// <summary>
         /// Adds a font mapping from <paramref name="fromFamily"/> to <paramref name="toFamily"/> iff the <paramref name="fromFamily"/> is not found.<br/>
-        /// When the <paramref name="fromFamily"/> font is used in rendered html and is not found in existing 
+        /// When the <paramref name="fromFamily"/> font is used in rendered HTML and is not found in existing 
         /// fonts (installed or added) it will be replaced by <paramref name="toFamily"/>.<br/>
         /// </summary>
         /// <remarks>
-        /// This fonts mapping can be used as a fallback in case the requested font is not installed in the client system.
+        /// This font mapping can be used as a fallback in case the requested font is not installed in the client system.
         /// </remarks>
         /// <param name="fromFamily">the font family to replace</param>
         /// <param name="toFamily">the font family to replace with</param>
@@ -45,14 +46,37 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         }
 
         /// <summary>
+        /// Registers a custom directory to search for font files (TTF/OTF).<br/>
+        /// Fonts in this directory will be discovered and made available for rendering.
+        /// </summary>
+        /// <remarks>
+        /// This will automatically trigger a rediscovery of all fonts.
+        /// </remarks>
+        /// <param name="fontDirectory">the directory path containing font files</param>
+        public static void RegisterCustomFontDirectory(string fontDirectory)
+        {
+            ArgChecker.AssertArgNotNullOrEmpty(fontDirectory, "fontDirectory");
+
+            PdfSharpAdapter.Instance.FontResolver.RegisterCustomFontDirectory(fontDirectory);
+            
+            // Trigger a rediscovery
+            var fontFamilies = PdfSharpAdapter.Instance.FontResolver.DiscoverFontFamilies();
+            
+            foreach (var fontFamily in fontFamilies)
+            {
+                PdfSharpAdapter.Instance.AddFontFamily(new FontFamilyAdapter(new XFontFamily(fontFamily)));
+            }
+        }
+
+        /// <summary>
         /// Parse the given stylesheet to <see cref="CssData"/> object.<br/>
-        /// If <paramref name="combineWithDefault"/> is true the parsed css blocks are added to the 
-        /// default css data (as defined by W3), merged if class name already exists. If false only the data in the given stylesheet is returned.
+        /// If <paramref name="combineWithDefault"/> is true the parsed CSS blocks are added to the 
+        /// default CSS data (as defined by W3), merged if class name already exists. If false only the data in the given stylesheet is returned.
         /// </summary>
         /// <seealso cref="http://www.w3.org/TR/CSS21/sample.html"/>
         /// <param name="stylesheet">the stylesheet source to parse</param>
-        /// <param name="combineWithDefault">true - combine the parsed css data with default css data, false - return only the parsed css data</param>
-        /// <returns>the parsed css data</returns>
+        /// <param name="combineWithDefault">true - combine the parsed CSS data with default CSS data, false - return only the parsed CSS data</param>
+        /// <returns>the parsed CSS data</returns>
         public static CssData ParseStyleSheet(string stylesheet, bool combineWithDefault = true)
         {
             return CssData.Parse(PdfSharpAdapter.Instance, stylesheet, combineWithDefault);
@@ -64,10 +88,10 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// <param name="html">HTML source to create PDF from</param>
         /// <param name="pageSize">the page size to use for each page in the generated pdf </param>
         /// <param name="margin">the margin to use between the HTML and the edges of each page</param>
-        /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
+        /// <param name="cssData">optional: the style to use for HTML rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
-        /// <returns>the generated image of the html</returns>
+        /// <returns>the generated image of the HTML</returns>
         public static PdfDocument GeneratePdf(string html, PageSize pageSize, int margin = 20, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             var config = new PdfGenerateConfig();
@@ -81,10 +105,10 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// </summary>
         /// <param name="html">HTML source to create PDF from</param>
         /// <param name="config">the configuration to use for the PDF generation (page size/page orientation/margins/etc.)</param>
-        /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
+        /// <param name="cssData">optional: the style to use for HTML rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
-        /// <returns>the generated image of the html</returns>
+        /// <returns>the generated image of the HTML</returns>
         public static PdfDocument GeneratePdf(string html, PdfGenerateConfig config, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             // create PDF document to render the HTML into
@@ -103,10 +127,10 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// <param name="html">HTML source to create PDF from</param>
         /// <param name="pageSize">the page size to use for each page in the generated pdf </param>
         /// <param name="margin">the margin to use between the HTML and the edges of each page</param>
-        /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
+        /// <param name="cssData">optional: the style to use for HTML rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
-        /// <returns>the generated image of the html</returns>
+        /// <returns>the generated image of the HTML</returns>
         public static void AddPdfPages(PdfDocument document, string html, PageSize pageSize, int margin = 20, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             var config = new PdfGenerateConfig();
@@ -121,10 +145,10 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// <param name="document">PDF document to append pages to</param>
         /// <param name="html">HTML source to create PDF from</param>
         /// <param name="config">the configuration to use for the PDF generation (page size/page orientation/margins/etc.)</param>
-        /// <param name="cssData">optional: the style to use for html rendering (default - use W3 default style)</param>
+        /// <param name="cssData">optional: the style to use for HTML rendering (default - use W3 default style)</param>
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
-        /// <returns>the generated image of the html</returns>
+        /// <returns>the generated image of the HTML</returns>
         public static void AddPdfPages(PdfDocument document, string html, PdfGenerateConfig config, CssData cssData = null, EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
             XSize orgPageSize;

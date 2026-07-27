@@ -101,6 +101,9 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.FontResolution
         public void RegisterCustomFontDirectory(string fontDirectory)
         {
             _fontDiscoveryService.RegisterCustomFontDirectory(fontDirectory);
+            
+            // Invalidate the cache to trigger discovery
+            _fontMetadataCache.Clear();
         }
 
         public List<string> DiscoverFontFamilies()
