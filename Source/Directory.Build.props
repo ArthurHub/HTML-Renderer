@@ -5,12 +5,12 @@
     <Owners>Arthur Teplitzki</Owners>
     <Company>Open source hosted on GitHub</Company>
     <Copyright>Copyright © 2008-2026</Copyright>
-    <Version>1.6.0</Version>
-    <AssemblyVersion>1.6.0.0</AssemblyVersion>
-    <FileVersion>1.6.0.0</FileVersion>
+    <Version>2.0.0-dev</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
-    <PackageProjectUrl>https://codeplexarchive.org/project/HtmlRenderer</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/ArthurHub/HTML-Renderer</PackageProjectUrl>
     <PackageIcon>html.png</PackageIcon>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>See https://github.com/ArthurHub/HTML-Renderer/releases.</PackageReleaseNotes>
