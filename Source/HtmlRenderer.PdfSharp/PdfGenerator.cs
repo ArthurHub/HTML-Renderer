@@ -197,6 +197,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                         var page = document.AddPage();
                         page.Height = XUnit.FromPoint(orgPageSize.Height);
                         page.Width = XUnit.FromPoint(orgPageSize.Width);
+                        page.Orientation = config.PageOrientation;
 
                         using (var g = XGraphics.FromPdfPage(page))
                         {
