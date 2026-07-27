@@ -33,6 +33,11 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         private static readonly PdfSharpAdapter _instance = new PdfSharpAdapter();
 
+        /// <summary>
+        /// Font resolver instance for managing font discovery and resolution.
+        /// </summary>
+        private FontResolver _fontResolver;
+
         #endregion
 
 
@@ -41,12 +46,12 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
         /// </summary>
         private PdfSharpAdapter()
         {
-            var fontResolver = FontResolver.Register();
+            _fontResolver = FontResolver.Register();
 
             AddFontFamilyMapping("monospace", "Courier New");
             AddFontFamilyMapping("Helvetica", "Arial");
 
-            var fontFamilies = fontResolver.DiscoverFontFamilies();
+            var fontFamilies = _fontResolver.DiscoverFontFamilies();
             
             foreach (var fontFamily in fontFamilies)
             {
@@ -60,6 +65,14 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
         public static PdfSharpAdapter Instance
         {
             get { return _instance; }
+        }
+
+        /// <summary>
+        /// Get the FontResolver instance for advanced font management.
+        /// </summary>
+        internal FontResolver FontResolver
+        {
+            get { return _fontResolver; }
         }
 
         protected override RColor GetColorInt(string colorName)
