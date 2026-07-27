@@ -16,7 +16,7 @@ For documentation, check out the project on the [CodePlex Archive](https://codep
 
 ## Download
 
-The release packages on [GitHub](https://github.com/ArthurHub/HTML-Renderer/releases) or the [CodePlex Archive](https://codeplexarchive.org/project/HtmlRenderer) also contains a Demo application to explore HML Renderer's capabilities.
+The release packages on [GitHub](https://github.com/ArthurHub/HTML-Renderer/releases) also contain a Demo application to explore HML Renderer's capabilities.
 
 The latest NuGet packages can be found on NuGet.org:
 
