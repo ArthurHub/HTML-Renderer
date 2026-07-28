@@ -17,7 +17,9 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using TheArtOfDev.HtmlRenderer.Demo.Common;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
 using TheArtOfDev.HtmlRenderer.WPF;
+using PdfSharp;
 
 namespace TheArtOfDev.HtmlRenderer.Demo.WPF
 {
@@ -109,6 +111,24 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
             w.Width = Width * 0.8;
             w.Height = Height * 0.8;
             w.ShowDialog();
+        }
+
+        /// <summary>
+        /// Create PDF using PdfSharp project, save to file and open that file.
+        /// </summary>
+        private void OnGeneratePdf_Click(object sender, RoutedEventArgs e)
+        {
+            var config = new PdfGenerateConfig();
+            config.PageSize = PageSize.A4;
+            config.SetMargins(20);
+
+            var doc = PdfGenerator.GeneratePdf(_mainControl.GetHtml(), config, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoadPdfSharp);
+
+            var tmpFile = Path.GetTempFileName();
+            var pdfFile = Path.ChangeExtension(tmpFile, ".pdf");
+            doc.Save(pdfFile);
+
+            Process.Start(new ProcessStartInfo(pdfFile) { UseShellExecute = true });
         }
 
         /// <summary>
