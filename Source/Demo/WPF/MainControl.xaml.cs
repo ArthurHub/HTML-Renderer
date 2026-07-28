@@ -128,6 +128,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
         public void SetHtml(string html)
         {
             _htmlPanel.Text = html;
+            UpdateFixedHtmlView();
             if (string.IsNullOrWhiteSpace(html))
             {
                 _htmlPanel.InvalidateMeasure();
@@ -219,9 +220,11 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
                 {
                     _htmlPanel.AvoidImagesLateLoading = !sample.FullName.Contains("Many images");
                     _htmlPanel.Text = sample.Html;
+                    UpdateFixedHtmlView();
                 }
                 catch (Exception ex)
                 {
+                    SetFixedHtmlText(string.Empty);
                     MessageBox.Show(ex.ToString(), "Failed to render HTML");
                 }
 
@@ -255,9 +258,11 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
                 try
                 {
                     _htmlPanel.Text = GetHtmlEditorText();
+                    UpdateFixedHtmlView();
                 }
                 catch (Exception ex)
                 {
+                    SetFixedHtmlText(string.Empty);
                     MessageBox.Show(ex.ToString(), "Failed to render HTML");
                 }
 
@@ -308,6 +313,23 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
         }
 
         /// <summary>
+        /// Update the fixed html shown in the read-only editor.
+        /// </summary>
+        private void UpdateFixedHtmlView()
+        {
+            SetFixedHtmlText(HtmlPrettyPrinter.Format(_htmlPanel.GetHtml() ?? string.Empty), _coloredCheckBox.IsChecked.GetValueOrDefault(false));
+        }
+
+        /// <summary>
+        /// Set formatted HTML text in the fixed HTML viewer.
+        /// </summary>
+        private void SetFixedHtmlText(string text, bool color = true)
+        {
+            text = text ?? string.Empty;
+            _fixedHtmlEditor.Text = color ? HtmlSyntaxHighlighter.Process(text) : text.Replace("\n", "\\par ");
+        }
+
+        /// <summary>
         /// Reload the html shown in the html editor by running coloring again.
         /// </summary>
         private void OnRefreshLink_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -320,7 +342,9 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
         /// </summary>
         private void OnColoredCheckbox_click(object sender, RoutedEventArgs e)
         {
-            SetColoredText(GetHtmlEditorText(), _coloredCheckBox.IsChecked.GetValueOrDefault(false));
+            var color = _coloredCheckBox.IsChecked.GetValueOrDefault(false);
+            SetColoredText(GetHtmlEditorText(), color);
+            UpdateFixedHtmlView();
         }
 
         /// <summary>
