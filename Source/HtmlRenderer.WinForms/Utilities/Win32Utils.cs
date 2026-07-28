@@ -47,11 +47,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Utilities
 
         public const int TextAlignBaselineRtl = 256 + 24;
 
-        [DllImport("user32.dll")]
-        public static extern int SetCursor(int hCursor);
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr SetCursor(IntPtr hCursor);
 
-        [DllImport("user32.dll")]
-        public static extern int LoadCursor(int hInstance, int lpCursorName);
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr LoadCursor(IntPtr hInstance, int lpCursorName);
 
         /// <summary>
         /// Create a compatible memory HDC from the given HDC.<br/>

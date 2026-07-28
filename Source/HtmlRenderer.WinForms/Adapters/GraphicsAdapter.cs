@@ -63,6 +63,12 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
         private readonly bool _useGdiPlusTextRendering;
 
         /// <summary>
+        /// True when <see cref="_g"/> has a non-identity world transform (e.g. zoom ScaleTransform).
+        /// GDI TextOut ignores the GDI+ world transform, so drawing must use GDI+ in that case.
+        /// </summary>
+        private readonly bool _hasWorldTransform;
+
+        /// <summary>
         /// the initialized HDC used
         /// </summary>
         private IntPtr _hdc;
@@ -105,7 +111,13 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
             _g = g;
             _releaseGraphics = releaseGraphics;
 
-            _useGdiPlusTextRendering = useGdiPlusTextRendering;
+            // When a world transform is active (HtmlPanel zoom), force GDI+ for DrawString so text scales.
+            // Layout measurement still prefers GDI when requested (transform is identity on layout Graphics).
+            using (var transform = g.Transform)
+            {
+                _hasWorldTransform = !transform.IsIdentity;
+            }
+            _useGdiPlusTextRendering = useGdiPlusTextRendering || _hasWorldTransform;
         }
 
         public override void PopClip()
@@ -148,7 +160,9 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
 
         public override RSize MeasureString(string str, RFont font)
         {
-            if (_useGdiPlusTextRendering)
+            // Prefer GDI metrics when layout has no world transform, even if draw uses GDI+ for zoom.
+            // Measuring with an active ScaleTransform would inflate sizes and break layout.
+            if (_useGdiPlusTextRendering && !_hasWorldTransform)
             {
                 ReleaseHdc();
                 var fontAdapter = (FontAdapter)font;
@@ -187,7 +201,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
         {
             charFit = 0;
             charFitWidth = 0;
-            if (_useGdiPlusTextRendering)
+            if (_useGdiPlusTextRendering && !_hasWorldTransform)
             {
                 ReleaseHdc();
 
@@ -216,7 +230,8 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
 
         public override void DrawString(string str, RFont font, RColor color, RPoint point, RSize size, bool rtl)
         {
-            if (_useGdiPlusTextRendering)
+            // GDI TextOut ignores Graphics.ScaleTransform; use GDI+ whenever a world transform is active (zoom).
+            if (_useGdiPlusTextRendering || _hasWorldTransform)
             {
                 ReleaseHdc();
                 SetRtlAlignGdiPlus(rtl);

@@ -39,9 +39,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
     internal sealed class ImageDownloader : IDisposable
     {
         /// <summary>
-        /// the web client used to download image from URL (to cancel on dispose)
+        /// List of web clients used to download images (to allow cancel on dispose).
         /// </summary>
         private readonly List<WebClient> _clients = new List<WebClient>();
+
+        /// <summary>
+        /// Lock object for thread-safe _clients access.
+        /// </summary>
+        private readonly object _clientsLock = new object();
 
         /// <summary>
         /// dictionary of image cache path to callbacks of download to handle multiple requests to download the same image 
@@ -111,7 +116,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             {
                 using (var client = new WebClient())
                 {
-                    _clients.Add(client);
+                    lock (_clientsLock) { _clients.Add(client); }
                     client.DownloadFile(source, tempPath);
                     OnDownloadImageCompleted(client, source, tempPath, filePath, null, false);
                 }
@@ -133,7 +138,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             try
             {
                 var client = new WebClient();
-                _clients.Add(client);
+                lock (_clientsLock) { _clients.Add(client); }
                 client.DownloadFileCompleted += OnDownloadImageAsyncCompleted;
                 client.DownloadFileAsync(downloadData._uri, downloadData._tempPath, downloadData);
             }
@@ -226,17 +231,20 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         private void ReleaseObjects()
         {
             _imageDownloadCallbacks.Clear();
-            while (_clients.Count > 0)
+            lock (_clientsLock)
             {
-                try
+                while (_clients.Count > 0)
                 {
-                    var client = _clients[0];
-                    client.CancelAsync();
-                    client.Dispose();
-                    _clients.RemoveAt(0);
+                    try
+                    {
+                        var client = _clients[0];
+                        client.CancelAsync();
+                        client.Dispose();
+                        _clients.RemoveAt(0);
+                    }
+                    catch
+                    { }
                 }
-                catch
-                { }
             }
         }
 

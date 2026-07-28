@@ -365,7 +365,7 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         /// </summary>
         /// <param name="image">the image returned from load event</param>
         /// <returns>converted image or null</returns>
-        protected abstract RImage ConvertImageInt(object image);
+        protected abstract RImage? ConvertImageInt(object? image);
 
         /// <summary>
         /// Create an <see cref="RImage"/> object from the given stream.
