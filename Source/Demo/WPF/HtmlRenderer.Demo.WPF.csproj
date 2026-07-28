@@ -15,6 +15,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HtmlRenderer.PdfSharp\HtmlRenderer.PdfSharp.csproj" />
     <ProjectReference Include="..\..\HtmlRenderer.WPF\HtmlRenderer.WPF.csproj" />
     <ProjectReference Include="..\..\HtmlRenderer\HtmlRenderer.csproj" />
     <ProjectReference Include="..\Common\HtmlRenderer.Demo.Common.csproj" />

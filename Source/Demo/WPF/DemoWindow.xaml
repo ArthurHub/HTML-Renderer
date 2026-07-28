@@ -43,7 +43,7 @@
                         <TextBlock Text="Generate Image" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
-                <Button IsEnabled="False">
+                <Button Click="OnGeneratePdf_Click">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding ConverterParameter=pdf, Converter={StaticResource Converter}}" MaxHeight="18" Margin="0 0 5 0"/>
                         <TextBlock Text="Generate PDF" VerticalAlignment="Center"/>

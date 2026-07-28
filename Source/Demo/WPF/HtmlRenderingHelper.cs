@@ -16,6 +16,7 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using PdfSharp.Drawing;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Demo.Common;
 using TheArtOfDev.HtmlRenderer.WPF;
@@ -60,6 +61,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
                     return new PngBitmapEncoder();
 
             }
+
         }
 
         /// <summary>
@@ -121,9 +123,26 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
         /// <summary>
         /// On image load in renderer set the image by event async.
         /// </summary>
+        public static void OnImageLoadPdfSharp(object sender, HtmlImageLoadEventArgs args)
+        {
+            ImageLoad(args, true);
+        }
+
+        /// <summary>
+        /// On image load in renderer set the image by event async.
+        /// </summary>
         public static void ImageLoad(HtmlImageLoadEventArgs e)
         {
+            ImageLoad(e, false);
+        }
+
+        /// <summary>
+        /// On image load in renderer set the image by event async.
+        /// </summary>
+        public static void ImageLoad(HtmlImageLoadEventArgs e, bool pdfSharp)
+        {
             var img = TryLoadResourceImage(e.Src);
+            var imgObj = pdfSharp ? (object)(img != null ? CreatePdfSharpImage(img) : null) : img;
 
             if (!e.Handled && e.Attributes != null)
             {
@@ -150,13 +169,31 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WPF
                 {
                     var split = e.Attributes["byrect"].Split(',');
                     var rect = new Rect(Int32.Parse(split[0]), Int32.Parse(split[1]), Int32.Parse(split[2]), Int32.Parse(split[3]));
-                    e.Callback(img ?? TryLoadResourceImage("htmlicon"), rect.X, rect.Y, rect.Width, rect.Height);
+                    var defaultResourceImage = TryLoadResourceImage("htmlicon");
+                    var defaultImg = pdfSharp && defaultResourceImage != null ? (object)CreatePdfSharpImage(defaultResourceImage) : defaultResourceImage;
+                    e.Callback(imgObj ?? defaultImg, rect.X, rect.Y, rect.Width, rect.Height);
                     return;
                 }
             }
 
             if (img != null)
-                e.Callback(img);
+                e.Callback(imgObj);
+        }
+
+        /// <summary>
+        /// Convert image to PNG before creating <see cref="XImage"/> because PdfSharp does not support GIF streams.
+        /// </summary>
+        private static XImage CreatePdfSharpImage(BitmapSource image)
+        {
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(image));
+
+            using (var ms = new MemoryStream())
+            {
+                encoder.Save(ms);
+                ms.Position = 0;
+                return XImage.FromStream(ms);
+            }
         }
     }
 }
