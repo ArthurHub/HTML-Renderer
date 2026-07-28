@@ -52,7 +52,15 @@ jobs:
       run: dotnet build Source/HtmlRenderer.sln --configuration Release --no-restore
 
     - name: Run Tests
+      if: runner.os == 'Windows'
       run: dotnet test Source/HtmlRenderer.sln --configuration Release --no-build --logger trx --results-directory ${{ github.workspace }}/TestResults
+      env:
+        PDF_OUTPUT_DIRECTORY: ${{ github.workspace }}/pdf-artifacts/${{ matrix.platform.name }}-${{ matrix.dotnet.name }}
+        HTML_RENDERER_REGRESSION_OUTPUT_DIRECTORY: ${{ github.workspace }}/image-regression/${{ matrix.platform.name }}-${{ matrix.dotnet.name }}
+
+    - name: Run Tests
+      if: runner.os != 'Windows'
+      run: dotnet test Source/Test/**/*.Test.csproj --configuration Release --no-build --logger trx --results-directory ${{ github.workspace }}/TestResults
       env:
         PDF_OUTPUT_DIRECTORY: ${{ github.workspace }}/pdf-artifacts/${{ matrix.platform.name }}-${{ matrix.dotnet.name }}
 
@@ -80,6 +88,14 @@ jobs:
       with:
         name: "PDF artifacts (${{ matrix.platform.name }} ${{ matrix.dotnet.name }})"
         path: ${{ github.workspace }}/pdf-artifacts/**/*.pdf
+        if-no-files-found: ignore
+
+    - name: Upload image regression artifacts
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: "Image regression artifacts (${{ matrix.platform.name }} ${{ matrix.dotnet.name }})"
+        path: ${{ github.workspace }}/image-regression/**/*.png
         if-no-files-found: ignore
 
     - name: NuGet Login
