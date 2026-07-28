@@ -31,11 +31,15 @@
             this._splitContainer1 = new System.Windows.Forms.SplitContainer();
             this._samplesTreeView = new System.Windows.Forms.TreeView();
             this._splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this._splitContainer3 = new System.Windows.Forms.SplitContainer();
             this._htmlPanel = new HtmlRenderer.WinForms.HtmlPanel();
             this._splitter = new System.Windows.Forms.Splitter();
             this._webBrowser = new System.Windows.Forms.WebBrowser();
+            this._inputHtmlLabel = new System.Windows.Forms.Label();
             this._reloadColorsLink = new System.Windows.Forms.LinkLabel();
             this._htmlEditor = new System.Windows.Forms.RichTextBox();
+            this._fixedHtmlLabel = new System.Windows.Forms.Label();
+            this._fixedHtmlEditor = new System.Windows.Forms.RichTextBox();
             this._htmlToolTip = new HtmlRenderer.WinForms.HtmlToolTip();
             this._splitContainer1.Panel1.SuspendLayout();
             this._splitContainer1.Panel2.SuspendLayout();
@@ -43,6 +47,9 @@
             this._splitContainer2.Panel1.SuspendLayout();
             this._splitContainer2.Panel2.SuspendLayout();
             this._splitContainer2.SuspendLayout();
+            this._splitContainer3.Panel1.SuspendLayout();
+            this._splitContainer3.Panel2.SuspendLayout();
+            this._splitContainer3.SuspendLayout();
             this.SuspendLayout();
             // 
             // _splitContainer1
@@ -89,12 +96,34 @@
             // 
             // _splitContainer2.Panel2
             // 
-            this._splitContainer2.Panel2.Controls.Add(this._reloadColorsLink);
-            this._splitContainer2.Panel2.Controls.Add(this._htmlEditor);
+            this._splitContainer2.Panel2.Controls.Add(this._splitContainer3);
             this._splitContainer2.Size = new System.Drawing.Size(729, 593);
             this._splitContainer2.SplitterDistance = 476;
             this._splitContainer2.TabIndex = 13;
             this._splitContainer2.TabStop = false;
+            // 
+            // _splitContainer3
+            // 
+            this._splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._splitContainer3.Location = new System.Drawing.Point(0, 0);
+            this._splitContainer3.Name = "_splitContainer3";
+            // 
+            // _splitContainer3.Panel1
+            // 
+            this._splitContainer3.Panel1.Controls.Add(this._htmlEditor);
+            this._splitContainer3.Panel1.Controls.Add(this._reloadColorsLink);
+            this._splitContainer3.Panel1.Controls.Add(this._inputHtmlLabel);
+            // 
+            // _splitContainer3.Panel2
+            // 
+            this._splitContainer3.Panel2.Controls.Add(this._fixedHtmlEditor);
+            this._splitContainer3.Panel2.Controls.Add(this._fixedHtmlLabel);
+            this._splitContainer3.Size = new System.Drawing.Size(729, 113);
+            this._splitContainer3.Panel1MinSize = 150;
+            this._splitContainer3.Panel2MinSize = 150;
+            this._splitContainer3.SplitterDistance = 364;
+            this._splitContainer3.TabIndex = 9;
+            this._splitContainer3.TabStop = false;
             // 
             // _htmlPanel
             // 
@@ -130,12 +159,22 @@
             this._webBrowser.TabIndex = 7;
             this._webBrowser.Visible = false;
             // 
+            // _inputHtmlLabel
+            // 
+            this._inputHtmlLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this._inputHtmlLabel.Location = new System.Drawing.Point(0, 0);
+            this._inputHtmlLabel.Name = "_inputHtmlLabel";
+            this._inputHtmlLabel.Size = new System.Drawing.Size(364, 24);
+            this._inputHtmlLabel.TabIndex = 9;
+            this._inputHtmlLabel.Text = "Input HTML";
+            this._inputHtmlLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // _reloadColorsLink
             // 
-            this._reloadColorsLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this._reloadColorsLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._reloadColorsLink.AutoSize = true;
             this._reloadColorsLink.BackColor = System.Drawing.Color.White;
-            this._reloadColorsLink.Location = new System.Drawing.Point(666, 97);
+            this._reloadColorsLink.Location = new System.Drawing.Point(277, 6);
             this._reloadColorsLink.Name = "_reloadColorsLink";
             this._reloadColorsLink.Size = new System.Drawing.Size(44, 13);
             this._reloadColorsLink.TabIndex = 8;
@@ -146,13 +185,36 @@
             // _htmlEditor
             // 
             this._htmlEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._htmlEditor.Location = new System.Drawing.Point(0, 0);
+            this._htmlEditor.Location = new System.Drawing.Point(0, 24);
             this._htmlEditor.Name = "_htmlEditor";
-            this._htmlEditor.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
-            this._htmlEditor.Size = new System.Drawing.Size(729, 113);
+            this._htmlEditor.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Both;
+            this._htmlEditor.Size = new System.Drawing.Size(364, 89);
             this._htmlEditor.TabIndex = 7;
             this._htmlEditor.Text = "";
+            this._htmlEditor.WordWrap = false;
             this._htmlEditor.TextChanged += new System.EventHandler(this.OnHtmlEditorTextChanged);
+            // 
+            // _fixedHtmlLabel
+            // 
+            this._fixedHtmlLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this._fixedHtmlLabel.Location = new System.Drawing.Point(0, 0);
+            this._fixedHtmlLabel.Name = "_fixedHtmlLabel";
+            this._fixedHtmlLabel.Size = new System.Drawing.Size(361, 24);
+            this._fixedHtmlLabel.TabIndex = 10;
+            this._fixedHtmlLabel.Text = "Fixed HTML";
+            this._fixedHtmlLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // _fixedHtmlEditor
+            // 
+            this._fixedHtmlEditor.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._fixedHtmlEditor.Location = new System.Drawing.Point(0, 24);
+            this._fixedHtmlEditor.Name = "_fixedHtmlEditor";
+            this._fixedHtmlEditor.ReadOnly = true;
+            this._fixedHtmlEditor.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Both;
+            this._fixedHtmlEditor.Size = new System.Drawing.Size(361, 89);
+            this._fixedHtmlEditor.TabIndex = 11;
+            this._fixedHtmlEditor.Text = "";
+            this._fixedHtmlEditor.WordWrap = false;
             // 
             // _htmlToolTip
             // 
@@ -176,8 +238,12 @@
             this._splitContainer1.ResumeLayout(false);
             this._splitContainer2.Panel1.ResumeLayout(false);
             this._splitContainer2.Panel2.ResumeLayout(false);
-            this._splitContainer2.Panel2.PerformLayout();
             this._splitContainer2.ResumeLayout(false);
+            this._splitContainer3.Panel1.ResumeLayout(false);
+            this._splitContainer3.Panel1.PerformLayout();
+            this._splitContainer3.Panel2.ResumeLayout(false);
+            this._splitContainer3.Panel2.PerformLayout();
+            this._splitContainer3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -187,11 +253,15 @@
         private System.Windows.Forms.SplitContainer _splitContainer1;
         private System.Windows.Forms.TreeView _samplesTreeView;
         private System.Windows.Forms.SplitContainer _splitContainer2;
+        private System.Windows.Forms.SplitContainer _splitContainer3;
         private HtmlRenderer.WinForms.HtmlPanel _htmlPanel;
         private System.Windows.Forms.Splitter _splitter;
         private System.Windows.Forms.WebBrowser _webBrowser;
+        private System.Windows.Forms.Label _inputHtmlLabel;
         private System.Windows.Forms.LinkLabel _reloadColorsLink;
         private System.Windows.Forms.RichTextBox _htmlEditor;
+        private System.Windows.Forms.Label _fixedHtmlLabel;
+        private System.Windows.Forms.RichTextBox _fixedHtmlEditor;
         private HtmlRenderer.WinForms.HtmlToolTip _htmlToolTip;
     }
 }

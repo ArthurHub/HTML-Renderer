@@ -64,6 +64,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
             _htmlToolTip.SetToolTip(_htmlPanel, Resources.Tooltip);
 
             _htmlEditor.Font = new Font(FontFamily.GenericMonospace, 10);
+            _fixedHtmlEditor.Font = _htmlEditor.Font;
 
             LoadSamples();
 
@@ -126,6 +127,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         public void SetHtml(string html)
         {
             _htmlPanel.Text = html;
+            UpdateFixedHtmlView();
         }
 
 
@@ -203,9 +205,11 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
                     _htmlPanel.AvoidImagesLateLoading = !sample.FullName.Contains("Many images");
 
                     _htmlPanel.Text = sample.Html;
+                    UpdateFixedHtmlView();
                 }
                 catch (Exception ex)
                 {
+                    SetColoredText(_fixedHtmlEditor, string.Empty);
                     MessageBox.Show(ex.ToString(), "Failed to render HTML");
                 }
 
@@ -239,9 +243,11 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
                 try
                 {
                     _htmlPanel.Text = _htmlEditor.Text;
+                    UpdateFixedHtmlView();
                 }
                 catch (Exception ex)
                 {
+                    SetColoredText(_fixedHtmlEditor, string.Empty);
                     MessageBox.Show(ex.ToString(), "Failed to render HTML");
                 }
 
@@ -289,6 +295,14 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         }
 
         /// <summary>
+        /// Update the fixed html shown in the read-only editor.
+        /// </summary>
+        private void UpdateFixedHtmlView()
+        {
+            SetColoredText(_fixedHtmlEditor, HtmlPrettyPrinter.Format(_htmlPanel.GetHtml() ?? string.Empty));
+        }
+
+        /// <summary>
         /// Reload the html shown in the html editor by running coloring again.
         /// </summary>
         private void OnReloadColorsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -329,10 +343,18 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         /// </summary>
         private void SetColoredText(string text)
         {
-            var selectionStart = _htmlEditor.SelectionStart;
-            _htmlEditor.Clear();
-            _htmlEditor.Rtf = HtmlSyntaxHighlighter.Process(text);
-            _htmlEditor.SelectionStart = selectionStart;
+            SetColoredText(_htmlEditor, text);
+        }
+
+        /// <summary>
+        /// Set html syntax color text on the given RTF html editor.
+        /// </summary>
+        private static void SetColoredText(RichTextBox richTextBox, string text)
+        {
+            var selectionStart = richTextBox.SelectionStart;
+            richTextBox.Clear();
+            richTextBox.Rtf = HtmlSyntaxHighlighter.Process(text ?? string.Empty);
+            richTextBox.SelectionStart = Math.Min(selectionStart, richTextBox.TextLength);
         }
 
         #endregion
