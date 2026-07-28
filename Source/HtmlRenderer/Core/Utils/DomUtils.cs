@@ -789,7 +789,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
 
             // collect all element style properties including from stylesheet
             var tagStyles = new Dictionary<string, string>();
-            var tagCssBlock = box.HtmlContainer.CssData.GetCssBlock(box.HtmlTag.Name);
+            var cssData = box.HtmlContainer.CssData;
+            var tagCssBlock = cssData != null ? cssData.GetCssBlock(box.HtmlTag.Name) : null;
             if (tagCssBlock != null)
             {
                 // TODO:a handle selectors
@@ -807,14 +808,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     if (styleGen == HtmlGenerationStyle.Inline && att.Key == HtmlConstants.Style)
                     {
                         // if inline style add the styles to the collection
-                        var block = cssParser.ParseCssBlock(box.HtmlTag.Name, box.HtmlTag.TryGetAttribute("style"));
-                        foreach (var prop in block.Properties)
-                            tagStyles[prop.Key] = prop.Value;
+                        var block = cssParser != null ? cssParser.ParseCssBlock(box.HtmlTag.Name, box.HtmlTag.TryGetAttribute("style")) : null;
+                        if (block != null)
+                        {
+                            foreach (var prop in block.Properties)
+                                tagStyles[prop.Key] = prop.Value;
+                        }
                     }
                     else if (styleGen == HtmlGenerationStyle.Inline && att.Key == HtmlConstants.Class)
                     {
                         // if inline style convert the style class to actual properties and add to collection
-                        var cssBlocks = box.HtmlContainer.CssData.GetCssBlock("." + att.Value);
+                        var cssBlocks = cssData != null ? cssData.GetCssBlock("." + att.Value) : null;
                         if (cssBlocks != null)
                         {
                             // TODO:a handle selectors
