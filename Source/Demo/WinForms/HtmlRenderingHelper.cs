@@ -14,6 +14,7 @@ using PdfSharp.Drawing;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
@@ -71,18 +72,11 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         public static XImage TryLoadResourceXImage(string src)
         {
             var img = TryLoadResourceImage(src);
-            XImage xImg;
 
             if (img == null)
                 return null;
 
-            using (var ms = new MemoryStream())
-            {
-                img.Save(ms, img.RawFormat);
-                xImg = img != null ? XImage.FromStream(ms) : null;
-            }
-
-            return xImg;
+            return CreatePdfSharpImage(img);
         }
 
         /// <summary>
@@ -107,20 +101,10 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
         public static void ImageLoad(HtmlImageLoadEventArgs e, bool pdfSharp)
         {
             var img = TryLoadResourceImage(e.Src);
-            XImage xImg = null;
-
-            if (img != null)
-            {
-                using (var ms = new MemoryStream())
-                {
-                    img.Save(ms, img.RawFormat);
-                    xImg = img != null ? XImage.FromStream(ms) : null;
-                }
-            }
 
             object imgObj;
             if (pdfSharp)
-                imgObj = xImg;
+                imgObj = img != null ? CreatePdfSharpImage(img) : null;
             else
                 imgObj = img;
 
@@ -156,6 +140,18 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
 
             if (img != null)
                 e.Callback(imgObj);
+        }
+
+        /// <summary>
+        /// Convert image to PNG before creating <see cref="XImage"/> because PdfSharp does not support GIF streams.
+        /// </summary>
+        private static XImage CreatePdfSharpImage(Image img)
+        {
+            using (var ms = new MemoryStream())
+            {
+                img.Save(ms, ImageFormat.Png);
+                return XImage.FromStream(ms);
+            }
         }
     }
 }
