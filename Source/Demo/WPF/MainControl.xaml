@@ -37,16 +37,48 @@
                 <WebBrowser x:Name="_webBrowser" Grid.Column="2" Visibility="Collapsed"/>
             </Grid>
             <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="4" Background="#BFDBFF" />
-            <xctk:RichTextBox x:Name="_htmlEditor" Grid.Row="2" VerticalScrollBarVisibility="Visible" BorderThickness="0" 
-                         TextChanged="OnHtmlEditor_TextChanged" />
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MinWidth="150" />
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="*" MinWidth="150" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" VerticalAlignment="Center">Input HTML</Label>
+                        <Label Grid.Column="1" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="11" Foreground="Blue" Cursor="Hand"
+                               MouseLeftButtonUp="OnRefreshLink_MouseLeftButtonUp">
+                            <Underline>Refresh</Underline>
+                        </Label>
+                        <CheckBox x:Name="_coloredCheckBox" Grid.Column="2" VerticalAlignment="Center" FontSize="11" Foreground="Blue" Cursor="Hand"
+                                  Click="OnColoredCheckbox_click">
+                            <Underline>Colored</Underline>
+                        </CheckBox>
+                    </Grid>
+                    <xctk:RichTextBox x:Name="_htmlEditor" Grid.Row="1" BorderThickness="0"
+                                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+                                      TextChanged="OnHtmlEditor_TextChanged" />
+                </Grid>
+                <GridSplitter Grid.Column="1" Width="4" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Background="#BFDBFF" />
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" VerticalAlignment="Center">Fixed HTML</Label>
+                    <xctk:RichTextBox x:Name="_fixedHtmlEditor" Grid.Row="1" BorderThickness="0" IsReadOnly="True"
+                                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" />
+                </Grid>
+            </Grid>
         </Grid>
-        <Label HorizontalAlignment="Right" Margin="0,0,16,14" VerticalAlignment="Bottom" Grid.Column="1" FontSize="11" Foreground="Blue" Cursor="Hand"
-               MouseLeftButtonUp="OnRefreshLink_MouseLeftButtonUp">
-            <Underline>Refresh</Underline>
-        </Label>
-        <CheckBox x:Name="_coloredCheckBox" HorizontalAlignment="Right" Margin="0,0,22,2" VerticalAlignment="Bottom" Grid.Column="1" FontSize="11" Foreground="Blue" Cursor="Hand"
-               Click="OnColoredCheckbox_click">
-            <Underline>Colored</Underline>
-        </CheckBox>
     </Grid>
 </UserControl>
