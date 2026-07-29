@@ -88,7 +88,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
             return new BrushAdapter(new LinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), (float)angle), true);
         }
 
-        protected override RImage ConvertImageInt(object image)
+        protected override RImage? ConvertImageInt(object? image)
         {
             return image != null ? new ImageAdapter((Image)image) : null;
         }

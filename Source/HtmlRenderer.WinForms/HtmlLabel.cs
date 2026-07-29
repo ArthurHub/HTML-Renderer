@@ -75,7 +75,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <summary>
         /// Underline html container instance.
         /// </summary>
-        protected HtmlContainer _htmlContainer;
+        protected HtmlContainer? _htmlContainer;
 
         /// <summary>
         /// The current border style of the control
@@ -85,17 +85,17 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <summary>
         /// the raw base stylesheet data used in the control
         /// </summary>
-        protected string _baseRawCssData;
+        protected string? _baseRawCssData;
 
         /// <summary>
         /// the base stylesheet data used in the panel
         /// </summary>
-        protected CssData _baseCssData;
+        protected CssData? _baseCssData;
 
         /// <summary>
         /// the current html text set in the control
         /// </summary>
-        protected string _text;
+        protected string? _text;
 
         /// <summary>
         /// is to handle auto size of the control height only
@@ -296,7 +296,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         [Description("Set base stylesheet to be used by html rendered in the control.")]
         [Category("Appearance")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Windows.Forms.Design, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", "System.Drawing.Design.UITypeEditor, System.Windows.Forms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
         public virtual string BaseStylesheet
         {
             get { return _baseRawCssData; }
@@ -488,21 +488,17 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         {
             if (_htmlContainer != null)
             {
-                Graphics g = CreateGraphics();
-                if (g != null)
+                using (var g = CreateGraphics())
+                using (var ig = new GraphicsAdapter(g, _htmlContainer.UseGdiPlusTextRendering))
                 {
-                    using (g)
-                    using (var ig = new GraphicsAdapter(g, _htmlContainer.UseGdiPlusTextRendering))
-                    {
-                        var newSize = HtmlRendererUtils.Layout(ig,
+                    var newSize = HtmlRendererUtils.Layout(ig,
                             _htmlContainer.HtmlContainerInt,
                             new RSize(ClientSize.Width - Padding.Horizontal, ClientSize.Height - Padding.Vertical),
                             new RSize(MinimumSize.Width - Padding.Horizontal, MinimumSize.Height - Padding.Vertical),
                             new RSize(MaximumSize.Width - Padding.Horizontal, MaximumSize.Height - Padding.Vertical),
                             AutoSize,
                             AutoSizeHeightOnly);
-                        ClientSize = Utils.ConvertRound(new RSize(newSize.Width + Padding.Horizontal, newSize.Height + Padding.Vertical));
-                    }
+                    ClientSize = Utils.ConvertRound(new RSize(newSize.Width + Padding.Horizontal, newSize.Height + Padding.Vertical));
                 }
             }
             base.OnLayout(levent);
@@ -659,7 +655,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                 try
                 {
                     // Replace .NET's hand cursor with the OS cursor
-                    Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IdcHand));
+                    Win32Utils.SetCursor(Win32Utils.LoadCursor(IntPtr.Zero, Win32Utils.IdcHand));
                     m.Result = IntPtr.Zero;
                     return;
                 }

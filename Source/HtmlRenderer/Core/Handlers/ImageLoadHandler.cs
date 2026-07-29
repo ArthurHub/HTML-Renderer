@@ -55,6 +55,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         private readonly ActionInt<RImage, RRect, bool> _loadCompleteCallback;
 
         /// <summary>
+        /// Dedicated lock object (instead of locking on the callback delegate).
+        /// </summary>
+        private readonly object _syncLock = new object();
+
+        /// <summary>
         /// Must be open as long as the image is in use
         /// </summary>
         private FileStream _imageFileStream;
@@ -302,7 +307,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             try
             {
                 var imageFileStream = File.Open(source, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                lock (_loadCompleteCallback)
+                lock (_syncLock)
                 {
                     _imageFileStream = imageFileStream;
                     if (!_disposed)

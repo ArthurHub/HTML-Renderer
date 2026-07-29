@@ -77,17 +77,17 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <summary>
         /// the raw base stylesheet data used in the control
         /// </summary>
-        protected string _baseRawCssData;
+        protected string? _baseRawCssData;
 
         /// <summary>
         /// the base stylesheet data used in the control
         /// </summary>
-        protected CssData _baseCssData;
+        protected CssData? _baseCssData;
 
         /// <summary>
         /// the current html text set in the control
         /// </summary>
-        protected string _text;
+        protected string? _text;
 
         /// <summary>
         /// If to use cursors defined by the operating system or .NET cursors
@@ -304,7 +304,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         [Category("Appearance")]
         [Description("Set base stylesheet to be used by html rendered in the control.")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Windows.Forms.Design, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", "System.Drawing.Design.UITypeEditor, System.Windows.Forms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
         public virtual string BaseStylesheet
         {
             get { return _baseRawCssData; }
@@ -471,13 +471,9 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             {
                 _htmlContainer.MaxSize = new SizeF(ClientSize.Width - Padding.Horizontal, 0);
 
-                Graphics g = CreateGraphics();
-                if (g != null)
+                using (var g = CreateGraphics())
                 {
-                    using (g)
-                    {
-                        _htmlContainer.PerformLayout(g);
-                    }
+                    _htmlContainer.PerformLayout(g);
                 }
 
                 AutoScrollMinSize = Size.Round(new SizeF(_htmlContainer.ActualSize.Width + Padding.Horizontal, _htmlContainer.ActualSize.Height));
@@ -747,7 +743,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                 try
                 {
                     // Replace .NET's hand cursor with the OS cursor
-                    Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IdcHand));
+                    Win32Utils.SetCursor(Win32Utils.LoadCursor(IntPtr.Zero, Win32Utils.IdcHand));
                     m.Result = IntPtr.Zero;
                     return;
                 }

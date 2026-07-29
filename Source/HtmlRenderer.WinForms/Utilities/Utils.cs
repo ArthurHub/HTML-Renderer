@@ -13,6 +13,7 @@
 using System;
 using System.Drawing;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
 
 namespace TheArtOfDev.HtmlRenderer.WinForms.Utilities
 {
@@ -34,6 +35,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Utilities
         /// </summary>
         public static PointF[] Convert(RPoint[] points)
         {
+            ArgChecker.AssertArgNotNull(points, nameof(points));
             PointF[] myPoints = new PointF[points.Length];
             for (int i = 0; i < points.Length; i++)
                 myPoints[i] = Convert(points[i]);

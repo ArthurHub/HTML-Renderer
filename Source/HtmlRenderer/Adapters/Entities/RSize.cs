@@ -287,7 +287,7 @@ namespace TheArtOfDev.HtmlRenderer.Adapters.Entities
         ///     The <see cref="T:System.Object" /> to test.
         /// </param>
         /// <filterpriority>1</filterpriority>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (!(obj is RSize))
                 return false;
