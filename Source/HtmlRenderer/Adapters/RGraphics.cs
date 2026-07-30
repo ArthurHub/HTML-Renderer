@@ -177,6 +177,42 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         public abstract RSize MeasureString(string str, RFont font);
 
         /// <summary>
+        /// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
+        /// using the given fonts: <paramref name="regularFont"/> <paramref name="reducedFont"/> (small-caps variant).
+        /// </summary>
+        /// <param name="str">the string to measure</param>
+        /// <param name="regularFont">the font to measure string with (uppercase chars)</param>
+        /// <param name="reducedFont">the font to measure string with (smallcap chars)</param>
+        /// <returns>the size of the string</returns>
+        public RSize MeasureSmallCapString(string str, RFont regularFont, RFont reducedFont)
+        {
+            RSize size = RSize.Empty;
+            size.Height = regularFont.Height;
+            int i = 0;
+            int len = str.Length;
+            while (i < len)
+            {
+                int j = i;
+                while (j < len && !char.IsLower(str, j))
+                    j++;
+                if (j != i)
+                {
+                    size.Width += MeasureString(str.Substring(i, j - i), regularFont).Width;
+                    i = j;
+                }
+
+                while (j < len && char.IsLower(str, j))
+                    j++;
+                if (j != i)
+                {
+                    size.Width += MeasureString(str.Substring(i, j - i).ToUpper(), reducedFont).Width;
+                    i = j;
+                }
+            }
+            return size;
+        }
+
+        /// <summary>
         /// Measure the width of string under max width restriction calculating the number of characters that can fit and the width those characters take.<br/>
         /// Not relevant for platforms that don't render HTML on UI element.
         /// </summary>
@@ -197,6 +233,17 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         /// <param name="size">used to know the size of the rendered text for transparent text support</param>
         /// <param name="rtl">is to render the string right-to-left (true - RTL, false - LTR)</param>
         public abstract void DrawString(String str, RFont font, RColor color, RPoint point, RSize size, bool rtl);
+
+        /// <summary>
+        /// Draw the given string using the given fonts and foreground color at given location (small-caps variant).
+        /// </summary>
+        /// <param name="str">the string to draw</param>
+        /// <param name="regularFont">the font to use to draw the string (uppercase chars)</param>
+        /// <param name="reducedFont">the reduced font to use to draw the string (small-cap chars)</param>
+        /// <param name="color">the text color to set</param>
+        /// <param name="point">the location to start string draw (top-left)</param>
+        /// <param name="rtl">is to render the string right-to-left (true - RTL, false - LTR)</param>
+        public abstract void DrawSmallCapString(string str, RFont regularFont, RFont reducedFont, RColor color, RPoint point, bool rtl);
 
         /// <summary>
         /// Draws a line connecting the two points specified by the coordinate pairs.
