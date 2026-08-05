@@ -1,0 +1,99 @@
+<html>
+<head>
+<style>
+    body { font: 10pt Tahoma; margin: 10px; }
+
+    .card {
+        border: 1px solid #767676;
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+
+    h3 { margin: 0 0 6px 0; font-size: 12pt; }
+    .note { color: #555555; font-size: 8pt; }
+
+    /* --- prefers-color-scheme -------------------------------------------------
+       The light styling below is the baseline. On GDI+ and WPF the adapter reports
+       the Windows app theme, so switching Windows to Dark and reloading should
+       flip this card to the dark palette. PdfSharp always reports light. */
+    .scheme {
+        background-color: #ffffff;
+        color: #111111;
+        border-color: #cccccc;
+    }
+    .scheme .verdict:after { content: "light"; }
+
+    @media (prefers-color-scheme: dark) {
+        .scheme {
+            background-color: #1e1e1e;
+            color: #f0f0f0;
+            border-color: #555555;
+        }
+        .scheme .verdict:after { content: "dark"; }
+    }
+
+    /* --- media type ----------------------------------------------------------
+       The adapter also supplies the media type: "screen" for GDI+/WPF, "print"
+       for PdfSharp. Exactly one of these two cards should be visible. */
+    .screen-only { display: none; }
+    .print-only { display: none; }
+
+    @media screen {
+        .screen-only { display: block; background-color: #e8f4ff; }
+    }
+
+    @media print {
+        .print-only { display: block; background-color: #f4f4f4; }
+    }
+
+    /* --- feature evaluation --------------------------------------------------
+       A feature the matcher cannot evaluate drops its whole block, so this card
+       must never turn red. */
+    @media all and (scan: interlace) {
+        .unsupported-feature { background-color: #ff0000; color: #ffffff; }
+    }
+
+    /* --- viewport width ------------------------------------------------------
+       Evaluated against the container's available width. */
+    .width-probe { background-color: #f0f0f0; }
+    @media (min-width: 400px) {
+        .width-probe { background-color: #e6ffe6; }
+        .width-probe .verdict:after { content: "viewport is at least 400px wide"; }
+    }
+    @media (max-width: 399px) {
+        .width-probe .verdict:after { content: "viewport is under 400px wide"; }
+    }
+</style>
+</head>
+<body>
+
+<div class="card scheme">
+    <h3>prefers-color-scheme</h3>
+    This card follows the platform colour scheme. Reported scheme: <b class="verdict"></b>.
+    <div class="note">GDI+ and WPF read the Windows app theme; PdfSharp always reports light.</div>
+</div>
+
+<div class="card screen-only">
+    <h3>@media screen</h3>
+    Visible because the adapter's media type is <b>screen</b>.
+</div>
+
+<div class="card print-only">
+    <h3>@media print</h3>
+    Visible because the adapter's media type is <b>print</b>.
+</div>
+
+<div class="card unsupported-feature">
+    <h3>Unsupported media feature</h3>
+    This card stays neutral. A media feature the matcher cannot evaluate drops its whole block
+    rather than applying the rules inside it, so the red styling in
+    <code>@media all and (scan: interlace)</code> must not win.
+</div>
+
+<div class="card width-probe">
+    <h3>Viewport width</h3>
+    <span class="verdict"></span>
+</div>
+
+</body>
+</html>

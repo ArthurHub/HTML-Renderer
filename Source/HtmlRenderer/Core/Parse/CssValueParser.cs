@@ -11,10 +11,15 @@
 // "The Art of War"
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 
 namespace TheArtOfDev.HtmlRenderer.Core.Parse
@@ -96,6 +101,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// <returns>true - valid, false - invalid</returns>
         public static bool IsValidLength(string value)
         {
+            if (IsCalcFunction(value))
+                return true;
+
             if (value.Length > 1)
             {
                 string number = string.Empty;
@@ -110,6 +118,57 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 double stub;
                 return double.TryParse(number, out stub);
             }
+            return false;
+        }
+
+        /// <summary>
+        /// Tokenizes <paramref name="value"/> using the vendored CSS lexer (Core/CssEngine/Parser/Lexer.cs),
+        /// skipping whitespace/end-of-file tokens - the same "just enough tokenization to recognize a
+        /// single top-level function call" approach used to detect calc()-family expressions.
+        /// </summary>
+        internal static List<Token> GetCssTokens(string value, bool isInValue = false)
+        {
+            var lexer = new Lexer(value) { IsInValue = isInValue };
+            var tokens = new List<Token>();
+            Token token;
+            do
+            {
+                token = lexer.Get();
+                if (token.Type != TokenType.EndOfFile && token.Type != TokenType.Whitespace)
+                {
+                    tokens.Add(token);
+                }
+            } while (token.Type != TokenType.EndOfFile);
+
+            return tokens;
+        }
+
+        /// <summary>
+        /// Recognizes a length string that is a single calc-family (calc/min/max/clamp) function call.
+        /// Real grammar/type validation happens in the vendored CSS-OM's CalcValueConverter at parse
+        /// time (for any value that didn't arrive via var() substitution); this is a syntactic
+        /// recognizer only, used to gate the evaluation branch in <see cref="ParseLength(string, double, double, string, bool, bool)"/>.
+        /// </summary>
+        public static bool IsCalcFunction(string value)
+        {
+            FunctionToken function;
+            return TryGetCalcFunction(value, out function);
+        }
+
+        private static bool TryGetCalcFunction(string value, out FunctionToken function)
+        {
+            var tokens = GetCssTokens(value);
+            if (tokens.Count == 1)
+            {
+                var fn = tokens[0] as FunctionToken;
+                if (fn != null && CalcParser.IsCalcFamily(fn.Data))
+                {
+                    function = fn;
+                    return true;
+                }
+            }
+
+            function = null;
             return false;
         }
 
@@ -191,6 +250,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             //If percentage, use ParseNumber
             if (length.EndsWith("%"))
                 return ParseNumber(length, hundredPercent);
+
+            // calc()/min()/max()/clamp(): evaluate via the vendored Calc engine (Core/CssEngine/Calc/)
+            // instead of falling through to the unit-suffix parsing below, which doesn't understand
+            // function syntax at all.
+            FunctionToken calcFunction;
+            if (TryGetCalcFunction(length, out calcFunction))
+            {
+                var node = CalcParser.Parse(calcFunction);
+                var context = new CalcContext(hundredPercent, emFactor, emFactor, fontAdjust, returnPoints);
+                var pixels = node != null ? CalcEvaluator.Evaluate(node, context) : null;
+                return pixels ?? 0d;
+            }
 
             //Get units of the length
             bool hasUnit;
@@ -317,6 +388,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                     else if (length > 13 && CommonUtils.SubStringEquals(str, idx, 5, "rgba(") && str[length - 1] == ')')
                     {
                         return GetColorByRgba(str, idx, length, out color);
+                    }
+                    else if (length > 9 && CommonUtils.SubStringEquals(str, idx, 4, "hsl(") && str[length - 1] == ')')
+                    {
+                        return GetColorByHsl(str, idx, length, false, out color);
+                    }
+                    else if (length > 10 && CommonUtils.SubStringEquals(str, idx, 5, "hsla(") && str[length - 1] == ')')
+                    {
+                        return GetColorByHsl(str, idx, length, true, out color);
                     }
                     else
                     {
@@ -451,7 +530,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 }
                 if (s < idx + length)
                 {
-                    a = ParseIntAtIndex(str, ref s);
+                    a = ParseAlphaAtIndex(str, ref s);
                 }
             }
 
@@ -465,13 +544,176 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Get color by given name, including .NET name.
+        /// Parses an rgba()/hsla()-style alpha component, per CSS syntax a fractional number in [0,1]
+        /// (e.g. "0.5") or a percentage (e.g. "50%") - unlike R/G/B, never a bare 0-255 integer. This is
+        /// also the canonical form the vendored CSS engine's Color.ToString() emits for any color with
+        /// partial transparency (hex-alpha, hsl()/hsla(), hwb(), modern space-separated rgb() syntax -
+        /// all normalized to "rgba(r, g, b, alpha)" at CSS-OM parse time), so this is the path that
+        /// makes those all resolve correctly here, not just literal author-written rgba().
         /// </summary>
+        /// <returns>alpha as a 0-255 byte value, or -1 if invalid</returns>
+        private static int ParseAlphaAtIndex(string str, ref int startIdx)
+        {
+            while (startIdx < str.Length && char.IsWhiteSpace(str, startIdx))
+                startIdx++;
+
+            var start = startIdx;
+            var len = 0;
+            while (start + len < str.Length && (char.IsDigit(str, start + len) || str[start + len] == '.'))
+                len++;
+
+            var isPercent = start + len < str.Length && str[start + len] == '%';
+
+            if (len < 1)
+            {
+                startIdx = start + len + (isPercent ? 1 : 0) + 1;
+                return -1;
+            }
+
+            double value;
+            if (!double.TryParse(str.Substring(start, len), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out value))
+            {
+                startIdx = start + len + (isPercent ? 1 : 0) + 1;
+                return -1;
+            }
+
+            if (isPercent)
+            {
+                value = value / 100.0;
+                len++; // include the '%' when advancing startIdx below
+            }
+
+            startIdx = start + len + 1;
+
+            var alpha = (int)Math.Round(value * 255.0);
+            return alpha < 0 ? 0 : (alpha > 255 ? 255 : alpha);
+        }
+
+        /// <summary>
+        /// Get color by parsing given HSL/HSLA value color string (hsl(210, 100%, 50%), hsla(210, 100%, 50%, 0.5)).<br/>
+        /// Unlike hex and rgb()/rgba(), the vendored CSS-OM's HslColorConverter/HslaColorConverter only
+        /// validate hsl() syntax at parse time (hue is a valid angle, saturation/lightness are
+        /// percentages) - they never actually convert it to an RGB Color the way rgb()/rgba()/hex do
+        /// (see Core/CssEngine/Model/Converters.cs's HslColorConverter/HslaColorConverter, and compare
+        /// to Color.ToString() which only ever emits rgb()/rgba()). So unlike those, the raw string this
+        /// engine sees for an hsl()-declared color is still the literal hsl() text (with hue normalized
+        /// to a "Ndeg" suffix), not a canonical rgba() - this method does the actual hue/sat/light -> RGB
+        /// conversion, reusing the vendored Color.FromHsla for the math.
+        /// </summary>
+        /// <returns>true - valid color, false - otherwise</returns>
+        private static bool GetColorByHsl(string str, int idx, int length, bool hasAlpha, out RColor color)
+        {
+            var openLen = hasAlpha ? 5 : 4; // "hsla(" or "hsl("
+            var inner = str.Substring(idx + openLen, length - openLen - 1);
+            var parts = inner.Split(',');
+            if (parts.Length != (hasAlpha ? 4 : 3))
+            {
+                color = RColor.Empty;
+                return false;
+            }
+
+            double hueDegrees;
+            if (!TryParseAngleDegrees(parts[0].Trim(), out hueDegrees))
+            {
+                color = RColor.Empty;
+                return false;
+            }
+
+            double saturation, lightness;
+            if (!double.TryParse(parts[1].Trim().TrimEnd('%'), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out saturation) ||
+                !double.TryParse(parts[2].Trim().TrimEnd('%'), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out lightness))
+            {
+                color = RColor.Empty;
+                return false;
+            }
+
+            var alpha = 1.0;
+            if (hasAlpha)
+            {
+                var alphaStr = parts[3].Trim();
+                if (alphaStr.EndsWith("%"))
+                {
+                    double a;
+                    double.TryParse(alphaStr.TrimEnd('%'), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out a);
+                    alpha = a / 100.0;
+                }
+                else
+                {
+                    double.TryParse(alphaStr, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out alpha);
+                }
+            }
+
+            var hueFraction = ((hueDegrees % 360.0) + 360.0) % 360.0 / 360.0;
+            var vendored = CssEngine.Color.FromHsla((float)hueFraction, (float)(saturation / 100.0), (float)(lightness / 100.0), (float)alpha);
+            color = RColor.FromArgb(vendored.A, vendored.R, vendored.G, vendored.B);
+            return true;
+        }
+
+        /// <summary>
+        /// Parses an hsl() hue component - a bare number (treated as degrees, per CSS) or a number with
+        /// an explicit angle unit (deg/rad/grad/turn).
+        /// </summary>
+        private static bool TryParseAngleDegrees(string value, out double degrees)
+        {
+            string unit = null;
+            foreach (var candidate in new[] { "turn", "grad", "deg", "rad" })
+            {
+                if (value.EndsWith(candidate, StringComparison.OrdinalIgnoreCase))
+                {
+                    unit = candidate;
+                    break;
+                }
+            }
+
+            var numberPart = unit != null ? value.Substring(0, value.Length - unit.Length) : value;
+            double number;
+            if (!double.TryParse(numberPart, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out number))
+            {
+                degrees = 0;
+                return false;
+            }
+
+            if (unit == "turn") degrees = number * 360.0;
+            else if (unit == "grad") degrees = number * 0.9;
+            else if (unit == "rad") degrees = number * 180.0 / Math.PI;
+            else degrees = number; // "deg" or bare number
+
+            return true;
+        }
+
+        /// <summary>
+        /// Get color by given name (including .NET names), or by any color function the CSS engine
+        /// understands.
+        /// </summary>
+        /// <remarks>
+        /// The adapter's palette is tried first because a bare name is by far the common case and a
+        /// dictionary lookup is cheaper than tokenizing. Anything it doesn't recognize - a CSS Color 4/5
+        /// function such as <c>lab()</c>/<c>oklch()</c>/<c>color-mix()</c>, or a fully transparent color,
+        /// which the palette reports with a zero alpha and is indistinguishable from "unknown" here - is
+        /// then resolved through the engine, which is the same code path the cascade validated the value
+        /// with. Hex/rgb()/rgba()/hsl()/hsla() never reach this method; they keep their own fast paths in
+        /// <see cref="TryGetColor"/>.
+        /// </remarks>
         /// <returns>true - valid color, false - otherwise</returns>
         private bool GetColorByName(string str, int idx, int length, out RColor color)
         {
-            color = _adapter.GetColor(str.Substring(idx, length));
-            return color.A > 0;
+            var text = str.Substring(idx, length);
+
+            color = _adapter.GetColor(text);
+            if (color.A > 0) return true;
+
+            // Value mode, so a hex colour lexes as a single colour token. Outside it, a digit-leading
+            // hex such as #0000ff splits into a "#" delimiter plus a dimension ("0000" + unit "ff"),
+            // which then fails to resolve as an operand inside color-mix().
+            var resolved = GetCssTokens(text, true).ToResolvedColor();
+            if (resolved != null)
+            {
+                var value = resolved.Value;
+                color = RColor.FromArgb(value.A, value.R, value.G, value.B);
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -536,6 +778,218 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 num = num * 16 + (c <= 57 ? c - 48 : (10 + c - (c <= 70 ? 65 : 97)));
             }
             return num;
+        }
+
+        #endregion
+
+
+        #region Background image / gradient parsing
+
+        /// <summary>
+        /// Parses a single <c>background-image</c> value: either a <c>url()</c> reference or a
+        /// <c>linear-gradient()</c>/<c>repeating-linear-gradient()</c> function. Returns null for "none",
+        /// an empty value, or anything else this engine doesn't recognize (matching this engine's existing
+        /// silent-failure behavior for unsupported values).<br/>
+        /// Trimmed to the single-value,
+        /// linear-gradient-only case this engine supports (no layered background-image, no radial/conic).
+        /// </summary>
+        public CssImage ParseImage(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value) || string.Equals(value, CssConstants.None, StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            var tokens = GetCssTokens(value);
+
+            var urlToken = tokens.OfType<UrlToken>().FirstOrDefault();
+            if (urlToken != null)
+                return new CssImage.Url(urlToken.Data);
+
+            var funcToken = tokens.OfType<FunctionToken>().FirstOrDefault();
+            if (funcToken == null)
+                return null;
+
+            if (string.Equals(funcToken.Data, FunctionNames.LinearGradient, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(funcToken.Data, FunctionNames.RepeatingLinearGradient, StringComparison.OrdinalIgnoreCase))
+            {
+                var gradient = ParseLinearGradient(value);
+                return gradient != null ? new CssImage.LinearGradient(gradient) : null;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Parses a <c>linear-gradient()</c>/<c>repeating-linear-gradient()</c> function value: an
+        /// optional angle or "to &lt;side&gt;" direction (default 180deg, top to bottom), followed by 2+
+        /// comma-separated color stops (each optionally followed by 1-2 length/percent positions), and
+        /// bare-position color hints between stops. Returns null if the value isn't a recognized gradient
+        /// function or doesn't have at least 2 real color stops.<br/>
+        /// Linear-gradient parsing, minus CSS Color 4
+        /// interpolation-color-space ("in oklab" etc.) support - see ParsedLinearGradient.
+        /// </summary>
+        private ParsedLinearGradient ParseLinearGradient(string value)
+        {
+            var tokens = GetCssTokens(value);
+
+            var funcToken = tokens.OfType<FunctionToken>().FirstOrDefault(t =>
+                string.Equals(t.Data, FunctionNames.LinearGradient, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(t.Data, FunctionNames.RepeatingLinearGradient, StringComparison.OrdinalIgnoreCase));
+
+            if (funcToken == null)
+                return null;
+
+            bool isRepeating = string.Equals(funcToken.Data, FunctionNames.RepeatingLinearGradient, StringComparison.OrdinalIgnoreCase);
+
+            var args = funcToken.ArgumentTokens.ToList();
+            if (args.Count == 0)
+                return null;
+
+            double angleRad = Math.PI; // default: 180deg = top to bottom
+            int stopOffset = 0;
+
+            var firstGroup = args[0];
+            var firstIdents = firstGroup.Where(t => t.Type == TokenType.Ident).Select(t => t.Data.ToLowerInvariant()).ToList();
+
+            if (firstIdents.Count > 0 && firstIdents[0] == "to")
+            {
+                // keyword direction: "to right", "to bottom left", etc.
+                angleRad = SideKeywordsToAngleRad(firstIdents.Skip(1).ToList());
+                stopOffset = 1;
+            }
+            else
+            {
+                var angle = firstGroup.ToAngle();
+                if (angle.HasValue)
+                {
+                    angleRad = angle.Value.ToRadian();
+                    stopOffset = 1;
+                }
+                // else no angle token, stopOffset stays 0 - first group is already the first color stop
+            }
+
+            var stopGroups = args.Skip(stopOffset).ToList();
+            if (stopGroups.Count < 2)
+                return null;
+
+            var stops = new List<(RColor? Color, Length? Position, bool IsHint)>();
+
+            foreach (var group in stopGroups)
+            {
+                var items = group.ToItems();
+                if (items.Count == 0)
+                    continue;
+
+                Length? position1 = null;
+                Length? position2 = null;
+                int colorItemCount = items.Count;
+
+                // Last item may be a length/percent position.
+                var lastItem = items[items.Count - 1];
+                var pv = lastItem.ToDistance();
+                if (pv.HasValue)
+                {
+                    position1 = pv.Value;
+                    colorItemCount--;
+
+                    // Two-position shorthand (e.g. "red 0 50%").
+                    if (colorItemCount > 0)
+                    {
+                        var pv2 = items[colorItemCount - 1].ToDistance();
+                        if (pv2.HasValue)
+                        {
+                            position2 = position1;
+                            position1 = pv2.Value;
+                            colorItemCount--;
+                        }
+                    }
+                }
+
+                if (colorItemCount == 0)
+                {
+                    // Bare position with no color - a color hint.
+                    if (position1.HasValue && !position2.HasValue)
+                        stops.Add((null, position1, true));
+                    continue;
+                }
+
+                var colorText = BuildColorText(items.Take(colorItemCount));
+                if (string.IsNullOrWhiteSpace(colorText))
+                    continue;
+
+                var color = GetActualColor(colorText);
+                stops.Add((color, position1, false));
+                if (position2.HasValue)
+                    stops.Add((color, position2, false));
+            }
+
+            if (stops.Count(s => !s.IsHint) < 2)
+                return null;
+
+            return new ParsedLinearGradient
+            {
+                AngleRad = angleRad,
+                Stops = stops.ToArray(),
+                IsRepeating = isRepeating,
+            };
+        }
+
+        /// <summary>
+        /// Converts "to &lt;side&gt; [&lt;side&gt;]" direction keywords (e.g. "right", "bottom left") to
+        /// the equivalent gradient-line angle in radians, per the CSS Images spec's side/corner table.
+        /// </summary>
+        private static double SideKeywordsToAngleRad(List<string> sides)
+        {
+            bool hasTop = sides.Contains("top");
+            bool hasBottom = sides.Contains("bottom");
+            bool hasLeft = sides.Contains("left");
+            bool hasRight = sides.Contains("right");
+
+            if (hasTop && hasRight) return Math.PI / 4;         // 45deg
+            if (hasBottom && hasRight) return 3 * Math.PI / 4;  // 135deg
+            if (hasBottom && hasLeft) return 5 * Math.PI / 4;   // 225deg
+            if (hasTop && hasLeft) return 7 * Math.PI / 4;      // 315deg
+            if (hasTop) return 0;                                // 0deg
+            if (hasRight) return Math.PI / 2;                    // 90deg
+            if (hasBottom) return Math.PI;                       // 180deg
+            if (hasLeft) return 3 * Math.PI / 2;                // 270deg
+
+            return Math.PI; // default
+        }
+
+        /// <summary>
+        /// Re-serializes a color stop's token groups (everything before its trailing position token(s))
+        /// back to CSS text so it can be handed to <see cref="GetActualColor"/> as a normal color string.
+        /// </summary>
+        private static string BuildColorText(IEnumerable<IEnumerable<Token>> itemGroups)
+        {
+            var sb = new StringBuilder();
+            foreach (var group in itemGroups)
+            {
+                sb.Append(group.ToText());
+            }
+            return sb.ToString().Trim();
+        }
+
+        /// <summary>
+        /// Splits a CSS value string on top-level whitespace (paren-depth-aware, so a calc()/gradient()
+        /// value's internal spaces aren't mistaken for a delimiter). Used to split a "border-radius"
+        /// corner value like "10px 5%" into its horizontal/vertical components.
+        /// </summary>
+        internal static IEnumerable<string> SplitTopLevelWhitespace(string value)
+        {
+            int depth = 0, start = 0;
+            for (int i = 0; i < value.Length; i++)
+            {
+                char c = value[i];
+                if (c == '(') depth++;
+                else if (c == ')') depth--;
+                else if (char.IsWhiteSpace(c) && depth == 0)
+                {
+                    if (i > start) yield return value.Substring(start, i - start);
+                    start = i + 1;
+                }
+            }
+            if (start < value.Length) yield return value.Substring(start);
         }
 
         #endregion

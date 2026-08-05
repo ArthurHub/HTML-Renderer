@@ -155,6 +155,14 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
 
         public override void DrawRectangle(RBrush brush, double x, double y, double width, double height)
         {
+            if (brush is GradientBrushAdapter gradient)
+            {
+                var rectPath = new XGraphicsPath();
+                rectPath.AddRectangle(x, y, width, height);
+                FillGradient(gradient, rectPath);
+                return;
+            }
+
             var xBrush = ((BrushAdapter)brush).Brush;
             var xTextureBrush = xBrush as XTextureBrush;
             if (xTextureBrush != null)
@@ -188,6 +196,12 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
 
         public override void DrawPath(RBrush brush, RGraphicsPath path)
         {
+            if (brush is GradientBrushAdapter gradient)
+            {
+                FillGradient(gradient, ((GraphicsPathAdapter)path).GraphicsPath);
+                return;
+            }
+
             _g.DrawPath((XBrush)((BrushAdapter)brush).Brush, ((GraphicsPathAdapter)path).GraphicsPath);
         }
 
@@ -197,6 +211,64 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
             {
                 _g.DrawPolygon((XBrush)((BrushAdapter)brush).Brush, Utils.Convert(points), XFillMode.Winding);
             }
+        }
+
+        /// <summary>
+        /// Paints a multi-stop linear gradient by clipping to <paramref name="targetPath"/> and drawing
+        /// one real 2-color <see cref="XLinearGradientBrush"/> band per consecutive stop pair, each
+        /// spanning the full perpendicular extent needed to cover the target - see
+        /// <see cref="GradientBrushAdapter"/> for why this backend needs banding instead of a single brush.
+        /// </summary>
+        private void FillGradient(GradientBrushAdapter gradient, XGraphicsPath targetPath)
+        {
+            var stops = gradient.Stops;
+            if (stops.Length == 0)
+                return;
+
+            _g.Save();
+            _g.IntersectClip(targetPath);
+
+            double dx = gradient.P2.X - gradient.P1.X;
+            double dy = gradient.P2.Y - gradient.P1.Y;
+            double len = Math.Sqrt(dx * dx + dy * dy);
+
+            if (stops.Length == 1 || len < 1e-6)
+            {
+                // Degenerate gradient line (single stop, or a zero-size box) - just flat-fill with the
+                // last color, matching what a real linear gradient converges to in that case.
+                var flatBrush = new XSolidBrush(Utils.Convert(stops[stops.Length - 1].Color));
+                _g.DrawRectangle(flatBrush, -1e5, -1e5, 2e5, 2e5);
+                _g.Restore();
+                _g.DrawRectangle(XBrushes.White, 0, 0, 0.1, 0.1);
+                return;
+            }
+
+            double ux = dx / len, uy = dy / len;
+            double perpX = -uy, perpY = ux;
+            double perpHalf = Math.Max(len, 1.0) * 4.0;
+
+            for (int i = 0; i < stops.Length - 1; i++)
+            {
+                double t1 = stops[i].Position, t2 = stops[i + 1].Position;
+                var bp1 = new XPoint(gradient.P1.X + ux * len * t1, gradient.P1.Y + uy * len * t1);
+                var bp2 = new XPoint(gradient.P1.X + ux * len * t2, gradient.P1.Y + uy * len * t2);
+
+                var band = new[]
+                {
+                    new XPoint(bp1.X - perpX * perpHalf, bp1.Y - perpY * perpHalf),
+                    new XPoint(bp1.X + perpX * perpHalf, bp1.Y + perpY * perpHalf),
+                    new XPoint(bp2.X + perpX * perpHalf, bp2.Y + perpY * perpHalf),
+                    new XPoint(bp2.X - perpX * perpHalf, bp2.Y - perpY * perpHalf),
+                };
+
+                var bandBrush = new XLinearGradientBrush(bp1, bp2, Utils.Convert(stops[i].Color), Utils.Convert(stops[i + 1].Color));
+                _g.DrawPolygon(bandBrush, band, XFillMode.Winding);
+            }
+
+            _g.Restore();
+
+            // handle bug in PdfSharp that keeps the brush color for next string draw
+            _g.DrawRectangle(XBrushes.White, 0, 0, 0.1, 0.1);
         }
 
         #endregion

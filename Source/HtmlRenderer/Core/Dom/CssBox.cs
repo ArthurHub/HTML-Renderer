@@ -147,6 +147,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
+        /// Is this box a synthesized <c>::before</c> pseudo-element (see <see cref="CssData"/>'s selector-matching synthesis).
+        /// </summary>
+        public bool IsBeforePseudoElement { get; set; }
+
+        /// <summary>
+        /// Is this box a synthesized <c>::after</c> pseudo-element (see <see cref="CssData"/>'s selector-matching synthesis).
+        /// </summary>
+        public bool IsAfterPseudoElement { get; set; }
+
+        /// <summary>
+        /// Is this box a synthesized <c>::before</c>/<c>::after</c> pseudo-element.
+        /// </summary>
+        public bool IsPseudoElement
+        {
+            get { return IsBeforePseudoElement || IsAfterPseudoElement; }
+        }
+
+        /// <summary>
         /// Is the box "Display" is one of the table-row-group/table-header-group/table-footer-group values.
         /// </summary>
         public bool IsTableRowGroupBox
@@ -719,10 +737,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         {
             if (!_wordsSizeMeasured)
             {
-                if (BackgroundImage != CssConstants.None && _imageLoadHandler == null)
+                if (ActualBackgroundImage is CssImage.Url urlImage && _imageLoadHandler == null)
                 {
                     _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnImageLoadComplete);
-                    _imageLoadHandler.LoadImage(BackgroundImage, HtmlTag != null ? HtmlTag.Attributes : null);
+                    _imageLoadHandler.LoadImage(urlImage.Href, HtmlTag != null ? HtmlTag.Attributes : null);
                 }
 
                 MeasureWordSpacing(g);
@@ -1310,14 +1328,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 RBrush brush = null;
 
-                if (BackgroundGradient != CssConstants.None)
+                var backgroundImage = ActualBackgroundImage;
+                if (backgroundImage is CssImage.LinearGradient linearGradient)
                 {
-                    brush = g.GetLinearGradientBrush(rect, ActualBackgroundColor, ActualBackgroundGradient, ActualBackgroundGradientAngle);
+                    brush = CssImagePainter.GetLinearGradientBrush(g, rect, linearGradient.Gradient);
                 }
                 else if (RenderUtils.IsColorVisible(ActualBackgroundColor))
                 {
                     brush = g.GetSolidBrush(ActualBackgroundColor);
                 }
+
+                var rad = ComputeRadii(rect);
 
                 if (brush != null)
                 {
@@ -1326,13 +1347,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     //  rectangle.Width -= ActualWordSpacing + CssUtils.GetWordEndWhitespace(ActualFont);
 
                     RGraphicsPath roundrect = null;
-                    if (IsRounded)
+                    if (rad.IsRounded)
                     {
-                        roundrect = RenderUtils.GetRoundRect(g, rect, ActualCornerNw, ActualCornerNe, ActualCornerSe, ActualCornerSw);
+                        roundrect = RenderUtils.GetRoundRect(g, rect, rad.TLX, rad.TLY, rad.TRX, rad.TRY, rad.BRX, rad.BRY, rad.BLX, rad.BLY);
                     }
 
                     Object prevMode = null;
-                    if (HtmlContainer != null && !HtmlContainer.AvoidGeometryAntialias && IsRounded)
+                    if (HtmlContainer != null && !HtmlContainer.AvoidGeometryAntialias && rad.IsRounded)
                     {
                         prevMode = g.SetAntiAliasSmoothingMode();
                     }
@@ -1531,6 +1552,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         protected override RColor GetActualColor(string colorStr)
         {
             return HtmlContainer.CssParser.ParseColor(colorStr);
+        }
+
+        protected override CssImage GetActualBackgroundImageValue(string value)
+        {
+            return HtmlContainer.CssParser.ParseBackgroundImage(value);
         }
 
         protected override RPoint GetActualLocation(string X, string Y)

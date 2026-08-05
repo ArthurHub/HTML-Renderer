@@ -68,6 +68,22 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
         }
 
         /// <summary>
+        /// Paged output, so @media print applies and @media screen does not.
+        /// </summary>
+        public override string DefaultMediaType
+        {
+            get { return "print"; }
+        }
+
+        /// <summary>
+        /// A PDF has no system theme to follow, so prefers-color-scheme always reports light.
+        /// </summary>
+        public override RColorScheme SystemColorScheme
+        {
+            get { return RColorScheme.Light; }
+        }
+
+        /// <summary>
         /// Get the FontResolver instance for advanced font management.
         /// </summary>
         internal FontResolver FontResolver
@@ -123,18 +139,9 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
             return new BrushAdapter(solidBrush);
         }
 
-        protected override RBrush CreateLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        protected override RBrush CreateLinearGradientBrush(RPoint p1, RPoint p2, (RColor Color, double Position)[] stops)
         {
-            XLinearGradientMode mode;
-            if (angle < 45)
-                mode = XLinearGradientMode.ForwardDiagonal;
-            else if (angle < 90)
-                mode = XLinearGradientMode.Vertical;
-            else if (angle < 135)
-                mode = XLinearGradientMode.BackwardDiagonal;
-            else
-                mode = XLinearGradientMode.Horizontal;
-            return new BrushAdapter(new XLinearGradientBrush(Utils.Convert(rect), Utils.Convert(color1), Utils.Convert(color2), mode));
+            return new GradientBrushAdapter(p1, p2, stops);
         }
 
         protected override RImage ConvertImageInt(object image)

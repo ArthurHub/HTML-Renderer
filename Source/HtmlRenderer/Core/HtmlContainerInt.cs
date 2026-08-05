@@ -127,6 +127,19 @@ namespace TheArtOfDev.HtmlRenderer.Core
         private CssData _cssData;
 
         /// <summary>
+        /// The html and base stylesheet last given to <see cref="SetHtml"/>, kept so the cascade can be
+        /// re-run when a viewport change alters which <c>@media</c> rules apply.
+        /// </summary>
+        private string _htmlSource;
+
+        private CssData _baseCssData;
+
+        /// <summary>
+        /// The device the current cascade was computed against.
+        /// </summary>
+        private MediaQueryContext _cascadeMedia;
+
+        /// <summary>
         /// Is content selection is enabled for the rendered html (default - true).<br/>
         /// If set to 'false' the rendered html will be static only with ability to click on links.
         /// </summary>
@@ -211,6 +224,30 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
             _adapter = adapter;
             _cssParser = new CssParser(adapter);
+
+            // A system theme change alters what prefers-color-scheme reports, which can change which
+            // rules apply. Nothing else would notice: the cascade is only re-evaluated during layout,
+            // and an idle window does not lay out.
+            _colorSchemeChangedHandler = (sender, e) => OnAdapterColorSchemeChanged();
+            _adapter.ColorSchemeChanged += _colorSchemeChangedHandler;
+        }
+
+        /// <summary>
+        /// Kept so the handler can be detached from the adapter - which is typically a process-wide
+        /// singleton, and would otherwise keep every container that ever rendered alive.
+        /// </summary>
+        private readonly EventHandler _colorSchemeChangedHandler;
+
+        /// <summary>
+        /// The colour scheme changed, so ask the host to lay out and repaint. The re-cascade itself
+        /// happens in <see cref="PerformLayout"/>, on the host's own thread - this event can arrive on
+        /// another one.
+        /// </summary>
+        private void OnAdapterColorSchemeChanged()
+        {
+            if (_root == null) return;
+
+            RequestRefresh(true);
         }
 
         /// <summary>
@@ -507,6 +544,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         public void SetHtml(string htmlSource, CssData baseCssData = null)
         {
             Clear();
+            _htmlSource = htmlSource;
+            _baseCssData = baseCssData;
+
             if (!string.IsNullOrEmpty(htmlSource))
             {
                 _loadComplete = false;
@@ -514,12 +554,30 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
                 DomParser parser = new DomParser(_cssParser);
                 _root = parser.GenerateCssTree(htmlSource, this, ref _cssData);
+                _cascadeMedia = MediaQueryContext.FromAdapter(_adapter, _maxSize.Width, _maxSize.Height);
                 if (_root != null)
                 {
                     _selectionHandler = new SelectionHandler(_root);
                     _imageDownloader = new ImageDownloader();
                 }
             }
+        }
+
+        /// <summary>
+        /// Re-runs the cascade if the viewport has changed in a way that changes which <c>@media</c>
+        /// rules apply - a resize crossing a <c>min-width</c> breakpoint, say. Nothing happens for a
+        /// document whose stylesheets have no viewport-dependent <c>@media</c> (the common case), or for
+        /// a resize that stays within the same breakpoint, so this costs one cheap condition test per
+        /// layout rather than a re-parse.
+        /// </summary>
+        private void RefreshMediaDependentCascade()
+        {
+            if (_root == null || string.IsNullOrEmpty(_htmlSource) || _cssData == null) return;
+
+            var media = MediaQueryContext.FromAdapter(_adapter, _maxSize.Width, _maxSize.Height);
+            if (!_cssData.MediaOutcomeChanged(_cascadeMedia, media)) return;
+
+            SetHtml(_htmlSource, _baseCssData);
         }
 
         /// <summary>
@@ -631,6 +689,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
         public void PerformLayout(RGraphics g)
         {
             ArgChecker.AssertArgNotNull(g, "g");
+
+            RefreshMediaDependentCascade();
 
             _actualSize = RSize.Empty;
             if (_root != null)
@@ -977,16 +1037,16 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// Add css box that has ":hover" selector to be handled on mouse hover.
         /// </summary>
         /// <param name="box">the box that has the hover selector</param>
-        /// <param name="block">the css block with the css data with the selector</param>
-        internal void AddHoverBox(CssBox box, CssBlock block)
+        /// <param name="styleRule">the style rule whose selector included the hover pseudo-class</param>
+        internal void AddHoverBox(CssBox box, TheArtOfDev.HtmlRenderer.Core.CssEngine.IStyleRule styleRule)
         {
             ArgChecker.AssertArgNotNull(box, "box");
-            ArgChecker.AssertArgNotNull(block, "block");
+            ArgChecker.AssertArgNotNull(styleRule, "styleRule");
 
             if (_hoverBoxes == null)
                 _hoverBoxes = new List<HoverBoxBlock>();
 
-            _hoverBoxes.Add(new HoverBoxBlock(box, block));
+            _hoverBoxes.Add(new HoverBoxBlock(box, styleRule));
         }
 
         /// <summary>
@@ -1044,6 +1104,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
                     StylesheetLoad = null;
                     ImageLoad = null;
                 }
+
+                _adapter.ColorSchemeChanged -= _colorSchemeChangedHandler;
 
                 _cssData = null;
                 if (_root != null)

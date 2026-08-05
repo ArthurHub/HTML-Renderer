@@ -81,11 +81,61 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         }
 
         /// <summary>
+        /// The CSS media type this adapter renders for, used to evaluate <c>@media</c> queries -
+        /// <c>"screen"</c> for on-screen adapters (the default), <c>"print"</c> for paged output.
+        /// </summary>
+        public virtual string DefaultMediaType
+        {
+            get { return "screen"; }
+        }
+
+        /// <summary>
+        /// The colour scheme the rendering surface presents, answering the <c>prefers-color-scheme</c>
+        /// media feature. Defaults to <see cref="RColorScheme.Light"/>; an adapter that renders onto a
+        /// themed surface should report the system setting instead, and raise
+        /// <see cref="ColorSchemeChanged"/> when it changes.
+        /// </summary>
+        public virtual RColorScheme SystemColorScheme
+        {
+            get { return RColorScheme.Light; }
+        }
+
+        /// <summary>
+        /// Raised when <see cref="SystemColorScheme"/> has changed, so anything rendered against it can
+        /// re-evaluate its <c>prefers-color-scheme</c> rules and repaint. Never raised by an adapter
+        /// whose scheme is fixed.
+        /// </summary>
+        /// <remarks>
+        /// Handlers are held for the lifetime of the adapter, which is typically a process-wide
+        /// singleton, so a subscriber must unsubscribe when it is disposed.
+        /// </remarks>
+        public event EventHandler ColorSchemeChanged;
+
+        /// <summary>
+        /// Raises <see cref="ColorSchemeChanged"/>. For adapters that track a system theme.
+        /// </summary>
+        protected void OnColorSchemeChanged()
+        {
+            var handler = ColorSchemeChanged;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
+        }
+
+        /// <summary>
         /// Get the default CSS stylesheet data.
         /// </summary>
         public CssData DefaultCssData
         {
-            get { return _defaultCssData ?? (_defaultCssData = CssData.Parse(this, CssDefaults.DefaultStyleSheet, false)); }
+            get
+            {
+                if (_defaultCssData == null)
+                {
+                    _defaultCssData = CssData.Parse(this, CssDefaults.DefaultStyleSheet, false);
+                    foreach (var stylesheet in _defaultCssData.Stylesheets)
+                        stylesheet.IsUserAgent = true;
+                }
+                return _defaultCssData;
+            }
         }
 
         /// <summary>
@@ -130,16 +180,15 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         }
 
         /// <summary>
-        /// Get linear gradient color brush from <paramref name="color1"/> to <paramref name="color2"/>.
+        /// Get a multi-stop linear gradient brush along the line from <paramref name="p1"/> to <paramref name="p2"/>.
         /// </summary>
-        /// <param name="rect">the rectangle to get the brush for</param>
-        /// <param name="color1">the start color of the gradient</param>
-        /// <param name="color2">the end color of the gradient</param>
-        /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
+        /// <param name="p1">the gradient line's start point</param>
+        /// <param name="p2">the gradient line's end point</param>
+        /// <param name="stops">color stops, each with a position in [0,1] along the gradient line</param>
         /// <returns>linear gradient color brush instance</returns>
-        public RBrush GetLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        public RBrush GetLinearGradientBrush(RPoint p1, RPoint p2, (RColor Color, double Position)[] stops)
         {
-            return CreateLinearGradientBrush(rect, color1, color2, angle);
+            return CreateLinearGradientBrush(p1, p2, stops);
         }
 
         /// <summary>
@@ -351,14 +400,13 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         protected abstract RBrush CreateSolidBrush(RColor color);
 
         /// <summary>
-        /// Get linear gradient color brush from <paramref name="color1"/> to <paramref name="color2"/>.
+        /// Get a multi-stop linear gradient brush along the line from <paramref name="p1"/> to <paramref name="p2"/>.
         /// </summary>
-        /// <param name="rect">the rectangle to get the brush for</param>
-        /// <param name="color1">the start color of the gradient</param>
-        /// <param name="color2">the end color of the gradient</param>
-        /// <param name="angle">the angle to move the gradient from start color to end color in the rectangle</param>
+        /// <param name="p1">the gradient line's start point</param>
+        /// <param name="p2">the gradient line's end point</param>
+        /// <param name="stops">color stops, each with a position in [0,1] along the gradient line</param>
         /// <returns>linear gradient color brush instance</returns>
-        protected abstract RBrush CreateLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle);
+        protected abstract RBrush CreateLinearGradientBrush(RPoint p1, RPoint p2, (RColor Color, double Position)[] stops);
 
         /// <summary>
         /// Convert image object returned from <see cref="HtmlImageLoadEventArgs"/> to <see cref="RImage"/>.

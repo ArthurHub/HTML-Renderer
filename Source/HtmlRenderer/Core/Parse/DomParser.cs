@@ -6,14 +6,17 @@
 // like the days and months;
 // they die and are reborn,
 // like the four seasons."
-// 
+//
 // - Sun Tsu,
 // "The Art of War"
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Handlers;
@@ -63,7 +66,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 bool cssDataChanged = false;
                 CascadeParseStyles(root, htmlContainer, ref cssData, ref cssDataChanged);
 
-                CascadeApplyStyles(root, cssData);
+                // The device @media queries are evaluated against: media type and colour scheme come
+                // from the platform adapter, the viewport from the container's max size (which is the
+                // available width/height at this point; zero means "not known yet", and geometry
+                // conditions then match permissively).
+                var media = MediaQueryContext.FromAdapter(
+                    htmlContainer.Adapter, htmlContainer.MaxSize.Width, htmlContainer.MaxSize.Height);
+
+                CascadeApplyStyles(root, cssData, media);
 
                 SetTextSelectionStyle(htmlContainer, cssData);
 
@@ -105,11 +115,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                     box.GetAttribute("rel", string.Empty).Equals("stylesheet", StringComparison.CurrentCultureIgnoreCase))
                 {
                     CloneCssData(ref cssData, ref cssDataChanged);
+                    var href = box.GetAttribute("href", string.Empty);
                     string stylesheet;
                     CssData stylesheetData;
-                    StylesheetLoadHandler.LoadStylesheet(htmlContainer, box.GetAttribute("href", string.Empty), box.HtmlTag.Attributes, out stylesheet, out stylesheetData);
+                    StylesheetLoadHandler.LoadStylesheet(htmlContainer, href, box.HtmlTag.Attributes, out stylesheet, out stylesheetData);
                     if (stylesheet != null)
-                        _cssParser.ParseStyleSheet(cssData, stylesheet);
+                        _cssParser.ParseStyleSheet(cssData, stylesheet, CommonUtils.TryGetUri(href));
                     else if (stylesheetData != null)
                         cssData.Combine(stylesheetData);
                 }
@@ -131,48 +142,122 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
 
         /// <summary>
-        /// Applies style to all boxes in the tree.<br/>
-        /// If the html tag has style defined for each apply that style to the css box of the tag.<br/>
-        /// If the html tag has "class" attribute and the class name has style defined apply that style on the tag css box.<br/>
-        /// If the html tag has "style" attribute parse it and apply the parsed style on the tag css box.<br/>
+        /// Applies style to all boxes in the tree via a spec-correct, origin-aware six-phase cascade:
+        /// UA-normal, Author-normal, Inline-normal, Author-!important, Inline-!important, UA-!important
+        /// (origin order reverses for the !important tier, per spec). Each phase's revert/revert-layer
+        /// target is a snapshot of the box's state immediately before that phase ran.
         /// </summary>
         /// <param name="box">the box to apply the style to</param>
         /// <param name="cssData">the style data for the html</param>
-        private void CascadeApplyStyles(CssBox box, CssData cssData)
+        private void CascadeApplyStyles(CssBox box, CssData cssData, MediaQueryContext media)
         {
+            // Every box's fields already start at their initial value (CssBoxProperties's private
+            // field initializers, which CssDefaults.InitialValues was itself built to mirror exactly -
+            // see CssDefaults.cs) - so unlike a from-initial cascade, there is no separate "set every
+            // property to its initial value" pass here. Deliberately: a handful of this engine's
+            // property setters (e.g. LineHeight, CssBoxProperties.cs:550) are eager - they immediately
+            // resolve the assigned value to an absolute pixel string using the box's CURRENT font/size,
+            // rather than storing it as-is for lazy resolution later. Calling every whitelisted
+            // property's setter unconditionally on every box, before InheritStyle() has propagated a
+            // real font-size down and before layout has given the box a real size, fires those eager
+            // setters against not-yet-meaningful state and bakes in garbage (observed: line-height
+            // resolving to "-0px", corrupting all downstream layout). CssDefaults.InitialValues is
+            // still very much used - see GetInitialValue() calls below - just only consulted on demand
+            // when a declaration literally says initial/unset/revert, never as a blanket pre-pass.
+
+            // 1. Inherit inheritable properties from parent
             box.InheritStyle();
+
+            // Regular property declarations whose value contains var(...) are deferred here and resolved
+            // once, after the whole cascade (all phases below) has finished, so var() sees this box's
+            // FINAL custom property values regardless of which phase declared them.
+            var pendingVarProperties = new Dictionary<string, string>();
+
+            // Anonymous layout-only wrapper boxes (HtmlTag == null, not a pseudo-element) never match
+            // anything and are skipped, matching this engine's pre-existing behavior. Synthesized
+            // ::before/::after boxes ARE queried despite also having HtmlTag == null - their whole
+            // purpose is to receive the declarations from the rule whose selector synthesized them
+            // (e.g. "li::before { content: ... }"), matched via CssData's PseudoElementSelector check.
+            var canMatchRules = box.HtmlTag != null || box.IsPseudoElement;
+            var uaRules = canMatchRules ? cssData.GetUserAgentStyleRules(media, box).ToList() : new List<IStyleRule>();
+            var authorRules = canMatchRules ? cssData.GetAuthorStyleRules(media, box).ToList() : new List<IStyleRule>();
+
+            // Inline style is parsed up front - parsing is pure text -> rule with no cascade side
+            // effects, so hoisting it here (ahead of TranslateAttributes, which still runs at its
+            // original point below) doesn't change behavior, and lets RulesUseRevertKeyword below see it too.
+            IStyleRule inlineRule = null;
+            if (box.HtmlTag != null && box.HtmlTag.HasAttribute("style"))
+            {
+                inlineRule = _cssParser.ParseInlineStyle(box.HtmlTag.TryGetAttribute("style"));
+            }
+
+            // The relatively expensive property/custom-property snapshots below are only ever read
+            // back when a later phase's declaration is literally revert/revert-layer, so each is only
+            // captured when something that will actually consult it uses one of those keywords.
+            var authorUsesRevert = RulesUseRevertKeyword(authorRules);
+            var uaUsesRevert = RulesUseRevertKeyword(uaRules);
+            var inlineUsesRevert = inlineRule != null && RulesUseRevertKeyword(new[] { inlineRule });
+
+            // Cascade precedence (lowest to highest, i.e. applied in this order so "last write wins"
+            // naturally produces the correct winner): UA-normal, Author-normal (inline-normal wins ties
+            // within this tier), Author-!important (inline-!important wins ties within this tier),
+            // UA-!important (per spec, origin order REVERSES for !important, so it's applied - and wins
+            // - last).
+
+            // 3. UA normal
+            AssignCssBlocks(box, uaRules, false, null, null, pendingVarProperties);
+            var needsUaSnapshot = authorUsesRevert;
+            var uaSnapshot = needsUaSnapshot ? CssUtils.SnapshotProperties(box) : null;
+            var uaCustomSnapshot = needsUaSnapshot ? CssUtils.SnapshotCustomProperties(box) : null;
+
+            // 4. Author normal
+            AssignCssBlocks(box, authorRules, false, uaSnapshot, uaCustomSnapshot, pendingVarProperties);
+            var needsAuthorNormalSnapshot = inlineUsesRevert || authorUsesRevert;
+            var authorNormalSnapshot = needsAuthorNormalSnapshot ? CssUtils.SnapshotProperties(box) : null;
+            var authorNormalCustomSnapshot = needsAuthorNormalSnapshot ? CssUtils.SnapshotCustomProperties(box) : null;
 
             if (box.HtmlTag != null)
             {
-                // try assign style using all wildcard
-                AssignCssBlocks(box, cssData, "*");
-
-                // try assign style using the html element tag
-                AssignCssBlocks(box, cssData, box.HtmlTag.Name);
-
-                // try assign style using the "class" attribute of the html element
-                if (box.HtmlTag.HasAttribute("class"))
-                {
-                    AssignClassCssBlocks(box, cssData);
-                }
-
-                // try assign style using the "id" attribute of the html element
-                if (box.HtmlTag.HasAttribute("id"))
-                {
-                    var id = box.HtmlTag.TryGetAttribute("id");
-                    AssignCssBlocks(box, cssData, "#" + id);
-                }
-
                 TranslateAttributes(box.HtmlTag, box);
-
-                // Check for the style="" attribute
-                if (box.HtmlTag.HasAttribute("style"))
-                {
-                    var block = _cssParser.ParseCssBlock(box.HtmlTag.Name, box.HtmlTag.TryGetAttribute("style"));
-                    if (block != null)
-                        AssignCssBlock(box, block);
-                }
             }
+
+            // 5. Inline normal; revert target is the author-normal-applied state
+            var inlineNormalSnapshot = authorNormalSnapshot;
+            var inlineNormalCustomSnapshot = authorNormalCustomSnapshot;
+            if (inlineRule != null)
+            {
+                AssignCssBlock(box, inlineRule, false, authorNormalSnapshot, authorNormalCustomSnapshot, pendingVarProperties);
+                var needsInlineNormalSnapshot = authorUsesRevert;
+                inlineNormalSnapshot = needsInlineNormalSnapshot ? CssUtils.SnapshotProperties(box) : null;
+                inlineNormalCustomSnapshot = needsInlineNormalSnapshot ? CssUtils.SnapshotCustomProperties(box) : null;
+            }
+
+            // 6. Author !important. Note this means an author-!important "revert" can roll back to a
+            // value inline *normal* style just set, not all the way back to the UA snapshot - a
+            // deliberate choice for mechanical consistency ("revert = state right before this phase")
+            // rather than a stricter per-origin reading of the spec.
+            AssignCssBlocks(box, authorRules, true, inlineNormalSnapshot, inlineNormalCustomSnapshot, pendingVarProperties);
+            var needsAuthorImportantSnapshot = inlineUsesRevert || uaUsesRevert;
+            var authorImportantSnapshot = needsAuthorImportantSnapshot ? CssUtils.SnapshotProperties(box) : null;
+            var authorImportantCustomSnapshot = needsAuthorImportantSnapshot ? CssUtils.SnapshotCustomProperties(box) : null;
+
+            // 7. Inline !important
+            var afterInlineImportantSnapshot = authorImportantSnapshot;
+            var afterInlineImportantCustomSnapshot = authorImportantCustomSnapshot;
+            if (inlineRule != null)
+            {
+                AssignCssBlock(box, inlineRule, true, authorImportantSnapshot, authorImportantCustomSnapshot, pendingVarProperties);
+                var needsAfterInlineImportantSnapshot = uaUsesRevert;
+                afterInlineImportantSnapshot = needsAfterInlineImportantSnapshot ? CssUtils.SnapshotProperties(box) : null;
+                afterInlineImportantCustomSnapshot = needsAfterInlineImportantSnapshot ? CssUtils.SnapshotCustomProperties(box) : null;
+            }
+
+            // 8. UA !important - applied globally last so it wins over everything else, per spec's
+            // origin reversal for the !important tier.
+            AssignCssBlocks(box, uaRules, true, afterInlineImportantSnapshot, afterInlineImportantCustomSnapshot, pendingVarProperties);
+
+            // 9. Resolve var() references now that every custom property's final cascaded value is known
+            ResolveDeferredVarProperties(box, pendingVarProperties);
 
             // cascade text decoration only to boxes that actually have text so it will be handled correctly.
             if (box.TextDecoration != String.Empty && box.Text == null)
@@ -184,12 +269,504 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
             foreach (var childBox in box.Boxes)
             {
-                CascadeApplyStyles(childBox, cssData);
+                CascadeApplyStyles(childBox, cssData, media);
             }
         }
 
         /// <summary>
-        /// Set the selected text style (selection text color and background color).
+        /// Assigns the given css style rules to the given css box, applying only the declarations whose
+        /// !important flag matches <paramref name="importantPass"/>. A rule whose selector's subject
+        /// includes ":hover" is diverted to <see cref="HtmlContainerInt.AddHoverBox"/> instead - matching
+        /// this engine's pre-existing "matched but never actually applied" :hover behavior.
+        /// </summary>
+        private static void AssignCssBlocks(
+            CssBox box,
+            IEnumerable<IStyleRule> rules,
+            bool importantPass,
+            IDictionary<string, string> revertTarget,
+            IDictionary<string, string> customPropertyRevertTarget,
+            Dictionary<string, string> pendingVarProperties)
+        {
+            foreach (var rule in rules)
+            {
+                if (IsHoverRule(rule))
+                {
+                    if (!importantPass)
+                    {
+                        box.HtmlContainer.AddHoverBox(box, rule);
+                    }
+                    continue;
+                }
+
+                AssignCssBlock(box, rule, importantPass, revertTarget, customPropertyRevertTarget, pendingVarProperties);
+            }
+        }
+
+        /// <summary>
+        /// True if the rule's selector's subject (rightmost, in the case of a combinator chain) compound
+        /// includes a ":hover" pseudo-class - e.g. "a:hover", ".foo:hover", or bare ":hover".
+        /// </summary>
+        private static bool IsHoverRule(IStyleRule rule)
+        {
+            return SelectorHasHover(rule.Selector);
+        }
+
+        private static bool SelectorHasHover(ISelector selector)
+        {
+            var pseudoClass = selector as PseudoClassSelector;
+            if (pseudoClass != null) return pseudoClass.Class == "hover";
+
+            var compound = selector as CompoundSelector;
+            if (compound != null) return compound.Any(SelectorHasHover);
+
+            var complex = selector as ComplexSelector;
+            if (complex != null)
+            {
+                var last = complex.LastOrDefault().Selector;
+                return last != null && SelectorHasHover(last);
+            }
+
+            var list = selector as ListSelector;
+            if (list != null) return list.Any(SelectorHasHover);
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether any declaration in the given rules literally uses the revert/revert-layer
+        /// keyword, so the (relatively expensive) property snapshot used as their revert target only
+        /// needs to be captured when it can actually be consulted.
+        /// </summary>
+        private static bool RulesUseRevertKeyword(IEnumerable<IStyleRule> rules)
+        {
+            foreach (var rule in rules)
+            {
+                foreach (var prop in rule.Style)
+                {
+                    if (prop.Value == CssConstants.Revert || prop.Value == CssConstants.RevertLayer)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Assigns the given css style rule's declarations to the given css box, applying only the
+        /// declarations whose !important flag matches <paramref name="importantPass"/> (the caller is
+        /// expected to call this once per origin per pass - see <see cref="CascadeApplyStyles"/> - so
+        /// that within a properly-ordered sequence of calls, "last write wins" alone produces the
+        /// spec-correct result). Handles the CSS-wide keywords: inherit, initial, unset, revert,
+        /// revert-layer. Custom property declarations (--foo) are routed to
+        /// <see cref="AssignCustomPropertyDeclaration"/> instead. Regular declarations whose value
+        /// contains var(...) are deferred into <paramref name="pendingVarProperties"/> rather than
+        /// applied immediately - see <see cref="ResolveDeferredVarProperties"/> for why.
+        /// </summary>
+        private static void AssignCssBlock(
+            CssBox box,
+            IStyleRule stylesheetRule,
+            bool importantPass,
+            IDictionary<string, string> revertTarget,
+            IDictionary<string, string> customPropertyRevertTarget,
+            Dictionary<string, string> pendingVarProperties)
+        {
+            foreach (var prop in stylesheetRule.Style)
+            {
+                if (prop.IsImportant != importantPass)
+                    continue;
+
+                if (PropertyFactory.IsCustomPropertyName(prop.Name))
+                {
+                    AssignCustomPropertyDeclaration(box, prop, customPropertyRevertTarget);
+                    continue;
+                }
+
+                string value;
+                if (prop.Value == CssConstants.Inherit)
+                {
+                    value = box.ParentBox != null
+                        ? CssUtils.GetPropertyValue(box.ParentBox, prop.Name)
+                        : CssDefaults.GetInitialValue(prop.Name);
+                }
+                else if (prop.Value == CssConstants.Initial)
+                {
+                    value = CssDefaults.GetInitialValue(prop.Name);
+                }
+                else if (prop.Value == CssConstants.Unset)
+                {
+                    value = CssDefaults.InheritedProperties.Contains(prop.Name) && box.ParentBox != null
+                        ? CssUtils.GetPropertyValue(box.ParentBox, prop.Name)
+                        : CssDefaults.GetInitialValue(prop.Name);
+                }
+                else if (prop.Value == CssConstants.Revert || prop.Value == CssConstants.RevertLayer)
+                {
+                    string rv;
+                    value = revertTarget != null && revertTarget.TryGetValue(prop.Name, out rv)
+                        ? rv
+                        : CssDefaults.GetInitialValue(prop.Name);
+                }
+                else
+                {
+                    value = prop.Value;
+                }
+
+                if (value == null) continue;
+
+                if (value.IndexOf("var(", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    // Overwrites any earlier pending entry for this name (last write wins).
+                    pendingVarProperties[prop.Name] = value;
+                }
+                else
+                {
+                    // A later plain value supersedes an earlier deferred var() value for the same property.
+                    pendingVarProperties.Remove(prop.Name);
+                    if (IsStyleOnElementAllowed(box, prop.Name, value))
+                        CssUtils.SetPropertyValue(box, prop.Name, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Assigns a single custom property (--foo) declaration to the box's custom-property store.
+        /// Unlike regular properties, custom properties are always inherited, their names are
+        /// case-sensitive, and their global keywords resolve against the custom-property dictionary
+        /// rather than the fixed, known-property switch used by <see cref="AssignCssBlock"/>. The stored
+        /// value is left unresolved (it may itself contain var(...)) - resolution happens once, later, in
+        /// <see cref="ResolveDeferredVarProperties"/>.
+        /// </summary>
+        private static void AssignCustomPropertyDeclaration(
+            CssBox box,
+            IProperty prop,
+            IDictionary<string, string> customPropertyRevertTarget)
+        {
+            string rawValue;
+            if (prop.Value == CssConstants.Inherit || prop.Value == CssConstants.Unset)
+            {
+                string pv;
+                rawValue = box.ParentBox != null && box.ParentBox.CustomProperties != null &&
+                           box.ParentBox.CustomProperties.TryGetValue(prop.Name, out pv)
+                    ? pv
+                    : null;
+            }
+            else if (prop.Value == CssConstants.Initial)
+            {
+                rawValue = null; // guaranteed-invalid value => property becomes absent
+            }
+            else if (prop.Value == CssConstants.Revert || prop.Value == CssConstants.RevertLayer)
+            {
+                string rv;
+                rawValue = customPropertyRevertTarget != null && customPropertyRevertTarget.TryGetValue(prop.Name, out rv)
+                    ? rv
+                    : null;
+            }
+            else
+            {
+                rawValue = prop.Value;
+            }
+
+            if (box.CustomProperties == null)
+                box.CustomProperties = new Dictionary<string, string>();
+
+            if (rawValue != null)
+                box.CustomProperties[prop.Name] = rawValue;
+            else
+                box.CustomProperties.Remove(prop.Name);
+        }
+
+        /// <summary>
+        /// Result of attempting to resolve every var() reference in a declaration's value. Success is
+        /// false only when a reference is "guaranteed-invalid" (no matching custom property, no
+        /// fallback, or a cyclic reference) - per spec this invalidates the whole value.
+        /// </summary>
+        private struct VarResolution
+        {
+            public VarResolution(bool success, string value)
+            {
+                Success = success;
+                Value = value;
+            }
+
+            public bool Success;
+            public string Value;
+        }
+
+        /// <summary>
+        /// Resolves every regular property deferred during the cascade's phases (see
+        /// <see cref="AssignCssBlock"/>) now that this box's custom properties reflect their FINAL
+        /// cascaded (though not yet var()-resolved) values. Resolution is graph-based and memoized per
+        /// box, so multi-hop cyclic references are detected correctly regardless of which pending
+        /// property triggers the lookup first.
+        /// </summary>
+        private static void ResolveDeferredVarProperties(CssBox box, Dictionary<string, string> pendingVarProperties)
+        {
+            if (pendingVarProperties.Count == 0) return;
+
+            var resolvedCache = new Dictionary<string, string>();
+            var resolving = new HashSet<string>();
+            var cyclic = new HashSet<string>();
+
+            foreach (var pending in pendingVarProperties)
+            {
+                var name = pending.Key;
+                var rawValue = pending.Value;
+                var result = SubstituteVarReferences(box, rawValue, resolvedCache, resolving, cyclic);
+                var finalValue = result.Success ? result.Value : GetGuaranteedInvalidFallback(box, name);
+
+                if (finalValue != null)
+                    ApplyResolvedPropertyValue(box, name, finalValue);
+            }
+        }
+
+        /// <summary>
+        /// Applies a fully var()-resolved property value to the box. Shorthand properties are re-parsed
+        /// through the real CSS-OM shorthand converter and expanded into longhands here, because
+        /// var()-containing shorthands deliberately skip longhand expansion at parse time (their value
+        /// can't be split into per-longhand slices until their var() references are resolved, which has
+        /// only just happened here).
+        /// </summary>
+        private static void ApplyResolvedPropertyValue(CssBox box, string name, string value)
+        {
+            var reparsed = StylesheetParser.Default.ParseDeclaration(name + ": " + value);
+
+            var shorthand = reparsed as ShorthandProperty;
+            if (shorthand != null && shorthand.HasValue)
+            {
+                var longhands = PropertyFactory.Instance.CreateLonghandsFor(name);
+                shorthand.Export(longhands);
+
+                foreach (var longhand in longhands)
+                {
+                    if (longhand.HasValue && IsStyleOnElementAllowed(box, longhand.Name, longhand.Value))
+                        CssUtils.SetPropertyValue(box, longhand.Name, longhand.Value);
+                }
+
+                return;
+            }
+
+            if (reparsed != null && reparsed.HasValue && IsStyleOnElementAllowed(box, name, reparsed.Value))
+                CssUtils.SetPropertyValue(box, name, reparsed.Value);
+        }
+
+        /// <summary>
+        /// Resolves every var(...) occurrence in <paramref name="value"/> to plain text. Quote-aware (so
+        /// `content: "var(--x)"` is left untouched) and paren-depth-aware (so a fallback containing
+        /// nested commas splits correctly).
+        /// </summary>
+        private static VarResolution SubstituteVarReferences(CssBox box, string value, Dictionary<string, string> resolvedCache, HashSet<string> resolving, HashSet<string> cyclic)
+        {
+            if (value.IndexOf("var(", StringComparison.OrdinalIgnoreCase) < 0)
+                return new VarResolution(true, value);
+
+            var sb = new StringBuilder();
+            var i = 0;
+            while (i < value.Length)
+            {
+                int argsStart, callEnd;
+                if (TryMatchVarCall(value, i, out argsStart, out callEnd))
+                {
+                    string name, fallback;
+                    SplitFirstTopLevelComma(value, argsStart, callEnd - 1, out name, out fallback);
+
+                    string found;
+                    if (TryResolveCustomProperty(box, name, resolvedCache, resolving, cyclic, out found))
+                    {
+                        sb.Append(found);
+                    }
+                    else if (fallback != null)
+                    {
+                        var fallbackResult = SubstituteVarReferences(box, fallback, resolvedCache, resolving, cyclic);
+                        if (!fallbackResult.Success) return new VarResolution(false, null);
+                        sb.Append(fallbackResult.Value);
+                    }
+                    else
+                    {
+                        return new VarResolution(false, null); // guaranteed-invalid
+                    }
+
+                    i = callEnd;
+                }
+                else if (value[i] == '"' || value[i] == '\'')
+                {
+                    var quoteEnd = SkipQuotedString(value, i);
+                    sb.Append(value, i, quoteEnd - i);
+                    i = quoteEnd;
+                }
+                else
+                {
+                    sb.Append(value[i]);
+                    i++;
+                }
+            }
+
+            return new VarResolution(true, sb.ToString());
+        }
+
+        /// <summary>
+        /// Recursive + memoized: resolves box.CustomProperties[name]'s own var() references first (so a
+        /// custom property may reference another custom property, in any declaration order), using
+        /// `resolving` as a visited-set for cycle detection. `cyclic` permanently marks a property found
+        /// to (directly or transitively) reference itself - distinct from plain "not found", since per
+        /// spec a self-referencing property is guaranteed-invalid regardless of any fallback written
+        /// inside its own definition.
+        /// </summary>
+        private static bool TryResolveCustomProperty(CssBox box, string name, Dictionary<string, string> resolvedCache, HashSet<string> resolving, HashSet<string> cyclic, out string value)
+        {
+            if (cyclic.Contains(name))
+            {
+                value = null;
+                return false;
+            }
+
+            if (resolvedCache.TryGetValue(name, out value)) return true;
+
+            string rawValue;
+            if (box.CustomProperties == null || !box.CustomProperties.TryGetValue(name, out rawValue))
+            {
+                value = null;
+                return false;
+            }
+
+            if (!resolving.Add(name))
+            {
+                cyclic.Add(name); // name is referenced while already being resolved - a cycle
+                value = null;
+                return false;
+            }
+
+            var result = SubstituteVarReferences(box, rawValue, resolvedCache, resolving, cyclic);
+            resolving.Remove(name);
+
+            if (cyclic.Contains(name) || !result.Success)
+            {
+                cyclic.Add(name);
+                value = null;
+                return false;
+            }
+
+            value = result.Value;
+            resolvedCache[name] = value;
+            return true;
+        }
+
+        /// <summary>
+        /// Matches a case-insensitive "var(" starting at <paramref name="start"/> and scans forward for
+        /// the matching close paren. On success, <paramref name="argsStart"/> is the index of the first
+        /// argument character and <paramref name="callEnd"/> is the index just past the closing paren.
+        /// </summary>
+        private static bool TryMatchVarCall(string value, int start, out int argsStart, out int callEnd)
+        {
+            argsStart = 0;
+            callEnd = 0;
+
+            if (start + 4 > value.Length) return false;
+            if (string.Compare(value, start, "var(", 0, 4, StringComparison.OrdinalIgnoreCase) != 0) return false;
+
+            var depth = 1;
+            var i = start + 4;
+            while (i < value.Length)
+            {
+                var c = value[i];
+                if (c == '"' || c == '\'')
+                {
+                    i = SkipQuotedString(value, i);
+                    continue;
+                }
+
+                if (c == '(') depth++;
+                else if (c == ')')
+                {
+                    depth--;
+                    if (depth == 0)
+                    {
+                        argsStart = start + 4;
+                        callEnd = i + 1;
+                        return true;
+                    }
+                }
+
+                i++;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Splits a var() argument list at the first top-level (paren-depth 0, outside quotes) comma.
+        /// The text before it is the custom property name (trimmed); everything after - commas and all -
+        /// is the fallback, per spec.
+        /// </summary>
+        private static void SplitFirstTopLevelComma(string value, int start, int end, out string name, out string fallback)
+        {
+            var depth = 0;
+            var i = start;
+            while (i < end)
+            {
+                var c = value[i];
+                if (c == '"' || c == '\'')
+                {
+                    i = SkipQuotedString(value, i);
+                    continue;
+                }
+
+                if (c == '(') depth++;
+                else if (c == ')') depth--;
+                else if (c == ',' && depth == 0)
+                {
+                    name = value.Substring(start, i - start).Trim();
+                    var fb = value.Substring(i + 1, end - (i + 1)).Trim();
+                    fallback = fb.Length > 0 ? fb : null;
+                    return;
+                }
+
+                i++;
+            }
+
+            name = value.Substring(start, end - start).Trim();
+            fallback = null;
+        }
+
+        /// <summary>
+        /// Advances past a quoted string literal starting at <paramref name="start"/> (which must point
+        /// at the opening quote), honoring backslash escapes so an escaped quote doesn't end the string
+        /// early. Returns the index just past the closing quote (or the string's end, if unterminated).
+        /// </summary>
+        private static int SkipQuotedString(string value, int start)
+        {
+            var quote = value[start];
+            var i = start + 1;
+            while (i < value.Length)
+            {
+                if (value[i] == '\\' && i + 1 < value.Length)
+                {
+                    i += 2;
+                    continue;
+                }
+
+                if (value[i] == quote)
+                    return i + 1;
+
+                i++;
+            }
+
+            return i;
+        }
+
+        /// <summary>
+        /// The value a property falls back to when a var() reference in it is guaranteed-invalid -
+        /// reuses the same expression as the "unset" keyword arm in <see cref="AssignCssBlock"/>.
+        /// </summary>
+        private static string GetGuaranteedInvalidFallback(CssBox box, string propName)
+        {
+            return CssDefaults.InheritedProperties.Contains(propName) && box.ParentBox != null
+                ? CssUtils.GetPropertyValue(box.ParentBox, propName)
+                : CssDefaults.GetInitialValue(propName);
+        }
+
+        /// <summary>
+        /// Set the selected text style (selection text color and background color) from any "::selection"
+        /// rule found in the parsed stylesheets. This is a document-level lookup, not a per-box cascade
+        /// one - there is no box for a "::selection" pseudo-element to match against.
         /// </summary>
         /// <param name="htmlContainer"> </param>
         /// <param name="cssData">the style data</param>
@@ -198,161 +775,42 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             htmlContainer.SelectionForeColor = RColor.Empty;
             htmlContainer.SelectionBackColor = RColor.Empty;
 
-            if (cssData.ContainsCssBlock("::selection"))
+            foreach (var stylesheet in cssData.Stylesheets)
             {
-                var blocks = cssData.GetCssBlock("::selection");
-                foreach (var block in blocks)
+                foreach (var rule in CssData.FlattenStyleRules(stylesheet.Rules))
                 {
-                    if (block.Properties.ContainsKey("color"))
-                        htmlContainer.SelectionForeColor = _cssParser.ParseColor(block.Properties["color"]);
-                    if (block.Properties.ContainsKey("background-color"))
-                        htmlContainer.SelectionBackColor = _cssParser.ParseColor(block.Properties["background-color"]);
-                }
-            }
-        }
+                    if (!SelectorIsSelectionPseudoElement(rule.Selector)) continue;
 
-        /// <summary>
-        /// Assigns the given css classes to the given css box checking if matching.<br/>
-        /// Support multiple classes in single attribute separated by whitespace.
-        /// </summary>
-        /// <param name="box">the css box to assign css to</param>
-        /// <param name="cssData">the css data to use to get the matching css blocks</param>
-        private static void AssignClassCssBlocks(CssBox box, CssData cssData)
-        {
-            var classes = box.HtmlTag.TryGetAttribute("class");
-
-            var startIdx = 0;
-            while (startIdx < classes.Length)
-            {
-                while (startIdx < classes.Length && classes[startIdx] == ' ')
-                    startIdx++;
-
-                if (startIdx < classes.Length)
-                {
-                    var endIdx = classes.IndexOf(' ', startIdx);
-
-                    if (endIdx < 0)
-                        endIdx = classes.Length;
-
-                    var cls = "." + classes.Substring(startIdx, endIdx - startIdx);
-                    AssignCssBlocks(box, cssData, cls);
-                    AssignCssBlocks(box, cssData, box.HtmlTag.Name + cls);
-
-                    startIdx = endIdx + 1;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Assigns the given css style blocks to the given css box checking if matching.
-        /// </summary>
-        /// <param name="box">the css box to assign css to</param>
-        /// <param name="cssData">the css data to use to get the matching css blocks</param>
-        /// <param name="className">the class selector to search for css blocks</param>
-        private static void AssignCssBlocks(CssBox box, CssData cssData, string className)
-        {
-            var blocks = cssData.GetCssBlock(className);
-            foreach (var block in blocks)
-            {
-                if (IsBlockAssignableToBox(box, block))
-                {
-                    AssignCssBlock(box, block);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Check if the given css block is assignable to the given css box.<br/>
-        /// the block is assignable if it has no hierarchical selectors or if the hierarchy matches.<br/>
-        /// Special handling for ":hover" pseudo-class.<br/>
-        /// </summary>
-        /// <param name="box">the box to check assign to</param>
-        /// <param name="block">the block to check assign of</param>
-        /// <returns>true - the block is assignable to the box, false - otherwise</returns>
-        private static bool IsBlockAssignableToBox(CssBox box, CssBlock block)
-        {
-            bool assignable = true;
-            if (block.Selectors != null)
-            {
-                assignable = IsBlockAssignableToBoxWithSelector(box, block);
-            }
-            else if (box.HtmlTag.Name.Equals("a", StringComparison.OrdinalIgnoreCase) && block.Class.Equals("a", StringComparison.OrdinalIgnoreCase) && !box.HtmlTag.HasAttribute("href"))
-            {
-                assignable = false;
-            }
-
-            if (assignable && block.Hover)
-            {
-                box.HtmlContainer.AddHoverBox(box, block);
-                assignable = false;
-            }
-
-            return assignable;
-        }
-
-        /// <summary>
-        /// Check if the given css block is assignable to the given css box by validating the selector.<br/>
-        /// </summary>
-        /// <param name="box">the box to check assign to</param>
-        /// <param name="block">the block to check assign of</param>
-        /// <returns>true - the block is assignable to the box, false - otherwise</returns>
-        private static bool IsBlockAssignableToBoxWithSelector(CssBox box, CssBlock block)
-        {
-            foreach (var selector in block.Selectors)
-            {
-                bool matched = false;
-                while (!matched)
-                {
-                    box = box.ParentBox;
-                    while (box != null && box.HtmlTag == null)
-                        box = box.ParentBox;
-
-                    if (box == null)
-                        return false;
-
-                    if (box.HtmlTag.Name.Equals(selector.Class, StringComparison.InvariantCultureIgnoreCase))
-                        matched = true;
-
-                    if (!matched && box.HtmlTag.HasAttribute("class"))
+                    foreach (var prop in rule.Style)
                     {
-                        var className = box.HtmlTag.TryGetAttribute("class");
-                        if (selector.Class.Equals("." + className, StringComparison.InvariantCultureIgnoreCase) || selector.Class.Equals(box.HtmlTag.Name + "." + className, StringComparison.InvariantCultureIgnoreCase))
-                            matched = true;
+                        if (prop.Name == "color")
+                            htmlContainer.SelectionForeColor = _cssParser.ParseColor(prop.Value);
+                        else if (prop.Name == "background-color")
+                            htmlContainer.SelectionBackColor = _cssParser.ParseColor(prop.Value);
                     }
-
-                    if (!matched && box.HtmlTag.HasAttribute("id"))
-                    {
-                        var id = box.HtmlTag.TryGetAttribute("id");
-                        if (selector.Class.Equals("#" + id, StringComparison.InvariantCultureIgnoreCase))
-                            matched = true;
-                    }
-
-                    if (!matched && selector.DirectParent)
-                        return false;
                 }
             }
-            return true;
         }
 
-        /// <summary>
-        /// Assigns the given css style block properties to the given css box.
-        /// </summary>
-        /// <param name="box">the css box to assign css to</param>
-        /// <param name="block">the css block to assign</param>
-        private static void AssignCssBlock(CssBox box, CssBlock block)
+        private static bool SelectorIsSelectionPseudoElement(ISelector selector)
         {
-            foreach (var prop in block.Properties)
+            var pseudoElement = selector as PseudoElementSelector;
+            if (pseudoElement != null) return pseudoElement.Name == "selection";
+
+            var compound = selector as CompoundSelector;
+            if (compound != null) return compound.Any(SelectorIsSelectionPseudoElement);
+
+            var complex = selector as ComplexSelector;
+            if (complex != null)
             {
-                var value = prop.Value;
-                if (prop.Value == CssConstants.Inherit && box.ParentBox != null)
-                {
-                    value = CssUtils.GetPropertyValue(box.ParentBox, prop.Key);
-                }
-                if (IsStyleOnElementAllowed(box, prop.Key, value))
-                {
-                    CssUtils.SetPropertyValue(box, prop.Key, value);
-                }
+                var last = complex.LastOrDefault().Selector;
+                return last != null && SelectorIsSelectionPseudoElement(last);
             }
+
+            var list = selector as ListSelector;
+            if (list != null) return list.Any(SelectorIsSelectionPseudoElement);
+
+            return false;
         }
 
         /// <summary>
@@ -407,7 +865,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="tag"></param>
         /// <param name="box"></param>
@@ -575,6 +1033,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             for (int i = box.Boxes.Count - 1; i >= 0; i--)
             {
                 var childBox = box.Boxes[i];
+
+                CssContentEngine.ApplyContent(childBox);
+
                 if (childBox.Text != null)
                 {
                     // is the box has text
@@ -602,7 +1063,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                     }
                     else
                     {
-                        // remove text box that has no 
+                        // remove text box that has no
                         childBox.ParentBox.Boxes.RemoveAt(i);
                     }
                 }

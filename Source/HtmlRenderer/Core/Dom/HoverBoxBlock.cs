@@ -10,7 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace TheArtOfDev.HtmlRenderer.Core.Dom
 {
@@ -25,17 +25,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private readonly CssBox _cssBox;
 
         /// <summary>
-        /// the :hover style block data
+        /// the :hover style rule
         /// </summary>
-        private readonly CssBlock _cssBlock;
+        private readonly IStyleRule _styleRule;
 
         /// <summary>
         /// Init.
         /// </summary>
-        public HoverBoxBlock(CssBox cssBox, CssBlock cssBlock)
+        public HoverBoxBlock(CssBox cssBox, IStyleRule styleRule)
         {
             _cssBox = cssBox;
-            _cssBlock = cssBlock;
+            _styleRule = styleRule;
         }
 
         /// <summary>
@@ -47,11 +47,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// the :hover style block data
+        /// the :hover style rule
         /// </summary>
-        public CssBlock CssBlock
+        public IStyleRule StyleRule
         {
-            get { return _cssBlock; }
+            get { return _styleRule; }
         }
     }
 }

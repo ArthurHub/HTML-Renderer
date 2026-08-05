@@ -71,6 +71,19 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
 	            {
 	            }
             }
+
+            SystemEvents.UserPreferenceChanged += (sender, e) =>
+            {
+                if (e.Category != UserPreferenceCategory.General) return;
+
+                // The General category covers far more than the theme, so re-read and only report a
+                // change if the scheme really moved - otherwise every unrelated preference change
+                // would force a re-cascade and repaint.
+                var previous = _colorScheme;
+                _colorScheme = null;
+                if (previous.HasValue && previous.Value != SystemColorScheme)
+                    OnColorSchemeChanged();
+            };
         }
 
         /// <summary>
@@ -80,6 +93,25 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
         {
             get { return _instance; }
         }
+
+        /// <summary>
+        /// Rendering onto a Windows surface, so the document should follow the user's app theme.
+        /// Cached and invalidated on a system preference change rather than read per query.
+        /// </summary>
+        public override RColorScheme SystemColorScheme
+        {
+            get
+            {
+                if (!_colorScheme.HasValue)
+                    _colorScheme = WindowsTheme.GetAppsColorScheme();
+                return _colorScheme.Value;
+            }
+        }
+
+        /// <summary>
+        /// Cached app theme; null when it needs to be re-read.
+        /// </summary>
+        private RColorScheme? _colorScheme;
 
         protected override RColor GetColorInt(string colorName)
         {
@@ -102,14 +134,19 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
             return new BrushAdapter(solidBrush);
         }
 
-        protected override RBrush CreateLinearGradientBrush(RRect rect, RColor color1, RColor color2, double angle)
+        protected override RBrush CreateLinearGradientBrush(RPoint p1, RPoint p2, (RColor Color, double Position)[] stops)
         {
-            var startColor = angle <= 180 ? Utils.Convert(color1) : Utils.Convert(color2);
-            var endColor = angle <= 180 ? Utils.Convert(color2) : Utils.Convert(color1);
-            angle = angle <= 180 ? angle : angle - 180;
-            double x = angle < 135 ? Math.Max((angle - 45) / 90, 0) : 1;
-            double y = angle <= 45 ? Math.Max(0.5 - angle / 90, 0) : angle > 135 ? Math.Abs(1.5 - angle / 90) : 0;
-            return new BrushAdapter(new LinearGradientBrush(startColor, endColor, new Point(x, y), new Point(1 - x, 1 - y)));
+            var gradientStops = new GradientStopCollection(stops.Length);
+            foreach (var stop in stops)
+                gradientStops.Add(new GradientStop(Utils.Convert(stop.Color), stop.Position));
+
+            var brush = new LinearGradientBrush(gradientStops, 0)
+            {
+                MappingMode = BrushMappingMode.Absolute,
+                StartPoint = Utils.Convert(p1),
+                EndPoint = Utils.Convert(p2)
+            };
+            return new BrushAdapter(brush);
         }
 
         protected override RImage ConvertImageInt(object image)
