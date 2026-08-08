@@ -611,6 +611,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             double cury = starty;
             double maxRight = startx;
             double maxBottom = 0f;
+            double maxHeaderBottom = 0f;
             int currentrow = 0;
 
             // change start X by if the table should align to center or right
@@ -634,6 +635,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 for (int j = 0; j < row.Boxes.Count; j++)
                 {
                     CssBox cell = row.Boxes[j];
+                    var isHeader = cell.HtmlTag != null && cell.HtmlTag.Name == "th";
                     if (curCol >= _columnWidths.Length)
                         break;
 
@@ -660,6 +662,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     maxRight = Math.Max(maxRight, cell.ActualRight);
                     curCol++;
                     curx = cell.ActualRight + GetHorizontalSpacing();
+
+                    if (isHeader)
+                    {
+                        maxHeaderBottom = maxBottom;
+                    }
                 }
 
                 foreach (CssBox cell in row.Boxes)
@@ -708,6 +715,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             maxRight = Math.Max(maxRight, _tableBox.Location.X + _tableBox.ActualWidth);
             _tableBox.ActualRight = maxRight + GetHorizontalSpacing() + _tableBox.ActualBorderRightWidth;
             _tableBox.ActualBottom = Math.Max(maxBottom, starty) + GetVerticalSpacing() + _tableBox.ActualBorderBottomWidth;
+
+            if (_headerBox != null)
+            {
+                _headerBox.Location = _tableBox.Location;
+                _headerBox.ActualRight = maxRight + GetHorizontalSpacing() + _headerBox.ActualBorderRightWidth;
+                _headerBox.ActualBottom = Math.Max(maxHeaderBottom, starty) + GetVerticalSpacing() + _headerBox.ActualBorderBottomWidth;
+            }
         }
 
         /// <summary>
