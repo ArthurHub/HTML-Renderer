@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 
 namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
@@ -8,8 +5,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
     /// <summary>
     /// A resumption record: where layout stopped in one fragmentainer, so the next one can pick up from
     /// exactly that point (https://www.w3.org/TR/css-break-3/#breaking-controls, CSS Fragmentation Level 3
-    /// §2/§4.4). Ported from PeachPDF's <c>BreakToken</c>, reduced to the two token kinds this port's
-    /// block/inline scope needs (<see cref="TableBreakToken"/> is added in the table-fragmentation stage).
+    /// §2/§4.4). Ported from PeachPDF's <c>BreakToken</c>, reduced to what this port's driver loop
+    /// actually needs: only forced <c>break-before</c>/<c>break-after: page</c> ever produces a real
+    /// cross-pass token here (see <see cref="BlockFragmentation.TryGetForcedBreakTarget"/>) - overflow,
+    /// <c>break-inside:avoid</c>, keep-with-next, widows/orphans, and table-row breaks all turned out to
+    /// be same-pass local corrections instead (confirmed empirically stage by stage while investigating
+    /// the fragmentation-engine-parity plan's R2-R9), so PeachPDF's inline and table token kinds - and its
+    /// per-token <c>FanOutContinuations</c> "parallel flows" mechanism, which only those kinds ever used -
+    /// have no counterpart in this port and were never added.
     /// </summary>
     /// <remarks>
     /// Tokens form a chain, one link per ancestor between the fragmentation-context root and the box that
@@ -24,16 +27,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
     /// after this one": a box can be placed far down the document, so the fragmentainer it overflows is
     /// not in general the one after the fragmentainer the pass nominally started in.
     /// </param>
-    internal abstract record BreakToken(CssBox Box, int ResumeSlotIndex)
-    {
-        /// <summary>
-        /// This token's per-child continuations, for a token naming more than one -
-        /// https://www.w3.org/TR/css-break-3/#parallel-flows (§2.1 parallel-flows), the shape
-        /// <see cref="TableBreakToken"/> uses. Empty for every other kind, whose one child (if any) is
-        /// <see cref="BlockBreakToken.ChildToken"/> instead.
-        /// </summary>
-        internal virtual IReadOnlyList<BreakToken> FanOutContinuations => Array.Empty<BreakToken>();
-    }
+    internal abstract record BreakToken(CssBox Box, int ResumeSlotIndex);
 
     /// <summary>A block container stopped part-way through its in-flow children.</summary>
     /// <param name="Box">the block container to resume</param>
@@ -60,53 +54,4 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         BreakToken ChildToken,
         bool IsBreakBefore,
         double? ResumeTopOverride) : BreakToken(Box, ResumeSlotIndex);
-
-    /// <summary>A block container's inline flow stopped part-way through its content.</summary>
-    /// <remarks>
-    /// <see cref="ResumePath"/> is a path rather than a single index because inline layout walks the
-    /// inline box tree recursively: resuming means descending the same path again and fast-forwarding to
-    /// the word that did not fit, rather than replaying the walk from the top.
-    /// </remarks>
-    /// <param name="Box">the block container whose inline flow stopped</param>
-    /// <param name="ResumeSlotIndex">the pagination slot the resumed pass fills</param>
-    /// <param name="ResumePath">child indices from <paramref name="Box"/> down to the inline box owning the word</param>
-    /// <param name="ResumeWordIndex">the index into that box's words to resume at</param>
-    /// <param name="CompletedLineCount">
-    /// how many line boxes the container had already produced when the break was taken. Everything below
-    /// this index has been emitted into an earlier fragmentainer and must not be re-aligned or re-measured
-    /// by the resumed pass.
-    /// </param>
-    /// <param name="LinesKeptHere">
-    /// how many line boxes this fragmentainer kept - <see cref="CompletedLineCount"/> minus what the pass
-    /// began with. This is the quantity <c>orphans</c> is defined over
-    /// (https://www.w3.org/TR/css-break-3/#widows-orphans, §5.4: line boxes left in a fragment before the
-    /// break), which the cumulative count cannot answer for any fragment but the first.
-    /// </param>
-    internal sealed record InlineBreakToken(
-        CssBox Box,
-        int ResumeSlotIndex,
-        IReadOnlyList<int> ResumePath,
-        int ResumeWordIndex,
-        int CompletedLineCount,
-        int LinesKeptHere = 0) : BreakToken(Box, ResumeSlotIndex)
-    {
-        /// <summary>
-        /// Compared by contents, because the driver's no-progress backstop is an equality test. The
-        /// compiler-generated record equality would compare <see cref="ResumePath"/> - an
-        /// <see cref="IReadOnlyList{T}"/> - by reference, so two passes that legitimately stopped at the
-        /// same word would compare unequal and the loop would spin to its pass-count cap instead of
-        /// recognizing no progress was made. See the plan's "break-token equality footgun" risk note.
-        /// </summary>
-        public bool Equals(InlineBreakToken other) =>
-            other is not null
-            && ReferenceEquals(Box, other.Box)
-            && ResumeSlotIndex == other.ResumeSlotIndex
-            && ResumeWordIndex == other.ResumeWordIndex
-            && CompletedLineCount == other.CompletedLineCount
-            && LinesKeptHere == other.LinesKeptHere
-            && ResumePath.SequenceEqual(other.ResumePath);
-
-        public override int GetHashCode() =>
-            HashCode.Combine(Box, ResumeSlotIndex, ResumeWordIndex, CompletedLineCount, LinesKeptHere, ResumePath.Count);
-    }
 }
