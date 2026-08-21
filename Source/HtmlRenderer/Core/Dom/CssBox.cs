@@ -72,6 +72,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
         protected bool _wordsSizeMeasured;
         private CssBox _listItemBox;
+
+        /// <summary>
+        /// The synthetic list-item marker box, if this box has one - not part of <see cref="Boxes"/>
+        /// (it has no parent box), so it is otherwise unreachable by a tree walk.
+        /// </summary>
+        internal CssBox ListItemBox
+        {
+            get { return _listItemBox; }
+        }
+
         private CssLineBox _firstHostingLineBox;
         private CssLineBox _lastHostingLineBox;
 
@@ -1475,7 +1485,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="rect">the bounding rectangle to draw in</param>
         /// <param name="isFirst">is it the first rectangle of the element</param>
         /// <param name="isLast">is it the last rectangle of the element</param>
-        protected void PaintBackground(RGraphics g, RRect rect, bool isFirst, bool isLast)
+        internal void PaintBackground(RGraphics g, RRect rect, bool isFirst, bool isLast)
         {
             if (rect.Width > 0 && rect.Height > 0)
             {
@@ -1539,7 +1549,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="g">the device to draw into</param>
         /// <param name="offset">the current scroll offset to offset the words</param>
-        private void PaintWords(RGraphics g, RPoint offset)
+        internal void PaintWords(RGraphics g, RPoint offset)
         {
             if (Width.Length > 0)
             {
@@ -1599,7 +1609,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="rectangle"> </param>
         /// <param name="isFirst"> </param>
         /// <param name="isLast"> </param>
-        protected void PaintDecoration(RGraphics g, RRect rectangle, bool isFirst, bool isLast)
+        internal void PaintDecoration(RGraphics g, RRect rectangle, bool isFirst, bool isLast)
         {
             if (string.IsNullOrEmpty(TextDecoration) || TextDecoration == CssConstants.None)
                 return;
