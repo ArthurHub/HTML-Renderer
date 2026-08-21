@@ -100,7 +100,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
                 if (HasContentInBand(child, band)) return true;
             }
 
-            return box.ListItemBox != null && HasContentInBand(box.ListItemBox, band);
+            if (box.ListItemBox != null && HasContentInBand(box.ListItemBox, band)) return true;
+
+            if (box.RepeatedHeaderRows != null)
+            {
+                foreach (var repeatedRow in box.RepeatedHeaderRows)
+                {
+                    if (HasContentInBand(repeatedRow, band)) return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -142,6 +152,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             {
                 if (HasContentInBand(child, band))
                     children.Add(BuildBoxFragment(child, fragmentainerIndex, band));
+            }
+
+            if (box.RepeatedHeaderRows != null)
+            {
+                foreach (var repeatedRow in box.RepeatedHeaderRows)
+                {
+                    if (HasContentInBand(repeatedRow, band))
+                        children.Add(BuildBoxFragment(repeatedRow, fragmentainerIndex, band));
+                }
             }
 
             var rect = ToLocal(Clip(box.Bounds, band), band);

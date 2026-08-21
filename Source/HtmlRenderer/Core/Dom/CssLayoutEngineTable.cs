@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Fragmentation;
 using TheArtOfDev.HtmlRenderer.Core.Parse;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 
@@ -624,12 +625,56 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 _tableBox.Location = new RPoint(startx - _tableBox.ActualBorderLeftWidth - _tableBox.ActualPaddingLeft - GetHorizontalSpacing(), _tableBox.Location.Y);
             }
 
+            // css-tables-3 6.2: a <thead> repeats on every page the table's body/footer spans, where
+            // the group carries an avoiding break-inside (the UA default stylesheet sets this).
+            // Reserving the room here, before the first row of each continuation page is positioned,
+            // is what keeps that row from being drawn underneath the repeated header instead of below
+            // it - a fragment-tree-only repeat (no reservation) would just overlap real content.
+            var pageGridContainer = _tableBox.HtmlContainer;
+            var repeatsHeader = pageGridContainer != null && pageGridContainer.HasRealPageGrid
+                                 && _headerBox != null && BreakValues.AvoidsBreak(_headerBox.BreakInside);
+            var headerRowCount = _headerBox?.Boxes.Count ?? 0;
+            double headerHeight = 0;
+            int? lastRepeatSlot = null;
+            _tableBox.RepeatedHeaderRows = null;
+
             for (int i = 0; i < _allRows.Count; i++)
             {
+                if (repeatsHeader && i == headerRowCount)
+                {
+                    // The header's own rows (i = 0..headerRowCount-1) just finished; maxBottom is
+                    // still theirs. Its own page is never itself a "repeat" - the header is already
+                    // there once, in flow.
+                    headerHeight = maxBottom - starty;
+                    lastRepeatSlot = pageGridContainer.PageIndexOf(starty);
+                }
+
+                if (repeatsHeader && i >= headerRowCount && lastRepeatSlot.HasValue)
+                {
+                    var slot = pageGridContainer.PageIndexOf(cury);
+                    if (slot > lastRepeatSlot.Value)
+                    {
+                        var pageTop = pageGridContainer.PageTopOf(slot);
+                        cury = pageTop + headerHeight;
+                        lastRepeatSlot = slot;
+
+                        _tableBox.RepeatedHeaderRows ??= new List<CssBox>();
+                        for (var hi = 0; hi < headerRowCount; hi++)
+                        {
+                            var sourceRow = _allRows[hi];
+                            // A <tr> box's own Location is never assigned by this row loop (only its
+                            // cells' is) - the first cell is the real reference point for "where this
+                            // header row actually renders".
+                            var sourceRenderedTop = sourceRow.Boxes.Count > 0 ? sourceRow.Boxes[0].Location.Y : starty;
+                            var targetTop = pageTop + (sourceRenderedTop - starty);
+                            _tableBox.RepeatedHeaderRows.Add(TableHeaderRepeat.CloneAndPosition(sourceRow, sourceRenderedTop, targetTop));
+                        }
+                    }
+                }
+
                 var row = _allRows[i];
                 double curx = startx;
                 int curCol = 0;
-                bool breakPage = false;
 
                 for (int j = 0; j < row.Boxes.Count; j++)
                 {
@@ -676,28 +721,29 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         spacer.ExtendedBox.ActualBottom = maxBottom;
                         CssLayoutEngine.ApplyCellVerticalAlignment(g, spacer.ExtendedBox);
                     }
-
-                    // If one cell crosses page borders then don't need to check other cells in the row
-                    if (_tableBox.PageBreakInside == CssConstants.Avoid)
-                    {
-                        breakPage = cell.BreakPage();
-                        if (breakPage)
-                        {
-                            cury = cell.Location.Y;
-                            break;
-                        }
-                    }
                 }
 
-                if (breakPage) // go back to move the whole row to the next page
+                // break-inside: avoid (or the legacy page-break-inside) on the table: if this row
+                // straddles a page boundary and fits whole on one page, shift the whole row - not
+                // just one cell - down to the next page's content top. Rows aren't avoided from
+                // splitting by default (css-tables-3 6.1 permits a row to fragment, each cell
+                // independently, which is what happens here with no correction: a cell's own content
+                // already flows across the boundary via BlockFragmentation/InlineFragmentation) -
+                // only when the table author actually asked for it.
+                if (pageGridContainer != null && pageGridContainer.HasRealPageGrid && BreakValues.AvoidsBreak(_tableBox.BreakInside)
+                    && maxBottom > cury)
                 {
-                    if (i == 1) // do not leave single row in previous page
-                        i = -1; // Start layout from the first row on new page
-                    else
-                        i--;
-
-                    maxBottom = 0;
-                    continue;
+                    var topSlot = pageGridContainer.PageIndexOf(cury);
+                    var bottomSlot = pageGridContainer.PageIndexOf(Math.Max(cury, maxBottom - 0.01));
+                    if (bottomSlot > topSlot && maxBottom - cury < pageGridContainer.PageSize.Height)
+                    {
+                        var delta = pageGridContainer.PageTopOf(topSlot + 1) - cury;
+                        foreach (CssBox cell in row.Boxes)
+                        {
+                            cell.OffsetTop(delta);
+                        }
+                        maxBottom += delta;
+                    }
                 }
 
                 cury = maxBottom + GetVerticalSpacing();
