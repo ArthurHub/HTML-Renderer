@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TheArtOfDev.HtmlRenderer.Adapters;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 
@@ -105,6 +106,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         /// the real page boundaries at the new position, rather than blindly carrying whatever decision
         /// they made at the old one.
         /// </remarks>
+        /// <remarks>
+        /// A real gap found while auditing this port's fragmentation engine against PeachPDF a second
+        /// time: css-break-3 §3.1's break-point propagation was only ever applied to forced breaks (see
+        /// <see cref="TryGetForcedBreakTarget"/>'s own remark), never to this kind of relocation. A child
+        /// moved by this method while it's its parent's first in-flow child - a plain wrapper with no
+        /// content before it - left the parent spanning from its original page to the child's new one, its
+        /// own background/border painted as a stub-then-continuation for no reason a CSS author would
+        /// expect (e.g. a card/panel div wrapping a single table or figure). <see cref="PropagateContainerRelocation"/>
+        /// fixes this by climbing the first-in-flow-child chain and shifting each such ancestor's own top
+        /// by the same delta, rather than leaving it behind.
+        /// </remarks>
         internal static void RelocateIfNeeded(RGraphics g, CssBox child)
         {
             var container = child.HtmlContainer;
@@ -132,6 +144,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             var target = container.PageTopOf(topSlot + 1);
             child.ResumeAt(null, target);
             child.PerformLayout(g);
+
+            PropagateContainerRelocation(child, child.EffectiveTop - top);
         }
 
         /// <summary>
@@ -185,7 +199,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
                 return;
 
             var prevBottomSlot = container.PageIndexOf(Math.Max(prevSibling.EffectiveTop, prevSibling.ActualBottom - 0.01));
-            var childTopSlot = container.PageIndexOf(child.EffectiveTop);
+            var childTopBeforeRelayout = child.EffectiveTop;
+            var childBottomBeforeRelayout = child.ActualBottom;
+            var childTopSlot = container.PageIndexOf(childTopBeforeRelayout);
             if (childTopSlot <= prevBottomSlot)
                 return; // No break actually falls between them - nothing to enforce.
 
@@ -195,7 +211,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             // Trim from the front (earliest members) until what remains fits alongside child on the
             // target page - see the second remarks block above for why pulling an oversized run
             // unconditionally is not just suboptimal but actively corrupts layout.
-            var childHeight = child.ActualBottom - child.EffectiveTop;
+            var childHeight = childBottomBeforeRelayout - childTopBeforeRelayout;
             var pageHeight = container.PageSize.Height;
             var start = 0;
             while (start < run.Count)
@@ -209,7 +225,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             if (start >= run.Count)
                 return; // RunDropped - not even the run's last member fits alongside child; leave everything in place.
 
-            var delta = container.PageTopOf(childTopSlot) - run[start].EffectiveTop;
+            var originalGroupTop = run[start].EffectiveTop; // captured before OffsetTop below moves it
+            var delta = container.PageTopOf(childTopSlot) - originalGroupTop;
             if (delta <= 0)
                 return; // Defensive - a positive shift is the only sensible outcome here.
 
@@ -220,6 +237,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 
             child.ResumeAt(null, null);
             child.PerformLayout(g);
+
+            // css-break-3 §3.1 propagation (see PropagateContainerRelocation and RelocateIfNeeded's own
+            // remark on the same gap): run[start] is the run's earliest member - if it's also its
+            // parent's first in-flow child, the parent's own top should follow it up by the same delta.
+            PropagateContainerRelocation(run[start], delta);
         }
 
         /// <summary>
@@ -242,6 +264,49 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             }
 
             return run;
+        }
+
+        /// <summary>
+        /// css-break-3 §3.1's break-point propagation applied to relocation, not just to forced breaks
+        /// (see <see cref="TryGetForcedBreakTarget"/>'s own "no previous sibling" check, which tests the
+        /// same condition): while <paramref name="movedBox"/> is its parent's first in-flow child, the
+        /// parent's own top has no meaning independent of it - so the parent's <see cref="CssBox.Location"/>
+        /// is shifted by the same <paramref name="delta"/>, and the check repeats one level further up
+        /// (the parent, now itself "the thing that moved").
+        /// </summary>
+        /// <remarks>
+        /// Deliberately touches only the parent's top, never its bottom/<see cref="CssBoxProperties.ActualBottom"/>:
+        /// a container's bottom is independently, correctly computed from its LAST child once that child
+        /// finishes its own layout (ordinary block flow, unaffected by an EARLIER sibling moving) - only
+        /// the top, decided once before any child is laid out and never revisited otherwise, needs this
+        /// correction. This also means the check doesn't need "does the parent have any OTHER content" at
+        /// all: a later sibling that hasn't been laid out yet (or moved by a different amount) has no
+        /// bearing on whether the FIRST child's own top should still anchor the parent's.
+        /// </remarks>
+        /// <remarks>
+        /// Deliberately narrower than PeachPDF's actual anchor-climbing (which participates in the same
+        /// call-stack-unwind bubbling every break decision does): this port has no such bubbling for
+        /// RelocateIfNeeded/EnforceKeepWithNext/InlineFragmentation's relocations (each fires and completes
+        /// within its own parent's child loop, several stack frames below any grandparent that might also
+        /// need to react), so climbing further and actually re-laying out an ancestor from underneath its
+        /// own in-progress layout call would be reentrant and unsafe. This version only ever adjusts the
+        /// parent's own <see cref="CssBox.Location"/> directly - never a subtree-wide <see cref="CssBox.OffsetTop"/>
+        /// (<paramref name="movedBox"/> has already been repositioned; shifting it again would double-count
+        /// it) and never a relayout.
+        /// </remarks>
+        internal static void PropagateContainerRelocation(CssBox movedBox, double delta)
+        {
+            if (delta == 0)
+                return;
+
+            var current = movedBox;
+            var parent = current.ParentBox;
+            while (parent != null && DomUtils.GetPreviousSibling(current) == null)
+            {
+                parent.Location = new RPoint(parent.Location.X, parent.Location.Y + delta);
+                current = parent;
+                parent = parent.ParentBox;
+            }
         }
     }
 }
