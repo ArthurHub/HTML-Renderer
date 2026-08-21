@@ -753,7 +753,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 _root.Size = new RSize(_maxSize.Width > 0 ? _maxSize.Width : 99999, 0);
                 _root.Location = _location;
                 _hasFloatedBoxes = ComputeHasFloatedBoxes(_root);
-                _root.PerformLayout(g);
+                DriveLayoutPasses(g);
 
                 if (_maxSize.Width <= 0.1)
                 {
@@ -761,7 +761,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                     _root.Size = new RSize((int)Math.Ceiling(_actualSize.Width), 0);
                     _actualSize = RSize.Empty;
                     _hasFloatedBoxes = ComputeHasFloatedBoxes(_root);
-                    _root.PerformLayout(g);
+                    DriveLayoutPasses(g);
                 }
 
                 if (!_loadComplete)
@@ -774,6 +774,44 @@ namespace TheArtOfDev.HtmlRenderer.Core
             }
 
             FragmentTree = new FragmentEmitter(this).Finish();
+        }
+
+        /// <summary>
+        /// The resumable per-fragmentainer pass loop (matching PeachPDF's <c>LayoutDocument</c>): lay the
+        /// whole document out once; if <see cref="_root"/> stopped partway through (its own
+        /// <see cref="CssBox.PendingBreakToken"/> is set - see that property's doc comment for how a break
+        /// discovered arbitrarily deep in the tree reaches it), resume from exactly that point and lay out
+        /// again; repeat until nothing is left pending. For a container with no real page grid (WinForms/
+        /// WPF's continuous-scroll convention), or a document with no forced breaks at all, this runs
+        /// exactly once - <see cref="CssBox.ResumeAt"/>'s default (no token, no override) is indistinguishable
+        /// from this engine's original single unbounded pass.
+        /// </summary>
+        private void DriveLayoutPasses(RGraphics g)
+        {
+            if (!HasRealPageGrid)
+            {
+                _root.PerformLayout(g);
+                return;
+            }
+
+            // A backstop, not a real budget (matching PeachPDF's own sentinel) - a real document can only
+            // exhaust this many passes if something is genuinely wrong (a break token that never resolves
+            // forward), not from ordinary content length, since R1's scope (forced breaks only) resumes
+            // at most once per forced break in the whole document.
+            const int maxPasses = 100_000;
+
+            BreakToken token = null;
+            for (var pass = 0; pass < maxPasses; pass++)
+            {
+                _root.ResumeAt(token);
+                _root.PerformLayout(g);
+
+                var next = _root.PendingBreakToken;
+                if (next == null)
+                    break;
+
+                token = next;
+            }
         }
 
         /// <summary>

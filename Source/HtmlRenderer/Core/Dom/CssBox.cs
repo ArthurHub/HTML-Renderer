@@ -92,6 +92,47 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         internal List<CssBox> RepeatedHeaderRows { get; set; }
 
+        /// <summary>
+        /// The resumption record this box should re-enter its own child loop with this pass, seeded by
+        /// the parent's <see cref="ResumeAt"/> call right before invoking this box's layout - null for a
+        /// box entered fresh this pass (no earlier pass stopped inside it). See <see cref="BreakToken"/>'s
+        /// own doc comment for the chain shape.
+        /// </summary>
+        private BreakToken _incomingToken;
+
+        /// <summary>
+        /// A pre-decided document-Y top this box must place itself at this pass, rather than deriving one
+        /// from its previous sibling - set only for a box being placed for the first time after an earlier
+        /// pass requested a break before it (<see cref="RequestedBreakBeforeTop"/>). Must not be re-derived:
+        /// re-deriving it would reach the same "doesn't fit" conclusion and request a break before itself
+        /// again, forever.
+        /// </summary>
+        private double? _resumeTopOverride;
+
+        /// <summary>
+        /// Set by this box's own child-loop right after a child's layout call returns with either
+        /// <see cref="RequestedBreakBeforeTop"/> set (wrapped as an <c>IsBreakBefore</c> link) or its own
+        /// <see cref="PendingBreakToken"/> set (wrapped as a continuation link) - the mechanism that lets a
+        /// break discovered arbitrarily deep in the tree reach <see cref="HtmlContainerInt"/>'s pass loop:
+        /// every ancestor's own child loop checks this immediately after its child's layout call returns,
+        /// and if set, stops laying out further siblings this pass and reflects the same fact to its own
+        /// parent. Reset to null at the top of every <see cref="PerformLayoutImp"/> call.
+        /// </summary>
+        internal BreakToken PendingBreakToken { get; private set; }
+
+        /// <summary>
+        /// Set by this box's own layout when a forced <c>break-before</c>/<c>break-after</c> means it
+        /// cannot be placed this pass at all - the box performs no further layout work and returns
+        /// immediately, leaving its parent's child loop to notice this (right after the layout call
+        /// returns) and stop, wrapping <see cref="RequestedBreakBeforeSlot"/>/this value into a
+        /// <c>BlockBreakToken(IsBreakBefore: true)</c>. Reset to null at the top of every
+        /// <see cref="PerformLayoutImp"/> call.
+        /// </summary>
+        internal double? RequestedBreakBeforeTop { get; private set; }
+
+        /// <summary>The pagination slot <see cref="RequestedBreakBeforeTop"/> falls in.</summary>
+        internal int RequestedBreakBeforeSlot { get; private set; }
+
         private CssLineBox _firstHostingLineBox;
         private CssLineBox _lastHostingLineBox;
 
@@ -521,6 +562,27 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
+        /// Seeds this box's resumption state for the upcoming <see cref="PerformLayout"/> call - called
+        /// by a parent's child loop right before re-entering a box on a break token's resume path (or by
+        /// <see cref="HtmlContainerInt"/> on the document root at the start of every pass). Both parameters
+        /// default to null/absent for a box being entered fresh this pass.
+        /// </summary>
+        /// <param name="token">
+        /// how this box should resume its own child/content loop - <see cref="_incomingToken"/>. Null both
+        /// for a genuinely fresh box and for a box being placed for the first time via
+        /// <paramref name="resumeTopOverride"/> (nothing to resume into, since it was never entered before).
+        /// </param>
+        /// <param name="resumeTopOverride">
+        /// a pre-decided top this box must place itself at, bypassing its own natural-position derivation
+        /// - <see cref="_resumeTopOverride"/>.
+        /// </param>
+        internal void ResumeAt(BreakToken token, double? resumeTopOverride = null)
+        {
+            _incomingToken = token;
+            _resumeTopOverride = resumeTopOverride;
+        }
+
+        /// <summary>
         /// Set this box in
         /// </summary>
         /// <param name="before"></param>
@@ -711,6 +773,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="g">Device context to use</param>
         protected virtual void PerformLayoutImp(RGraphics g)
         {
+            // Pass-scoped signal state - stale values from an earlier pass must never leak into this one.
+            PendingBreakToken = null;
+            RequestedBreakBeforeTop = null;
+            RequestedBreakBeforeSlot = 0;
+
             if (Display != CssConstants.None)
             {
                 RectanglesReset();
@@ -777,7 +844,35 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     {
                         left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
                         var baseTopWithoutMargin = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
-                        top = BlockFragmentation.ResolveBlockTop(this, prevSibling, baseTopWithoutMargin);
+
+                        if (_incomingToken != null && ReferenceEquals(_incomingToken.Box, this))
+                        {
+                            // Resuming this box's own interrupted child/content loop, not placing it fresh
+                            // - css-break-3 §2 gives a box one inline position across all its fragments, so
+                            // there is nothing to re-derive here; Location already holds it from the pass
+                            // that placed this box originally.
+                            top = Location.Y;
+                        }
+                        else if (_resumeTopOverride.HasValue)
+                        {
+                            // A break-before target an earlier pass already decided (see
+                            // RequestedBreakBeforeTop's doc comment) - must not be re-derived.
+                            top = _resumeTopOverride.Value;
+                        }
+                        else if (BlockFragmentation.TryGetForcedBreakTarget(this, prevSibling, baseTopWithoutMargin, out var breakSlot, out var breakTop))
+                        {
+                            // A forced break-before/after applies and this is a genuinely fresh entry (no
+                            // resume state of any kind) - defer this box (and everything after it in its
+                            // parent's child loop) to a later pass entirely, rather than positioning it now.
+                            RequestedBreakBeforeSlot = breakSlot;
+                            RequestedBreakBeforeTop = breakTop;
+                            return;
+                        }
+                        else
+                        {
+                            top = BlockFragmentation.ResolveBlockTop(this, prevSibling, baseTopWithoutMargin);
+                        }
+
                         Location = new RPoint(left, top);
                         ActualBottom = top;
 
@@ -803,10 +898,49 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     }
                     else if (_boxes.Count > 0)
                     {
-                        foreach (var childBox in Boxes)
+                        // Resuming our OWN child loop (as opposed to a fresh entry) if the incoming token
+                        // names this box - ResumeChildIndex says which child to pick back up at; every
+                        // child before it already has a finished fragment from an earlier pass and is
+                        // never touched again.
+                        var resumeToken = _incomingToken as BlockBreakToken;
+                        var resumingHere = resumeToken != null && ReferenceEquals(resumeToken.Box, this);
+                        var startIndex = resumingHere ? resumeToken.ResumeChildIndex : 0;
+
+                        for (var i = startIndex; i < Boxes.Count; i++)
                         {
+                            var childBox = Boxes[i];
+
+                            if (i == startIndex && resumingHere)
+                            {
+                                if (resumeToken.IsBreakBefore)
+                                    childBox.ResumeAt(null, resumeToken.ResumeTopOverride);
+                                else
+                                    childBox.ResumeAt(resumeToken.ChildToken);
+                            }
+
                             childBox.PerformLayout(g);
+
+                            if (childBox.RequestedBreakBeforeTop.HasValue)
+                            {
+                                // Child declined to be placed this pass at all - stop here too, so this
+                                // box's own parent bubbles the same fact upward (see PendingBreakToken's
+                                // doc comment for how this reaches HtmlContainerInt's pass loop).
+                                PendingBreakToken = new BlockBreakToken(
+                                    this, childBox.RequestedBreakBeforeSlot, i, null, true, childBox.RequestedBreakBeforeTop);
+                                return;
+                            }
+
                             BlockFragmentation.RelocateIfNeeded(childBox);
+
+                            if (childBox.PendingBreakToken != null)
+                            {
+                                // Child placed itself but stopped somewhere inside its own content/child
+                                // loop - wrap its token in a link naming this box and stop laying out any
+                                // further siblings this pass.
+                                PendingBreakToken = new BlockBreakToken(
+                                    this, childBox.PendingBreakToken.ResumeSlotIndex, i, childBox.PendingBreakToken, false, null);
+                                return;
+                            }
                         }
                         ActualRight = CalculateActualRight();
 
