@@ -21,7 +21,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint.Content
         public void Paint(FragmentPainter painter, RGraphics g, BoxFragment fragment)
         {
             var box = (CssBoxHr)fragment.Box;
-            var offset = box.IsFixed ? RPoint.Empty : painter.Container.ScrollOffset;
+            var offset = painter.FragmentLocalOffset(box.IsFixed);
             var rect = fragment.PrimaryRect;
             rect.Offset(offset);
             box.DrawHrContent(g, rect);

@@ -10,8 +10,9 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Paint
 {
     /// <summary>
-    /// Paints a fragmentainer from the immutable fragment tree, replacing <see cref="CssBox.Paint"/>'s
-    /// live-tree walk. Every geometric decision reads from the <see cref="BoxFragment"/> being painted;
+    /// Paints a fragmentainer from the immutable fragment tree - the sole paint path now that the old
+    /// live-tree walk (formerly <c>CssBox.Paint</c>/<c>PaintImp</c>) has been deleted. Every geometric
+    /// decision reads from the <see cref="BoxFragment"/> being painted;
     /// the box back-reference (<see cref="BoxFragment.Box"/>) is consulted only for computed style and,
     /// for now, for the paint primitives themselves (<see cref="CssBox.PaintBackground"/>/
     /// <see cref="CssBox.PaintWords"/>/<see cref="CssBox.PaintDecoration"/> - widened from <c>protected</c>/
@@ -29,23 +30,82 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
     {
         private readonly HtmlContainerInt _container;
 
-        internal FragmentPainter(HtmlContainerInt container)
+        /// <summary>
+        /// Added to every painted rect on top of <see cref="HtmlContainerInt.ScrollOffset"/> - zero for
+        /// every ordinary caller (one fragmentainer already in its own native coordinate system: a PDF
+        /// page's own <c>XGraphics</c>, or the single always-page-local-zero fragmentainer WinForms/WPF's
+        /// continuous document produces). Non-zero only when <see cref="HtmlContainerInt.PerformPaint(RGraphics)"/>
+        /// paints several fragmentainers onto one continuous surface (its multi-fragmentainer branch) -
+        /// there each fragmentainer's content is fragment-tree-local (translated so the band's own top is
+        /// Y=0) and must be translated back by the band's real document-Y top to land in the right place
+        /// on the shared surface, matching what painting the old, unfragmented box tree once did directly.
+        /// </summary>
+        private readonly RPoint _pageOrigin;
+
+        /// <summary>
+        /// The real document-Y top of the fragmentainer currently being painted (<see cref="FragmentainerFragment.LocalOriginY"/>),
+        /// set once per <see cref="Paint"/> call. Geometry sourced from the fragment tree (<see cref="BoxFragment.Lines"/>/
+        /// <see cref="BoxFragment.PrimaryRect"/>) is already local to this band (<see cref="Fragmentation.FragmentEmitter"/>
+        /// subtracts it at build time) and needs no further adjustment for it. Geometry read straight off the
+        /// live <see cref="CssBox"/> tree instead (<see cref="CssBox.PaintWords"/>'s <c>word.Rectangle</c>,
+        /// <see cref="CssBoxImage.DrawImageContent"/>'s image-word rect, the visibility cull below) is still
+        /// absolute document-Y and must have this subtracted to land in the same target frame - missing this
+        /// distinction was a real bug (found while building the continuous-surface paint path this field
+        /// supports): every page after the first silently painted zero text, since a fresh per-page surface's
+        /// origin is this band's top, not the document's.
+        /// </summary>
+        private double _bandTop;
+
+        internal FragmentPainter(HtmlContainerInt container, RPoint pageOrigin = default)
         {
             _container = container;
+            _pageOrigin = pageOrigin;
         }
 
-        /// <summary>Exposed for <see cref="Content.IFragmentContentPainter"/> implementations, which live outside this class but need <see cref="HtmlContainerInt.ScrollOffset"/>.</summary>
-        internal HtmlContainerInt Container => _container;
+        /// <summary>
+        /// The offset to apply to a box's fragment-local rect (already local to the fragmentainer being
+        /// painted) to reach its paint position: scroll offset (suppressed for a fixed-position box,
+        /// matching the old live-tree walk's behavior) plus <see cref="_pageOrigin"/> (applies regardless
+        /// of <paramref name="isFixed"/> - the old, single continuous-surface paint path this replaced
+        /// never gave "fixed" boxes special treatment with respect to which page's content they belonged
+        /// to, only whether scroll offset applied to them).
+        /// </summary>
+        internal RPoint FragmentLocalOffset(bool isFixed)
+        {
+            var scroll = isFixed ? RPoint.Empty : _container.ScrollOffset;
+            return new RPoint(scroll.X + _pageOrigin.X, scroll.Y + _pageOrigin.Y);
+        }
+
+        /// <summary>
+        /// The offset to apply to a rect read straight off the live <see cref="CssBox"/> tree (still
+        /// absolute document-Y, unlike fragment-tree geometry) to reach the same paint position
+        /// <see cref="FragmentLocalOffset"/> gives fragment-local geometry: additionally undoes
+        /// <see cref="_bandTop"/>, regardless of <paramref name="isFixed"/> (band membership is
+        /// orthogonal to scroll-offset suppression).
+        /// </summary>
+        internal RPoint LiveTreeOffset(bool isFixed)
+        {
+            var offset = FragmentLocalOffset(isFixed);
+            return new RPoint(offset.X, offset.Y - _bandTop);
+        }
+
+        /// <summary>
+        /// The portion of <see cref="LiveTreeOffset"/> that <see cref="RenderUtils.ClipGraphicsByOverflow"/>
+        /// doesn't already add itself (it applies <see cref="HtmlContainerInt.ScrollOffset"/>/<c>IsFixed</c>
+        /// gating internally) - pass as its <c>extraOffset</c> parameter.
+        /// </summary>
+        internal RPoint LiveTreeExtraOffset => new RPoint(_pageOrigin.X, _pageOrigin.Y - _bandTop);
 
         internal void Paint(RGraphics g, FragmentainerFragment fragmentainer)
         {
+            _bandTop = fragmentainer.LocalOriginY;
             PaintFragment(g, fragmentainer.Root);
         }
 
         /// <summary>
-        /// Paints one box fragment - the fragment-tree analog of <see cref="CssBox.Paint"/>: display/
-        /// visibility gate, fixed-position clip suspension, and the same "is this rect actually in the
-        /// visible area" cull, before handing off to the box's own content.
+        /// Paints one box fragment: display/visibility gate, fixed-position clip suspension, and the
+        /// same "is this rect actually in the visible area" cull the old live-tree walk used, before
+        /// handing off to the box's own content.
         /// </summary>
         private void PaintFragment(RGraphics g, BoxFragment fragment)
         {
@@ -55,7 +115,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
                 if (box.Display == CssConstants.None || box.Visibility != CssConstants.Visible)
                     return;
 
-                // Only this box's own Position, not IsFixed's ancestor-aware sense - matching CssBox.Paint.
+                // Only this box's own Position, not IsFixed's ancestor-aware sense - matching the old live-tree walk.
                 var suspendsClip = box.Position == CssConstants.Fixed;
                 if (suspendsClip)
                     g.SuspendClipping();
@@ -63,12 +123,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
                 var visible = box.Rectangles.Count == 0;
                 if (!visible)
                 {
+                    // box.ContainingBlock.ClientRectangle is read off the live box tree - still absolute
+                    // document-Y, unlike fragment-tree geometry, so this needs LiveTreeOffset (not just
+                    // ScrollOffset) to land in this painter's target frame.
                     var clip = g.GetClip();
                     var rect = box.ContainingBlock.ClientRectangle;
                     rect.X -= 2;
                     rect.Width += 2;
-                    if (!box.IsFixed)
-                        rect.Offset(_container.ScrollOffset);
+                    rect.Offset(LiveTreeOffset(box.IsFixed));
                     clip.Intersect(rect);
                     visible = clip != RRect.Empty;
                 }
@@ -86,8 +148,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
         }
 
         /// <summary>
-        /// Paints one box fragment's own decorations, words, and children - the fragment-tree analog of
-        /// <see cref="CssBox.PaintImp"/>.
+        /// Paints one box fragment's own decorations, words, and children.
         /// </summary>
         private void PaintFragmentContent(RGraphics g, BoxFragment fragment)
         {
@@ -106,9 +167,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
                 return;
             }
 
-            var clipped = RenderUtils.ClipGraphicsByOverflow(g, box);
+            var clipped = RenderUtils.ClipGraphicsByOverflow(g, box, LiveTreeExtraOffset);
             var clip = g.GetClip();
-            var offset = box.IsFixed ? RPoint.Empty : _container.ScrollOffset;
+            // fragment.Lines is already fragment-local (FragmentEmitter subtracted the band top at build
+            // time) - only FragmentLocalOffset (scroll + page-origin) applies. box.PaintWords instead
+            // reads box.Words directly off the live tree (still absolute document-Y), so it needs
+            // LiveTreeOffset to additionally undo the band top - see _bandTop's doc comment.
+            var offset = FragmentLocalOffset(box.IsFixed);
             var lines = fragment.Lines;
 
             for (var i = 0; i < lines.Count; i++)
@@ -122,7 +187,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
                 }
             }
 
-            box.PaintWords(g, offset);
+            box.PaintWords(g, LiveTreeOffset(box.IsFixed));
 
             for (var i = 0; i < lines.Count; i++)
             {
@@ -134,7 +199,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
                 }
             }
 
-            // Split to match the z-order CssBox.PaintImp already uses: normal flow, then absolute, then fixed.
+            // Split to match the old live-tree walk's z-order: normal flow, then absolute, then fixed.
             foreach (var child in fragment.Children)
             {
                 if (child.Box.Position != CssConstants.Absolute && !child.Box.IsFixed)

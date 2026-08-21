@@ -39,7 +39,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         /// <param name="g">the graphics to clip</param>
         /// <param name="box">the box that is rendered to get containing blocks</param>
         /// <returns>true - was clipped, false - not clipped</returns>
-        public static bool ClipGraphicsByOverflow(RGraphics g, CssBox box)
+        /// <param name="extraOffset">
+        /// Added unconditionally (regardless of <see cref="CssBox.IsFixed"/>) on top of the usual
+        /// scroll-offset handling below - <see cref="Paint.FragmentPainter"/> passes its
+        /// <see cref="Paint.FragmentPainter.LiveTreeExtraOffset"/> to additionally undo the current
+        /// fragmentainer's band top, since <paramref name="box"/>.ContainingBlock's client rectangle is
+        /// read straight off the live box tree (still absolute document-Y) while the caller may be
+        /// painting into a page-local or page-origin-translated surface.
+        /// </param>
+        public static bool ClipGraphicsByOverflow(RGraphics g, CssBox box, RPoint extraOffset = default)
         {
             var containingBlock = box.ContainingBlock;
             while (true)
@@ -53,6 +61,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
 
                     if (!box.IsFixed)
                         rect.Offset(box.HtmlContainer.ScrollOffset);
+                    rect.Offset(extraOffset);
 
                     rect.Intersect(prevClip);
                     g.PushClip(rect);
