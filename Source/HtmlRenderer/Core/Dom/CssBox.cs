@@ -944,6 +944,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                             // inside a break-inside:avoid container - so check again.
                             if (BubbleChildPendingToken(childBox, i))
                                 return;
+
+                            BlockFragmentation.EnforceKeepWithNext(g, childBox);
+
+                            // Same reasoning as above: EnforceKeepWithNext's own relayout of childBox can
+                            // itself surface a nested break.
+                            if (BubbleChildPendingToken(childBox, i))
+                                return;
                         }
                         ActualRight = CalculateActualRight();
 
