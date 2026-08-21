@@ -810,7 +810,21 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 g.PushClip(new RRect(MarginLeft, MarginTop, PageSize.Width, PageSize.Height));
             }
 
-            if (_root != null)
+            // The fragment tree has exactly one fragmentainer for every caller of this overload today
+            // (WinForms/WPF's continuous single-surface rendering, and any other HasRealPageGrid=false
+            // container - see FragmentEmitter.Finish's no-real-page-grid path) - FragmentPainter is a
+            // faithful, verified replacement for CssBox.Paint there (see StageE1SmokeTest's pixel-for-
+            // pixel comparison, and HtmlRenderingRegressionTests staying green under this path).
+            // A caller with a real, multi-page grid that reaches this overload instead of the
+            // fragmentainer-aware one (PdfGenerator always uses that one - see PdfGenerator.AddPdfPages)
+            // falls back to the old live-tree walk, which paints every page's content onto one
+            // continuous surface exactly as this method always has; splitting that across fragments
+            // correctly is what the fragmentainer-aware overload below already does properly.
+            if (FragmentTree != null && FragmentTree.Fragmentainers.Count == 1)
+            {
+                new Paint.FragmentPainter(this).Paint(g, FragmentTree.Fragmentainers[0]);
+            }
+            else if (_root != null)
             {
                 _root.Paint(g);
             }
@@ -820,8 +834,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
         /// <summary>
         /// Render one fragmentainer using the given device, reading from the immutable fragment tree
-        /// rather than walking the mutable box tree directly. Not yet the default paint path - see
-        /// <see cref="Paint.FragmentPainter"/>'s remarks for why.
+        /// rather than walking the mutable box tree directly.
         /// </summary>
         /// <param name="g">the device to use to render</param>
         /// <param name="fragmentainer">the fragmentainer to paint</param>
