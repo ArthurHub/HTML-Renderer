@@ -168,9 +168,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         /// empirically reaching a box position around 8.6e11 for a 60-member chain on a short page). The
         /// fix is css-break-3 §4.3's actual staged relaxation: trim the run from its front (the earliest,
         /// least-important-to-keep members) until what remains actually fits the target page alongside
-        /// <paramref name="child"/> (<see cref="BreakRelaxation.RunTrimmed"/>), or leave the run in place
-        /// entirely if even its last member doesn't fit there (<see cref="BreakRelaxation.RunDropped"/>) -
-        /// never pull a run that can't actually fit.
+        /// <paramref name="child"/> ("RunTrimmed"), or leave the run in place entirely if even its last
+        /// member doesn't fit there ("RunDropped") - never pull a run that can't actually fit.
         /// </remarks>
         internal static void EnforceKeepWithNext(RGraphics g, CssBox child)
         {
