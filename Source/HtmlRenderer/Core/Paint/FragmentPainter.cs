@@ -19,12 +19,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
     /// the existing, tested paint code rather than a parallel reimplementation).
     /// </summary>
     /// <remarks>
-    /// This is the first-cut ("E1") version: it paints the trivial single-fragmentainer tree D1 already
-    /// produces, and is verified to be pixel-identical to the old <see cref="CssBox.Paint"/> path across
-    /// the entire existing regression baseline set before any real multi-page fragmentation exists. Real
-    /// per-type content painters (matching PeachPDF's <c>IFragmentContentPainter</c>), stacking-context
-    /// paint order, and <c>box-decoration-break</c> slicing are follow-on work once real fragmentation
-    /// (multiple fragments per box) exists for them to matter.
+    /// Leaf/replaced types dispatch to their own <see cref="Content.IFragmentContentPainter"/> (matching
+    /// PeachPDF's <c>IFragmentContentPainter</c>/<c>FragmentContentPainters</c> shape, see
+    /// <see cref="Content.FragmentContentPainters.For"/>); everything else uses the generic box-fragment
+    /// path below. Stacking-context paint order and <c>box-decoration-break</c> slicing are follow-on
+    /// work once real fragmentation (multiple fragments per box) exists for them to matter.
     /// </remarks>
     internal sealed class FragmentPainter
     {
@@ -34,6 +33,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
         {
             _container = container;
         }
+
+        /// <summary>Exposed for <see cref="Content.IFragmentContentPainter"/> implementations, which live outside this class but need <see cref="HtmlContainerInt.ScrollOffset"/>.</summary>
+        internal HtmlContainerInt Container => _container;
 
         internal void Paint(RGraphics g, FragmentainerFragment fragmentainer)
         {
@@ -91,14 +93,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
         {
             var box = fragment.Box;
 
-            if (box is CssBoxImage or CssBoxHr or CssBoxFrame)
+            var contentPainter = Content.FragmentContentPainters.For(box);
+            if (contentPainter != null)
             {
-                // These are replaced/rule leaf types with their own, unchanged PaintImp override.
-                // They are monolithic (MonolithicContent.IsReplaced), so their one fragment always
-                // covers their whole box and there is nothing fragment-specific for them to gain by
-                // being re-painted here - real per-type content painters are follow-on work once real
-                // fragmentation exists for them to matter.
-                box.Paint(g);
+                contentPainter.Paint(this, g, fragment);
                 return;
             }
 
@@ -156,10 +154,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
             if (clipped)
                 g.PopClip();
 
-            // Not part of Boxes/Children - paint directly via the existing, unchanged code, same as
-            // CssBox.PaintImp does today.
-            if (box.ListItemBox != null)
-                box.ListItemBox.Paint(g);
+            // Marker paints last, after this fragment's own overflow clip is popped - see
+            // BoxFragment.MarkerFragment's doc comment for why it's kept separate from Children.
+            if (fragment.MarkerFragment != null)
+                PaintFragment(g, fragment.MarkerFragment);
         }
 
         private static bool IsRectVisible(RRect rect, RRect clip)

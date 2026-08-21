@@ -97,7 +97,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         {
             var offset = (HtmlContainer != null && !IsFixed) ? HtmlContainer.ScrollOffset : RPoint.Empty;
             var rect = new RRect(Bounds.X + offset.X, Bounds.Y + offset.Y, Bounds.Width, Bounds.Height);
+            DrawHrContent(g, rect);
+        }
 
+        /// <summary>
+        /// Draws the rule itself at <paramref name="rect"/> (already offset for scroll) - the whole of
+        /// what <see cref="PaintImp"/> does, since an <c>&lt;hr&gt;</c> has no separate background/border
+        /// step shared with other replaced elements (it draws each border edge itself, not via
+        /// <see cref="BordersDrawHandler.DrawBoxBorders"/>). Shared by <see cref="PaintImp"/> and
+        /// <see cref="Paint.Content.HrFragmentPainter"/>.
+        /// </summary>
+        internal void DrawHrContent(RGraphics g, RRect rect)
+        {
             if (rect.Height > 2 && RenderUtils.IsColorVisible(ActualBackgroundColor))
             {
                 g.DrawRectangle(g.GetSolidBrush(ActualBackgroundColor), rect.X, rect.Y, rect.Width, rect.Height);

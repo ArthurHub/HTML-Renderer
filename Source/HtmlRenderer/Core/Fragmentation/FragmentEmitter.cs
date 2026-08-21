@@ -169,6 +169,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
                 }
             }
 
+            BoxFragment markerFragment = null;
+            if (box.ListItemBox != null && HasContentInBand(box.ListItemBox, band))
+                markerFragment = BuildBoxFragment(box.ListItemBox, fragmentainerIndex, band);
+
             var rect = ToLocal(Clip(box.Bounds, band), band);
             var wholeBoxRect = ToLocal(box.Bounds, band);
 
@@ -191,6 +195,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
                 lines,
                 words,
                 children,
+                markerFragment,
                 OverflowClip: null);
         }
 

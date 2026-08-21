@@ -72,12 +72,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="g">the device to draw to</param>
         protected override void PaintImp(RGraphics g)
         {
-            // load image if it is in visible rectangle
-            if (_imageLoadHandler == null)
-            {
-                _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
-                _imageLoadHandler.LoadImage(GetImageSource(), HtmlTag != null ? HtmlTag.Attributes : null);
-            }
+            EnsureImageLoadStarted();
 
             var rect = CommonUtils.GetFirstValueOrDefault(Rectangles);
             RPoint offset = RPoint.Empty;
@@ -92,6 +87,35 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             PaintBackground(g, rect, true, true);
             BordersDrawHandler.DrawBoxBorders(g, this, rect, true, true);
 
+            DrawImageContent(g, offset);
+
+            if (clipped)
+                g.PopClip();
+        }
+
+        /// <summary>
+        /// Starts loading the image if it hasn't started already. This is the primary load trigger for
+        /// the common async case (<see cref="HtmlContainerInt.AvoidAsyncImagesLoading"/>/
+        /// <see cref="HtmlContainerInt.AvoidImagesLateLoading"/> both false) - <see cref="MeasureWordsSize"/>
+        /// only starts loading when one of those flags is set, so paint is where loading normally begins.
+        /// Shared by <see cref="PaintImp"/> and <see cref="Paint.Content.ImageFragmentPainter"/>.
+        /// </summary>
+        internal void EnsureImageLoadStarted()
+        {
+            if (_imageLoadHandler == null)
+            {
+                _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
+                _imageLoadHandler.LoadImage(GetImageSource(), HtmlTag != null ? HtmlTag.Attributes : null);
+            }
+        }
+
+        /// <summary>
+        /// Draws the image itself (or its error/loading placeholder) at <paramref name="offset"/> - the
+        /// part of <see cref="PaintImp"/> specific to this box's own image word, as opposed to the
+        /// generic background/border painting shared with every other replaced element.
+        /// </summary>
+        internal void DrawImageContent(RGraphics g, RPoint offset)
+        {
             RRect r = _imageWord.Rectangle;
             r.Offset(offset);
             r.Height -= ActualBorderTopWidth + ActualBorderBottomWidth + ActualPaddingTop + ActualPaddingBottom;
@@ -129,9 +153,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     g.DrawRectangle(g.GetPen(RColor.LightGray), r.X, r.Y, r.Width, r.Height);
                 }
             }
-
-            if (clipped)
-                g.PopClip();
         }
 
         /// <summary>
