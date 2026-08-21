@@ -191,6 +191,14 @@ namespace TheArtOfDev.HtmlRenderer.Core
             { "padding-right", "0" },
             { "padding-top", "0" },
             { "page-break-inside", "auto" },
+            { "break-inside", "auto" },
+            { "break-before", "auto" },
+            { "break-after", "auto" },
+            { "page-break-before", "auto" },
+            { "page-break-after", "auto" },
+            { "widows", "2" },
+            { "orphans", "2" },
+            { "page", "auto" },
             { "text-align", "" },
             { "text-decoration-line", "" },
             { "text-indent", "0" },
@@ -225,6 +233,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             "line-height",
             "word-break",
             "direction",
+            "widows", "orphans",
         };
 
         /// <summary>

@@ -90,6 +90,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _paddingRight = "0";
         private string _paddingTop = "0";
         private string _pageBreakInside = CssConstants.Auto;
+        private string _breakBefore = CssConstants.Auto;
+        private string _breakAfter = CssConstants.Auto;
+        private string _widows = "2";
+        private string _orphans = "2";
+        private string _pageName = CssConstants.Auto;
         private string _right;
         private string _textAlign = string.Empty;
         private string _textDecoration = string.Empty;
@@ -453,6 +458,112 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 _pageBreakInside = value;
             }
+        }
+
+        /// <summary>
+        /// CSS Fragmentation "break-inside". Shares a backing field with the legacy "page-break-inside"
+        /// (<see cref="PageBreakInside"/>) so fragmentation code has one canonical value to consult
+        /// regardless of which property name an author used.
+        /// </summary>
+        public string BreakInside
+        {
+            get { return _pageBreakInside; }
+            set { _pageBreakInside = value; }
+        }
+
+        /// <summary>
+        /// CSS Fragmentation "break-before". Shares a backing field with the legacy "page-break-before"
+        /// (<see cref="PageBreakBefore"/>).
+        /// </summary>
+        public string BreakBefore
+        {
+            get { return _breakBefore; }
+            set { _breakBefore = value; }
+        }
+
+        /// <summary>
+        /// Legacy CSS2.1 "page-break-before". Shares a backing field with <see cref="BreakBefore"/>.
+        /// </summary>
+        public string PageBreakBefore
+        {
+            get { return _breakBefore; }
+            set { _breakBefore = value; }
+        }
+
+        /// <summary>
+        /// CSS Fragmentation "break-after". Shares a backing field with the legacy "page-break-after"
+        /// (<see cref="PageBreakAfter"/>).
+        /// </summary>
+        public string BreakAfter
+        {
+            get { return _breakAfter; }
+            set { _breakAfter = value; }
+        }
+
+        /// <summary>
+        /// Legacy CSS2.1 "page-break-after". Shares a backing field with <see cref="BreakAfter"/>.
+        /// </summary>
+        public string PageBreakAfter
+        {
+            get { return _breakAfter; }
+            set { _breakAfter = value; }
+        }
+
+        /// <summary>
+        /// CSS Fragmentation "widows" - the minimum number of lines of a block left on the top of a page.
+        /// </summary>
+        public string Widows
+        {
+            get { return _widows; }
+            set { _widows = value; }
+        }
+
+        /// <summary>
+        /// The resolved <see cref="Widows"/> value, defaulting to the CSS initial value of 2 when unset
+        /// or unparsable.
+        /// </summary>
+        public int ActualWidows
+        {
+            get
+            {
+                int result;
+                return int.TryParse(_widows, NumberStyles.Integer, CultureInfo.InvariantCulture, out result) && result > 0
+                    ? result
+                    : 2;
+            }
+        }
+
+        /// <summary>
+        /// CSS Fragmentation "orphans" - the minimum number of lines of a block left at the bottom of a page.
+        /// </summary>
+        public string Orphans
+        {
+            get { return _orphans; }
+            set { _orphans = value; }
+        }
+
+        /// <summary>
+        /// The resolved <see cref="Orphans"/> value, defaulting to the CSS initial value of 2 when unset
+        /// or unparsable.
+        /// </summary>
+        public int ActualOrphans
+        {
+            get
+            {
+                int result;
+                return int.TryParse(_orphans, NumberStyles.Integer, CultureInfo.InvariantCulture, out result) && result > 0
+                    ? result
+                    : 2;
+            }
+        }
+
+        /// <summary>
+        /// CSS Paged Media "page" - the named page this box's containing fragmentainer should use.
+        /// </summary>
+        public string PageName
+        {
+            get { return _pageName; }
+            set { _pageName = value; }
         }
 
         public string Left
@@ -1759,6 +1870,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 _lineHeight = p._lineHeight;
                 _wordBreak = p.WordBreak;
                 _direction = p._direction;
+                _widows = p._widows;
+                _orphans = p._orphans;
 
                 if (everything)
                 {
