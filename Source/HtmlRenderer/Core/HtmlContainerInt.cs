@@ -18,6 +18,8 @@ using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Fragmentation;
+using TheArtOfDev.HtmlRenderer.Core.Fragments;
 using TheArtOfDev.HtmlRenderer.Core.Handlers;
 using TheArtOfDev.HtmlRenderer.Core.Parse;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
@@ -530,6 +532,13 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
+        /// The immutable fragment tree layout produced from the box tree on the last <see cref="PerformLayout"/>
+        /// call - the result paint reads from, rather than walking the mutable box tree directly. Null
+        /// before the first layout, or when there is nothing to lay out.
+        /// </summary>
+        internal FragmentTree FragmentTree { get; private set; }
+
+        /// <summary>
         /// the text fore color use for selected text
         /// </summary>
         internal RColor SelectionForeColor
@@ -729,6 +738,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
                         handler(this, EventArgs.Empty);
                 }
             }
+
+            FragmentTree = new FragmentEmitter(this).Finish();
         }
 
         /// <summary>
