@@ -59,16 +59,27 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             var firstPageIndex = container.PageIndexOf(lines[0].LineTop);
             var firstRunCapacity = container.PageBottomOf(firstPageIndex) - lines[0].LineTop;
 
-            // The box's own first line can itself fail to fit the room remaining on the page it starts
-            // on (this box may start very close to a page's bottom) - every OTHER run always starts
-            // fresh at a full page's top, where this can't happen unless a single line is individually
-            // taller than a whole page (an unrelated, unhandled-here monolithic-overflow concern the
-            // main loop's ordinary straddle test still catches the same way it always did). The main
-            // loop below only ever compares a later line's cumulative height back to line 0's position -
-            // it never re-examines whether line 0 itself already overflowed there, so this has to be
-            // decided first and folded into where the first run is considered to begin.
-            var firstLineNeedsOwnPage = lines[0].LineBottom - lines[0].LineTop > firstRunCapacity;
-            if (firstLineNeedsOwnPage)
+            // How many lines actually fit in the room remaining on the page this box starts on - a
+            // run's total height measured from line 0 is invariant under a uniform shift (see the
+            // two-phase remark above), so this natural-position count is valid regardless of where the
+            // run ends up landing.
+            var firstRunLineCount = 0;
+            while (firstRunLineCount < lines.Count && lines[firstRunLineCount].LineBottom - lines[0].LineTop <= firstRunCapacity)
+                firstRunLineCount++;
+
+            // Orphans (css-break-3 §5.4) applies to the box's very first run exactly like every later
+            // one: a paragraph starting close enough to a page's bottom that fewer than `orphans` lines
+            // fit there must move in its ENTIRETY to the next page, not leave a too-small first fragment
+            // behind. The main loop below cannot fix this on its own - its merge-back correction only
+            // ever runs once at least one earlier break already exists (`breaks.Count > 1`), which is
+            // never true while still deciding the first run, so an otherwise-identical violation at the
+            // very start of a paragraph was silently exempt. Folding it into where the first run begins
+            // (the same mechanism already used for a single first line taller than the remaining room)
+            // fixes it without needing a special case in the main loop. Subsumes that single-line case
+            // too - it is just the `orphans` violation that can never be waived (0 lines fitting is
+            // always fewer than any orphans value of at least 1).
+            var firstRunMovedToFreshPage = firstRunLineCount < lines.Count && firstRunLineCount < orphans;
+            if (firstRunMovedToFreshPage)
             {
                 firstPageIndex++;
                 firstRunCapacity = pageHeight;
@@ -115,9 +126,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             }
 
             // Phase 2: apply the decided breaks as cumulative shifts, in one forward pass. The first
-            // run's own delta is seeded up front (zero unless firstLineNeedsOwnPage moved it) since the
-            // loop below only assigns a fresh delta when it crosses breaks[1] onward.
-            var delta = firstLineNeedsOwnPage ? container.PageTopOf(firstPageIndex) - lines[0].LineTop : 0.0;
+            // run's own delta is seeded up front (zero unless firstRunMovedToFreshPage moved it) since
+            // the loop below only assigns a fresh delta when it crosses breaks[1] onward.
+            var delta = firstRunMovedToFreshPage ? container.PageTopOf(firstPageIndex) - lines[0].LineTop : 0.0;
             var breakOrdinal = 0;
 
             for (var i = 0; i < lines.Count; i++)
