@@ -930,17 +930,20 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                                 return;
                             }
 
-                            BlockFragmentation.RelocateIfNeeded(childBox);
-
-                            if (childBox.PendingBreakToken != null)
-                            {
-                                // Child placed itself but stopped somewhere inside its own content/child
-                                // loop - wrap its token in a link naming this box and stop laying out any
-                                // further siblings this pass.
-                                PendingBreakToken = new BlockBreakToken(
-                                    this, childBox.PendingBreakToken.ResumeSlotIndex, i, childBox.PendingBreakToken, false, null);
+                            // Checked BEFORE RelocateIfNeeded, not after: a child whose own child loop
+                            // stopped mid-way (a nested forced break) never reached its epilogue, so its
+                            // ActualBottom/Location only reflect a partial pass - RelocateIfNeeded's
+                            // straddle test would read meaningless geometry if run on it.
+                            if (BubbleChildPendingToken(childBox, i))
                                 return;
-                            }
+
+                            BlockFragmentation.RelocateIfNeeded(g, childBox);
+
+                            // RelocateIfNeeded's own relayout (see its doc comment) can itself surface a
+                            // break nested inside the relocated child's subtree - e.g. a forced break
+                            // inside a break-inside:avoid container - so check again.
+                            if (BubbleChildPendingToken(childBox, i))
+                                return;
                         }
                         ActualRight = CalculateActualRight();
 
@@ -978,6 +981,23 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 var actualWidth = Math.Max(GetMinimumWidth() + GetWidthMarginDeep(this), Size.Width < 90999 ? ActualRight - HtmlContainer.Root.Location.X : 0);
                 HtmlContainer.ActualSize = CommonUtils.Max(HtmlContainer.ActualSize, new RSize(actualWidth, ActualBottom - HtmlContainer.Root.Location.Y));
             }
+        }
+
+        /// <summary>
+        /// If <paramref name="childBox"/> stopped somewhere inside its own content/child loop this pass,
+        /// wraps its token in a link naming this box (at <paramref name="childIndex"/>) and sets it as
+        /// this box's own <see cref="PendingBreakToken"/>, for the caller to stop laying out any further
+        /// siblings and return. See <see cref="PendingBreakToken"/>'s doc comment for how this bubbling
+        /// reaches <see cref="HtmlContainerInt"/>'s pass loop.
+        /// </summary>
+        private bool BubbleChildPendingToken(CssBox childBox, int childIndex)
+        {
+            if (childBox.PendingBreakToken == null)
+                return false;
+
+            PendingBreakToken = new BlockBreakToken(
+                this, childBox.PendingBreakToken.ResumeSlotIndex, childIndex, childBox.PendingBreakToken, false, null);
+            return true;
         }
 
         /// <summary>
