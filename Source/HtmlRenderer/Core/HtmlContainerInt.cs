@@ -810,23 +810,21 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 g.PushClip(new RRect(MarginLeft, MarginTop, PageSize.Width, PageSize.Height));
             }
 
-            // The fragment tree has exactly one fragmentainer for every caller of this overload today
-            // (WinForms/WPF's continuous single-surface rendering, and any other HasRealPageGrid=false
-            // container - see FragmentEmitter.Finish's no-real-page-grid path) - FragmentPainter is a
-            // faithful, verified replacement for CssBox.Paint there (see StageE1SmokeTest's pixel-for-
-            // pixel comparison, and HtmlRenderingRegressionTests staying green under this path).
-            // A caller with a real, multi-page grid that reaches this overload instead of the
-            // fragmentainer-aware one (PdfGenerator always uses that one - see PdfGenerator.AddPdfPages)
-            // falls back to the old live-tree walk, which paints every page's content onto one
-            // continuous surface exactly as this method always has; splitting that across fragments
-            // correctly is what the fragmentainer-aware overload below already does properly.
-            if (FragmentTree != null && FragmentTree.Fragmentainers.Count == 1)
+            // Every fragmentainer, painted onto this one continuous surface, each translated back to its
+            // real document-Y band top - exactly what the old live-tree walk (_root.Paint(g), removed
+            // once this replaced it) did by construction, since box geometry there was always absolute.
+            // For every caller of this overload today (WinForms/WPF's continuous single-surface
+            // rendering, any other HasRealPageGrid=false container) there is exactly one fragmentainer
+            // whose LocalOriginY is already 0, so this loop runs once with a no-op page origin - a direct
+            // multi-page-grid caller of this overload (bypassing PdfGenerator's real per-fragmentainer
+            // loop below) is the only case where more than one iteration, or a non-zero origin, happens.
+            if (FragmentTree != null)
             {
-                new Paint.FragmentPainter(this).Paint(g, FragmentTree.Fragmentainers[0]);
-            }
-            else if (_root != null)
-            {
-                _root.Paint(g);
+                foreach (var fragmentainer in FragmentTree.Fragmentainers)
+                {
+                    var pageOrigin = new RPoint(0, fragmentainer.LocalOriginY);
+                    new Paint.FragmentPainter(this, pageOrigin).Paint(g, fragmentainer);
+                }
             }
 
             g.PopClip();

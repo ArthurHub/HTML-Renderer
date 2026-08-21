@@ -407,35 +407,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Paints the fragment
-        /// </summary>
-        /// <param name="g">the device to draw to</param>
-        protected override void PaintImp(RGraphics g)
-        {
-            EnsureVideoImageLoadStarted();
-
-            var rects = CommonUtils.GetFirstValueOrDefault(Rectangles);
-
-            RPoint offset = (HtmlContainer != null && !IsFixed) ? HtmlContainer.ScrollOffset : RPoint.Empty;
-            rects.Offset(offset);
-
-            var clipped = RenderUtils.ClipGraphicsByOverflow(g, this);
-
-            PaintBackground(g, rects, true, true);
-
-            BordersDrawHandler.DrawBoxBorders(g, this, rects, true, true);
-
-            DrawFrameContent(g, offset);
-
-            if (clipped)
-                g.PopClip();
-        }
-
-        /// <summary>
         /// Starts loading the video thumbnail if the video API call resolved a thumbnail URL and loading
         /// hasn't started already - the same paint-time trigger pattern as <see cref="CssBoxImage"/>, see
         /// its <see cref="CssBoxImage.EnsureImageLoadStarted"/> for why this can't move to measure time.
-        /// Shared by <see cref="PaintImp"/> and <see cref="Paint.Content.FrameFragmentPainter"/>.
+        /// Called by <see cref="Paint.Content.FrameFragmentPainter"/>.
         /// </summary>
         internal void EnsureVideoImageLoadStarted()
         {
@@ -447,9 +422,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Draws the video thumbnail/title/play-button chrome at <paramref name="offset"/> - the part of
-        /// <see cref="PaintImp"/> specific to this box's own image word, as opposed to the generic
-        /// background/border painting shared with every other replaced element.
+        /// Draws the video thumbnail/title/play-button chrome at <paramref name="offset"/>, leaving
+        /// background/border painting to the caller (<see cref="Paint.Content.FrameFragmentPainter"/>).
         /// </summary>
         internal void DrawFrameContent(RGraphics g, RPoint offset)
         {

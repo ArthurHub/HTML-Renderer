@@ -20,16 +20,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint.Content
         public void Paint(FragmentPainter painter, RGraphics g, BoxFragment fragment)
         {
             var box = fragment.Box;
-            var offset = box.IsFixed ? RPoint.Empty : painter.Container.ScrollOffset;
-            var rect = fragment.PrimaryRect;
-            rect.Offset(offset);
 
-            var clipped = RenderUtils.ClipGraphicsByOverflow(g, box);
+            // fragment.PrimaryRect is fragment-local; the image/video word rect DrawContent's
+            // implementations read is off the live tree (still absolute document-Y) - each needs its own
+            // offset flavor, see FragmentPainter.FragmentLocalOffset/LiveTreeOffset's doc comments.
+            var rect = fragment.PrimaryRect;
+            rect.Offset(painter.FragmentLocalOffset(box.IsFixed));
+
+            var clipped = RenderUtils.ClipGraphicsByOverflow(g, box, painter.LiveTreeExtraOffset);
 
             box.PaintBackground(g, rect, true, true);
             BordersDrawHandler.DrawBoxBorders(g, box, rect, true, true);
 
-            DrawContent(g, fragment, offset);
+            DrawContent(g, fragment, painter.LiveTreeOffset(box.IsFixed));
 
             if (clipped)
                 g.PopClip();

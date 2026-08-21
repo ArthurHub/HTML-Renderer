@@ -67,38 +67,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Paints the fragment
-        /// </summary>
-        /// <param name="g">the device to draw to</param>
-        protected override void PaintImp(RGraphics g)
-        {
-            EnsureImageLoadStarted();
-
-            var rect = CommonUtils.GetFirstValueOrDefault(Rectangles);
-            RPoint offset = RPoint.Empty;
-
-            if (!IsFixed)
-                offset = HtmlContainer.ScrollOffset;
-
-            rect.Offset(offset);
-
-            var clipped = RenderUtils.ClipGraphicsByOverflow(g, this);
-
-            PaintBackground(g, rect, true, true);
-            BordersDrawHandler.DrawBoxBorders(g, this, rect, true, true);
-
-            DrawImageContent(g, offset);
-
-            if (clipped)
-                g.PopClip();
-        }
-
-        /// <summary>
         /// Starts loading the image if it hasn't started already. This is the primary load trigger for
         /// the common async case (<see cref="HtmlContainerInt.AvoidAsyncImagesLoading"/>/
         /// <see cref="HtmlContainerInt.AvoidImagesLateLoading"/> both false) - <see cref="MeasureWordsSize"/>
         /// only starts loading when one of those flags is set, so paint is where loading normally begins.
-        /// Shared by <see cref="PaintImp"/> and <see cref="Paint.Content.ImageFragmentPainter"/>.
+        /// Called by <see cref="Paint.Content.ImageFragmentPainter"/>.
         /// </summary>
         internal void EnsureImageLoadStarted()
         {
@@ -110,9 +83,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Draws the image itself (or its error/loading placeholder) at <paramref name="offset"/> - the
-        /// part of <see cref="PaintImp"/> specific to this box's own image word, as opposed to the
-        /// generic background/border painting shared with every other replaced element.
+        /// Draws the image itself (or its error/loading placeholder) at <paramref name="offset"/>,
+        /// leaving background/border painting to the caller (<see cref="Paint.Content.ImageFragmentPainter"/>).
         /// </summary>
         internal void DrawImageContent(RGraphics g, RPoint offset)
         {
