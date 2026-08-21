@@ -785,6 +785,32 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
+        /// Render one fragmentainer using the given device, reading from the immutable fragment tree
+        /// rather than walking the mutable box tree directly. Not yet the default paint path - see
+        /// <see cref="Paint.FragmentPainter"/>'s remarks for why.
+        /// </summary>
+        /// <param name="g">the device to use to render</param>
+        /// <param name="fragmentainer">the fragmentainer to paint</param>
+        internal void PerformPaint(RGraphics g, Fragments.FragmentainerFragment fragmentainer)
+        {
+            ArgChecker.AssertArgNotNull(g, "g");
+            ArgChecker.AssertArgNotNull(fragmentainer, "fragmentainer");
+
+            if (MaxSize.Height > 0)
+            {
+                g.PushClip(new RRect(_location.X, _location.Y, Math.Min(_maxSize.Width, PageSize.Width), Math.Min(_maxSize.Height, PageSize.Height)));
+            }
+            else
+            {
+                g.PushClip(new RRect(MarginLeft, MarginTop, PageSize.Width, PageSize.Height));
+            }
+
+            new Paint.FragmentPainter(this).Paint(g, fragmentainer);
+
+            g.PopClip();
+        }
+
+        /// <summary>
         /// Handle mouse down to handle selection.
         /// </summary>
         /// <param name="parent">the control hosting the html to invalidate</param>
