@@ -46,7 +46,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
                 return new FragmentTree(new List<FragmentainerFragment> { fragmentainer });
             }
 
-            var lastSlot = _container.PageIndexOf(Math.Max(0, _container.ActualSize.Height - Epsilon));
+            // root.ActualBottom (Location.Y + Size.Height), not _container.ActualSize.Height: the
+            // latter is document height *excluding* the root's own top offset (ActualSize.Height =
+            // ActualBottom - Root.Location.Y, set at the end of CssBox.PerformLayoutImp/Epilogue), so
+            // using it directly here as an absolute Y would double-subtract MarginTop inside
+            // PageIndexOf and under-report the last slot whenever content's true bottom lands just
+            // past a page boundary that ActualSize.Height alone doesn't yet cross.
+            var lastSlot = _container.PageIndexOf(Math.Max(0, root.ActualBottom - Epsilon));
             var fragmentainers = new List<FragmentainerFragment>();
 
             for (var slot = 0; slot <= lastSlot; slot++)
