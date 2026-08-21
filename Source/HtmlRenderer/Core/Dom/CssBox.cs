@@ -595,6 +595,28 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
+        /// Whether a forced break here could actually be deferred to (and resumed in) a later pass -
+        /// false anywhere inside a table cell's subtree. <see cref="CssLayoutEngineTable"/>'s row loop
+        /// calls <c>cell.PerformLayout</c> directly, the same way it always has, and does not participate
+        /// in the <see cref="PendingBreakToken"/> bubbling protocol an ordinary block-child loop does (see
+        /// that property's doc comment) - a table row is not itself laid out via that loop, so nothing
+        /// would ever read a cell's own <see cref="PendingBreakToken"/> and turn it into a real pass
+        /// boundary. Deferring anyway would leave the deferred content measured but never positioned
+        /// (its <see cref="PerformLayoutImp"/> call returns before reaching <c>CreateLineBoxes</c>/the
+        /// block-child loop, yet nothing ever resumes it) - found as a real regression while
+        /// investigating table fragmentation, once R1's forced-break deferral existed to trigger it.
+        /// </summary>
+        private bool CanDeferToLaterPass()
+        {
+            for (var box = this; box != null; box = box.ParentBox)
+            {
+                if (box.Display == CssConstants.TableCell)
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Set this box in
         /// </summary>
         /// <param name="before"></param>
@@ -873,12 +895,23 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         }
                         else if (BlockFragmentation.TryGetForcedBreakTarget(this, prevSibling, baseTopWithoutMargin, out var breakSlot, out var breakTop))
                         {
-                            // A forced break-before/after applies and this is a genuinely fresh entry (no
-                            // resume state of any kind) - defer this box (and everything after it in its
-                            // parent's child loop) to a later pass entirely, rather than positioning it now.
-                            RequestedBreakBeforeSlot = breakSlot;
-                            RequestedBreakBeforeTop = breakTop;
-                            return;
+                            if (CanDeferToLaterPass())
+                            {
+                                // A forced break-before/after applies and this is a genuinely fresh entry
+                                // (no resume state of any kind) - defer this box (and everything after it
+                                // in its parent's child loop) to a later pass entirely, rather than
+                                // positioning it now.
+                                RequestedBreakBeforeSlot = breakSlot;
+                                RequestedBreakBeforeTop = breakTop;
+                                return;
+                            }
+
+                            // Deferring would never actually be resumed here (see CanDeferToLaterPass) -
+                            // place immediately at the target instead, matching how forced breaks worked
+                            // before real pass-based deferral existed. Not ideal (this content doesn't
+                            // get a fresh fragmentainer pass the way top-level content does), but correct
+                            // rather than silently measured-but-never-positioned.
+                            top = breakTop;
                         }
                         else
                         {
