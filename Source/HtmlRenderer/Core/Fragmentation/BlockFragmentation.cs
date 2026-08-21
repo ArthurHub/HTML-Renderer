@@ -294,6 +294,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         /// (<paramref name="movedBox"/> has already been repositioned; shifting it again would double-count
         /// it) and never a relayout.
         /// </remarks>
+        /// <remarks>
+        /// A third audit pass raised a plausible-sounding concern worth recording as a non-issue: does a
+        /// list-item marker (<see cref="CssBox.ListItemBox"/>) go stale here the way it would after a raw
+        /// <see cref="CssBox.Location"/> change elsewhere? No - confirmed empirically (a diagnostic test
+        /// showed identical marker positions with and without an explicit marker shift added here).
+        /// <c>CssBox.CreateListItemBox</c> recomputes the marker's position from its owner's CURRENT
+        /// <c>Location</c> unconditionally on every <c>PerformLayoutImp</c> call (not only once, at
+        /// creation) - and every ancestor this method climbs is, by construction, still mid-<c>PerformLayoutImp</c>
+        /// when it runs (this method is only ever called from deep within that same call's own child-loop
+        /// or line-breaking step), so <c>CreateListItemBox</c> always re-fires afterward with the
+        /// already-corrected <c>Location</c>. No explicit marker handling needed here.
+        /// </remarks>
         internal static void PropagateContainerRelocation(CssBox movedBox, double delta)
         {
             if (delta == 0)
