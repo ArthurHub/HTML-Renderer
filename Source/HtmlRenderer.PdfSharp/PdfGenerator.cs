@@ -14,10 +14,12 @@ using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Fragments;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 using TheArtOfDev.HtmlRenderer.PdfSharp.Adapters;
 
@@ -195,9 +197,14 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                         container.PerformLayout(measure);
                     }
 
-                    // while there is un-rendered HTML, create another PDF page and render with proper offset for the next page
-                    double scrollOffset = 0;
-                    while (scrollOffset > -container.ActualSize.Height)
+                    // One PDF page per fragmentainer the fragment tree actually materialized - a
+                    // content-empty page slot (CSS Paged Media 3 3.2, e.g. a huge margin that would
+                    // otherwise paginate through blank vertical space - see the margin-truncation
+                    // correction in BlockFragmentation) is simply never in this list, which is what
+                    // gives blank-page skipping for free here instead of the old ceil(height/pageHeight)
+                    // loop's naive page count.
+                    var tree = container.FragmentTree;
+                    foreach (var fragmentainer in tree?.Fragmentainers ?? (IReadOnlyList<FragmentainerFragment>)Array.Empty<FragmentainerFragment>())
                     {
                         var page = document.AddPage();
                         page.Height = XUnit.FromPoint(orgPageSize.Height);
@@ -206,17 +213,14 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
 
                         using (var g = XGraphics.FromPdfPage(page))
                         {
-                            //g.IntersectClip(new XRect(config.MarginLeft, config.MarginTop, pageSize.Width, pageSize.Height));
                             g.IntersectClip(new XRect(0, 0, page.Width.Point, page.Height.Point));
 
-                            container.ScrollOffset = new XPoint(0, scrollOffset);
-                            container.PerformPaint(g);
+                            container.PerformPaint(g, fragmentainer);
                         }
-                        scrollOffset -= pageSize.Height;
                     }
 
                     // add web links and anchors
-                    HandleLinks(document, container, orgPageSize, pageSize);
+                    HandleLinks(document, container, orgPageSize, tree);
                 }
             }
         }
@@ -228,17 +232,34 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// <summary>
         /// Handle HTML links by create PDF Documents link either to external URL or to another page in the document.
         /// </summary>
-        private static void HandleLinks(PdfDocument document, HtmlContainer container, XSize orgPageSize, XSize pageSize)
+        private static void HandleLinks(PdfDocument document, HtmlContainer container, XSize orgPageSize, FragmentTree tree)
         {
+            if (tree == null || tree.Fragmentainers.Count == 0)
+                return;
+
+            // Pagination slot -> PDF page index. Not a bare multiply/divide by page height any more:
+            // a content-empty slot is never materialized as a fragmentainer at all (blank-page
+            // skipping), so slot indices are not contiguous across tree.Fragmentainers the way a
+            // fixed-size page grid's would be.
+            var slotToPage = new Dictionary<int, int>();
+            for (var pageIndex = 0; pageIndex < tree.Fragmentainers.Count; pageIndex++)
+            {
+                slotToPage[tree.Fragmentainers[pageIndex].SlotIndex] = pageIndex;
+            }
+
             foreach (var link in container.GetLinks())
             {
-                int i = (int)(link.Rectangle.Top / pageSize.Height);
-                for (; i < document.Pages.Count && pageSize.Height * i < link.Rectangle.Bottom; i++)
+                foreach (var fragmentainer in tree.Fragmentainers)
                 {
-                    var offset = pageSize.Height * i;
+                    var bandTop = fragmentainer.Geometry.Top;
+                    var bandBottom = bandTop + fragmentainer.Geometry.Height;
+                    if (link.Rectangle.Top >= bandBottom || link.Rectangle.Bottom <= bandTop)
+                        continue; // this link has no part on this fragmentainer's page
+
+                    var pageIndex = slotToPage[fragmentainer.SlotIndex];
 
                     // fucking position is from the bottom of the page
-                    var xRect = new XRect(link.Rectangle.Left, orgPageSize.Height - (link.Rectangle.Height + link.Rectangle.Top - offset), link.Rectangle.Width, link.Rectangle.Height);
+                    var xRect = new XRect(link.Rectangle.Left, orgPageSize.Height - (link.Rectangle.Height + link.Rectangle.Top - bandTop), link.Rectangle.Width, link.Rectangle.Height);
 
                     if (link.IsAnchor)
                     {
@@ -246,24 +267,37 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                         var anchorRect = container.GetElementRectangle(link.AnchorId);
                         if (anchorRect.HasValue)
                         {
+                            var anchorSlot = SlotContaining(tree, anchorRect.Value.Top);
                             // document links to the same page as the link is not allowed
-                            int anchorPageIdx = (int)(anchorRect.Value.Top / pageSize.Height);
-                            
-                            // in case that not find the page index, set to the first page.
-                            if (anchorPageIdx == 0)
-                                anchorPageIdx = 1;
-                            
-                            if (i != anchorPageIdx)
-                                document.Pages[i].AddDocumentLink(new PdfRectangle(xRect), anchorPageIdx);
+                            if (anchorSlot.HasValue && slotToPage.TryGetValue(anchorSlot.Value, out var anchorPageIdx) && pageIndex != anchorPageIdx)
+                            {
+                                document.Pages[pageIndex].AddDocumentLink(new PdfRectangle(xRect), anchorPageIdx);
+                            }
                         }
                     }
                     else
                     {
                         // create link to URL
-                        document.Pages[i].AddWebLink(new PdfRectangle(xRect), link.Href);
+                        document.Pages[pageIndex].AddWebLink(new PdfRectangle(xRect), link.Href);
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// The pagination slot whose content band contains document-space Y coordinate <paramref name="y"/>,
+        /// or null if it falls in no materialized fragmentainer's band (e.g. an anchor inside a
+        /// content-empty page slot that was skipped, or past the end of the document).
+        /// </summary>
+        private static int? SlotContaining(FragmentTree tree, double y)
+        {
+            foreach (var fragmentainer in tree.Fragmentainers)
+            {
+                var bandTop = fragmentainer.Geometry.Top;
+                if (y >= bandTop && y < bandTop + fragmentainer.Geometry.Height)
+                    return fragmentainer.SlotIndex;
+            }
+            return null;
         }
 
         #endregion

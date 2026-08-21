@@ -349,6 +349,31 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
             }
         }
 
+        /// <summary>
+        /// The immutable fragment tree layout produced from the box tree on the last <see cref="PerformLayout"/>
+        /// call - one fragmentainer per real page the document spans. Null before the first layout.
+        /// </summary>
+        internal Core.Fragments.FragmentTree FragmentTree
+        {
+            get { return _htmlContainerInt.FragmentTree; }
+        }
+
+        /// <summary>
+        /// Render one fragmentainer using the given device, reading from the immutable fragment tree
+        /// rather than walking the mutable box tree directly.
+        /// </summary>
+        /// <param name="g">the device to use to render</param>
+        /// <param name="fragmentainer">the fragmentainer to paint</param>
+        internal void PerformPaint(XGraphics g, Core.Fragments.FragmentainerFragment fragmentainer)
+        {
+            ArgChecker.AssertArgNotNull(g, "g");
+
+            using (var ig = new GraphicsAdapter(g))
+            {
+                _htmlContainerInt.PerformPaint(ig, fragmentainer);
+            }
+        }
+
         public void Dispose()
         {
             _htmlContainerInt.Dispose();
