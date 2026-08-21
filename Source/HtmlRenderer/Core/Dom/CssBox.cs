@@ -1313,26 +1313,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             return value;
         }
 
-        public bool BreakPage()
-        {
-            var container = this.HtmlContainer;
-
-            if (this.Size.Height >= container.PageSize.Height)
-                return false;
-
-            var remTop = (this.Location.Y - container.MarginTop) % container.PageSize.Height;
-            var remBottom = (this.ActualBottom - container.MarginTop) % container.PageSize.Height;
-
-            if (remTop > remBottom)
-            {
-                var diff = container.PageSize.Height - remTop;
-                this.Location = new RPoint(this.Location.X, this.Location.Y + diff + 1);
-                return true;
-            }
-
-            return false;
-        }
-
         /// <summary>
         /// Calculate the actual right of the box by the actual right of the child boxes if this box actual right is not set.
         /// </summary>
