@@ -11,11 +11,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
     /// equivalents matching PeachPDF's architecture (see the fragmentation-engine-parity plan): forced
     /// breaks (<see cref="TryGetForcedBreakTarget"/>, plan R1) go through <c>CssBox</c>'s real pass loop
     /// across fragmentainers; <c>break-inside:avoid</c>/monolithic relocation (<see cref="RelocateIfNeeded"/>,
-    /// plan R3) relays the child out fresh at its target position within the SAME pass, rather than
-    /// shifting already-finished geometry - real relayout, but not yet a cross-pass token, since nothing
-    /// downstream has been touched yet when it fires. Margin truncation (<see cref="ResolveBlockTop"/>)
-    /// and keep-with-next (still inside <see cref="RelocateIfNeeded"/>) remain the older flat
-    /// <c>OffsetTop</c> correction for now, until plan R4 converts them together.
+    /// plan R3) and keep-with-next (<see cref="EnforceKeepWithNext"/>, plan R4) both relay the affected
+    /// box out fresh at its target position within the SAME pass, rather than shifting already-finished
+    /// geometry - real relayout, but not yet a cross-pass token, since nothing downstream has been touched
+    /// yet when either fires. Margin truncation (<see cref="ResolveBlockTop"/>) remains the older
+    /// pre-placement arithmetic correction, since it needs no relayout at all - it's already applied
+    /// before a box is ever positioned, the same timing <see cref="TryGetForcedBreakTarget"/> uses.
     /// </summary>
     internal static class BlockFragmentation
     {
@@ -91,19 +92,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         /// subtree) has finished laying out this pass. If the child straddles a page boundary and either
         /// asks not to be broken (<c>break-inside: avoid</c>) or may not be broken at all (a replaced
         /// element, a scroll container), and it fits within a single page's height, the child is relaid
-        /// out fresh at the next page's content top - and any preceding siblings chained to it by
-        /// <c>break-after</c>/<c>break-before: avoid</c> (keep-with-next, css-break-3 §3.1) are shifted
-        /// there too, via the older <c>OffsetTop</c> correction, since they already finished this pass and
-        /// keep-with-next itself isn't converted yet.
+        /// out fresh at the next page's content top. Does not itself consider whether this leaves a
+        /// preceding sibling stranded - <see cref="EnforceKeepWithNext"/>, called right after this in the
+        /// same loop iteration, catches that uniformly for every trigger (this one included).
         /// </summary>
         /// <remarks>
         /// The child is genuinely relaid out (<c>ResumeAt</c> + <c>PerformLayout</c>), not
-        /// <c>OffsetTop</c>-shifted the way it used to be and the way its preceding keep-with-next run
-        /// still is: nothing after this child in its parent's loop has been touched yet this pass, so
-        /// re-entering its own layout at the new top is cheap, and it is also more correct than a flat
-        /// shift - any of the child's OWN descendants that themselves have <c>break-inside:avoid</c> or a
-        /// nested forced break get to make their own decision relative to the real page boundaries at the
-        /// new position, rather than blindly carrying whatever decision they made at the old one.
+        /// <c>OffsetTop</c>-shifted: nothing after this child in its parent's loop has been touched yet
+        /// this pass, so re-entering its own layout at the new top is cheap, and it is also more correct
+        /// than a flat shift - any of the child's OWN descendants that themselves have
+        /// <c>break-inside:avoid</c> or a nested forced break get to make their own decision relative to
+        /// the real page boundaries at the new position, rather than blindly carrying whatever decision
+        /// they made at the old one.
         /// </remarks>
         internal static void RelocateIfNeeded(RGraphics g, CssBox child)
         {
@@ -130,14 +130,66 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
                 return; // Fits on no single page - left in place rather than moved somewhere it also won't fit.
 
             var target = container.PageTopOf(topSlot + 1);
-            var delta = target - top;
+            child.ResumeAt(null, target);
+            child.PerformLayout(g);
+        }
 
-            foreach (var member in CollectPrecedingKeepWithNextRun(child))
+        /// <summary>
+        /// Called by a block container's child loop right after <paramref name="child"/> has finished
+        /// laying out (and, if applicable, been relocated by <see cref="RelocateIfNeeded"/>) this pass. If
+        /// a page break actually falls between <paramref name="child"/> and its immediately preceding
+        /// in-flow sibling, and either of them asks it not to (<c>break-after</c>/<c>break-before: avoid</c>,
+        /// keep-with-next, css-break-3 §3.1), the whole preceding run chained to that sibling is pulled
+        /// down to join <paramref name="child"/>'s page instead of leaving it stranded on the page it just
+        /// left - then <paramref name="child"/> itself is relaid out fresh, since its own natural top
+        /// depends on the now-shifted sibling's new bottom.
+        /// </summary>
+        /// <remarks>
+        /// A real gap found while building this: the pre-existing keep-with-next code only ever ran as a side effect
+        /// of <see cref="RelocateIfNeeded"/> relocating <paramref name="child"/> itself - so it only ever
+        /// fired when <paramref name="child"/> was ALSO <c>break-inside:avoid</c> or monolithic. The
+        /// ordinary case (an unremarkable paragraph that simply doesn't fit after a keep-with-next-chained
+        /// heading) never triggered it at all: the heading was left stranded on the page it started on
+        /// while the paragraph moved on alone. This method is the general fix - checked unconditionally,
+        /// not only after a relocation - and <see cref="RelocateIfNeeded"/>'s own preceding-run handling
+        /// was removed as redundant once this covers it too (after a relocation moves the child, the
+        /// preceding sibling is exactly as "left behind" as in the ordinary case, and this method treats
+        /// both identically).
+        /// </remarks>
+        internal static void EnforceKeepWithNext(RGraphics g, CssBox child)
+        {
+            var container = child.HtmlContainer;
+            if (container == null || !container.HasRealPageGrid || child.IsOutOfFlow)
+                return;
+
+            var prevSibling = DomUtils.GetPreviousSibling(child);
+            if (prevSibling == null || prevSibling.IsOutOfFlow)
+                return;
+
+            if (!BreakValues.AvoidsBreak(prevSibling.BreakAfter) && !BreakValues.AvoidsBreak(child.BreakBefore))
+                return;
+
+            var prevBottomSlot = container.PageIndexOf(Math.Max(prevSibling.Location.Y, prevSibling.ActualBottom - 0.01));
+            var childTopSlot = container.PageIndexOf(child.Location.Y);
+            if (childTopSlot <= prevBottomSlot)
+                return; // No break actually falls between them - nothing to enforce.
+
+            var run = CollectPrecedingKeepWithNextRun(prevSibling);
+            run.Add(prevSibling);
+
+            // Simplified for this stage: always pull the whole run to child's page, without checking
+            // whether the run then fits alongside child there - the progressive relaxation ladder
+            // (trim the run, drop it, leave the container behind) is a later plan stage's refinement.
+            var delta = container.PageTopOf(childTopSlot) - run[0].Location.Y;
+            if (delta <= 0)
+                return; // Defensive - a positive shift is the only sensible outcome here.
+
+            foreach (var member in run)
             {
                 member.OffsetTop(delta);
             }
 
-            child.ResumeAt(null, target);
+            child.ResumeAt(null, null);
             child.PerformLayout(g);
         }
 
