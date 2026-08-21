@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 
@@ -7,12 +8,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 {
     /// <summary>
     /// Block-level page-break decisions. Being replaced, stage by stage, with real resumable-pass-loop
-    /// equivalents matching PeachPDF's architecture (see the fragmentation-engine-parity plan) - forced
-    /// breaks (<see cref="TryGetForcedBreakTarget"/>) already go through <c>CssBox</c>'s real pass loop
-    /// as of that plan's R1. Margin truncation (<see cref="ResolveBlockTop"/>) and relocation
-    /// (<see cref="RelocateIfNeeded"/>) remain local, single-pass corrections for now - they only need a
-    /// box's own natural position, or its already-finished height, and never re-enter content that
-    /// hasn't been measured yet - until later plan stages replace them too.
+    /// equivalents matching PeachPDF's architecture (see the fragmentation-engine-parity plan): forced
+    /// breaks (<see cref="TryGetForcedBreakTarget"/>, plan R1) go through <c>CssBox</c>'s real pass loop
+    /// across fragmentainers; <c>break-inside:avoid</c>/monolithic relocation (<see cref="RelocateIfNeeded"/>,
+    /// plan R3) relays the child out fresh at its target position within the SAME pass, rather than
+    /// shifting already-finished geometry - real relayout, but not yet a cross-pass token, since nothing
+    /// downstream has been touched yet when it fires. Margin truncation (<see cref="ResolveBlockTop"/>)
+    /// and keep-with-next (still inside <see cref="RelocateIfNeeded"/>) remain the older flat
+    /// <c>OffsetTop</c> correction for now, until plan R4 converts them together.
     /// </summary>
     internal static class BlockFragmentation
     {
@@ -85,13 +88,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 
         /// <summary>
         /// Called by a block container's child loop right after <paramref name="child"/> (and its whole
-        /// subtree) has finished laying out. If the child straddles a page boundary and either asks not
-        /// to be broken (<c>break-inside: avoid</c>) or may not be broken at all (a replaced element, a
-        /// scroll container), and it fits within a single page's height, the child - and any preceding
-        /// siblings chained to it by <c>break-after</c>/<c>break-before: avoid</c> (keep-with-next,
-        /// css-break-3 §3.1) - are shifted down to the next page's content top.
+        /// subtree) has finished laying out this pass. If the child straddles a page boundary and either
+        /// asks not to be broken (<c>break-inside: avoid</c>) or may not be broken at all (a replaced
+        /// element, a scroll container), and it fits within a single page's height, the child is relaid
+        /// out fresh at the next page's content top - and any preceding siblings chained to it by
+        /// <c>break-after</c>/<c>break-before: avoid</c> (keep-with-next, css-break-3 §3.1) are shifted
+        /// there too, via the older <c>OffsetTop</c> correction, since they already finished this pass and
+        /// keep-with-next itself isn't converted yet.
         /// </summary>
-        internal static void RelocateIfNeeded(CssBox child)
+        /// <remarks>
+        /// The child is genuinely relaid out (<c>ResumeAt</c> + <c>PerformLayout</c>), not
+        /// <c>OffsetTop</c>-shifted the way it used to be and the way its preceding keep-with-next run
+        /// still is: nothing after this child in its parent's loop has been touched yet this pass, so
+        /// re-entering its own layout at the new top is cheap, and it is also more correct than a flat
+        /// shift - any of the child's OWN descendants that themselves have <c>break-inside:avoid</c> or a
+        /// nested forced break get to make their own decision relative to the real page boundaries at the
+        /// new position, rather than blindly carrying whatever decision they made at the old one.
+        /// </remarks>
+        internal static void RelocateIfNeeded(RGraphics g, CssBox child)
         {
             var container = child.HtmlContainer;
             if (container == null || !container.HasRealPageGrid || child.IsOutOfFlow)
@@ -123,7 +137,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
                 member.OffsetTop(delta);
             }
 
-            child.OffsetTop(delta);
+            child.ResumeAt(null, target);
+            child.PerformLayout(g);
         }
 
         /// <summary>
