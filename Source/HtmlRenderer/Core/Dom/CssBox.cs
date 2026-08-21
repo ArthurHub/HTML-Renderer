@@ -83,6 +83,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             get { return _listItemBox; }
         }
 
+        /// <summary>
+        /// For a table box only: detached clones of the table's own &lt;thead&gt; rows, one set per
+        /// continuation page the table's body spans (css-tables-3 6.2's repeated headers) - not part
+        /// of <see cref="Boxes"/> (so re-running table layout can never mistake them for real body
+        /// content), rebuilt from scratch on every layout pass by <see cref="Fragmentation.TableHeaderRepeat"/>.
+        /// Null when the table has no header or never crosses a page boundary.
+        /// </summary>
+        internal List<CssBox> RepeatedHeaderRows { get; set; }
+
         private CssLineBox _firstHostingLineBox;
         private CssLineBox _lastHostingLineBox;
 
@@ -1466,6 +1475,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 if (_listItemBox != null)
                 {
                     _listItemBox.Paint(g);
+                }
+
+                if (RepeatedHeaderRows != null)
+                {
+                    foreach (var repeatedRow in RepeatedHeaderRows)
+                    {
+                        repeatedRow.Paint(g);
+                    }
                 }
             }
         }
