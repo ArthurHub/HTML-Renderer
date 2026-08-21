@@ -48,6 +48,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             if (lines.Count == 0)
                 return;
 
+            // Captured before any shifting, for BlockFragmentation.PropagateContainerRelocation at the
+            // end - see that method's own remarks for why css-break-3 §3.1 propagation applies here too,
+            // not only to BlockFragmentation's own relocations: a box whose orphans violation pushes its
+            // whole first run to a fresh page (below) moves its own EffectiveTop exactly the way
+            // RelocateIfNeeded's block-level relocation does, and a parent that starts with this box
+            // needs its own top to follow just the same.
+            var originalTop = lines[0].LineTop;
+
             var orphans = blockBox.ActualOrphans;
             var widows = blockBox.ActualWidows;
             var pageHeight = container.PageSize.Height;
@@ -154,6 +162,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             {
                 blockBox.ActualBottom = maxBottom + blockBox.ActualPaddingBottom + blockBox.ActualBorderBottomWidth;
             }
+
+            BlockFragmentation.PropagateContainerRelocation(blockBox, lines[0].LineTop - originalTop);
         }
     }
 }
