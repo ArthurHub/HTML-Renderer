@@ -842,6 +842,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     {
                         ActualBottom = Location.Y;
                         CssLayoutEngine.CreateLineBoxes(g, this); //This will automatically set the bottom of this block
+                        InlineFragmentation.ApplyLineBreaking(this);
                     }
                     else if (_boxes.Count > 0)
                     {
