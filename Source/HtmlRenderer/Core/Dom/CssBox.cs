@@ -1403,60 +1403,53 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Paint all the words in the box.
+        /// Paints one word at <paramref name="wordRect"/>, its final paint position - the caller decides
+        /// where that is (fragment-tree-local geometry, offset the same way <see cref="PaintBackground"/>'s
+        /// line rects already are; there is no live-tree geometry read here, only style/selection state).
         /// </summary>
         /// <param name="g">the device to draw into</param>
-        /// <param name="offset">the current scroll offset to offset the words</param>
-        internal void PaintWords(RGraphics g, RPoint offset)
+        /// <param name="word">the word to paint</param>
+        /// <param name="wordRect">the word's final paint rectangle</param>
+        internal void PaintWord(RGraphics g, CssRect word, RRect wordRect)
         {
-            if (Width.Length > 0)
+            if (word.IsLineBreak)
+                return;
+
+            var clip = g.GetClip();
+            clip.Intersect(wordRect);
+            if (clip == RRect.Empty)
+                return;
+
+            var isRtl = Direction == CssConstants.Rtl;
+            var wordPoint = new RPoint(wordRect.X, wordRect.Y);
+            if (word.Selected)
             {
-                var isRtl = Direction == CssConstants.Rtl;
-                foreach (var word in Words)
+                // handle paint selected word background and with partial word selection
+                var wordLine = DomUtils.GetCssLineBoxByWord(word);
+                var left = word.SelectedStartOffset > -1 ? word.SelectedStartOffset : (wordLine.Words[0] != word && word.HasSpaceBefore ? -ActualWordSpacing : 0);
+                var padWordRight = word.HasSpaceAfter && !wordLine.IsLastSelectedWord(word);
+                var width = word.SelectedEndOffset > -1 ? word.SelectedEndOffset : word.Width + (padWordRight ? ActualWordSpacing : 0);
+                var rect = new RRect(wordRect.X + left, wordRect.Y, width - left, wordLine.LineHeight);
+
+                g.DrawRectangle(GetSelectionBackBrush(g, false), rect.X, rect.Y, rect.Width, rect.Height);
+
+                if (HtmlContainer.SelectionForeColor != RColor.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
                 {
-                    if (!word.IsLineBreak)
-                    {
-                        var clip = g.GetClip();
-                        var wordRect = word.Rectangle;
-                        wordRect.Offset(offset);
-                        clip.Intersect(wordRect);
-
-                        if (clip != RRect.Empty)
-                        {
-                            var wordPoint = new RPoint(word.Left + offset.X, word.Top + offset.Y);
-                            if (word.Selected)
-                            {
-                                // handle paint selected word background and with partial word selection
-                                var wordLine = DomUtils.GetCssLineBoxByWord(word);
-                                var left = word.SelectedStartOffset > -1 ? word.SelectedStartOffset : (wordLine.Words[0] != word && word.HasSpaceBefore ? -ActualWordSpacing : 0);
-                                var padWordRight = word.HasSpaceAfter && !wordLine.IsLastSelectedWord(word);
-                                var width = word.SelectedEndOffset > -1 ? word.SelectedEndOffset : word.Width + (padWordRight ? ActualWordSpacing : 0);
-                                var rect = new RRect(word.Left + offset.X + left, word.Top + offset.Y, width - left, wordLine.LineHeight);
-
-                                g.DrawRectangle(GetSelectionBackBrush(g, false), rect.X, rect.Y, rect.Width, rect.Height);
-
-                                if (HtmlContainer.SelectionForeColor != RColor.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
-                                {
-                                    g.PushClipExclude(rect);
-                                    g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
-                                    g.PopClip();
-                                    g.PushClip(rect);
-                                    g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
-                                    g.PopClip();
-                                }
-                                else
-                                {
-                                    g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
-                                }
-                            }
-                            else
-                            {
-                                //                            g.DrawRectangle(HtmlContainer.Adapter.GetPen(RColor.Black), wordPoint.X, wordPoint.Y, word.Width - 1, word.Height - 1);
-                                g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
-                            }
-                        }
-                    }
+                    g.PushClipExclude(rect);
+                    g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
+                    g.PopClip();
+                    g.PushClip(rect);
+                    g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
+                    g.PopClip();
                 }
+                else
+                {
+                    g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
+                }
+            }
+            else
+            {
+                g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
             }
         }
 

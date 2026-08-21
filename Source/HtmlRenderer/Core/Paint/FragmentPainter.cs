@@ -12,12 +12,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
     /// <summary>
     /// Paints a fragmentainer from the immutable fragment tree - the sole paint path now that the old
     /// live-tree walk (formerly <c>CssBox.Paint</c>/<c>PaintImp</c>) has been deleted. Every geometric
-    /// decision reads from the <see cref="BoxFragment"/> being painted;
-    /// the box back-reference (<see cref="BoxFragment.Box"/>) is consulted only for computed style and,
-    /// for now, for the paint primitives themselves (<see cref="CssBox.PaintBackground"/>/
-    /// <see cref="CssBox.PaintWords"/>/<see cref="CssBox.PaintDecoration"/> - widened from <c>protected</c>/
-    /// <c>private</c> to <c>internal</c> rather than duplicated here, so this stays a faithful re-shaping of
-    /// the existing, tested paint code rather than a parallel reimplementation).
+    /// decision reads from the <see cref="BoxFragment"/> being painted, including text: each word paints
+    /// at its own <see cref="TextFragment.Rect"/>, not <c>CssRect.Rectangle</c> read off the live box.
+    /// The box back-reference (<see cref="BoxFragment.Box"/>) is consulted only for computed style and
+    /// paint primitives themselves (<see cref="CssBox.PaintBackground"/>/<see cref="CssBox.PaintWord"/>/
+    /// <see cref="CssBox.PaintDecoration"/> - widened from <c>protected</c>/<c>private</c> to <c>internal</c>
+    /// rather than duplicated here, so this stays a faithful re-shaping of the existing, tested paint code
+    /// rather than a parallel reimplementation).
     /// </summary>
     /// <remarks>
     /// Leaf/replaced types dispatch to their own <see cref="Content.IFragmentContentPainter"/> (matching
@@ -45,14 +46,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
         /// <summary>
         /// The real document-Y top of the fragmentainer currently being painted (<see cref="FragmentainerFragment.LocalOriginY"/>),
         /// set once per <see cref="Paint"/> call. Geometry sourced from the fragment tree (<see cref="BoxFragment.Lines"/>/
-        /// <see cref="BoxFragment.PrimaryRect"/>) is already local to this band (<see cref="Fragmentation.FragmentEmitter"/>
-        /// subtracts it at build time) and needs no further adjustment for it. Geometry read straight off the
-        /// live <see cref="CssBox"/> tree instead (<see cref="CssBox.PaintWords"/>'s <c>word.Rectangle</c>,
-        /// <see cref="CssBoxImage.DrawImageContent"/>'s image-word rect, the visibility cull below) is still
-        /// absolute document-Y and must have this subtracted to land in the same target frame - missing this
-        /// distinction was a real bug (found while building the continuous-surface paint path this field
-        /// supports): every page after the first silently painted zero text, since a fresh per-page surface's
-        /// origin is this band's top, not the document's.
+        /// <see cref="BoxFragment.Words"/>/<see cref="BoxFragment.PrimaryRect"/>) is already local to this band
+        /// (<see cref="Fragmentation.FragmentEmitter"/> subtracts it at build time) and needs no further
+        /// adjustment for it. Geometry read straight off the live <see cref="CssBox"/> tree instead
+        /// (<see cref="CssBoxImage.DrawImageContent"/>'s image-word rect, the visibility cull below) is
+        /// still absolute document-Y and must have this subtracted to land in the same target frame -
+        /// missing this distinction for text was a real bug (found while building the continuous-surface
+        /// paint path this field supports, since fixed by moving word painting onto the fragment tree
+        /// entirely rather than reconciling it): every page after the first silently painted zero text,
+        /// since a fresh per-page surface's origin is this band's top, not the document's.
         /// </summary>
         private double _bandTop;
 
@@ -169,10 +171,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
 
             var clipped = RenderUtils.ClipGraphicsByOverflow(g, box, LiveTreeExtraOffset);
             var clip = g.GetClip();
-            // fragment.Lines is already fragment-local (FragmentEmitter subtracted the band top at build
-            // time) - only FragmentLocalOffset (scroll + page-origin) applies. box.PaintWords instead
-            // reads box.Words directly off the live tree (still absolute document-Y), so it needs
-            // LiveTreeOffset to additionally undo the band top - see _bandTop's doc comment.
+            // fragment.Lines/fragment.Words are already fragment-local (FragmentEmitter subtracted the
+            // band top at build time) - only FragmentLocalOffset (scroll + page-origin) applies to either.
             var offset = FragmentLocalOffset(box.IsFixed);
             var lines = fragment.Lines;
 
@@ -187,7 +187,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
                 }
             }
 
-            box.PaintWords(g, LiveTreeOffset(box.IsFixed));
+            // Width.Length > 0 gate matches CssBox's own former PaintWords guard - preserved here since
+            // it's the caller's job now that word painting reads the fragment tree, not the live box.
+            if (box.Width.Length > 0)
+            {
+                foreach (var wordFragment in fragment.Words)
+                {
+                    var wordRect = wordFragment.Rect;
+                    wordRect.Offset(offset);
+                    box.PaintWord(g, wordFragment.Word, wordRect);
+                }
+            }
 
             for (var i = 0; i < lines.Count; i++)
             {
