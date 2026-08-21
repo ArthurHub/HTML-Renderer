@@ -8,7 +8,11 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
+// This assembly parallelizes at the method level (MSTestSettings.cs); HtmlContainerInt's underlying
+// adapter singletons (font/brush caches, etc.) aren't safe against that for tests that drive full
+// layout passes directly - HtmlRenderingRegressionTests already opts out for the same reason.
 [TestClass]
+[DoNotParallelize]
 public sealed class StageD2FragmentBucketingSmokeTest
 {
     private static HtmlContainerInt GetInternal(HtmlContainer wrapper)
