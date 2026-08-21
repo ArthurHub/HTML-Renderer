@@ -156,6 +156,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         /// preceding sibling is exactly as "left behind" as in the ordinary case, and this method treats
         /// both identically).
         /// </remarks>
+        /// <remarks>
+        /// A second real bug found while investigating the fragmentation-engine-parity plan's R9 stage:
+        /// an earlier version of this method always pulled the WHOLE preceding run to <paramref name="child"/>'s
+        /// page, without checking whether the run (which can be arbitrarily tall - a long chain of
+        /// <c>break-after:avoid</c> siblings) then fit there at all. This did not just mis-place content -
+        /// it corrupted layout outright: when a run too tall for one page got pulled, its own later
+        /// members remained just as likely to trigger their own keep-with-next check against the now
+        /// artificially-stretched-out run, each firing its own unconditional pull and compounding
+        /// <see cref="CssBox.OffsetTop"/> shifts on the same earlier boxes without bound (observed
+        /// empirically reaching a box position around 8.6e11 for a 60-member chain on a short page). The
+        /// fix is css-break-3 §4.3's actual staged relaxation: trim the run from its front (the earliest,
+        /// least-important-to-keep members) until what remains actually fits the target page alongside
+        /// <paramref name="child"/> (<see cref="BreakRelaxation.RunTrimmed"/>), or leave the run in place
+        /// entirely if even its last member doesn't fit there (<see cref="BreakRelaxation.RunDropped"/>) -
+        /// never pull a run that can't actually fit.
+        /// </remarks>
         internal static void EnforceKeepWithNext(RGraphics g, CssBox child)
         {
             var container = child.HtmlContainer;
@@ -177,16 +193,30 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             var run = CollectPrecedingKeepWithNextRun(prevSibling);
             run.Add(prevSibling);
 
-            // Simplified for this stage: always pull the whole run to child's page, without checking
-            // whether the run then fits alongside child there - the progressive relaxation ladder
-            // (trim the run, drop it, leave the container behind) is a later plan stage's refinement.
-            var delta = container.PageTopOf(childTopSlot) - run[0].EffectiveTop;
+            // Trim from the front (earliest members) until what remains fits alongside child on the
+            // target page - see the second remarks block above for why pulling an oversized run
+            // unconditionally is not just suboptimal but actively corrupts layout.
+            var childHeight = child.ActualBottom - child.EffectiveTop;
+            var pageHeight = container.PageSize.Height;
+            var start = 0;
+            while (start < run.Count)
+            {
+                var runHeight = run[run.Count - 1].ActualBottom - run[start].EffectiveTop;
+                if (runHeight + childHeight <= pageHeight)
+                    break;
+                start++;
+            }
+
+            if (start >= run.Count)
+                return; // RunDropped - not even the run's last member fits alongside child; leave everything in place.
+
+            var delta = container.PageTopOf(childTopSlot) - run[start].EffectiveTop;
             if (delta <= 0)
                 return; // Defensive - a positive shift is the only sensible outcome here.
 
-            foreach (var member in run)
+            for (var i = start; i < run.Count; i++)
             {
-                member.OffsetTop(delta);
+                run[i].OffsetTop(delta);
             }
 
             child.ResumeAt(null, null);
