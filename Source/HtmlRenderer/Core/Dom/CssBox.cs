@@ -405,6 +405,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
+        /// This box's actual rendered top, for page-index comparisons against an already-laid-out box -
+        /// <see cref="CssBoxProperties.Location"/>'s Y for a block container, but the first line's actual
+        /// top for an inline-only box. <c>Location</c> is committed once, before content layout runs, and
+        /// <see cref="Fragmentation.InlineFragmentation.ApplyLineBreaking"/> never updates it even though
+        /// it can move the box's one-and-only line (or first of several) to an entirely different page -
+        /// a single-line paragraph pushed whole onto the next page by orphans/widows is the case that
+        /// actually surfaces this: <c>Location.Y</c> stays wherever the box was originally positioned,
+        /// silently wrong for any caller using it to ask "which page does this box's content start on."
+        /// </summary>
+        internal double EffectiveTop => _lineBoxes.Count > 0 ? _lineBoxes[0].LineTop : Location.Y;
+
+        /// <summary>
         /// Gets the linebox(es) that contains words of this box (if inline)
         /// </summary>
         internal List<CssLineBox> ParentLineBoxes

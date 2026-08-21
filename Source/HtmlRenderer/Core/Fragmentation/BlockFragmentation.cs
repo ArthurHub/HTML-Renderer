@@ -111,7 +111,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             if (container == null || !container.HasRealPageGrid || child.IsOutOfFlow)
                 return;
 
-            var top = child.Location.Y;
+            var top = child.EffectiveTop;
             var bottom = child.ActualBottom;
             if (bottom <= top)
                 return;
@@ -169,8 +169,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             if (!BreakValues.AvoidsBreak(prevSibling.BreakAfter) && !BreakValues.AvoidsBreak(child.BreakBefore))
                 return;
 
-            var prevBottomSlot = container.PageIndexOf(Math.Max(prevSibling.Location.Y, prevSibling.ActualBottom - 0.01));
-            var childTopSlot = container.PageIndexOf(child.Location.Y);
+            var prevBottomSlot = container.PageIndexOf(Math.Max(prevSibling.EffectiveTop, prevSibling.ActualBottom - 0.01));
+            var childTopSlot = container.PageIndexOf(child.EffectiveTop);
             if (childTopSlot <= prevBottomSlot)
                 return; // No break actually falls between them - nothing to enforce.
 
@@ -180,7 +180,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             // Simplified for this stage: always pull the whole run to child's page, without checking
             // whether the run then fits alongside child there - the progressive relaxation ladder
             // (trim the run, drop it, leave the container behind) is a later plan stage's refinement.
-            var delta = container.PageTopOf(childTopSlot) - run[0].Location.Y;
+            var delta = container.PageTopOf(childTopSlot) - run[0].EffectiveTop;
             if (delta <= 0)
                 return; // Defensive - a positive shift is the only sensible outcome here.
 
