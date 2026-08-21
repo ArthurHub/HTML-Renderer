@@ -630,6 +630,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             // Reserving the room here, before the first row of each continuation page is positioned,
             // is what keeps that row from being drawn underneath the repeated header instead of below
             // it - a fragment-tree-only repeat (no reservation) would just overlap real content.
+            //
+            // KNOWN LIMITATION (confirmed via direct testing, not yet fixed - fragmentation-engine-parity
+            // plan's R8 stage): this check runs once per ROW (below, gated on `i`), reading `cury`'s slot
+            // only at that row's own start. A row whose own cell content spans MULTIPLE pages by itself
+            // (one cell vastly longer than its siblings) only gets a repeat inserted for the FIRST page
+            // it crosses onto - the header does not repeat on further intermediate pages that same row's
+            // content continues to span, only reappearing once a LATER row's own start advances the slot
+            // again. Not data loss or a crash, just a missing header repeat on some pages of a fairly
+            // exotic table shape. A real fix needs to know how many pages a row spans before deciding how
+            // much room to reserve for it, which this single-pass-per-row model doesn't have without
+            // relaying the row out a second time once its true span is known - tractable, but out of
+            // scope for now given how rare the shape is (the far more common case - many ordinary rows,
+            // table spans many pages - already repeats correctly, verified by ThreadRepeatsOnEveryPageTheTableSpans).
             var pageGridContainer = _tableBox.HtmlContainer;
             var repeatsHeader = pageGridContainer != null && pageGridContainer.HasRealPageGrid
                                  && _headerBox != null && BreakValues.AvoidsBreak(_headerBox.BreakInside);
