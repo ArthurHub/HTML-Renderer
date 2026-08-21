@@ -412,11 +412,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="g">the device to draw to</param>
         protected override void PaintImp(RGraphics g)
         {
-            if (_videoImageUrl != null && _imageLoadHandler == null)
-            {
-                _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
-                _imageLoadHandler.LoadImage(_videoImageUrl, HtmlTag != null ? HtmlTag.Attributes : null);
-            }
+            EnsureVideoImageLoadStarted();
 
             var rects = CommonUtils.GetFirstValueOrDefault(Rectangles);
 
@@ -429,6 +425,34 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             BordersDrawHandler.DrawBoxBorders(g, this, rects, true, true);
 
+            DrawFrameContent(g, offset);
+
+            if (clipped)
+                g.PopClip();
+        }
+
+        /// <summary>
+        /// Starts loading the video thumbnail if the video API call resolved a thumbnail URL and loading
+        /// hasn't started already - the same paint-time trigger pattern as <see cref="CssBoxImage"/>, see
+        /// its <see cref="CssBoxImage.EnsureImageLoadStarted"/> for why this can't move to measure time.
+        /// Shared by <see cref="PaintImp"/> and <see cref="Paint.Content.FrameFragmentPainter"/>.
+        /// </summary>
+        internal void EnsureVideoImageLoadStarted()
+        {
+            if (_videoImageUrl != null && _imageLoadHandler == null)
+            {
+                _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
+                _imageLoadHandler.LoadImage(_videoImageUrl, HtmlTag != null ? HtmlTag.Attributes : null);
+            }
+        }
+
+        /// <summary>
+        /// Draws the video thumbnail/title/play-button chrome at <paramref name="offset"/> - the part of
+        /// <see cref="PaintImp"/> specific to this box's own image word, as opposed to the generic
+        /// background/border painting shared with every other replaced element.
+        /// </summary>
+        internal void DrawFrameContent(RGraphics g, RPoint offset)
+        {
             var word = Words[0];
             var tmpRect = word.Rectangle;
             tmpRect.Offset(offset);
@@ -443,9 +467,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             DrawTitle(g, rect);
 
             DrawPlay(g, rect);
-
-            if (clipped)
-                g.PopClip();
         }
 
         /// <summary>

@@ -47,7 +47,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragments
     /// The portion of one <see cref="CssBox"/> living in one fragmentainer. A box spanning a page boundary
     /// produces one <see cref="BoxFragment"/> per page. <see cref="Lines"/>/<see cref="Words"/>/<see cref="Children"/>
     /// mirror what the old live-tree paint walk painted, in the same order: own decoration rects, own words,
-    /// then stacking-ordered child box fragments.
+    /// then stacking-ordered child box fragments. <see cref="MarkerFragment"/> (a list item's marker, if any)
+    /// is kept separate from <see cref="Children"/> rather than folded in, matching <c>CssBox.PaintImp</c>'s
+    /// own paint order - the marker paints last, after this fragment's own overflow clip is popped, since a
+    /// <c>list-style-position: outside</c> marker can legitimately hang outside the content box's clip.
     /// </summary>
     internal sealed record BoxFragment(
         RRect Rect,
@@ -62,6 +65,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragments
         IReadOnlyList<LineFragment> Lines,
         IReadOnlyList<TextFragment> Words,
         IReadOnlyList<BoxFragment> Children,
+        BoxFragment MarkerFragment,
         RRect? OverflowClip) : Fragment(Rect)
     {
         /// <summary>The rect a replaced element paints its background/border over: the first line's rect, else this fragment's own rect.</summary>
