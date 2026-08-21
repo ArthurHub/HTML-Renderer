@@ -753,7 +753,23 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         var delta = pageGridContainer.PageTopOf(topSlot + 1) - cury;
                         foreach (CssBox cell in row.Boxes)
                         {
-                            cell.OffsetTop(delta);
+                            // A rowspan-crossing cell's real content lives on CssSpacingBox.ExtendedBox,
+                            // not on the placeholder itself (Display:none, no children/words/rectangles -
+                            // OffsetTop on it was a silent no-op, leaving the spanning cell's actual
+                            // bottom edge stale while the rest of the row moved on). Unlike an ordinary
+                            // cell, the spanning cell's own top and content are already anchored to
+                            // whichever earlier row it started in (laid out there, unaffected by this
+                            // row's shift) - so rather than OffsetTop-ing the whole subtree (which would
+                            // incorrectly drag its top and content away from that row too), only its
+                            // bottom edge is extended to cover the gap this row's move just opened up.
+                            if (cell is CssSpacingBox spacer)
+                            {
+                                spacer.ExtendedBox.ActualBottom += delta;
+                            }
+                            else
+                            {
+                                cell.OffsetTop(delta);
+                            }
                         }
                         maxBottom += delta;
                     }
