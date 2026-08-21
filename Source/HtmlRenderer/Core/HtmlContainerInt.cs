@@ -446,7 +446,41 @@ namespace TheArtOfDev.HtmlRenderer.Core
         public RSize PageSize { get; set; }
 
         /// <summary>
-        /// the top margin between the page start and the text
+        /// Whether this container is paginating against a real, bounded page grid, as opposed to an
+        /// effectively unbounded single "page" (WinForms/WPF's continuous-scroll convention, which sets
+        /// <see cref="PageSize"/> to a large sentinel - see <c>HtmlContainer.PageSize</c> in the WinForms/
+        /// WPF projects). Fragmentation corrections (forced breaks, break-inside:avoid relocation, margin
+        /// truncation) only make sense, and only run, when this is true.
+        /// </summary>
+        internal bool HasRealPageGrid
+        {
+            get { return PageSize.Height > 0 && PageSize.Height < 90999; }
+        }
+
+        /// <summary>
+        /// The zero-based pagination slot document-space coordinate <paramref name="y"/> falls in - the
+        /// top-edge convention (a coordinate exactly on a page boundary belongs to the page that starts
+        /// there). Only meaningful when <see cref="HasRealPageGrid"/>.
+        /// </summary>
+        internal int PageIndexOf(double y)
+        {
+            return (int)Math.Floor((y - MarginTop) / PageSize.Height);
+        }
+
+        /// <summary>Document-space Y of the top of pagination slot <paramref name="slot"/>'s content band.</summary>
+        internal double PageTopOf(int slot)
+        {
+            return MarginTop + slot * PageSize.Height;
+        }
+
+        /// <summary>Document-space Y of the bottom of pagination slot <paramref name="slot"/>'s content band.</summary>
+        internal double PageBottomOf(int slot)
+        {
+            return PageTopOf(slot) + PageSize.Height;
+        }
+
+        /// <summary>
+        /// The top margin between the page start and the text
         /// </summary>
         public int MarginTop
         {

@@ -16,6 +16,7 @@ using System.Globalization;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Fragmentation;
 using TheArtOfDev.HtmlRenderer.Core.Handlers;
 using TheArtOfDev.HtmlRenderer.Core.Parse;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
@@ -818,7 +819,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     else
                     {
                         left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
-                        top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+                        var baseTopWithoutMargin = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+                        top = BlockFragmentation.ResolveBlockTop(this, prevSibling, baseTopWithoutMargin);
                         Location = new RPoint(left, top);
                         ActualBottom = top;
 
@@ -846,6 +848,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         foreach (var childBox in Boxes)
                         {
                             childBox.PerformLayout(g);
+                            BlockFragmentation.RelocateIfNeeded(childBox);
                         }
                         ActualRight = CalculateActualRight();
 
@@ -1274,7 +1277,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="prevSibling">the previous box under the same parent</param>
         /// <returns>Resulting top margin</returns>
-        protected double MarginTopCollapse(CssBoxProperties prevSibling)
+        internal double MarginTopCollapse(CssBoxProperties prevSibling)
         {
             double value;
             if (prevSibling != null)

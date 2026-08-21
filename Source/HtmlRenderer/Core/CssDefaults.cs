@@ -98,11 +98,20 @@ namespace TheArtOfDev.HtmlRenderer.Core
         *[DIR=""ltr""]    { direction: ltr; unicode-bidi: embed }
         *[DIR=""rtl""]    { direction: rtl; unicode-bidi: embed }
 
+        /* Ported from PeachPDF's CssDefaults (spelt with css-break-3's break-* properties rather
+           than the legacy page-break-* aliases - the two share their storage and initial value,
+           see InitialValues below, so this is the same cascade either way). Replaces this engine's
+           own older `h1 { page-break-before: always }` default, which forced a leading blank page
+           before any document that opened with a heading now that break-before is actually
+           consumed by layout - break-after: avoid (keep-with-next) is the behavior real print
+           engines give headings by default. */
         @media print {
-          h1            { page-break-before: always }
           h1, h2, h3,
-          h4, h5, h6    { page-break-after: avoid }
-          ul, ol, dl    { page-break-before: avoid }
+          h4, h5, h6    { break-after: avoid }
+
+          /* css-tables-3 6.2 repeats a header or footer group across the pages a table spans only
+             where the group carries an avoid break-inside. */
+          thead, tfoot  { break-inside: avoid }
         }
 
         /* Not in the specification but necessary */
