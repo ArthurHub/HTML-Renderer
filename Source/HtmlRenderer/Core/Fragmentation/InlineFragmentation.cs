@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
 
 namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 {
@@ -41,7 +42,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         internal static void ApplyLineBreaking(CssBox blockBox)
         {
             var container = blockBox.HtmlContainer;
-            if (container == null || !container.HasRealPageGrid)
+            // A fixed box (css-position-3, paged media) is repeated identically on every page and its
+            // own coordinates are page-relative, not absolute document-Y (see FragmentEmitter's
+            // CollectFixedRoots) - unlike a float or an absolutely-positioned box, which stay in normal
+            // document flow and must still paginate like anything else, the UA "must not paginate the
+            // content of fixed-positioned boxes" (css-position-3), so this correction does not apply.
+            if (container == null || !container.HasRealPageGrid || blockBox.Position == CssConstants.Fixed)
                 return;
 
             var lines = blockBox.LineBoxes;
