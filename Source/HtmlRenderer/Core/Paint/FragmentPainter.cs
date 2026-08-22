@@ -81,22 +81,41 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
         /// <summary>
         /// The offset to apply to a rect read straight off the live <see cref="CssBox"/> tree (still
         /// absolute document-Y, unlike fragment-tree geometry) to reach the same paint position
-        /// <see cref="FragmentLocalOffset"/> gives fragment-local geometry: additionally undoes
-        /// <see cref="_bandTop"/>, regardless of <paramref name="isFixed"/> (band membership is
-        /// orthogonal to scroll-offset suppression).
+        /// <see cref="FragmentLocalOffset"/> gives fragment-local geometry: undoes <see cref="_bandTop"/>
+        /// - except for a fixed (or fixed-ancestor) box, whose live geometry is already page-relative
+        /// (see the remark below), where undoing this painter's current band top would double-subtract
+        /// it, pushing the box far outside every page except the one whose band top happens to equal its
+        /// own small top offset.
         /// </summary>
+        /// <remarks>
+        /// A real bug found while confirming <see cref="FragmentEmitter"/>'s fixed-position repeat-per-page
+        /// support through actual PDF output: <c>CssBox.PerformLayoutImp</c> never routes a
+        /// <c>Position==Fixed</c> box through normal top-computing flow at all (its <c>Left</c>/<c>Top</c>
+        /// property setters assign <c>Location</c> directly, from <c>GetActualLocation</c>, resolved
+        /// against the page size) - so unlike ordinary content, whose live <c>Location</c> genuinely is an
+        /// absolute document-Y this painter's current band top needs undoing from, a fixed box's live
+        /// <c>Location</c> already IS the small, page-relative offset the fragment tree also uses. This
+        /// only affected the containing-block visibility/overflow-clip checks below (<see cref="PaintFragment"/>'s
+        /// own check, and <see cref="RenderUtils.ClipGraphicsByOverflow"/> via <see cref="LiveTreeExtraOffset"/>)
+        /// - the fragment tree's own already-correct geometry (<c>fragment.Lines</c>/<c>fragment.Words</c>,
+        /// via <see cref="FragmentLocalOffset"/> alone) was never affected, which is why the fixed content
+        /// was confirmed correctly PRESENT in the fragment tree on every page before this was found - it
+        /// was being computed correctly and then clipped away on every page except one.
+        /// </remarks>
         internal RPoint LiveTreeOffset(bool isFixed)
         {
             var offset = FragmentLocalOffset(isFixed);
-            return new RPoint(offset.X, offset.Y - _bandTop);
+            return isFixed ? offset : new RPoint(offset.X, offset.Y - _bandTop);
         }
 
         /// <summary>
         /// The portion of <see cref="LiveTreeOffset"/> that <see cref="RenderUtils.ClipGraphicsByOverflow"/>
-        /// doesn't already add itself (it applies <see cref="HtmlContainerInt.ScrollOffset"/>/<c>IsFixed</c>
-        /// gating internally) - pass as its <c>extraOffset</c> parameter.
+        /// doesn't already add itself (it applies <see cref="HtmlContainerInt.ScrollOffset"/> gating
+        /// internally) - pass as its <c>extraOffset</c> parameter. See <see cref="LiveTreeOffset"/>'s own
+        /// remark for why <paramref name="isFixed"/> must gate the band-top term here too.
         /// </summary>
-        internal RPoint LiveTreeExtraOffset => new RPoint(_pageOrigin.X, _pageOrigin.Y - _bandTop);
+        internal RPoint LiveTreeExtraOffset(bool isFixed) =>
+            isFixed ? new RPoint(_pageOrigin.X, _pageOrigin.Y) : new RPoint(_pageOrigin.X, _pageOrigin.Y - _bandTop);
 
         internal void Paint(RGraphics g, FragmentainerFragment fragmentainer)
         {
@@ -169,7 +188,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
                 return;
             }
 
-            var clipped = RenderUtils.ClipGraphicsByOverflow(g, box, LiveTreeExtraOffset);
+            var clipped = RenderUtils.ClipGraphicsByOverflow(g, box, LiveTreeExtraOffset(box.IsFixed));
             var clip = g.GetClip();
             // fragment.Lines/fragment.Words are already fragment-local (FragmentEmitter subtracted the
             // band top at build time) - only FragmentLocalOffset (scroll + page-origin) applies to either.

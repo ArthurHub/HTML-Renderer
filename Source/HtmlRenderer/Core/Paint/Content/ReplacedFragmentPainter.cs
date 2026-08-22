@@ -27,7 +27,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint.Content
             var rect = fragment.PrimaryRect;
             rect.Offset(painter.FragmentLocalOffset(box.IsFixed));
 
-            var clipped = RenderUtils.ClipGraphicsByOverflow(g, box, painter.LiveTreeExtraOffset);
+            var clipped = RenderUtils.ClipGraphicsByOverflow(g, box, painter.LiveTreeExtraOffset(box.IsFixed));
 
             box.PaintBackground(g, rect, true, true);
             BordersDrawHandler.DrawBoxBorders(g, box, rect, true, true);

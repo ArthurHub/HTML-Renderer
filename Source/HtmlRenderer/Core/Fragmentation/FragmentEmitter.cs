@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Fragments;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
 
 namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 {
@@ -55,6 +57,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             var lastSlot = _container.PageIndexOf(Math.Max(0, root.ActualBottom - Epsilon));
             var fragmentainers = new List<FragmentainerFragment>();
 
+            // css-position-3, paged media: a fixed box's containing block is each page's own page area,
+            // and it "is thus replicated on every page". Collected once - each fixed box's own Location
+            // is already page-relative (CssBox never runs it through normal top-computing flow; see
+            // CssBox.PerformLayoutImp's own Position==Fixed branch), so building its fragment against a
+            // band starting at Y=0 (rather than this slot's real band top) localizes it to exactly that
+            // same relative position on every page, unchanged.
+            var fixedRoots = new List<CssBox>();
+            CollectFixedRoots(root, fixedRoots);
+            var fixedBand = new PageBand(0, _container.PageSize.Height);
+
             for (var slot = 0; slot <= lastSlot; slot++)
             {
                 var bandTop = _container.PageTopOf(slot);
@@ -63,11 +75,23 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 
                 // CSS Paged Media 3 3.2: a page-slot no box has any content in is never materialized -
                 // this falls out of the walk rather than being special-cased, since a box only gets
-                // built into this fragmentainer at all when HasContentInBand finds something.
+                // built into this fragmentainer at all when HasContentInBand finds something. Fixed
+                // content deliberately does not itself justify materializing an otherwise content-empty
+                // slot - matches this port's existing blank-page-skipping scope.
                 if (!HasContentInBand(root, band))
                     continue;
 
                 var rootFragment = BuildBoxFragment(root, slot, band);
+                if (fixedRoots.Count > 0)
+                {
+                    var fixedFragments = fixedRoots
+                        .Where(fixedRoot => HasContentInBand(fixedRoot, fixedBand))
+                        .Select(fixedRoot => BuildBoxFragment(fixedRoot, slot, fixedBand))
+                        .ToList();
+                    if (fixedFragments.Count > 0)
+                        rootFragment = rootFragment with { Children = rootFragment.Children.Concat(fixedFragments).ToList() };
+                }
+
                 var rect = new RRect(0, 0, _container.PageSize.Width, band.Height);
                 var geometry = new PageBandGeometry(bandTop, band.Height, _container.MarginTop, _container.MarginRight, _container.MarginBottom, _container.MarginLeft);
                 fragmentainers.Add(new FragmentainerFragment(rect, slot, geometry, bandTop, rootFragment));
@@ -77,12 +101,28 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         }
 
         /// <summary>
+        /// Finds every <c>position:fixed</c> box in the tree, at any nesting depth - each one gets its
+        /// own independent repeat-per-page treatment in <see cref="Finish"/>, regardless of whether it's
+        /// nested inside another fixed box (rare, but each still resolves its own page-relative position
+        /// independently per css-position-3, so neither should be folded into the other's subtree).
+        /// </summary>
+        private static void CollectFixedRoots(CssBox box, List<CssBox> into)
+        {
+            foreach (var child in box.Boxes)
+            {
+                if (child.Position == CssConstants.Fixed)
+                    into.Add(child);
+                CollectFixedRoots(child, into);
+            }
+        }
+
+        /// <summary>
         /// Whether <paramref name="box"/> or any descendant has some rectangle (its own decoration
         /// rects, a word, or a child's) overlapping <paramref name="band"/> - used both to decide
         /// whether a page-slot is content-empty (skip it) and whether a child belongs in this band's
         /// fragment at all.
         /// </summary>
-        private static bool HasContentInBand(CssBox box, PageBand band)
+        private bool HasContentInBand(CssBox box, PageBand band)
         {
             if (box.Rectangles.Count == 0)
             {
@@ -103,6 +143,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 
             foreach (var child in box.Boxes)
             {
+                // A fixed box is handled separately when there's a real page grid (see
+                // CollectFixedRoots/Finish) - it repeats identically on every page rather than
+                // belonging to whichever band its own (page-relative, not absolute) coordinates would
+                // otherwise overlap. Without a real page grid (WinForms/WPF continuous-scroll, one
+                // fragmentainer for the whole document) it stays in the normal walk unchanged - "stays
+                // put" there is a paint-time scroll-offset suppression, not a repeat-per-page concern.
+                if (_container.HasRealPageGrid && child.Position == CssConstants.Fixed) continue;
                 if (HasContentInBand(child, band)) return true;
             }
 
@@ -156,6 +203,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             var children = new List<BoxFragment>();
             foreach (var child in box.Boxes)
             {
+                // See the matching check/comment in HasContentInBand.
+                if (_container.HasRealPageGrid && child.Position == CssConstants.Fixed) continue;
                 if (HasContentInBand(child, band))
                     children.Add(BuildBoxFragment(child, fragmentainerIndex, band));
             }
