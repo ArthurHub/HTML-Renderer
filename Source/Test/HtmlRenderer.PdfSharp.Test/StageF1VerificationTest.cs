@@ -12,7 +12,10 @@ public sealed class StageF1VerificationTest
         var config = new PdfGenerateConfig { PageSize = PageSize.A4 };
         config.SetMargins(20);
 
-        var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of text</p>", 60));
+        // Generous filler, not a precisely-calibrated boundary - a tight "just barely" filler count is
+        // fragile to font substitution across CI platforms (non-Windows runners fall back to an
+        // embedded font with different metrics than Windows' real "Times New Roman").
+        var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of text</p>", 150));
         var html = $"""
             <html><body>
                 <a href="https://example.com">external link on page one</a>
