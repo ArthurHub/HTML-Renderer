@@ -12,8 +12,12 @@ public sealed class StageD3VerificationTest
         var config = new PdfGenerateConfig { PageSize = PageSize.A4 };
         config.SetMargins(20);
 
+        // Generous repeat count - a precisely-calibrated boundary is fragile to font substitution
+        // across CI platforms (non-Windows runners fall back to an embedded font with different metrics
+        // than Windows' real "Times New Roman"); this only needs to comfortably exceed one page
+        // regardless of exactly which font resolves.
         var sentence = "This is a moderately long sentence used to build a paragraph that will wrap across many lines and, eventually, across more than one page. ";
-        var html = $"<html><body><p>{string.Concat(Enumerable.Repeat(sentence, 40))}</p></body></html>";
+        var html = $"<html><body><p>{string.Concat(Enumerable.Repeat(sentence, 100))}</p></body></html>";
 
         using var document = await PdfGenerator.GeneratePdf(html, config);
 
@@ -26,10 +30,12 @@ public sealed class StageD3VerificationTest
         var config = new PdfGenerateConfig { PageSize = PageSize.A4 };
         config.SetMargins(20);
 
-        // Filler sized to leave room for just one more line of the following paragraph before the
-        // page boundary - with widows:3 (default), that line alone isn't enough and must move with
-        // at least two more to the next page.
-        var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of text</p>", 53));
+        // Generous filler, not precisely calibrated to a specific boundary - see
+        // StageD2VerificationTest.BreakInsideAvoid_KeepsBlockTogether_OnOnePage's remark on why a tight
+        // "just barely" filler count is fragile to font substitution across CI platforms. Precise
+        // per-page widows verification lives in HtmlRenderer.IntegrationTest's StageR5WidowsMultiPageTest,
+        // which reads the fragment tree directly.
+        var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of text</p>", 150));
         var sentence = "one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty ";
         var html = $"""
             <html><body>
@@ -52,7 +58,9 @@ public sealed class StageD3VerificationTest
         var config = new PdfGenerateConfig { PageSize = PageSize.A4 };
         config.SetMargins(20);
 
-        var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of text</p>", 54));
+        // Generous filler - see Widows_PullsMinimumLinesToNextPage's own remark on why a tight "just
+        // barely" filler count is fragile to font substitution across CI platforms.
+        var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of text</p>", 150));
         var sentence = "one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty ";
         var html = $"""
             <html><body>
