@@ -736,19 +736,25 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     }
                 }
 
-                // break-inside: avoid (or the legacy page-break-inside) on the table: if this row
-                // straddles a page boundary and fits whole on one page, shift the whole row - not
-                // just one cell - down to the next page's content top. Rows aren't avoided from
-                // splitting by default (css-tables-3 6.1 permits a row to fragment, each cell
-                // independently, which is what happens here with no correction: a cell's own content
-                // already flows across the boundary via BlockFragmentation/InlineFragmentation) -
-                // only when the table author actually asked for it.
-                if (pageGridContainer != null && pageGridContainer.HasRealPageGrid && BreakValues.AvoidsBreak(_tableBox.BreakInside)
-                    && maxBottom > cury)
+                // css-tables-3 §6.1: "user agents must attempt to preserve the table rows unfragmented
+                // if the cells spanning the row do not span any subsequent row, and their height is at
+                // least twice smaller than both the fragmentainer height and width" - a UA-default
+                // requirement, not something an author has to opt into. If this row straddles a page
+                // boundary and isn't "freely fragmentable" by that rule, shift the whole row - not just
+                // one cell - down to the next page's content top. The table's own break-inside:avoid
+                // still forces the attempt even for an otherwise-freely-fragmentable row (an author's
+                // explicit, stronger request), matching this port's existing behavior for that case.
+                if (pageGridContainer != null && pageGridContainer.HasRealPageGrid && maxBottom > cury)
                 {
                     var topSlot = pageGridContainer.PageIndexOf(cury);
                     var bottomSlot = pageGridContainer.PageIndexOf(Math.Max(cury, maxBottom - 0.01));
-                    if (bottomSlot > topSlot && maxBottom - cury < pageGridContainer.PageSize.Height)
+                    var rowHeight = maxBottom - cury;
+                    var freelyFragmentable = RowHasCellSpanningIntoSubsequentRow(row, currentrow)
+                        || rowHeight >= pageGridContainer.PageSize.Height / 2
+                        || rowHeight >= pageGridContainer.PageSize.Width / 2;
+                    var shouldPreserve = !freelyFragmentable || BreakValues.AvoidsBreak(_tableBox.BreakInside);
+
+                    if (bottomSlot > topSlot && shouldPreserve && rowHeight < pageGridContainer.PageSize.Height)
                     {
                         var delta = pageGridContainer.PageTopOf(topSlot + 1) - cury;
                         foreach (CssBox cell in row.Boxes)
@@ -876,6 +882,31 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
 
             return rowspan;
+        }
+
+        /// <summary>
+        /// css-tables-3 §6.1's "the cells spanning the row do not span any subsequent row" test: true
+        /// if any cell in <paramref name="row"/> - real or the <see cref="CssSpacingBox"/> placeholder
+        /// standing in for one that started earlier - continues into a row after
+        /// <paramref name="currentrow"/>, meaning this row cannot be preserved unfragmented on its own
+        /// without also pulling along content that belongs to a row not yet reached.
+        /// </summary>
+        private static bool RowHasCellSpanningIntoSubsequentRow(CssBox row, int currentrow)
+        {
+            foreach (CssBox cell in row.Boxes)
+            {
+                if (cell is CssSpacingBox spacer)
+                {
+                    if (spacer.EndRow > currentrow)
+                        return true;
+                }
+                else if (GetRowSpan(cell) > 1)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
