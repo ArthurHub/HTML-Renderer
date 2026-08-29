@@ -79,6 +79,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _marginRight = "0";
         private string _marginTop = "0";
         private string _left = "auto";
+        private string _counterReset = CssConstants.None;
+        private string _counterIncrement = CssConstants.None;
         private string _lineHeight = "normal";
         private string _listStyleType = "disc";
         private string _listStyleImage = string.Empty;
@@ -725,6 +727,27 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             get { return _right; }
             set { _right = value; }
         }
+
+        public string CounterReset
+        {
+            get { return _counterReset; }
+            set { _counterReset = value; }
+        }
+
+        public string CounterIncrement
+        {
+            get { return _counterIncrement; }
+            set { _counterIncrement = value; }
+        }
+
+        /// <summary>
+        /// This box's resolved named-counter values (CSS 2.1 §12.4), as of just after its own
+        /// <c>counter-reset</c>/<c>counter-increment</c> have been applied - populated once, by
+        /// <see cref="CssCounterEngine.ResolveCounters"/>, before layout runs. Consulted by
+        /// <c>content: counter()</c> (<see cref="CssContentEngine"/>).
+        /// </summary>
+        internal System.Collections.Generic.Dictionary<string, int> Counters { get; set; }
+            = new System.Collections.Generic.Dictionary<string, int>();
 
         public string Bottom
         {

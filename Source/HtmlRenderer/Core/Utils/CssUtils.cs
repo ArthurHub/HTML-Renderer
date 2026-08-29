@@ -49,7 +49,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             "padding-bottom", "padding-left", "padding-right", "padding-top",
             "page-break-inside", "break-inside", "break-before", "break-after", "page-break-before", "page-break-after",
             "widows", "orphans", "page",
-            "left", "top", "right", "bottom", "width", "max-width", "height", "min-height", "max-height",
+            "left", "top", "right", "bottom", "counter-reset", "counter-increment",
+            "width", "max-width", "height", "min-height", "max-height",
             "background-color", "background-image", "background-position", "background-repeat",
             "content", "color", "display", "direction", "empty-cells", "float", "clear", "box-sizing", "position",
             "line-height", "vertical-align", "text-indent", "text-align", "text-decoration-line",
@@ -175,6 +176,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.Right;
                 case "bottom":
                     return cssBox.Bottom;
+                case "counter-reset":
+                    return cssBox.CounterReset;
+                case "counter-increment":
+                    return cssBox.CounterIncrement;
                 case "width":
                     return cssBox.Width;
                 case "max-width":
@@ -385,6 +390,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     break;
                 case "bottom":
                     cssBox.Bottom = value;
+                    break;
+                case "counter-reset":
+                    cssBox.CounterReset = value;
+                    break;
+                case "counter-increment":
+                    cssBox.CounterIncrement = value;
                     break;
                 case "width":
                     cssBox.Width = value;
