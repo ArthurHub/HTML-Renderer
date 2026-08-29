@@ -67,31 +67,27 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Paints the fragment
+        /// Starts loading the image if it hasn't started already. This is the primary load trigger for
+        /// the common async case (<see cref="HtmlContainerInt.AvoidAsyncImagesLoading"/>/
+        /// <see cref="HtmlContainerInt.AvoidImagesLateLoading"/> both false) - <see cref="MeasureWordsSize"/>
+        /// only starts loading when one of those flags is set, so paint is where loading normally begins.
+        /// Called by <see cref="Paint.Content.ImageFragmentPainter"/>.
         /// </summary>
-        /// <param name="g">the device to draw to</param>
-        protected override void PaintImp(RGraphics g)
+        internal void EnsureImageLoadStarted()
         {
-            // load image if it is in visible rectangle
             if (_imageLoadHandler == null)
             {
                 _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
                 _imageLoadHandler.LoadImage(GetImageSource(), HtmlTag != null ? HtmlTag.Attributes : null);
             }
+        }
 
-            var rect = CommonUtils.GetFirstValueOrDefault(Rectangles);
-            RPoint offset = RPoint.Empty;
-
-            if (!IsFixed)
-                offset = HtmlContainer.ScrollOffset;
-
-            rect.Offset(offset);
-
-            var clipped = RenderUtils.ClipGraphicsByOverflow(g, this);
-
-            PaintBackground(g, rect, true, true);
-            BordersDrawHandler.DrawBoxBorders(g, this, rect, true, true);
-
+        /// <summary>
+        /// Draws the image itself (or its error/loading placeholder) at <paramref name="offset"/>,
+        /// leaving background/border painting to the caller (<see cref="Paint.Content.ImageFragmentPainter"/>).
+        /// </summary>
+        internal void DrawImageContent(RGraphics g, RPoint offset)
+        {
             RRect r = _imageWord.Rectangle;
             r.Offset(offset);
             r.Height -= ActualBorderTopWidth + ActualBorderBottomWidth + ActualPaddingTop + ActualPaddingBottom;
@@ -129,9 +125,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     g.DrawRectangle(g.GetPen(RColor.LightGray), r.X, r.Y, r.Width, r.Height);
                 }
             }
-
-            if (clipped)
-                g.PopClip();
         }
 
         /// <summary>

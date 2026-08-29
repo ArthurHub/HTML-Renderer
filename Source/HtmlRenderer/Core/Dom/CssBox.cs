@@ -16,6 +16,7 @@ using System.Globalization;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Fragmentation;
 using TheArtOfDev.HtmlRenderer.Core.Handlers;
 using TheArtOfDev.HtmlRenderer.Core.Parse;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
@@ -72,6 +73,66 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
         protected bool _wordsSizeMeasured;
         private CssBox _listItemBox;
+
+        /// <summary>
+        /// The synthetic list-item marker box, if this box has one - not part of <see cref="Boxes"/>
+        /// (it has no parent box), so it is otherwise unreachable by a tree walk.
+        /// </summary>
+        internal CssBox ListItemBox
+        {
+            get { return _listItemBox; }
+        }
+
+        /// <summary>
+        /// For a table box only: detached clones of the table's own &lt;thead&gt; rows, one set per
+        /// continuation page the table's body spans (css-tables-3 6.2's repeated headers) - not part
+        /// of <see cref="Boxes"/> (so re-running table layout can never mistake them for real body
+        /// content), rebuilt from scratch on every layout pass by <see cref="Fragmentation.TableHeaderRepeat"/>.
+        /// Null when the table has no header or never crosses a page boundary.
+        /// </summary>
+        internal List<CssBox> RepeatedHeaderRows { get; set; }
+
+        /// <summary>
+        /// The resumption record this box should re-enter its own child loop with this pass, seeded by
+        /// the parent's <see cref="ResumeAt"/> call right before invoking this box's layout - null for a
+        /// box entered fresh this pass (no earlier pass stopped inside it). See <see cref="BreakToken"/>'s
+        /// own doc comment for the chain shape.
+        /// </summary>
+        private BreakToken _incomingToken;
+
+        /// <summary>
+        /// A pre-decided document-Y top this box must place itself at this pass, rather than deriving one
+        /// from its previous sibling - set only for a box being placed for the first time after an earlier
+        /// pass requested a break before it (<see cref="RequestedBreakBeforeTop"/>). Must not be re-derived:
+        /// re-deriving it would reach the same "doesn't fit" conclusion and request a break before itself
+        /// again, forever.
+        /// </summary>
+        private double? _resumeTopOverride;
+
+        /// <summary>
+        /// Set by this box's own child-loop right after a child's layout call returns with either
+        /// <see cref="RequestedBreakBeforeTop"/> set (wrapped as an <c>IsBreakBefore</c> link) or its own
+        /// <see cref="PendingBreakToken"/> set (wrapped as a continuation link) - the mechanism that lets a
+        /// break discovered arbitrarily deep in the tree reach <see cref="HtmlContainerInt"/>'s pass loop:
+        /// every ancestor's own child loop checks this immediately after its child's layout call returns,
+        /// and if set, stops laying out further siblings this pass and reflects the same fact to its own
+        /// parent. Reset to null at the top of every <see cref="PerformLayoutImp"/> call.
+        /// </summary>
+        internal BreakToken PendingBreakToken { get; private set; }
+
+        /// <summary>
+        /// Set by this box's own layout when a forced <c>break-before</c>/<c>break-after</c> means it
+        /// cannot be placed this pass at all - the box performs no further layout work and returns
+        /// immediately, leaving its parent's child loop to notice this (right after the layout call
+        /// returns) and stop, wrapping <see cref="RequestedBreakBeforeSlot"/>/this value into a
+        /// <c>BlockBreakToken(IsBreakBefore: true)</c>. Reset to null at the top of every
+        /// <see cref="PerformLayoutImp"/> call.
+        /// </summary>
+        internal double? RequestedBreakBeforeTop { get; private set; }
+
+        /// <summary>The pagination slot <see cref="RequestedBreakBeforeTop"/> falls in.</summary>
+        internal int RequestedBreakBeforeSlot { get; private set; }
+
         private CssLineBox _firstHostingLineBox;
         private CssLineBox _lastHostingLineBox;
 
@@ -344,6 +405,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
+        /// This box's actual rendered top, for page-index comparisons against an already-laid-out box -
+        /// <see cref="CssBoxProperties.Location"/>'s Y for a block container, but the first line's actual
+        /// top for an inline-only box. <c>Location</c> is committed once, before content layout runs, and
+        /// <see cref="Fragmentation.InlineFragmentation.ApplyLineBreaking"/> never updates it even though
+        /// it can move the box's one-and-only line (or first of several) to an entirely different page -
+        /// a single-line paragraph pushed whole onto the next page by orphans/widows is the case that
+        /// actually surfaces this: <c>Location.Y</c> stays wherever the box was originally positioned,
+        /// silently wrong for any caller using it to ask "which page does this box's content start on."
+        /// </summary>
+        internal double EffectiveTop => _lineBoxes.Count > 0 ? _lineBoxes[0].LineTop : Location.Y;
+
+        /// <summary>
         /// Gets the linebox(es) that contains words of this box (if inline)
         /// </summary>
         internal List<CssLineBox> ParentLineBoxes
@@ -501,59 +574,50 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Paints the fragment
+        /// Seeds this box's resumption state for the upcoming <see cref="PerformLayout"/> call - called
+        /// by a parent's child loop right before re-entering a box on a break token's resume path (or by
+        /// <see cref="HtmlContainerInt"/> on the document root at the start of every pass). Both parameters
+        /// default to null/absent for a box being entered fresh this pass.
         /// </summary>
-        /// <param name="g">Device context to use</param>
-        public void Paint(RGraphics g)
+        /// <param name="token">
+        /// how this box should resume its own child/content loop - <see cref="_incomingToken"/>. Null both
+        /// for a genuinely fresh box and for a box being placed for the first time via
+        /// <paramref name="resumeTopOverride"/> (nothing to resume into, since it was never entered before).
+        /// </param>
+        /// <param name="resumeTopOverride">
+        /// a pre-decided top this box must place itself at, bypassing its own natural-position derivation
+        /// - <see cref="_resumeTopOverride"/>.
+        /// </param>
+        internal void ResumeAt(BreakToken token, double? resumeTopOverride = null)
         {
-            try
-            {
-                if (Display != CssConstants.None && Visibility == CssConstants.Visible)
-                {
-                    // use initial clip to draw blocks with Position = fixed. I.e. ignrore page margins
-                    if (this.Position == CssConstants.Fixed)
-                    {
-                        g.SuspendClipping();
-                    }
-
-                    // don't call paint if the rectangle of the box is not in visible rectangle
-                    bool visible = Rectangles.Count == 0;
-                    if (!visible)
-                    {
-                        var clip = g.GetClip();
-                        var rect = ContainingBlock.ClientRectangle;
-                        rect.X -= 2;
-                        rect.Width += 2;
-                        if (!IsFixed)
-                        {
-                            //rect.Offset(new RPoint(-HtmlContainer.Location.X, -HtmlContainer.Location.Y));
-                            rect.Offset(HtmlContainer.ScrollOffset);
-                        }
-                        clip.Intersect(rect);
-
-                        if (clip != RRect.Empty)
-                            visible = true;
-                    }
-
-                    if (visible)
-                        PaintImp(g);
-
-                    // Restore clips
-                    if (this.Position == CssConstants.Fixed)
-                    {
-                        g.ResumeClipping();
-                    }
-
-                }
-            }
-            catch (Exception ex)
-            {
-                HtmlContainer.ReportError(HtmlRenderErrorType.Paint, "Exception in box paint", ex);
-            }
+            _incomingToken = token;
+            _resumeTopOverride = resumeTopOverride;
         }
 
         /// <summary>
-        /// Set this box in 
+        /// Whether a forced break here could actually be deferred to (and resumed in) a later pass -
+        /// false anywhere inside a table cell's subtree. <see cref="CssLayoutEngineTable"/>'s row loop
+        /// calls <c>cell.PerformLayout</c> directly, the same way it always has, and does not participate
+        /// in the <see cref="PendingBreakToken"/> bubbling protocol an ordinary block-child loop does (see
+        /// that property's doc comment) - a table row is not itself laid out via that loop, so nothing
+        /// would ever read a cell's own <see cref="PendingBreakToken"/> and turn it into a real pass
+        /// boundary. Deferring anyway would leave the deferred content measured but never positioned
+        /// (its <see cref="PerformLayoutImp"/> call returns before reaching <c>CreateLineBoxes</c>/the
+        /// block-child loop, yet nothing ever resumes it) - found as a real regression while
+        /// investigating table fragmentation, once R1's forced-break deferral existed to trigger it.
+        /// </summary>
+        private bool CanDeferToLaterPass()
+        {
+            for (var box = this; box != null; box = box.ParentBox)
+            {
+                if (box.Display == CssConstants.TableCell)
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Set this box in
         /// </summary>
         /// <param name="before"></param>
         public void SetBeforeBox(CssBox before)
@@ -743,6 +807,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="g">Device context to use</param>
         protected virtual void PerformLayoutImp(RGraphics g)
         {
+            // Pass-scoped signal state - stale values from an earlier pass must never leak into this one.
+            PendingBreakToken = null;
+            RequestedBreakBeforeTop = null;
+            RequestedBreakBeforeSlot = 0;
+
             if (Display != CssConstants.None)
             {
                 RectanglesReset();
@@ -808,7 +877,55 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     else
                     {
                         left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
-                        top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+                        var baseTopWithoutMargin = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+
+                        if (_incomingToken != null && ReferenceEquals(_incomingToken.Box, this))
+                        {
+                            // Resuming this box's own interrupted child/content loop, not placing it fresh
+                            // - css-break-3 §2 gives a box one inline position across all its fragments, so
+                            // there is nothing to re-derive here; Location already holds it from the pass
+                            // that placed this box originally.
+                            top = Location.Y;
+                        }
+                        else if (_resumeTopOverride.HasValue)
+                        {
+                            // A break-before target an earlier pass already decided (see
+                            // RequestedBreakBeforeTop's doc comment) - must not be re-derived.
+                            top = _resumeTopOverride.Value;
+                        }
+                        else if (BlockFragmentation.TryGetForcedBreakTarget(this, prevSibling, baseTopWithoutMargin, out var breakSlot, out var breakTop))
+                        {
+                            // css-break-3 5.2 preserves a box's own top margin at a FORCED break (unlike an
+                            // unforced one, where BlockFragmentation.ResolveBlockTop truncates it to avoid
+                            // paginating through blank space) - breakTop itself is the page's own content
+                            // top (TryGetForcedBreakTarget's own contract, kept a pure boundary value so its
+                            // slot/target stay meaningful on their own), so the margin is added here, once,
+                            // at the point it becomes this box's actual placement.
+                            var breakTopWithMargin = breakTop + MarginTopCollapse(prevSibling);
+
+                            if (CanDeferToLaterPass())
+                            {
+                                // A forced break-before/after applies and this is a genuinely fresh entry
+                                // (no resume state of any kind) - defer this box (and everything after it
+                                // in its parent's child loop) to a later pass entirely, rather than
+                                // positioning it now.
+                                RequestedBreakBeforeSlot = breakSlot;
+                                RequestedBreakBeforeTop = breakTopWithMargin;
+                                return;
+                            }
+
+                            // Deferring would never actually be resumed here (see CanDeferToLaterPass) -
+                            // place immediately at the target instead, matching how forced breaks worked
+                            // before real pass-based deferral existed. Not ideal (this content doesn't
+                            // get a fresh fragmentainer pass the way top-level content does), but correct
+                            // rather than silently measured-but-never-positioned.
+                            top = breakTopWithMargin;
+                        }
+                        else
+                        {
+                            top = BlockFragmentation.ResolveBlockTop(this, prevSibling, baseTopWithoutMargin);
+                        }
+
                         Location = new RPoint(left, top);
                         ActualBottom = top;
 
@@ -830,12 +947,63 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     {
                         ActualBottom = Location.Y;
                         CssLayoutEngine.CreateLineBoxes(g, this); //This will automatically set the bottom of this block
+                        InlineFragmentation.ApplyLineBreaking(this);
                     }
                     else if (_boxes.Count > 0)
                     {
-                        foreach (var childBox in Boxes)
+                        // Resuming our OWN child loop (as opposed to a fresh entry) if the incoming token
+                        // names this box - ResumeChildIndex says which child to pick back up at; every
+                        // child before it already has a finished fragment from an earlier pass and is
+                        // never touched again.
+                        var resumeToken = _incomingToken as BlockBreakToken;
+                        var resumingHere = resumeToken != null && ReferenceEquals(resumeToken.Box, this);
+                        var startIndex = resumingHere ? resumeToken.ResumeChildIndex : 0;
+
+                        for (var i = startIndex; i < Boxes.Count; i++)
                         {
+                            var childBox = Boxes[i];
+
+                            if (i == startIndex && resumingHere)
+                            {
+                                if (resumeToken.IsBreakBefore)
+                                    childBox.ResumeAt(null, resumeToken.ResumeTopOverride);
+                                else
+                                    childBox.ResumeAt(resumeToken.ChildToken);
+                            }
+
                             childBox.PerformLayout(g);
+
+                            if (childBox.RequestedBreakBeforeTop.HasValue)
+                            {
+                                // Child declined to be placed this pass at all - stop here too, so this
+                                // box's own parent bubbles the same fact upward (see PendingBreakToken's
+                                // doc comment for how this reaches HtmlContainerInt's pass loop).
+                                PendingBreakToken = new BlockBreakToken(
+                                    this, childBox.RequestedBreakBeforeSlot, i, null, true, childBox.RequestedBreakBeforeTop);
+                                return;
+                            }
+
+                            // Checked BEFORE RelocateIfNeeded, not after: a child whose own child loop
+                            // stopped mid-way (a nested forced break) never reached its epilogue, so its
+                            // ActualBottom/Location only reflect a partial pass - RelocateIfNeeded's
+                            // straddle test would read meaningless geometry if run on it.
+                            if (BubbleChildPendingToken(childBox, i))
+                                return;
+
+                            BlockFragmentation.RelocateIfNeeded(g, childBox);
+
+                            // RelocateIfNeeded's own relayout (see its doc comment) can itself surface a
+                            // break nested inside the relocated child's subtree - e.g. a forced break
+                            // inside a break-inside:avoid container - so check again.
+                            if (BubbleChildPendingToken(childBox, i))
+                                return;
+
+                            BlockFragmentation.EnforceKeepWithNext(g, childBox);
+
+                            // Same reasoning as above: EnforceKeepWithNext's own relayout of childBox can
+                            // itself surface a nested break.
+                            if (BubbleChildPendingToken(childBox, i))
+                                return;
                         }
                         ActualRight = CalculateActualRight();
 
@@ -873,6 +1041,23 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 var actualWidth = Math.Max(GetMinimumWidth() + GetWidthMarginDeep(this), Size.Width < 90999 ? ActualRight - HtmlContainer.Root.Location.X : 0);
                 HtmlContainer.ActualSize = CommonUtils.Max(HtmlContainer.ActualSize, new RSize(actualWidth, ActualBottom - HtmlContainer.Root.Location.Y));
             }
+        }
+
+        /// <summary>
+        /// If <paramref name="childBox"/> stopped somewhere inside its own content/child loop this pass,
+        /// wraps its token in a link naming this box (at <paramref name="childIndex"/>) and sets it as
+        /// this box's own <see cref="PendingBreakToken"/>, for the caller to stop laying out any further
+        /// siblings and return. See <see cref="PendingBreakToken"/>'s doc comment for how this bubbling
+        /// reaches <see cref="HtmlContainerInt"/>'s pass loop.
+        /// </summary>
+        private bool BubbleChildPendingToken(CssBox childBox, int childIndex)
+        {
+            if (childBox.PendingBreakToken == null)
+                return false;
+
+            PendingBreakToken = new BlockBreakToken(
+                this, childBox.PendingBreakToken.ResumeSlotIndex, childIndex, childBox.PendingBreakToken, false, null);
+            return true;
         }
 
         /// <summary>
@@ -1264,7 +1449,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="prevSibling">the previous box under the same parent</param>
         /// <returns>Resulting top margin</returns>
-        protected double MarginTopCollapse(CssBoxProperties prevSibling)
+        internal double MarginTopCollapse(CssBoxProperties prevSibling)
         {
             double value;
             if (prevSibling != null)
@@ -1288,26 +1473,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
 
             return value;
-        }
-
-        public bool BreakPage()
-        {
-            var container = this.HtmlContainer;
-
-            if (this.Size.Height >= container.PageSize.Height)
-                return false;
-
-            var remTop = (this.Location.Y - container.MarginTop) % container.PageSize.Height;
-            var remBottom = (this.ActualBottom - container.MarginTop) % container.PageSize.Height;
-
-            if (remTop > remBottom)
-            {
-                var diff = container.PageSize.Height - remTop;
-                this.Location = new RPoint(this.Location.X, this.Location.Y + diff + 1);
-                return true;
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -1357,6 +1522,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Deeply offsets the top of the box and its contents
         /// </summary>
         /// <param name="amount"></param>
+        /// <remarks>
+        /// A real gap found while auditing this port's fragmentation engine against PeachPDF a second
+        /// time: this box's own <see cref="Rectangles"/> entry for a line was kept in sync, but the
+        /// line's OWN mirror of the same value (<see cref="CssLineBox.Rectangles"/>, keyed the other way
+        /// around) was not - the two are separate dictionaries updated by separate call sites
+        /// (<see cref="CssLineBox.ShiftLine"/> keeps both in sync when a line-level shift initiates the
+        /// move; this method didn't when a box-level shift does). <see cref="CssLineBox.LineTop"/>/
+        /// <c>LineBottom</c> - and therefore <see cref="EffectiveTop"/> for any inline-only box, since it
+        /// reads them - went stale after this method ran, even though <see cref="Location"/> (this
+        /// method's own last statement) was correctly updated. Confirmed by directly inspecting both
+        /// dictionaries after a real <c>EnforceKeepWithNext</c> run-shift: <c>Location.Y</c> reflected the
+        /// new position while <c>EffectiveTop</c> still reported the old one.
+        /// </remarks>
         internal void OffsetTop(double amount)
         {
             List<CssLineBox> lines = new List<CssLineBox>();
@@ -1366,7 +1544,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             foreach (CssLineBox line in lines)
             {
                 RRect r = Rectangles[line];
-                Rectangles[line] = new RRect(r.X, r.Y + amount, r.Width, r.Height);
+                var shifted = new RRect(r.X, r.Y + amount, r.Width, r.Height);
+                Rectangles[line] = shifted;
+                line.Rectangles[this] = shifted;
             }
 
             foreach (CssRect word in Words)
@@ -1386,96 +1566,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Paints the fragment
-        /// </summary>
-        /// <param name="g">the device to draw to</param>
-        protected virtual void PaintImp(RGraphics g)
-        {
-            if (Display != CssConstants.None && (Display != CssConstants.TableCell || EmptyCells != CssConstants.Hide || !IsSpaceOrEmpty))
-            {
-                var clipped = RenderUtils.ClipGraphicsByOverflow(g, this);
-
-                var areas = Rectangles.Count == 0 ? new List<RRect>(new[] { Bounds }) : new List<RRect>(Rectangles.Values);
-                var clip = g.GetClip();
-                RRect[] rects = areas.ToArray();
-                RPoint offset = RPoint.Empty;
-                if (!IsFixed)
-                {
-                    offset = HtmlContainer.ScrollOffset;
-                }
-
-                for (int i = 0; i < rects.Length; i++)
-                {
-                    var actualRect = rects[i];
-                    actualRect.Offset(offset);
-
-                    if (IsRectVisible(actualRect, clip))
-                    {
-                        PaintBackground(g, actualRect, i == 0, i == rects.Length - 1);
-                        BordersDrawHandler.DrawBoxBorders(g, this, actualRect, i == 0, i == rects.Length - 1);
-                    }
-                }
-
-                PaintWords(g, offset);
-
-                for (int i = 0; i < rects.Length; i++)
-                {
-                    var actualRect = rects[i];
-                    actualRect.Offset(offset);
-
-                    if (IsRectVisible(actualRect, clip))
-                    {
-                        PaintDecoration(g, actualRect, i == 0, i == rects.Length - 1);
-                    }
-                }
-
-                // split paint to handle z-order
-                foreach (CssBox b in Boxes)
-                {
-                    if (b.Position != CssConstants.Absolute && !b.IsFixed)
-                        b.Paint(g);
-                }
-                foreach (CssBox b in Boxes)
-                {
-                    if (b.Position == CssConstants.Absolute)
-                        b.Paint(g);
-                }
-                foreach (CssBox b in Boxes)
-                {
-                    if (b.IsFixed)
-                        b.Paint(g);
-                }
-
-                if (clipped)
-                    g.PopClip();
-
-                if (_listItemBox != null)
-                {
-                    _listItemBox.Paint(g);
-                }
-            }
-        }
-
-        private bool IsRectVisible(RRect rect, RRect clip)
-        {
-            rect.X -= 2;
-            rect.Width += 2;
-            clip.Intersect(rect);
-
-            if (clip != RRect.Empty)
-                return true;
-
-            return false;
-        }
-
-        /// <summary>
         /// Paints the background of the box
         /// </summary>
         /// <param name="g">the device to draw into</param>
         /// <param name="rect">the bounding rectangle to draw in</param>
         /// <param name="isFirst">is it the first rectangle of the element</param>
         /// <param name="isLast">is it the last rectangle of the element</param>
-        protected void PaintBackground(RGraphics g, RRect rect, bool isFirst, bool isLast)
+        internal void PaintBackground(RGraphics g, RRect rect, bool isFirst, bool isLast)
         {
             if (rect.Width > 0 && rect.Height > 0)
             {
@@ -1535,60 +1632,53 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Paint all the words in the box.
+        /// Paints one word at <paramref name="wordRect"/>, its final paint position - the caller decides
+        /// where that is (fragment-tree-local geometry, offset the same way <see cref="PaintBackground"/>'s
+        /// line rects already are; there is no live-tree geometry read here, only style/selection state).
         /// </summary>
         /// <param name="g">the device to draw into</param>
-        /// <param name="offset">the current scroll offset to offset the words</param>
-        private void PaintWords(RGraphics g, RPoint offset)
+        /// <param name="word">the word to paint</param>
+        /// <param name="wordRect">the word's final paint rectangle</param>
+        internal void PaintWord(RGraphics g, CssRect word, RRect wordRect)
         {
-            if (Width.Length > 0)
+            if (word.IsLineBreak)
+                return;
+
+            var clip = g.GetClip();
+            clip.Intersect(wordRect);
+            if (clip == RRect.Empty)
+                return;
+
+            var isRtl = Direction == CssConstants.Rtl;
+            var wordPoint = new RPoint(wordRect.X, wordRect.Y);
+            if (word.Selected)
             {
-                var isRtl = Direction == CssConstants.Rtl;
-                foreach (var word in Words)
+                // handle paint selected word background and with partial word selection
+                var wordLine = DomUtils.GetCssLineBoxByWord(word);
+                var left = word.SelectedStartOffset > -1 ? word.SelectedStartOffset : (wordLine.Words[0] != word && word.HasSpaceBefore ? -ActualWordSpacing : 0);
+                var padWordRight = word.HasSpaceAfter && !wordLine.IsLastSelectedWord(word);
+                var width = word.SelectedEndOffset > -1 ? word.SelectedEndOffset : word.Width + (padWordRight ? ActualWordSpacing : 0);
+                var rect = new RRect(wordRect.X + left, wordRect.Y, width - left, wordLine.LineHeight);
+
+                g.DrawRectangle(GetSelectionBackBrush(g, false), rect.X, rect.Y, rect.Width, rect.Height);
+
+                if (HtmlContainer.SelectionForeColor != RColor.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
                 {
-                    if (!word.IsLineBreak)
-                    {
-                        var clip = g.GetClip();
-                        var wordRect = word.Rectangle;
-                        wordRect.Offset(offset);
-                        clip.Intersect(wordRect);
-
-                        if (clip != RRect.Empty)
-                        {
-                            var wordPoint = new RPoint(word.Left + offset.X, word.Top + offset.Y);
-                            if (word.Selected)
-                            {
-                                // handle paint selected word background and with partial word selection
-                                var wordLine = DomUtils.GetCssLineBoxByWord(word);
-                                var left = word.SelectedStartOffset > -1 ? word.SelectedStartOffset : (wordLine.Words[0] != word && word.HasSpaceBefore ? -ActualWordSpacing : 0);
-                                var padWordRight = word.HasSpaceAfter && !wordLine.IsLastSelectedWord(word);
-                                var width = word.SelectedEndOffset > -1 ? word.SelectedEndOffset : word.Width + (padWordRight ? ActualWordSpacing : 0);
-                                var rect = new RRect(word.Left + offset.X + left, word.Top + offset.Y, width - left, wordLine.LineHeight);
-
-                                g.DrawRectangle(GetSelectionBackBrush(g, false), rect.X, rect.Y, rect.Width, rect.Height);
-
-                                if (HtmlContainer.SelectionForeColor != RColor.Empty && (word.SelectedStartOffset > 0 || word.SelectedEndIndexOffset > -1))
-                                {
-                                    g.PushClipExclude(rect);
-                                    g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
-                                    g.PopClip();
-                                    g.PushClip(rect);
-                                    g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
-                                    g.PopClip();
-                                }
-                                else
-                                {
-                                    g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
-                                }
-                            }
-                            else
-                            {
-                                //                            g.DrawRectangle(HtmlContainer.Adapter.GetPen(RColor.Black), wordPoint.X, wordPoint.Y, word.Width - 1, word.Height - 1);
-                                g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
-                            }
-                        }
-                    }
+                    g.PushClipExclude(rect);
+                    g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
+                    g.PopClip();
+                    g.PushClip(rect);
+                    g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
+                    g.PopClip();
                 }
+                else
+                {
+                    g.DrawString(word.Text, ActualFont, GetSelectionForeBrush(), wordPoint, new RSize(word.Width, word.Height), isRtl);
+                }
+            }
+            else
+            {
+                g.DrawString(word.Text, ActualFont, ActualColor, wordPoint, new RSize(word.Width, word.Height), isRtl);
             }
         }
 
@@ -1599,7 +1689,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="rectangle"> </param>
         /// <param name="isFirst"> </param>
         /// <param name="isLast"> </param>
-        protected void PaintDecoration(RGraphics g, RRect rectangle, bool isFirst, bool isLast)
+        internal void PaintDecoration(RGraphics g, RRect rectangle, bool isFirst, bool isLast)
         {
             if (string.IsNullOrEmpty(TextDecoration) || TextDecoration == CssConstants.None)
                 return;

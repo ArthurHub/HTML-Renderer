@@ -47,7 +47,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             "border-top-left-radius", "border-top-right-radius", "border-bottom-right-radius", "border-bottom-left-radius",
             "margin-bottom", "margin-left", "margin-right", "margin-top",
             "padding-bottom", "padding-left", "padding-right", "padding-top",
-            "page-break-inside", "left", "top", "width", "max-width", "height", "min-height", "max-height",
+            "page-break-inside", "break-inside", "break-before", "break-after", "page-break-before", "page-break-after",
+            "widows", "orphans", "page",
+            "left", "top", "width", "max-width", "height", "min-height", "max-height",
             "background-color", "background-image", "background-position", "background-repeat",
             "content", "color", "display", "direction", "empty-cells", "float", "clear", "box-sizing", "position",
             "line-height", "vertical-align", "text-indent", "text-align", "text-decoration-line",
@@ -149,6 +151,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.PaddingTop;
                 case "page-break-inside":
                     return cssBox.PageBreakInside;
+                case "break-inside":
+                    return cssBox.BreakInside;
+                case "break-before":
+                    return cssBox.BreakBefore;
+                case "break-after":
+                    return cssBox.BreakAfter;
+                case "page-break-before":
+                    return cssBox.PageBreakBefore;
+                case "page-break-after":
+                    return cssBox.PageBreakAfter;
+                case "widows":
+                    return cssBox.Widows;
+                case "orphans":
+                    return cssBox.Orphans;
+                case "page":
+                    return cssBox.PageName;
                 case "left":
                     return cssBox.Left;
                 case "top":
@@ -327,6 +345,30 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     break;
                 case "page-break-inside":
                     cssBox.PageBreakInside = value;
+                    break;
+                case "break-inside":
+                    cssBox.BreakInside = value;
+                    break;
+                case "break-before":
+                    cssBox.BreakBefore = value;
+                    break;
+                case "break-after":
+                    cssBox.BreakAfter = value;
+                    break;
+                case "page-break-before":
+                    cssBox.PageBreakBefore = value;
+                    break;
+                case "page-break-after":
+                    cssBox.PageBreakAfter = value;
+                    break;
+                case "widows":
+                    cssBox.Widows = value;
+                    break;
+                case "orphans":
+                    cssBox.Orphans = value;
+                    break;
+                case "page":
+                    cssBox.PageName = value;
                     break;
                 case "left":
                     cssBox.Left = value;

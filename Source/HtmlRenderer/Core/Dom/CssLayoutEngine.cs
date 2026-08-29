@@ -505,11 +505,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         word.Left = curx;
                         word.Top = cury;
 
-                        if (!box.IsFixed)
-                        {
-                            word.BreakPage();
-                        }
-
                         curx = word.Left + word.FullWidth;
 
                         maxRight = Math.Max(maxRight, word.Right);
