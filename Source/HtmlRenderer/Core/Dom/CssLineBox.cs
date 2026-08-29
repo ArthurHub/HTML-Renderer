@@ -114,6 +114,43 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
+        /// Get the top of this box line (the min top of all its rectangles).
+        /// </summary>
+        internal double LineTop
+        {
+            get
+            {
+                double top = double.MaxValue;
+                foreach (var rect in _rects)
+                {
+                    top = Math.Min(top, rect.Value.Top);
+                }
+                return top == double.MaxValue ? 0 : top;
+            }
+        }
+
+        /// <summary>
+        /// Shifts every word and per-box rectangle on this line down by <paramref name="delta"/> - used
+        /// by <see cref="Fragmentation.InlineFragmentation"/> to push a line (css-break-3 4.1: a line box
+        /// is monolithic - the whole of it moves, never just the words that don't fit) to the next page.
+        /// </summary>
+        internal void ShiftLine(double delta)
+        {
+            foreach (var word in _words)
+            {
+                word.Top += delta;
+            }
+
+            var boxes = new List<CssBox>(_rects.Keys);
+            foreach (var box in boxes)
+            {
+                var r = _rects[box];
+                _rects[box] = new RRect(r.X, r.Y + delta, r.Width, r.Height);
+                box.OffsetRectangle(this, delta);
+            }
+        }
+
+        /// <summary>
         /// Lets the linebox add the word an its box to their lists if necessary.
         /// </summary>
         /// <param name="word"></param>

@@ -1,5 +1,6 @@
 using System.Linq;
 using HtmlRenderer.Test.TestSupport;
+using TheArtOfDev.HtmlRenderer.Core.Dom;
 
 namespace HtmlRenderer.Test.Dom;
 
@@ -141,5 +142,99 @@ public sealed class CssLayoutEngineTableTests
         // fixed pixel budget, so assert the semantically-intended relationship (narrower than the
         // explicitly-widened column) instead of an arbitrary absolute threshold.
         Assert.IsTrue(auto1Width < wideWidth, $"Auto cell ({auto1Width}) should be narrower than the explicitly-widened first cell ({wideWidth})");
+    }
+
+    // Cherry-picked from PeachPDF's CssLayoutEngineTableTests (the rest of that file is general table
+    // layout, already out of scope for this port - see Fragmentation/CssLayoutEngineTablePageBreakTests.cs
+    // for the dedicated pagination-focused port). Adapted: PeachPDF's own version asserts against
+    // table.Boxes.OfType<CssProxyBox>() (its in-tree header-repeat proxy mechanism); this fork instead
+    // detaches repeated header clones onto CssBox.RepeatedHeaderRows (Core/Fragmentation/TableHeaderRepeat.cs)
+    // rather than inserting them into the live tree, so the assertions are rewritten onto that. Also drops
+    // the source's "@page { size: A4; margin: 20mm }" CSS rule (this fork's page grid is set on the
+    // container directly, via LayoutHarness's pageHeight parameter, not through @page).
+    [TestMethod]
+    public void TableLayout_DetectsPageBreaksCorrectly()
+    {
+        var html = LayoutHarness.Wrap(
+            "<table style='width:100%;border-collapse:collapse;'>" +
+            "<thead style='break-inside:avoid;'><tr><th style='border:1px solid black;padding:10px;'>Header</th></tr></thead>" +
+            "<tbody>" +
+            string.Concat(Enumerable.Range(1, 30).Select(i =>
+                $"<tr><td style='border:1px solid black;padding:10px;'>Row {i}</td></tr>")) +
+            "</tbody></table>");
+
+        const double pageHeight = 400.0;
+        var (root, container) = LayoutHarness.Layout(html, pageHeight: pageHeight, margin: 20);
+
+        var table = FindTableBox(root);
+        Assert.IsNotNull(table);
+
+        var tableHeight = table!.ActualBottom - table.Location.Y;
+
+        Assert.IsTrue(tableHeight > pageHeight, $"Table height ({tableHeight}) should exceed page height ({pageHeight})");
+        Assert.IsNotNull(table.RepeatedHeaderRows);
+        Assert.IsTrue(table.RepeatedHeaderRows!.Count >= 2,
+            $"Should have at least 2 repeated header row-sets for a multi-page table, found {table.RepeatedHeaderRows.Count}");
+    }
+
+    [TestMethod]
+    public void TableLayout_PositionsHeadersAtCorrectPageStarts()
+    {
+        var html = LayoutHarness.Wrap(
+            // Deliberately not border-collapse:collapse/padding - see
+            // CssLayoutEngineTablePageBreakTests.RepeatedThead_SinglePageBorderCollapseTable_... for a
+            // dedicated, [Ignore]d test pinning down why that combination can shift a table's own top
+            // fractionally off a page boundary and produce a spurious extra repeat.
+            "<table style='width:100%;'>" +
+            "<thead style='break-inside:avoid;'><tr><th style='height:20px;padding:0;margin:0;'>Header</th></tr></thead>" +
+            "<tbody>" +
+            string.Concat(Enumerable.Range(1, 10).Select(i =>
+                $"<tr><td style='height:20px;padding:0;margin:0;'>Row {i}</td></tr>")) +
+            "</tbody></table>");
+
+        // Very short pages to force multiple page breaks.
+        var (root, container) = LayoutHarness.Layout(html, pageHeight: 200, margin: 20);
+
+        var table = FindTableBox(root);
+        Assert.IsNotNull(table);
+        Assert.IsNotNull(table!.RepeatedHeaderRows);
+        Assert.IsTrue(table.RepeatedHeaderRows!.Count >= 1, "Should have at least one repeated header row-set");
+
+        // Each repeated header row's own cell carries its real position - the row box itself is never
+        // positioned by table layout (see CssLayoutEngineTablePageBreakTests' identical note).
+        var headerYPositions = table.RepeatedHeaderRows
+            .Select(row => row.Boxes.Count > 0 ? row.Boxes[0].Location.Y : row.Location.Y)
+            .OrderBy(y => y)
+            .ToList();
+
+        // Every repeated header should land at one of this page grid's own real page tops.
+        foreach (var y in headerYPositions)
+        {
+            var slot = container.PageIndexOf(y);
+            Assert.AreEqual(container.PageTopOf(slot), y, 0.5, $"repeated header at Y={y} should sit flush at page-slot {slot}'s content top");
+        }
+
+        // If there are multiple repeats, they must be at different Y positions - not all collapsed onto
+        // the same page.
+        if (headerYPositions.Count > 1)
+        {
+            var uniquePositions = headerYPositions.Distinct().Count();
+            Assert.IsTrue(uniquePositions > 1,
+                $"Multiple repeated headers should be at different Y positions, but all {headerYPositions.Count} were the same");
+        }
+    }
+
+    private static CssBox? FindTableBox(CssBox box)
+    {
+        if (box.Display == TheArtOfDev.HtmlRenderer.Core.Utils.CssConstants.Table)
+            return box;
+
+        foreach (var child in box.Boxes)
+        {
+            var found = FindTableBox(child);
+            if (found is not null) return found;
+        }
+
+        return null;
     }
 }

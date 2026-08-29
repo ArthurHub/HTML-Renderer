@@ -189,9 +189,6 @@ public sealed class HtmlEntityDecodingIntegrationTests
         Assert.AreEqual("&", beforeBox!.Text);
     }
 
-    [Ignore("Requires ::before/::after pseudo-elements with a CSS content: property - this fork has no " +
-            "pseudo-element support at all (confirmed: no \"::before\"/\"::after\"/pseudo-element handling " +
-            "anywhere in Core, only :link/:hover pseudo-CLASSES are recognized).")]
     [TestMethod]
     public void CssContentWithCssEscapeInString_RendersLiterally()
     {
@@ -200,7 +197,10 @@ public sealed class HtmlEntityDecodingIntegrationTests
         var (root, _) = LayoutHarness.Layout(html);
         var p = LayoutHarness.FindById(root, "p")!;
 
-        var afterBox = p.Boxes.FirstOrDefault(b => b.HtmlTag == null && b.Text != null);
+        // Unlike ::before (inserted at index 0), ::after is appended at the end of p.Boxes - so
+        // FirstOrDefault(HtmlTag == null) would instead match the real text node "text" (which also has
+        // no HtmlTag), not the pseudo box. IsAfterPseudoElement identifies it unambiguously.
+        var afterBox = p.Boxes.FirstOrDefault(b => b.IsAfterPseudoElement);
         Assert.IsNotNull(afterBox);
         Assert.IsTrue(afterBox!.Text!.Contains('<'));
         Assert.IsTrue(afterBox.Text!.Contains('>'));
