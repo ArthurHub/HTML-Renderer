@@ -1922,6 +1922,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     _width = p._width;
                     _maxWidth = p._maxWidth;
                     _wordSpacing = p._wordSpacing;
+
+                    // css-break-3 3: break-before/break-after/break-inside attach to the ELEMENT, not to
+                    // whichever one of its boxes happens to hold them - so a structural clone (a fragment
+                    // of the same element, as opposed to an ordinary, unrelated child) must carry them too,
+                    // even though they are not part of the ordinary CSS inheritance this method's non-
+                    // "everything" branch above implements. Confirmed missing by direct inspection: this
+                    // "everything" branch copied every other originating-element property (background,
+                    // border, position, size...) but never these three, so both of this method's real
+                    // "everything: true" callers silently produced auto/auto/auto clones regardless of what
+                    // the source element declared - TableHeaderRepeat.CloneSubtree's per-page repeated
+                    // <thead> row clones, and DomParser.CorrectBlockSplitBadBox's block-in-inline split
+                    // (leftbox/rightBox), both of which exist specifically because one element is being
+                    // represented by more than one box and every representative must agree.
+                    _pageBreakInside = p._pageBreakInside;
+                    _breakBefore = p._breakBefore;
+                    _breakAfter = p._breakAfter;
                 }
             }
         }

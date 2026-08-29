@@ -659,12 +659,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     // still theirs. Its own page is never itself a "repeat" - the header is already
                     // there once, in flow.
                     headerHeight = maxBottom - starty;
-                    lastRepeatSlot = pageGridContainer.PageIndexOf(starty);
+                    lastRepeatSlot = PageSlotOf(pageGridContainer, starty);
                 }
 
                 if (repeatsHeader && i >= headerRowCount && lastRepeatSlot.HasValue)
                 {
-                    var slot = pageGridContainer.PageIndexOf(cury);
+                    var slot = PageSlotOf(pageGridContainer, cury);
                     if (slot > lastRepeatSlot.Value)
                     {
                         var pageTop = pageGridContainer.PageTopOf(slot);
@@ -883,6 +883,47 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             return rowspan;
         }
+
+        /// <summary>
+        /// The pagination slot <paramref name="y"/> falls in, for the repeated-header loop above - which
+        /// needs to know which page the row cursor is really on, as opposed to
+        /// <see cref="HtmlContainerInt.PageIndexOf"/>'s raw arithmetic.
+        /// </summary>
+        /// <remarks>
+        /// A confirmed, real bug found while porting this port's own table-fragmentation test suite: for a
+        /// <c>border-collapse:collapse</c> table (<see cref="GetVerticalSpacing()"/> is <c>-1</c>, a
+        /// deliberate one-pixel overlap between the first row and the table's own top border), <c>starty</c>
+        /// is one pixel LESS than <see cref="CssBox.ClientTop"/> whenever the table sits flush at a page's
+        /// own content top (the common case: the table is the first thing on a page, or was just relocated
+        /// to <c>PageTopOf(slot)</c> by <see cref="Fragmentation.BlockFragmentation.RelocateIfNeeded"/>).
+        /// Fed straight into <see cref="HtmlContainerInt.PageIndexOf"/>, that one pixel is enough to floor
+        /// into the SLOT BEFORE the one the table's box actually starts in (observed directly: a 200px-tall
+        /// page grid with <c>MarginTop=10</c>, table starting at <c>ClientTop=10</c>, gives
+        /// <c>starty=9</c> and <c>PageIndexOf(9)=-1</c>, not <c>0</c>). Seeding <c>lastRepeatSlot</c> from
+        /// that value made the repeated-header loop see a spurious "transition" into slot 0 at the very
+        /// first body row, consuming its first repeat on a duplicate drawn almost exactly on top of the
+        /// header the table already has in flow there (confirmed: before this fix, a table's own first page
+        /// painted its header twice). <see cref="CssBox.ClientTop"/> itself is never subject to the
+        /// collapsed-border overlap (it is the table's plain border/padding-resolved box edge), so clamping
+        /// to it here is a safe floor: every legitimate use of <c>cury</c> for this loop's slot arithmetic
+        /// is asking "which page is the table's own row cursor on", and that can never sensibly be a page
+        /// before the table's own top.
+        /// </remarks>
+        /// <remarks>
+        /// Deliberately NOT applied to the row-preservation straddle check a few lines below (which still
+        /// calls <see cref="HtmlContainerInt.PageIndexOf"/> directly, unclamped) - confirmed by running the
+        /// existing regression suite both ways: that check's own reaction to this exact -1/0 misread is a
+        /// harmless, arguably-correct 1px nudge (shifting a row that starts 1px into the "previous" slot
+        /// down to that slot's real top), and two pre-existing tests
+        /// (<c>CssLayoutEngineTablePageBreakTests.AvailableHeight_PageBreakFiringPoint_RowDoesNotBleedIntoBottomMargin</c>/
+        /// <c>TableLayout_MultiPageTable_RowsDoNotOverlapPageMargins</c>) depend on that nudge keeping a
+        /// collapsed-border table's very first row flush with its page's own content top rather than
+        /// poking one pixel above it. Clamping there too would remove a real, useful correction to fix a
+        /// bug in a different, unrelated caller (the header-repeat loop, which reacts to the same misread
+        /// by inserting visible duplicate content rather than by a sub-pixel nudge).
+        /// </remarks>
+        private int PageSlotOf(HtmlContainerInt container, double y) =>
+            container.PageIndexOf(Math.Max(y, _tableBox.ClientTop));
 
         /// <summary>
         /// css-tables-3 §6.1's "the cells spanning the row do not span any subsequent row" test: true
