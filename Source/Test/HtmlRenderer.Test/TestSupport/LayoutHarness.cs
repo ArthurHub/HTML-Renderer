@@ -22,18 +22,39 @@ internal static class LayoutHarness
     /// Optional: a caller-supplied <see cref="MockAdapter"/> (e.g. with a non-default <c>MediaType</c> for
     /// <c>@media</c> tests). Defaults to a plain <c>new MockAdapter()</c>.
     /// </param>
+    /// <param name="pageHeight">
+    /// Optional: enables a real page grid (<see cref="HtmlContainerInt.HasRealPageGrid"/>) for fragmentation
+    /// tests. Assigned directly to <see cref="HtmlContainerInt.PageSize"/>'s height - i.e. this is already the
+    /// per-page CONTENT BAND, not a sheet height margins are subtracted from, matching this fork's own
+    /// <see cref="HtmlContainerInt.PageTopOf"/>/<see cref="HtmlContainerInt.PageIndexOf"/> convention (a
+    /// caller wanting a 300px sheet with 20px margins passes <c>pageHeight: 260</c>). <paramref name="margin"/>
+    /// pixels of top/bottom margin are applied on top - the root box is placed at <c>(margin, margin)</c>, and
+    /// <c>MaxSize.Height</c> is left unbounded (0), matching this branch's own <c>StageR1DriverLoopTest</c>-style
+    /// convention, since fragmentation content commonly spans many multiples of one page. Left null (the
+    /// default) leaves <see cref="HtmlContainerInt.PageSize"/> unset - <c>HasRealPageGrid</c> false - which is
+    /// required to keep every pre-existing non-fragmentation caller of this method behaving exactly as before.
+    /// </param>
+    /// <param name="margin">Only meaningful when <paramref name="pageHeight"/> is given - see its own doc.</param>
     internal static (CssBox Root, HtmlContainerInt Container) Layout(
         string html,
         double maxWidth = 1000,
         double maxHeight = 4000,
         Action<CssBox>? prepare = null,
-        MockAdapter? adapter = null)
+        MockAdapter? adapter = null,
+        double? pageHeight = null,
+        double margin = 20)
     {
         var container = new HtmlContainerInt(adapter ?? new MockAdapter())
         {
-            MaxSize = new RSize(maxWidth, maxHeight),
-            Location = RPoint.Empty
+            MaxSize = new RSize(maxWidth, pageHeight.HasValue ? 0 : maxHeight),
+            Location = pageHeight.HasValue ? new RPoint(margin, margin) : RPoint.Empty
         };
+
+        if (pageHeight.HasValue)
+        {
+            container.SetMargins((int)margin);
+            container.PageSize = new RSize(maxWidth, pageHeight.Value);
+        }
 
         container.SetHtml(html);
 
