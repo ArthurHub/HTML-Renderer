@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Fragmentation;
 using TheArtOfDev.HtmlRenderer.Core.Parse;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 
@@ -624,12 +625,69 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 _tableBox.Location = new RPoint(startx - _tableBox.ActualBorderLeftWidth - _tableBox.ActualPaddingLeft - GetHorizontalSpacing(), _tableBox.Location.Y);
             }
 
+            // css-tables-3 6.2: a <thead> repeats on every page the table's body/footer spans, where
+            // the group carries an avoiding break-inside (the UA default stylesheet sets this).
+            // Reserving the room here, before the first row of each continuation page is positioned,
+            // is what keeps that row from being drawn underneath the repeated header instead of below
+            // it - a fragment-tree-only repeat (no reservation) would just overlap real content.
+            //
+            // KNOWN LIMITATION (confirmed via direct testing, not yet fixed - fragmentation-engine-parity
+            // plan's R8 stage): this check runs once per ROW (below, gated on `i`), reading `cury`'s slot
+            // only at that row's own start. A row whose own cell content spans MULTIPLE pages by itself
+            // (one cell vastly longer than its siblings) only gets a repeat inserted for the FIRST page
+            // it crosses onto - the header does not repeat on further intermediate pages that same row's
+            // content continues to span, only reappearing once a LATER row's own start advances the slot
+            // again. Not data loss or a crash, just a missing header repeat on some pages of a fairly
+            // exotic table shape. A real fix needs to know how many pages a row spans before deciding how
+            // much room to reserve for it, which this single-pass-per-row model doesn't have without
+            // relaying the row out a second time once its true span is known - tractable, but out of
+            // scope for now given how rare the shape is (the far more common case - many ordinary rows,
+            // table spans many pages - already repeats correctly, verified by ThreadRepeatsOnEveryPageTheTableSpans).
+            var pageGridContainer = _tableBox.HtmlContainer;
+            var repeatsHeader = pageGridContainer != null && pageGridContainer.HasRealPageGrid
+                                 && _headerBox != null && BreakValues.AvoidsBreak(_headerBox.BreakInside);
+            var headerRowCount = _headerBox?.Boxes.Count ?? 0;
+            double headerHeight = 0;
+            int? lastRepeatSlot = null;
+            _tableBox.RepeatedHeaderRows = null;
+
             for (int i = 0; i < _allRows.Count; i++)
             {
+                if (repeatsHeader && i == headerRowCount)
+                {
+                    // The header's own rows (i = 0..headerRowCount-1) just finished; maxBottom is
+                    // still theirs. Its own page is never itself a "repeat" - the header is already
+                    // there once, in flow.
+                    headerHeight = maxBottom - starty;
+                    lastRepeatSlot = PageSlotOf(pageGridContainer, starty);
+                }
+
+                if (repeatsHeader && i >= headerRowCount && lastRepeatSlot.HasValue)
+                {
+                    var slot = PageSlotOf(pageGridContainer, cury);
+                    if (slot > lastRepeatSlot.Value)
+                    {
+                        var pageTop = pageGridContainer.PageTopOf(slot);
+                        cury = pageTop + headerHeight;
+                        lastRepeatSlot = slot;
+
+                        _tableBox.RepeatedHeaderRows ??= new List<CssBox>();
+                        for (var hi = 0; hi < headerRowCount; hi++)
+                        {
+                            var sourceRow = _allRows[hi];
+                            // A <tr> box's own Location is never assigned by this row loop (only its
+                            // cells' is) - the first cell is the real reference point for "where this
+                            // header row actually renders".
+                            var sourceRenderedTop = sourceRow.Boxes.Count > 0 ? sourceRow.Boxes[0].Location.Y : starty;
+                            var targetTop = pageTop + (sourceRenderedTop - starty);
+                            _tableBox.RepeatedHeaderRows.Add(TableHeaderRepeat.CloneAndPosition(sourceRow, sourceRenderedTop, targetTop));
+                        }
+                    }
+                }
+
                 var row = _allRows[i];
                 double curx = startx;
                 int curCol = 0;
-                bool breakPage = false;
 
                 for (int j = 0; j < row.Boxes.Count; j++)
                 {
@@ -676,28 +734,76 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         spacer.ExtendedBox.ActualBottom = maxBottom;
                         CssLayoutEngine.ApplyCellVerticalAlignment(g, spacer.ExtendedBox);
                     }
-
-                    // If one cell crosses page borders then don't need to check other cells in the row
-                    if (_tableBox.PageBreakInside == CssConstants.Avoid)
-                    {
-                        breakPage = cell.BreakPage();
-                        if (breakPage)
-                        {
-                            cury = cell.Location.Y;
-                            break;
-                        }
-                    }
                 }
 
-                if (breakPage) // go back to move the whole row to the next page
+                // css-tables-3 §6.1: "user agents must attempt to preserve the table rows unfragmented
+                // if the cells spanning the row do not span any subsequent row, and their height is at
+                // least twice smaller than both the fragmentainer height and width" - a UA-default
+                // requirement, not something an author has to opt into. If this row straddles a page
+                // boundary and isn't "freely fragmentable" by that rule, shift the whole row - not just
+                // one cell - down to the next page's content top. The table's own break-inside:avoid
+                // still forces the attempt even for an otherwise-freely-fragmentable row (an author's
+                // explicit, stronger request), matching this port's existing behavior for that case.
+                if (pageGridContainer != null && pageGridContainer.HasRealPageGrid && maxBottom > cury)
                 {
-                    if (i == 1) // do not leave single row in previous page
-                        i = -1; // Start layout from the first row on new page
-                    else
-                        i--;
+                    var topSlot = pageGridContainer.PageIndexOf(cury);
+                    var bottomSlot = pageGridContainer.PageIndexOf(Math.Max(cury, maxBottom - 0.01));
+                    var rowHeight = maxBottom - cury;
+                    var freelyFragmentable = RowHasCellSpanningIntoSubsequentRow(row, currentrow)
+                        || rowHeight >= pageGridContainer.PageSize.Height / 2
+                        || rowHeight >= pageGridContainer.PageSize.Width / 2;
+                    var shouldPreserve = !freelyFragmentable || BreakValues.AvoidsBreak(_tableBox.BreakInside);
 
-                    maxBottom = 0;
-                    continue;
+                    if (bottomSlot > topSlot && shouldPreserve && rowHeight < pageGridContainer.PageSize.Height)
+                    {
+                        var delta = pageGridContainer.PageTopOf(topSlot + 1) - cury;
+
+                        // cury == starty means nothing has been drawn above this row within the table yet
+                        // (no earlier row consumed space on the table's original page) - so this row moving
+                        // IS the table's own content moving wholesale, not one row among several straddling
+                        // independently. The table's own Location was set once, before this method ever
+                        // ran, by its parent's child loop - row-atomicity shifting cell rectangles alone
+                        // left it stale, so EnforceKeepWithNext(table) (called on the table exactly like any
+                        // other child) never saw the boundary crossing and could never pull an avoid-chained
+                        // heading along. Only the table's own Location follows here - deliberately NOT
+                        // BlockFragmentation.PropagateContainerRelocation's further climb into an ancestor:
+                        // this method can run more than once per overall document pass whenever an ancestor
+                        // is independently relocated by RelocateIfNeeded (which re-lays the whole subtree
+                        // out fresh at its own target) - climbing here too would double-count that ancestor's
+                        // own already-correct shift on top of RelocateIfNeeded's (confirmed: caused a real
+                        // regression in BoxContainingARepeatingTable_IsStillRelocated, a table inside its own
+                        // break-inside:avoid card, off by the same few pixels PageSlotOf's collapsed-border
+                        // tolerance allows). A plain, non-avoid wrapper around a table whose first row alone
+                        // triggers this path is not climbed to - a narrower fix than full css-break-3 3.1
+                        // propagation, matching what the two tests this fixes actually exercise (the table
+                        // itself as EnforceKeepWithNext's own child, not a further-wrapped one).
+                        if (Math.Abs(cury - starty) < 0.01)
+                        {
+                            _tableBox.Location = new RPoint(_tableBox.Location.X, _tableBox.Location.Y + delta);
+                        }
+
+                        foreach (CssBox cell in row.Boxes)
+                        {
+                            // A rowspan-crossing cell's real content lives on CssSpacingBox.ExtendedBox,
+                            // not on the placeholder itself (Display:none, no children/words/rectangles -
+                            // OffsetTop on it was a silent no-op, leaving the spanning cell's actual
+                            // bottom edge stale while the rest of the row moved on). Unlike an ordinary
+                            // cell, the spanning cell's own top and content are already anchored to
+                            // whichever earlier row it started in (laid out there, unaffected by this
+                            // row's shift) - so rather than OffsetTop-ing the whole subtree (which would
+                            // incorrectly drag its top and content away from that row too), only its
+                            // bottom edge is extended to cover the gap this row's move just opened up.
+                            if (cell is CssSpacingBox spacer)
+                            {
+                                spacer.ExtendedBox.ActualBottom += delta;
+                            }
+                            else
+                            {
+                                cell.OffsetTop(delta);
+                            }
+                        }
+                        maxBottom += delta;
+                    }
                 }
 
                 cury = maxBottom + GetVerticalSpacing();
@@ -801,6 +907,72 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
 
             return rowspan;
+        }
+
+        /// <summary>
+        /// The pagination slot <paramref name="y"/> falls in, for the repeated-header loop above - which
+        /// needs to know which page the row cursor is really on, as opposed to
+        /// <see cref="HtmlContainerInt.PageIndexOf"/>'s raw arithmetic.
+        /// </summary>
+        /// <remarks>
+        /// A confirmed, real bug found while porting this port's own table-fragmentation test suite: for a
+        /// <c>border-collapse:collapse</c> table (<see cref="GetVerticalSpacing()"/> is <c>-1</c>, a
+        /// deliberate one-pixel overlap between the first row and the table's own top border), <c>starty</c>
+        /// is one pixel LESS than <see cref="CssBox.ClientTop"/> whenever the table sits flush at a page's
+        /// own content top (the common case: the table is the first thing on a page, or was just relocated
+        /// to <c>PageTopOf(slot)</c> by <see cref="Fragmentation.BlockFragmentation.RelocateIfNeeded"/>).
+        /// Fed straight into <see cref="HtmlContainerInt.PageIndexOf"/>, that one pixel is enough to floor
+        /// into the SLOT BEFORE the one the table's box actually starts in (observed directly: a 200px-tall
+        /// page grid with <c>MarginTop=10</c>, table starting at <c>ClientTop=10</c>, gives
+        /// <c>starty=9</c> and <c>PageIndexOf(9)=-1</c>, not <c>0</c>). Seeding <c>lastRepeatSlot</c> from
+        /// that value made the repeated-header loop see a spurious "transition" into slot 0 at the very
+        /// first body row, consuming its first repeat on a duplicate drawn almost exactly on top of the
+        /// header the table already has in flow there (confirmed: before this fix, a table's own first page
+        /// painted its header twice). <see cref="CssBox.ClientTop"/> itself is never subject to the
+        /// collapsed-border overlap (it is the table's plain border/padding-resolved box edge), so clamping
+        /// to it here is a safe floor: every legitimate use of <c>cury</c> for this loop's slot arithmetic
+        /// is asking "which page is the table's own row cursor on", and that can never sensibly be a page
+        /// before the table's own top.
+        /// </remarks>
+        /// <remarks>
+        /// Deliberately NOT applied to the row-preservation straddle check a few lines below (which still
+        /// calls <see cref="HtmlContainerInt.PageIndexOf"/> directly, unclamped) - confirmed by running the
+        /// existing regression suite both ways: that check's own reaction to this exact -1/0 misread is a
+        /// harmless, arguably-correct 1px nudge (shifting a row that starts 1px into the "previous" slot
+        /// down to that slot's real top), and two pre-existing tests
+        /// (<c>CssLayoutEngineTablePageBreakTests.AvailableHeight_PageBreakFiringPoint_RowDoesNotBleedIntoBottomMargin</c>/
+        /// <c>TableLayout_MultiPageTable_RowsDoNotOverlapPageMargins</c>) depend on that nudge keeping a
+        /// collapsed-border table's very first row flush with its page's own content top rather than
+        /// poking one pixel above it. Clamping there too would remove a real, useful correction to fix a
+        /// bug in a different, unrelated caller (the header-repeat loop, which reacts to the same misread
+        /// by inserting visible duplicate content rather than by a sub-pixel nudge).
+        /// </remarks>
+        private int PageSlotOf(HtmlContainerInt container, double y) =>
+            container.PageIndexOf(Math.Max(y, _tableBox.ClientTop));
+
+        /// <summary>
+        /// css-tables-3 §6.1's "the cells spanning the row do not span any subsequent row" test: true
+        /// if any cell in <paramref name="row"/> - real or the <see cref="CssSpacingBox"/> placeholder
+        /// standing in for one that started earlier - continues into a row after
+        /// <paramref name="currentrow"/>, meaning this row cannot be preserved unfragmented on its own
+        /// without also pulling along content that belongs to a row not yet reached.
+        /// </summary>
+        private static bool RowHasCellSpanningIntoSubsequentRow(CssBox row, int currentrow)
+        {
+            foreach (CssBox cell in row.Boxes)
+            {
+                if (cell is CssSpacingBox spacer)
+                {
+                    if (spacer.EndRow > currentrow)
+                        return true;
+                }
+                else if (GetRowSpan(cell) > 1)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

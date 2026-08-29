@@ -79,6 +79,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _marginRight = "0";
         private string _marginTop = "0";
         private string _left = "auto";
+        private string _counterReset = CssConstants.None;
+        private string _counterIncrement = CssConstants.None;
+        private string _outlineStyle = CssConstants.None;
+        private string _outlineColor = string.Empty;
+        private string _outlineWidth = "medium";
         private string _lineHeight = "normal";
         private string _listStyleType = "disc";
         private string _listStyleImage = string.Empty;
@@ -90,6 +95,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _paddingRight = "0";
         private string _paddingTop = "0";
         private string _pageBreakInside = CssConstants.Auto;
+        private string _breakBefore = CssConstants.Auto;
+        private string _breakAfter = CssConstants.Auto;
+        private string _widows = "2";
+        private string _orphans = "2";
+        private string _pageName = CssConstants.Auto;
         private string _right;
         private string _textAlign = string.Empty;
         private string _textDecoration = string.Empty;
@@ -455,31 +465,131 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
         }
 
+        /// <summary>
+        /// CSS Fragmentation "break-inside". Shares a backing field with the legacy "page-break-inside"
+        /// (<see cref="PageBreakInside"/>) so fragmentation code has one canonical value to consult
+        /// regardless of which property name an author used.
+        /// </summary>
+        public string BreakInside
+        {
+            get { return _pageBreakInside; }
+            set { _pageBreakInside = value; }
+        }
+
+        /// <summary>
+        /// CSS Fragmentation "break-before". Shares a backing field with the legacy "page-break-before"
+        /// (<see cref="PageBreakBefore"/>).
+        /// </summary>
+        public string BreakBefore
+        {
+            get { return _breakBefore; }
+            set { _breakBefore = value; }
+        }
+
+        /// <summary>
+        /// Legacy CSS2.1 "page-break-before". Shares a backing field with <see cref="BreakBefore"/>.
+        /// </summary>
+        public string PageBreakBefore
+        {
+            get { return _breakBefore; }
+            set { _breakBefore = value; }
+        }
+
+        /// <summary>
+        /// CSS Fragmentation "break-after". Shares a backing field with the legacy "page-break-after"
+        /// (<see cref="PageBreakAfter"/>).
+        /// </summary>
+        public string BreakAfter
+        {
+            get { return _breakAfter; }
+            set { _breakAfter = value; }
+        }
+
+        /// <summary>
+        /// Legacy CSS2.1 "page-break-after". Shares a backing field with <see cref="BreakAfter"/>.
+        /// </summary>
+        public string PageBreakAfter
+        {
+            get { return _breakAfter; }
+            set { _breakAfter = value; }
+        }
+
+        /// <summary>
+        /// CSS Fragmentation "widows" - the minimum number of lines of a block left on the top of a page.
+        /// </summary>
+        public string Widows
+        {
+            get { return _widows; }
+            set { _widows = value; }
+        }
+
+        /// <summary>
+        /// The resolved <see cref="Widows"/> value, defaulting to the CSS initial value of 2 when unset
+        /// or unparsable.
+        /// </summary>
+        public int ActualWidows
+        {
+            get
+            {
+                int result;
+                return int.TryParse(_widows, NumberStyles.Integer, CultureInfo.InvariantCulture, out result) && result > 0
+                    ? result
+                    : 2;
+            }
+        }
+
+        /// <summary>
+        /// CSS Fragmentation "orphans" - the minimum number of lines of a block left at the bottom of a page.
+        /// </summary>
+        public string Orphans
+        {
+            get { return _orphans; }
+            set { _orphans = value; }
+        }
+
+        /// <summary>
+        /// The resolved <see cref="Orphans"/> value, defaulting to the CSS initial value of 2 when unset
+        /// or unparsable.
+        /// </summary>
+        public int ActualOrphans
+        {
+            get
+            {
+                int result;
+                return int.TryParse(_orphans, NumberStyles.Integer, CultureInfo.InvariantCulture, out result) && result > 0
+                    ? result
+                    : 2;
+            }
+        }
+
+        /// <summary>
+        /// CSS Paged Media "page" - the named page this box's containing fragmentainer should use.
+        /// </summary>
+        public string PageName
+        {
+            get { return _pageName; }
+            set { _pageName = value; }
+        }
+
         public string Left
         {
             get { return _left; }
             set
             {
+                // Deliberately no eager position:fixed recompute here (as this once had): it raced ahead
+                // of ActualMarginLeft/Top and ContainingBlock/HtmlContainer being ready and cached a
+                // margin-less Location that never got recomputed once they were. position:fixed placement
+                // is instead resolved once, in PerformLayoutImp, once the box is fully set up.
                 _left = value;
-
-                if (Position == CssConstants.Fixed)
-                {
-                    _location = GetActualLocation(Left, Top);
-                }
             }
         }
 
         public string Top
         {
             get { return _top; }
-            set {
+            set
+            {
                 _top = value;
-
-                if (Position == CssConstants.Fixed)
-                {
-                    _location = GetActualLocation(Left, Top);
-                }
-
             }
         }
 
@@ -614,6 +724,113 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             get { return _position; }
             set { _position = value; }
         }
+
+        public string Right
+        {
+            get { return _right; }
+            set { _right = value; }
+        }
+
+        public string CounterReset
+        {
+            get { return _counterReset; }
+            set { _counterReset = value; }
+        }
+
+        public string CounterIncrement
+        {
+            get { return _counterIncrement; }
+            set { _counterIncrement = value; }
+        }
+
+        public string OutlineStyle
+        {
+            get { return _outlineStyle; }
+            set { _outlineStyle = value; }
+        }
+
+        public string OutlineColor
+        {
+            get { return _outlineColor; }
+            set { _outlineColor = value; }
+        }
+
+        public string OutlineWidth
+        {
+            get { return _outlineWidth; }
+            set { _outlineWidth = value; }
+        }
+
+        /// <summary>
+        /// The resolved <c>outline-width</c> in pixels ("thin"/"medium"/"thick" keywords resolved, like
+        /// <see cref="ActualBorderTopWidth"/>), or 0 when <c>outline-style</c> is <c>none</c>/<c>hidden</c>
+        /// (an outline with a style of none/hidden never paints, regardless of width - CSS 2.1 §18.1's
+        /// invert/no-op default matches border's own "no style, no width" rule).
+        /// </summary>
+        public double ActualOutlineWidth
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(OutlineStyle) || OutlineStyle == CssConstants.None || OutlineStyle == CssConstants.Hidden)
+                {
+                    return 0;
+                }
+                return CssValueParser.GetActualBorderWidth(OutlineWidth, this);
+            }
+        }
+
+        /// <summary>
+        /// The resolved paint color for <c>outline-color</c> - falls back to this box's own
+        /// <see cref="ActualColor"/> (i.e. <c>currentColor</c>) when <c>outline-color</c> is unset, which
+        /// is what every real browser does today for the property's nominal <c>invert</c> initial value
+        /// (true color inversion is not implemented here).
+        /// </summary>
+        public RColor ActualOutlineColor
+        {
+            get
+            {
+                // "transparent" is OutlineColorProperty's own cascaded initial value (Color.Transparent) -
+                // treated the same as unset, since an invisible-by-default outline would defeat the point
+                // of the property entirely.
+                return string.IsNullOrEmpty(OutlineColor) || OutlineColor == "transparent"
+                    ? ActualColor
+                    : GetActualColor(OutlineColor);
+            }
+        }
+
+        /// <summary>
+        /// This box's resolved named-counter values (CSS 2.1 §12.4), as of just after its own
+        /// <c>counter-reset</c>/<c>counter-increment</c> have been applied - populated once, by
+        /// <see cref="CssCounterEngine.ResolveCounters"/>, before layout runs. Consulted by
+        /// <c>content: counter()</c> (<see cref="CssContentEngine"/>).
+        /// </summary>
+        internal System.Collections.Generic.Dictionary<string, int> Counters { get; set; }
+            = new System.Collections.Generic.Dictionary<string, int>();
+
+        public string Bottom
+        {
+            get { return _bottom; }
+            set { _bottom = value; }
+        }
+
+        /// <summary>
+        /// The visual-only offset a <c>position:relative</c> box's placement branch applied, per CSS 2.1
+        /// §9.4.3 - kept separately so <see cref="StaticBottom"/> can back it back out for margin-collapse/
+        /// sibling-placement consumers that must lay out against the box's un-offset (static) position.
+        /// Ported from PeachPDF's CssBox.RelativeOffsetX/Y.
+        /// </summary>
+        public double RelativeOffsetX { get; set; }
+
+        /// <inheritdoc cref="RelativeOffsetX"/>
+        public double RelativeOffsetY { get; set; }
+
+        /// <summary>
+        /// <see cref="CssBoxProperties.ActualBottom"/> with any <c>position:relative</c> visual offset
+        /// backed out - the coordinate a following sibling or this box's own parent (for auto height) must
+        /// lay out against, since relative positioning "has no effect on the position of any other box"
+        /// (CSS 2.1 §9.4.3). Ported from PeachPDF's CssBox.StaticBottom.
+        /// </summary>
+        public double StaticBottom => ActualBottom - RelativeOffsetY;
 
         public string LineHeight
         {
@@ -1759,6 +1976,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 _lineHeight = p._lineHeight;
                 _wordBreak = p.WordBreak;
                 _direction = p._direction;
+                _widows = p._widows;
+                _orphans = p._orphans;
 
                 if (everything)
                 {
@@ -1809,6 +2028,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     _width = p._width;
                     _maxWidth = p._maxWidth;
                     _wordSpacing = p._wordSpacing;
+
+                    // css-break-3 3: break-before/break-after/break-inside attach to the ELEMENT, not to
+                    // whichever one of its boxes happens to hold them - so a structural clone (a fragment
+                    // of the same element, as opposed to an ordinary, unrelated child) must carry them too,
+                    // even though they are not part of the ordinary CSS inheritance this method's non-
+                    // "everything" branch above implements. Confirmed missing by direct inspection: this
+                    // "everything" branch copied every other originating-element property (background,
+                    // border, position, size...) but never these three, so both of this method's real
+                    // "everything: true" callers silently produced auto/auto/auto clones regardless of what
+                    // the source element declared - TableHeaderRepeat.CloneSubtree's per-page repeated
+                    // <thead> row clones, and DomParser.CorrectBlockSplitBadBox's block-in-inline split
+                    // (leftbox/rightBox), both of which exist specifically because one element is being
+                    // represented by more than one box and every representative must agree.
+                    _pageBreakInside = p._pageBreakInside;
+                    _breakBefore = p._breakBefore;
+                    _breakAfter = p._breakAfter;
                 }
             }
         }

@@ -76,6 +76,33 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         sb.Append(attrValue);
                     }
                 }
+                else if (token is FunctionToken counterFunctionToken &&
+                         counterFunctionToken.Data.Equals(FunctionNames.Counter, StringComparison.OrdinalIgnoreCase))
+                {
+                    // counter(<name> [, <style>]?) - a bare counter() with no name argument (malformed,
+                    // or the counters()-with-separator form this subset doesn't support) contributes no
+                    // text, matching this engine's graceful-ignore-the-unsupported-part behavior.
+                    // ArgumentTokens.ToList() (ValueExtensions' comma-splitting overload, not System.Linq's)
+                    // groups the raw token stream into one List<Token> per comma-separated argument.
+                    var counterArgs = counterFunctionToken.ArgumentTokens.ToList();
+                    if (counterArgs.Count > 0 && counterArgs[0].FirstOrDefault() is KeywordToken counterNameToken)
+                    {
+                        var style = counterArgs.Count > 1 && counterArgs[1].FirstOrDefault() is KeywordToken styleToken
+                            ? styleToken.Data
+                            : CssConstants.Decimal;
+
+                        // Unlike attr() above, no parent fallback is needed here: CssCounterEngine.
+                        // ResolveCounters walks this pseudo-element box as an ordinary child of its
+                        // generating element, so it already carries its own correct post-increment
+                        // counter snapshot (inherited from the generating element's, per §12.4).
+                        int counterValue;
+                        if (!box.Counters.TryGetValue(counterNameToken.Data, out counterValue))
+                        {
+                            counterValue = 1;
+                        }
+                        sb.Append(CssCounterEngine.FormatCounterValue(counterValue, style));
+                    }
+                }
                 else if (token is KeywordToken keywordToken)
                 {
                     if (keywordToken.Data.Equals(Keywords.OpenQuote, StringComparison.OrdinalIgnoreCase))

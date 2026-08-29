@@ -48,7 +48,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             var prevSibling = DomUtils.GetPreviousSibling(this);
             double left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
-            double top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+            // The baseline for this rule's own collapsed top margin, matching CssBox.PerformLayoutImp's
+            // own placement: a self-collapsing prevSibling (CSS 2.1 8.3.1) contributes no space of its own
+            // and must not be anchored against directly (see FindMarginAnchorSibling).
+            var marginAnchor = FindMarginAnchorSibling(prevSibling);
+            // StaticBottom (not ActualBottom): a relatively-positioned previous sibling's visual offset must
+            // not drag this rule down with it (CSS 2.1 9.4.3), matching the same fix in CssBox.PerformLayoutImp.
+            double top = (marginAnchor == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (marginAnchor != null ? marginAnchor.StaticBottom + marginAnchor.ActualBorderBottomWidth : 0);
             Location = new RPoint(left, top);
             ActualBottom = top;
 
@@ -90,14 +96,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Paints the fragment
+        /// Draws the rule itself at <paramref name="rect"/> (already offset) - an <c>&lt;hr&gt;</c> has
+        /// no separate background/border step shared with other replaced elements (it draws each border
+        /// edge itself, not via <see cref="BordersDrawHandler.DrawBoxBorders"/>). Called by
+        /// <see cref="Paint.Content.HrFragmentPainter"/>.
         /// </summary>
-        /// <param name="g">the device to draw to</param>
-        protected override void PaintImp(RGraphics g)
+        internal void DrawHrContent(RGraphics g, RRect rect)
         {
-            var offset = (HtmlContainer != null && !IsFixed) ? HtmlContainer.ScrollOffset : RPoint.Empty;
-            var rect = new RRect(Bounds.X + offset.X, Bounds.Y + offset.Y, Bounds.Width, Bounds.Height);
-
             if (rect.Height > 2 && RenderUtils.IsColorVisible(ActualBackgroundColor))
             {
                 g.DrawRectangle(g.GetSolidBrush(ActualBackgroundColor), rect.X, rect.Y, rect.Width, rect.Height);

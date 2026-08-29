@@ -28,11 +28,10 @@ public sealed class HrPlacementTests
     [TestMethod]
     public void ARelativelyPositionedPredecessor_DoesNotDragTheRuleWithIt()
     {
-        // Note: position:relative has no implementation anywhere in this fork's Core at all (confirmed - no
-        // "Relative"/CssConstants.Relative handling exists in Core/Dom/CssBox.cs or CssBoxProperties.cs), so
-        // 'top' on a relatively-positioned box is simply ignored; the box never moves in the first place. This
-        // test still genuinely passes - it just does so because relative offsetting is a no-op here, not because
-        // it's correctly excluded from the flow calculation the way CSS2.1 requires.
+        // CSS 2.1 §9.4.3: relative positioning is purely visual - the offset must not affect where a
+        // following sibling lays out. CssBoxHr.PerformLayoutImp reads prevSibling.StaticBottom (which backs
+        // the offset back out), not ActualBottom, so the rule ends up in the same place whether or not its
+        // predecessor is relatively positioned.
         var (staticRoot, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
             "<div id='a' style='height:40px'></div><hr id='h' style='margin:0'>"));
         var (offsetRoot, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
