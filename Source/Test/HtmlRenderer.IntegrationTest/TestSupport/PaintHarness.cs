@@ -1,6 +1,8 @@
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
+using TheArtOfDev.HtmlRenderer.Core.Fragments;
+using TheArtOfDev.HtmlRenderer.Core.Paint;
 
 namespace HtmlRenderer.IntegrationTest.TestSupport;
 
@@ -68,8 +70,45 @@ internal static class PaintHarness
             g.PushClip(new RRect(container.MarginLeft, container.MarginTop, container.PageSize.Width, container.PageSize.Height));
         }
 
-        box.Paint(g);
+        var (fragment, bandTop) = FindFragment(container, box);
+        new FragmentPainter(container).PaintFragmentSubtree(g, fragment, bandTop);
 
         g.PopClip();
+    }
+
+    /// <summary>
+    /// Locates <paramref name="box"/>'s own <see cref="BoxFragment"/> in <paramref name="container"/>'s
+    /// fragment tree (built by <see cref="HtmlContainerInt.PerformLayout"/>), searching every fragmentainer
+    /// since a box relocated onto a later page won't be found on the first one. Paint now reads geometry
+    /// from the fragment tree exclusively (<c>CssBox.Paint</c>/<c>PaintImp</c> were deleted once
+    /// <see cref="FragmentPainter"/> became the only paint path), so a harness that wants "the draw calls
+    /// for this one box" has to find its fragment first, the same way <see cref="FragmentPainter.Paint"/>
+    /// itself starts from a fragmentainer's own <c>Root</c> fragment rather than a live <c>CssBox</c>.
+    /// </summary>
+    private static (BoxFragment Fragment, double BandTop) FindFragment(HtmlContainerInt container, CssBox box)
+    {
+        foreach (var fragmentainer in container.FragmentTree.Fragmentainers)
+        {
+            var found = FindFragment(fragmentainer.Root, box);
+            if (found != null)
+                return (found, fragmentainer.LocalOriginY);
+        }
+
+        throw new InvalidOperationException("No fragment found for the given box - is it display:none, or otherwise never laid out?");
+    }
+
+    private static BoxFragment? FindFragment(BoxFragment fragment, CssBox box)
+    {
+        if (ReferenceEquals(fragment.Box, box))
+            return fragment;
+
+        foreach (var child in fragment.Children)
+        {
+            var found = FindFragment(child, box);
+            if (found != null)
+                return found;
+        }
+
+        return fragment.MarkerFragment != null ? FindFragment(fragment.MarkerFragment, box) : null;
     }
 }

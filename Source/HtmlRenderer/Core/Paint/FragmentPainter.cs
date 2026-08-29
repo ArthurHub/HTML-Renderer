@@ -124,6 +124,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
         }
 
         /// <summary>
+        /// Test-support entry point: paints one box fragment (and its descendants) directly, without
+        /// painting the rest of its fragmentainer - mirrors what the old live-tree <c>CssBox.Paint(g)</c>
+        /// did for an arbitrary box, for tests that want the draw-call log of just one subtree.
+        /// <paramref name="bandTop"/> should be the owning fragmentainer's own
+        /// <see cref="FragmentainerFragment.LocalOriginY"/>.
+        /// </summary>
+        internal void PaintFragmentSubtree(RGraphics g, BoxFragment fragment, double bandTop = 0)
+        {
+            _bandTop = bandTop;
+            PaintFragment(g, fragment);
+        }
+
+        /// <summary>
         /// Paints one box fragment: display/visibility gate, fixed-position clip suspension, and the
         /// same "is this rect actually in the visible area" cull the old live-tree walk used, before
         /// handing off to the box's own content.
