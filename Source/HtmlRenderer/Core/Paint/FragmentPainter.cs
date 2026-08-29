@@ -216,6 +216,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
                 {
                     box.PaintBackground(g, actualRect, i == 0, i == lines.Count - 1);
                     BordersDrawHandler.DrawBoxBorders(g, box, actualRect, i == 0, i == lines.Count - 1);
+                    OutlineDrawHandler.Draw(g, box, actualRect);
                 }
             }
 

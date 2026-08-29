@@ -81,6 +81,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private string _left = "auto";
         private string _counterReset = CssConstants.None;
         private string _counterIncrement = CssConstants.None;
+        private string _outlineStyle = CssConstants.None;
+        private string _outlineColor = string.Empty;
+        private string _outlineWidth = "medium";
         private string _lineHeight = "normal";
         private string _listStyleType = "disc";
         private string _listStyleImage = string.Empty;
@@ -738,6 +741,61 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         {
             get { return _counterIncrement; }
             set { _counterIncrement = value; }
+        }
+
+        public string OutlineStyle
+        {
+            get { return _outlineStyle; }
+            set { _outlineStyle = value; }
+        }
+
+        public string OutlineColor
+        {
+            get { return _outlineColor; }
+            set { _outlineColor = value; }
+        }
+
+        public string OutlineWidth
+        {
+            get { return _outlineWidth; }
+            set { _outlineWidth = value; }
+        }
+
+        /// <summary>
+        /// The resolved <c>outline-width</c> in pixels ("thin"/"medium"/"thick" keywords resolved, like
+        /// <see cref="ActualBorderTopWidth"/>), or 0 when <c>outline-style</c> is <c>none</c>/<c>hidden</c>
+        /// (an outline with a style of none/hidden never paints, regardless of width - CSS 2.1 §18.1's
+        /// invert/no-op default matches border's own "no style, no width" rule).
+        /// </summary>
+        public double ActualOutlineWidth
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(OutlineStyle) || OutlineStyle == CssConstants.None || OutlineStyle == CssConstants.Hidden)
+                {
+                    return 0;
+                }
+                return CssValueParser.GetActualBorderWidth(OutlineWidth, this);
+            }
+        }
+
+        /// <summary>
+        /// The resolved paint color for <c>outline-color</c> - falls back to this box's own
+        /// <see cref="ActualColor"/> (i.e. <c>currentColor</c>) when <c>outline-color</c> is unset, which
+        /// is what every real browser does today for the property's nominal <c>invert</c> initial value
+        /// (true color inversion is not implemented here).
+        /// </summary>
+        public RColor ActualOutlineColor
+        {
+            get
+            {
+                // "transparent" is OutlineColorProperty's own cascaded initial value (Color.Transparent) -
+                // treated the same as unset, since an invisible-by-default outline would defeat the point
+                // of the property entirely.
+                return string.IsNullOrEmpty(OutlineColor) || OutlineColor == "transparent"
+                    ? ActualColor
+                    : GetActualColor(OutlineColor);
+            }
         }
 
         /// <summary>
