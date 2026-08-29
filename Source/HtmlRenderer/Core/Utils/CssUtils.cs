@@ -49,7 +49,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             "padding-bottom", "padding-left", "padding-right", "padding-top",
             "page-break-inside", "break-inside", "break-before", "break-after", "page-break-before", "page-break-after",
             "widows", "orphans", "page",
-            "left", "top", "width", "max-width", "height", "min-height", "max-height",
+            "left", "top", "right", "bottom", "width", "max-width", "height", "min-height", "max-height",
             "background-color", "background-image", "background-position", "background-repeat",
             "content", "color", "display", "direction", "empty-cells", "float", "clear", "box-sizing", "position",
             "line-height", "vertical-align", "text-indent", "text-align", "text-decoration-line",
@@ -171,6 +171,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.Left;
                 case "top":
                     return cssBox.Top;
+                case "right":
+                    return cssBox.Right;
+                case "bottom":
+                    return cssBox.Bottom;
                 case "width":
                     return cssBox.Width;
                 case "max-width":
@@ -375,6 +379,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     break;
                 case "top":
                     cssBox.Top = value;
+                    break;
+                case "right":
+                    cssBox.Right = value;
+                    break;
+                case "bottom":
+                    cssBox.Bottom = value;
                     break;
                 case "width":
                     cssBox.Width = value;
