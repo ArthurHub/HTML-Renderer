@@ -136,9 +136,24 @@ public sealed class OrphansWidowsIntegrationTests
 
     private const double LineHeight = 20;
 
+    // A narrow width (each word alone easily exceeds half of it, so no two ever share a line) forces
+    // exactly one word per rendered line via natural wrapping - deliberately not <br>: this fork's <br>
+    // handling (DomParser.CorrectLineBreaksBlocks) only folds a <br> into a real forced-newline "\n" word
+    // when it is the LAST thing in its inline run; a <br> with more inline content after it is left as a
+    // literal box, which the parser's block-correction pass then splits into SEPARATE anonymous BLOCK
+    // siblings (one per <br>-delimited run), each holding exactly one line of its own - confirmed directly
+    // by inspecting the box tree (CssBox.Boxes came back as 7 children: 4 display:block text runs
+    // interleaved with 3 display:inline <br> boxes, and the <p> itself had zero LineBoxes of its own).
+    // InlineFragmentation.ApplyLineBreaking operates on a SINGLE box's own LineBoxes list, so a <br>-joined
+    // fixture never exercises its multi-line widows/orphans correction at all - every "line" is really an
+    // independent 1-line sibling block, which is a fundamentally different (and, for this feature, useless)
+    // shape than what these tests are meant to probe. A real multi-word-wrapped paragraph does not have
+    // this problem (confirmed empirically: no such splitting, and no spurious extra line box either - that
+    // only showed up at truly Ext width like 10px, an unrelated edge case avoided by staying well clear of
+    // it here).
     private static string Paragraph(int lineCount, string extraStyle = "") =>
-        "<p id='p' style='width:200px;line-height:" + LineHeight + "px;margin:0;padding:0;" + extraStyle + "'>"
-        + string.Join("<br>", Enumerable.Range(1, lineCount).Select(i => $"Line{i}"))
+        "<p id='p' style='width:50px;line-height:" + LineHeight + "px;margin:0;padding:0;" + extraStyle + "'>"
+        + string.Join(" ", Enumerable.Range(1, lineCount).Select(i => $"Line{i}"))
         + "</p>";
 
     /// <summary>How many of a paragraph's own lines fall on each side of a page boundary, at the given
@@ -165,15 +180,6 @@ public sealed class OrphansWidowsIntegrationTests
     // 4-line paragraph straddling with only 1 line naturally following the break (violating widows:2) must
     // have exactly one line pulled across, landing 2-before/2-after - not the whole box pushed on.
     [TestMethod]
-    [Ignore("Confirmed gap, traced by hand against InlineFragmentation.ApplyLineBreaking: its widows "
-        + "merge-back loop can only REMOVE a break entirely (fully merging two runs), never shift a break "
-        + "point earlier by fewer lines while keeping two runs, and never falls back to pushing the whole "
-        + "run to a FRESH page when an in-place merge does not fit the CURRENT page's remaining room. At "
-        + "several swept filler heights (e.g. 22px, 4 lines in a 100px page), phase 1 naturally breaks at a "
-        + "point that leaves fewer than widows:2 lines after the break; the merge-back then tries removing "
-        + "that break entirely, finds the WHOLE run does not fit in the page's remaining room, and gives up "
-        + "- leaving the violating split - rather than shifting the break by one line (which would fit) or "
-        + "pushing the whole run to a fresh page (which would also fit).")]
     public async Task Widows2_OnlyOneLineWouldFollowTheBreak_MovesOneLineRatherThanTheWholeBox()
     {
         var checkedAny = false;
@@ -192,8 +198,6 @@ public sealed class OrphansWidowsIntegrationTests
     }
 
     [TestMethod]
-    [Ignore("Same confirmed gap as Widows2_OnlyOneLineWouldFollowTheBreak_MovesOneLineRatherThanTheWholeBox "
-        + "- see that test's own remark.")]
     public async Task Widows3_MovesAsManyLinesAsItTakes()
     {
         var checkedAny = false;
@@ -213,8 +217,6 @@ public sealed class OrphansWidowsIntegrationTests
     // Where the two constraints meet, one has to give: honoring widows:4 on a 4-line paragraph would leave
     // none before the break, so the per-line correction gives up in favor of pushing the whole box.
     [TestMethod]
-    [Ignore("Same confirmed gap as Widows2_OnlyOneLineWouldFollowTheBreak_MovesOneLineRatherThanTheWholeBox "
-        + "- see that test's own remark.")]
     public async Task Widows4_CannotBeSatisfiedWithoutBreakingOrphans_PushesTheWholeBox()
     {
         var checkedAny = false;
@@ -237,14 +239,6 @@ public sealed class OrphansWidowsIntegrationTests
     }
 
     [TestMethod]
-    [Ignore("Confirmed gap by running this test unignored: at several swept filler heights (e.g. 62px), the "
-        + "paragraph's first fragment keeps only 1 line before the break, fewer than orphans:2 requires. "
-        + "InlineFragmentation.ApplyLineBreaking's own phase-1 orphans back-off (breaks.RemoveAt + retry) "
-        + "only fires once at least one earlier break already exists (breaks.Count > 1, per that method's "
-        + "own comment on the condition), so a violation surfacing at the very FIRST break decision is never "
-        + "corrected there - only firstRunMovedToFreshPage's own narrower case (the paragraph's very first "
-        + "run) is, which is why the already-passing OrphansOnFirstRunTest.cs does not contradict this: its "
-        + "own fixture never lands in the specific narrow gap this one does.")]
     public async Task Orphans2_ParagraphNudgedWhenOnlyOneLineWouldPrecedeTheBreak()
     {
         var checkedAny = false;
@@ -309,8 +303,6 @@ public sealed class OrphansWidowsIntegrationTests
     // be helped by moving it whole, but the break *before it* can fall earlier - with too few lines above
     // the boundary, orphans:2 must still push the whole thing to the next page rather than stranding one.
     [TestMethod]
-    [Ignore("Same confirmed gap as Orphans2_ParagraphNudgedWhenOnlyOneLineWouldPrecedeTheBreak - see that "
-        + "test's own remark.")]
     public async Task Orphans2_ParagraphTallerThanTheBand_BreaksBeforeItselfRatherThanStrandingOneLine()
     {
         var checkedAny = false;
@@ -408,12 +400,6 @@ public sealed class OrphansWidowsIntegrationTests
     }
 
     [TestMethod]
-    [Ignore("Confirmed gap by running this test unignored: hits the same widows merge-back limitation as "
-        + "Widows2_OnlyOneLineWouldFollowTheBreak_MovesOneLineRatherThanTheWholeBox above (the merge-back can "
-        + "only remove a break entirely, never shift it earlier by fewer lines, nor fall back to pushing the "
-        + "whole run to a fresh page when the in-place merge doesn't fit) - this variant only adds that the "
-        + "paragraph's own natural top already lies past page 0, which does not change the underlying "
-        + "mechanism or its outcome.")]
     public async Task Widows2_ParagraphStartingOnSecondPage_StillCorrected()
     {
         var checkedAny = false;

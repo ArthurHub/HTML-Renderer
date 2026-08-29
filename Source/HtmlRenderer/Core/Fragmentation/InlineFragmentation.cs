@@ -92,7 +92,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             // fixes it without needing a special case in the main loop. Subsumes that single-line case
             // too - it is just the `orphans` violation that can never be waived (0 lines fitting is
             // always fewer than any orphans value of at least 1).
-            var firstRunMovedToFreshPage = firstRunLineCount < lines.Count && firstRunLineCount < orphans;
+            // A forced break (or any other placement) may already have put this run flush at a fresh
+            // page's own top - in which case its capacity IS a full page height already, and pushing it
+            // to yet ANOTHER fresh page cannot gain any more room (same content, same capacity, same
+            // unsatisfiable result), it would just leave the page it was actually placed on blank. Only
+            // worth doing when there is real room being left on the table by staying put.
+            var alreadyAtFreshPageTop = Math.Abs(lines[0].LineTop - container.PageTopOf(firstPageIndex)) < 0.01;
+            var firstRunMovedToFreshPage = !alreadyAtFreshPageTop && firstRunLineCount < lines.Count && firstRunLineCount < orphans;
             if (firstRunMovedToFreshPage)
             {
                 firstPageIndex++;
@@ -117,26 +123,93 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
                     breaks.RemoveAt(breaks.Count - 1);
                     i--;
                 }
+                else if (linesBefore > 0 && linesBefore < orphans && runStart == 0 && !firstRunMovedToFreshPage && !alreadyAtFreshPageTop)
+                {
+                    // Same violation as above, but there is no earlier run to merge into - runStart==0
+                    // IS the first run. The only fix here is exactly what the pre-loop check above already
+                    // does for the common case: push it whole to a fresh page - gated by the SAME
+                    // alreadyAtFreshPageTop condition that check uses, for the same reason: if this run is
+                    // already sitting at a fresh page's own top, it already got the full pageHeight
+                    // capacity and still could not fit `orphans` lines (the pre-loop check's own
+                    // firstRunLineCount<orphans, computed against that same capacity, agrees) - genuinely
+                    // unsatisfiable, not something a SECOND fresh page could help with either.
+                    firstRunMovedToFreshPage = true;
+                    firstPageIndex++;
+                    firstRunCapacity = pageHeight;
+                    i = 0; // restart the scan from line 1 under the widened capacity
+                }
                 else
                 {
                     breaks.Add(i);
                 }
             }
 
-            // Widows: the run after the LAST break must have at least `widows` lines - if not, merge
-            // break points backward (as many as needed) until it does, or until only one run is left, or
-            // until merging further would make the run taller than a page can hold - honoring widows by
-            // creating a run that can never fit isn't honoring it, it's trading one violation for a worse
-            // one, so this is where the relaxation gives up rather than forcing it (css-break-3 §4.3's
-            // own "some constraints can't always be satisfied" philosophy).
+            // Widows: the run after the LAST break must have at least `widows` lines - if not, first try
+            // shifting the break point EARLIER by as few lines as it takes (css-break-3 §5.4 asks for the
+            // minimum number of lines moved across the break, not for the whole preceding run to be
+            // absorbed) - as long as the shrinking earlier run still keeps at least `orphans` lines of its
+            // own. A shifted-but-still-separate run always lands at a fresh page's own top regardless of
+            // where exactly the break falls (phase 2 places every run but the first at
+            // PageTopOf(firstPageIndex + its own ordinal), which does not depend on how many lines it
+            // holds) - so its own capacity is always a full page height, never the tighter capacity a
+            // merge into run 0 might face.
+            //
+            // If no such shift satisfies widows without violating orphans on the earlier run, fall back to
+            // merging the whole earlier run away entirely (as many times as it takes, cascading further
+            // back across more than one earlier break when needed) - first against that run's own current
+            // capacity (a full page height, unless it is run 0, still sitting at whatever tighter room its
+            // natural position left it), and if that specific case (merging into run 0) does not fit
+            // there, against a full page height instead (mirroring firstRunMovedToFreshPage above: run 0
+            // pushed whole to a fresh page gains the same capacity boost a later run already has for free).
+            //
+            // Only when neither a shift nor a merge - at any capacity - can satisfy widows does this give
+            // up and leave the violation in place: honoring widows by creating a run that can never fit
+            // isn't honoring it, it's trading one violation for a worse one (css-break-3 §4.3's own "some
+            // constraints can't always be satisfied" philosophy).
             while (breaks.Count > 1 && lines.Count - breaks[breaks.Count - 1] < widows)
             {
-                var candidateStart = breaks[breaks.Count - 2];
-                var candidateCapacity = candidateStart == 0 ? firstRunCapacity : pageHeight;
-                if (lines[lines.Count - 1].LineBottom - lines[candidateStart].LineTop > candidateCapacity)
+                var prevRunStart = breaks[breaks.Count - 2];
+
+                var shifted = false;
+                for (var newBreak = breaks[breaks.Count - 1] - 1; newBreak > prevRunStart; newBreak--)
+                {
+                    if (newBreak - prevRunStart < orphans)
+                        break; // shifting further would strand the earlier run below its own orphans minimum
+
+                    if (lines.Count - newBreak < widows)
+                        continue; // this candidate still does not have enough lines after it
+
+                    if (lines[lines.Count - 1].LineBottom - lines[newBreak].LineTop > pageHeight)
+                        continue; // the (now larger) last run would not fit a fresh page either
+
+                    breaks[breaks.Count - 1] = newBreak;
+                    shifted = true;
+                    break;
+                }
+
+                if (shifted)
                     break;
 
-                breaks.RemoveAt(breaks.Count - 1);
+                var mergedHeight = lines[lines.Count - 1].LineBottom - lines[prevRunStart].LineTop;
+                if (mergedHeight <= (prevRunStart == 0 ? firstRunCapacity : pageHeight))
+                {
+                    breaks.RemoveAt(breaks.Count - 1);
+                    continue; // re-test widows against the now one-level-earlier run (cascades further back)
+                }
+
+                if (prevRunStart == 0 && !firstRunMovedToFreshPage && mergedHeight <= pageHeight)
+                {
+                    // Merging everything back into run 0 does not fit run 0's own natural (tighter) room,
+                    // but WOULD fit a full page - exactly the boost firstRunMovedToFreshPage already gives
+                    // the first run for orphans. Apply it here too and finish the merge.
+                    firstRunMovedToFreshPage = true;
+                    firstPageIndex++;
+                    firstRunCapacity = pageHeight;
+                    breaks.RemoveAt(breaks.Count - 1);
+                    continue;
+                }
+
+                break; // neither a shift nor any merge can satisfy widows - decline gracefully
             }
 
             // Phase 2: apply the decided breaks as cumulative shifts, in one forward pass. The first

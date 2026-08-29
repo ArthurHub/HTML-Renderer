@@ -74,15 +74,6 @@ public sealed class FragmentainerCursorIntegrationTests
     // is already at the top of a fresh page - moving it again (as if there were a whole page of content
     // above it) would blank the page the forced break named.
     [TestMethod]
-    [Ignore("Confirmed gap (this is the one case in this file where the cursor concept PeachPDF's own test "
-        + "targets really does have a counterpart bug here, just via a different mechanism):  "
-        + "InlineFragmentation.ApplyLineBreaking's firstRunMovedToFreshPage check "
-        + "('firstRunLineCount < lines.Count && firstRunLineCount < orphans') never asks whether "
-        + "lines[0] is already flush at a fresh page's own top before deciding to push the run forward - "
-        + "for an unsatisfiable orphans minimum (firstRunLineCount permanently 0 or otherwise < orphans), "
-        + "this fires unconditionally and moves the box one page further than the forced break already "
-        + "placed it, exactly like PeachPDF's stale-cursor bug: the page the break named (PageTopOf(1)) is "
-        + "left blank and the box lands on PageTopOf(2) instead. Confirmed by running this test unignored.")]
     public async Task AForcedBreak_LandsOnThePageItNames_EvenWhenTheBoxCannotMeetItsOrphansMinimum()
     {
         var html = "<div id='a' style='height:50px'>A</div>"
