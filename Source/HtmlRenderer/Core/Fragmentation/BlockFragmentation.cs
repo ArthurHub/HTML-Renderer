@@ -138,7 +138,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
                 return;
 
             var height = bottom - top;
-            if (height >= container.PageSize.Height)
+            if (height > container.PageSize.Height)
                 return; // Fits on no single page - left in place rather than moved somewhere it also won't fit.
 
             var target = container.PageTopOf(topSlot + 1);

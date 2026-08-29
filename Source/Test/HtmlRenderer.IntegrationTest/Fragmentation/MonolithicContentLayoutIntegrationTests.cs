@@ -214,11 +214,6 @@ public sealed class MonolithicContentLayoutIntegrationTests
 
     // A box exactly as tall as the content band fits a page perfectly, so there is somewhere to move it to.
     [TestMethod]
-    [Ignore("Confirmed off-by-one gap: BlockFragmentation.RelocateIfNeeded's own fits-nowhere guard reads "
-        + "'if (height >= container.PageSize.Height) return;' - a box exactly as tall as one page is treated "
-        + "the same as one too tall for any page (>=, not >), so it is left in place rather than relocated. "
-        + "A box exactly this tall really does fit one page exactly (started flush at that page's own top), "
-        + "so this is a genuine boundary bug, not just a difference in relaxation philosophy.")]
     public async Task ScrollContainerExactlyAsTallAsTheBand_StillMovesWhole()
     {
         var html = "<div style='height:60px'>filler</div>"
