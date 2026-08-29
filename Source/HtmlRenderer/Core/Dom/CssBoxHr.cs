@@ -48,9 +48,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             var prevSibling = DomUtils.GetPreviousSibling(this);
             double left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
+            // The baseline for this rule's own collapsed top margin, matching CssBox.PerformLayoutImp's
+            // own placement: a self-collapsing prevSibling (CSS 2.1 8.3.1) contributes no space of its own
+            // and must not be anchored against directly (see FindMarginAnchorSibling).
+            var marginAnchor = FindMarginAnchorSibling(prevSibling);
             // StaticBottom (not ActualBottom): a relatively-positioned previous sibling's visual offset must
             // not drag this rule down with it (CSS 2.1 9.4.3), matching the same fix in CssBox.PerformLayoutImp.
-            double top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.StaticBottom + prevSibling.ActualBorderBottomWidth : 0);
+            double top = (marginAnchor == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (marginAnchor != null ? marginAnchor.StaticBottom + marginAnchor.ActualBorderBottomWidth : 0);
             Location = new RPoint(left, top);
             ActualBottom = top;
 
