@@ -105,17 +105,39 @@ public sealed class OrphansWidowsIntegrationTests
         Assert.AreEqual("1", FindById(root, "p").Widows);
     }
 
-    // orphans/widows must be >= 1 per spec; an invalid value leaves the property at its default.
+    // orphans/widows must be >= 1 per spec (a used-value constraint) - but the DECLARED value ("0") is
+    // still syntactically legal CSS and is stored verbatim, exactly matching PeachPDF's own real behavior:
+    // Css/PropertyPaginationTests.cs (ported directly from PeachPDF.Tests/CSS/Property.cs) already asserts
+    // OrphansProperty/WidowsProperty parse "0" into Property.Value=="0", not a fallback. CssBox.Orphans/
+    // Widows are thin wrappers over that same declared string, so they correctly return "0" too - this was
+    // confirmed the hard way: an earlier attempt to make the raw string reject 0 at the CSS-engine level
+    // broke CssOrphansZeroLegal/CssWidowsZeroLegal outright. The actual spec constraint (>=1) is enforced
+    // exactly once, at the point real layout consumes the value: ActualOrphans/ActualWidows (below) already
+    // treat any non-positive parse as unset and fall back to the CSS initial value of 2 - which is what
+    // this test should really be pinning, not the raw declared string.
     [TestMethod]
-    [Ignore("Confirmed gap: OrphansProperty/WidowsProperty (Core/CssEngine/StyleProperties/OrphansProperty.cs, "
-        + "WidowsProperty.cs) both use Converters.NaturalIntegerConverter.OrDefault(2), which accepts 0 - "
-        + "css-break-3 requires a positive integer (>= 1), which is what the separate "
-        + "Converters.PositiveIntegerConverter enforces elsewhere in this codebase. 'orphans:0' is parsed and "
-        + "stored as \"0\" rather than falling back to the default.")]
-    public async Task Orphans_RejectsZero()
+    public async Task Orphans_ZeroResolvesToDefault_ThoughTheDeclaredStringStaysZero()
     {
         var (root, _) = await BuildAsync("<p id='p' style='orphans:0'>text</p>");
-        Assert.AreEqual("2", FindById(root, "p").Orphans);
+        var p = FindById(root, "p");
+        Assert.AreEqual("0", p.Orphans);
+        Assert.AreEqual(2, p.ActualOrphans);
+    }
+
+    [TestMethod]
+    public async Task Widows_ZeroResolvesToDefault_ThoughTheDeclaredStringStaysZero()
+    {
+        var (root, _) = await BuildAsync("<p id='p' style='widows:0'>text</p>");
+        var p = FindById(root, "p");
+        Assert.AreEqual("0", p.Widows);
+        Assert.AreEqual(2, p.ActualWidows);
+    }
+
+    [TestMethod]
+    public async Task Widows_NegativeResolvesToDefault()
+    {
+        var (root, _) = await BuildAsync("<p id='p' style='widows:-1'>text</p>");
+        Assert.AreEqual(2, FindById(root, "p").ActualWidows);
     }
 
     [TestMethod]
