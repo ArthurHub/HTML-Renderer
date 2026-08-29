@@ -1228,6 +1228,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             foreach (CssBox b in ParentBox.Boxes)
             {
+                // An explicit <li value="N"> (WHATWG HTML presentational hint) sets the running count to
+                // N for that item; later items (without their own explicit value) continue incrementing
+                // from there, matching every browser's actual behavior.
+                int explicitValue;
+                if (b.Display == CssConstants.ListItem && int.TryParse(b.GetAttribute("value"), out explicitValue))
+                {
+                    index = explicitValue;
+                }
+
                 if (b.Equals(this))
                     return index;
 
@@ -1263,7 +1272,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     }
                     else if (ListStyleType.Equals(CssConstants.Square, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        _listItemBox.Text = "♠";
+                        // Was "♠" (U+2660 BLACK SPADE SUIT) - not what CSS2.1 §12.5.1's list-style-type:
+                        // square means at all (a filled square marker, the ♣/♦/♠ card-suit glyph was
+                        // presumably a typo/copy-paste of a nearby symbol).
+                        _listItemBox.Text = "▪"; // U+25AA BLACK SMALL SQUARE
                     }
                     else if (ListStyleType.Equals(CssConstants.Decimal, StringComparison.InvariantCultureIgnoreCase))
                     {
