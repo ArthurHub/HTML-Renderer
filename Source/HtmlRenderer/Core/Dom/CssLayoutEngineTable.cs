@@ -757,6 +757,31 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     if (bottomSlot > topSlot && shouldPreserve && rowHeight < pageGridContainer.PageSize.Height)
                     {
                         var delta = pageGridContainer.PageTopOf(topSlot + 1) - cury;
+
+                        // cury == starty means nothing has been drawn above this row within the table yet
+                        // (no earlier row consumed space on the table's original page) - so this row moving
+                        // IS the table's own content moving wholesale, not one row among several straddling
+                        // independently. The table's own Location was set once, before this method ever
+                        // ran, by its parent's child loop - row-atomicity shifting cell rectangles alone
+                        // left it stale, so EnforceKeepWithNext(table) (called on the table exactly like any
+                        // other child) never saw the boundary crossing and could never pull an avoid-chained
+                        // heading along. Only the table's own Location follows here - deliberately NOT
+                        // BlockFragmentation.PropagateContainerRelocation's further climb into an ancestor:
+                        // this method can run more than once per overall document pass whenever an ancestor
+                        // is independently relocated by RelocateIfNeeded (which re-lays the whole subtree
+                        // out fresh at its own target) - climbing here too would double-count that ancestor's
+                        // own already-correct shift on top of RelocateIfNeeded's (confirmed: caused a real
+                        // regression in BoxContainingARepeatingTable_IsStillRelocated, a table inside its own
+                        // break-inside:avoid card, off by the same few pixels PageSlotOf's collapsed-border
+                        // tolerance allows). A plain, non-avoid wrapper around a table whose first row alone
+                        // triggers this path is not climbed to - a narrower fix than full css-break-3 3.1
+                        // propagation, matching what the two tests this fixes actually exercise (the table
+                        // itself as EnforceKeepWithNext's own child, not a further-wrapped one).
+                        if (Math.Abs(cury - starty) < 0.01)
+                        {
+                            _tableBox.Location = new RPoint(_tableBox.Location.X, _tableBox.Location.Y + delta);
+                        }
+
                         foreach (CssBox cell in row.Boxes)
                         {
                             // A rowspan-crossing cell's real content lives on CssSpacingBox.ExtendedBox,

@@ -102,17 +102,16 @@ public sealed class KeepWithNextIntegrationTests
     }
 
     // css-tables-3 §6.1's row-atomicity shift (CssLayoutEngineTable.LayoutCells) moves each CELL's own
-    // rectangle (cell.OffsetTop) - it never touches the outer <table> box's own Location, which stays
-    // wherever the table's own (unmoved) top naturally fell. So "did the table move" has to be read off a
-    // cell inside it, not the <table> element itself.
+    // rectangle (cell.OffsetTop); the outer <table> box's own Location follows too, but only when the
+    // shifted row is the table's very first content (nothing rendered above it within the table yet) - an
+    // ordinary row straddling further down a multi-page table correctly leaves the table's Location where
+    // its real first row is. Reading a cell directly is the robust check either way, so tests use this
+    // rather than assuming which case applies.
     private static CssBox FindFirstCell(CssBox table) => Walk(table).FirstOrDefault(b => b.HtmlTag?.Name == "td")!;
 
     // A table moved wholesale to the next page (css-tables-3 §6.1 row-atomicity, its only row too tall to
     // fit) must pull its avoid-chained heading along instead of stranding it at the bottom of the old page.
     [TestMethod]
-    [Ignore("Confirmed gap: CssLayoutEngineTable's row-atomicity shift only offsets the cell's own "
-        + "rectangle, never the outer <table> box's own Location/EffectiveTop, so EnforceKeepWithNext(table) "
-        + "never observes the boundary crossing - see this class's own doc remark.")]
     public async Task TableMovedToNextPage_PullsAvoidChainedHeadingAlong()
     {
         var (root, container) = await BuildAsync(
@@ -157,8 +156,6 @@ public sealed class KeepWithNextIntegrationTests
     // The chain walk must skip a display:none sibling and pull BOTH the heading and an avoid-chained intro
     // paragraph along when the table moves to the next page.
     [TestMethod]
-    [Ignore("Same confirmed gap as TableMovedToNextPage_PullsAvoidChainedHeadingAlong - see this class's "
-        + "own doc remark.")]
     public async Task TableMovedToNextPage_ChainSkipsDisplayNoneSibling_PullsHeadingAndIntroAlong()
     {
         var (root, container) = await BuildAsync(
