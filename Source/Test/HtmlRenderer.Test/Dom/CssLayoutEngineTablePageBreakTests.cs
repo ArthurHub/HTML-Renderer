@@ -230,24 +230,17 @@ public sealed class CssLayoutEngineTablePageBreakTests
         Assert.IsNull(table!.RepeatedHeaderRows);
     }
 
-    // A real, previously-undocumented gap found while porting this file, confirmed via a diagnostic trace
-    // through CssLayoutEngineTable.LayoutCells: a border-collapse:collapse table's own top can resolve to
-    // a document Y fractionally BELOW the page's true content top (observed: table.Location.Y = 19 against
-    // a margin/content-top of 20 - collapsed-border geometry pulls the table's own box slightly outside its
-    // nominal position). HtmlContainerInt.PageIndexOf (~466: "Math.Floor((y - MarginTop) / PageSize.Height)")
-    // floors that to page-slot -1 rather than 0. LayoutCells (~662) seeds "lastRepeatSlot" from exactly this
-    // value, so the very first body row - whose own slot correctly resolves to 0 - reads as having "advanced"
-    // past slot -1, and a header repeat is spuriously inserted even though the table never leaves its own
-    // first page. Traced with a temporary diagnostic (not left in the source): for a 4-row single-page
-    // table at pageHeight=2000/margin=20, "starty=19" produced "lastRepeatSlot=-1" at row index 1, versus
-    // "slot=0" for the same row - the (slot > lastRepeatSlot) check fires on the very first comparison.
-    [Ignore("CssLayoutEngineTable.LayoutCells seeds lastRepeatSlot from PageIndexOf(starty) (~662), and a " +
-            "border-collapse:collapse table's own top can land fractionally below the page's true content " +
-            "top (observed table.Location.Y=19 against a margin/content-top of 20), which PageIndexOf " +
-            "(Core/HtmlContainerInt.cs ~466) floors to slot -1 instead of 0 - so the first body row (whose " +
-            "own slot correctly resolves to 0) spuriously reads as a slot advance, inserting a phantom " +
-            "repeated header even on a table that never leaves its own first page. Confirmed via a temporary " +
-            "diagnostic trace through the real row loop, not by guessing - see the comment above.")]
+    // Fixed, not just documented, as part of the fragmentation-engine-parity table batch: a
+    // border-collapse:collapse table's row cursor (GetVerticalSpacing() is -1, a deliberate one-pixel
+    // overlap between the first row and the table's own top border) starts one pixel below CssBox.ClientTop
+    // whenever the table sits flush at a page's own content top. Fed straight into HtmlContainerInt's
+    // PageIndexOf, that pixel used to floor into the slot BEFORE the one the table's box actually starts
+    // in, which CssLayoutEngineTable.LayoutCells's repeated-header loop seeded "lastRepeatSlot" from - so
+    // the very first body row read as having "advanced" a slot, and a header repeat was spuriously inserted
+    // even though the table never left its own first page. Fixed at its source by the loop's new
+    // PageSlotOf helper (CssLayoutEngineTable.cs), which clamps to ClientTop - see its own remarks for the
+    // full mechanism, including why the fix is scoped to this loop alone and not the row-preservation
+    // straddle check a few lines below it (a separate, unrelated caller of the same raw PageIndexOf call).
     [TestMethod]
     public void RepeatedThead_SinglePageBorderCollapseTable_PhantomHeaderRepeatDueToNegativeSlotRounding()
     {
