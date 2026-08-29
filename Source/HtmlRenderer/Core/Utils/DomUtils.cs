@@ -232,6 +232,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
+        /// The nearest positioned ancestor (CSS 2.1 §10.1: a box whose <c>position</c> is anything other
+        /// than <c>static</c>) of <paramref name="box"/>, or the document root if none is found - the
+        /// containing block a <c>position:absolute</c> box's offsets/percentages resolve against. Ported
+        /// from PeachPDF's DomUtils.GetNearestPositionedAncestor.
+        /// </summary>
+        internal static CssBox GetNearestPositionedAncestor(CssBox box)
+        {
+            var current = box.ParentBox;
+
+            while (current.ParentBox != null && current.Position == CssConstants.Static)
+            {
+                current = current.ParentBox;
+            }
+
+            return current;
+        }
+
+        /// <summary>
         /// The candidate rectangle being tested against existing floats, either during float placement
         /// (<see cref="CssLayoutEngine"/>'s FloatBoxLeft/FloatBoxRight) or while flowing a line's inline
         /// content around already-placed floats (<see cref="GetLastLeftIntersectingFloatBox"/>/

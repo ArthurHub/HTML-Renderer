@@ -571,26 +571,20 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             get { return _left; }
             set
             {
+                // Deliberately no eager position:fixed recompute here (as this once had): it raced ahead
+                // of ActualMarginLeft/Top and ContainingBlock/HtmlContainer being ready and cached a
+                // margin-less Location that never got recomputed once they were. position:fixed placement
+                // is instead resolved once, in PerformLayoutImp, once the box is fully set up.
                 _left = value;
-
-                if (Position == CssConstants.Fixed)
-                {
-                    _location = GetActualLocation(Left, Top);
-                }
             }
         }
 
         public string Top
         {
             get { return _top; }
-            set {
+            set
+            {
                 _top = value;
-
-                if (Position == CssConstants.Fixed)
-                {
-                    _location = GetActualLocation(Left, Top);
-                }
-
             }
         }
 
@@ -725,6 +719,37 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             get { return _position; }
             set { _position = value; }
         }
+
+        public string Right
+        {
+            get { return _right; }
+            set { _right = value; }
+        }
+
+        public string Bottom
+        {
+            get { return _bottom; }
+            set { _bottom = value; }
+        }
+
+        /// <summary>
+        /// The visual-only offset a <c>position:relative</c> box's placement branch applied, per CSS 2.1
+        /// §9.4.3 - kept separately so <see cref="StaticBottom"/> can back it back out for margin-collapse/
+        /// sibling-placement consumers that must lay out against the box's un-offset (static) position.
+        /// Ported from PeachPDF's CssBox.RelativeOffsetX/Y.
+        /// </summary>
+        public double RelativeOffsetX { get; set; }
+
+        /// <inheritdoc cref="RelativeOffsetX"/>
+        public double RelativeOffsetY { get; set; }
+
+        /// <summary>
+        /// <see cref="CssBoxProperties.ActualBottom"/> with any <c>position:relative</c> visual offset
+        /// backed out - the coordinate a following sibling or this box's own parent (for auto height) must
+        /// lay out against, since relative positioning "has no effect on the position of any other box"
+        /// (CSS 2.1 §9.4.3). Ported from PeachPDF's CssBox.StaticBottom.
+        /// </summary>
+        public double StaticBottom => ActualBottom - RelativeOffsetY;
 
         public string LineHeight
         {

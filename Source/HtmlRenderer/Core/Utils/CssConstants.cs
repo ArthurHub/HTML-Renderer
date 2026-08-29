@@ -95,6 +95,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         public const string Pre = "pre";
         public const string PreWrap = "pre-wrap";
         public const string PreLine = "pre-line";
+        public const string Relative = "relative";
         public const string Right = "right";
         public const string Rtl = "rtl";
         public const string SansSerif = "sans-serif";
@@ -103,6 +104,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         public const string Small = "small";
         public const string Smaller = "smaller";
         public const string Solid = "solid";
+        public const string Static = "static";
         public const string Sub = "sub";
         public const string Super = "super";
         public const string Square = "square";

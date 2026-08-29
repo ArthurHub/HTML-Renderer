@@ -48,7 +48,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             var prevSibling = DomUtils.GetPreviousSibling(this);
             double left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
-            double top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth : 0);
+            // StaticBottom (not ActualBottom): a relatively-positioned previous sibling's visual offset must
+            // not drag this rule down with it (CSS 2.1 9.4.3), matching the same fix in CssBox.PerformLayoutImp.
+            double top = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + MarginTopCollapse(prevSibling) + (prevSibling != null ? prevSibling.StaticBottom + prevSibling.ActualBorderBottomWidth : 0);
             Location = new RPoint(left, top);
             ActualBottom = top;
 
