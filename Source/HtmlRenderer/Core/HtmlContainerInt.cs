@@ -874,6 +874,20 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// </summary>
         /// <param name="g">the device to use to render</param>
         /// <param name="fragmentainer">the fragmentainer to paint</param>
+        /// <remarks>
+        /// The pushed clip's Y origin is always 0, never <see cref="MarginTop"/>/<see cref="_location"/>'s
+        /// Y - unlike <see cref="PerformPaint(RGraphics)"/>'s multi-fragmentainer loop (which paints every
+        /// band back onto one continuous, absolute-Y surface via a per-band page-origin translate),
+        /// <paramref name="fragmentainer"/> here is painted alone onto its own fresh surface (a real PDF
+        /// page, one per <see cref="PdfGenerator"/> loop iteration) with no such translate - so its content
+        /// paints at exactly the fragment-local coordinates <see cref="Fragmentation.FragmentEmitter"/>
+        /// already produced (band-local Y = document Y - band top, per that type's own doc comment). A real
+        /// bug found while confirming this: the clip previously started at Y=<see cref="MarginTop"/>
+        /// (mirroring the single-surface overload's own absolute-Y convention), silently clipping away the
+        /// first <see cref="MarginTop"/>-tall strip of every single page's own content - confirmed by a
+        /// list item landing entirely within that clipped strip and never appearing in the paint log at all,
+        /// with no exception raised (the visibility cull is a quiet no-op, not a thrown error).
+        /// </remarks>
         internal void PerformPaint(RGraphics g, Fragments.FragmentainerFragment fragmentainer)
         {
             ArgChecker.AssertArgNotNull(g, "g");
@@ -881,11 +895,11 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
             if (MaxSize.Height > 0)
             {
-                g.PushClip(new RRect(_location.X, _location.Y, Math.Min(_maxSize.Width, PageSize.Width), Math.Min(_maxSize.Height, PageSize.Height)));
+                g.PushClip(new RRect(_location.X, 0, Math.Min(_maxSize.Width, PageSize.Width), Math.Min(_maxSize.Height, PageSize.Height)));
             }
             else
             {
-                g.PushClip(new RRect(MarginLeft, MarginTop, PageSize.Width, PageSize.Height));
+                g.PushClip(new RRect(MarginLeft, 0, PageSize.Width, PageSize.Height));
             }
 
             new Paint.FragmentPainter(this).Paint(g, fragmentainer);
