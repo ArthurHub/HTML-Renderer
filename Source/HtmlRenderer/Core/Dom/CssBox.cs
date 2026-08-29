@@ -895,6 +895,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         }
                         else if (BlockFragmentation.TryGetForcedBreakTarget(this, prevSibling, baseTopWithoutMargin, out var breakSlot, out var breakTop))
                         {
+                            // css-break-3 5.2 preserves a box's own top margin at a FORCED break (unlike an
+                            // unforced one, where BlockFragmentation.ResolveBlockTop truncates it to avoid
+                            // paginating through blank space) - breakTop itself is the page's own content
+                            // top (TryGetForcedBreakTarget's own contract, kept a pure boundary value so its
+                            // slot/target stay meaningful on their own), so the margin is added here, once,
+                            // at the point it becomes this box's actual placement.
+                            var breakTopWithMargin = breakTop + MarginTopCollapse(prevSibling);
+
                             if (CanDeferToLaterPass())
                             {
                                 // A forced break-before/after applies and this is a genuinely fresh entry
@@ -902,7 +910,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                                 // in its parent's child loop) to a later pass entirely, rather than
                                 // positioning it now.
                                 RequestedBreakBeforeSlot = breakSlot;
-                                RequestedBreakBeforeTop = breakTop;
+                                RequestedBreakBeforeTop = breakTopWithMargin;
                                 return;
                             }
 
@@ -911,7 +919,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                             // before real pass-based deferral existed. Not ideal (this content doesn't
                             // get a fresh fragmentainer pass the way top-level content does), but correct
                             // rather than silently measured-but-never-positioned.
-                            top = breakTop;
+                            top = breakTopWithMargin;
                         }
                         else
                         {

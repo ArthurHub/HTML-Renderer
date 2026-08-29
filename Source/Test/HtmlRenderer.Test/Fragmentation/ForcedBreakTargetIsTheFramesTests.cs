@@ -143,14 +143,6 @@ public sealed class ForcedBreakTargetIsTheFramesTests
     // §5.2 preserves the margin on the new page's side of a FORCED break, so the box lands one margin
     // below the target rather than on it - which is exactly why the target is worth asserting
     // separately from the position.
-    [Ignore("This port does not preserve a box's own top margin at a forced-break target - confirmed by " +
-            "direct source read and empirically. BlockFragmentation.TryGetForcedBreakTarget returns the raw " +
-            "slot boundary (Core/Fragmentation/BlockFragmentation.cs ~87: 'targetTop = " +
-            "container.PageTopOf(slot)'), and every consumer places the box flush there with no margin " +
-            "added: CssBox.cs ~914 ('top = breakTop') for the immediate-placement path, and ~974 " +
-            "(ResumeTopOverride: childBox.RequestedBreakBeforeTop) for the deferred-pass path that resumes " +
-            "via ~894 ('top = _resumeTopOverride.Value'). A 30px break-before box lands at SlotTop(1) " +
-            "exactly, not SlotTop(1)+30, unlike PeachPDF's css-break-3 §5.2 margin preservation.")]
     [TestMethod]
     public void TargetIsTheBoundary_AndThePreservedMarginIsAddedToIt()
     {

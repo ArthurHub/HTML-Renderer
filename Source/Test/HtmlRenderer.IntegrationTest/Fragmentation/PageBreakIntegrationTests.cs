@@ -28,13 +28,11 @@ namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 /// only ever tests <c>BreakValues.IsForcedBreak</c> on <c>break-before</c>/<c>break-after</c>. Named-page
 /// attribution/transitions are out of scope per the port plan's general exclusion list.
 /// <para>
-/// Confirmed by actually running these against the real engine (not just reading source): three more real
+/// Confirmed by actually running these against the real engine (not just reading source): two more real
 /// behavioral differences from PeachPDF surfaced, each documented on its own test below -
 /// <c>BreakBeforeAlways_IsAcceptedAsAForcedBreak_UnlikePeachPDF</c> (inverted, not dropped: a deliberate,
-/// documented design choice - see <c>BreakValues.IsForcedBreak</c>'s own remark),
-/// <c>ForcedBreak_MarginAfterBreak_IsPreservedNotTruncated</c> (Ignored: <c>TryGetForcedBreakTarget</c>'s
-/// <c>targetTop</c> is always the raw <c>PageTopOf(slot)</c>, discarding the box's own margin entirely
-/// rather than adding it back), and the "container left behind" gap extending to margin-truncation-caused
+/// documented design choice - see <c>BreakValues.IsForcedBreak</c>'s own remark), and the "container left
+/// behind" gap extending to margin-truncation-caused
 /// overflow specifically (2 tests Ignored - <c>EnforceKeepWithNext</c>'s pull only fires on an actual slot
 /// gap between a container and ITS OWN previous sibling, which a grandchild's margin truncation alone never
 /// creates, unlike <c>RelocateIfNeeded</c>'s straddle-triggered relocation - the case
@@ -283,12 +281,6 @@ public sealed class PageBreakIntegrationTests
     // A forced break already relocates the previous sibling's bottom to the next page's top - per
     // css-break-3 §5.2, PeachPDF preserves (does not truncate) the margin AFTER a forced break.
     [TestMethod]
-    [Ignore("Confirmed gap: BlockFragmentation.TryGetForcedBreakTarget's targetTop is always the raw "
-        + "container.PageTopOf(slot) - the box's own MarginTopCollapse is used only to decide WHICH slot "
-        + "the natural position falls in, never added back into the final target. So a forced-break box's "
-        + "own margin-top is silently discarded, not preserved, unlike PeachPDF. Confirmed by running this "
-        + "test unignored: the box lands at exactly PageTopOf(1) (320 in this fixture's original 300/20 "
-        + "page grid) rather than PageTopOf(1)+50.")]
     public async Task ForcedBreak_MarginAfterBreak_IsPreservedNotTruncated()
     {
         var (root, container) = await BuildAsync(
