@@ -888,10 +888,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     else
                     {
                         left = ContainingBlock.Location.X + ContainingBlock.ActualPaddingLeft + ActualMarginLeft + ContainingBlock.ActualBorderLeftWidth;
+                        // The baseline to add this box's own collapsed top margin (below) on top of. A
+                        // self-collapsing prevSibling (CSS 2.1 8.3.1) contributes no space of its own and
+                        // is transparent to margin collapsing - its own position already reflects part of
+                        // the SAME adjoining-margin set MarginTopCollapse resolves below, so anchoring here
+                        // against it directly would double-count that shared portion. marginAnchor walks
+                        // back through any run of self-collapsing siblings to the first real (non-empty)
+                        // one, matching the same walk CollectAdjoiningMarginsBeforeSibling does when
+                        // gathering the margin SET itself.
+                        var marginAnchor = FindMarginAnchorSibling(prevSibling);
                         // StaticBottom (not ActualBottom): a relatively-positioned previous sibling's visual
                         // offset must not drag this box down with it (CSS 2.1 9.4.3 - relative positioning
                         // "has no effect on the position of any other box"). Ported from PeachPDF.
-                        var baseTopWithoutMargin = (prevSibling == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + (prevSibling != null ? prevSibling.StaticBottom + prevSibling.ActualBorderBottomWidth : 0);
+                        var baseTopWithoutMargin = (marginAnchor == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + (marginAnchor != null ? marginAnchor.StaticBottom + marginAnchor.ActualBorderBottomWidth : 0);
 
                         if (_incomingToken != null && ReferenceEquals(_incomingToken.Box, this))
                         {
@@ -1597,25 +1606,71 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Gets the result of collapsing the vertical margins of the two boxes
+        /// Gets the result of collapsing the vertical margins of the two boxes, per CSS 2.1 §8.3.1's real
+        /// "adjoining margin set" rule (collapse to <c>max(positives) + min(negatives)</c> over the WHOLE
+        /// set of margins that adjoin - not a pairwise <c>Math.Max</c> between exactly two, which only
+        /// happens to match when both margins are positive). The set can span:
+        /// <list type="bullet">
+        /// <item>this box's own top margin, extended forward through an unblocked chain of first-in-flow
+        /// children (<see cref="CollapsedMarginTopChain"/>) - collapsing "through" the box so a nested
+        /// child sits flush with it rather than being pushed down twice;</item>
+        /// <item><paramref name="prevSibling"/>'s own bottom-margin chain, and - if <paramref name="prevSibling"/>
+        /// is itself self-collapsing (empty, zero border/padding/height) - reaching further back through
+        /// however many more self-collapsing siblings (and, if the chain runs out of siblings, the
+        /// parent's own top-margin chain) precede it, since a self-collapsing box is transparent to margin
+        /// collapsing entirely (its own top and bottom margins merge into the same set too).</item>
+        /// </list>
+        /// A floated box's own margin never participates in collapsing at all (CSS 2.1 §8.3.1: floats are
+        /// out of flow) - the predecessor's trailing margin is still real space, but this box's own margin
+        /// adds on top of it rather than merging.
         /// </summary>
-        /// <param name="prevSibling">the previous box under the same parent</param>
+        /// <param name="prevSibling">the previous in-flow box under the same parent, or null if this is the first</param>
         /// <returns>Resulting top margin</returns>
-        internal double MarginTopCollapse(CssBoxProperties prevSibling)
+        internal double MarginTopCollapse(CssBox prevSibling)
         {
             double value;
-            if (prevSibling != null)
+            if (IsFloated)
             {
-                value = Math.Max(prevSibling.ActualMarginBottom, ActualMarginTop);
+                value = (prevSibling?.ActualMarginBottom ?? 0) + ActualMarginTop;
                 CollapsedMarginTop = value;
             }
-            else if (_parentBox != null && ActualPaddingTop < 0.1 && ActualPaddingBottom < 0.1 && _parentBox.ActualPaddingTop < 0.1 && _parentBox.ActualPaddingBottom < 0.1)
+            else if (prevSibling != null)
             {
-                value = Math.Max(0, ActualMarginTop - Math.Max(_parentBox.ActualMarginTop, _parentBox.CollapsedMarginTop));
+                var margins = new List<double>();
+                CollapsedMarginTopChain(this, margins);
+                CollectAdjoiningMarginsBeforeSibling(prevSibling, margins);
+
+                value = CollapseMarginSet(margins);
+                // A real sibling gap is always genuinely, geometrically realized right here (this box's
+                // own position is baseTopWithoutMargin + value) - so it's a fresh anchor for whatever
+                // comes next to build on, independent of anything before prevSibling.
+                CollapsedMarginTop = value;
+            }
+            else if (_parentBox != null && !BlocksParentChildTopJoin(_parentBox, this))
+            {
+                // This box's own semantic top margin, extended forward into its own subtree (its first
+                // in-flow child's chain, if unblocked, and so on).
+                var forwardMargins = new List<double>();
+                CollapsedMarginTopChain(this, forwardMargins);
+                var forwardValue = CollapseMarginSet(forwardMargins);
+
+                // Only the excess beyond what the parent's OWN placement already geometrically realized is
+                // left for this box to apply - parent.CollapsedMarginTop is the CUMULATIVE amount actually
+                // applied so far along this unblocked first-in-flow-child chain (not merely this box's own
+                // semantic total): critically, that's 0 at the true document root, which cannot itself
+                // move no matter how large a margin collapses into it - see
+                // FirstChildMarginCollapsingToTheRoot_IsStillTruncated_UnlikePeachPDF, where the excess
+                // must still surface as real displacement (later truncated by page-break logic) rather
+                // than being silently absorbed by a root that only ever contributes its own 0 margin.
+                value = Math.Max(0, forwardValue - _parentBox.CollapsedMarginTop);
+                CollapsedMarginTop = _parentBox.CollapsedMarginTop + value;
             }
             else
             {
                 value = ActualMarginTop;
+                // Blocked (or no parent at all): a fresh realized-origin, unrelated to whatever the parent
+                // chain was carrying - matches every other "stop the chain here" case in this method.
+                CollapsedMarginTop = value;
             }
 
             // fix for hr tag
@@ -1625,6 +1680,196 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
 
             return value;
+        }
+
+        /// <summary>
+        /// Adds <paramref name="box"/>'s own top margin, and - if unblocked - its first in-flow child's
+        /// own chain (recursively), to <paramref name="margins"/>. This is the "forward" half of §8.3.1's
+        /// adjoining set: it's what lets a parent's own top-margin placement already account for a nested,
+        /// unblocked child's top margin too, so the child can sit flush with the parent instead of being
+        /// pushed down a second time once the child is itself placed (see <see cref="MarginTopCollapse"/>'s
+        /// no-prevSibling branch).
+        /// </summary>
+        private static void CollapsedMarginTopChain(CssBox box, List<double> margins)
+        {
+            margins.Add(ResolveMarginTopForChain(box));
+
+            var firstChild = FirstInFlowChild(box);
+            if (firstChild != null && !BlocksParentChildTopJoin(box, firstChild))
+            {
+                CollapsedMarginTopChain(firstChild, margins);
+            }
+        }
+
+        /// <summary>
+        /// Adds <paramref name="box"/>'s own bottom margin, and - if unblocked - its last in-flow child's
+        /// own chain (recursively), to <paramref name="margins"/>. The "forward" half for the bottom edge,
+        /// mirroring <see cref="CollapsedMarginTopChain"/>.
+        /// </summary>
+        private static void CollapsedMarginBottomChain(CssBox box, List<double> margins)
+        {
+            margins.Add(ResolveMarginBottomForChain(box));
+
+            var lastChild = LastInFlowChild(box);
+            if (lastChild != null && !BlocksParentChildBottomJoin(box))
+            {
+                CollapsedMarginBottomChain(lastChild, margins);
+            }
+        }
+
+        /// <summary>
+        /// <see cref="CssBoxProperties.ActualMarginTop"/> resolves a percentage margin against this box's
+        /// OWN <see cref="Size"/>.Width, not its containing block's (a pre-existing quirk elsewhere in
+        /// this engine, left as-is here to avoid a wider blast radius) - fine once a box's own width has
+        /// actually been computed, but <see cref="CollapsedMarginTopChain"/> deliberately reads a
+        /// not-yet-laid-out descendant's margin (that's the whole point of the forward lookahock - see its
+        /// own remarks), so <c>Size.Width</c> is still the zero default there. Resolves against
+        /// <see cref="CssBox.ContainingBlock"/>'s width instead when this box's own margin is a percentage
+        /// and its containing block is one level up (already sized, since this is always called from that
+        /// ancestor's own placement, after its own width computation ran) - correct AND safe. A percentage
+        /// margin more than one unblocked level deep still can't be resolved this way (the ancestor two
+        /// levels up hasn't been sized either at this point) and falls back to the same 0 the pre-existing
+        /// bug already produced.
+        /// </summary>
+        private static double ResolveMarginTopForChain(CssBox box)
+        {
+            if (!string.IsNullOrEmpty(box.MarginTop) && box.MarginTop.EndsWith("%") && box.ParentBox != null)
+            {
+                return CssValueParser.ParseLength(box.MarginTop, box.ContainingBlock.Size.Width, box);
+            }
+            return box.ActualMarginTop;
+        }
+
+        /// <inheritdoc cref="ResolveMarginTopForChain"/>
+        private static double ResolveMarginBottomForChain(CssBox box)
+        {
+            if (!string.IsNullOrEmpty(box.MarginBottom) && box.MarginBottom.EndsWith("%") && box.ParentBox != null)
+            {
+                return CssValueParser.ParseLength(box.MarginBottom, box.ContainingBlock.Size.Width, box);
+            }
+            return box.ActualMarginBottom;
+        }
+
+        /// <summary>
+        /// The "backward" half of §8.3.1's adjoining set: adds <paramref name="sibling"/>'s own bottom-
+        /// margin chain to <paramref name="margins"/>, and - if <paramref name="sibling"/> is itself
+        /// self-collapsing (so its own top and bottom margins merge into the very same set, per spec) -
+        /// reaches further back through however many more self-collapsing predecessors adjoin before it,
+        /// including (once siblings run out) the parent's own forward chain.
+        /// </summary>
+        private static void CollectAdjoiningMarginsBeforeSibling(CssBox sibling, List<double> margins)
+        {
+            CollapsedMarginBottomChain(sibling, margins);
+
+            if (!IsSelfCollapsingEmpty(sibling)) return;
+
+            CollapsedMarginTopChain(sibling, margins);
+
+            var earlierSibling = DomUtils.GetPreviousSibling(sibling);
+            if (earlierSibling != null)
+            {
+                CollectAdjoiningMarginsBeforeSibling(earlierSibling, margins);
+            }
+            else if (sibling.ParentBox != null && !BlocksParentChildTopJoin(sibling.ParentBox, sibling))
+            {
+                // sibling was itself its parent's first in-flow child - the parent's own placement already
+                // folded its own chain in via CollapsedMarginTopChain, so that value is already correct and
+                // complete (no need to walk further back past the parent - see MarginTopCollapse's
+                // no-prevSibling branch for why the parent's own value is already the full answer).
+                CollapsedMarginTopChain(sibling.ParentBox, margins);
+            }
+        }
+
+        /// <summary>
+        /// Walks back from <paramref name="prevSibling"/> through any run of self-collapsing (empty)
+        /// siblings to the first real one - the box whose own border-box bottom edge is a genuine position
+        /// baseline, since a self-collapsing box's own position already reflects part of the shared
+        /// adjoining-margin set rather than occupying real space of its own. Returns null if
+        /// <paramref name="prevSibling"/> itself is null, or the ENTIRE preceding run turns out to be
+        /// self-collapsing all the way back (meaning there's no real sibling to anchor against - falls
+        /// through to the parent's own content-top instead, same as having no previous sibling at all).
+        /// </summary>
+        internal static CssBox FindMarginAnchorSibling(CssBox prevSibling)
+        {
+            var current = prevSibling;
+            while (current != null && IsSelfCollapsingEmpty(current))
+            {
+                current = DomUtils.GetPreviousSibling(current);
+            }
+            return current;
+        }
+
+        /// <summary>
+        /// CSS 2.1 §8.3.1: an empty box (no border/padding on either the top or bottom edge, and zero
+        /// height) is "self-collapsing" - transparent to margin collapsing, its own top and bottom margins
+        /// merge into whatever set adjoins either edge, rather than keeping them apart. Relies on
+        /// <paramref name="box"/> already being fully laid out (true for a previous sibling, which is
+        /// always placed - including its own subtree - before this box is).
+        /// </summary>
+        private static bool IsSelfCollapsingEmpty(CssBox box)
+        {
+            return box.ActualBorderTopWidth + box.ActualBorderBottomWidth + box.ActualPaddingTop + box.ActualPaddingBottom < 0.1
+                   && box.ActualBottom - box.Location.Y < 0.1;
+        }
+
+        /// <summary>A parent's own top border/padding, or the child's own clearance, blocks the top-margin join.</summary>
+        private static bool BlocksParentChildTopJoin(CssBox parent, CssBox child)
+        {
+            return parent.ActualBorderTopWidth > 0.1 || parent.ActualPaddingTop > 0.1
+                   || (!string.IsNullOrEmpty(child.Clear) && child.Clear != CssConstants.None)
+                   // CSS 2.1 §8.3.1 margin collapsing is a block-formatting-context concept - an inline
+                   // parent (e.g. a block-level child anonymously boxed inside a <span>) is not a block
+                   // container to collapse "through" in the first place.
+                   || parent.Display == CssConstants.Inline || parent.Display == CssConstants.InlineBlock;
+        }
+
+        /// <summary>A box's own bottom border/padding blocks the bottom-margin join with its last child.</summary>
+        private static bool BlocksParentChildBottomJoin(CssBox box)
+        {
+            return box.ActualBorderBottomWidth > 0.1 || box.ActualPaddingBottom > 0.1;
+        }
+
+        /// <summary>
+        /// The first in-flow child that's itself a block container - i.e. one margin collapsing could
+        /// possibly apply to (CSS 2.1 §8.3.1 is a block-formatting-context concept). Skips not just
+        /// out-of-flow/display:none children but inline/inline-block ones too: an anonymous inline/text
+        /// run preceding a real block child (e.g. "text&lt;p&gt;...&lt;/p&gt;") is not itself a candidate
+        /// to collapse through, and must not stop the search before reaching the real block child.
+        /// </summary>
+        private static CssBox FirstInFlowChild(CssBox box)
+        {
+            return box._boxes.Find(IsBlockLevelInFlowChild);
+        }
+
+        /// <inheritdoc cref="FirstInFlowChild"/>
+        private static CssBox LastInFlowChild(CssBox box)
+        {
+            return box._boxes.FindLast(IsBlockLevelInFlowChild);
+        }
+
+        private static bool IsBlockLevelInFlowChild(CssBox b)
+        {
+            return !b.IsOutOfFlow && b.Display != CssConstants.None
+                   && b.Display != CssConstants.Inline && b.Display != CssConstants.InlineBlock;
+        }
+
+        /// <summary>
+        /// CSS 2.1 §8.3.1: an adjoining margin set collapses to the largest positive margin plus the most
+        /// negative (smallest) margin in the set - equal to a plain max() only when every member shares the
+        /// same sign.
+        /// </summary>
+        private static double CollapseMarginSet(List<double> margins)
+        {
+            double maxPositive = 0;
+            double minNegative = 0;
+
+            foreach (var m in margins)
+            {
+                if (m > maxPositive) maxPositive = m;
+                if (m < minNegative) minNegative = m;
+            }
+
+            return maxPositive + minNegative;
         }
 
         /// <summary>
