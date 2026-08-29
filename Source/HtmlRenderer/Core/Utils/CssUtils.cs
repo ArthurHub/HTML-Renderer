@@ -50,6 +50,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             "page-break-inside", "break-inside", "break-before", "break-after", "page-break-before", "page-break-after",
             "widows", "orphans", "page",
             "left", "top", "right", "bottom", "counter-reset", "counter-increment",
+            "outline-style", "outline-color", "outline-width",
             "width", "max-width", "height", "min-height", "max-height",
             "background-color", "background-image", "background-position", "background-repeat",
             "content", "color", "display", "direction", "empty-cells", "float", "clear", "box-sizing", "position",
@@ -180,6 +181,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     return cssBox.CounterReset;
                 case "counter-increment":
                     return cssBox.CounterIncrement;
+                case "outline-style":
+                    return cssBox.OutlineStyle;
+                case "outline-color":
+                    return cssBox.OutlineColor;
+                case "outline-width":
+                    return cssBox.OutlineWidth;
                 case "width":
                     return cssBox.Width;
                 case "max-width":
@@ -396,6 +403,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     break;
                 case "counter-increment":
                     cssBox.CounterIncrement = value;
+                    break;
+                case "outline-style":
+                    cssBox.OutlineStyle = value;
+                    break;
+                case "outline-color":
+                    cssBox.OutlineColor = value;
+                    break;
+                case "outline-width":
+                    cssBox.OutlineWidth = value;
                     break;
                 case "width":
                     cssBox.Width = value;
