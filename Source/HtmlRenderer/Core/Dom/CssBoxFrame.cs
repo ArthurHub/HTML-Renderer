@@ -407,28 +407,26 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Paints the fragment
+        /// Starts loading the video thumbnail if the video API call resolved a thumbnail URL and loading
+        /// hasn't started already - the same paint-time trigger pattern as <see cref="CssBoxImage"/>, see
+        /// its <see cref="CssBoxImage.EnsureImageLoadStarted"/> for why this can't move to measure time.
+        /// Called by <see cref="Paint.Content.FrameFragmentPainter"/>.
         /// </summary>
-        /// <param name="g">the device to draw to</param>
-        protected override void PaintImp(RGraphics g)
+        internal void EnsureVideoImageLoadStarted()
         {
             if (_videoImageUrl != null && _imageLoadHandler == null)
             {
                 _imageLoadHandler = new ImageLoadHandler(HtmlContainer, OnLoadImageComplete);
                 _imageLoadHandler.LoadImage(_videoImageUrl, HtmlTag != null ? HtmlTag.Attributes : null);
             }
+        }
 
-            var rects = CommonUtils.GetFirstValueOrDefault(Rectangles);
-
-            RPoint offset = (HtmlContainer != null && !IsFixed) ? HtmlContainer.ScrollOffset : RPoint.Empty;
-            rects.Offset(offset);
-
-            var clipped = RenderUtils.ClipGraphicsByOverflow(g, this);
-
-            PaintBackground(g, rects, true, true);
-
-            BordersDrawHandler.DrawBoxBorders(g, this, rects, true, true);
-
+        /// <summary>
+        /// Draws the video thumbnail/title/play-button chrome at <paramref name="offset"/>, leaving
+        /// background/border painting to the caller (<see cref="Paint.Content.FrameFragmentPainter"/>).
+        /// </summary>
+        internal void DrawFrameContent(RGraphics g, RPoint offset)
+        {
             var word = Words[0];
             var tmpRect = word.Rectangle;
             tmpRect.Offset(offset);
@@ -443,9 +441,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             DrawTitle(g, rect);
 
             DrawPlay(g, rect);
-
-            if (clipped)
-                g.PopClip();
         }
 
         /// <summary>

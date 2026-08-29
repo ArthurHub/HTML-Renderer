@@ -30,12 +30,16 @@ For existing implementations see: HtmlRenderer.WinForms, HtmlRenderer.WPF and Ht
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
-    <!-- Grants the WinForms/WPF adapters (which read SystemColorSchemeOverride from their own
-         SystemColorScheme override) and the image-regression test assembly (which sets it) access to
-         RAdapter's internal members. SystemColorSchemeOverride is a test-only seam that makes
-         prefers-color-scheme rendering deterministic regardless of the host machine's own theme setting. -->
+    <!-- Grants the WinForms/WPF/PdfSharp adapters access to internal members: originally just
+         RAdapter.SystemColorSchemeOverride (a test-only seam that makes prefers-color-scheme
+         rendering deterministic regardless of the host machine's own theme setting), now also
+         HtmlContainerInt.FragmentTree and its FragmentainerFragment-based PerformPaint overload -
+         the fragment tree stays internal rather than becoming public API while this port is still
+         underway. The image-regression test assembly also needs this (it sets the color-scheme
+         override and reaches deep into layout/fragment internals for precision assertions). -->
     <InternalsVisibleTo Include="HtmlRenderer.WinForms" />
     <InternalsVisibleTo Include="HtmlRenderer.WPF" />
+    <InternalsVisibleTo Include="HtmlRenderer.PdfSharp" />
     <InternalsVisibleTo Include="HtmlRenderer.IntegrationTest" />
   </ItemGroup>
   <ItemGroup>

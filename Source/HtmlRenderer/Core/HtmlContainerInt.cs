@@ -18,6 +18,8 @@ using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Fragmentation;
+using TheArtOfDev.HtmlRenderer.Core.Fragments;
 using TheArtOfDev.HtmlRenderer.Core.Handlers;
 using TheArtOfDev.HtmlRenderer.Core.Parse;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
@@ -444,7 +446,41 @@ namespace TheArtOfDev.HtmlRenderer.Core
         public RSize PageSize { get; set; }
 
         /// <summary>
-        /// the top margin between the page start and the text
+        /// Whether this container is paginating against a real, bounded page grid, as opposed to an
+        /// effectively unbounded single "page" (WinForms/WPF's continuous-scroll convention, which sets
+        /// <see cref="PageSize"/> to a large sentinel - see <c>HtmlContainer.PageSize</c> in the WinForms/
+        /// WPF projects). Fragmentation corrections (forced breaks, break-inside:avoid relocation, margin
+        /// truncation) only make sense, and only run, when this is true.
+        /// </summary>
+        internal bool HasRealPageGrid
+        {
+            get { return PageSize.Height > 0 && PageSize.Height < 90999; }
+        }
+
+        /// <summary>
+        /// The zero-based pagination slot document-space coordinate <paramref name="y"/> falls in - the
+        /// top-edge convention (a coordinate exactly on a page boundary belongs to the page that starts
+        /// there). Only meaningful when <see cref="HasRealPageGrid"/>.
+        /// </summary>
+        internal int PageIndexOf(double y)
+        {
+            return (int)Math.Floor((y - MarginTop) / PageSize.Height);
+        }
+
+        /// <summary>Document-space Y of the top of pagination slot <paramref name="slot"/>'s content band.</summary>
+        internal double PageTopOf(int slot)
+        {
+            return MarginTop + slot * PageSize.Height;
+        }
+
+        /// <summary>Document-space Y of the bottom of pagination slot <paramref name="slot"/>'s content band.</summary>
+        internal double PageBottomOf(int slot)
+        {
+            return PageTopOf(slot) + PageSize.Height;
+        }
+
+        /// <summary>
+        /// The top margin between the page start and the text
         /// </summary>
         public int MarginTop
         {
@@ -528,6 +564,13 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             get { return _root; }
         }
+
+        /// <summary>
+        /// The immutable fragment tree layout produced from the box tree on the last <see cref="PerformLayout"/>
+        /// call - the result paint reads from, rather than walking the mutable box tree directly. Null
+        /// before the first layout, or when there is nothing to lay out.
+        /// </summary>
+        internal FragmentTree FragmentTree { get; private set; }
 
         /// <summary>
         /// the text fore color use for selected text
@@ -710,7 +753,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 _root.Size = new RSize(_maxSize.Width > 0 ? _maxSize.Width : 99999, 0);
                 _root.Location = _location;
                 _hasFloatedBoxes = ComputeHasFloatedBoxes(_root);
-                _root.PerformLayout(g);
+                DriveLayoutPasses(g);
 
                 if (_maxSize.Width <= 0.1)
                 {
@@ -718,7 +761,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                     _root.Size = new RSize((int)Math.Ceiling(_actualSize.Width), 0);
                     _actualSize = RSize.Empty;
                     _hasFloatedBoxes = ComputeHasFloatedBoxes(_root);
-                    _root.PerformLayout(g);
+                    DriveLayoutPasses(g);
                 }
 
                 if (!_loadComplete)
@@ -728,6 +771,46 @@ namespace TheArtOfDev.HtmlRenderer.Core
                     if (handler != null)
                         handler(this, EventArgs.Empty);
                 }
+            }
+
+            FragmentTree = new FragmentEmitter(this).Finish();
+        }
+
+        /// <summary>
+        /// The resumable per-fragmentainer pass loop (matching PeachPDF's <c>LayoutDocument</c>): lay the
+        /// whole document out once; if <see cref="_root"/> stopped partway through (its own
+        /// <see cref="CssBox.PendingBreakToken"/> is set - see that property's doc comment for how a break
+        /// discovered arbitrarily deep in the tree reaches it), resume from exactly that point and lay out
+        /// again; repeat until nothing is left pending. For a container with no real page grid (WinForms/
+        /// WPF's continuous-scroll convention), or a document with no forced breaks at all, this runs
+        /// exactly once - <see cref="CssBox.ResumeAt"/>'s default (no token, no override) is indistinguishable
+        /// from this engine's original single unbounded pass.
+        /// </summary>
+        private void DriveLayoutPasses(RGraphics g)
+        {
+            if (!HasRealPageGrid)
+            {
+                _root.PerformLayout(g);
+                return;
+            }
+
+            // A backstop, not a real budget (matching PeachPDF's own sentinel) - a real document can only
+            // exhaust this many passes if something is genuinely wrong (a break token that never resolves
+            // forward), not from ordinary content length, since R1's scope (forced breaks only) resumes
+            // at most once per forced break in the whole document.
+            const int maxPasses = 100_000;
+
+            BreakToken token = null;
+            for (var pass = 0; pass < maxPasses; pass++)
+            {
+                _root.ResumeAt(token);
+                _root.PerformLayout(g);
+
+                var next = _root.PendingBreakToken;
+                if (next == null)
+                    break;
+
+                token = next;
             }
         }
 
@@ -765,10 +848,61 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 g.PushClip(new RRect(MarginLeft, MarginTop, PageSize.Width, PageSize.Height));
             }
 
-            if (_root != null)
+            // Every fragmentainer, painted onto this one continuous surface, each translated back to its
+            // real document-Y band top - exactly what the old live-tree walk (_root.Paint(g), removed
+            // once this replaced it) did by construction, since box geometry there was always absolute.
+            // For every caller of this overload today (WinForms/WPF's continuous single-surface
+            // rendering, any other HasRealPageGrid=false container) there is exactly one fragmentainer
+            // whose LocalOriginY is already 0, so this loop runs once with a no-op page origin - a direct
+            // multi-page-grid caller of this overload (bypassing PdfGenerator's real per-fragmentainer
+            // loop below) is the only case where more than one iteration, or a non-zero origin, happens.
+            if (FragmentTree != null)
             {
-                _root.Paint(g);
+                foreach (var fragmentainer in FragmentTree.Fragmentainers)
+                {
+                    var pageOrigin = new RPoint(0, fragmentainer.LocalOriginY);
+                    new Paint.FragmentPainter(this, pageOrigin).Paint(g, fragmentainer);
+                }
             }
+
+            g.PopClip();
+        }
+
+        /// <summary>
+        /// Render one fragmentainer using the given device, reading from the immutable fragment tree
+        /// rather than walking the mutable box tree directly.
+        /// </summary>
+        /// <param name="g">the device to use to render</param>
+        /// <param name="fragmentainer">the fragmentainer to paint</param>
+        /// <remarks>
+        /// The pushed clip's Y origin is always 0, never <see cref="MarginTop"/>/<see cref="_location"/>'s
+        /// Y - unlike <see cref="PerformPaint(RGraphics)"/>'s multi-fragmentainer loop (which paints every
+        /// band back onto one continuous, absolute-Y surface via a per-band page-origin translate),
+        /// <paramref name="fragmentainer"/> here is painted alone onto its own fresh surface (a real PDF
+        /// page, one per <see cref="PdfGenerator"/> loop iteration) with no such translate - so its content
+        /// paints at exactly the fragment-local coordinates <see cref="Fragmentation.FragmentEmitter"/>
+        /// already produced (band-local Y = document Y - band top, per that type's own doc comment). A real
+        /// bug found while confirming this: the clip previously started at Y=<see cref="MarginTop"/>
+        /// (mirroring the single-surface overload's own absolute-Y convention), silently clipping away the
+        /// first <see cref="MarginTop"/>-tall strip of every single page's own content - confirmed by a
+        /// list item landing entirely within that clipped strip and never appearing in the paint log at all,
+        /// with no exception raised (the visibility cull is a quiet no-op, not a thrown error).
+        /// </remarks>
+        internal void PerformPaint(RGraphics g, Fragments.FragmentainerFragment fragmentainer)
+        {
+            ArgChecker.AssertArgNotNull(g, "g");
+            ArgChecker.AssertArgNotNull(fragmentainer, "fragmentainer");
+
+            if (MaxSize.Height > 0)
+            {
+                g.PushClip(new RRect(_location.X, 0, Math.Min(_maxSize.Width, PageSize.Width), Math.Min(_maxSize.Height, PageSize.Height)));
+            }
+            else
+            {
+                g.PushClip(new RRect(MarginLeft, 0, PageSize.Width, PageSize.Height));
+            }
+
+            new Paint.FragmentPainter(this).Paint(g, fragmentainer);
 
             g.PopClip();
         }
