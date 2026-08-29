@@ -38,6 +38,57 @@ internal static class PaintHarness
         return (container.Root!, container);
     }
 
+    /// <summary>
+    /// Lays <paramref name="html"/> out against a real, bounded page grid (<paramref name="pageHeight"/>
+    /// shorter than the content, unlike <see cref="Layout"/>'s single unbounded "page") so a test can inspect
+    /// more than one <see cref="TheArtOfDev.HtmlRenderer.Core.Fragments.FragmentainerFragment"/>. Mirrors the
+    /// real-<c>WinForms.HtmlContainer</c> multi-page harness pattern used in the Fragmentation test folder,
+    /// but over the deterministic recording mock adapter instead of real GDI+ fonts.
+    /// </summary>
+    internal static (CssBox Root, HtmlContainerInt Container) LayoutPaginated(
+        string html,
+        double pageWidth = 400,
+        double pageHeight = 800,
+        double margin = 0)
+    {
+        var container = new HtmlContainerInt(new MockAdapter())
+        {
+            MaxSize = new RSize(pageWidth, 0),
+            Location = new RPoint(0, margin),
+            PageSize = new RSize(pageWidth, pageHeight)
+        };
+        container.SetMargins((int)margin);
+
+        container.SetHtml(html);
+
+        using var layoutGraphics = new RecordingGraphics();
+        container.PerformLayout(layoutGraphics);
+
+        Assert.IsNotNull(container.Root);
+
+        return (container.Root!, container);
+    }
+
+    /// <summary>
+    /// Paints one whole page (<see cref="HtmlContainerInt.FragmentTree"/>'s fragmentainer at
+    /// <paramref name="page"/>) through the same production entry point <c>PdfGenerator</c> uses per page
+    /// (<see cref="HtmlContainerInt.PerformPaint(RGraphics, TheArtOfDev.HtmlRenderer.Core.Fragments.FragmentainerFragment)"/>),
+    /// and returns a fresh <see cref="RecordingGraphics"/> with the resulting draw-call log.
+    /// </summary>
+    internal static RecordingGraphics PaintPage(HtmlContainerInt container, int page = 0)
+    {
+        var g = new RecordingGraphics();
+        PaintPage(container, g, page);
+        return g;
+    }
+
+    /// <summary>Same as <see cref="PaintPage(HtmlContainerInt, int)"/> but reuses a caller-supplied graphics/log.</summary>
+    internal static void PaintPage(HtmlContainerInt container, RecordingGraphics g, int page = 0)
+    {
+        var fragmentainer = container.FragmentTree!.Fragmentainers[page];
+        container.PerformPaint(g, fragmentainer);
+    }
+
     /// <summary>Wraps a body fragment in a minimal document, so a test can state only the markup it cares about.</summary>
     internal static string Wrap(string body) => $"<html><head></head><body style='margin:0'>{body}</body></html>";
 
