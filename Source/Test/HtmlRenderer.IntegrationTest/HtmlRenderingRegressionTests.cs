@@ -22,6 +22,19 @@ public sealed class HtmlRenderingRegressionTests
 
     private static bool _samplesLoaded;
 
+    [TestMethod]
+    public async Task Render_ConsecutiveBreaks_LeaveAnEmptyLine()
+    {
+        EnsureSamplesLoaded();
+
+        using var oneBreak = await RenderSample("<span>first</span><br/><span>second</span>");
+        using var consecutiveBreaks = await RenderSample("<span>first</span><br/><br/><span>second</span>");
+
+        Assert.IsTrue(
+            consecutiveBreaks.Height > oneBreak.Height,
+            $"Consecutive <br> elements should add an empty line. One break: {oneBreak.Height}px; two breaks: {consecutiveBreaks.Height}px.");
+    }
+
     [DoNotParallelize]
     [TestMethod]
     [DynamicData(nameof(GetSamples), DynamicDataDisplayName = nameof(GetSampleDisplayName))]
