@@ -889,67 +889,106 @@ sections:
       - Control characters such as U+000B and U+0085 are treated as white space instead of being rendered
   tables.html#q17.0:
     title: 17 Tables
-    status: unknown
+    status: partial
   tables.html#tables-intro:
     title: 17.1 Introduction to tables
-    status: unknown
+    status: n/a
   tables.html#table-display:
     title: 17.2 The CSS table model
-    status: unknown
+    status: partial
+    gaps:
+      - A second 'table-header-group' or 'table-footer-group' is laid out as one row with its rows as cells, which loses their content
+      - "'inline-table' is laid out like a block-level table and breaks the line"
   tables.html#anonymous-boxes:
     title: 17.2.1 Anonymous table objects
-    status: unknown
+    status: partial
+    gaps:
+      - Consecutive children of a table or row group that aren't rows each get their own anonymous row instead of sharing one
+      - Misparented rows, row groups, columns and captions don't get an anonymous table
+      - Anonymous wrappers are appended as the parent's last child instead of taking the place of the boxes they wrap
   tables.html#columns:
     title: 17.3 Columns
-    status: unknown
+    status: partial
+    gaps:
+      - Column and column group backgrounds aren't painted
   tables.html#model:
     title: 17.4 Tables in the visual formatting model
-    status: unknown
+    status: partial
+    gaps:
+      - Captions aren't laid out or painted
+      - "An inherited 'text-align: center' or 'right' moves an auto-width table itself"
   tables.html#caption-position:
     title: 17.4.1 Caption position and alignment
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'caption-side' has no effect, captions aren't rendered at all"
   tables.html#table-layout:
     title: 17.5 Visual layout of table contents
-    status: unknown
+    status: partial
   tables.html#table-layers:
     title: 17.5.1 Table layers and transparency
-    status: unknown
+    status: partial
+    gaps:
+      - Row and row group backgrounds aren't painted
   tables.html#width-layout:
     title: 17.5.2 Table width algorithms
-    status: unknown
+    status: partial
+    gaps:
+      - "'auto' margins don't center a table"
   tables.html#fixed-table-layout:
     title: 17.5.2.1 Fixed table layout
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'table-layout: fixed' is ignored, column widths always come from the automatic layout"
   tables.html#auto-table-layout:
     title: 17.5.2.2 Automatic table layout
-    status: unknown
+    status: partial
+    gaps:
+      - A column group's 'width' doesn't widen its columns
+      - The caption's minimum width doesn't widen the table
   tables.html#height-layout:
     title: 17.5.3 Table height algorithms
-    status: unknown
+    status: partial
+    gaps:
+      - A row's 'height' is ignored
+      - "'vertical-align: baseline' aligns like 'top', cells aren't aligned on a shared row baseline"
   tables.html#column-alignment:
     title: 17.5.4 Horizontal alignment in a column
-    status: unknown
+    status: supported
   tables.html#dynamic-effects:
     title: 17.5.5 Dynamic row and column effects
-    status: unknown
+    status: unsupported
+    gaps:
+      - "Rows, row groups, columns and column groups with 'visibility: collapse' keep their space"
   tables.html#borders:
     title: 17.6 Borders
-    status: unknown
+    status: partial
   tables.html#separated-borders:
     title: 17.6.1 The separated borders model
-    status: unknown
+    status: partial
+    gaps:
+      - The table's padding is dropped, the edge cells are only inset by the border spacing
   tables.html#empty-cells:
     title: 17.6.1.1 Borders and Backgrounds around empty cells
-    status: unknown
+    status: partial
+    gaps:
+      - "'hide' also hides cells whose content is in child boxes, i.e. any cell with text"
+      - A row of only hidden empty cells keeps its height and its border spacing on both sides
   tables.html#collapsing-borders:
     title: 17.6.2 The collapsing border model
-    status: unknown
+    status: partial
+    gaps:
+      - Adjacent cell borders are drawn side by side with a 1px overlap instead of as one border centered on the grid line
   tables.html#border-conflict-resolution:
     title: 17.6.2.1 Border conflict resolution
-    status: unknown
+    status: unsupported
+    gaps:
+      - Borders aren't resolved, every cell and the table paint their own
   tables.html#table-border-styles:
     title: 17.6.3 Border styles
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'hidden' doesn't suppress the other borders at the same edge"
   ui.html#q18.0:
     title: 18 User interface
     status: unknown

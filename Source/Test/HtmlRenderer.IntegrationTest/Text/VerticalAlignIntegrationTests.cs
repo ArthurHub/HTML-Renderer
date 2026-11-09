@@ -123,12 +123,9 @@ public sealed class VerticalAlignIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "tables.html#height-layout")]
     public void Bottom_OnATableCell_PushesShortContentLowerThanTopAligned()
     {
-        // CssLayoutEngine.ApplyCellVerticalAlignment's table-specific alignment algorithm (distinct from the
-        // inline ApplyVerticalAlignment exercised by the other tests in this file) - a short cell in a taller
-        // row must be pushed all the way to the row's bottom under vertical-align:bottom, unlike
-        // vertical-align:top where it stays put.
         var htmlTop = LayoutHarness.Wrap(
             "<table><tr>"
             + "<td style='height:100px'>Tall</td>"
@@ -151,6 +148,7 @@ public sealed class VerticalAlignIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "tables.html#height-layout")]
     public void Middle_OnATableCellWithExplicitHeight_CentersShortContent()
     {
         var htmlTop = LayoutHarness.Wrap(
@@ -180,8 +178,6 @@ public sealed class VerticalAlignIntegrationTests
         Assert.IsTrue(middleY > topY && middleY < bottomY,
             $"vertical-align:middle ({middleY}) should land strictly between vertical-align:top ({topY}) and vertical-align:bottom ({bottomY}) even with an explicit cell height");
 
-        // ApplyCellVerticalAlignment splits the leftover room evenly for `middle` (half of what `bottom`
-        // moves it by), so middle must sit at the exact midpoint.
         Assert.AreEqual((topY + bottomY) / 2, middleY, Delta);
     }
 

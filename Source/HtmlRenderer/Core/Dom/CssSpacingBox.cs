@@ -5,7 +5,7 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Dom
 {
     /// <summary>
-    /// Used to make space on vertical cell combination
+    /// Placeholder in a row for a cell spanning in from an earlier row
     /// </summary>
     internal sealed class CssSpacingBox : CssBox
     {

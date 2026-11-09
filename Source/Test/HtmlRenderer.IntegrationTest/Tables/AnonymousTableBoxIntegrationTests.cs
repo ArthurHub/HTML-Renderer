@@ -5,33 +5,13 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.IntegrationTest.Tables;
 
-/// <summary>
-/// Coverage for CSS2.1 §17.2.1 anonymous table-object generation
-/// (<c>DomParser.CorrectAnonymousTablesGenerateMissingChildWrappers</c> /
-/// <c>CorrectAnonymousTablesGenerateMissingParents</c>) against the shape the real Acid2 test's table line
-/// exercises: a <c>display:table</c> parent whose non-row children have mixed display values, and stray
-/// <c>table-cell</c> boxes with no table ancestor at all.
-/// </summary>
-/// <remarks>
-/// Direct reads of <c>DomParser.cs</c> confirm this fork's anonymous-table-object pass diverges from the
-/// PeachPDF-fixed behavior these tests were written against in three separate, independently-confirmed ways -
-/// see each test's own <see cref="IgnoreAttribute"/> for the specific one it exercises.
-/// </remarks>
 [DoNotParallelize]
 [TestClass]
 public sealed class AnonymousTableBoxIntegrationTests
 {
-    [Ignore("Confirmed real bug, not a porting mistake: DomParser.CorrectAnonymousTablesGenerateMissingChildWrappers " +
-            "rule 2.1 (~line 940) - 'a child of a display:table box that isn't a proper table child gets an " +
-            "anonymous table-row wrapper' - only wraps the single box being visited (`box.ParentBox = tableRowBox`) " +
-            "and never gathers the run of consecutive non-proper-table-child siblings the way rule 2.3 a few lines " +
-            "below does (via DomUtils.GetFollowingSiblings). Also, DomUtils.IsProperTableChild (Utils/DomUtils.cs " +
-            "~line 152) does NOT list table-cell as a proper table child (only row-groups/table-row/table-column/" +
-            "table-column-group/table-caption), so ALL FOUR <li> children here (including the two already " +
-            "display:table-cell ones) fail the proper-table-child check and each gets its OWN separate anonymous " +
-            "table-row - the <ul> ends up with 4 child rows, not 1, and 'first'/'third' are not left as direct " +
-            "children of a shared row at all.")]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "tables.html#anonymous-boxes")]
     public void MixedNonRowChildren_AllGroupIntoOneAnonymousRow_WithOnlyNonCellsWrapped()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -69,8 +49,7 @@ public sealed class AnonymousTableBoxIntegrationTests
         Assert.AreSame(row, fourth.ParentBox!.ParentBox);
         Assert.AreEqual(1, fourth.ParentBox!.Boxes.Count);
 
-        // The nested display:table on "second" establishes its own table, unaffected by the anonymous-cell
-        // wrapper around it.
+        // The nested table keeps its own display inside the anonymous cell
         Assert.AreEqual(CssConstants.Table, second.Display);
 
         // Row order must match document order.
@@ -79,14 +58,9 @@ public sealed class AnonymousTableBoxIntegrationTests
             row.Boxes);
     }
 
-    [Ignore("Confirmed real bug, not a porting mistake: DomParser.CorrectAnonymousTablesGenerateMissingChildWrappers " +
-            "rule 2.2 (~line 952) - 'a child of a row-group box that isn't table-row gets an anonymous table-row " +
-            "wrapper' - has the exact same non-grouping shape as rule 2.1 above: it only reparents the single box " +
-            "being visited and never consults DomUtils.GetFollowingSiblings, unlike rule 2.3's correctly-grouping " +
-            "sibling logic a few lines further down in the same method. So 'a' and 'b' (both bare <span>s) each " +
-            "get their OWN separate anonymous table-row instead of sharing one - rowGroup.Boxes.Count ends up 3 " +
-            "(anonRow-for-a, anonRow-for-b, realrow), not 2.")]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "tables.html#anonymous-boxes")]
     public void RowGroupWithNonRowChildren_GroupsConsecutiveSiblingsIntoOneAnonymousRow()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -101,11 +75,8 @@ public sealed class AnonymousTableBoxIntegrationTests
         var rowGroup = FindByClass(root, "rowgroup")!;
         Assert.AreEqual(2, rowGroup.Boxes.Count);
 
-        // The anonymous row rule 2.2 wraps "a"/"b" in immediately cascades into rule 2.3 as well (the new row's
-        // own children, "a"/"b", still aren't table-cells) - so the row ends up with a single anonymous
-        // table-cell child wrapping both (via a further anonymous block box, the usual
-        // inline-content-needs-a-block-wrapper mechanism, unrelated to the table rules under test here), not
-        // "a"/"b" as its direct children.
+        // The anonymous row's children aren't cells either, so they share one anonymous cell, with the
+        // usual anonymous block box around the inline content in between
         var anonRow = rowGroup.Boxes[0];
         Assert.AreEqual(CssConstants.TableRow, anonRow.Display);
         Assert.AreEqual(1, anonRow.Boxes.Count);
@@ -120,27 +91,14 @@ public sealed class AnonymousTableBoxIntegrationTests
         Assert.AreSame(anonCell, a.ParentBox!.ParentBox);
         Assert.AreSame(anonCell, b.ParentBox!.ParentBox);
 
-        // Document order preserved: the anonymous row takes "a"'s original position, ahead of the real
-        // table-row that follows it.
+        // The anonymous row takes the place of "a", ahead of the real row
         Assert.AreSame(rowGroup, realRow.ParentBox);
         CollectionAssert.AreEqual(new[] { anonRow, realRow }, rowGroup.Boxes);
     }
 
-    [Ignore("Confirmed real bug, not a porting mistake, via two separate issues in " +
-            "DomParser.CorrectAnonymousTablesGenerateMissingParents (~line 979): " +
-            "(1) rule 3.2 - 'wrap a misparented proper table child in an anonymous table' - computes " +
-            "`isMisparented = isMissingParent && isParentNotTable && isParentNotInlineTable` (~line 1005): ANDing " +
-            "in `isMissingParent` (box.ParentBox == null) means the rule can only ever fire for a box with " +
-            "literally no parent at all, which practically never happens once rule 3.1 has already reparented the " +
-            "cell run under a real (non-null) anonymous table-row box - so the anonymous table-row here is never " +
-            "wrapped in an anonymous table at all; anonRow.ParentBox is just the <body>, not a synthesized " +
-            "display:table box, so anonTable.HtmlTag is not null and anonTable.Display is 'block', not 'table'. " +
-            "(2) CssBox.ParentBox's setter (Dom/CssBox.cs ~line 117) unconditionally Boxes.Remove()s from the old " +
-            "parent then Boxes.Add()s (appends) to the new one - there is no SetBeforeBox-style reinsertion at the " +
-            "original sibling index (SetBeforeBox exists and IS used elsewhere in DomParser.cs for inline-box " +
-            "splitting, just not here) - so even the row itself lands at the END of body's children, after " +
-            "'after', not between 'before' and 'after' as document order requires.")]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "tables.html#anonymous-boxes")]
     public void MisparentedTableCell_WrappedInAnonymousRowThenTable_AtItsOriginalDocumentPosition()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -160,14 +118,12 @@ public sealed class AnonymousTableBoxIntegrationTests
         Assert.AreEqual(CssConstants.TableRow, anonRow.Display);
         Assert.AreSame(anonRow, cell2.ParentBox);
 
-        // 3.2: the anonymous row is wrapped in an anonymous table (the table formatting context the stray
-        // cells require per CSS2.1 §17.2.1) - without it the row would render outside any table.
+        // 3.2: the anonymous row is wrapped in an anonymous table
         var anonTable = anonRow.ParentBox!;
         Assert.IsNull(anonTable.HtmlTag);
         Assert.AreEqual(CssConstants.Table, anonTable.Display);
 
-        // The synthesized table must sit between "before" and "after" in document order, not after "after"
-        // (which is what a naive append-at-the-end would produce).
+        // The anonymous table takes the place of the cells, between "before" and "after"
         CollectionAssert.AreEqual(new[] { before, anonTable, after }, body.Boxes);
     }
 

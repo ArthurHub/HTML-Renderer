@@ -2,10 +2,6 @@ using HtmlRenderer.IntegrationTest.TestSupport;
 
 namespace HtmlRenderer.IntegrationTest.Tables;
 
-/// <summary>
-/// Ported from PeachPDF.Tests' Acid2 table regression cases (CSS 2.1 §17.5.3 row-stretch, §17.6.1
-/// border-spacing).
-/// </summary>
 [DoNotParallelize]
 [TestClass]
 public sealed class Acid2TableIntegrationTests
@@ -13,6 +9,7 @@ public sealed class Acid2TableIntegrationTests
     private const double Delta = 0.5;
 
     [TestMethod]
+    [Spec("css21", "tables.html#height-layout")]
     public void TableCell_ExplicitHeightShorterThanRow_StretchesToRowHeight()
     {
         var html = LayoutHarness.Wrap(
@@ -29,6 +26,7 @@ public sealed class Acid2TableIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "tables.html#separated-borders")]
     public void BorderSpacingZero_AdjacentCells_HaveNoGapBetweenThem()
     {
         var html = LayoutHarness.Wrap(

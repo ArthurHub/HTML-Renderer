@@ -865,7 +865,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
         /// <summary>
         /// Check if the given style is allowed to be set on the given css box.<br/>
-        /// Used to prevent invalid CssBoxes creation like table with inline display style.
+        /// Keeps the display of HTML table elements, which CSS 2.1 §17.2 allows user agents to do.
         /// </summary>
         /// <param name="box">the css box to assign css to</param>
         /// <param name="key">the style key to cehck</param>
@@ -1033,10 +1033,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Cascades to the TD's the border spacified in the TABLE tag.
+        /// Cascades the cellpadding of the TABLE tag to its TDs.
         /// </summary>
-        /// <param name="table"></param>
-        /// <param name="padding"></param>
         private static void ApplyTablePadding(CssBox table, string padding)
         {
             var length = TranslateLength(padding);
@@ -1389,7 +1387,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Corrects the missing elements in tables per https://www.w3.org/TR/CSS2/tables.html#anonymous-boxes
+        /// Generates the anonymous table objects (CSS 2.1 §17.2.1), the comments refer to its rules.
         /// </summary>
         /// <param name="box">the current box to correct its sub-tree</param>
         private static void CorrectAnonymousTables(CssBox box)
@@ -1426,7 +1424,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
         private static void CorrectAnonymousTablesRemoveIrrelevantBoxes(CssBox box)
         {
-            // 1.1 All child boxes of a 'table-column' parent are treated as if they had 'display: none'
+            // 1.1
             if (box.Display == CssConstants.TableColumn)
             {
                 foreach (var childBox in box.Boxes)
@@ -1435,7 +1433,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 }
             }
 
-            // 1.2 If a child of a 'table-column-group' parent is not a 'table-column' box, it is treated as if it had 'display: none'.
+            // 1.2
             if (box.ParentBox != null && box.ParentBox.Display == CssConstants.TableColumnGroup && box.Display != CssConstants.TableColumn)
             {
                 box.Display = CssConstants.None;
@@ -1444,8 +1442,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
         private static void CorrectAnonymousTablesGenerateMissingChildWrappers(CssBox box)
         {
-            // 2.1 If a child of a 'table'/'inline-table' box is not a proper table child, generate an anonymous 'table-row' box around it
-            // and all consecutive siblings that are not proper table children.
+            // 2.1
             if (box.ParentBox != null && box.ParentBox.Display == CssConstants.Table)
             {
                 if (!DomUtils.IsProperTableChild(box))
@@ -1456,8 +1453,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 }
             }
 
-            // 2.2 If a child of a row group box is not a 'table-row' box, generate an anonymous 'table-row' box around it
-            // and all consecutive siblings that are not 'table-row' boxes.
+            // 2.2
             if (box.ParentBox != null && box.ParentBox.IsTableRowGroupBox)
             {
                 if (box.Display != CssConstants.TableRow)
@@ -1468,8 +1464,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 }
             }
 
-            // 2.3 If a child of a 'table-row' box is not a 'table-cell', generate an anonymous 'table-cell' box around it
-            // and all consecutive siblings that are not 'table-cell' boxes.
+            // 2.3
             if (box.ParentBox != null && box.ParentBox.Display == CssConstants.TableRow)
             {
                 if (box.Display != CssConstants.TableCell)
@@ -1487,8 +1482,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
         private static void CorrectAnonymousTablesGenerateMissingParents(CssBox box)
         {
-            // 3.1 For each 'table-cell' box in a sequence of consecutive internal table and 'table-caption' siblings, if its parent
-            // is not a 'table-row' then generate an anonymous 'table-row' box around it and all consecutive 'table-cell' siblings.
+            // 3.1
             if (box.Display == CssConstants.TableCell)
             {
                 if (box.ParentBox == null || box.ParentBox.Display != CssConstants.TableRow)
@@ -1503,8 +1497,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 }
             }
 
-            // 3.2 For each proper table child in a sequence of consecutive proper table children, if it is misparented then generate
-            // an anonymous 'table'/'inline-table' box around it and all consecutive proper-table-child siblings.
+            // 3.2
             if (DomUtils.IsProperTableChild(box))
             {
                 var isMissingParent = box.ParentBox == null;

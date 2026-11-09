@@ -4,38 +4,16 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 
 namespace HtmlRenderer.IntegrationTest.Tables;
 
-/// <summary>
-/// CSS 2.1 §17.6.1: <c>visibility: collapse</c> on a table row/row-group/column/column-group removes it
-/// from the table's geometry entirely - as if it had <c>display: none</c> - so the rows/columns after it
-/// shift up/left to fill the gap. Distinct from <c>visibility: hidden</c>, which reserves the element's
-/// layout space and only omits painting it.
-/// </summary>
-/// <remarks>
-/// HTML-Renderer fact (confirmed, <c>Dom\CssLayoutEngineTable.cs</c>): zero awareness of
-/// <c>visibility:collapse</c> anywhere in the table layout engine (only unrelated <c>border-collapse</c>/
-/// <c>PageBreakInside</c> hits exist for the word "collapse") - a &lt;tr&gt;/&lt;col&gt;/etc. with
-/// <c>visibility:collapse</c> is NOT removed from the table's geometry/height/width calculations at all, so
-/// every test below that actually exercises collapse-driven removal is [Ignore]d. The one test that does
-/// NOT depend on collapse-specific logic (only on plain <c>visibility:hidden</c> reserving space, a much
-/// more basic/general mechanism most CSS engines implement) is left active.
-/// </remarks>
 [DoNotParallelize]
 [TestClass]
 public sealed class TableVisibilityCollapseIntegrationTests
 {
-    private const string CollapseNotImplemented =
-        "This fork's CssLayoutEngineTable has zero awareness of visibility:collapse (confirmed: no " +
-        "collapse/visibility handling anywhere in Dom/CssLayoutEngineTable.cs beyond unrelated " +
-        "border-collapse/PageBreakInside hits) - a collapsed row/row-group/column/column-group is not " +
-        "removed from the table's geometry, so it keeps taking up its normal space instead of being " +
-        "skipped like a genuinely absent row/column.";
-
-    [Ignore(CollapseNotImplemented)]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "tables.html#dynamic-effects")]
     public void CollapsedRow_DirectTableChild_TakesNoSpace()
     {
-        // <tr> as a direct child of <table> (no row group) - CssLayoutEngineTable.AssignBoxKinds'
-        // Keywords.TableRow branch.
+        // <tr> as a direct child of <table>, no row group
         var (experiment, _) = LayoutHarness.Layout("""
             <!DOCTYPE html><html><body>
             <table style="border-spacing:0">
@@ -58,11 +36,12 @@ public sealed class TableVisibilityCollapseIntegrationTests
         AssertSameLocation(FindByClass(control, "c")!, FindByClass(experiment, "c")!);
     }
 
-    [Ignore(CollapseNotImplemented)]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "tables.html#dynamic-effects")]
     public void CollapsedRow_InsideRowGroup_TakesNoSpace()
     {
-        // A <tr> inside a <tbody> - the Keywords.TableRowGroup branch.
+        // A <tr> inside a <tbody>
         var (experiment, _) = LayoutHarness.Layout("""
             <!DOCTYPE html><html><body>
             <table style="border-spacing:0">
@@ -120,12 +99,12 @@ public sealed class TableVisibilityCollapseIntegrationTests
         AssertSameLocation(FindByClass(control, "after2")!, FindByClass(experiment, "after2")!);
     }
 
-    [Ignore(CollapseNotImplemented)]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "tables.html#dynamic-effects")]
     public void CollapsedRowGroup_CollapsesEveryRowInsideIt()
     {
-        // visibility is an inherited property, so visibility:collapse on the <tbody> itself must collapse
-        // every row inside it without the row declaring anything.
+        // visibility is inherited, so the rows collapse with their group
         var (experiment, _) = LayoutHarness.Layout("""
             <!DOCTYPE html><html><body>
             <table style="border-spacing:0">
@@ -154,10 +133,7 @@ public sealed class TableVisibilityCollapseIntegrationTests
     [TestMethod]
     public void HiddenRow_StillReservesSpace_UnlikeCollapse()
     {
-        // Guard distinguishing the two values: visibility:hidden must keep reserving the row's space (only
-        // paint is skipped), so the row after it must NOT land where it would if the hidden row had been
-        // collapsed instead. Unlike the rest of this file, this does not depend on collapse-specific
-        // removal logic at all - only on generic visibility:hidden still occupying layout space.
+        // visibility:hidden keeps the row's space, unlike collapse
         var (hidden, _) = LayoutHarness.Layout("""
             <!DOCTYPE html><html><body>
             <table style="border-spacing:0">
@@ -183,12 +159,12 @@ public sealed class TableVisibilityCollapseIntegrationTests
             $"a visibility:hidden row must still reserve its space, but hiddenC.Y={hiddenC.Location.Y} controlC.Y={controlC.Location.Y}");
     }
 
-    [Ignore(CollapseNotImplemented)]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "tables.html#dynamic-effects")]
     public void CollapsedRow_InsideDetachedHeader_TakesNoSpace()
     {
-        // A <thead> is detached from the row-loop and measured separately - a collapsed row inside it has
-        // its own skip there, if collapse were implemented at all.
+        // The header group is laid out separately from the body rows
         var (experiment, _) = LayoutHarness.Layout("""
             <!DOCTYPE html><html><body>
             <table style="border-spacing:0">
@@ -215,8 +191,9 @@ public sealed class TableVisibilityCollapseIntegrationTests
         AssertSameLocation(FindByClass(control, "body")!, FindByClass(experiment, "body")!);
     }
 
-    [Ignore(CollapseNotImplemented)]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "tables.html#dynamic-effects")]
     public void CollapsedRow_InsideDetachedFooter_TakesNoSpace()
     {
         var (experiment, _) = LayoutHarness.Layout("""
@@ -245,8 +222,9 @@ public sealed class TableVisibilityCollapseIntegrationTests
         Assert.AreEqual(FindByClass(control, "t")!.ActualBottom, FindByClass(experiment, "t")!.ActualBottom, 3);
     }
 
-    [Ignore(CollapseNotImplemented)]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "tables.html#dynamic-effects")]
     public void CollapsedColumn_TakesNoWidth()
     {
         var (experiment, _) = LayoutHarness.Layout("""
@@ -288,13 +266,12 @@ public sealed class TableVisibilityCollapseIntegrationTests
         Assert.AreEqual(controlTable.ActualRight, experimentTable.ActualRight, 3);
     }
 
-    [Ignore(CollapseNotImplemented)]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "tables.html#dynamic-effects")]
     public void CollapsedColumn_WideContentDoesNotStarveNextColumn()
     {
-        // An auto-width table's content-based column sizing spreads whatever width is left over toward
-        // each column's own max-content width. A collapsed column's own (invisible) unbreakable content
-        // must not count against that leftover, if collapse were implemented.
+        // The collapsed column's unbreakable content must not take width from the visible column
         var (experiment, _) = LayoutHarness.Layout("""
             <!DOCTYPE html><html><body>
             <div style="width:100px">
@@ -337,13 +314,12 @@ public sealed class TableVisibilityCollapseIntegrationTests
         Assert.AreEqual(controlC.ActualWidth, experimentC.ActualWidth, 3);
     }
 
-    [Ignore(CollapseNotImplemented)]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "tables.html#dynamic-effects")]
     public void CollapsedColumn_WithBorderSpacing_LeavesNoResidualGap()
     {
-        // Regression guard: a collapsed column must not leave one border-spacing unit behind, which only
-        // shows once border-spacing is non-zero - the default UA stylesheet sets border-spacing:2px on
-        // every table, so this is the common case, if collapse were implemented.
+        // A collapsed column must not leave its border-spacing behind
         var (experiment, _) = LayoutHarness.Layout("""
             <!DOCTYPE html><html><body>
             <table class="t" style="border-spacing:5px; width:300px">
@@ -420,13 +396,12 @@ public sealed class TableVisibilityCollapseIntegrationTests
         Assert.AreEqual(controlA.ActualWidth, experimentA.ActualWidth, 3);
     }
 
-    [Ignore(CollapseNotImplemented)]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "tables.html#dynamic-effects")]
     public void ColspanCell_StraddlingVisibleThenCollapsedColumn_NoResidualBorderSpacing()
     {
-        // A colspan cell spanning a visible column followed by a collapsed one has its trailing edge land
-        // on the collapsed column - like a cell confined entirely to collapsed column(s), the
-        // border-spacing slot after it must be omitted too, if collapse were implemented.
+        // A colspan cell ending in a collapsed column must not keep the border-spacing after it
         var (experiment, _) = LayoutHarness.Layout("""
             <!DOCTYPE html><html><body>
             <table class="t" style="border-spacing:5px; width:305px">
@@ -461,13 +436,12 @@ public sealed class TableVisibilityCollapseIntegrationTests
         AssertSameLocation(FindByClass(control, "c")!, FindByClass(experiment, "c")!);
     }
 
-    [Ignore(CollapseNotImplemented)]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "tables.html#dynamic-effects")]
     public void ColspanCell_StraddlingCollapsedThenVisibleColumn_NoExtraInteriorSpacing()
     {
-        // Mirror case: a colspan cell spanning a collapsed column followed by a visible one. The boundary
-        // strictly between the cell's own two spanned columns must be omitted, if collapse were
-        // implemented.
+        // A colspan cell starting in a collapsed column must not keep the border-spacing inside it
         var (experiment, _) = LayoutHarness.Layout("""
             <!DOCTYPE html><html><body>
             <table class="t" style="border-spacing:5px; width:305px">
@@ -505,9 +479,7 @@ public sealed class TableVisibilityCollapseIntegrationTests
     [TestMethod]
     public void ColspanCell_StraddlingCollapsedColumn_ContentDoesNotShareWidthWithIt()
     {
-        // A straddling cell's content-based min-width must not be divided evenly across every column its
-        // colspan reaches when one of them is collapsed and will never carry any of it, if collapse were
-        // implemented.
+        // The spanning cell's min-width must not be shared with the collapsed column
         var (experiment, _) = LayoutHarness.Layout("""
             <!DOCTYPE html><html><body>
             <div style="width:80px">

@@ -22,7 +22,7 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Dom
 {
     /// <summary>
-    /// Layout engine for tables executing the complex layout of tables with rows/columns/headers/etc.
+    /// Lays out a table's rows and cells (CSS 2.1 §17).
     /// </summary>
     internal sealed class CssLayoutEngineTable
     {
@@ -33,9 +33,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         private readonly CssBox _tableBox;
 
-        /// <summary>
-        /// 
-        /// </summary>
         private CssBox _caption;
 
         private CssBox _headerBox;
@@ -53,7 +50,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private readonly List<CssBox> _columns = new List<CssBox>();
 
         /// <summary>
-        /// 
+        /// header rows, body rows and footer rows, in the order they're laid out
         /// </summary>
         private readonly List<CssBox> _allRows = new List<CssBox>();
 
@@ -118,10 +115,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// 
+        /// Lays out the rows and cells of <paramref name="tableBox"/>.
         /// </summary>
-        /// <param name="g"></param>
-        /// <param name="tableBox"> </param>
         public static void PerformLayout(RGraphics g, CssBox tableBox)
         {
             ArgChecker.AssertArgNotNull(g, "g");
@@ -142,8 +137,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         #region Private Methods
 
         /// <summary>
-        /// Analyzes the Table and assigns values to this CssTable object.
-        /// To be called from the constructor
+        /// Column widths first (CSS 2.1 §17.5.2), then the rows (§17.5.3).
         /// </summary>
         private void Layout(RGraphics g)
         {
@@ -174,7 +168,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Get the table boxes into the proper fields.
+        /// Get the table boxes into the proper fields. Only the first header and footer group count as
+        /// such (CSS 2.1 §17.2).
         /// </summary>
         private void AssignBoxKinds()
         {
@@ -360,9 +355,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// 
+        /// Gives the columns without a width their share of the available width (CSS 2.1 §17.5.2.2).
         /// </summary>
-        /// <param name="availCellSpace"></param>
         private void DetermineMissingColumnWidths(double availCellSpace)
         {
             double occupedSpace = 0f;
@@ -614,7 +608,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             double maxBottom = 0f;
             int currentrow = 0;
 
-            // change start X by if the table should align to center or right
+            // HTML's align attribute on the table ends up in text-align
             if (_tableBox.TextAlign == CssConstants.Center || _tableBox.TextAlign == CssConstants.Right)
             {
                 double maxRightCalc = GetWidthSum();
@@ -625,24 +619,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 _tableBox.Location = new RPoint(startx - _tableBox.ActualBorderLeftWidth - _tableBox.ActualPaddingLeft - GetHorizontalSpacing(), _tableBox.Location.Y);
             }
 
-            // css-tables-3 6.2: a <thead> repeats on every page the table's body/footer spans, where
-            // the group carries an avoiding break-inside (the UA default stylesheet sets this).
-            // Reserving the room here, before the first row of each continuation page is positioned,
-            // is what keeps that row from being drawn underneath the repeated header instead of below
-            // it - a fragment-tree-only repeat (no reservation) would just overlap real content.
+            // css-tables-3 6.2: a <thead> with an avoiding break-inside repeats on every page the table
+            // spans. The room for it is reserved here, before the first row of each continuation page is
+            // placed, so the row ends up below the repeated header instead of underneath it.
             //
-            // KNOWN LIMITATION (confirmed via direct testing, not yet fixed - fragmentation-engine-parity
-            // plan's R8 stage): this check runs once per ROW (below, gated on `i`), reading `cury`'s slot
-            // only at that row's own start. A row whose own cell content spans MULTIPLE pages by itself
-            // (one cell vastly longer than its siblings) only gets a repeat inserted for the FIRST page
-            // it crosses onto - the header does not repeat on further intermediate pages that same row's
-            // content continues to span, only reappearing once a LATER row's own start advances the slot
-            // again. Not data loss or a crash, just a missing header repeat on some pages of a fairly
-            // exotic table shape. A real fix needs to know how many pages a row spans before deciding how
-            // much room to reserve for it, which this single-pass-per-row model doesn't have without
-            // relaying the row out a second time once its true span is known - tractable, but out of
-            // scope for now given how rare the shape is (the far more common case - many ordinary rows,
-            // table spans many pages - already repeats correctly, verified by ThreadRepeatsOnEveryPageTheTableSpans).
+            // The check runs once per row, at the row's start. A single row spanning several pages only
+            // gets the header on the first page it crosses onto.
             var pageGridContainer = _tableBox.HtmlContainer;
             var repeatsHeader = pageGridContainer != null && pageGridContainer.HasRealPageGrid
                                  && _headerBox != null && BreakValues.AvoidsBreak(_headerBox.BreakInside);
@@ -655,9 +637,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 if (repeatsHeader && i == headerRowCount)
                 {
-                    // The header's own rows (i = 0..headerRowCount-1) just finished; maxBottom is
-                    // still theirs. Its own page is never itself a "repeat" - the header is already
-                    // there once, in flow.
+                    // The header rows just finished, maxBottom is still theirs. The header's own page
+                    // isn't a repeat, it's already there in flow.
                     headerHeight = maxBottom - starty;
                     lastRepeatSlot = PageSlotOf(pageGridContainer, starty);
                 }
@@ -675,9 +656,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         for (var hi = 0; hi < headerRowCount; hi++)
                         {
                             var sourceRow = _allRows[hi];
-                            // A <tr> box's own Location is never assigned by this row loop (only its
-                            // cells' is) - the first cell is the real reference point for "where this
-                            // header row actually renders".
+                            // The row loop only positions cells, not the row box itself
                             var sourceRenderedTop = sourceRow.Boxes.Count > 0 ? sourceRow.Boxes[0].Location.Y : starty;
                             var targetTop = pageTop + (sourceRenderedTop - starty);
                             _tableBox.RepeatedHeaderRows.Add(TableHeaderRepeat.CloneAndPosition(sourceRow, sourceRenderedTop, targetTop));
@@ -736,14 +715,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     }
                 }
 
-                // css-tables-3 §6.1: "user agents must attempt to preserve the table rows unfragmented
-                // if the cells spanning the row do not span any subsequent row, and their height is at
-                // least twice smaller than both the fragmentainer height and width" - a UA-default
-                // requirement, not something an author has to opt into. If this row straddles a page
-                // boundary and isn't "freely fragmentable" by that rule, shift the whole row - not just
-                // one cell - down to the next page's content top. The table's own break-inside:avoid
-                // still forces the attempt even for an otherwise-freely-fragmentable row (an author's
-                // explicit, stronger request), matching this port's existing behavior for that case.
+                // css-tables-3 §6.1: a row straddling a page boundary that the UA has to try to keep in
+                // one piece moves down to the next page as a whole. The table's own break-inside:avoid
+                // forces that for every row.
                 if (pageGridContainer != null && pageGridContainer.HasRealPageGrid && maxBottom > cury)
                 {
                     var topSlot = pageGridContainer.PageIndexOf(cury);
@@ -758,25 +732,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     {
                         var delta = pageGridContainer.PageTopOf(topSlot + 1) - cury;
 
-                        // cury == starty means nothing has been drawn above this row within the table yet
-                        // (no earlier row consumed space on the table's original page) - so this row moving
-                        // IS the table's own content moving wholesale, not one row among several straddling
-                        // independently. The table's own Location was set once, before this method ever
-                        // ran, by its parent's child loop - row-atomicity shifting cell rectangles alone
-                        // left it stale, so EnforceKeepWithNext(table) (called on the table exactly like any
-                        // other child) never saw the boundary crossing and could never pull an avoid-chained
-                        // heading along. Only the table's own Location follows here - deliberately NOT
-                        // BlockFragmentation.PropagateContainerRelocation's further climb into an ancestor:
-                        // this method can run more than once per overall document pass whenever an ancestor
-                        // is independently relocated by RelocateIfNeeded (which re-lays the whole subtree
-                        // out fresh at its own target) - climbing here too would double-count that ancestor's
-                        // own already-correct shift on top of RelocateIfNeeded's (confirmed: caused a real
-                        // regression in BoxContainingARepeatingTable_IsStillRelocated, a table inside its own
-                        // break-inside:avoid card, off by the same few pixels PageSlotOf's collapsed-border
-                        // tolerance allows). A plain, non-avoid wrapper around a table whose first row alone
-                        // triggers this path is not climbed to - a narrower fix than full css-break-3 3.1
-                        // propagation, matching what the two tests this fixes actually exercise (the table
-                        // itself as EnforceKeepWithNext's own child, not a further-wrapped one).
+                        // The first row moving means the whole table moves, so its Location has to follow,
+                        // or EnforceKeepWithNext never sees the table cross the page boundary. Ancestors
+                        // aren't moved: RelocateIfNeeded lays a relocated ancestor out again anyway, moving
+                        // it here as well would apply that shift twice.
                         if (Math.Abs(cury - starty) < 0.01)
                         {
                             _tableBox.Location = new RPoint(_tableBox.Location.X, _tableBox.Location.Y + delta);
@@ -784,15 +743,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                         foreach (CssBox cell in row.Boxes)
                         {
-                            // A rowspan-crossing cell's real content lives on CssSpacingBox.ExtendedBox,
-                            // not on the placeholder itself (Display:none, no children/words/rectangles -
-                            // OffsetTop on it was a silent no-op, leaving the spanning cell's actual
-                            // bottom edge stale while the rest of the row moved on). Unlike an ordinary
-                            // cell, the spanning cell's own top and content are already anchored to
-                            // whichever earlier row it started in (laid out there, unaffected by this
-                            // row's shift) - so rather than OffsetTop-ing the whole subtree (which would
-                            // incorrectly drag its top and content away from that row too), only its
-                            // bottom edge is extended to cover the gap this row's move just opened up.
+                            // A cell spanning in from an earlier row stays anchored there, only its bottom
+                            // edge grows to cover the gap
                             if (cell is CssSpacingBox spacer)
                             {
                                 spacer.ExtendedBox.ActualBottom += delta;
@@ -876,7 +828,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Gets the colspan of the specified box
+        /// Gets the colspan of the specified box. CSS 2.1 §17.5 leaves spans to the document language.
         /// </summary>
         /// <param name="b"></param>
         private static int GetColSpan(CssBox b)
@@ -910,42 +862,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// The pagination slot <paramref name="y"/> falls in, for the repeated-header loop above - which
-        /// needs to know which page the row cursor is really on, as opposed to
-        /// <see cref="HtmlContainerInt.PageIndexOf"/>'s raw arithmetic.
+        /// The page slot <paramref name="y"/> falls in, for the repeated-header loop.
         /// </summary>
         /// <remarks>
-        /// A confirmed, real bug found while porting this port's own table-fragmentation test suite: for a
-        /// <c>border-collapse:collapse</c> table (<see cref="GetVerticalSpacing()"/> is <c>-1</c>, a
-        /// deliberate one-pixel overlap between the first row and the table's own top border), <c>starty</c>
-        /// is one pixel LESS than <see cref="CssBox.ClientTop"/> whenever the table sits flush at a page's
-        /// own content top (the common case: the table is the first thing on a page, or was just relocated
-        /// to <c>PageTopOf(slot)</c> by <see cref="Fragmentation.BlockFragmentation.RelocateIfNeeded"/>).
-        /// Fed straight into <see cref="HtmlContainerInt.PageIndexOf"/>, that one pixel is enough to floor
-        /// into the SLOT BEFORE the one the table's box actually starts in (observed directly: a 200px-tall
-        /// page grid with <c>MarginTop=10</c>, table starting at <c>ClientTop=10</c>, gives
-        /// <c>starty=9</c> and <c>PageIndexOf(9)=-1</c>, not <c>0</c>). Seeding <c>lastRepeatSlot</c> from
-        /// that value made the repeated-header loop see a spurious "transition" into slot 0 at the very
-        /// first body row, consuming its first repeat on a duplicate drawn almost exactly on top of the
-        /// header the table already has in flow there (confirmed: before this fix, a table's own first page
-        /// painted its header twice). <see cref="CssBox.ClientTop"/> itself is never subject to the
-        /// collapsed-border overlap (it is the table's plain border/padding-resolved box edge), so clamping
-        /// to it here is a safe floor: every legitimate use of <c>cury</c> for this loop's slot arithmetic
-        /// is asking "which page is the table's own row cursor on", and that can never sensibly be a page
-        /// before the table's own top.
-        /// </remarks>
-        /// <remarks>
-        /// Deliberately NOT applied to the row-preservation straddle check a few lines below (which still
-        /// calls <see cref="HtmlContainerInt.PageIndexOf"/> directly, unclamped) - confirmed by running the
-        /// existing regression suite both ways: that check's own reaction to this exact -1/0 misread is a
-        /// harmless, arguably-correct 1px nudge (shifting a row that starts 1px into the "previous" slot
-        /// down to that slot's real top), and two pre-existing tests
-        /// (<c>CssLayoutEngineTablePageBreakTests.AvailableHeight_PageBreakFiringPoint_RowDoesNotBleedIntoBottomMargin</c>/
-        /// <c>TableLayout_MultiPageTable_RowsDoNotOverlapPageMargins</c>) depend on that nudge keeping a
-        /// collapsed-border table's very first row flush with its page's own content top rather than
-        /// poking one pixel above it. Clamping there too would remove a real, useful correction to fix a
-        /// bug in a different, unrelated caller (the header-repeat loop, which reacts to the same misread
-        /// by inserting visible duplicate content rather than by a sub-pixel nudge).
+        /// Clamped to the table's top: with collapsed borders the spacing is -1, so the first row starts 1px
+        /// above <see cref="CssBox.ClientTop"/>. For a table at the top of a page that floors into the
+        /// previous slot and repeats the header on the table's own first page.
+        /// The row preservation check uses the unclamped <see cref="HtmlContainerInt.PageIndexOf"/> on
+        /// purpose, there the misread moves the first row 1px down, flush with the page's content top.
         /// </remarks>
         private int PageSlotOf(HtmlContainerInt container, double y) =>
             container.PageIndexOf(Math.Max(y, _tableBox.ClientTop));
@@ -1048,14 +972,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Gets the available width for the whole table.
+        /// Gets the table's max-width, 9999 when it has none.
         /// It also sets the value of WidthSpecified
         /// </summary>
-        /// <returns></returns>
-        /// <remarks>
-        /// The table's width can be larger than the result of this method, because of the minimum 
-        /// size that individual boxes.
-        /// </remarks>
         private double GetMaxTableWidth()
         {
             var tblen = new CssLength(_tableBox.MaxWidth);
@@ -1183,7 +1102,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Gets the actual horizontal spacing of the table
+        /// Gets the actual horizontal spacing of the table. With collapsed borders it's -1, so adjacent
+        /// cell borders overlap by one pixel (CSS 2.1 §17.6.2).
         /// </summary>
         private double GetHorizontalSpacing()
         {
@@ -1191,7 +1111,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Gets the actual horizontal spacing of the table
+        /// Gets the actual horizontal spacing of <paramref name="box"/>
         /// </summary>
         private static double GetHorizontalSpacing(CssBox box)
         {

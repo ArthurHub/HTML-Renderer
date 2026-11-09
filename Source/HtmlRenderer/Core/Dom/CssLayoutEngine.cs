@@ -201,10 +201,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Applies special vertical alignment for table-cells
+        /// Moves the content of a cell down for 'vertical-align' middle and bottom (CSS 2.1 §17.5.3).
         /// </summary>
-        /// <param name="g"></param>
-        /// <param name="cell"></param>
         public static void ApplyCellVerticalAlignment(RGraphics g, CssBox cell)
         {
             ArgChecker.AssertArgNotNull(g, "g");
@@ -230,29 +228,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 b.OffsetTop(dist);
             }
-
-            //float top = cell.ClientTop;
-            //float bottom = cell.ClientBottom;
-            //bool middle = cell.VerticalAlign == CssConstants.Middle;
-
-            //foreach (LineBox line in cell.LineBoxes)
-            //{
-            //    for (int i = 0; i < line.RelatedBoxes.Count; i++)
-            //    {
-
-            //        double diff = bottom - line.RelatedBoxes[i].Rectangles[line].Bottom;
-            //        if (middle) diff /= 2f;
-            //        RectangleF r = line.RelatedBoxes[i].Rectangles[line];
-            //        line.RelatedBoxes[i].Rectangles[line] = new RectangleF(r.X, r.Y + diff, r.Width, r.Height);
-
-            //    }
-
-            //    foreach (BoxWord word in line.Words)
-            //    {
-            //        double gap = word.Top - top;
-            //        word.Top = bottom - gap - word.Height;
-            //    }
-            //}
         }
 
 
