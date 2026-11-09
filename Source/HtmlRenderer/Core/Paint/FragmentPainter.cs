@@ -242,7 +242,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
                 }
             }
 
-            // Split to match the old live-tree walk's z-order: normal flow, then absolute, then fixed.
+            // Normal flow, then absolute, then fixed, per parent rather than per stacking context (CSS 2.1 §9.9.1)
             foreach (var child in fragment.Children)
             {
                 if (child.Box.Position != CssConstants.Absolute && !child.Box.IsFixed)

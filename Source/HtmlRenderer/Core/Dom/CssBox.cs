@@ -258,10 +258,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// True for a box removed from normal flow: floated, or absolutely/fixed positioned. Ported
-        /// from PeachPDF's CssBox.IsOutOfFlow - used to find a container's last IN-FLOW child (e.g.
-        /// <see cref="MarginBottomCollapse"/>), since an out-of-flow box doesn't contribute to a
-        /// non-BFC-establishing container's own auto-height (CSS 2.1 10.6.3/10.6.7).
+        /// Floated, absolutely or fixed positioned, i.e. out of flow (CSS 2.1 §9.3). The root isn't
+        /// included.
         /// </summary>
         public bool IsOutOfFlow
         {
@@ -506,9 +504,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// If no before box is given the new box will be added at the end of parent boxes collection.<br/>
         /// If before box doesn't exists in parent box exception is thrown.<br/>
         /// </summary>
-        /// <remarks>
-        /// To learn more about anonymous inline boxes visit: http://www.w3.org/TR/CSS21/visuren.html#anonymous
-        /// </remarks>
+        /// <remarks>CSS 2.1 §9.2.2.1</remarks>
         /// <param name="parent">the box to add the new box to it as child</param>
         /// <param name="tag">optional: the html tag to define the box</param>
         /// <param name="before">optional: to insert as specific location in parent box</param>
@@ -544,10 +540,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// If no before box is given the new box will be added at the end of parent boxes collection.<br/>
         /// If before box doesn't exists in parent box exception is thrown.<br/>
         /// </summary>
-        /// <remarks>
-        /// To learn more about anonymous block boxes visit CSS spec:
-        /// http://www.w3.org/TR/CSS21/visuren.html#anonymous-block-level
-        /// </remarks>
+        /// <remarks>CSS 2.1 §9.2.1.1</remarks>
         /// <param name="parent">the box to add the new block box to it as child</param>
         /// <param name="tag">optional: the html tag to define the box</param>
         /// <param name="before">optional: to insert as specific location in parent box</param>
@@ -880,10 +873,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                     if (Position == CssConstants.Fixed)
                     {
-                        // Computed here (not eagerly from the Left/Top property setters, which used to
-                        // race ahead of ActualMarginLeft/Top and ContainingBlock/HtmlContainer being ready
-                        // and cache a margin-less Location that never got recomputed) so margin is always
-                        // resolved against a fully-set-up box, matching every other positioning scheme.
                         var fixedLocation = GetActualLocation(Left, Top);
                         left = fixedLocation.X;
                         top = fixedLocation.Y;
@@ -902,9 +891,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         // one, matching the same walk CollectAdjoiningMarginsBeforeSibling does when
                         // gathering the margin SET itself.
                         var marginAnchor = FindMarginAnchorSibling(prevSibling);
-                        // StaticBottom (not ActualBottom): a relatively-positioned previous sibling's visual
-                        // offset must not drag this box down with it (CSS 2.1 9.4.3 - relative positioning
-                        // "has no effect on the position of any other box"). Ported from PeachPDF.
+                        // StaticBottom, the previous sibling's relative offset doesn't move this box (CSS 2.1 §9.4.3)
                         var baseTopWithoutMargin = (marginAnchor == null && ParentBox != null ? ParentBox.ClientTop : ParentBox == null ? Location.Y : 0) + (marginAnchor != null ? marginAnchor.StaticBottom + marginAnchor.ActualBorderBottomWidth : 0);
 
                         if (_incomingToken != null && ReferenceEquals(_incomingToken.Box, this))
@@ -958,22 +945,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         Location = new RPoint(left, top);
                         ActualBottom = top;
 
-                        // static position committed above; float/clear now overwrite Location using that
-                        // static position as input. No-op for boxes that are neither floated nor clearing.
+                        // Floats and clearance start from the static position (CSS 2.1 §9.5)
                         CssLayoutEngine.FloatBox(this);
 
-                        // CSS 2.1 §9.4.3/§10.3.7: position:relative/absolute apply on top of the static
-                        // position just committed above. Ported from PeachPDF's CssBox.CommitBlockChildOffset
-                        // (adapted: this fork places a box within its own PerformLayoutImp rather than a
-                        // parent placing its child, and position:fixed's own offset - which never runs
-                        // through this static-flow branch at all, see the Position==Fixed arm above - is
-                        // instead resolved by CssBoxProperties.GetActualLocation).
                         if (Position == CssConstants.Relative)
                         {
-                            // Purely visual (§9.4.3): the offset is recorded separately (RelativeOffsetX/Y)
-                            // so StaticBottom can back it out again for margin-collapse/sibling-placement
-                            // consumers - "the effect of relative positioning on ... the box's parent's or
-                            // following siblings' layout is nil".
+                            // Kept in RelativeOffsetX/Y, so StaticBottom can take it out again (CSS 2.1 §9.4.3)
                             var offsetX = ResolveNearFarOffset(this, Left, Right, ActualWidth);
                             var offsetY = ResolveNearFarOffset(this, Top, Bottom, ActualHeight);
 
@@ -988,13 +965,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                             var leftIsAuto = string.IsNullOrEmpty(Left) || Left == CssConstants.Auto;
                             var rightIsAuto = string.IsNullOrEmpty(Right) || Right == CssConstants.Auto;
 
-                            // left/top are measured from the containing block's PADDING edge (ClientLeft/
-                            // ClientTop), not its border-box edge, and the box's own margin still applies
-                            // on top of that offset (CSS 2.1 §10.3.7). When left is auto but right is set,
-                            // anchor off the containing block's right edge instead - this box's own
-                            // border-box width (Size.Width) is already resolved by this point (the shrink-
-                            // to-fit/explicit-width computation above), unlike its height (see the
-                            // top/bottom case, resolved later in this method once ApplyHeight has run).
+                            // Offsets are from the containing block's padding edge (CSS 2.1 §10.1). 'bottom'
+                            // needs the height and is applied after ApplyHeight.
                             var absLeft = !leftIsAuto
                                 ? nearestPositionedAncestor.ClientLeft + ActualMarginLeft
                                   + ResolveOffsetOrZero(this, Left, nearestPositionedAncestor.ActualWidth)
@@ -1118,20 +1090,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                 if (topIsAuto && !bottomIsAuto)
                 {
-                    // The top/bottom counterpart of the left/right shrink-to-fit-anchoring case above:
-                    // unlike width, this box's own height is only known now, after ApplyHeight has run
-                    // (auto height depends on this box's own already-laid-out content) - so the
-                    // bottom-anchored case can't resolve at the same point the left/right one does, and
-                    // is instead corrected here by shifting the whole subtree (OffsetTop, the same deep-
-                    // move helper break relocation/table-header repetition already use) once this box's
-                    // final height is known. CSS 2.1 §10.3.7.
-                    //
-                    // The ancestor's own ClientBottom/ActualBottom is NOT usable here: this box is still
-                    // laying out as one of the ancestor's descendants, so the ancestor's own ApplyHeight
-                    // (which sets ActualBottom, run only after ALL of its children finish) has not run yet
-                    // either. ActualHeight, unlike ActualBottom, resolves directly from the ancestor's own
-                    // explicit Height CSS string without depending on that - so the ancestor's content-box
-                    // bottom edge is derived from Location.Y + ActualHeight instead.
+                    // The ancestor is still being laid out and has no ActualBottom yet, so its bottom edge
+                    // comes from ActualHeight
                     var nearestPositionedAncestor = DomUtils.GetNearestPositionedAncestor(this);
                     var ancestorBorderBoxBottom = nearestPositionedAncestor.Location.Y + nearestPositionedAncestor.ActualHeight;
                     var ancestorClientBottom = ancestorBorderBoxBottom
@@ -1141,9 +1101,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     var targetBottom = ancestorClientBottom - ActualMarginBottom - offsetBottom;
                     var deltaY = targetBottom - ActualBottom;
 
-                    // ActualBottom is computed (Location.Y + Size.Height, see CssBoxProperties.ActualBottom),
-                    // so shifting Location.Y via OffsetTop already moves it by the same delta - no separate
-                    // update needed (and adding one double-counts the shift).
+                    // OffsetTop moves ActualBottom along
                     if (deltaY != 0)
                     {
                         OffsetTop(deltaY);
@@ -2192,20 +2150,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
         protected override RPoint GetActualLocation(string X, string Y)
         {
-            // position:fixed's own left/top offset resolves against the page/viewport size (CSS 2.1
-            // §10.1: the initial containing block) and, like every other positioning scheme, the box's own
-            // margin still applies on top of that offset. Ported from PeachPDF's CommitBlockChildOffset
-            // Fixed branch (PeachPDF does not consult right/bottom for position:fixed either).
+            // The containing block of a fixed box is the viewport, or the page (CSS 2.1 §9.6.1)
             var left = ActualMarginLeft + ResolveOffsetOrZero(this, X, this.HtmlContainer.PageSize.Width);
             var top = ActualMarginTop + ResolveOffsetOrZero(this, Y, this.HtmlContainer.PageSize.Height);
             return new RPoint(left, top);
         }
 
         /// <summary>
-        /// CSS 2.1 §9.4.3's near/far offset resolution for one axis: the near offset (<c>left</c>/<c>top</c>)
-        /// wins when set; if it's <c>auto</c> and the far offset (<c>right</c>/<c>bottom</c>) isn't, the far
-        /// offset applies with its sign flipped; if both are <c>auto</c>, the offset is 0. Ported from
-        /// PeachPDF's CssBox.ResolveNearFarOffset.
+        /// The relative offset along one axis from <c>left</c>/<c>top</c> and <c>right</c>/<c>bottom</c>
+        /// (CSS 2.1 §9.4.3).
         /// </summary>
         private static double ResolveNearFarOffset(CssBox box, string near, string far, double basis)
         {
@@ -2225,12 +2178,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             return 0;
         }
 
-        /// <summary>
-        /// Resolves a single <c>left</c>/<c>top</c>/<c>right</c>/<c>bottom</c> offset for the absolute/fixed
-        /// positioning branches, where the counterpart edge is never consulted (unlike the relative-
-        /// positioning near/far resolution in <see cref="ResolveNearFarOffset"/>) - an <c>auto</c> offset
-        /// simply contributes 0. Ported from PeachPDF's CssBox.ResolveOffsetOrZero.
-        /// </summary>
+        /// <summary>One box offset in pixels, 0 for <c>auto</c>.</summary>
         private static double ResolveOffsetOrZero(CssBox box, string offset, double basis)
         {
             return offset != CssConstants.Auto && !string.IsNullOrEmpty(offset)

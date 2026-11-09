@@ -3,20 +3,6 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 
 namespace HtmlRenderer.IntegrationTest.Layout;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/Integration/FloatLayoutRegressionTests.cs. CSS 2.1 §9.5: a floated box is taken
-/// out of normal flow and shifted to the left/right edge of its containing block; subsequent inline content
-/// flows around it, and other floats stack against it rather than overlapping. §9.5.2 defines <c>clear</c> as
-/// only clearing floats of the matching (or "both") side.
-/// <para>
-/// The four perf-regression-guard cases from the source file (<c>FloatScanCalls</c>/<c>FloatScanBoxVisits</c>
-/// counters on <c>HtmlContainerInt</c>, guarding an O(document size) vs O(1) float-scan short-circuit) are not
-/// ported: this fork's <c>HtmlContainerInt</c> has the same <c>HasFloatedBoxes</c> short-circuit and float-scan
-/// helpers (confirmed in <c>DomUtils.GetFirstIntersectingFloatBox</c> et al.), but no <c>FloatScanCalls</c>/
-/// <c>FloatScanBoxVisits</c> instrumentation to observe it through - that's an internal perf counter, not CSS
-/// 2.1 behavior, so it's out of scope for this pass rather than something to add.
-/// </para>
-/// </summary>
 [DoNotParallelize]
 [TestClass]
 public sealed class FloatLayoutIntegrationTests
@@ -24,6 +10,7 @@ public sealed class FloatLayoutIntegrationTests
     private const double Delta = 1.0;
 
     [TestMethod]
+    [Spec("css21", "visuren.html#floats")]
     public void Float_PushesFollowingSiblingTextToTheRight()
     {
         var html = LayoutHarness.Wrap(
@@ -58,6 +45,7 @@ public sealed class FloatLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#floats")]
     public void Float_NarrowsAvailableWidth_SoTextWrapsToMoreLines()
     {
         const string longText =
@@ -83,10 +71,9 @@ public sealed class FloatLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#float-position")]
     public void FloatLeft_WrapsBelowAFullWidthFloatRightSibling()
     {
-        // A float:left box that would overlap a previously-placed, full-width float:right sibling must wrap
-        // below it rather than overlapping.
         var html = LayoutHarness.Wrap(
             "<div style='width:200px;'>"
             + "<div id='r' style='float:right; width:200px; height:50px;'></div>"
@@ -102,39 +89,42 @@ public sealed class FloatLayoutIntegrationTests
     }
 
     [TestMethod]
-    public void FloatRight_InNarrowerNestedBlock_AvoidsAWiderAncestorFloatRightSibling()
+    [Ignore("Gap, see Spec/css21.yml")]
+    [Spec("css21", "visuren.html#float-position")]
+    public void FloatRight_InNarrowerNestedBlock_StaysInsideItsContainingBlock()
     {
-        // A float:right box placed inside a narrower, non-floated nested block still avoids an ancestor
-        // float:right sibling that sits past the nested block's own right edge.
         var html = LayoutHarness.Wrap(
             "<div style='width:500px;'>"
             + "<div id='outerR' style='float:right; width:50px; height:80px;'></div>"
-            + "<div style='width:200px;'><div id='r' style='float:right; width:100px; height:30px;'></div></div></div>");
+            + "<div id='cb' style='width:200px;'><div id='r' style='float:right; width:100px; height:30px;'></div></div></div>");
 
         var (root, _) = LayoutHarness.Layout(html);
-        var outerR = LayoutHarness.FindById(root, "outerR")!;
+        var cb = LayoutHarness.FindById(root, "cb")!;
         var r = LayoutHarness.FindById(root, "r")!;
 
-        Assert.AreEqual(outerR.Location.X - outerR.ActualMarginLeft, r.ActualRight, Delta);
+        Assert.AreEqual(cb.ActualRight, r.ActualRight, Delta);
     }
 
     [TestMethod]
-    public void FloatRight_InNarrowerNestedBlock_WithMarginLeft_StillAvoidsAWiderAncestorFloatRightSibling()
+    [Ignore("Gap, see Spec/css21.yml")]
+    [Spec("css21", "visuren.html#float-position")]
+    public void FloatRight_InNarrowerNestedBlock_WithMarginLeft_StaysInsideItsContainingBlock()
     {
         var html = LayoutHarness.Wrap(
             "<div style='width:500px;'>"
             + "<div id='outerR' style='float:right; width:280px; height:80px;'></div>"
-            + "<div style='width:200px;'>"
+            + "<div id='cb' style='width:200px;'>"
             + "<div id='r' style='float:right; width:100px; height:30px; margin-left:40px;'></div></div></div>");
 
         var (root, _) = LayoutHarness.Layout(html);
-        var outerR = LayoutHarness.FindById(root, "outerR")!;
+        var cb = LayoutHarness.FindById(root, "cb")!;
         var r = LayoutHarness.FindById(root, "r")!;
 
-        Assert.AreEqual(outerR.Location.X - outerR.ActualMarginLeft, r.ActualRight, Delta);
+        Assert.AreEqual(cb.ActualRight, r.ActualRight, Delta);
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#floats")]
     public void FloatRight_NarrowsLineWrapWidth_SoTextWrapsBeforeReachingIt()
     {
         var html = LayoutHarness.Wrap(
@@ -160,6 +150,7 @@ public sealed class FloatLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#float-position")]
     public void FloatRight_WithMarginLeft_StillReachesContainingBlockRightEdge()
     {
         var html = LayoutHarness.Wrap(
@@ -174,6 +165,7 @@ public sealed class FloatLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#floats")]
     public void FloatLeft_StillNarrowsLineWrapWidth_AfterTheRightFloatFix()
     {
         const string longText =
@@ -211,9 +203,9 @@ public sealed class FloatLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#flow-control")]
     public void ClearLeft_IgnoresAPrecedingFloatRightSibling()
     {
-        // clear:left only clears past float:left siblings - a float:right sibling must not push it down.
         var html = LayoutHarness.Wrap(
             "<div style='width:200px;'>"
             + "<div id='r' style='float:right; width:50px; height:80px;'></div>"
@@ -227,9 +219,9 @@ public sealed class FloatLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#flow-control")]
     public void ClearRight_IgnoresAPrecedingFloatLeftSibling()
     {
-        // Symmetric case: clear:right ignoring a float:left sibling.
         var html = LayoutHarness.Wrap(
             "<div style='width:200px;'>"
             + "<div id='l' style='float:left; width:50px; height:80px;'></div>"
@@ -242,7 +234,288 @@ public sealed class FloatLayoutIntegrationTests
             $"clear:right must not clear past a float:left sibling, was pushed to Y={cleared.Location.Y}");
     }
 
+    [TestMethod]
+    [Spec("css21", "visuren.html#floats")]
+    public void FollowingBlock_FlowsAsIfTheFloatDidNotExist()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<div id='f' style='float:left;width:100px;height:50px'></div>"
+            + "<div id='b' style='height:10px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var f = LayoutHarness.FindById(root, "f")!;
+        var b = LayoutHarness.FindById(root, "b")!;
+
+        Assert.AreEqual(f.Location.Y, b.Location.Y, Delta);
+        Assert.AreEqual(0, b.Location.X, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visuren.html#floats")]
+    public void BlockFormattingContextRoot_DoesNotOverlapAFloat()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<div id='f' style='float:left;width:100px;height:50px'></div>"
+            + "<div id='b' style='overflow:hidden;height:20px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var f = LayoutHarness.FindById(root, "f")!;
+        var b = LayoutHarness.FindById(root, "b")!;
+
+        Assert.IsTrue(b.Location.X >= f.ActualRight - Delta || b.Location.Y >= f.ActualBottom - Delta,
+            $"b at ({b.Location.X}, {b.Location.Y}) overlaps the float ending at ({f.ActualRight}, {f.ActualBottom})");
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visuren.html#floats")]
+    public void InlineFloat_IsPlacedAtTheTopOfTheCurrentLine_AndTheEarlierTextMovesPastIt()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>before<span id='f' style='float:left;width:50px;height:30px'></span> after</div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var f = LayoutHarness.FindById(root, "f")!;
+        var before = FindWordByText(root, "before")!;
+
+        Assert.AreEqual(0, f.Location.X, Delta);
+        Assert.AreEqual(before.Top, f.Location.Y, Delta);
+        Assert.IsGreaterThanOrEqualTo(50 - Delta, before.Left);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visuren.html#floats")]
+    public void Float_PaintsInFrontOfAnOverlappingInFlowBlock()
+    {
+        var html = PaintHarness.Wrap(
+            "<div style='float:left;width:50px;height:50px;background-color:rgb(255,0,0)'></div>"
+            + "<div style='height:50px;background-color:rgb(0,0,255)'></div>");
+
+        var (_, container) = PaintHarness.Layout(html);
+        var rects = PaintHarness.PaintPage(container).Log.OfType<RecordingGraphics.DrawRectCall>().ToList();
+
+        var floatIndex = rects.FindIndex(c => c.Color.R == 255 && c.Color.B == 0);
+        var blockIndex = rects.FindIndex(c => c.Color.B == 255 && c.Color.R == 0);
+
+        Assert.IsGreaterThanOrEqualTo(0, floatIndex);
+        Assert.IsGreaterThan(blockIndex, floatIndex);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#float-position")]
+    public void LeftFloat_OuterEdgeTouchesTheContainingBlockEdge()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='padding-left:20px;width:300px'><div id='f' style='float:left;margin-left:10px;width:50px;height:20px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+
+        Assert.AreEqual(30, LayoutHarness.FindById(root, "f")!.Location.X, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#float-position")]
+    public void SuccessiveLeftFloats_StackSideBySide()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<div id='a' style='float:left;width:50px;height:20px;margin-right:5px'></div>"
+            + "<div id='b' style='float:left;width:50px;height:20px;margin-left:7px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var a = LayoutHarness.FindById(root, "a")!;
+        var b = LayoutHarness.FindById(root, "b")!;
+
+        Assert.AreEqual(a.Location.Y, b.Location.Y, Delta);
+        Assert.AreEqual(a.ActualRight + 5 + 7, b.Location.X, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visuren.html#float-position")]
+    public void SuccessiveRightFloats_StackSideBySide()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<div id='a' style='float:right;width:50px;height:20px'></div>"
+            + "<div id='b' style='float:right;width:50px;height:20px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var a = LayoutHarness.FindById(root, "a")!;
+        var b = LayoutHarness.FindById(root, "b")!;
+
+        Assert.AreEqual(250, a.Location.X, Delta);
+        Assert.AreEqual(a.Location.Y, b.Location.Y, Delta);
+        Assert.AreEqual(a.Location.X, b.ActualRight, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#float-position")]
+    public void LeftFloatThatDoesNotFit_MovesBelowTheEarlierLeftFloat()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:100px'>"
+            + "<div id='a' style='float:left;width:60px;height:20px'></div>"
+            + "<div id='b' style='float:left;width:60px;height:20px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var a = LayoutHarness.FindById(root, "a")!;
+        var b = LayoutHarness.FindById(root, "b")!;
+
+        Assert.AreEqual(0, b.Location.X, Delta);
+        Assert.AreEqual(a.ActualBottom, b.Location.Y, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visuren.html#float-position")]
+    public void FloatThatDoesNotFit_IsPlacedAsHighAsPossible()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:120px'>"
+            + "<div id='a' style='float:left;width:50px;height:100px'></div>"
+            + "<div id='b' style='float:left;width:50px;height:20px'></div>"
+            + "<div id='c' style='float:left;width:50px;height:20px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var b = LayoutHarness.FindById(root, "b")!;
+        var c = LayoutHarness.FindById(root, "c")!;
+
+        Assert.AreEqual(b.ActualBottom, c.Location.Y, Delta);
+        Assert.AreEqual(50, c.Location.X, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#float-position")]
+    public void Float_IsNotHigherThanAnEarlierBlock()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<div id='a' style='height:40px'></div>"
+            + "<div id='f' style='float:left;width:50px;height:20px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+
+        Assert.AreEqual(LayoutHarness.FindById(root, "a")!.ActualBottom, LayoutHarness.FindById(root, "f")!.Location.Y, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#float-position")]
+    public void Float_IsNotHigherThanAnEarlierLineBox()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<p id='p' style='margin:0'>text</p>"
+            + "<div id='f' style='float:left;width:50px;height:20px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+
+        Assert.IsGreaterThanOrEqualTo(FindWordByText(root, "text")!.Bottom - Delta, LayoutHarness.FindById(root, "f")!.Location.Y);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#flow-control")]
+    public void ClearBoth_MovesTheBoxBelowLeftAndRightFloats()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<div style='float:left;width:50px;height:40px'></div>"
+            + "<div style='float:right;width:50px;height:70px'></div>"
+            + "<div id='c' style='clear:both;height:10px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+
+        Assert.AreEqual(70, LayoutHarness.FindById(root, "c")!.Location.Y, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#flow-control")]
+    public void Clearance_PutsTheBorderEdgeAtTheFloatsBottomOuterEdge()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<div id='b1' style='height:10px;margin-bottom:10px'></div>"
+            + "<div style='float:left;width:50px;height:50px;margin-bottom:5px'></div>"
+            + "<div id='b2' style='clear:left;margin-top:20px;height:10px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var b1 = LayoutHarness.FindById(root, "b1")!;
+
+        Assert.AreEqual(b1.ActualBottom + 10 + 50 + 5, LayoutHarness.FindById(root, "b2")!.Location.Y, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#flow-control")]
+    public void NegativeClearance_KeepsTheHypotheticalPositionWhenAlreadyPastTheFloat()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<div id='p1' style='height:10px;margin-bottom:40px'></div>"
+            + "<div style='float:left;width:50px;height:20px;margin:0'></div>"
+            + "<div id='p3' style='clear:left;margin-top:30px;height:10px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var p1 = LayoutHarness.FindById(root, "p1")!;
+
+        Assert.AreEqual(p1.ActualBottom + 40 + 20, LayoutHarness.FindById(root, "p3")!.Location.Y, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visuren.html#flow-control")]
+    public void ClearOnAFloat_MovesItBelowEarlierFloats()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<div id='a' style='float:left;width:50px;height:40px'></div>"
+            + "<div id='b' style='float:left;clear:left;width:50px;height:20px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var a = LayoutHarness.FindById(root, "a")!;
+        var b = LayoutHarness.FindById(root, "b")!;
+
+        Assert.AreEqual(0, b.Location.X, Delta);
+        Assert.AreEqual(a.ActualBottom, b.Location.Y, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visuren.html#flow-control")]
+    public void Clear_IgnoresFloatsInOtherBlockFormattingContexts()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<div id='bfc' style='overflow:hidden;height:10px'><div style='float:left;width:50px;height:80px'></div></div>"
+            + "<div id='c' style='clear:both;height:10px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+
+        Assert.AreEqual(10, LayoutHarness.FindById(root, "c")!.Location.Y, Delta);
+    }
+
     // ── Helpers ────────────────────────────────────────────────────────────
+
+    private static CssRect? FindWordByText(CssBox box, string text)
+    {
+        foreach (var word in box.Words)
+        {
+            if (word.Text == text)
+                return word;
+        }
+
+        foreach (var child in box.Boxes)
+        {
+            var found = FindWordByText(child, text);
+            if (found is not null)
+                return found;
+        }
+
+        return null;
+    }
 
     private static CssRect? FindFirstWord(CssBox box)
     {

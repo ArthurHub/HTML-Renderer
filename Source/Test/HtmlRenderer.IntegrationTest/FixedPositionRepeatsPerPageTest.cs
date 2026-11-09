@@ -9,18 +9,6 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
-/// <summary>
-/// Verifies a real, spec-confirmed missing feature found while auditing this port's fragmentation engine
-/// against PeachPDF a third time, then checking the actual W3C text directly
-/// (<see href="https://www.w3.org/TR/css-position-3/">css-position-3</see>): "in paged media, the page
-/// area of each page; fixed positioned boxes are thus replicated on every page", and user agents "must
-/// not paginate the content of fixed-positioned boxes". A <c>position:fixed</c> element (a print
-/// header/watermark - <c>bottom</c>/<c>right</c> anchoring is a separate, pre-existing gap: neither
-/// property is parsed for absolute/fixed positioning at all, so a bottom-anchored footer, the more common
-/// real print pattern, is out of scope here) previously rendered on exactly one page - wherever its
-/// <c>top</c>/<c>left</c> offset happened to be interpreted as an absolute document coordinate - instead
-/// of being replicated identically on every page.
-/// </summary>
 [TestClass]
 [DoNotParallelize]
 public sealed class FixedPositionRepeatsPerPageTest
@@ -42,6 +30,7 @@ public sealed class FixedPositionRepeatsPerPageTest
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#fixed-positioning")]
     public async Task TopLeftFixedElement_RepeatsIdenticallyOnEveryPage()
     {
         using var wrapper = new HtmlContainer();
@@ -75,12 +64,10 @@ public sealed class FixedPositionRepeatsPerPageTest
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#fixed-positioning")]
     public async Task FixedElement_StillRendersOnce_WithoutARealPageGrid()
     {
-        // WinForms/WPF's continuous-scroll convention (no PageSize set - HasRealPageGrid=false): the
-        // repeat-per-page mechanism must not apply here at all, since "stays put" for that viewport is a
-        // paint-time scroll-offset suppression (CssBox.IsFixed), not a per-page repeat concern - confirms
-        // the new exclusion in FragmentEmitter is correctly gated on HasRealPageGrid.
+        // Continuous media, no PageSize, so no page grid to repeat on
         using var wrapper = new HtmlContainer();
         var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of body text</p>", 60));
         await wrapper.SetHtml(

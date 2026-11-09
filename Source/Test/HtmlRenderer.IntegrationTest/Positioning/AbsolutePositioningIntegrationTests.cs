@@ -2,21 +2,6 @@ using HtmlRenderer.IntegrationTest.TestSupport;
 
 namespace HtmlRenderer.IntegrationTest.Positioning;
 
-/// <summary>
-/// Ported from PeachPDF.Tests' Acid2FeatureVerificationTests.cs (the position:relative/absolute/fixed offset
-/// section) and AbsolutePositioningIntegrationTests.cs's shrink-to-fit cases. CSS 2.1 §9.4.3: for each axis of
-/// a relatively/absolutely positioned box, the "near" offset (<c>left</c>/<c>top</c>) wins when set; if it's
-/// <c>auto</c> and the "far" offset (<c>right</c>/<c>bottom</c>) isn't, the far offset applies with its sign
-/// flipped. §9.4.3 also requires relative positioning to be purely visual - it must not affect the parent's
-/// content-driven height or any following sibling's layout. §10.3.7: an absolutely positioned box's offsets
-/// are measured from its nearest positioned ancestor's PADDING edge, and (like every other positioning scheme)
-/// its own margin still applies on top of that offset; with no explicit width, it shrinks to fit its content.
-/// <para>
-/// The PeachPDF source file's flexbox/grid blockification cases and detached-&lt;thead&gt;/&lt;tfoot&gt;
-/// containing-block cases are not ported: this fork has neither a flex/grid layout engine nor the notion of a
-/// detached header/footer proxy box those target.
-/// </para>
-/// </summary>
 [DoNotParallelize]
 [TestClass]
 public sealed class AbsolutePositioningIntegrationTests
@@ -24,22 +9,20 @@ public sealed class AbsolutePositioningIntegrationTests
     private const double Delta = 1.0;
 
     [TestMethod]
+    [Spec("css21", "visuren.html#relative-positioning")]
     public void PositionRelative_BottomOffset_MovesBoxOppositeDirection()
     {
-        // top is auto, bottom is set - a positive "bottom" pulls the box UP, i.e. subtracts from Y.
         var html = LayoutHarness.Wrap("<div id='t' style='position:relative; bottom:10px; width:10px; height:10px;'></div>");
         var (root, _) = LayoutHarness.Layout(html);
         var box = LayoutHarness.FindById(root, "t")!;
 
-        // Static-flow position is Y=0 (LayoutHarness.Wrap sets body margin:0); "bottom:10px" must move it to Y=-10.
         Assert.AreEqual(-10, box.Location.Y, Delta);
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#relative-positioning")]
     public void PositionRelative_Offset_DoesNotAffectParentHeightOrFollowingSibling()
     {
-        // The offset box (and its descendants) move, but the parent's content-driven height and every
-        // following sibling must lay out against the STATIC position.
         var html = LayoutHarness.Wrap(
             "<div id='parent'>"
             + "<div id='shifted' style='position:relative; bottom:-30px; height:40px;'></div>"
@@ -50,21 +33,16 @@ public sealed class AbsolutePositioningIntegrationTests
         var shifted = LayoutHarness.FindById(root, "shifted")!;
         var after = LayoutHarness.FindById(root, "after")!;
 
-        // The offset itself is applied visually: the child sits 30px below the parent's top...
         Assert.AreEqual(30, shifted.Location.Y - parent.Location.Y, Delta);
-
-        // ...but the parent is still exactly 40px tall (the child's static extent)...
         Assert.AreEqual(40, parent.ActualBottom - parent.Location.Y, Delta);
-
-        // ...and the following sibling starts at the parent's un-inflated bottom.
         Assert.AreEqual(parent.ActualBottom, after.Location.Y, Delta);
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#relative-positioning")]
     public void PositionRelative_WithAForcedBreakInside_AppliesTheOffsetOnce()
     {
-        // The forced break makes a later layout pass resume inside the relative box, which must not add
-        // its offset a second time.
+        // The forced break makes a later layout pass resume inside the relative box
         var (root, _) = PaintHarness.LayoutPaginated(PaintHarness.Wrap(
             "<p style='margin:0;height:50px'>a</p>"
             + "<div id='rel' style='position:relative;top:20px'>"
@@ -78,9 +56,9 @@ public sealed class AbsolutePositioningIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#relative-positioning")]
     public void PositionRelative_OffsetOnBoxItself_DoesNotShiftFollowingSibling()
     {
-        // "after" must lay out against "shifted"'s static bottom, not its visually offset bottom 25px lower.
         var html = LayoutHarness.Wrap(
             "<div id='shifted' style='position:relative; top:25px; height:40px;'></div>"
             + "<div id='after' style='height:10px;'></div>");
@@ -93,6 +71,7 @@ public sealed class AbsolutePositioningIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#position-props")]
     public void PositionAbsolute_BottomOffset_PositionsRelativeToContainingBlockBottomEdge()
     {
         var html = LayoutHarness.Wrap(
@@ -102,11 +81,11 @@ public sealed class AbsolutePositioningIntegrationTests
         var cb = LayoutHarness.FindById(root, "cb")!;
         var box = LayoutHarness.FindById(root, "t")!;
 
-        // Box's bottom edge must sit 10px above the containing block's own bottom (padding) edge.
         Assert.AreEqual(cb.ActualBottom - 10, box.ActualBottom, Delta);
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#position-props")]
     public void PositionAbsolute_WithMarginAndBorderedContainingBlock_AppliesBothCorrectly()
     {
         var html = LayoutHarness.Wrap(
@@ -116,12 +95,12 @@ public sealed class AbsolutePositioningIntegrationTests
         var cb = LayoutHarness.FindById(root, "cb")!;
         var box = LayoutHarness.FindById(root, "t")!;
 
-        // Expected: containing block's PADDING edge (border-box + 16px border) + the box's own margin.
         Assert.AreEqual(cb.Location.X + 16 + 60, box.Location.X, Delta);
         Assert.AreEqual(cb.Location.Y + 16 + 36, box.Location.Y, Delta);
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#fixed-positioning")]
     public void PositionFixed_WithMargin_AppliesMarginOnTopOfOffset()
     {
         var html = LayoutHarness.Wrap(

@@ -343,100 +343,127 @@ sections:
       - A split inline box in RTL text gets its left border on the first line and its right border on the last, like in LTR
   visuren.html#q9.0:
     title: 9 Visual formatting model
-    status: unknown
+    status: partial
   visuren.html#visual-model-intro:
     title: 9.1 Introduction to the visual formatting model
-    status: unknown
+    status: supported
   visuren.html#viewport:
     title: 9.1.1 The viewport
-    status: unknown
+    status: supported
   visuren.html#containing-block:
     title: 9.1.2 Containing blocks
-    status: unknown
+    status: supported
   visuren.html#box-gen:
     title: 9.2 Controlling box generation
-    status: unknown
+    status: partial
   visuren.html#block-boxes:
     title: 9.2.1 Block-level elements and block boxes
-    status: unknown
+    status: supported
   visuren.html#anonymous-block-level:
     title: 9.2.1.1 Anonymous block boxes
-    status: unknown
+    status: partial
+    gaps:
+      - The first display:none child of an inline-block is moved out of it, next to the anonymous block box around the inline-block
   visuren.html#inline-boxes:
     title: 9.2.2 Inline-level elements and inline boxes
-    status: unknown
+    status: partial
+    gaps:
+      - "'display: inline-table' is laid out like a block, on a line of its own"
   visuren.html#anonymous:
     title: 9.2.2.1 Anonymous inline boxes
-    status: unknown
+    status: supported
   visuren.html#run-in:
     title: 9.2.3 Run-in boxes
-    status: unknown
+    status: n/a
   visuren.html#display-prop:
     title: 9.2.4 The 'display' property
-    status: unknown
+    status: supported
   visuren.html#positioning-scheme:
     title: 9.3 Positioning schemes
-    status: unknown
+    status: partial
   visuren.html#choose-position:
     title: 9.3.1 Choosing a positioning scheme
-    status: unknown
+    status: supported
   visuren.html#position-props:
     title: 9.3.2 Box offsets
-    status: unknown
+    status: partial
+    gaps:
+      - Percentage offsets of a relatively positioned box resolve against its own width or height instead of the containing block's
   visuren.html#normal-flow:
     title: 9.4 Normal flow
-    status: unknown
+    status: partial
   visuren.html#block-formatting:
     title: 9.4.1 Block formatting contexts
-    status: unknown
+    status: partial
+    gaps:
+      - Floats inside a block with overflow other than visible still shorten the line boxes after it
+      - A block after a sibling with a bottom border is placed that border's width too low
   visuren.html#inline-formatting:
     title: 9.4.2 Inline formatting contexts
-    status: unknown
+    status: partial
+    gaps:
+      - The start padding, border and margin of an inline box are repeated at the start of every line it's split onto
+      - A word wider than the line box starts a new line, leaving an empty line above it
   visuren.html#relative-positioning:
     title: 9.4.3 Relative positioning
-    status: unknown
+    status: partial
+    gaps:
+      - Relative positioning of inline boxes is ignored
+      - When 'left' and 'right' are both set, 'left' wins even if the containing block is rtl
   visuren.html#floats:
     title: 9.5 Floats
-    status: unknown
+    status: partial
+    gaps:
+      - A float inside a line, e.g. a floated span, isn't floated and stays in the line
+      - A box that establishes a new block formatting context overlaps preceding floats
+      - Floats paint in document order, so a later in-flow block's background covers them
   visuren.html#float-position:
     title: 9.5.1 Positioning the float
-    status: unknown
+    status: partial
+    gaps:
+      - Successive right floats overlap instead of stacking side by side
+      - A float that doesn't fit next to the previous ones moves below the lowest of them instead of as high as possible
+      - A right float in a block narrower than its block formatting context is placed against an earlier right float outside that block, past its containing block's right edge
   visuren.html#flow-control:
     title: 9.5.2 Controlling flow next to floats
-    status: unknown
+    status: partial
+    gaps:
+      - "'clear' on a float moves it down but keeps it next to the floats it clears instead of at the containing block edge"
+      - "'clear' also clears floats inside earlier boxes that establish their own block formatting context"
   visuren.html#absolute-positioning:
     title: 9.6 Absolute positioning
-    status: unknown
+    status: partial
+    gaps:
+      - The content of an absolutely positioned box flows around floats outside of it
   visuren.html#fixed-positioning:
     title: 9.6.1 Fixed positioning
-    status: unknown
+    status: partial
+    gaps:
+      - "'right' and 'bottom' are ignored, a fixed box is always placed by 'left' and 'top'"
   visuren.html#dis-pos-flo:
     title: 9.7 Relationships between 'display', 'position', and 'float'
-    status: unknown
+    status: partial
+    gaps:
+      - "Floated and absolutely positioned inline elements keep 'display: inline' instead of becoming block"
+      - An absolutely positioned box with 'float' still acts as a float for the content after it
   visuren.html#comparison:
     title: 9.8 Comparison of normal flow, floats, and absolute positioning
-    status: unknown
-  visuren.html#comp-normal-flow:
-    title: 9.8.1 Normal flow
-    status: unknown
-  visuren.html#comp-relpos:
-    title: 9.8.2 Relative positioning
-    status: unknown
-  visuren.html#comp-float:
-    title: 9.8.3 Floating a box
-    status: unknown
-  visuren.html#comp-abspos:
-    title: 9.8.4 Absolute positioning
-    status: unknown
+    status: n/a
   visuren.html#layers:
     title: 9.9 Layered presentation
-    status: unknown
+    status: partial
   visuren.html#z-index:
     title: 9.9.1 Specifying the stack level
-    status: unknown
+    status: partial
+    gaps:
+      - "'z-index' is ignored, boxes paint in the order normal flow, absolute, fixed"
+      - Relatively positioned boxes paint with the normal flow, behind later in-flow blocks
   visuren.html#direction:
     title: 9.10 Text direction
-    status: unknown
+    status: partial
+    gaps:
+      - "No Unicode bidirectional algorithm, 'direction: rtl' reverses the order of all words on a line, left-to-right runs included"
+      - "'direction' on an inline element reorders its words although 'unicode-bidi' is 'normal'"
   visudet.html#q10.0:
     title: 10 Visual formatting model details
     status: unknown

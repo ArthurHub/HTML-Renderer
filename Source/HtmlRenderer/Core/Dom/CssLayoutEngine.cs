@@ -169,12 +169,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Applies float positioning (float: left/right) and clearance (clear) to a box that has already
-        /// had its static in-flow position committed by the caller (<see cref="CssBox.PerformLayoutImp"/>) -
-        /// overwrites <see cref="CssBox.Location"/> using that static position as input. No-op if the box
-        /// is neither floated nor has clear set. Ported from PeachPDF.
+        /// Moves a floated or clearing box from its static position to where 'float' and 'clear' put it
+        /// (CSS 2.1 §9.5.1, §9.5.2).
         /// </summary>
-        /// <param name="box">the box to float/clear - its Location.Y must already hold its static position</param>
+        /// <param name="box">the box to float/clear, its Location.Y must already hold its static position</param>
         public static void FloatBox(CssBox box)
         {
             if (box.Float == CssConstants.None && box.Clear == CssConstants.None)
@@ -261,10 +259,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         #region Private methods
 
         /// <summary>
-        /// Pushes <paramref name="box"/> down past any floated preceding sibling (at any depth - a float
-        /// nested inside a plain non-floated wrapper still needs clearing against, CSS 2.1 9.5.2) that
-        /// matches <paramref name="box"/>'s <c>clear</c> direction. Only ever changes Y, never X - X is
-        /// left exactly as <see cref="FloatBox"/>/normal static-position assignment already set it.
+        /// Moves <paramref name="box"/> below the floats it clears, including floats nested in preceding
+        /// siblings (CSS 2.1 §9.5.2). Only changes Y.
         /// </summary>
         private static void ClearBox(CssBox box, int currentBoxIdx, CssBox containingBox)
         {
@@ -279,11 +275,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Recursively finds the outer (margin) bottom edge of every floated box in <paramref name="sibling"/>'s
-        /// subtree that matches <paramref name="clearDirection"/>, testing <paramref name="sibling"/> itself
-        /// and every descendant at every depth (not just direct children) - so a float directly inside another
-        /// float (e.g. ACID1's <c>dd</c> float:right containing <c>blockquote</c>/<c>h1</c> float:left as direct
-        /// children) is never missed.
+        /// The lowest bottom margin edge of the floats in <paramref name="sibling"/> and its subtree that
+        /// <paramref name="clearDirection"/> clears.
         /// </summary>
         private static double GetClearance(CssBox sibling, string clearDirection)
         {
@@ -315,13 +308,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 MaxBottom = startY,
                 MarginLeft = box.ActualMarginLeft,
                 MarginRight = box.ActualMarginRight,
-                // FloatBox (this method's only caller) runs from PerformLayoutImp's block-width-
-                // resolution branch, after Size.Width is already resolved to this box's border-box
-                // width - use it directly rather than ActualWidth, which re-parses the Width CSS
-                // string against Size.Width as a percentage base (correct for the inline-block callers
-                // it otherwise serves, but not what a border-box reference width means here: for a
-                // fixed-unit Width like "34em" it returns the bare content-only value, ignoring
-                // Size.Width entirely, understating a padded/bordered float's true footprint).
+                // The resolved border box width, ActualWidth would be the content width of an explicit 'width'
                 ReferenceWidth = box.Size.Width
             };
 
@@ -366,8 +353,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 MaxBottom = startY,
                 MarginLeft = box.ActualMarginLeft,
                 MarginRight = box.ActualMarginRight,
-                // See FloatBoxLeft's matching comment - Size.Width is this box's own already-resolved
-                // border-box width, which is what ReferenceWidth means here.
                 ReferenceWidth = box.Size.Width
             };
 

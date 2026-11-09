@@ -576,10 +576,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             get { return _left; }
             set
             {
-                // Deliberately no eager position:fixed recompute here (as this once had): it raced ahead
-                // of ActualMarginLeft/Top and ContainingBlock/HtmlContainer being ready and cached a
-                // margin-less Location that never got recomputed once they were. position:fixed placement
-                // is instead resolved once, in PerformLayoutImp, once the box is fully set up.
                 _left = value;
             }
         }
@@ -815,10 +811,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// The visual-only offset a <c>position:relative</c> box's placement branch applied, per CSS 2.1
-        /// §9.4.3 - kept separately so <see cref="StaticBottom"/> can back it back out for margin-collapse/
-        /// sibling-placement consumers that must lay out against the box's un-offset (static) position.
-        /// Ported from PeachPDF's CssBox.RelativeOffsetX/Y.
+        /// The offset applied by <c>position: relative</c> (CSS 2.1 §9.4.3), kept so <see cref="StaticBottom"/>
+        /// can take it out again.
         /// </summary>
         public double RelativeOffsetX { get; set; }
 
@@ -826,10 +820,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         public double RelativeOffsetY { get; set; }
 
         /// <summary>
-        /// <see cref="CssBoxProperties.ActualBottom"/> with any <c>position:relative</c> visual offset
-        /// backed out - the coordinate a following sibling or this box's own parent (for auto height) must
-        /// lay out against, since relative positioning "has no effect on the position of any other box"
-        /// (CSS 2.1 §9.4.3). Ported from PeachPDF's CssBox.StaticBottom.
+        /// <see cref="CssBoxProperties.ActualBottom"/> without the relative offset, which following siblings and
+        /// the parent's auto height lay out against (CSS 2.1 §9.4.3).
         /// </summary>
         public double StaticBottom => ActualBottom - RelativeOffsetY;
 
