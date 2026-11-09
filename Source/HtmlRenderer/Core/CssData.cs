@@ -566,10 +566,6 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
             var lastSelector = compoundSelector.Last();
 
-            // Structural pseudo-classes (ChildSelector subtypes, OnlyChildSelector, OnlyOfTypeSelector)
-            // are matched against `box` itself here, same as every other compound member - their own
-            // DoesSelectorMatch overload re-derives sibling scope from `box` as needed, so no special
-            // handling is required for them beyond the plain path below.
             var pseudoElementSelector = lastSelector as PseudoElementSelector;
             if (pseudoElementSelector == null)
                 return compoundSelector.All(selector => DoesSelectorMatch(selector, box));
@@ -587,9 +583,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 return DoesSelectorMatch(pseudoElementSelector, box);
             }
 
-            // Only ::before/::after synthesize a box here - ::marker is intentionally not ported
-            // (no CssBox.IsMarkerPseudoElement concept in this codebase; list markers are painted
-            // procedurally, not via a synthesized box - see PaintListStyleShapeMarker and friends).
+            // Matching the element creates the ::before/::after box, which then matches on its own
+            // cascade pass. Other pseudo-elements get no box here.
             if (pseudoElementSelector.Name == CssConstants.Before && !box.Boxes.Any(b => b.IsBeforePseudoElement))
             {
                 var beforePseudoBox = new CssBox(box, null);
@@ -746,17 +741,14 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             if (box == null) return false;
 
-            // ":hover" is matched structurally (ignoring live mouse-hover state, which this engine
-            // doesn't track at cascade time) so DomParser.AssignCssBlock can intercept the match and
-            // divert it to HtmlContainerInt.AddHoverBox instead of applying it - preserving the
-            // "matched but inert" behavior this engine has always had for :hover (see DomParser).
+            // CSS 2.1 §5.11.3. Matches whatever the mouse does, DomParser.AssignCssBlocks then hands
+            // rules with :hover in the subject to HtmlContainerInt.AddHoverBox instead of applying them.
             if (pseudoClassSelector.Class == "hover") return true;
 
-            // ":root" always matches the document's <html> element - this engine has no separate
-            // CssBox.IsRoot flag, so match on tag name directly (correct for any HTML document).
             if (pseudoClassSelector.Class == "root")
                 return box.HtmlTag != null && box.HtmlTag.Name.Equals("html", StringComparison.InvariantCultureIgnoreCase);
 
+            // CSS 2.1 §5.11.2. There's no history, every link is unvisited and :visited never matches.
             return pseudoClassSelector.Class == "link" && box.IsClickable;
         }
 
@@ -773,12 +765,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// Matches the six structural "An+B" pseudo-classes (:nth-child, :nth-last-child,
-        /// :nth-of-type, :nth-last-of-type, :nth-column, :nth-last-column - including their bare-ident
-        /// forms like :first-child, wired to Step=0/Offset=1 by PseudoClassSelectorFactory).
-        /// Each variant differs only in (a) which sibling scope to count within and (b) whether to
-        /// count from the start or the end; the actual "does this position satisfy An+B" test is
-        /// shared via <see cref="MatchesAnPlusB"/>.
+        /// The An+B pseudo-classes, including the bare forms like :first-child (CSS 2.1 §5.11.1),
+        /// which PseudoClassSelectorFactory creates with Step 0 and Offset 1.
         /// </summary>
         private static bool DoesSelectorMatch(ChildSelector childSelector, CssBox box)
         {
@@ -807,11 +795,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                     b.HtmlTag.Name.Equals(box.HtmlTag.Name, StringComparison.InvariantCultureIgnoreCase));
             }
 
-            // CSS4 "of <selector>" extension (:nth-child(An+B of S)/:nth-last-child(An+B of S)).
-            // Kind defaults to AllSelector (matches unconditionally) whenever no "of" clause was
-            // written, and the parser only ever allows a non-default Kind on FirstChildSelector/
-            // LastChildSelector - so this filter is always a no-op for the four other subtypes.
-            // Applying it unconditionally is simpler than special-casing which subtypes can have it.
+            // The "of S" filter of :nth-child()/:nth-last-child(). Without it Kind is AllSelector.
             siblingBoxes = siblingBoxes.Where(b => DoesSelectorMatch(childSelector.Kind, b));
 
             var siblings = siblingBoxes.ToList();

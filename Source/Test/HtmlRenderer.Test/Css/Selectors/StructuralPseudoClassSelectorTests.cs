@@ -4,22 +4,13 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 
 namespace HtmlRenderer.Test.Css.Selectors;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/StructuralPseudoClassSelectorTests.cs. The structural pseudo-class
-/// family - bare :first-child/:last-child/:only-child/:first-of-type/:last-of-type/:only-of-type,
-/// :nth-child()/:nth-last-child()/:nth-of-type()/:nth-last-of-type() (incl. the CSS4 "of &lt;selector&gt;"
-/// clause) and :nth-column()/:nth-last-column() - is all wired and matching in HTML-Renderer's CSS
-/// engine port (see <see cref="TheArtOfDev.HtmlRenderer.Core.CssEngine.PseudoClassSelectorFactory"/> and
-/// <see cref="TheArtOfDev.HtmlRenderer.Core.CssData"/>), so this is ported via the
-/// <see cref="LayoutHarness"/>/<see cref="MockAdapter"/> pattern (see
-/// <see cref="CssSpecificityOrderingTests"/>) instead of PeachPDF's PdfSharpAdapter-based BuildRoot.
-/// </summary>
 [TestClass]
 public sealed class StructuralPseudoClassSelectorTests
 {
     // ── :first-child ──────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css21", "selector.html#first-child")]
     public void FirstChild_Matches_FirstElement()
     {
         var html = Html(":first-child { background-color: #ff0000; }", "<div><p>first</p><p>second</p></div>");
@@ -287,6 +278,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("css21", "selector.html#first-child")]
     public void ClassPlusFirstChild_MatchesOnlyWhenBothConditionsHold()
     {
         var html = Html(".item:first-child { background-color: #ff0000; }", "<div><p class='item'>1</p><p class='item'>2</p></div>");
@@ -297,6 +289,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("css21", "selector.html#first-child")]
     public void ClassPlusFirstChild_DoesNotMatch_WhenFirstChildLacksClass()
     {
         var html = Html(".item:first-child { background-color: #ff0000; }", "<div><p>1</p><p class='item'>2</p></div>");

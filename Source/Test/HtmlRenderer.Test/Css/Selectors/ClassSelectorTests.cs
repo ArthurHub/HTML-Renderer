@@ -3,11 +3,11 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css.Selectors;
 
-/// <summary>Ported from PeachPDF.Tests/CSS/ClassSelectorTests.cs.</summary>
 [TestClass]
 public sealed class ClassSelectorTests
 {
     [TestMethod]
+    [Spec("css21", "selector.html#class-html")]
     public void FindAllClassSelectorsThatMatchClassName()
     {
         var css =

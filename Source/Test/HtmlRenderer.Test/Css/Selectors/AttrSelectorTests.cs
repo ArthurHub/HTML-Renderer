@@ -3,11 +3,11 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css.Selectors;
 
-/// <summary>Ported from PeachPDF.Tests/CSS/AttrSelectorTests.cs.</summary>
 [TestClass]
 public sealed class AttrSelectorTests
 {
     [TestMethod]
+    [Spec("css21", "selector.html#matching-attrs")]
     public void FindAllAttrMatchSelectorsThatMatchAttributeName()
     {
         var sheet = GetAttributeStylesheet("");
@@ -16,6 +16,7 @@ public sealed class AttrSelectorTests
     }
 
     [TestMethod]
+    [Spec("css21", "selector.html#matching-attrs")]
     public void FindAllAttrInListSelectorsThatMatchAttributeName()
     {
         var sheet = GetAttributeStylesheet("~");
@@ -24,6 +25,7 @@ public sealed class AttrSelectorTests
     }
 
     [TestMethod]
+    [Spec("css21", "selector.html#matching-attrs")]
     public void FindAllAttrHyphenSelectorsThatMatchAttributeName()
     {
         var sheet = GetAttributeStylesheet("|");
@@ -64,6 +66,7 @@ public sealed class AttrSelectorTests
     }
 
     [TestMethod]
+    [Spec("css21", "selector.html#matching-attrs")]
     public void BareAttributePresenceSelector_ResolvesToAttrAvailableSelector()
     {
         // A `[attr]` with no combinator/value falls through the factory's dispatch to the presence

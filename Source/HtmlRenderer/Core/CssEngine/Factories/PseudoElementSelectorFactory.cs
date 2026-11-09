@@ -16,8 +16,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         private readonly Dictionary<string, ISelector> _selectors =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                 {
-                    //TODO some lack implementation (selection, content, ...)
-                    // some implementations are dubious (first-line, first-letter, ...)
                     PseudoElementNames.Before,
                     PseudoElementNames.After,
                     PseudoElementNames.Marker,

@@ -4,12 +4,6 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 
 namespace HtmlRenderer.Test.Css.Selectors;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/SelectorMatchingTests.cs. Attribute (^=, $=, |=) and combinator
-/// (+, ~, &gt;, descendant) selectors are all implemented 1:1 against HTML-Renderer's CSS engine port,
-/// so this is ported via the <see cref="LayoutHarness"/>/<see cref="MockAdapter"/> pattern (see
-/// <see cref="CssSpecificityOrderingTests"/>) instead of PeachPDF's PdfSharpAdapter-based BuildRoot.
-/// </summary>
 [TestClass]
 public sealed class SelectorMatchingTests
 {
@@ -52,6 +46,7 @@ public sealed class SelectorMatchingTests
     // ── Attribute: hyphen-prefix [attr|=value] ───────────────────────────────
 
     [TestMethod]
+    [Spec("css21", "selector.html#matching-attrs")]
     public void AttrHyphen_Matches_ExactValue()
     {
         var html = Html("[lang|='en'] { background-color: #ff0000; }", "<span lang='en'>text</span>");
@@ -60,6 +55,7 @@ public sealed class SelectorMatchingTests
     }
 
     [TestMethod]
+    [Spec("css21", "selector.html#matching-attrs")]
     public void AttrHyphen_Matches_HyphenPrefixed()
     {
         var html = Html("[lang|='en'] { background-color: #ff0000; }", "<span lang='en-US'>text</span>");
@@ -68,6 +64,7 @@ public sealed class SelectorMatchingTests
     }
 
     [TestMethod]
+    [Spec("css21", "selector.html#matching-attrs")]
     public void AttrHyphen_DoesNotMatch_SubstringOnly()
     {
         var html = Html("[lang|='en'] { background-color: #ff0000; }", "<span lang='english'>text</span>");
@@ -78,6 +75,7 @@ public sealed class SelectorMatchingTests
     // ── Combinator: adjacent sibling (div + p) ───────────────────────────────
 
     [TestMethod]
+    [Spec("css21", "selector.html#adjacent-selectors")]
     public void AdjacentSibling_Matches_ImmediatelyFollowingSibling()
     {
         var html = Html("div + p { background-color: #ff0000; }", "<div>d</div><p id='t'>first</p>");
@@ -86,6 +84,7 @@ public sealed class SelectorMatchingTests
     }
 
     [TestMethod]
+    [Spec("css21", "selector.html#adjacent-selectors")]
     public void AdjacentSibling_DoesNotMatch_SecondSibling()
     {
         var html = Html("div + p { background-color: #ff0000; }", "<div>d</div><p>first</p><p>second</p>");
@@ -96,6 +95,7 @@ public sealed class SelectorMatchingTests
     }
 
     [TestMethod]
+    [Spec("css21", "selector.html#adjacent-selectors")]
     public void AdjacentSibling_DoesNotMatch_PrecedingSibling()
     {
         var html = Html("div + p { background-color: #ff0000; }", "<p>before</p><div>d</div>");
@@ -123,9 +123,10 @@ public sealed class SelectorMatchingTests
         Assert.AreEqual(RColor.Transparent, box.ActualBackgroundColor);
     }
 
-    // ── Regression: existing combinators still work ──────────────────────────
+    // ── Combinator: child (div > p) and descendant (div p) ──────────────────
 
     [TestMethod]
+    [Spec("css21", "selector.html#child-selectors")]
     public void ChildCombinator_StillMatches_DirectChild()
     {
         var html = Html("div > p { background-color: #ff0000; }", "<div><p>direct</p><section><p>nested</p></section></div>");
@@ -136,6 +137,7 @@ public sealed class SelectorMatchingTests
     }
 
     [TestMethod]
+    [Spec("css21", "selector.html#descendant-selectors")]
     public void DescendantCombinator_StillMatches_AnyDescendant()
     {
         var html = Html("div p { background-color: #ff0000; }", "<div><section><p>deep</p></section></div><p>outside</p>");
@@ -145,7 +147,7 @@ public sealed class SelectorMatchingTests
         Assert.AreEqual(RColor.Transparent, boxes[1].ActualBackgroundColor);
     }
 
-    // ── Helpers (mirrors CssSpecificityOrderingTests.cs conventions) ─────────
+    // ── Helpers ──────────────────────────────────────────────────────────────
 
     private static string Html(string css, string body) =>
         $"<!DOCTYPE html><html><head><style>{css}</style></head><body>{body}</body></html>";

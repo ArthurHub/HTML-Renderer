@@ -121,76 +121,97 @@ sections:
     status: supported
   selector.html#q5.0:
     title: 5 Selectors
-    status: unknown
+    status: partial
   selector.html#pattern-matching:
     title: 5.1 Pattern matching
-    status: unknown
+    status: supported
   selector.html#selector-syntax:
     title: 5.2 Selector syntax
-    status: unknown
+    status: partial
+    gaps:
+      - "Combinator chains don't backtrack: '.a > div span' fails when only an outer div is the child of .a"
   selector.html#grouping:
     title: 5.2.1 Grouping
-    status: unknown
+    status: supported
   selector.html#universal-selector:
     title: 5.3 Universal selector
-    status: unknown
+    status: supported
   selector.html#type-selectors:
     title: 5.4 Type selectors
-    status: unknown
+    status: supported
   selector.html#descendant-selectors:
     title: 5.5 Descendant selectors
-    status: unknown
+    status: supported
   selector.html#child-selectors:
     title: 5.6 Child selectors
-    status: unknown
+    status: supported
   selector.html#adjacent-selectors:
     title: 5.7 Adjacent sibling selectors
-    status: unknown
+    status: supported
   selector.html#attribute-selectors:
     title: 5.8 Attribute selectors
-    status: unknown
+    status: partial
   selector.html#matching-attrs:
     title: 5.8.1 Matching attributes and attribute values
-    status: unknown
+    status: partial
+    gaps:
+      - Attribute values are matched case-insensitively, e.g. [title=Foo] matches title="foo"
   selector.html#default-attrs:
     title: 5.8.2 Default attribute values in DTDs
-    status: unknown
+    status: n/a
   selector.html#class-html:
     title: 5.8.3 Class selectors
-    status: unknown
+    status: partial
+    gaps:
+      - Class names are matched case-insensitively, e.g. .Foo matches class="foo"
+      - The class attribute is only split on spaces, tabs and newlines don't separate class names
   selector.html#id-selectors:
     title: 5.9 ID selectors
-    status: unknown
+    status: partial
+    gaps:
+      - IDs are matched case-insensitively, e.g. #Foo matches id="foo"
   selector.html#pseudo-elements:
     title: 5.10 Pseudo-elements and pseudo-classes
-    status: unknown
+    status: partial
+    gaps:
+      - "Pseudo-class names are case-sensitive, 'p:FIRST-CHILD' never matches"
+      - "Pseudo-element names are case-sensitive, 'p:BEFORE' generates nothing"
   selector.html#pseudo-class-selectors:
     title: 5.11 Pseudo-classes
-    status: unknown
+    status: partial
   selector.html#first-child:
-    title: 5.11.1 :first-child pseudo-class
-    status: unknown
+    title: "5.11.1 :first-child pseudo-class"
+    status: supported
   selector.html#link-pseudo-classes:
     title: 5.11.2 The link pseudo-classes
-    status: unknown
+    status: supported
   selector.html#dynamic-pseudo-classes:
     title: 5.11.3 The dynamic pseudo-classes
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":hover rules are collected but never applied when the mouse is over the element, :active and :focus never match"
+      - "A :hover outside the subject, e.g. 'div:hover p', matches as if the element were always hovered"
   selector.html#lang:
     title: 5.11.4 The language pseudo-class
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":lang() never matches"
   selector.html#pseudo-element-selectors:
     title: 5.12 Pseudo-elements
-    status: unknown
+    status: partial
   selector.html#first-line-pseudo:
     title: 5.12.1 The :first-line pseudo-element
-    status: unknown
+    status: parsed-only
+    gaps:
+      - ":first-line is accepted but its declarations never apply"
   selector.html#first-letter:
     title: 5.12.2 The :first-letter pseudo-element
-    status: unknown
+    status: parsed-only
+    gaps:
+      - ":first-letter is accepted but its declarations never apply"
   selector.html#before-and-after:
     title: 5.12.3 The :before and :after pseudo-elements
-    status: unknown
+    status: supported
   cascade.html#q6.0:
     title: 6 Assigning property values, Cascading, and Inheritance
     status: unknown

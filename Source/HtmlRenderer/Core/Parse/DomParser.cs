@@ -233,11 +233,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             // FINAL custom property values regardless of which phase declared them.
             var pendingVarProperties = new Dictionary<string, string>();
 
-            // Anonymous layout-only wrapper boxes (HtmlTag == null, not a pseudo-element) never match
-            // anything and are skipped, matching this engine's pre-existing behavior. Synthesized
-            // ::before/::after boxes ARE queried despite also having HtmlTag == null - their whole
-            // purpose is to receive the declarations from the rule whose selector synthesized them
-            // (e.g. "li::before { content: ... }"), matched via CssData's PseudoElementSelector check.
+            // Anonymous boxes aren't elements and match nothing. ::before/::after boxes have no HtmlTag
+            // either, but receive the declarations of the rule that created them.
             var canMatchRules = box.HtmlTag != null || box.IsPseudoElement;
             var uaRules = canMatchRules ? cssData.GetUserAgentStyleRules(media, box).ToList() : new List<IStyleRule>();
             var authorRules = canMatchRules ? cssData.GetAuthorStyleRules(media, box).ToList() : new List<IStyleRule>();
@@ -336,9 +333,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
         /// <summary>
         /// Assigns the given css style rules to the given css box, applying only the declarations whose
-        /// !important flag matches <paramref name="importantPass"/>. A rule whose selector's subject
-        /// includes ":hover" is diverted to <see cref="HtmlContainerInt.AddHoverBox"/> instead - matching
-        /// this engine's pre-existing "matched but never actually applied" :hover behavior.
+        /// !important flag matches <paramref name="importantPass"/>. A rule with :hover in its subject
+        /// goes to <see cref="HtmlContainerInt.AddHoverBox"/> instead.
         /// </summary>
         private static void AssignCssBlocks(
             CssBox box,
@@ -364,8 +360,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// True if the rule's selector's subject (rightmost, in the case of a combinator chain) compound
-        /// includes a ":hover" pseudo-class - e.g. "a:hover", ".foo:hover", or bare ":hover".
+        /// True if the subject of the rule's selector, the rightmost compound of a chain, has :hover.
         /// </summary>
         private static bool IsHoverRule(IStyleRule rule)
         {

@@ -55,11 +55,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             selectors.Add(PseudoElementNames.FirstLetter,
                 PseudoElementSelectorFactory.Instance.Create(PseudoElementNames.FirstLetter));
 
-            // Structural pseudo-classes: bare idents are equivalent to their nth-*(1) function form
-            // (see CSS Selectors spec), so wire them to the same ChildSelector subtypes that
-            // "nth-child(...)" etc. produce, rather than a generic PseudoClassSelector with no
-            // positional semantics. Kind uses AllSelector.Create() (never null) to match the
-            // invariant ChildFunctionState<T>.Produce() upholds for the function-form parse path.
+            // :first-child (CSS 2.1 §5.11.1) and friends are their nth-*() function with An+B = 1.
+            // Kind is never null, same as what ChildFunctionState<T>.Produce() creates.
             selectors.Add(PseudoClassNames.FirstChild, new FirstChildSelector().With(0, 1, AllSelector.Create()));
             selectors.Add(PseudoClassNames.LastChild, new LastChildSelector().With(0, 1, AllSelector.Create()));
             selectors.Add(PseudoClassNames.FirstOfType, new FirstTypeSelector().With(0, 1, AllSelector.Create()));
