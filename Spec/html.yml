@@ -229,55 +229,68 @@ sections:
     status: n/a
   sections.html#sections:
     title: 4.3 Sections
-    status: unknown
+    status: partial
   sections.html#the-body-element:
     title: 4.3.1 The body element
-    status: unknown
+    status: supported
   sections.html#the-article-element:
     title: 4.3.2 The article element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, rendered inline, see 15.3.3
   sections.html#the-section-element:
     title: 4.3.3 The section element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, rendered inline, see 15.3.3
   sections.html#the-nav-element:
     title: 4.3.4 The nav element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, rendered inline, see 15.3.3
   sections.html#the-aside-element:
     title: 4.3.5 The aside element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, rendered inline, see 15.3.3
   sections.html#the-h1,-h2,-h3,-h4,-h5,-and-h6-elements:
     title: 4.3.6 The h1, h2, h3, h4, h5, and h6 elements
-    status: unknown
+    status: supported
   sections.html#the-hgroup-element:
     title: 4.3.7 The hgroup element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, rendered inline, see 15.3.3
   sections.html#the-header-element:
     title: 4.3.8 The header element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, rendered inline, see 15.3.3
   sections.html#the-footer-element:
     title: 4.3.9 The footer element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, rendered inline, see 15.3.3
   sections.html#the-address-element:
     title: 4.3.10 The address element
-    status: unknown
+    status: supported
   sections.html#headings-and-outlines-2:
     title: 4.3.11 Headings and outlines
-    status: unknown
+    status: partial
   sections.html#heading-levels-&-offsets:
     title: 4.3.11.1 Heading levels & offsets
-    status: unknown
+    status: partial
+    gaps:
+      - headingoffset and headingreset are ignored, the heading level is always the one of the tag
   sections.html#sample-outlines:
     title: 4.3.11.2 Sample outlines
-    status: unknown
+    status: n/a
   sections.html#exposing-outlines-to-users:
     title: 4.3.11.3 Exposing outlines to users
-    status: unknown
+    status: n/a
   sections.html#usage-summary-2:
     title: 4.3.12 Usage summary
-    status: unknown
-  sections.html#article-or-section:
-    title: 4.3.12.1 Article or section?
-    status: unknown
+    status: n/a
   grouping-content.html#grouping-content:
     title: 4.4 Grouping content
     status: partial
