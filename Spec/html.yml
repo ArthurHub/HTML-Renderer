@@ -78,100 +78,67 @@ sections:
     status: n/a
   dom.html#elements:
     title: 3.2 Elements
-    status: unknown
+    status: partial
   dom.html#semantics-2:
     title: 3.2.1 Semantics
-    status: unknown
+    status: n/a
   dom.html#elements-in-the-dom:
     title: 3.2.2 Elements in the DOM
-    status: unknown
+    status: n/a
   dom.html#html-element-constructors:
     title: 3.2.3 HTML element constructors
-    status: unknown
+    status: n/a
   dom.html#element-definitions:
     title: 3.2.4 Element definitions
-    status: unknown
-  dom.html#attributes:
-    title: 3.2.4.1 Attributes
-    status: unknown
+    status: n/a
   dom.html#content-models:
     title: 3.2.5 Content models
-    status: unknown
-  dom.html#the-nothing-content-model:
-    title: 3.2.5.1 The "nothing" content model
-    status: unknown
-  dom.html#kinds-of-content:
-    title: 3.2.5.2 Kinds of content
-    status: unknown
-  dom.html#metadata-content:
-    title: 3.2.5.2.1 Metadata content
-    status: unknown
-  dom.html#flow-content:
-    title: 3.2.5.2.2 Flow content
-    status: unknown
-  dom.html#sectioning-content:
-    title: 3.2.5.2.3 Sectioning content
-    status: unknown
-  dom.html#heading-content:
-    title: 3.2.5.2.4 Heading content
-    status: unknown
-  dom.html#phrasing-content:
-    title: 3.2.5.2.5 Phrasing content
-    status: unknown
-  dom.html#embedded-content-2:
-    title: 3.2.5.2.6 Embedded content
-    status: unknown
-  dom.html#interactive-content:
-    title: 3.2.5.2.7 Interactive content
-    status: unknown
-  dom.html#palpable-content:
-    title: 3.2.5.2.8 Palpable content
-    status: unknown
-  dom.html#script-supporting-elements:
-    title: 3.2.5.2.9 Script-supporting elements
-    status: unknown
-  dom.html#transparent-content-models:
-    title: 3.2.5.3 Transparent content models
-    status: unknown
-  dom.html#paragraphs:
-    title: 3.2.5.4 Paragraphs
-    status: unknown
+    status: n/a
   dom.html#global-attributes:
     title: 3.2.6 Global attributes
-    status: unknown
+    status: partial
   dom.html#the-title-attribute:
     title: 3.2.6.1 The title attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - Advisory information isn't shown to the user
   dom.html#the-lang-and-xml:lang-attributes:
     title: 3.2.6.2 The lang and xml:lang attributes
-    status: unknown
+    status: unsupported
+    gaps:
+      - The language of an element isn't determined, :lang() never matches, see CSS 2.1 5.11.4
   dom.html#the-translate-attribute:
     title: 3.2.6.3 The translate attribute
-    status: unknown
+    status: n/a
   dom.html#the-dir-attribute:
     title: 3.2.6.4 The dir attribute
-    status: unknown
+    status: partial
+    gaps:
+      - dir=auto doesn't determine the direction from the text
+      - An invalid value doesn't fall back to the parent directionality
   dom.html#the-style-attribute:
     title: 3.2.6.5 The style attribute
-    status: unknown
+    status: supported
   dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes:
     title: 3.2.6.6 Embedding custom non-visible data with the data-* attributes
-    status: unknown
+    status: supported
   dom.html#the-innertext-idl-attribute:
     title: 3.2.7 The innerText and outerText properties
-    status: unknown
+    status: n/a
   dom.html#requirements-relating-to-the-bidirectional-algorithm:
     title: 3.2.8 Requirements relating to the bidirectional algorithm
-    status: unknown
+    status: unsupported
   dom.html#authoring-conformance-criteria-for-bidirectional-algorithm-formatting-characters:
     title: 3.2.8.1 Authoring conformance criteria for bidirectional-algorithm formatting characters
-    status: unknown
+    status: n/a
   dom.html#user-agent-conformance-criteria:
     title: 3.2.8.2 User agent conformance criteria
-    status: unknown
+    status: unsupported
+    gaps:
+      - No Unicode bidirectional algorithm, see CSS 2.1 9.10
   dom.html#wai-aria:
     title: 3.2.9 Requirements related to ARIA and to platform accessibility APIs
-    status: unknown
+    status: n/a
   semantics.html#semantics:
     title: 4 The elements of HTML
     status: partial

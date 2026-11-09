@@ -35,6 +35,7 @@ public sealed class CommonMicrosyntaxesTests
     [TestMethod]
     [Ignore("Gap, see Spec/html.yml")]
     [Spec("html", "common-microsyntaxes.html#keywords-and-enumerated-attributes")]
+    [Spec("html", "dom.html#the-dir-attribute")]
     public void InvalidKeyword_IsIgnored()
     {
         Assert.AreEqual("rtl", Box("<div dir=rtl><p id=x dir=sideways>a</p></div>").Direction);

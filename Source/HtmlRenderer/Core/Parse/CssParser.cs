@@ -118,10 +118,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Parse a single inline style="" attribute value into its one resulting style rule, by
-        /// wrapping it in a synthetic universal-selector rule and parsing it through the same
-        /// tokenizer/grammar as a full stylesheet - so inline style values get exactly the same value
-        /// parsing (shorthands, calc(), var(), etc.) as anything from a &lt;style&gt; block.
+        /// Parses the value of a style attribute, HTML §3.2.6.5. The declarations are wrapped in a
+        /// universal rule to go through the same parser as a stylesheet.
         /// </summary>
         /// <param name="declarations">the raw declaration list, e.g. "color: red; font-weight: bold"</param>
         /// <returns>the single parsed style rule, or null if the declaration block was empty/invalid</returns>
