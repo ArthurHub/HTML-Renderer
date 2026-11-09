@@ -61,6 +61,23 @@ public sealed class AbsolutePositioningIntegrationTests
     }
 
     [TestMethod]
+    public void PositionRelative_WithAForcedBreakInside_AppliesTheOffsetOnce()
+    {
+        // The forced break makes a later layout pass resume inside the relative box, which must not add
+        // its offset a second time.
+        var (root, _) = PaintHarness.LayoutPaginated(PaintHarness.Wrap(
+            "<p style='margin:0;height:50px'>a</p>"
+            + "<div id='rel' style='position:relative;top:20px'>"
+            + "<p style='margin:0;height:50px'>b</p>"
+            + "<p style='margin:0;height:50px;break-before:page'>c</p>"
+            + "</div>"),
+            pageHeight: 200, margin: 0);
+        var rel = LayoutHarness.FindById(root, "rel")!;
+
+        Assert.AreEqual(70, rel.Location.Y, Delta);
+    }
+
+    [TestMethod]
     public void PositionRelative_OffsetOnBoxItself_DoesNotShiftFollowingSibling()
     {
         // "after" must lay out against "shifted"'s static bottom, not its visually offset bottom 25px lower.
