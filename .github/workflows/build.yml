@@ -82,6 +82,10 @@ jobs:
       env:
         PDF_OUTPUT_DIRECTORY: ${{ github.workspace }}/pdf-artifacts/${{ matrix.platform.name }}-${{ matrix.dotnet.name }}
 
+    - name: Spec compliance report
+      if: ${{ !cancelled() && runner.os == 'Windows' && matrix.dotnet.name == '.NET 8' }}
+      run: dotnet run --project Source/Tools/HtmlRenderer.SpecCompliance --configuration Release --no-build -- report --output $env:GITHUB_STEP_SUMMARY
+
     - name: Create HtmlRenderer.Core NuGet package
       run: dotnet pack Source/HtmlRenderer/HtmlRenderer.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --no-build --verbosity normal --output ${{ env.NuGetDirectory }}
 

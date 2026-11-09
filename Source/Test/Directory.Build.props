@@ -1,0 +1,8 @@
+<Project>
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+    <ItemGroup>
+        <Compile Include="$(MSBuildThisFileDirectory)Shared/SpecAttribute.cs" Link="Shared/SpecAttribute.cs" />
+        <Using Include="HtmlRenderer.TestSupport" />
+    </ItemGroup>
+</Project>

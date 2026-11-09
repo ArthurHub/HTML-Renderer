@@ -11,7 +11,8 @@
       "HtmlRenderer.WPF\\HtmlRenderer.WPF.csproj",
       "Test\\HtmlRenderer.IntegrationTest\\HtmlRenderer.IntegrationTest.csproj",
       "Test\\HtmlRenderer.PdfSharp.Test\\HtmlRenderer.PdfSharp.Test.csproj",
-      "Test\\HtmlRenderer.Test\\HtmlRenderer.Test.csproj"
+      "Test\\HtmlRenderer.Test\\HtmlRenderer.Test.csproj",
+      "Tools\\HtmlRenderer.SpecCompliance\\HtmlRenderer.SpecCompliance.csproj"
     ]
   }
 }
