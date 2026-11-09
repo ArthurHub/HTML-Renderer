@@ -100,7 +100,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                 return string.Empty;
             }
 
-            // CSS 2.1 §3.4. A response of another type is skipped like a missing one. A response without
+            // CSS 2.1 §3.4, HTML §4.2.4.2. A response of another type is skipped like a missing one. A response without
             // a Content-Type, e.g. a local file, is trusted.
             if (networkResponse.ResponseHeaders != null &&
                 networkResponse.ResponseHeaders.TryGetValue("Content-Type", out var contentTypeValues) &&

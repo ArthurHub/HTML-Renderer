@@ -144,64 +144,89 @@ sections:
     status: partial
   semantics.html#the-root-element:
     title: 4.1 The document element
-    status: unknown
+    status: supported
   semantics.html#the-html-element:
     title: 4.1.1 The html element
-    status: unknown
+    status: supported
   semantics.html#document-metadata:
     title: 4.2 Document metadata
-    status: unknown
+    status: partial
   semantics.html#the-head-element:
     title: 4.2.1 The head element
-    status: unknown
+    status: supported
   semantics.html#the-title-element:
     title: 4.2.2 The title element
-    status: unknown
+    status: unsupported
+    gaps:
+      - The document title isn't used anywhere, e.g. not as the title of a generated PDF
   semantics.html#the-base-element:
     title: 4.2.3 The base element
-    status: unknown
+    status: partial
+    gaps:
+      - Doesn't apply to style sheet links, their href resolves against the adapter's base URL
+      - A relative href isn't resolved against the document URL, the references then fail to load
+      - The first base element is used even if it has no href
   semantics.html#the-link-element:
     title: 4.2.4 The link element
-    status: unknown
+    status: partial
+    gaps:
+      - rel is compared as a whole, a stylesheet keyword among others doesn't link a style sheet
+      - title doesn't define style sheet sets, sheets with different titles all apply
   semantics.html#processing-the-media-attribute:
     title: 4.2.4.1 Processing the media attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - media is ignored, a style sheet for other media still applies
   semantics.html#processing-the-type-attribute:
     title: 4.2.4.2 Processing the type attribute
-    status: unknown
+    status: partial
+    gaps:
+      - type is ignored, a link to an unsupported type is still fetched
   semantics.html#fetching-and-processing-a-resource-from-a-link-element:
     title: 4.2.4.3 Fetching and processing a resource from a link element
-    status: unknown
+    status: partial
+    gaps:
+      - Critical subresources aren't loaded, @import never loads
   semantics.html#processing-link-headers:
     title: 4.2.4.4 Processing `Link` headers
-    status: unknown
+    status: n/a
   semantics.html#early-hints:
     title: 4.2.4.5 Early hints
-    status: unknown
+    status: n/a
   semantics.html#providing-users-with-a-means-to-follow-hyperlinks-created-using-the-link-element:
     title: 4.2.4.6 Providing users with a means to follow hyperlinks created using the link element
-    status: unknown
+    status: n/a
   semantics.html#the-meta-element:
     title: 4.2.5 The meta element
-    status: unknown
+    status: unsupported
   semantics.html#standard-metadata-names:
     title: 4.2.5.1 Standard metadata names
-    status: unknown
+    status: unsupported
+    gaps:
+      - color-scheme is ignored
   semantics.html#other-metadata-names:
     title: 4.2.5.2 Other metadata names
-    status: unknown
+    status: n/a
   semantics.html#pragma-directives:
     title: 4.2.5.3 Pragma directives
-    status: unknown
+    status: unsupported
+    gaps:
+      - default-style doesn't select the preferred style sheet set
+      - content-language doesn't set the document's default language
   semantics.html#charset:
     title: 4.2.5.4 Specifying the document's character encoding
-    status: unknown
+    status: n/a
   semantics.html#the-style-element:
     title: 4.2.6 The style element
-    status: unknown
+    status: partial
+    gaps:
+      - media is ignored, a style sheet for other media still applies
+      - type is ignored, a style element of another type still applies
+      - title doesn't define style sheet sets, sheets with different titles all apply
+      - Critical subresources aren't loaded, @import never loads
   semantics.html#interactions-of-styling-and-scripting:
     title: 4.2.7 Interactions of styling and scripting
-    status: unknown
+    status: n/a
   sections.html#sections:
     title: 4.3 Sections
     status: unknown

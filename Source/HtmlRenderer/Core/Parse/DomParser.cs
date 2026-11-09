@@ -103,9 +103,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         #region Private methods
 
         /// <summary>
-        /// Read styles defined inside the dom structure in links and style elements.<br/>
-        /// If the html tag is "style" tag parse it content and add to the css data for all future tags parsing.<br/>
-        /// If the html tag is "link" that point to style data parse it content and add to the css data for all future tags parsing.<br/>
+        /// Collects the style sheets of <c>link rel=stylesheet</c> (HTML §4.2.4) and <c>style</c> (HTML §4.2.6)
+        /// elements in tree order. Runs before <see cref="HtmlContainerInt.Root"/> is set, so a <c>base</c>
+        /// element doesn't affect the <c>href</c>s resolved here.
         /// </summary>
         /// <param name="box">the box to parse style data in</param>
         /// <param name="htmlContainer">the html container to use for reference resolve</param>

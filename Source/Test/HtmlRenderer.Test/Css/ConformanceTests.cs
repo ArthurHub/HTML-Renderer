@@ -24,6 +24,7 @@ public sealed class ConformanceTests
 
     [TestMethod]
     [Spec("css21", "conform.html#conformance")]
+    [Spec("html", "semantics.html#fetching-and-processing-a-resource-from-a-link-element")]
     public void MissingStyleSheet_TheOthersStillApply()
     {
         Assert.AreEqual(Green, ColorOf("<link rel=stylesheet href='missing.css'><style>p { color: green }</style>"));
@@ -61,6 +62,7 @@ public sealed class ConformanceTests
 
     [TestMethod]
     [Spec("css21", "conform.html#text-css")]
+    [Spec("html", "semantics.html#processing-the-type-attribute")]
     public void TextCssResource_IsUsedAsAStyleSheet()
     {
         Assert.AreEqual(Green, ColorOf($"<link rel=stylesheet href='{DataUri("text/css", "p { color: green }")}'>"));
@@ -68,6 +70,7 @@ public sealed class ConformanceTests
 
     [TestMethod]
     [Spec("css21", "conform.html#text-css")]
+    [Spec("html", "semantics.html#processing-the-type-attribute")]
     public void ResourceOfAnotherContentType_IsNotUsedAsAStyleSheet()
     {
         Assert.AreNotEqual(Green, ColorOf($"<link rel=stylesheet href='{DataUri("text/plain", "p { color: green }")}'>"));

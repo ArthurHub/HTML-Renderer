@@ -178,11 +178,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Resolves <paramref name="src"/> (a <c>src</c>/<c>href</c>/CSS <c>url()</c> reference, absolute
-        /// or relative) against the document's base URL: <paramref name="overrideBaseUri"/> when given (a
-        /// stylesheet's own URL, for resolving a nested <c>@import</c> or <c>@font-face src</c> relative to
-        /// where that stylesheet was fetched from, not the document's own base), else the document's
-        /// <c>&lt;base href&gt;</c> element if it has one, else the adapter's own
+        /// Resolves <paramref name="src"/> against <paramref name="overrideBaseUri"/> when given, else the
+        /// document base URL (HTML §4.2.3): the <c>href</c> of the first <c>base</c> element, else
         /// <see cref="Adapters.RAdapter.BaseUri"/>.
         /// </summary>
         /// <param name="htmlContainer">the html container to resolve the base URI against</param>
