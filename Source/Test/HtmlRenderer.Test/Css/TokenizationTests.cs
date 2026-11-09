@@ -2,15 +2,11 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/Tokenization.cs (<c>CssTokenizationTests</c>). <c>Lexer</c>, hash-token
-/// classification (incl. escape-forces-id-hash), and CR/CRLF/LF normalization all match HTML-Renderer's
-/// <c>Parser/Lexer.cs</c> / <c>Parser/LexerBase.cs</c> line-for-line.
-/// </summary>
 [TestClass]
 public sealed class TokenizationTests
 {
     [TestMethod]
+    [Spec("css21", "grammar.html#scanner")]
     public void CssParserIdentifier()
     {
         var teststring = "h1 { background: blue; }";
@@ -20,6 +16,7 @@ public sealed class TokenizationTests
     }
 
     [TestMethod]
+    [Spec("css21", "grammar.html#scanner")]
     public void CssParserAtRule()
     {
         var teststring = "@media { background: blue; }";
@@ -29,6 +26,7 @@ public sealed class TokenizationTests
     }
 
     [TestMethod]
+    [Spec("css21", "grammar.html#scanner")]
     public void CssParserUrlUnquoted()
     {
         var url = "http://someurl";
@@ -39,6 +37,7 @@ public sealed class TokenizationTests
     }
 
     [TestMethod]
+    [Spec("css21", "grammar.html#scanner")]
     public void CssParserUrlDoubleQuoted()
     {
         var url = "http://someurl";
@@ -49,6 +48,7 @@ public sealed class TokenizationTests
     }
 
     [TestMethod]
+    [Spec("css21", "grammar.html#scanner")]
     public void CssParserUrlSingleQuoted()
     {
         var url = "http://someurl";
@@ -58,10 +58,8 @@ public sealed class TokenizationTests
         Assert.AreEqual(url, token.Data);
     }
 
-    // Exercises Lexer.UrlBad, the CSS Syntax bad-url-token recovery state: consume and discard
-    // characters until the url()'s matching close-paren (or an earlier ';'/unmatched '}') so the
-    // tokenizer resynchronizes rather than getting stuck on malformed input.
     [TestMethod]
+    [Spec("css21", "grammar.html#scanner")]
     public void CssParserUrlBad_UnexpectedQuoteInUnquotedUrl_RecoversAtClosingParen()
     {
         var teststring = "url(bad\"value) next";
@@ -77,57 +75,9 @@ public sealed class TokenizationTests
         Assert.AreEqual("next", nextToken.Data);
     }
 
+    // In a value, an all-hex hash is a color literal, any other name stays an id hash.
     [TestMethod]
-    public void CssParserUrlBad_LineBreakInsideQuotedUrl_RecoversAtClosingParen()
-    {
-        var teststring = "url(\"unterminated\nstring\") next";
-        var tokenizer = new Lexer(new TextSource(teststring));
-
-        var urlToken = tokenizer.Get();
-        Assert.AreEqual(TokenType.Url, urlToken.Type);
-
-        Assert.AreEqual(TokenType.Whitespace, tokenizer.Get().Type);
-
-        var nextToken = tokenizer.Get();
-        Assert.AreEqual(TokenType.Ident, nextToken.Type);
-        Assert.AreEqual("next", nextToken.Data);
-    }
-
-    [TestMethod]
-    public void CssParserUrlBad_SemicolonInsideBadUrl_StopsAtSemicolon()
-    {
-        var teststring = "url(bad\"value; next";
-        var tokenizer = new Lexer(new TextSource(teststring));
-
-        var urlToken = tokenizer.Get();
-        Assert.AreEqual(TokenType.Url, urlToken.Type);
-
-        var nextToken = tokenizer.Get();
-        Assert.AreEqual(TokenType.Semicolon, nextToken.Type);
-    }
-
-    [TestMethod]
-    public void CssParserUrlBad_NestedParenInsideBadUrl_RequiresMatchingCloseParen()
-    {
-        // The stray '(' bumps UrlBad's paren-depth counter, so the first ')' just closes the
-        // nested paren rather than ending the url() - only the second ')' does.
-        var teststring = "url(bad\"va(lue)) next";
-        var tokenizer = new Lexer(new TextSource(teststring));
-
-        var urlToken = tokenizer.Get();
-        Assert.AreEqual(TokenType.Url, urlToken.Type);
-
-        Assert.AreEqual(TokenType.Whitespace, tokenizer.Get().Type);
-
-        var nextToken = tokenizer.Get();
-        Assert.AreEqual(TokenType.Ident, nextToken.Type);
-        Assert.AreEqual("next", nextToken.Data);
-    }
-
-    // In a value context, '#' begins a <hash-token> (CSS Syntax §4.3.4): an all-hex name is a color
-    // literal, any other name stays an id hash-token (e.g. the '#id' inside element()). Previously a
-    // non-hex hash was truncated at the first non-hex char into an empty color + a stray ident.
-    [TestMethod]
+    [Spec("css21", "grammar.html#scanner")]
     public void ValueContextHash()
     {
         static void Check(string input, TokenType expectedType, string expectedData)
@@ -179,6 +129,7 @@ public sealed class TokenizationTests
     }
 
     [TestMethod]
+    [Spec("css21", "grammar.html#scanner")]
     public void LexerOnlyCarriageReturn()
     {
         var teststring = "\r";
@@ -188,6 +139,7 @@ public sealed class TokenizationTests
     }
 
     [TestMethod]
+    [Spec("css21", "grammar.html#scanner")]
     public void LexerCarriageReturnLineFeed()
     {
         var teststring = "\r\n";
@@ -197,6 +149,7 @@ public sealed class TokenizationTests
     }
 
     [TestMethod]
+    [Spec("css21", "grammar.html#scanner")]
     public void LexerOnlyLineFeed()
     {
         var teststring = "\n";

@@ -1091,16 +1091,18 @@ sections:
     status: n/a
   grammar.html#q25.0:
     title: G Grammar of CSS 2.1
-    status: unknown
+    status: partial
   grammar.html#grammar:
     title: G.1 Grammar
-    status: unknown
+    status: supported
   grammar.html#scanner:
     title: G.2 Lexical scanner
-    status: unknown
+    status: partial
+    gaps:
+      - Uppercase units, at-keywords and '!important' aren't recognized, e.g. 10PX, @MEDIA and !IMPORTANT
   grammar.html#tokenizer-diffs:
     title: G.3 Comparison of tokenization in CSS 2.1 and CSS1
-    status: unknown
+    status: supported
   grammar.html#q25.4:
     title: G.4 Implementation note
-    status: unknown
+    status: n/a
