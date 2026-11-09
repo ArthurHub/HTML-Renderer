@@ -3,11 +3,9 @@ using System.Collections.Generic;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Shared grammar for the CSS <c>background-size</c> value (<c>auto</c>, <c>cover</c>,
-    /// <c>contain</c>, or a 1-2 token length/percentage/auto form). Used by both
-    /// <see cref="Converters.BackgroundSizeConverter"/> (CSS-OM grammar validation/serialization)
-    /// and the render-time background-layer resolution (size resolution), so there
-    /// is one parser for this grammar, not two.
+    /// Grammar of a <c>background-size</c> value: <c>auto</c>, <c>cover</c>, <c>contain</c> or
+    /// 1 to 2 length, percentage or auto tokens. Used by <see cref="Converters.BackgroundSizeConverter"/>
+    /// to validate and serialize the value.
     /// </summary>
     internal static class BackgroundSizeGrammar
     {

@@ -3,7 +3,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>Ported from PeachPDF.Tests/CSS/PropertyTests/BackgroundProperty.cs. Pure CSSOM parse tests - no layout involved.</summary>
 [TestClass]
 public sealed class BackgroundPropertyTests
 {
@@ -874,6 +873,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "colors.html#background-properties")]
     public void BackgroundShorthand_Color_SetsBackgroundColor()
     {
         var style = CssConstructionFunctions.ParseDeclarations("background: red");
@@ -894,6 +894,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "colors.html#background-properties")]
     public void BackgroundShorthand_ImageAndColor_SetsBothLonghands()
     {
         var style = CssConstructionFunctions.ParseDeclarations("background: white url(\"pendant.png\")");
@@ -904,6 +905,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "colors.html#background-properties")]
     public void BackgroundShorthand_ImageRepeatAttachmentColor_SetsAllFourLonghands()
     {
         var style = CssConstructionFunctions.ParseDeclarations("background: url(\"topbanner.png\") #00d repeat-y fixed");
@@ -915,6 +917,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "colors.html#background-properties")]
     public void BackgroundShorthand_ImageNoRepeatPosition_SetsImageRepeatPosition()
     {
         var style = CssConstructionFunctions.ParseDeclarations("background: url(\"img_tree.png\") no-repeat right top");
@@ -945,10 +948,7 @@ public sealed class BackgroundPropertyTests
     [TestMethod]
     public void BackgroundShorthand_MultipleLayers_ExtractsCommaJoinedNotSpaceJoinedLonghands()
     {
-        // Regression test: EndListValueConverter used to join per-layer longhand values with a
-        // space instead of a comma when extracted from a multi-layer `background` shorthand,
-        // silently corrupting them (e.g. "no-repeat repeat-x" looks like a single valid
-        // two-axis repeat value, not two layers).
+        // Layers are joined with a comma, "no-repeat repeat-x" would read as one two-axis value
         var style = CssConstructionFunctions.ParseDeclarations(
             "background: url(\"a.png\") top no-repeat, url(\"b.png\") bottom repeat-x");
 

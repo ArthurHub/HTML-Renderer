@@ -745,16 +745,23 @@ sections:
       - "@page declarations aren't cascaded, nothing reads them"
   colors.html#q14.0:
     title: 14 Colors and Backgrounds
-    status: unknown
+    status: partial
   colors.html#colors:
     title: 14.1 Foreground color
-    status: unknown
+    status: supported
   colors.html#background:
     title: 14.2 The background
-    status: unknown
+    status: partial
+    gaps:
+      - The root element's background only covers the root box, not the whole canvas
+      - The body's background isn't propagated to the canvas when the root has none, the body paints it itself
   colors.html#background-properties:
     title: 14.2.1 Background properties
-    status: unknown
+    status: partial
+    gaps:
+      - "'background-position' only resolves keywords, a percentage or length anchors to the left or top edge if it contains the digit 0 and is centered otherwise"
+      - "'background-position' is relative to the border box instead of the padding box"
+      - "'background-attachment: fixed' is ignored, the image scrolls with the element"
   fonts.html#q15.0:
     title: 15 Fonts
     status: unknown

@@ -1606,7 +1606,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// 
         /// Gets the actual color for the text.
         /// </summary>
         public RColor ActualColor

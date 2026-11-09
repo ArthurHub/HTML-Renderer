@@ -3,12 +3,9 @@ using System.Collections.Generic;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Shared grammar for the CSS <c>background-position</c> value (the 1/2/3/4-token forms,
-    /// including the edge-relative offset syntax, e.g. "right 20px bottom 10px"). Used by both
-    /// <see cref="Converters.PointConverter"/> (CSS-OM grammar validation/serialization) and
-    /// the render-time background-layer resolution (pixel-offset arithmetic) so
-    /// there is one parser for this grammar, not two independent re-implementations - mirroring how
-    /// CalcParser is shared between CalcValueConverter and CssValueParser rather than re-parsed twice.
+    /// Grammar of a <c>background-position</c> value: the 1 to 4 token forms, including edge offsets
+    /// like "right 20px bottom 10px". Used by <see cref="Converters.PointConverter"/> and
+    /// <see cref="BasicShapeGrammar"/> to validate and serialize the value.
     /// </summary>
     internal static class BackgroundPositionGrammar
     {

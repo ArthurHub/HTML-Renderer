@@ -4,9 +4,8 @@ using System.Linq;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Validates and serializes a single-layer <c>background-position</c> value via the shared
-    /// <see cref="BackgroundPositionGrammar"/> (see that class for why this isn't a hand-written
-    /// combinator tree like most other converters in this file).
+    /// Validates and serializes a single-layer <c>background-position</c> value through
+    /// <see cref="BackgroundPositionGrammar"/>.
     /// </summary>
     internal sealed class BackgroundPositionValueConverter : IValueConverter
     {

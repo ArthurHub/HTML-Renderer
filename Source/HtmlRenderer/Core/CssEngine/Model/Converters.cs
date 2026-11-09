@@ -89,10 +89,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             Assign(Keywords.Top, 1.0).Or(Keywords.Bottom, -1.0).Option(0.0)
         );
 
-        // The 1/2/3/4-token background-position grammar (including the edge-relative offset syntax,
-        // e.g. "right 20px bottom 10px") is implemented once in BackgroundPositionGrammar and shared
-        // with the render layer's BackgroundLayerResolver, rather than re-implemented as a second,
-        // independent parser of the same value string - see that class's doc comment.
         public static readonly IValueConverter PointConverter = new BackgroundPositionValueConverter();
 
         public static readonly IValueConverter AttrConverter = new FunctionValueConverter(
@@ -523,8 +519,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly IValueConverter FontFamiliesConverter =
             DefaultFontFamiliesConverter.Or(StringConverter).Or(LiteralsConverter).FromList();
 
-        // Shared with the render layer's BackgroundLayerResolver via BackgroundSizeGrammar - see
-        // BackgroundPositionGrammar's doc comment for why.
         public static readonly IValueConverter BackgroundSizeConverter = new BackgroundSizeValueConverter();
 
         public static readonly IValueConverter BackgroundRepeatsConverter = BackgroundRepeatConverter.Or(
