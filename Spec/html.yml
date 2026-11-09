@@ -712,100 +712,21 @@ sections:
       - The data resource isn't loaded, an image is shown as the fallback content instead
   media.html#the-video-element:
     title: 4.8.8 The video element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Not rendered, its fallback content is shown instead
+      - The poster image isn't shown
   media.html#the-audio-element:
     title: 4.8.9 The audio element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Not rendered, its fallback content is shown instead
   media.html#the-track-element:
     title: 4.8.10 The track element
-    status: unknown
+    status: n/a
   media.html#media-elements:
     title: 4.8.11 Media elements
-    status: unknown
-  media.html#error-codes:
-    title: 4.8.11.1 Error codes
-    status: unknown
-  media.html#location-of-the-media-resource:
-    title: 4.8.11.2 Location of the media resource
-    status: unknown
-  media.html#mime-types:
-    title: 4.8.11.3 MIME types
-    status: unknown
-  media.html#network-states:
-    title: 4.8.11.4 Network states
-    status: unknown
-  media.html#loading-the-media-resource:
-    title: 4.8.11.5 Loading the media resource
-    status: unknown
-  media.html#offsets-into-the-media-resource:
-    title: 4.8.11.6 Offsets into the media resource
-    status: unknown
-  media.html#ready-states:
-    title: 4.8.11.7 Ready states
-    status: unknown
-  media.html#playing-the-media-resource:
-    title: 4.8.11.8 Playing the media resource
-    status: unknown
-  media.html#seeking:
-    title: 4.8.11.9 Seeking
-    status: unknown
-  media.html#media-resources-with-multiple-media-tracks:
-    title: 4.8.11.10 Media resources with multiple media tracks
-    status: unknown
-  media.html#audiotracklist-and-videotracklist-objects:
-    title: 4.8.11.10.1 AudioTrackList and VideoTrackList objects
-    status: unknown
-  media.html#selecting-specific-audio-and-video-tracks-declaratively:
-    title: 4.8.11.10.2 Selecting specific audio and video tracks declaratively
-    status: unknown
-  media.html#timed-text-tracks:
-    title: 4.8.11.11 Timed text tracks
-    status: unknown
-  media.html#text-track-model:
-    title: 4.8.11.11.1 Text track model
-    status: unknown
-  media.html#sourcing-in-band-text-tracks:
-    title: 4.8.11.11.2 Sourcing in-band text tracks
-    status: unknown
-  media.html#sourcing-out-of-band-text-tracks:
-    title: 4.8.11.11.3 Sourcing out-of-band text tracks
-    status: unknown
-  media.html#guidelines-for-exposing-cues-in-various-formats-as-text-track-cues:
-    title: 4.8.11.11.4 Guidelines for exposing cues in various formats as text track cues
-    status: unknown
-  media.html#text-track-api:
-    title: 4.8.11.11.5 Text track API
-    status: unknown
-  media.html#cue-events:
-    title: 4.8.11.11.6 Event handlers for objects of the text track APIs
-    status: unknown
-  media.html#best-practices-for-metadata-text-tracks:
-    title: 4.8.11.11.7 Best practices for metadata text tracks
-    status: unknown
-  media.html#identifying-a-track-kind-through-a-url:
-    title: 4.8.11.12 Identifying a track kind through a URL
-    status: unknown
-  media.html#user-interface:
-    title: 4.8.11.13 User interface
-    status: unknown
-  media.html#time-ranges:
-    title: 4.8.11.14 Time ranges
-    status: unknown
-  media.html#the-trackevent-interface:
-    title: 4.8.11.15 The TrackEvent interface
-    status: unknown
-  media.html#mediaevents:
-    title: 4.8.11.16 Events summary
-    status: unknown
-  media.html#security-and-privacy-considerations:
-    title: 4.8.11.17 Security and privacy considerations
-    status: unknown
-  media.html#best-practices-for-authors-using-media-elements:
-    title: 4.8.11.18 Best practices for authors using media elements
-    status: unknown
-  media.html#best-practices-for-implementers-of-media-elements:
-    title: 4.8.11.19 Best practices for implementers of media elements
-    status: unknown
+    status: n/a
   image-maps.html#the-map-element:
     title: 4.8.12 The map element
     status: unknown
