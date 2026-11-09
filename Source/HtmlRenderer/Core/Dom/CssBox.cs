@@ -898,8 +898,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                             // Resuming this box's own interrupted child/content loop, not placing it fresh
                             // - css-break-3 §2 gives a box one inline position across all its fragments, so
                             // there is nothing to re-derive here; Location already holds it from the pass
-                            // that placed this box originally.
-                            top = Location.Y;
+                            // that placed this box originally. Back out the relative offset, it gets applied
+                            // again below.
+                            top = Location.Y - RelativeOffsetY;
                         }
                         else if (_resumeTopOverride.HasValue)
                         {

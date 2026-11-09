@@ -14,36 +14,25 @@ namespace HtmlRenderer.IntegrationTest.Painting;
 [TestClass]
 public sealed class StackingContextTests
 {
-    [Ignore("z-index/stacking-context paint order is not implemented on this fork: FragmentPainter.cs's own " +
-            "class remarks explicitly document it as deferred (\"Stacking-context paint order and " +
-            "box-decoration-break slicing are follow-on work\"), and CssBoxProperties has no ZIndex field at " +
-            "all - the CSS-OM parses z-index (CssEngine/StyleProperties/Flow/ZIndexProperty.cs) but " +
-            "CssUtils.SetPropertyValue never dispatches it onto a box, so it has zero effect on paint order. " +
-            "This box tree currently paints in plain document order (normal flow, then absolute/fixed, per " +
-            "FragmentPainter's child-iteration order) regardless of any z-index value - a position:relative " +
-            "z-index:2 box painting over a LATER position:fixed sibling (this test's whole premise) is exactly " +
-            "the case document order alone cannot produce, so this reliably fails rather than passing by " +
-            "accident. Implementing real stacking-context ordering (a ZIndex box property, plus grouping/" +
-            "sorting descendants by stacking context per CSS2.1 Appendix E) is a separate, larger feature port.")]
+    [Ignore("z-index and stacking-context paint order aren't implemented yet, boxes paint in document order")]
     [TestMethod]
     public void PositionedZIndex_PaintsOverFixedPositionedContent()
     {
-        // A black position:fixed bar declared AFTER (later in the box tree than) a white
-        // position:relative;z-index:2 box must still be painted BEFORE it (i.e. underneath).
+        // The white z-index:2 box must paint on top of the black fixed bar, even though the painter
+        // currently draws the fixed bar after the normal flow.
         var html = LayoutHarness.Wrap(
             "<div id='fixedbar' style='position:fixed; top:0; left:0; width:50px; height:50px; background:rgb(0,0,0);'></div>"
             + "<div id='intro' style='position:relative; z-index:2; width:50px; height:50px; background:rgb(255,255,255);'></div>");
 
-        var (root, container) = PaintHarness.Layout(html);
+        var (_, container) = PaintHarness.Layout(html);
         var recorder = PaintHarness.PaintPage(container);
 
-        var fixedBar = PaintHarness.FindById(root, "fixedbar")!;
-        var intro = PaintHarness.FindById(root, "intro")!;
-
         var drawRectCalls = recorder.Log.OfType<RecordingGraphics.DrawRectCall>().ToList();
-        var fixedBarPaintIndex = drawRectCalls.FindIndex(c => c.X == fixedBar.Location.X && c.Y == fixedBar.Location.Y);
-        var introPaintIndex = drawRectCalls.FindIndex(c => c.X == intro.Location.X && c.Y == intro.Location.Y);
+        var fixedBarPaintIndex = drawRectCalls.FindIndex(c => c.Color.R == 0 && c.Color.G == 0 && c.Color.B == 0);
+        var introPaintIndex = drawRectCalls.FindIndex(c => c.Color.R == 255 && c.Color.G == 255 && c.Color.B == 255);
 
+        Assert.IsGreaterThanOrEqualTo(0, fixedBarPaintIndex);
+        Assert.IsGreaterThanOrEqualTo(0, introPaintIndex);
         Assert.IsTrue(fixedBarPaintIndex < introPaintIndex,
             "the z-index:2 box must paint after (on top of) the fixed bar, regardless of document order");
     }
