@@ -1005,43 +1005,31 @@ sections:
     status: n/a
   interactive-elements.html#interactive-elements:
     title: 4.11 Interactive elements
-    status: unknown
+    status: partial
   interactive-elements.html#the-details-element:
     title: 4.11.1 The details element
-    status: unknown
+    status: partial
+    gaps:
+      - A closed details shows all its content, not just the summary
+      - Without a summary there's no default legend
+      - Of several open details with the same name all stay open instead of only the first
   interactive-elements.html#the-summary-element:
     title: 4.11.2 The summary element
-    status: unknown
+    status: partial
+    gaps:
+      - No disclosure triangle, see 15.5.5
   interactive-elements.html#commands:
     title: 4.11.3 Commands
-    status: unknown
-  interactive-elements.html#facets-2:
-    title: 4.11.3.1 Facets
-    status: unknown
-  interactive-elements.html#using-the-a-element-to-define-a-command:
-    title: 4.11.3.2 Using the a element to define a command
-    status: unknown
-  interactive-elements.html#using-the-button-element-to-define-a-command:
-    title: 4.11.3.3 Using the button element to define a command
-    status: unknown
-  interactive-elements.html#using-the-input-element-to-define-a-command:
-    title: 4.11.3.4 Using the input element to define a command
-    status: unknown
-  interactive-elements.html#using-the-option-element-to-define-a-command:
-    title: 4.11.3.5 Using the option element to define a command
-    status: unknown
-  interactive-elements.html#using-the-accesskey-attribute-on-a-legend-element-to-define-a-command:
-    title: 4.11.3.6 Using the accesskey attribute on a legend element to define a command
-    status: unknown
-  interactive-elements.html#using-the-accesskey-attribute-to-define-a-command-on-other-elements:
-    title: 4.11.3.7 Using the accesskey attribute to define a command on other elements
-    status: unknown
+    status: n/a
   interactive-elements.html#the-dialog-element:
     title: 4.11.4 The dialog element
-    status: unknown
+    status: partial
+    gaps:
+      - A dialog without open is shown, see 15.3.1
+      - An open dialog is rendered in the flow instead of as a centered, bordered box, see 15.3.3
   interactive-elements.html#dialog-light-dismiss:
     title: 4.11.5 Dialog light dismiss
-    status: unknown
+    status: n/a
   scripting.html#scripting-3:
     title: 4.12 Scripting
     status: unknown
