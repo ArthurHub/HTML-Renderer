@@ -828,289 +828,181 @@ sections:
     status: n/a
   forms.html#forms:
     title: 4.10 Forms
-    status: unknown
+    status: partial
   forms.html#introduction-4:
     title: 4.10.1 Introduction
-    status: unknown
-  forms.html#writing-a-form's-user-interface:
-    title: 4.10.1.1 Writing a form's user interface
-    status: unknown
-  forms.html#implementing-the-server-side-processing-for-a-form:
-    title: 4.10.1.2 Implementing the server-side processing for a form
-    status: unknown
-  forms.html#configuring-a-form-to-communicate-with-a-server:
-    title: 4.10.1.3 Configuring a form to communicate with a server
-    status: unknown
-  forms.html#client-side-form-validation:
-    title: 4.10.1.4 Client-side form validation
-    status: unknown
-  forms.html#enabling-client-side-automatic-filling-of-form-controls:
-    title: 4.10.1.5 Enabling client-side automatic filling of form controls
-    status: unknown
-  forms.html#improving-the-user-experience-on-mobile-devices:
-    title: 4.10.1.6 Improving the user experience on mobile devices
-    status: unknown
-  forms.html#the-difference-between-the-field-type,-the-autofill-field-name,-and-the-input-modality:
-    title: 4.10.1.7 The difference between the field type, the autofill field name, and the input modality
-    status: unknown
-  forms.html#input-author-notes:
-    title: 4.10.1.8 Date, time, and number formats
-    status: unknown
+    status: n/a
   forms.html#categories:
     title: 4.10.2 Categories
-    status: unknown
+    status: n/a
   forms.html#the-form-element:
     title: 4.10.3 The form element
-    status: unknown
+    status: supported
   forms.html#the-label-element:
     title: 4.10.4 The label element
-    status: unknown
+    status: supported
   input.html#the-input-element:
     title: 4.10.5 The input element
-    status: unknown
+    status: unsupported
   input.html#states-of-the-type-attribute:
     title: 4.10.5.1 States of the type attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - Renders as an empty box, no field, value or check mark, see 15.5.6 to 15.5.12
   input.html#hidden-state-(type=hidden):
     title: 4.10.5.1.1 Hidden state (type=hidden)
-    status: unknown
+    status: unsupported
   input.html#text-(type=text)-state-and-search-state-(type=search):
     title: 4.10.5.1.2 Text (type=text) state and Search state (type=search)
-    status: unknown
+    status: unsupported
   input.html#telephone-state-(type=tel):
     title: 4.10.5.1.3 Telephone state (type=tel)
-    status: unknown
+    status: unsupported
   input.html#url-state-(type=url):
     title: 4.10.5.1.4 URL state (type=url)
-    status: unknown
+    status: unsupported
   input.html#email-state-(type=email):
     title: 4.10.5.1.5 Email state (type=email)
-    status: unknown
+    status: unsupported
   input.html#password-state-(type=password):
     title: 4.10.5.1.6 Password state (type=password)
-    status: unknown
+    status: unsupported
   input.html#date-state-(type=date):
     title: 4.10.5.1.7 Date state (type=date)
-    status: unknown
+    status: unsupported
   input.html#month-state-(type=month):
     title: 4.10.5.1.8 Month state (type=month)
-    status: unknown
+    status: unsupported
   input.html#week-state-(type=week):
     title: 4.10.5.1.9 Week state (type=week)
-    status: unknown
+    status: unsupported
   input.html#time-state-(type=time):
     title: 4.10.5.1.10 Time state (type=time)
-    status: unknown
+    status: unsupported
   input.html#local-date-and-time-state-(type=datetime-local):
     title: 4.10.5.1.11 Local Date and Time state (type=datetime-local)
-    status: unknown
+    status: unsupported
   input.html#number-state-(type=number):
     title: 4.10.5.1.12 Number state (type=number)
-    status: unknown
+    status: unsupported
   input.html#range-state-(type=range):
     title: 4.10.5.1.13 Range state (type=range)
-    status: unknown
+    status: unsupported
   input.html#color-state-(type=color):
     title: 4.10.5.1.14 Color state (type=color)
-    status: unknown
+    status: unsupported
   input.html#checkbox-state-(type=checkbox):
     title: 4.10.5.1.15 Checkbox state (type=checkbox)
-    status: unknown
+    status: unsupported
   input.html#radio-button-state-(type=radio):
     title: 4.10.5.1.16 Radio Button state (type=radio)
-    status: unknown
+    status: unsupported
   input.html#file-upload-state-(type=file):
     title: 4.10.5.1.17 File Upload state (type=file)
-    status: unknown
+    status: unsupported
   input.html#submit-button-state-(type=submit):
     title: 4.10.5.1.18 Submit Button state (type=submit)
-    status: unknown
+    status: unsupported
   input.html#image-button-state-(type=image):
     title: 4.10.5.1.19 Image Button state (type=image)
-    status: unknown
+    status: unsupported
   input.html#reset-button-state-(type=reset):
     title: 4.10.5.1.20 Reset Button state (type=reset)
-    status: unknown
+    status: unsupported
   input.html#button-state-(type=button):
     title: 4.10.5.1.21 Button state (type=button)
-    status: unknown
+    status: unsupported
   input.html#input-impl-notes:
     title: 4.10.5.2 Implementation notes regarding localization of form controls
-    status: unknown
+    status: n/a
   input.html#common-input-element-attributes:
     title: 4.10.5.3 Common input element attributes
-    status: unknown
-  input.html#the-maxlength-and-minlength-attributes:
-    title: 4.10.5.3.1 The maxlength and minlength attributes
-    status: unknown
+    status: n/a
   input.html#the-size-attribute:
     title: 4.10.5.3.2 The size attribute
-    status: unknown
-  input.html#the-readonly-attribute:
-    title: 4.10.5.3.3 The readonly attribute
-    status: unknown
-  input.html#the-required-attribute:
-    title: 4.10.5.3.4 The required attribute
-    status: unknown
-  input.html#the-multiple-attribute:
-    title: 4.10.5.3.5 The multiple attribute
-    status: unknown
-  input.html#the-pattern-attribute:
-    title: 4.10.5.3.6 The pattern attribute
-    status: unknown
-  input.html#the-min-and-max-attributes:
-    title: 4.10.5.3.7 The min and max attributes
-    status: unknown
-  input.html#the-step-attribute:
-    title: 4.10.5.3.8 The step attribute
-    status: unknown
-  input.html#the-list-attribute:
-    title: 4.10.5.3.9 The list attribute
-    status: unknown
+    status: unsupported
   input.html#the-placeholder-attribute:
     title: 4.10.5.3.10 The placeholder attribute
-    status: unknown
+    status: unsupported
   input.html#common-input-element-apis:
     title: 4.10.5.4 Common input element APIs
-    status: unknown
+    status: n/a
   input.html#common-input-element-events:
     title: 4.10.5.5 Common event behaviors
-    status: unknown
+    status: n/a
   form-elements.html#the-button-element:
     title: 4.10.6 The button element
-    status: unknown
+    status: partial
+    gaps:
+      - Rendered without the button frame, see 15.5.4
   form-elements.html#the-select-element:
     title: 4.10.7 The select element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Shows the text of every option instead of a drop-down box with the selected one, see 15.5.16
   form-elements.html#the-datalist-element:
     title: 4.10.8 The datalist element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Its options are displayed, see 15.3.1
   form-elements.html#the-optgroup-element:
     title: 4.10.9 The optgroup element
-    status: unknown
+    status: unsupported
   form-elements.html#the-option-element:
     title: 4.10.10 The option element
-    status: unknown
+    status: unsupported
   form-elements.html#the-textarea-element:
     title: 4.10.11 The textarea element
-    status: unknown
+    status: partial
+    gaps:
+      - Rendered as inline text without the text field frame, see 15.5.17
   form-elements.html#the-output-element:
     title: 4.10.12 The output element
-    status: unknown
+    status: supported
   form-elements.html#the-progress-element:
     title: 4.10.13 The progress element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Shows its content instead of a progress bar, see 15.5.15
   form-elements.html#the-meter-element:
     title: 4.10.14 The meter element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Shows its content instead of a gauge, see 15.5.14
   form-elements.html#the-fieldset-element:
     title: 4.10.15 The fieldset element
-    status: unknown
+    status: partial
+    gaps:
+      - Rendered as a plain block without the border around it, see 15.3.12
   form-elements.html#the-legend-element:
     title: 4.10.16 The legend element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Rendered inline at the start of the fieldset's content instead of in its border, see 15.3.12
   form-elements.html#the-selectedcontent-element:
     title: 4.10.17 The selectedcontent element
-    status: unknown
+    status: unsupported
   form-control-infrastructure.html#form-control-infrastructure:
     title: 4.10.18 Form control infrastructure
-    status: unknown
-  form-control-infrastructure.html#a-form-control's-value:
-    title: 4.10.18.1 A form control's value
-    status: unknown
-  form-control-infrastructure.html#mutability:
-    title: 4.10.18.2 Mutability
-    status: unknown
-  form-control-infrastructure.html#association-of-controls-and-forms:
-    title: 4.10.18.3 Association of controls and forms
-    status: unknown
+    status: n/a
   form-control-infrastructure.html#attributes-common-to-form-controls:
     title: 4.10.19 Attributes common to form controls
-    status: unknown
-  form-control-infrastructure.html#naming-form-controls:-the-name-attribute:
-    title: '4.10.19.1 Naming form controls: the name attribute'
-    status: unknown
-  form-control-infrastructure.html#submitting-element-directionality:-the-dirname-attribute:
-    title: '4.10.19.2 Submitting element directionality: the dirname attribute'
-    status: unknown
-  form-control-infrastructure.html#limiting-user-input-length:-the-maxlength-attribute:
-    title: '4.10.19.3 Limiting user input length: the maxlength attribute'
-    status: unknown
-  form-control-infrastructure.html#setting-minimum-input-length-requirements:-the-minlength-attribute:
-    title: '4.10.19.4 Setting minimum input length requirements: the minlength attribute'
-    status: unknown
+    status: n/a
   form-control-infrastructure.html#enabling-and-disabling-form-controls:-the-disabled-attribute:
     title: '4.10.19.5 Enabling and disabling form controls: the disabled attribute'
-    status: unknown
-  form-control-infrastructure.html#form-submission-attributes:
-    title: 4.10.19.6 Form submission attributes
-    status: unknown
-  form-control-infrastructure.html#autofill:
-    title: 4.10.19.7 Autofill
-    status: unknown
-  form-control-infrastructure.html#autofilling-form-controls:-the-autocomplete-attribute:
-    title: '4.10.19.7.1 Autofilling form controls: the autocomplete attribute'
-    status: unknown
-  form-control-infrastructure.html#autofill-processing-model:
-    title: 4.10.19.7.2 Processing model
-    status: unknown
+    status: unsupported
   form-control-infrastructure.html#textFieldSelection:
     title: 4.10.20 APIs for the text control selections
-    status: unknown
+    status: n/a
   form-control-infrastructure.html#constraints:
     title: 4.10.21 Constraints
-    status: unknown
-  form-control-infrastructure.html#definitions:
-    title: 4.10.21.1 Definitions
-    status: unknown
-  form-control-infrastructure.html#constraint-validation:
-    title: 4.10.21.2 Constraint validation
-    status: unknown
-  form-control-infrastructure.html#the-constraint-validation-api:
-    title: 4.10.21.3 The constraint validation API
-    status: unknown
-  form-control-infrastructure.html#security-forms:
-    title: 4.10.21.4 Security
-    status: unknown
+    status: n/a
   form-control-infrastructure.html#form-submission-2:
     title: 4.10.22 Form submission
-    status: unknown
-  form-control-infrastructure.html#introduction-5:
-    title: 4.10.22.1 Introduction
-    status: unknown
-  form-control-infrastructure.html#implicit-submission:
-    title: 4.10.22.2 Implicit submission
-    status: unknown
-  form-control-infrastructure.html#form-submission-algorithm:
-    title: 4.10.22.3 Form submission algorithm
-    status: unknown
-  form-control-infrastructure.html#constructing-form-data-set:
-    title: 4.10.22.4 Constructing the entry list
-    status: unknown
-  form-control-infrastructure.html#selecting-a-form-submission-encoding:
-    title: 4.10.22.5 Selecting a form submission encoding
-    status: unknown
-  form-control-infrastructure.html#converting-an-entry-list-to-a-list-of-name-value-pairs:
-    title: 4.10.22.6 Converting an entry list to a list of name-value pairs
-    status: unknown
-  form-control-infrastructure.html#url-encoded-form-data:
-    title: 4.10.22.7 URL-encoded form data
-    status: unknown
-  form-control-infrastructure.html#multipart-form-data:
-    title: 4.10.22.8 Multipart form data
-    status: unknown
-  form-control-infrastructure.html#plain-text-form-data:
-    title: 4.10.22.9 Plain text form data
-    status: unknown
-  form-control-infrastructure.html#the-submitevent-interface:
-    title: 4.10.22.10 The SubmitEvent interface
-    status: unknown
-  form-control-infrastructure.html#the-formdataevent-interface:
-    title: 4.10.22.11 The FormDataEvent interface
-    status: unknown
+    status: n/a
   form-control-infrastructure.html#resetting-a-form:
     title: 4.10.23 Resetting a form
-    status: unknown
+    status: n/a
   interactive-elements.html#interactive-elements:
     title: 4.11 Interactive elements
     status: unknown
