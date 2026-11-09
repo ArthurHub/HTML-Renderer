@@ -33,6 +33,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private readonly Dictionary<CssBox, RRect> _rects;
         private readonly List<CssBox> _relatedBoxes;
 
+        // The vertical extent of the line's strut, so the line keeps the block's own line height even when
+        // all its text is smaller. Null for a line without text.
+        private double? _strutTop;
+        private double _strutBottom;
+
         #endregion
 
 
@@ -104,7 +109,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         {
             get
             {
-                double bottom = 0;
+                double bottom = _strutTop.HasValue ? _strutBottom : 0;
                 foreach (var rect in _rects)
                 {
                     bottom = Math.Max(bottom, rect.Value.Bottom);
@@ -120,7 +125,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         {
             get
             {
-                double top = double.MaxValue;
+                double top = _strutTop ?? double.MaxValue;
                 foreach (var rect in _rects)
                 {
                     top = Math.Min(top, rect.Value.Top);
@@ -136,6 +141,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         internal void ShiftLine(double delta)
         {
+            ShiftStrut(delta);
+
             foreach (var word in _words)
             {
                 word.Top += delta;
@@ -147,6 +154,21 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 var r = _rects[box];
                 _rects[box] = new RRect(r.X, r.Y + delta, r.Width, r.Height);
                 box.OffsetRectangle(this, delta);
+            }
+        }
+
+        internal void SetStrut(double top, double height)
+        {
+            _strutTop = top;
+            _strutBottom = top + height;
+        }
+
+        internal void ShiftStrut(double delta)
+        {
+            if (_strutTop.HasValue)
+            {
+                _strutTop += delta;
+                _strutBottom += delta;
             }
         }
 
