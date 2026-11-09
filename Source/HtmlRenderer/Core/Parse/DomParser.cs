@@ -116,7 +116,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         {
             if (box.HtmlTag != null)
             {
-                // Check for the <link rel=stylesheet> tag
+                // <link rel=stylesheet>, HTML §4.6.8.23
                 if (box.HtmlTag.Name.Equals("link", StringComparison.CurrentCultureIgnoreCase) &&
                     box.GetAttribute("rel", string.Empty).Equals("stylesheet", StringComparison.CurrentCultureIgnoreCase))
                 {

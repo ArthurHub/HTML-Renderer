@@ -462,121 +462,129 @@ sections:
     status: n/a
   links.html#links:
     title: 4.6 Links
-    status: unknown
+    status: partial
   links.html#introduction-2:
     title: 4.6.1 Introduction
-    status: unknown
+    status: n/a
   links.html#links-created-by-a-and-area-elements:
     title: 4.6.2 Links created by a and area elements
-    status: unknown
+    status: partial
+    gaps:
+      - area doesn't create a hyperlink
+      - Clicking an ismap image inside a link doesn't append the click coordinates to the URL
   links.html#api-for-hyperlink-elements:
     title: 4.6.3 API for hyperlink elements
-    status: unknown
+    status: n/a
   links.html#api-for-a-and-area-elements:
     title: 4.6.4 API for a and area elements
-    status: unknown
+    status: n/a
   links.html#following-hyperlinks:
     title: 4.6.5 Following hyperlinks
-    status: unknown
+    status: partial
+    gaps:
+      - The href isn't resolved against the document base URL, LinkClicked and Process.Start get it as written
+      - A fragment matches ids case-insensitively and doesn't fall back to the name of an a element
   links.html#downloading-resources:
     title: 4.6.6 Downloading resources
-    status: unknown
+    status: unsupported
+    gaps:
+      - The download attribute is ignored, the link is followed instead
   links.html#hyperlink-auditing:
     title: 4.6.7 Hyperlink auditing
-    status: unknown
+    status: unsupported
+    gaps:
+      - The ping attribute is ignored
   links.html#the-ping-headers:
     title: 4.6.7.1 The `Ping-From` and `Ping-To` headers
-    status: unknown
+    status: unsupported
   links.html#linkTypes:
     title: 4.6.8 Link types
-    status: unknown
+    status: partial
   links.html#rel-alternate:
     title: 4.6.8.1 Link type "alternate"
-    status: unknown
+    status: supported
   links.html#link-type-author:
     title: 4.6.8.2 Link type "author"
-    status: unknown
+    status: n/a
   links.html#link-type-bookmark:
     title: 4.6.8.3 Link type "bookmark"
-    status: unknown
+    status: n/a
   links.html#link-type-canonical:
     title: 4.6.8.4 Link type "canonical"
-    status: unknown
+    status: n/a
   links.html#link-type-dns-prefetch:
     title: 4.6.8.5 Link type "dns-prefetch"
-    status: unknown
+    status: n/a
   links.html#link-type-expect:
     title: 4.6.8.6 Link type "expect"
-    status: unknown
+    status: n/a
   links.html#link-type-external:
     title: 4.6.8.7 Link type "external"
-    status: unknown
+    status: n/a
   links.html#link-type-help:
     title: 4.6.8.8 Link type "help"
-    status: unknown
+    status: n/a
   links.html#rel-icon:
     title: 4.6.8.9 Link type "icon"
-    status: unknown
+    status: n/a
   links.html#link-type-license:
     title: 4.6.8.10 Link type "license"
-    status: unknown
+    status: n/a
   links.html#link-type-manifest:
     title: 4.6.8.11 Link type "manifest"
-    status: unknown
+    status: n/a
   links.html#link-type-modulepreload:
     title: 4.6.8.12 Link type "modulepreload"
-    status: unknown
+    status: n/a
   links.html#link-type-nofollow:
     title: 4.6.8.13 Link type "nofollow"
-    status: unknown
+    status: n/a
   links.html#link-type-noopener:
     title: 4.6.8.14 Link type "noopener"
-    status: unknown
+    status: n/a
   links.html#link-type-noreferrer:
     title: 4.6.8.15 Link type "noreferrer"
-    status: unknown
+    status: n/a
   links.html#link-type-opener:
     title: 4.6.8.16 Link type "opener"
-    status: unknown
+    status: n/a
   links.html#link-type-pingback:
     title: 4.6.8.17 Link type "pingback"
-    status: unknown
+    status: n/a
   links.html#link-type-preconnect:
     title: 4.6.8.18 Link type "preconnect"
-    status: unknown
+    status: n/a
   links.html#link-type-prefetch:
     title: 4.6.8.19 Link type "prefetch"
-    status: unknown
+    status: n/a
   links.html#link-type-preload:
     title: 4.6.8.20 Link type "preload"
-    status: unknown
+    status: n/a
   links.html#link-type-privacy-policy:
     title: 4.6.8.21 Link type "privacy-policy"
-    status: unknown
+    status: n/a
   links.html#link-type-search:
     title: 4.6.8.22 Link type "search"
-    status: unknown
+    status: n/a
   links.html#link-type-stylesheet:
     title: 4.6.8.23 Link type "stylesheet"
-    status: unknown
+    status: partial
+    gaps:
+      - rel is compared as a whole, stylesheet among other link types isn't loaded
+      - The disabled attribute is ignored
+      - A style sheet whose Content-Type only contains text/css, e.g. text/cssx, is applied, see 2.5.2
   links.html#link-type-tag:
     title: 4.6.8.24 Link type "tag"
-    status: unknown
+    status: n/a
   links.html#link-type-terms-of-service:
     title: 4.6.8.25 Link Type "terms-of-service"
-    status: unknown
+    status: n/a
   links.html#sequential-link-types:
     title: 4.6.8.26 Sequential link types
-    status: unknown
-  links.html#link-type-next:
-    title: 4.6.8.26.1 Link type "next"
-    status: unknown
-  links.html#link-type-prev:
-    title: 4.6.8.26.2 Link type "prev"
-    status: unknown
+    status: n/a
   links.html#other-link-types:
     title: 4.6.8.27 Other link types
-    status: unknown
+    status: n/a
   edits.html#edits:
     title: 4.7 Edits
     status: unknown

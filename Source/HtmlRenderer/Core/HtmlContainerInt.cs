@@ -1135,7 +1135,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// Handle link clicked going over <see cref="LinkClicked"/> event and using <see cref="Process.Start()"/> if not canceled.
+        /// Follows a hyperlink, HTML §4.6.5: raises <see cref="LinkClicked"/> and, unless that handled it, scrolls
+        /// to a "#id" fragment or opens the href with <see cref="Process.Start()"/>.
         /// </summary>
         /// <param name="parent">the control hosting the html to invalidate</param>
         /// <param name="location">the location of the mouse</param>

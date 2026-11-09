@@ -267,9 +267,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Is the css box clickable (by default only "a" elements that are actual hyperlinks - i.e.
-        /// have an "href" - are clickable; an "a" used only as a named anchor/target has no href and
-        /// is not clickable, matching the same "href" gate CSS uses for the :link pseudo-class).
+        /// Whether the box is a hyperlink, HTML §4.6.2. Also what :link matches.
         /// </summary>
         public virtual bool IsClickable
         {

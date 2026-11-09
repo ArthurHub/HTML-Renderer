@@ -54,9 +54,7 @@ public sealed class DomUtilsTests
     [TestMethod]
     public void FindParent_NullBox_ReturnsRoot()
     {
-        // Unlike PeachPDF's FindParent (which returns null when the walk-up never finds a matching
-        // ancestor, so a stray closing tag can be treated as a no-op), HTML-Renderer's FindParent
-        // short-circuits a null `box` straight to `root` -- there's no distinct "not found" signal.
+        // A null box goes straight to root, there's no separate "not found" result.
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div></div>"));
 
         var parent = DomUtils.FindParent(root, "div", null);
@@ -117,8 +115,6 @@ public sealed class DomUtilsTests
     [TestMethod]
     public void GetAllLinkBoxes_CollectsClickableVisibleBoxes()
     {
-        // Note: HTML-Renderer's CssBox.IsClickable requires the "a" element to have no "id" attribute,
-        // so this markup deliberately leaves the anchor unidentified.
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div><a href='#'>Link</a><span>Not a link</span></div>"));
 
         var links = new System.Collections.Generic.List<CssBox>();
@@ -152,7 +148,6 @@ public sealed class DomUtilsTests
     [TestMethod]
     public void GetLinkBox_LocationOnClickableVisibleLink_ReturnsIt()
     {
-        // Note: no "id" on the anchor itself -- HTML-Renderer's IsClickable excludes an "a" that has one.
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<a href='#'>Click</a>"));
         var link = LayoutHarness.Descendants(root).First(b => b.HtmlTag?.Name == "a");
         var word = FindFirstWord(link)!;
