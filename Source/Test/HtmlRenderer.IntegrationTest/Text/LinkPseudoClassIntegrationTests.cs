@@ -12,6 +12,7 @@ public sealed class LinkPseudoClassIntegrationTests
 {
     [TestMethod]
     [Spec("html", "links.html#links-created-by-a-and-area-elements")]
+    [Spec("html", "semantics-other.html#pseudo-classes")]
     public void Link_MatchesAnchorWithHref()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -23,6 +24,7 @@ public sealed class LinkPseudoClassIntegrationTests
 
     [TestMethod]
     [Spec("html", "links.html#links-created-by-a-and-area-elements")]
+    [Spec("html", "semantics-other.html#pseudo-classes")]
     public void Link_DoesNotMatchAnchorWithoutHref()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -33,6 +35,7 @@ public sealed class LinkPseudoClassIntegrationTests
     }
 
     [TestMethod]
+    [Spec("html", "semantics-other.html#pseudo-classes")]
     public void Link_DoesNotMatchNonAnchorElement()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -43,6 +46,7 @@ public sealed class LinkPseudoClassIntegrationTests
     }
 
     [TestMethod]
+    [Spec("html", "semantics-other.html#pseudo-classes")]
     public void Visited_NeverMatches_ByDesign()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -53,6 +57,7 @@ public sealed class LinkPseudoClassIntegrationTests
     }
 
     [TestMethod]
+    [Spec("html", "semantics-other.html#pseudo-classes")]
     public void Active_NeverMatches_ByDesign()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

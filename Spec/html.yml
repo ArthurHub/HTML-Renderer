@@ -1118,34 +1118,33 @@ sections:
     status: n/a
   semantics-other.html#common-idioms:
     title: 4.14 Common idioms without dedicated elements
-    status: unknown
-  semantics-other.html#rel-up:
-    title: 4.14.1 Breadcrumb navigation
-    status: unknown
-  semantics-other.html#tag-clouds:
-    title: 4.14.2 Tag clouds
-    status: unknown
-  semantics-other.html#conversations:
-    title: 4.14.3 Conversations
-    status: unknown
-  semantics-other.html#footnotes:
-    title: 4.14.4 Footnotes
-    status: unknown
+    status: n/a
   semantics-other.html#disabled-elements:
     title: 4.15 Disabled elements
-    status: unknown
+    status: unsupported
   semantics-other.html#selectors:
     title: 4.16 Matching HTML elements using selectors and CSS
-    status: unknown
+    status: partial
   semantics-other.html#case-sensitivity-of-the-css-'attr()'-function:
     title: 4.16.1 Case-sensitivity of the CSS 'attr()' function
-    status: unknown
+    status: unsupported
+    gaps:
+      - attr() matches attribute names case-sensitively, attr(TITLE) doesn't find title
   semantics-other.html#case-sensitivity-of-selectors:
     title: 4.16.2 Case-sensitivity of selectors
-    status: unknown
+    status: partial
+    gaps:
+      - Attribute values match case-insensitively for every attribute, not just the listed ones
+      - ID and class selectors match case-insensitively also in no-quirks mode
   semantics-other.html#pseudo-classes:
     title: 4.16.3 Pseudo-classes
-    status: unknown
+    status: partial
+    gaps:
+      - ":link doesn't match an area with an href"
+      - ":defined, :enabled, :disabled, :checked, :indeterminate, :default, :placeholder-shown, :required, :optional, :read-only and :read-write never match"
+      - ":valid, :invalid, :in-range and :out-of-range never match"
+      - ":dir(), :heading and :open never match"
+      - ":paused and :muted never match a media element"
   syntax.html#syntax:
     title: 13 The HTML syntax
     status: partial
