@@ -729,19 +729,23 @@ sections:
     status: n/a
   image-maps.html#the-map-element:
     title: 4.8.12 The map element
-    status: unknown
+    status: supported
   image-maps.html#the-area-element:
     title: 4.8.13 The area element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Not a hyperlink, see 4.8.14.2
   image-maps.html#image-maps:
     title: 4.8.14 Image maps
-    status: unknown
+    status: unsupported
   image-maps.html#authoring:
     title: 4.8.14.1 Authoring
-    status: unknown
+    status: n/a
   image-maps.html#image-map-processing-model:
     title: 4.8.14.2 Processing model
-    status: unknown
+    status: unsupported
+    gaps:
+      - usemap is ignored, the areas of the map aren't hit-tested over the image
   embedded-content-other.html#mathml:
     title: 4.8.15 MathML
     status: unknown
