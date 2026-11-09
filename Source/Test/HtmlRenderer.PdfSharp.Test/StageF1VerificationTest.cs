@@ -12,9 +12,7 @@ public sealed class StageF1VerificationTest
         var config = new PdfGenerateConfig { PageSize = PageSize.A4 };
         config.SetMargins(20);
 
-        // Generous filler, not a precisely-calibrated boundary - a tight "just barely" filler count is
-        // fragile to font substitution across CI platforms (non-Windows runners fall back to an
-        // embedded font with different metrics than Windows' real "Times New Roman").
+        // Generous filler, fonts differ between platforms.
         var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of text</p>", 150));
         var html = $"""
             <html><body>
@@ -29,9 +27,7 @@ public sealed class StageF1VerificationTest
 
         Assert.IsGreaterThan(1, document.Pages.Count);
 
-        // At least one page carries some link annotation (either the web link or the document link) -
-        // this is a smoke check that HandleLinks' new slot-to-page mapping runs without throwing and
-        // actually attaches annotations, not a check of which exact page holds which link.
+        // Smoke check only, it doesn't verify which page holds which link.
         var anyLinks = false;
         for (var i = 0; i < document.PageCount; i++)
         {
@@ -45,6 +41,7 @@ public sealed class StageF1VerificationTest
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task HugeMargin_ProducesNoBlankPages()
     {
         var config = new PdfGenerateConfig { PageSize = PageSize.A4 };
@@ -54,8 +51,6 @@ public sealed class StageF1VerificationTest
 
         using var document = await PdfGenerator.GeneratePdf(html, config);
 
-        // css-break-3 5.2 margin truncation (D2) keeps this on very few pages; blank-page skipping
-        // (F1's page-per-fragmentainer loop) means whatever pages exist are never content-empty.
         Assert.IsLessThanOrEqualTo(2, document.Pages.Count);
     }
 }

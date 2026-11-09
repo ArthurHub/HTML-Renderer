@@ -197,12 +197,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                         container.PerformLayout(measure);
                     }
 
-                    // One PDF page per fragmentainer the fragment tree actually materialized - a
-                    // content-empty page slot (CSS Paged Media 3 3.2, e.g. a huge margin that would
-                    // otherwise paginate through blank vertical space - see the margin-truncation
-                    // correction in BlockFragmentation) is simply never in this list, which is what
-                    // gives blank-page skipping for free here instead of the old ceil(height/pageHeight)
-                    // loop's naive page count.
+                    // One PDF page per fragmentainer, pages without content have none.
                     var tree = container.FragmentTree;
                     foreach (var fragmentainer in tree?.Fragmentainers ?? (IReadOnlyList<FragmentainerFragment>)Array.Empty<FragmentainerFragment>())
                     {

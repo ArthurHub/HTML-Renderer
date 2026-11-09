@@ -9,19 +9,6 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
-/// <summary>
-/// Verifies a real, previously-undocumented gap found while auditing this port's fragmentation engine
-/// against PeachPDF a second time (a later, separate pass over what remained after the R0-R10 plan
-/// completed): css-break-3 §3.1's break-point propagation was only ever applied to forced breaks
-/// (<see cref="TheArtOfDev.HtmlRenderer.Core.Fragmentation.BlockFragmentation.TryGetForcedBreakTarget"/>'s
-/// own "no previous sibling" check), never to <c>break-inside:avoid</c>/monolithic relocation
-/// (<c>RelocateIfNeeded</c>). A box moved by that method while it's its parent's first (and here, only)
-/// in-flow child - a plain wrapper div with no content before it - left the parent spanning from its
-/// original page to the child's new one, its own background/border rendered as a stub-then-continuation
-/// for no reason a CSS author would expect (e.g. a card/panel div wrapping a single table or figure).
-/// Confirmed by temporarily reverting the fix: card and table reliably landed on different page slots at
-/// several filler counts.
-/// </summary>
 [TestClass]
 [DoNotParallelize]
 public sealed class ContainerLeftBehindTest
@@ -41,13 +28,12 @@ public sealed class ContainerLeftBehindTest
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task WrapperDivWithOneAvoidBreakChild_MovesWithIt_NeverSpansBothPages()
     {
         var checkedAnyRelocation = false;
 
-        // Sweep filler counts - the exact boundary where the relocation fires depends on font-metric
-        // arithmetic (this session's established testing lesson: never hardcode a "just barely
-        // straddles" calibration).
+        // Where the relocation fires depends on font metrics, so sweep instead of calibrating.
         for (var fillerCount = 1; fillerCount < 60; fillerCount++)
         {
             using var wrapper = new HtmlContainer();
@@ -83,9 +69,7 @@ public sealed class ContainerLeftBehindTest
             var cardSlot = container.PageIndexOf(card.Location.Y);
             var tableSlot = container.PageIndexOf(table.Location.Y);
 
-            // Only meaningful once the table has actually been relocated (flush - within border-rounding
-            // slack - at a fresh page top) - otherwise there's nothing for the card to have gotten left
-            // behind by in the first place.
+            // Only meaningful once the table was relocated to a page top (within border rounding).
             if (System.Math.Abs(table.Location.Y - container.PageTopOf(tableSlot)) > 2.0)
                 continue;
 

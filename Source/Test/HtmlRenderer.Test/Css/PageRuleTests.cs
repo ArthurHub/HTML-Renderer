@@ -5,18 +5,7 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/PageRuleTests.cs.
-/// All structural @page tests apply: <see cref="PageRule"/>, <see cref="MarginStyleRule"/>,
-/// <see cref="PageSizeProperty"/> (Style.Size), Style.MarginTop, <see cref="PageNameProperty"/>
-/// (Style.PageName), and Style.Width all exist with matching shape.
-/// Dropped entirely (SKIP, not ported, not [Ignore]d): every test that calls
-/// <c>PeachPDF.Html.Core.Parse.DomParser.ParseLengthToPdfPoints(...)</c> or constructs a
-/// <c>PageLengthContext</c> - the ParseLengthToPdfPoints_* theories, plus
-/// AtPage_FirstPseudoSelector_MarginTopIsParseable and
-/// AtPage_FirstPseudoSelector_ZeroMargin_RoundTripsToZeroPoints (which call it after the structural
-/// assertion). This is a PDF-page-box length-to-points resolver with no HTML-Renderer counterpart at all
-/// (HTML-Renderer isn't a PDF renderer) - confirmed zero hits for "ParseLengthToPdfPoints"/
-/// "PageLengthContext" anywhere under Source/HtmlRenderer.
+/// Parsing of <c>@page</c> rules. Nothing applies them to the page yet.
 /// </summary>
 [TestClass]
 public sealed class PageRuleTests
@@ -62,6 +51,7 @@ public sealed class PageRuleTests
     // ── @page pseudo-selectors ─────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css21", "page.html#page-box")]
     public void AtPage_NoSelector_HasNullSelector()
     {
         var sheet = CssConstructionFunctions.ParseStyleSheet("@page { margin: 20mm; }");
@@ -71,6 +61,7 @@ public sealed class PageRuleTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-selectors")]
     public void AtPage_FirstPseudoSelector_SelectorTextIsFirst()
     {
         var sheet = CssConstructionFunctions.ParseStyleSheet("@page :first { margin-top: 0; }");
@@ -80,6 +71,7 @@ public sealed class PageRuleTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-selectors")]
     public void AtPage_LeftPseudoSelector_SelectorTextIsLeft()
     {
         var sheet = CssConstructionFunctions.ParseStyleSheet("@page :left { margin-left: 30mm; }");
@@ -89,6 +81,7 @@ public sealed class PageRuleTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-selectors")]
     public void AtPage_RightPseudoSelector_SelectorTextIsRight()
     {
         var sheet = CssConstructionFunctions.ParseStyleSheet("@page :right { margin-right: 30mm; }");
@@ -98,9 +91,6 @@ public sealed class PageRuleTests
     }
 
     // ── @page named selectors ──────────────────────────────────────────────
-    // Regression coverage: a bare identifier selector used to make the whole rule fail to parse in
-    // PeachPDF (CreatePageSelector only handled the leading-colon pseudo-class case), so
-    // "@page chapter { }" silently vanished instead of producing a PageRule at all.
 
     [TestMethod]
     public void AtPage_NamedSelector_SelectorTextIsName()
@@ -114,8 +104,6 @@ public sealed class PageRuleTests
     [TestMethod]
     public void AtPage_NamedSelector_IsNotColonPrefixed()
     {
-        // Distinguishes a named-page selector from a pseudo-class one: SelectPageRule's matching
-        // logic branches on whether the selector text starts with ':'.
         var sheet = CssConstructionFunctions.ParseStyleSheet("@page chapter { margin-top: 0; }");
         var rule = sheet.Rules.OfType<PageRule>().FirstOrDefault();
         Assert.IsNotNull(rule);
@@ -141,9 +129,6 @@ public sealed class PageRuleTests
     }
 
     // ── @page compound name:pseudo selectors ───────────────────────────────
-    // Regression coverage: "@page chapter1:left { }" used to fail to parse entirely in PeachPDF
-    // (CreatePageSelector stopped consuming tokens at the first non-comma token after an ident),
-    // silently dropping the whole rule.
 
     [TestMethod]
     public void AtPage_CompoundNamePseudoSelector_ParsesAsOneRule()

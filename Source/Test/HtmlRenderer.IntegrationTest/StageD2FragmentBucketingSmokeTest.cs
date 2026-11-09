@@ -8,9 +8,7 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
-// This assembly parallelizes at the method level (MSTestSettings.cs); HtmlContainerInt's underlying
-// adapter singletons (font/brush caches, etc.) aren't safe against that for tests that drive full
-// layout passes directly - HtmlRenderingRegressionTests already opts out for the same reason.
+// The adapter singletons (font and brush caches) aren't safe for parallel full layout passes.
 [TestClass]
 [DoNotParallelize]
 public sealed class StageD2FragmentBucketingSmokeTest
@@ -60,6 +58,7 @@ public sealed class StageD2FragmentBucketingSmokeTest
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task HugeMargin_SkipsBlankFragmentainers()
     {
         using var wrapper = new HtmlContainer();
@@ -77,8 +76,7 @@ public sealed class StageD2FragmentBucketingSmokeTest
         var tree = container.FragmentTree;
         Assert.IsNotNull(tree);
 
-        // The margin is truncated (D2), so content should land on an early page, not one 3000px down -
-        // this also implicitly confirms no run of ~4 blank fragmentainers was materialized for the gap.
+        // The truncated margin leaves no run of blank fragmentainers.
         Assert.IsTrue(tree.Fragmentainers.Count <= 2, $"expected at most 2 fragmentainers, got {tree.Fragmentainers.Count}");
     }
 }

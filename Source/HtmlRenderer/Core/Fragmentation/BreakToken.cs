@@ -3,16 +3,9 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 {
     /// <summary>
-    /// A resumption record: where layout stopped in one fragmentainer, so the next one can pick up from
-    /// exactly that point (https://www.w3.org/TR/css-break-3/#breaking-controls, CSS Fragmentation Level 3
-    /// §2/§4.4). Ported from PeachPDF's <c>BreakToken</c>, reduced to what this port's driver loop
-    /// actually needs: only forced <c>break-before</c>/<c>break-after: page</c> ever produces a real
-    /// cross-pass token here (see <see cref="BlockFragmentation.TryGetForcedBreakTarget"/>) - overflow,
-    /// <c>break-inside:avoid</c>, keep-with-next, widows/orphans, and table-row breaks all turned out to
-    /// be same-pass local corrections instead (confirmed empirically stage by stage while investigating
-    /// the fragmentation-engine-parity plan's R2-R9), so PeachPDF's inline and table token kinds - and its
-    /// per-token <c>FanOutContinuations</c> "parallel flows" mechanism, which only those kinds ever used -
-    /// have no counterpart in this port and were never added.
+    /// Where layout stopped in one fragmentainer, so the next pass resumes from there (css-break-3 §4.4).
+    /// Only forced breaks (<see cref="BlockFragmentation.TryGetForcedBreakTarget"/>) produce one, every
+    /// other break is corrected within the same pass.
     /// </summary>
     /// <remarks>
     /// Tokens form a chain, one link per ancestor between the fragmentation-context root and the box that

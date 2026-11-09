@@ -5,17 +5,11 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 {
     /// <summary>
-    /// Classifies content that cannot be broken, per
-    /// https://www.w3.org/TR/css-break-3/#monolithic (CSS Fragmentation Level 3 §2). Ported from
-    /// PeachPDF's <c>MonolithicContent</c>, reduced to what this port's scope needs: no flex/grid/columns
-    /// (so <see cref="PaginatesItsOwnContent"/> narrows to "is a table"), no vertical writing mode, no
-    /// box-decoration-break clone insets, and HTML-Renderer's own (smaller) set of replaced element types.
+    /// Content that can't be broken (css-break-3 §2, CSS 2.1 §13.3.5 for replaced elements).
     /// </summary>
     /// <remarks>
-    /// <see cref="IsMonolithic"/> is css-break-3 §2's own set: a property of the content, which no user
-    /// agent may break. <see cref="PaginatesItsOwnContent"/> is an implementation constraint - the table
-    /// engine fragments its own subtree, so the driver must not hand it a half-laid-out one. Keeping the
-    /// two apart is the point of this file, exactly as in PeachPDF.
+    /// <see cref="IsMonolithic"/> is a property of the content. <see cref="PaginatesItsOwnContent"/> is an
+    /// implementation constraint, the table layout fragments its own subtree.
     /// </remarks>
     internal static class MonolithicContent
     {
@@ -23,9 +17,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         internal static bool IsMonolithic(CssBox box) => IsReplaced(box) || IsScrollContainer(box);
 
         /// <summary>
-        /// Whether <paramref name="box"/> is a replaced element, whose content the UA cannot fragment
-        /// because it has no fragmentable inner structure. HTML-Renderer's replaced-element set is
-        /// smaller than PeachPDF's - no &lt;object&gt;/&lt;video&gt;, inline SVG, or form-field widgets.
+        /// Whether <paramref name="box"/> is a replaced element (an image or a frame).
         /// </summary>
         internal static bool IsReplaced(CssBox box) => box is CssBoxImage or CssBoxFrame;
 
@@ -55,26 +47,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             string.Equals(box.HtmlTag?.Name, name, StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
-        /// Whether <paramref name="box"/> runs a layout engine that fragments its own subtree. In
-        /// PeachPDF this covers flex, grid, table and multi-column; none of the first three exist in
-        /// HTML-Renderer, so this narrows to table/inline-table.
+        /// Whether <paramref name="box"/> runs a layout engine that fragments its own subtree, i.e. is a table.
         /// </summary>
         internal static bool PaginatesItsOwnContent(CssBox box) => RunsAnEngineOfItsOwn(box.Display);
 
         /// <summary>
-        /// The display-value half of <see cref="PaginatesItsOwnContent"/>. Kept as its own method (rather
-        /// than inlined) so a future engine addition only has to widen this one place, mirroring PeachPDF's
-        /// shape even though it currently names only one display value.
+        /// The display-value half of <see cref="PaginatesItsOwnContent"/>.
         /// </summary>
         internal static bool RunsAnEngineOfItsOwn(string display) =>
             display is CssConstants.Table or CssConstants.InlineTable;
 
         /// <summary>
-        /// Whether <paramref name="box"/> must be treated as an indivisible unit by its parent's own
-        /// fragmentation. In PeachPDF this also covers unresumable vertical-writing-mode content; that
-        /// doesn't exist in HTML-Renderer, so this is currently the same set as <see cref="IsMonolithic"/>.
-        /// Kept as a separate name (rather than inlined at call sites) so a future reason can be added here
-        /// without touching every caller.
+        /// Whether <paramref name="box"/> must be treated as an indivisible unit by its parent's
+        /// fragmentation. Currently the same set as <see cref="IsMonolithic"/>.
         /// </summary>
         internal static bool IsMonolithicForFragmentation(CssBox box) => IsMonolithic(box);
 

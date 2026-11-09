@@ -4,20 +4,9 @@ using TheArtOfDev.HtmlRenderer.Core.Fragmentation;
 namespace HtmlRenderer.Test.Fragmentation;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Html/Core/Fragmentation/BreakTokenTests.cs (BreakTokenTests).
+/// The resumption record says where layout stopped, the box tree holds the geometry, so these pin its
+/// shape rather than any placement.
 /// </summary>
-/// <remarks>
-/// The resumption record: says <i>where</i> layout stopped and nothing about geometry - the box tree still
-/// holds the coordinates - so these pin its shape rather than any placement. PeachPDF's own file also covers
-/// <c>InlineBreakToken</c>/<c>FlexBreakToken</c>/<c>GridBreakToken</c>/<c>FlexColumnBreakToken</c>, none of
-/// which exist here - <c>BreakToken.cs</c>'s own doc comment confirms only forced <c>break-before</c>/
-/// <c>break-after: page</c> ever produces a real cross-pass token in this port (everything else - overflow,
-/// break-inside:avoid, keep-with-next, widows/orphans, table-row breaks - turned out to be same-pass local
-/// corrections instead), so <see cref="BlockBreakToken"/> is the only concrete <see cref="BreakToken"/> to
-/// test. Every test below that PeachPDF built over a different token kind is dropped as out of scope rather
-/// than adapted; <c>Chain_...</c> is kept but rewritten to chain only <see cref="BlockBreakToken"/> links,
-/// since that's the only concrete kind this port has to chain.
-/// </remarks>
 [TestClass]
 public sealed class BreakTokenTests
 {
@@ -86,9 +75,7 @@ public sealed class BreakTokenTests
     {
         var box = new CssBox(null, null);
 
-        // A record's compiler-generated equality is what lets a resumed pass compare "did this pass land
-        // on the same resumption point as a previous one" without hand-written Equals/GetHashCode - two
-        // independently-built tokens over the same field values must compare equal.
+        // A resumed pass compares tokens to detect landing on the same resumption point again.
         var first = new BlockBreakToken(box, ResumeSlotIndex: 2, ResumeChildIndex: 4, ChildToken: null, IsBreakBefore: true, ResumeTopOverride: null);
         var second = new BlockBreakToken(box, ResumeSlotIndex: 2, ResumeChildIndex: 4, ChildToken: null, IsBreakBefore: true, ResumeTopOverride: null);
 

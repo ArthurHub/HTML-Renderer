@@ -9,13 +9,9 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 {
     /// <summary>
-    /// Collects layout's output into the immutable <see cref="FragmentTree"/>. Layout (see
-    /// <see cref="BlockFragmentation"/>) already positions every box correctly across however many
-    /// pages the document spans, in one continuous top-down pass with local relocation corrections -
-    /// so unlike PeachPDF's pass-based emitter, this one does not need to collect per-pass output over
-    /// multiple <c>EmitPass</c> calls. Its job is simpler: walk the already-finished box tree once per
-    /// page band and bucket each box's rectangles into whichever band(s) they fall in, splitting a box
-    /// that spans multiple pages into one <see cref="BoxFragment"/> per page it appears on.
+    /// Builds the immutable <see cref="FragmentTree"/> from the laid-out box tree. Layout has already
+    /// placed every box across the pages, so this walks the tree once per page and puts each box's
+    /// rectangles into the pages they fall in, one <see cref="BoxFragment"/> per page a box appears on.
     /// </summary>
     internal sealed class FragmentEmitter
     {
@@ -49,21 +45,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
                 return new FragmentTree(new List<FragmentainerFragment> { fragmentainer });
             }
 
-            // root.ActualBottom (Location.Y + Size.Height), not _container.ActualSize.Height: the
-            // latter is document height *excluding* the root's own top offset (ActualSize.Height =
-            // ActualBottom - Root.Location.Y, set at the end of CssBox.PerformLayoutImp/Epilogue), so
-            // using it directly here as an absolute Y would double-subtract MarginTop inside
-            // PageIndexOf and under-report the last slot whenever content's true bottom lands just
-            // past a page boundary that ActualSize.Height alone doesn't yet cross.
+            // ActualSize.Height excludes the root's top offset, so it isn't a document Y.
             var lastSlot = _container.PageIndexOf(Math.Max(0, root.ActualBottom - Epsilon));
             var fragmentainers = new List<FragmentainerFragment>();
 
-            // css-position-3, paged media: a fixed box's containing block is each page's own page area,
-            // and it "is thus replicated on every page". Collected once - each fixed box's own Location
-            // is already page-relative (CssBox never runs it through normal top-computing flow; see
-            // CssBox.PerformLayoutImp's own Position==Fixed branch), so building its fragment against a
-            // band starting at Y=0 (rather than this slot's real band top) localizes it to exactly that
-            // same relative position on every page, unchanged.
+            // A fixed box repeats on every page (css-position-3). Its Location is already page-relative,
+            // so it's built against a band starting at 0 on every page.
             var fixedRoots = new List<CssBox>();
             CollectFixedRoots(root, fixedRoots);
             var fixedBand = new PageBand(0, _container.PageSize.Height);
@@ -74,11 +61,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
                 var bandBottom = _container.PageBottomOf(slot);
                 var band = new PageBand(bandTop, bandBottom, bandTop - _container.MarginTop);
 
-                // CSS Paged Media 3 3.2: a page-slot no box has any content in is never materialized -
-                // this falls out of the walk rather than being special-cased, since a box only gets
-                // built into this fragmentainer at all when HasContentInBand finds something. Fixed
-                // content deliberately does not itself justify materializing an otherwise content-empty
-                // slot - matches this port's existing blank-page-skipping scope.
+                // A page without content gets no fragmentainer (CSS 2.1 §13.2.3), fixed content alone
+                // doesn't count.
                 if (!HasContentInBand(root, band))
                     continue;
 

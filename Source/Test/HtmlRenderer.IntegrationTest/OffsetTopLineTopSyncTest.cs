@@ -10,20 +10,8 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
 /// <summary>
-/// Verifies a real, previously-undocumented bug found while investigating
-/// <see cref="ContainerLeftBehindKeepWithNextTest"/>: <c>CssBox.OffsetTop</c> kept the box's own
-/// <c>Rectangles</c> dictionary in sync with a shift, but never the corresponding entry in the line's OWN
-/// mirror dictionary (<c>CssLineBox.Rectangles</c>, keyed the other way around) that
-/// <c>CssLineBox.LineTop</c>/<c>LineBottom</c> - and therefore <c>CssBox.EffectiveTop</c> for any
-/// inline-only box - read from. <c>Location.Y</c> (updated by <c>OffsetTop</c>'s own last statement) was
-/// correct immediately after the call, while <c>EffectiveTop</c> silently kept reporting the pre-shift
-/// position - confirmed directly by inspecting both dictionaries on a real shifted heading before the fix.
-/// Exercised directly via reflection here (rather than only through whichever fragmentation mechanism
-/// happens to call <c>OffsetTop</c> at a given filler count - <c>EnforceKeepWithNext</c>'s run-pull and
-/// <c>InlineFragmentation</c>'s own orphans-driven push are both live callers, and only the former uses
-/// <c>OffsetTop</c>, so a test gated only on "the heading visibly moved" can't reliably tell which path it
-/// hit) since <c>OffsetTop</c>'s own contract - keep every derived position getter consistent after a
-/// shift - should hold regardless of which caller invokes it.
+/// <c>CssBox.OffsetTop</c> has to shift the line-side rectangles too, <c>EffectiveTop</c> of an
+/// inline-only box reads from them.
 /// </summary>
 [TestClass]
 [DoNotParallelize]

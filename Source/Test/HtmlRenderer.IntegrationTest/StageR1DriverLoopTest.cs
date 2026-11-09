@@ -10,12 +10,7 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
 /// <summary>
-/// Verifies the R1 stage of the fragmentation-engine-parity plan: forced page breaks now go through a
-/// real resumable pass loop (<see cref="HtmlContainerInt"/>'s per-fragmentainer driver, <c>CssBox</c>'s
-/// <c>ResumeAt</c>/<c>PendingBreakToken</c> child-loop bubbling) instead of a single-pass local
-/// correction. These tests exercise the loop across multiple passes specifically, which the existing
-/// single-forced-break tests (<c>StageD2VerificationTest</c>) don't - a bug in child-index bookkeeping
-/// across repeated resumes wouldn't necessarily show up with only one break in the document.
+/// Several forced breaks in one document, each resuming the layout pass loop.
 /// </summary>
 [TestClass]
 [DoNotParallelize]
@@ -28,6 +23,7 @@ public sealed class StageR1DriverLoopTest
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#forced")]
     public async Task TwoForcedBreaksInSequence_EachStartsANewPageWithCorrectContent()
     {
         using var wrapper = new HtmlContainer();
@@ -53,17 +49,13 @@ public sealed class StageR1DriverLoopTest
         Assert.IsNotNull(tree);
         Assert.AreEqual(3, tree.Fragmentainers.Count, "each forced break should land its own div on its own page");
 
-        // Each page's fragmentainer must be flush at its own band top (no leftover offset carried
-        // across the second break from the first, which an off-by-one in ResumeChildIndex would produce).
         for (var slot = 0; slot < 3; slot++)
         {
             var fragmentainer = tree.Fragmentainers[slot];
             Assert.AreEqual(slot, fragmentainer.SlotIndex);
         }
 
-        // The three divs resolve to three distinct, correctly-ordered per-page fragments - proves the
-        // second break resumed the child loop at the right index rather than re-processing or skipping
-        // a sibling.
+        // No sibling is skipped or laid out twice when the second break resumes the child loop.
         StringAssert.Contains(AllText(tree.Fragmentainers[0].Root), "First");
         StringAssert.Contains(AllText(tree.Fragmentainers[1].Root), "Second");
         StringAssert.Contains(AllText(tree.Fragmentainers[2].Root), "Third");
@@ -85,6 +77,7 @@ public sealed class StageR1DriverLoopTest
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#forced")]
     public async Task ManyForcedBreaksInSequence_TerminatesPromptlyWithOnePagePerBreak()
     {
         using var wrapper = new HtmlContainer();
@@ -101,9 +94,7 @@ public sealed class StageR1DriverLoopTest
         using var g = Graphics.FromImage(bitmap);
         wrapper.PerformLayout(g);
 
-        // 50 divs, every one but the first forcing its own break: 50 pages. A hang or a runaway pass
-        // count would fail this test by timeout rather than by assertion - that's the point of covering
-        // the pass loop's backstop with a large-but-realistic case rather than only single/double breaks.
+        // The first div's break isn't taken, nothing precedes it. A runaway pass loop fails by timeout.
         var tree = container.FragmentTree;
         Assert.IsNotNull(tree);
         Assert.AreEqual(50, tree.Fragmentainers.Count);

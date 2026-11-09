@@ -12,29 +12,8 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/StraddlingLineClaimTests.cs: content taller than the whole page
-/// band has nowhere to go (css-break-3 §2's "content too large for any fragment" case), so layout leaves it
-/// exactly where it is - and every band it geometrically covers must still claim it. Maps to
-/// <c>FragmentEmitter.Overlaps</c> (a strict rect/band overlap test, applied independently per band with no
-/// special case for oversized content, so an oversized word is claimed by construction rather than through
-/// any dedicated "straddling" logic).
+/// Content taller than a page stays where it is, and every page it covers claims it.
 /// </summary>
-/// <remarks>
-/// Only 1 of PeachPDF's 3 tests ports:
-/// <list type="bullet">
-/// <item><c>ContentAfterAWordTallerThanTheBand_SeesATruthfulCursor</c> is dropped: it asserts
-/// <c>HtmlContainerInt.CursorSpills</c> stays zero, a counter belonging to PeachPDF's own per-pass document
-/// cursor. Confirmed by reading <c>Core/Fragmentation/InlineFragmentation.cs</c> and
-/// <c>Core/Fragmentation/BlockFragmentation.cs</c> in full plus <c>HtmlContainerInt.cs</c>: this port has no
-/// such cursor at all (layout runs the whole document's flow in one pass; there is nothing for a "stale
-/// cursor after an oversized word" bug to corrupt).</item>
-/// <item><c>ARowOrLineTheEngineCouldNotFit_ContinuesOnTheNextPageInstead</c> is dropped: all 3
-/// <c>[InlineData]</c> rows use <c>display:grid</c>/<c>display:flex</c>, neither of which exists in
-/// HTML-Renderer - <c>MonolithicContent.RunsAnEngineOfItsOwn</c>'s own doc comment confirms this port's
-/// <c>PaginatesItsOwnContent</c> narrows to table/inline-table only, matching the general flex/grid
-/// exclusion already established for this porting effort.</item>
-/// </list>
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class StraddlingLineClaimTests
@@ -86,14 +65,8 @@ public sealed class StraddlingLineClaimTests
             .Select(f => f.SlotIndex)
             .ToList();
 
-    /// <summary>
-    /// A word taller than the whole band - the one production mechanism left that leaves a word straddling
-    /// by more than a hairline: content with nowhere to fit must not be treated as breakable (moving it only
-    /// repeats the problem forever), so layout leaves it exactly where it naturally lands, covering more than
-    /// one band by construction. The word's own rectangle straddles here because its height comes from the
-    /// font rather than from <c>line-height</c> - hence an enormous <c>font-size</c> rather than an enormous
-    /// leading, which would grow the line box while leaving the word itself small enough to fit.
-    /// </summary>
+    // A word taller than the page fits nowhere, so it stays and every page it covers claims it. Its height
+    // comes from font-size, a tall line-height would only grow the line box.
     [TestMethod]
     public async Task AWordTallerThanTheBand_IsClaimedByEveryBandItCovers()
     {
@@ -105,8 +78,6 @@ public sealed class StraddlingLineClaimTests
         Assert.IsTrue(word.Height > container.PageBottomOf(band) - container.PageTopOf(band),
             $"the fixture must produce a word taller than the band, not {word.Height}");
 
-        // Every band the word covers, from the grid's own materialized fragmentainers - "claimed by band +
-        // 1" alone would still pass if a taller word silently lost the bands below its second.
         var covered = container.FragmentTree!.Fragmentainers
             .Select(f => f.SlotIndex)
             .Where(slot => word.Bottom > container.PageTopOf(slot) && word.Top < container.PageBottomOf(slot))

@@ -11,20 +11,8 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/FragmentainerCursorIntegrationTests.cs: a forced break steps a
-/// layout pass over slots without ending it, so the band a later correction (orphans) should reason about
-/// is the one the break actually landed on, not the one the pass nominally started in.
+/// Later corrections such as orphans reason about the page a forced break actually landed on.
 /// </summary>
-/// <remarks>
-/// Adapted per the port plan: PeachPDF's <c>FragmentainerContext</c> (an explicit per-pass "which
-/// fragmentainer is being filled" cursor object) has no counterpart here. This port has no separate cursor
-/// at all - <c>InlineFragmentation.ApplyLineBreaking</c> always computes <c>firstPageIndex</c> directly from
-/// <c>lines[0].LineTop</c>, the line's own real, already-placed position (which already reflects wherever a
-/// forced break/margin-truncation/relocation put the box), so there is no stale-cursor state that could
-/// disagree with it. These 3 tests (of PeachPDF's 5 - 2 more dropped, both using the directional
-/// <c>break-before: right</c> value, unsupported per the port plan's exclusion list) are ported as
-/// regression checks against the equivalent real-geometry reasoning.
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class FragmentainerCursorIntegrationTests
@@ -69,11 +57,9 @@ public sealed class FragmentainerCursorIntegrationTests
 
     private static string LongText() => string.Join(" ", Enumerable.Range(0, 600).Select(i => "word" + i));
 
-    // orphans: 99 is a minimum no band here can satisfy, which is §5.4 read through §4.3's relaxation
-    // ladder: the constraint is given up rather than acted on pointlessly. A box placed by a forced break
-    // is already at the top of a fresh page - moving it again (as if there were a whole page of content
-    // above it) would blank the page the forced break named.
+    // orphans:99 can't be satisfied, and moving a box that already starts a page wouldn't help.
     [TestMethod]
+    [Spec("css21", "page.html#forced")]
     public async Task AForcedBreak_LandsOnThePageItNames_EvenWhenTheBoxCannotMeetItsOrphansMinimum()
     {
         var html = "<div id='a' style='height:50px'>A</div>"
@@ -85,15 +71,14 @@ public sealed class FragmentainerCursorIntegrationTests
 
         Assert.AreEqual(container.PageTopOf(1), b.EffectiveTop, 1.0);
 
-        // And no blank page in the middle: every fragmentainer from the first to the last carries content.
+        // No blank page in between.
         var slots = container.FragmentTree!.Fragmentainers.Select(f => f.SlotIndex).ToArray();
         Assert.IsTrue(Enumerable.Range(0, slots.Length).SequenceEqual(slots));
     }
 
-    // The other side of the same reasoning: here the box with the unsatisfiable orphans minimum is not the
-    // one the forced break placed - it follows it on the same page - so there genuinely is something above
-    // it, and the orphans mover is entitled to fire and start it on the next page.
+    // Here content precedes the orphans box on its page, so moving it to the next page does help.
     [TestMethod]
+    [Spec("css21", "page.html#forced")]
     public async Task AboveTheForcedBreaksBox_IsStillRoomAbove_ForWhatFollowsItOnThatPage()
     {
         var html = "<div id='a' style='height:50px'>A</div>"
@@ -110,10 +95,9 @@ public sealed class FragmentainerCursorIntegrationTests
         Assert.AreEqual(container.PageTopOf(2), c.EffectiveTop, 1.0);
     }
 
-    // The shape most likely to have relied on a wrong cursor: content that overflows the fragmentainer the
-    // break stepped to. A box taller than the band still starts on the page the break named, and the box
-    // after it picks up at its real bottom, not at the bottom of some other band.
+    // A box taller than the page still starts on the page the break named.
     [TestMethod]
+    [Spec("css21", "page.html#forced")]
     public async Task AfterAForcedBreak_ABoxTallerThanTheBand_StillStartsOnThePageTheBreakNamed()
     {
         var html = "<div id='x' style='height:50px'>X</div>"

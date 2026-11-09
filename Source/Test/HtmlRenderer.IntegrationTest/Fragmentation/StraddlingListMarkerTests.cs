@@ -11,40 +11,15 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/StraddlingListMarkerTests.cs: an outside <c>::marker</c> belongs to
-/// the fragmentainer its list item BEGINS in, settled the moment the item is placed.
+/// An outside marker belongs to the fragmentainer its list item begins in.
 /// </summary>
-/// <remarks>
-/// <para>
-/// HTML-Renderer's marker is architecturally different from PeachPDF's independently-positioned
-/// <c>::marker</c> box: it is <see cref="CssBox.ListItemBox"/>, a single field built once by
-/// <c>CssBox.CreateListItemBox</c> at the very end of the item's own <c>PerformLayoutImp</c> and
-/// repositioned - every time that method runs - directly against the item's own, current
-/// <c>Location</c>/<c>ActualPaddingTop</c> (never against a per-pass "epilogue" separate from the item's own
-/// placement). PeachPDF's bug (#444) was staleness between when the marker was positioned and which pass
-/// completed the item; that specific failure mode does not exist here, since there is only ever one marker-
-/// positioning statement and it always runs against the item's own truth. These tests are still ported: they
-/// pin the same observable invariant (a marker belongs to the fragmentainer its item begins in, exactly once)
-/// as a regression check on this port's own, structurally different mechanism.
-/// </para>
-/// <para>
-/// 3 of PeachPDF's 8 tests are dropped - <c>AnItemCrossingAColumnBoundary_KeepsItsMarkerInTheColumnItBeginsIn</c>,
-/// <c>AListWhoseItemsCrossColumnBoundaries_ClaimsEveryWordExactlyOnce</c> and
-/// <c>AnItemAColumnPlacedButKeptNothingOf_StillClaimsItsMarkerExactlyOnce</c> all require a real multi-column
-/// engine (<c>column-count</c>/<c>column-fill:balance</c> producing one fragmentainer per column). HTML-Renderer
-/// has no such engine - out of scope for this whole porting effort, per the plan's general exclusion list.
-/// </para>
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class StraddlingListMarkerTests
 {
     private const string ItemStyle = "margin:0;font-size:10px;line-height:20px;orphans:1;widows:1";
 
-    /// <summary>
-    /// #374's claimed-exactly-once invariant, over the whole document. A marker is a thing that can be
-    /// claimed <i>zero</i> times, which is the direction a duplicate-only check would miss.
-    /// </summary>
+    /// <summary>Every word, markers included, is claimed exactly once.</summary>
     [TestMethod]
     public void AListItemStraddlingAPageBoundary_ClaimsEveryWordExactlyOnce()
     {
@@ -64,10 +39,6 @@ public sealed class StraddlingListMarkerTests
         Assert.AreEqual(authored.Count, claims.Count);
     }
 
-    /// <summary>
-    /// The same statement narrowed to the markers, which is where PeachPDF's bug failed it: every item's
-    /// marker is claimed, and by the fragmentainer the item's own first fragment is in.
-    /// </summary>
     [TestMethod]
     public void AStraddlingItemsMarker_IsClaimedByTheFragmentainerItsItemBeginsIn()
     {
@@ -90,11 +61,7 @@ public sealed class StraddlingListMarkerTests
         Assert.IsTrue(SlotsOf(container, straddler).Count > 1);
     }
 
-    /// <summary>
-    /// The visible symptom, asked of the paint calls themselves: a lost marker is not a mispositioned
-    /// bullet, it is a bullet that is never drawn on any page. Numbered so each marker is identifiable in the
-    /// log by its own text.
-    /// </summary>
+    /// <summary>Numbered, so each marker is identifiable by its text.</summary>
     [TestMethod]
     public void EveryMarker_IsDrawnOnExactlyOnePage()
     {
@@ -116,10 +83,7 @@ public sealed class StraddlingListMarkerTests
         }
     }
 
-    /// <summary>
-    /// The fix's shape, restated positively: the marker still sits against the item's own border box
-    /// (CSS 2.1 §12.5.1), for an item that breaks exactly as for one that does not.
-    /// </summary>
+    /// <summary>CSS 2.1 §12.5.1, for an item that breaks as for one that doesn't.</summary>
     [TestMethod]
     public void AMarkerSitsAgainstItsItemsBorderBox_WhetherOrNotTheItemBreaks()
     {
@@ -141,17 +105,11 @@ public sealed class StraddlingListMarkerTests
             offsets.Add(word.Top - item.Location.Y);
         }
 
-        // The straddling item's marker is offset from its own item exactly as every other item's is - the
-        // statement that it was not positioned against something else.
         Assert.AreEqual(1, offsets.Select(o => Math.Round(o, 3)).Distinct().Count());
         Assert.IsTrue(ListItems(root).Contains(straddler));
     }
 
-    /// <summary>
-    /// A pass that <i>declines</i> to place the item - css-break-3 §5.2's margin truncation concluding the
-    /// break falls before it - has written no position for the marker to sit against until the item is
-    /// actually placed on its real page; the claim still stands exactly once there.
-    /// </summary>
+    /// <summary>The item's own margin moves it to the next page.</summary>
     [TestMethod]
     public void AnItemWhoseFirstPassDeclinedToPlaceIt_StillClaimsItsMarkerExactlyOnce()
     {
@@ -179,11 +137,7 @@ public sealed class StraddlingListMarkerTests
 
     // ── Fixtures/helpers ─────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Three items, the middle one long enough to run over several pages, so exactly one of them straddles
-    /// - guaranteed by word count rather than hoped for from platform font metrics (this harness's
-    /// deterministic <c>MockAdapter</c> metrics make it so regardless).
-    /// </summary>
+    /// <summary>Three items, the middle one long enough to run over several pages.</summary>
     private static (CssBox Root, HtmlContainerInt Container) Layout(string listStyleType = "disc")
     {
         var items = string.Join("", new[] { 12, 1200, 12 }.Select((words, i) =>

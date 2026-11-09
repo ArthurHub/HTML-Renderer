@@ -12,10 +12,7 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/MonolithicContentLayoutIntegrationTests.cs: what css-break-3 §2's
-/// monolithic set (<c>MonolithicContent.IsMonolithic</c> - a scroll container or a replaced element) does
-/// to pagination - moved whole to the next fragmentainer rather than sliced, via the same
-/// <c>BlockFragmentation.RelocateIfNeeded</c> mover <c>break-inside:avoid</c> uses.
+/// css-break-3 §2 monolithic content (scroll containers, replaced elements) moves whole to the next page.
 /// </summary>
 [TestClass]
 [DoNotParallelize]
@@ -74,7 +71,7 @@ public sealed class MonolithicContentLayoutIntegrationTests
         $"<div style='height:900px'>filler</div>"
         + $"<div id='card' style='{cardCss};margin:0;height:200px'>content</div>";
 
-    // The headline case: a card with overflow: hidden is a scroll container, so it may not be split.
+    // overflow:hidden makes a scroll container, which may not be split.
     [TestMethod]
     public async Task StraddlingScrollContainer_MovesWholeToTheNextPage()
     {
@@ -88,8 +85,9 @@ public sealed class MonolithicContentLayoutIntegrationTests
         Assert.AreEqual(container.PageTopOf(1), card.Location.Y, 0.5);
     }
 
-    // The control: the identical box without the declaration still straddles.
+    // The same box without the declaration still straddles.
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task StraddlingVisibleBox_IsStillSplit()
     {
         var (root, container) = await BuildAsync(StraddleDocument(""));
@@ -102,8 +100,7 @@ public sealed class MonolithicContentLayoutIntegrationTests
             "fixture must straddle a page boundary when nothing forbids it");
     }
 
-    // The two movers share the same relocation code path, so they must agree exactly however the box came
-    // to straddle.
+    // A monolithic box moves exactly like a break-inside:avoid one.
     [TestMethod]
     [DataRow(750.0)]
     [DataRow(800.0)]
@@ -140,9 +137,7 @@ public sealed class MonolithicContentLayoutIntegrationTests
             container.PageIndexOf(card.ActualBottom - 0.01));
     }
 
-    // §2 would have content that fits in no fragmentainer overflow rather than be sliced. This port
-    // deliberately keeps fragmenting instead (RelocateIfNeeded's own "fits on no single page - left in
-    // place" rule), matching PeachPDF's own documented choice for the same case.
+    // css-break-3 §2 lets monolithic content taller than a page overflow, this keeps fragmenting it instead.
     [TestMethod]
     public async Task ScrollContainerTallerThanTheBand_KeepsFragmentingRatherThanOverflowing()
     {
@@ -168,8 +163,7 @@ public sealed class MonolithicContentLayoutIntegrationTests
         Assert.AreEqual(80, placed);
     }
 
-    // A fixed box is emitted in every fragmentainer at identical coordinates, so "move it to the next page"
-    // names nothing for it - the mover has to leave it alone however it is styled.
+    // A fixed box repeats on every page, there is no next page to move it to.
     [TestMethod]
     public async Task FixedScrollContainer_IsNotRelocated()
     {
@@ -189,8 +183,7 @@ public sealed class MonolithicContentLayoutIntegrationTests
         Assert.AreEqual(plainCard.Location.Y, clippedCard.Location.Y, 0.5);
     }
 
-    // A display:none box is never placed - LayoutContents copies its previous sibling's Location/
-    // ActualBottom instead, so it must be untouched by the mover.
+    // A display:none box takes its previous sibling's geometry and must not be moved.
     [TestMethod]
     public async Task HiddenScrollContainer_IsNotRelocated()
     {
@@ -228,8 +221,7 @@ public sealed class MonolithicContentLayoutIntegrationTests
             container.PageIndexOf(card.ActualBottom - 0.01));
     }
 
-    // A scroll container too tall for any band, with nothing inside it to fragment, overflows in place -
-    // and content after it must still see a truthful position, not one measured against a stale band.
+    // An empty scroll container taller than a page overflows in place, content after it follows its bottom.
     [TestMethod]
     public async Task ContentAfterAScrollContainerTallerThanTheBand_SeesATruthfulCursor()
     {
@@ -246,15 +238,12 @@ public sealed class MonolithicContentLayoutIntegrationTests
         Assert.IsTrue(card.ActualBottom - card.Location.Y > PageHeight,
             "the fixture must be taller than a whole band, or this asserts nothing");
 
-        // The content after the oversized box must flow from its real bottom, not from some earlier,
-        // stale band boundary.
         Assert.AreEqual(card.ActualBottom, after.Location.Y, 0.5);
     }
 
-    // The replaced half of §2 reaches the same outcome by a different route: an <img> is forced inline, so
-    // it never runs the epilogue's mover at all - its whole word moves through the ordinary per-word
-    // fragmentainer check instead, the same path any other word takes.
+    // An inline image is a word, so it moves with its line instead of through the block mover.
     [TestMethod]
+    [Spec("css21", "page.html#best-page-breaks")]
     public async Task StraddlingImage_MovesWholeThroughTheWordPath()
     {
         var html = "<div style='height:940px'>filler</div>"

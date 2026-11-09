@@ -1783,17 +1783,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         /// <param name="amount"></param>
         /// <remarks>
-        /// A real gap found while auditing this port's fragmentation engine against PeachPDF a second
-        /// time: this box's own <see cref="Rectangles"/> entry for a line was kept in sync, but the
-        /// line's OWN mirror of the same value (<see cref="CssLineBox.Rectangles"/>, keyed the other way
-        /// around) was not - the two are separate dictionaries updated by separate call sites
-        /// (<see cref="CssLineBox.ShiftLine"/> keeps both in sync when a line-level shift initiates the
-        /// move; this method didn't when a box-level shift does). <see cref="CssLineBox.LineTop"/>/
-        /// <c>LineBottom</c> - and therefore <see cref="EffectiveTop"/> for any inline-only box, since it
-        /// reads them - went stale after this method ran, even though <see cref="Location"/> (this
-        /// method's own last statement) was correctly updated. Confirmed by directly inspecting both
-        /// dictionaries after a real <c>EnforceKeepWithNext</c> run-shift: <c>Location.Y</c> reflected the
-        /// new position while <c>EffectiveTop</c> still reported the old one.
+        /// A line's rectangle is stored both in <see cref="Rectangles"/> and in <see cref="CssLineBox.Rectangles"/>,
+        /// both are shifted so <see cref="CssLineBox.LineTop"/> and <see cref="EffectiveTop"/> follow.
         /// </remarks>
         internal void OffsetTop(double amount)
         {

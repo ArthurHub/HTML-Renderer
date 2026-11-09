@@ -9,20 +9,6 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
-/// <summary>
-/// Verifies the R4 stage of the fragmentation-engine-parity plan: keep-with-next
-/// (<c>BlockFragmentation.EnforceKeepWithNext</c>) now fires for the ordinary case, not just as a side
-/// effect of the following box also being <c>break-inside:avoid</c>/monolithic.
-/// </summary>
-/// <remarks>
-/// The pre-existing <c>KeepWithNext_HeadingStaysWithFollowingParagraph</c> PDF test (still passing, still
-/// kept) only ever asserted a page COUNT of 2 - which is also exactly what you get if the heading is left
-/// stranded alone at the bottom of page 1 while the paragraph moves to page 2 by itself (2 pages either
-/// way). It never actually proved the heading and paragraph land on the SAME page. This test does, using
-/// the fragment tree directly: filler content is calibrated so the heading provably fits alone on page 0
-/// in isolation (confirmed by a companion assertion with no trailing paragraph), then, with the paragraph
-/// present, both must appear in the SAME fragmentainer.
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class StageR4KeepWithNextTest
@@ -68,18 +54,11 @@ public sealed class StageR4KeepWithNextTest
     private static string Filler(int count) =>
         string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of text</p>", count));
 
-    // WinForms reports media type "screen", not "print" - the UA stylesheet's h1-h6 { break-after: avoid }
-    // rule lives under @media print (see PdfSharpAdapter vs RAdapter.DefaultMediaType) and never applies
-    // to this IntegrationTest project's WinForms-based HtmlContainer. Set it explicitly rather than
-    // relying on the UA default.
+    // The UA's h1-h6 { break-after: avoid } is under @media print, WinForms renders as screen.
     private const string HeadingStyle = "margin:0; break-after: avoid;";
 
     /// <summary>
-    /// Finds, by direct search rather than a hardcoded magic number, a filler count where the heading
-    /// fits alone on page 0 but heading+paragraph together do not - the exact boundary this stage's real
-    /// test needs. Hardcoding the count made this test fragile to unrelated, still-correct changes
-    /// elsewhere in the pagination arithmetic (this happened once already, when InlineFragmentation's
-    /// algorithm was rewritten for an unrelated widows bug and shifted the boundary by one filler).
+    /// A filler count where the heading fits alone on page 0, but not together with its paragraph.
     /// </summary>
     private static async Task<int> FindBoundaryFillerCountAsync()
     {
@@ -95,7 +74,7 @@ public sealed class StageR4KeepWithNextTest
             var bothFitOnPageZero = withParagraph.Fragmentainers.Count >= 1
                 && StringContains(AllText(withParagraph.Fragmentainers[0].Root), "Paragraph right after the heading.");
             if (!bothFitOnPageZero)
-                return count; // heading alone fits; heading+paragraph together doesn't - the boundary.
+                return count;
         }
 
         Assert.Fail("could not find a filler count where the heading fits alone but not with its paragraph");
@@ -105,6 +84,7 @@ public sealed class StageR4KeepWithNextTest
     private static bool StringContains(string haystack, string needle) => haystack.Contains(needle);
 
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task HeadingAndParagraph_LandOnTheSamePage_NotStranded()
     {
         var count = await FindBoundaryFillerCountAsync();
@@ -112,8 +92,6 @@ public sealed class StageR4KeepWithNextTest
         var tree = await LayoutAsync(
             $"{Filler(count)}<h4 style='{HeadingStyle}'>Section heading</h4><p style='margin:0;'>Paragraph right after the heading.</p>");
 
-        // Page 0's own text must NOT contain the heading - it should have been pulled forward to join
-        // the paragraph, not left stranded where the boundary search shows it would otherwise fit alone.
         var pageZeroText = AllText(tree.Fragmentainers[0].Root);
         StringAssert.DoesNotMatch(pageZeroText, new System.Text.RegularExpressions.Regex("Section heading"));
 

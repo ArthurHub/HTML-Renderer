@@ -9,8 +9,6 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
-// See StageD2FragmentBucketingSmokeTest for why this opts out of this assembly's default
-// method-level parallelization (MSTestSettings.cs).
 [TestClass]
 [DoNotParallelize]
 public sealed class StageD3PrecisionTest
@@ -35,6 +33,7 @@ public sealed class StageD3PrecisionTest
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public void NoLine_EverStraddlesAPageBoundary()
     {
         var sentence = "one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty ";
@@ -65,6 +64,7 @@ public sealed class StageD3PrecisionTest
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#break-inside")]
     public void Widows_NeverLeavesFewerThanMinimumLinesAtTopOfPage()
     {
         var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of text</p>", 53));

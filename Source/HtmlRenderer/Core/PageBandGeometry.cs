@@ -1,10 +1,9 @@
 namespace TheArtOfDev.HtmlRenderer.Core
 {
     /// <summary>
-    /// The resolved block-axis band and margins one fragmentainer (page) occupies, in true output units.
-    /// HTML-Renderer keeps a single fixed page size/margins per document (no per-page @page overrides,
-    /// unlike PeachPDF's variable-geometry PageGeometryTable), so this is a plain value computed once
-    /// from the container's <see cref="HtmlContainerInt.PageSize"/> and margins rather than a table.
+    /// The block-axis band and margins of one page, in output units. All pages share the container's
+    /// <see cref="HtmlContainerInt.PageSize"/> and margins, <c>@page</c> rules aren't applied
+    /// (CSS 2.1 §13.2).
     /// </summary>
     internal readonly struct PageBandGeometry
     {

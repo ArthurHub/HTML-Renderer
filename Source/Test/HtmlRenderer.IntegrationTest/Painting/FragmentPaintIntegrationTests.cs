@@ -18,6 +18,7 @@ namespace HtmlRenderer.IntegrationTest.Painting;
 public sealed class FragmentPaintIntegrationTests
 {
     [TestMethod]
+    [Spec("css21", "page.html#forced")]
     public void EachPage_PaintsOnlyItsOwnFragmentainersContent()
     {
         var (_, container) = PaintHarness.LayoutPaginated(PaintHarness.Wrap(
@@ -53,8 +54,7 @@ public sealed class FragmentPaintIntegrationTests
 
             Assert.IsTrue(recording.DrawStringCalls.Count > 0);
 
-            // Every drawn glyph run sits exactly where its own fragment says, in page-local coordinates -
-            // no page offset is applied at paint time any more.
+            // Fragment coordinates are page-local, paint adds no page offset.
             foreach (var call in recording.DrawStringCalls)
             {
                 Assert.IsTrue(wordRects.Any(r => Math.Abs(r.X - call.Point.X) < 0.001));
@@ -78,8 +78,7 @@ public sealed class FragmentPaintIntegrationTests
         {
             var recording = PaintHarness.PaintPage(container, page);
 
-            // Sliced, not cloned: each fragment paints the whole box's background rectangle and the page
-            // clip does the cutting (box-decoration-break: slice, the initial value).
+            // box-decoration-break: slice, each fragment paints the whole background and the page clip cuts it.
             Assert.IsTrue(recording.Log.OfType<RecordingGraphics.DrawRectCall>()
                 .Any(r => r.Color == RColorOf(10, 20, 30)));
         }

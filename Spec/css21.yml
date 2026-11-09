@@ -685,43 +685,64 @@ sections:
       - georgian renders 20 as პ instead of კ
   page.html#the-page:
     title: 13 Paged media
-    status: unknown
+    status: partial
   page.html#page-intro:
     title: 13.1 Introduction to paged media
-    status: unknown
+    status: n/a
   page.html#page-box:
     title: 13.2 Page boxes
-    status: unknown
+    status: partial
   page.html#page-margins:
     title: 13.2.1 Page margins
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Margins in @page rules are parsed but never applied, the page margins come only from PdfGenerateConfig
   page.html#page-selectors:
     title: 13.2.2 Page selectors
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "@page :first, :left and :right rules are parsed but never applied"
   page.html#outside-page-box:
     title: 13.2.3 Content outside the page box
-    status: unknown
+    status: supported
   page.html#page-breaks:
     title: 13.3 Page breaks
-    status: unknown
+    status: partial
   page.html#page-break-props:
     title: 13.3.1 Page break properties
-    status: unknown
+    status: partial
+    gaps:
+      - "'left' and 'right' don't force a break"
+      - "A 'page-break-inside: avoid' block without text, e.g. an empty div with a height, is split instead of moved to the next page"
+      - A box split across pages draws its border on both sides of the split
   page.html#break-inside:
     title: 13.3.2 Breaks inside elements
-    status: unknown
+    status: partial
+    gaps:
+      - "'orphans' and 'widows' of 0 or less are accepted and fall back to 2 instead of being ignored"
   page.html#allowed-page-breaks:
     title: 13.3.3 Allowed page breaks
-    status: unknown
+    status: partial
+    gaps:
+      - When all lines of a block move to the next page, the block's top edge (border, background) stays on the previous page
+      - "'page-break-after: avoid' doesn't pull a block without text along to the next page"
+      - "'page-break-after: avoid' isn't honored when the next box's first child moves to the next page through margin truncation"
+      - "At a forced break the previous box's 'margin-bottom' isn't set to 0, it collapses with 'margin-top' at the top of the new page"
+      - The top margin of an hr isn't set to 0 at an unforced page break
   page.html#forced:
     title: 13.3.4 Forced page breaks
-    status: unknown
+    status: partial
+    gaps:
+      - A forced break before a first child is dropped instead of breaking before its ancestors, which meet at the same margin
+      - "A forced 'page-break-after' on a last child doesn't break before its parent's next sibling"
   page.html#best-page-breaks:
     title: 13.3.5 "Best" page breaks
-    status: unknown
+    status: supported
   page.html#page-cascade:
     title: 13.4 Cascading in the page context
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "@page declarations aren't cascaded, nothing reads them"
   colors.html#q14.0:
     title: 14 Colors and Backgrounds
     status: unknown

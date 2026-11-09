@@ -6,26 +6,8 @@ using static HtmlRenderer.Test.CssEngineSupport.CssConstructionFunctions;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/Property.cs (the break-*/page-break-* cases).
-/// Exercises the modern css-break-3 <c>break-before</c>/<c>break-after</c>/<c>break-inside</c> properties
-/// (<see cref="BreakAfterProperty"/>/<see cref="BreakBeforeProperty"/>/<see cref="BreakInsideProperty"/>)
-/// against the legacy <c>page-break-before</c>/<c>page-break-after</c>/<c>page-break-inside</c> aliases
-/// (<see cref="PageBreakAfterProperty"/>/<see cref="PageBreakBeforeProperty"/>/<see cref="PageBreakInsideProperty"/>),
-/// confirming they really do use two distinct converters/keyword sets as the port task described:
-/// Source/HtmlRenderer/Core/CssEngine/Model/Converters.cs lines 279-281 define
-/// <c>Converters.BreakModeConverter</c> (break-before/break-after), <c>Converters.BreakInsideModeConverter</c>
-/// (break-inside) and <c>Converters.PageBreakModeConverter</c> (page-break-before/page-break-after) as three
-/// separate maps, and page-break-inside (Break/PageBreakInsideProperty.cs) uses a fourth, hand-rolled
-/// auto/avoid-only converter rather than any of the three maps.
-///
-/// One real divergence from PeachPDF's own grammar was found while verifying this port (Model/Map.cs
-/// lines 265-277) and is documented in place below rather than assumed away:
-/// <c>Map.BreakModes</c> (break-before/break-after) implements only 9 of the 12 css-break-3 §3.1 values -
-/// it is missing "recto"/"verso"/"avoid-region"/"region" entirely (no such keywords exist anywhere in
-/// Enumerations/Keywords.cs), and unlike PeachPDF it treats "always" as a supported value on the modern
-/// properties (PeachPDF scopes "always" to the legacy page-break-* aliases only, per css-break-4).
-/// <c>Map.BreakInsideModes</c> (break-inside) and <c>Map.PageBreakModes</c> (legacy page-break-before/after),
-/// by contrast, match their respective spec value sets exactly.
+/// The css-break-3 <c>break-*</c> properties and the CSS 2.1 <c>page-break-*</c> ones, which accept
+/// different value sets.
 /// </summary>
 [TestClass]
 public sealed class PropertyBreakTests
@@ -46,6 +28,7 @@ public sealed class PropertyBreakTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-break-props")]
     public void CssPageBreakAfterLegalAvoid()
     {
         var snippet = "page-break-after:avoid";
@@ -76,6 +59,7 @@ public sealed class PropertyBreakTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-break-props")]
     public void CssPageBreakAfterIllegalAvoidColumn()
     {
         var snippet = "page-break-after:avoid-column";
@@ -119,6 +103,7 @@ public sealed class PropertyBreakTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-break-props")]
     public void CssPageBreakBeforeLegalAuto()
     {
         var snippet = "page-break-before:AUTO";
@@ -134,6 +119,7 @@ public sealed class PropertyBreakTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-break-props")]
     public void CssPageBreakBeforeLegalLeft()
     {
         var snippet = "page-break-before:left";
@@ -190,6 +176,7 @@ public sealed class PropertyBreakTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-break-props")]
     public void CssPageBreakInsideLegalAvoid()
     {
         var snippet = "page-break-inside:avoid";
@@ -205,6 +192,7 @@ public sealed class PropertyBreakTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-break-props")]
     public void CssPageBreakInsideLegalAutoUppercase()
     {
         var snippet = "page-break-inside:AUTO";
@@ -219,10 +207,6 @@ public sealed class PropertyBreakTests
         Assert.AreEqual("AUTO", concrete.Original);
     }
 
-    // The css-break-3 §3.1 break-before/break-after value set, restricted to the subset this engine's
-    // Map.BreakModes (Converters.cs line 279) actually implements. "recto"/"verso"/"avoid-region"/"region"
-    // are asserted as rejected separately below, rather than folded in here as PeachPDF does, because they
-    // are genuinely unsupported (no matching keywords exist in Enumerations/Keywords.cs).
     [TestMethod]
     [DataRow("break-before")]
     [DataRow("break-after")]
@@ -241,9 +225,7 @@ public sealed class PropertyBreakTests
         }
     }
 
-    // Documents the gap noted in the class header: these four css-break-3 values have no keyword defined
-    // anywhere in this engine (Enumerations/Keywords.cs) and are absent from Map.BreakModes
-    // (Model/Map.cs lines 265-277), so break-before/break-after reject them outright.
+    // css-break-3 values the engine doesn't implement.
     [TestMethod]
     [DataRow("break-before", "recto")]
     [DataRow("break-before", "verso")]
@@ -264,18 +246,12 @@ public sealed class PropertyBreakTests
     [DataRow("break-after")]
     public void BreakBeforeAfter_IsCaseInsensitiveAndKeepsAuthoredText(string name)
     {
-        // "avoid-page" replaces PeachPDF's "verso" probe value here, since "verso" is one of the
-        // unimplemented values documented above and would not exercise case-insensitivity at all.
         var property = ParseDeclaration($"{name}:AvOiD-PaGe");
         Assert.IsTrue(property.HasValue);
         Assert.AreEqual("avoid-page", property.Value);
         Assert.AreEqual("AvOiD-PaGe", property.Original);
     }
 
-    // "all" and "avoid-nothing" are not part of any value set this engine defines for break-before/
-    // break-after and are correctly rejected. "always" is asserted separately below since - unlike
-    // PeachPDF, which scopes "always" to the legacy page-break-* aliases only - this engine's
-    // Map.BreakModes (Model/Map.cs line 269) includes it as a supported break-before/break-after value.
     [TestMethod]
     [DataRow("break-before", "all")]
     [DataRow("break-after", "all")]
@@ -286,8 +262,7 @@ public sealed class PropertyBreakTests
         Assert.IsFalse(property.HasValue);
     }
 
-    // Divergence from PeachPDF (see class header): this engine's Map.BreakModes treats "always" as a
-    // legal break-before/break-after value, not just a legacy page-break-* one.
+    // css-break-3 only has "always" on the page-break-* aliases, the engine also takes it here.
     [TestMethod]
     [DataRow("break-before")]
     [DataRow("break-after")]
@@ -335,6 +310,7 @@ public sealed class PropertyBreakTests
     [DataRow("page-break-after", "avoid")]
     [DataRow("page-break-after", "left")]
     [DataRow("page-break-after", "right")]
+    [Spec("css21", "page.html#page-break-props")]
     public void PageBreakBeforeAfter_AcceptsLegacyValue(string name, string value)
     {
         var property = ParseDeclaration($"{name}:{value}");
@@ -351,6 +327,7 @@ public sealed class PropertyBreakTests
     [DataRow("page-break-after", "page")]
     [DataRow("page-break-after", "avoid-page")]
     [DataRow("page-break-after", "verso")]
+    [Spec("css21", "page.html#page-break-props")]
     public void PageBreakBeforeAfter_RejectsModernOnlyValue(string name, string value)
     {
         var property = ParseDeclaration($"{name}:{value}");
@@ -360,6 +337,7 @@ public sealed class PropertyBreakTests
     [TestMethod]
     [DataRow("auto")]
     [DataRow("avoid")]
+    [Spec("css21", "page.html#page-break-props")]
     public void PageBreakInside_AcceptsLegacyValue(string value)
     {
         var property = ParseDeclaration($"page-break-inside:{value}");
@@ -372,6 +350,7 @@ public sealed class PropertyBreakTests
     [DataRow("avoid-column")]
     [DataRow("avoid-region")]
     [DataRow("page")]
+    [Spec("css21", "page.html#page-break-props")]
     public void PageBreakInside_RejectsNonLegacyValue(string value)
     {
         var property = ParseDeclaration($"page-break-inside:{value}");

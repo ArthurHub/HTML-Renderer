@@ -12,29 +12,9 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/EarlyBreakLayoutIntegrationTests.cs: a box relocated by one of
-/// css-break-3 §4.3's corrections (<c>BlockFragmentation.RelocateIfNeeded</c>/<c>EnforceKeepWithNext</c>)
-/// is laid out again at its new position rather than translated to it - so it never carries a
-/// fragmentainer-boundary gap inside its own content the way a flat <c>OffsetTop</c> translation would.
+/// A box moved to the next page is laid out again there instead of being translated, on a 200px page with
+/// 20px margins (band <c>[20, 220)</c>).
 /// </summary>
-/// <remarks>
-/// PeachPDF's own version of this file is built around a real cross-pass rewind (<c>PassRewind.RollBackTo</c>,
-/// a <c>FragmentainerPasses</c>/<c>PassRewinds</c> pass counter, and table &lt;thead&gt; repetition via a
-/// detached <c>CssProxyBox</c> per page) - none of which this port has: <see cref="BreakToken"/>'s own doc
-/// comment confirms only a forced <c>break-before</c>/<c>break-after: page</c> ever produces a real
-/// cross-pass token here, and <c>TableHeaderRepeat.CloneAndPosition</c> clones real laid-out
-/// <see cref="CssBox"/> instances rather than PeachPDF's detached proxies. 9 of PeachPDF's 20 tests are
-/// therefore dropped rather than ported - see the "Dropped" region at the bottom of this file for exactly
-/// which, and why each one's premise doesn't reach this port's architecture.
-/// <para>
-/// Fixtures use a 200-unit page with 20-unit margins (band <c>[20, 220)</c>, matching PeachPDF's own
-/// pt-denominated fixture geometry 1:1 in CSS <c>px</c> - this port's <see cref="RSize"/>-based
-/// <see cref="HtmlContainerInt.PageSize"/> matches <c>px</c> exactly, unlike <c>pt</c> (confirmed via a
-/// ~1.333 WinForms conversion ratio while calibrating the sibling files in this folder), so reusing
-/// PeachPDF's own numbers as <c>px</c> keeps the same proportions). <c>orphans</c>/<c>widows</c> are pinned
-/// to 1 wherever the box under test is not itself the one being tested for them.
-/// </para>
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class EarlyBreakLayoutIntegrationTests
@@ -111,10 +91,7 @@ public sealed class EarlyBreakLayoutIntegrationTests
         $"<div style='height:{fillerHeight}px'>filler</div>"
         + $"<div id='card' style='{cardCss};orphans:1;widows:1;line-height:{LineHeight}px;font-size:10px;width:60px'>Aaa Bbb Ccc Ddd Eee Fff Ggg Hhh</div>";
 
-    // Sweeps a range of filler heights rather than hardcoding PeachPDF's own pt-calibrated 130/140/150 -
-    // the exact boundary where a card starts straddling depends on font-metric arithmetic (this session's
-    // own established testing lesson from the sibling Stage*/ContainerLeftBehind* tests: never hardcode a
-    // "just barely straddles" calibration across a different text-measurement backend).
+    // Sweeps filler heights, where the card starts straddling depends on font metrics.
     [TestMethod]
     public async Task RelocatedBox_HasNoInteriorGap()
     {
@@ -128,9 +105,6 @@ public sealed class EarlyBreakLayoutIntegrationTests
             if (container.PageIndexOf(card.EffectiveTop) != container.PageIndexOf(card.ActualBottom - 0.01))
                 continue; // relocation failed to land it on a single page - not the case under test
 
-            // Only meaningful once the box was actually straddling before relocation, i.e. some filler in
-            // this range genuinely pushed it across a boundary - confirmed indirectly by checking more than
-            // one filler height below all land on a page other than 0.
             checkedAny = true;
             AssertLinesAreEvenlySpaced(card);
         }
@@ -176,9 +150,9 @@ public sealed class EarlyBreakLayoutIntegrationTests
         return System.Math.Round(card.ActualBottom - card.EffectiveTop, 3);
     }
 
-    // The latch: an unsatisfiable avoid (content taller than the band) is relaxed rather than walked down
-    // the document one page at a time.
+    // An avoid that can't be satisfied is dropped instead of moving the box down page by page.
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task BoxTallerThanTheBand_MovesAtMostOnce()
     {
         var lines = string.Concat(Enumerable.Range(0, 14).Select(i => $"Line {i}<br>"));
@@ -210,10 +184,8 @@ public sealed class EarlyBreakLayoutIntegrationTests
         AssertLinesAreEvenlySpaced(FindById(root, "card"));
     }
 
-    // The keep-with-next pull is the one correction a box cannot carry out for itself: the break falls
-    // before a sibling placed before it, so only the parent's child loop can re-run it. Whichever way it is
-    // carried out, the heading comes along and lands at the destination band's top with the box below it.
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task PulledRun_MovesTogetherToTheDestinationBandTop()
     {
         var checkedAny = false;
@@ -254,9 +226,7 @@ public sealed class EarlyBreakLayoutIntegrationTests
         Assert.IsTrue(checkedAny, "test is not meaningful as written");
     }
 
-    // Every word the document authored is claimed by exactly one fragment - fails one way if a rewound
-    // pass leaves a ghost, the other way if a correction discards content that legitimately belonged
-    // somewhere.
+    // Every word is claimed by exactly one fragment, no ghost and no lost content.
     [TestMethod]
     public async Task PulledRun_ClaimsEveryWordExactlyOnce()
     {
@@ -287,9 +257,7 @@ public sealed class EarlyBreakLayoutIntegrationTests
 
     // ── §3.1 propagation (the container travels too) ──────────────────────────────────────────────
 
-    // §3.1's break point before a container's first in-flow child IS the break point before the container,
-    // so a §4.3 mover relocating that child has to move the container with it - confirmed working end to
-    // end via BlockFragmentation.PropagateContainerRelocation (see this repo's own ContainerLeftBehindTest.cs).
+    // css-break-3 §3.1: the break before a first child is the break before its container.
     [TestMethod]
     [DataRow("break-inside:avoid")]
     [DataRow("overflow:hidden")]
@@ -310,17 +278,14 @@ public sealed class EarlyBreakLayoutIntegrationTests
         Assert.IsTrue(card.EffectiveTop >= wrapper.Location.Y - 0.001,
             $"the card must sit inside its wrapper, but is at {card.EffectiveTop:F1} against {wrapper.Location.Y:F1}");
 
-        // And the wrapper is no longer on the page it left, which is the whole visible defect.
         Assert.IsTrue(wrapper.Location.Y > container.PageTopOf(0) + 1.0);
     }
 
-    // The redirect is a relaxation ladder rung, not an unconditional rewrite: a container that does not fit
-    // the destination is left where it is and the box moves alone.
+    // A container that doesn't fit the destination stays, the box moves alone.
     [TestMethod]
     public async Task RelocatedFirstChild_LeavesAContainerThatDoesNotFitTheDestination()
     {
-        // The card straddles the boundary and fits a band on its own, so the mover fires; the wrapper's own
-        // extent (its top down to the card's bottom) is 180 against a 160 band, so it cannot go.
+        // The wrapper's extent from its top to the card's bottom is 180px against a 160px band.
         var html = "<div style='height:20px'>filler</div>"
             + "<div id='wrapper' style='padding-top:170px;background:#eee;border:1px solid #000'>"
             + $"<div id='card' style='break-inside:avoid;orphans:1;widows:1;line-height:{LineHeight}px;font-size:10px;width:60px'>Aaa Bbb Ccc Ddd Eee Fff Ggg Hhh</div></div>";
@@ -335,13 +300,8 @@ public sealed class EarlyBreakLayoutIntegrationTests
         Assert.AreEqual(1, container.PageIndexOf(card.EffectiveTop));
     }
 
-    // A box whose subtree contains a table that repeats a header still gets relocated correctly - unlike
-    // PeachPDF's CssProxyBox-based repeat (detached from the tree, replaced fresh per page and therefore
-    // unsafe to re-lay-out a second time), TableHeaderRepeat.CloneAndPosition clones real laid-out CssBox
-    // instances rather than mutating/removing the source subtree, so a second layout of the same table
-    // (which is exactly what RelocateIfNeeded's re-entrant PerformLayout does) finds the same real content
-    // it did the first time.
     [TestMethod]
+    [Spec("css21", "page.html#page-break-props")]
     public async Task BoxContainingARepeatingTable_IsStillRelocated()
     {
         var rows = string.Concat(Enumerable.Range(0, 4).Select(i => $"<tr><td>Row {i}</td></tr>"));
@@ -356,43 +316,4 @@ public sealed class EarlyBreakLayoutIntegrationTests
         Assert.AreEqual(1, container.PageIndexOf(card.EffectiveTop));
         Assert.AreEqual(container.PageTopOf(1), card.EffectiveTop, 1.0);
     }
-
-    // ── Dropped (9 of PeachPDF's 20 tests) ──────────────────────────────────────────────────────────
-    //
-    // All 9 depend on PeachPDF's own resumable-pass rewind architecture, which this port never built (see
-    // this class's own doc remark, and StageR5WidowsMultiPageTest.cs's own confirmation that the
-    // investigation into needing one concluded it wasn't necessary):
-    //
-    //  - RelocatingABox_TakesNoExtraFragmentainerPass, PulledRun_FromAPassThatResumedIntoAParagraph_
-    //    ReEntersThatPass: assert a bounded/equal HtmlContainerInt.FragmentainerPasses/PassRewinds pass
-    //    counter. Neither property exists - DriveLayoutPasses' own pass counter is a local loop variable,
-    //    not exposed state, and every correction in this port (RelocateIfNeeded, EnforceKeepWithNext,
-    //    InlineFragmentation's orphans/widows) is a same-pass local fix, so there is no "extra pass" or
-    //    "pass rewind" concept to bound in the first place.
-    //  - PulledRun_FromAnEarlierPass_LeavesNoFragmentOnThePageItLeft: asserts a moved box's fragment is
-    //    absent from an "already-emitted" earlier page. FragmentEmitter runs exactly once, after every
-    //    DriveLayoutPasses pass has settled (HtmlContainerInt.PerformLayout's own call order) - nothing is
-    //    ever "already emitted" mid-layout for a later correction to have un-emitted, so the scenario this
-    //    test characterizes cannot arise.
-    //  - PulledRun_AlreadyRestartedOnThisPass_IsMovedRatherThanRestartedAgain: asserts a "restart" limiter
-    //    (PeachPDF's own per-pass-per-box guard against restarting the same run twice) falls back to a
-    //    flat move. EnforceKeepWithNext has no restart counter or fallback path to test - it always
-    //    computes the same trim-and-shift outcome from the current geometry, deterministically, every time
-    //    it is called.
-    //  - RunHeadContainingARepeatingTable_KeepsItsHeaderIntact: asserts against PeachPDF's CssProxyBox
-    //    (a detached per-page proxy row inserted into the live tree) surviving a restart. No such type
-    //    exists here (TableHeaderRepeat.CloneAndPosition's clones are never inserted into CssBox.Boxes at
-    //    all - see that class's own doc comment), and the underlying "does the header actually repeat
-    //    correctly" concern is already covered by StageD4RepeatedHeaderTest.cs and Batch 1's
-    //    HtmlContainerIntPaginationTests.cs, so re-asserting it here under a keep-with-next run would be
-    //    redundant, not a new gap.
-    //  - PulledRun_ReEnteringAPassThatResumedIntoAParagraph_LaysItOutAgain,
-    //    PulledRun_FromAPassThatResumedIntoAParagraph_KeepsEachHeadingWithItsBlock,
-    //    PulledRun_FromAPassThatResumedIntoAParagraph_ClaimsEachBlockWordExactlyOnce,
-    //    PulledRun_ReEnteringAPassThatResumedIntoAParagraph_RetakesAForcedBreakOnAGrandchild: all four
-    //    exist specifically to characterize PassRewind.RollBackTo's own correctness (discarding lines a
-    //    replayed pass would otherwise duplicate, retaking a forced break latched by a discarded attempt).
-    //    InlineFragmentation.ApplyLineBreaking computes an entire paragraph's lines in one unbounded,
-    //    side-effect-free call (its own doc comment), so there is no resumed/replayed pass for duplicate
-    //    lines or a latched break to survive from - the bug class these tests guard against cannot occur.
 }

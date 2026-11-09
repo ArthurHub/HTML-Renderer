@@ -12,25 +12,8 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/EngineRelayoutIdempotencyTests.cs: whether laying the same
-/// subtree out again reproduces the first result.
+/// Laying the same, already built tree out again reproduces the first result.
 /// </summary>
-/// <remarks>
-/// Reframed per the port plan: PeachPDF's version is about general resumed-pass idempotency (re-running an
-/// engine's measurement phases mid-resume). This port's relevant relayout triggers are more specific -
-/// <c>BlockFragmentation.RelocateIfNeeded</c>/<c>EnforceKeepWithNext</c> relaying a box out fresh within the
-/// same pass (<c>child.ResumeAt</c> + <c>child.PerformLayout</c>), and
-/// <c>CssLayoutEngineTable</c>'s repeated-header rebuild, which its own call site resets
-/// (<c>_tableBox.RepeatedHeaderRows = null</c>) and rebuilds "from scratch" via
-/// <c>TableHeaderRepeat.CloneAndPosition</c> on every table layout, per that class's own doc comment.
-/// Dropped entirely: PeachPDF's flex/grid/multicol Theories (4 of 7 methods) - none of those engines exist
-/// in this port (<c>MonolithicContent.RunsAnEngineOfItsOwn</c>'s own doc comment narrows "engines that
-/// paginate their own content" to table only). The remaining 3 (the plain-block-flow control, and the
-/// table header-repeat family) are ported, adapted to call <see cref="HtmlContainer.PerformLayout"/>
-/// directly, more than once, on the SAME already-built tree - the real repeated-layout shape this port
-/// actually has (<c>HtmlContainerInt.PerformLayout</c>'s own unrestricted-width double layout, and a host
-/// control's own resize-driven re-layout), rather than PeachPDF's resumed-pass re-entry.
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class EngineRelayoutIdempotencyTests

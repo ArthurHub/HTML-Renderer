@@ -6,12 +6,6 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
-/// <summary>
-/// Verifies the R3 stage of the fragmentation-engine-parity plan: <c>break-inside:avoid</c>/monolithic
-/// relocation now relays the child out fresh at its target position (<c>CssBox.ResumeAt</c> + a second
-/// <c>PerformLayout</c> call within the same pass) instead of shifting already-finished geometry with
-/// <c>OffsetTop</c>.
-/// </summary>
 [TestClass]
 [DoNotParallelize]
 public sealed class StageR3RelocationTest
@@ -23,12 +17,11 @@ public sealed class StageR3RelocationTest
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task MonolithicContentTallerThanOnePage_IsLeftInPlace_NotMoved()
     {
         using var wrapper = new HtmlContainer();
-        // A scroll container (overflow:hidden, MonolithicContent.IsScrollContainer) taller than the
-        // 700px page - RelocateIfNeeded's "fits on no single page" guard must leave it straddling the
-        // boundary in place rather than moving it (nowhere to move it TO would help) or looping.
+        // A scroll container is monolithic, this one is taller than the 700px page.
         await wrapper.SetHtml(
             """
             <html><body>
@@ -48,9 +41,7 @@ public sealed class StageR3RelocationTest
 
         var tree = container.FragmentTree;
         Assert.IsNotNull(tree);
-        // Straddles the one boundary it naturally crosses (250 + 900 = 1150, past the 700px mark) and
-        // stops there - not moved to a later page (which would still not fit it whole) and not spun
-        // into extra pages by a mistaken relocation attempt.
+        // Straddles the boundary it naturally crosses instead of moving to a page it wouldn't fit either.
         Assert.AreEqual(2, tree.Fragmentainers.Count);
     }
 }

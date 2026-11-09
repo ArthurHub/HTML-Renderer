@@ -5,25 +5,6 @@ using static HtmlRenderer.Test.CssEngineSupport.CssConstructionFunctions;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/Property.cs (the Orphans/Widows/UnicodeBidirectional cases).
-///
-/// orphans (StyleProperties/OrphansProperty.cs) uses <c>Converters.NaturalIntegerConverter</c>
-/// (<c>ValueExtensions.ToNaturalInteger</c>, Model/Converters.cs lines 36-37) - a non-negative integer
-/// only, rejecting both negative values and non-integers.
-///
-/// widows (StyleProperties/WidowsProperty.cs) uses the plain <c>Converters.IntegerConverter</c>
-/// (<c>ValueExtensions.ToInteger</c>) rather than the natural-number variant - it still rejects a value
-/// carrying a length unit like "5px" since that isn't a bare integer token at all.
-///
-/// unicode-bidi (StyleProperties/UnicodeBidirectionalProperty.cs) uses
-/// <c>Converters.UnicodeModeConverter</c> (backed by <c>Map.UnicodeModes</c>, Model/Map.cs lines 310-319),
-/// which defines normal/embed/isolate/isolate-override/bidirectional-override/plaintext - "bidi-override"
-/// and "isolate"/"plaintext"/"embed" are all present, confirming this port's value set matches the source
-/// file's expectations unchanged; PeachPDF's own <c>UnicodeMode</c>-typed assertions are commented out in
-/// the source (the concrete <c>State</c> member does not exist on this port's <c>Property</c>, mirroring
-/// how the source itself already leaves them commented rather than asserting them).
-/// </summary>
 [TestClass]
 public sealed class PropertyPaginationTests
 {
@@ -43,6 +24,7 @@ public sealed class PropertyPaginationTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#break-inside")]
     public void CssOrphansTwoLegal()
     {
         var snippet = "orphans : 2 ";
@@ -58,6 +40,7 @@ public sealed class PropertyPaginationTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#break-inside")]
     public void CssOrphansNegativeIllegal()
     {
         var snippet = "orphans : -2 ";
@@ -71,6 +54,7 @@ public sealed class PropertyPaginationTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#break-inside")]
     public void CssOrphansFloatingIllegal()
     {
         var snippet = "orphans : 1.5 ";
@@ -99,6 +83,7 @@ public sealed class PropertyPaginationTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#break-inside")]
     public void CssWidowsThreeLegal()
     {
         var snippet = "widows: 3";
@@ -114,6 +99,7 @@ public sealed class PropertyPaginationTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#break-inside")]
     public void CssWidowsLengthIllegal()
     {
         var snippet = "widows: 5px";

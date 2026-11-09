@@ -9,17 +9,6 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
-/// <summary>
-/// Verifies a real, previously-undocumented gap found while auditing this port's fragmentation engine
-/// against PeachPDF a second time (the first audit produced the R0-R10 plan; this is a later, separate
-/// pass over what remained): <c>InlineFragmentation.ApplyLineBreaking</c>'s orphans merge-back correction
-/// only ever ran once at least one earlier break already existed (<c>breaks.Count > 1</c>), which can
-/// never be true while still deciding a paragraph's very FIRST run - so a paragraph starting close enough
-/// to a page's bottom that fewer than <c>orphans</c> lines fit there was left with a too-small stranded
-/// first fragment, uncorrected. Confirmed by temporarily reverting the fix and re-running this exact test:
-/// it reliably reproduced a 1-line first page against <c>orphans:2</c> at several filler counts (13, 28,
-/// 43, 58 - the same ~15-count period the page-height/line-height ratio produces).
-/// </summary>
 [TestClass]
 [DoNotParallelize]
 public sealed class OrphansOnFirstRunTest
@@ -41,11 +30,10 @@ public sealed class OrphansOnFirstRunTest
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#break-inside")]
     public async Task ParagraphStartingNearPageBottom_NeverStrandsFewerThanOrphansLines()
     {
-        // Sweep filler counts rather than hardcoding one - this is a "just barely fits" calibration
-        // (see this session's own established testing lesson), and the exact boundary depends on
-        // font-metric arithmetic other changes are expected to keep touching.
+        // Where the paragraph straddles depends on font metrics, so sweep instead of calibrating.
         for (var fillerCount = 1; fillerCount < 60; fillerCount++)
         {
             using var wrapper = new HtmlContainer();

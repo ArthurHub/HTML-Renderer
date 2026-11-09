@@ -10,26 +10,8 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
 /// <summary>
-/// Verifies the fragmentation-engine-parity plan's R9 investigation finding: PeachPDF's "keep-with-next
-/// run-pull rewind across an already-frozen fragmentainer" does not have a counterpart problem in this
-/// port's architecture, so no new rewind machinery is needed - the existing same-pass
-/// <see cref="TheArtOfDev.HtmlRenderer.Core.Fragmentation.BlockFragmentation.EnforceKeepWithNext"/> (R4)
-/// already covers it.
+/// Keep-with-next still applies in a layout pass that resumed after a forced break.
 /// </summary>
-/// <remarks>
-/// PeachPDF needs a real cross-pass rewind because ordinary overflow-driven pagination is itself a real
-/// pass boundary there - a keep-with-next violation discovered while laying out page N+1 may need to
-/// reach back into page N's content, which was already committed via that pass's own <c>EmitPass</c>.
-/// In this port, only a FORCED break (<c>break-before/after: page</c>) ever creates a real pass boundary
-/// in <c>HtmlContainerInt.DriveLayoutPasses</c> - ordinary overflow and <c>break-inside:avoid</c> are both
-/// same-pass local corrections (R2/R3), and <c>FragmentEmitter</c> runs once, only after every pass has
-/// settled, so nothing is ever truly "frozen" mid-layout the way PeachPDF's per-pass emit makes it.
-/// A keep-with-next run is therefore always laid out - and checked by <c>EnforceKeepWithNext</c> - within
-/// the SAME pass as the sibling it's chained to, even immediately after resuming from an unrelated forced
-/// break earlier in the document, as this test confirms directly against the fragment tree. And a run
-/// could never need to be pulled across a forced break itself either way: the forced break is the
-/// intentional separator keep-with-next exists to avoid accidentally recreating, not an obstacle to undo.
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class StageR9KeepWithNextAcrossForcedBreakTest
@@ -56,6 +38,7 @@ public sealed class StageR9KeepWithNextAcrossForcedBreakTest
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task KeepWithNextPairRightAfterAForcedBreak_StaysTogether_OnTheResumedPage()
     {
         using var wrapper = new HtmlContainer();

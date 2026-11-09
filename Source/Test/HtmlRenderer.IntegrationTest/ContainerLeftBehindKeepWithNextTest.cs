@@ -10,23 +10,9 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
 /// <summary>
-/// Verifies the same css-break-3 §3.1 propagation gap as <see cref="ContainerLeftBehindTest"/>, applied
-/// to <c>EnforceKeepWithNext</c>'s run-pull instead of <c>RelocateIfNeeded</c>'s relocation: a heading
-/// pulled onto a paragraph's page (because they're chained by <c>break-after:avoid</c>) is also the
-/// section wrapping both of them's first in-flow child - the section's own top needs to follow the
-/// heading up, or the section is left spanning from its original page to the pulled-together pair's new
-/// one.
+/// A heading pulled onto its paragraph's page by <c>break-after:avoid</c> takes the section that starts
+/// with it along.
 /// </summary>
-/// <remarks>
-/// Diagnosing this surfaced a SECOND, more fundamental bug along the way: <c>CssBox.OffsetTop</c> (what
-/// <c>EnforceKeepWithNext</c> uses to pull the run) kept the box's own <c>Rectangles</c> dictionary in
-/// sync but never the corresponding <c>CssLineBox.Rectangles</c> entry (a separate dictionary, keyed the
-/// other way, that <c>CssLineBox.LineTop</c>/<c>LineBottom</c> - and therefore <c>CssBox.EffectiveTop</c>
-/// for any inline-only box - read from). <c>Location.Y</c> (this method's own last statement) was
-/// correctly updated while <c>EffectiveTop</c> silently kept reporting the pre-shift position - confirmed
-/// by inspecting both dictionaries directly on a real shifted heading before the fix. Fixed by having
-/// <c>OffsetTop</c> also update the line's own mirror entry for each line it touches.
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class ContainerLeftBehindKeepWithNextTest
@@ -46,6 +32,7 @@ public sealed class ContainerLeftBehindKeepWithNextTest
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task SectionWrappingHeadingAndParagraph_MovesWithThePulledHeading_NeverSpansBothPages()
     {
         var checkedAnyPull = false;
@@ -83,8 +70,7 @@ public sealed class ContainerLeftBehindKeepWithNextTest
             var sectionSlot = container.PageIndexOf(section.Location.Y);
             var headingSlot = container.PageIndexOf(heading.EffectiveTop);
 
-            // Only meaningful once the heading has actually been pulled forward (flush at a fresh page
-            // top) - otherwise there's no run-pull for the section to have gotten left behind by.
+            // Only meaningful once the heading was pulled to a page top.
             if (System.Math.Abs(heading.EffectiveTop - container.PageTopOf(headingSlot)) > 0.5)
                 continue;
 

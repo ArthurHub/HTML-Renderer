@@ -7,6 +7,7 @@ namespace HtmlRenderer.PdfSharp.Test;
 public sealed class StageD2VerificationTest
 {
     [TestMethod]
+    [Spec("css21", "page.html#forced")]
     public async Task ForcedBreakBefore_Page_StartsNewPage()
     {
         var config = new PdfGenerateConfig { PageSize = PageSize.A4 };
@@ -38,6 +39,7 @@ public sealed class StageD2VerificationTest
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#forced")]
     public async Task LegacyPageBreakBefore_Always_StartsNewPage()
     {
         var config = new PdfGenerateConfig { PageSize = PageSize.A4 };
@@ -61,15 +63,8 @@ public sealed class StageD2VerificationTest
         var config = new PdfGenerateConfig { PageSize = PageSize.A4 };
         config.SetMargins(20);
 
-        // Enough filler to span several pages regardless of exactly which font ends up resolving on
-        // whatever machine runs this (a small, precisely-calibrated filler count is fragile to font
-        // substitution - CI's non-Windows runners fall back to an embedded font with different metrics
-        // than Windows' real "Times New Roman", so a boundary tuned for one silently misses the other;
-        // see this project's own established testing lesson about hardcoded "just barely" magic
-        // numbers). Precise per-page content verification lives in HtmlRenderer.IntegrationTest's
-        // ContainerLeftBehindTest/StageR3RelocationTest, which read the fragment tree directly instead
-        // of inferring behavior from a PDF's total page count - this is only a regression-style guard
-        // that the avoid-block relocation doesn't crash or misbehave outright.
+        // Generous filler, fonts differ between platforms. This only guards that the relocation
+        // doesn't fail outright, the integration tests check where boxes land.
         var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of text</p>", 150));
         var html = $"""
             <html><body>
@@ -102,13 +97,12 @@ public sealed class StageD2VerificationTest
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task HugeMargin_DoesNotProduceRunawayBlankPages()
     {
         var config = new PdfGenerateConfig { PageSize = PageSize.A4 };
         config.SetMargins(20);
 
-        // A margin far taller than a single page - margin truncation (css-break-3 5.2) must
-        // discard it rather than paginating through blank vertical space.
         const string html = "<html><body><div style='margin-top:2000pt;'>content</div></body></html>";
 
         using var document = await PdfGenerator.GeneratePdf(html, config);
@@ -122,11 +116,7 @@ public sealed class StageD2VerificationTest
         var config = new PdfGenerateConfig { PageSize = PageSize.A4 };
         config.SetMargins(20);
 
-        // h4 has UA break-after: avoid. Generous filler (see BreakInsideAvoid_KeepsBlockTogether_OnOnePage's
-        // own remark on why a precisely-calibrated boundary is fragile to font substitution across CI
-        // platforms) - this is a regression-style guard that the pair doesn't blow up across an
-        // unreasonable number of pages, not a precise "did they move together" check (that lives at the
-        // fragment-tree level, in HtmlRenderer.IntegrationTest's ContainerLeftBehindKeepWithNextTest).
+        // h4 has UA break-after: avoid. Only a smoke test, StageR4KeepWithNextTest checks the placement.
         var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of text</p>", 150));
         var html = $"""
             <html><body>

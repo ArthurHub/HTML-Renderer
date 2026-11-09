@@ -12,21 +12,8 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/ResumableBlockLayoutIntegrationTests.cs: css-break-3 §5.2
-/// margin-truncation becoming a real break-before, driven through
-/// <see cref="HtmlContainerInt"/>'s own resumable per-fragmentainer pass loop (<c>DriveLayoutPasses</c>,
-/// matching PeachPDF's <c>LayoutDocument</c>) - the one case in this port where a whole extra pass really
-/// is taken, per <see cref="BreakToken"/>'s own doc comment.
+/// An unforced break in a margin taken as a break before the next box, in a later layout pass.
 /// </summary>
-/// <remarks>
-/// Verified test by test per the port plan: portable ones map onto <c>BlockFragmentation.ResolveBlockTop</c>
-/// (margin truncation) and <c>CssBox.ResumeAt</c>/<c>PendingBreakToken</c> (the real cross-pass token this
-/// port's driver loop actually uses). Two of PeachPDF's 10 are dropped -
-/// <c>ResumedPass_RegistersEachNamedPageElementOnce</c> (named pages are parse-only in this port -
-/// <c>HtmlContainerInt.NamedPageElements</c> has no counterpart) - and two Theories are narrowed from
-/// PeachPDF's flex/grid/table/multicol set to table only (the only one of those engines this port has -
-/// see <c>MonolithicContent.RunsAnEngineOfItsOwn</c>'s own doc comment narrowing it the same way).
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class ResumableBlockLayoutIntegrationTests
@@ -83,14 +70,13 @@ public sealed class ResumableBlockLayoutIntegrationTests
     private static List<int> FragmentSlotsOf(HtmlContainerInt container, CssBox box) =>
         container.FragmentTree!.Fragmentainers.Where(f => Contains(f.Root, box)).Select(f => f.SlotIndex).ToList();
 
-    // A first block, then a margin far taller than the remaining band, then a second block - the margin
-    // alone pushes the second block onto a later page, which is exactly the §5.2 unforced break that is
-    // now taken as a real break-before via CssBox.PendingBreakToken/ResumeAt.
+    // The margin alone pushes the second block past the end of the page.
     private static string MarginTruncationDocument() =>
         "<div id='first' style='height:40px'>first</div>"
         + "<div id='second' style='margin-top:300px;height:40px'>second</div>";
 
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task MarginPushingABoxAcrossABoundary_StartsItAtTheNextPagesContentTop()
     {
         var (root, container) = await BuildAsync(MarginTruncationDocument());
@@ -103,6 +89,7 @@ public sealed class ResumableBlockLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task BoxBrokenBefore_ProducesNoFragmentInTheFragmentainerItLeaves()
     {
         var (root, container) = await BuildAsync(MarginTruncationDocument());
@@ -111,12 +98,9 @@ public sealed class ResumableBlockLayoutIntegrationTests
 
         var slots = FragmentSlotsOf(container, second);
 
-        // §4.4: a break *before* a box means the box was never entered in the earlier fragmentainer, so it
-        // has no geometry there and therefore no fragment.
         Assert.IsTrue(slots.Count > 0);
         Assert.IsFalse(slots.Contains(0));
 
-        // And it got there by actually resuming: the driver had to open a second fragmentainer.
         Assert.IsTrue(container.FragmentTree!.Fragmentainers.Count >= 2);
     }
 
@@ -125,8 +109,6 @@ public sealed class ResumableBlockLayoutIntegrationTests
     {
         var (_, container) = await BuildAsync("<div style='height:40px'>first</div><div style='height:40px'>second</div>");
 
-        // The common case: no forced break/margin-truncation token is ever pending, so the driver's own
-        // pass loop runs exactly once - one real fragmentainer.
         Assert.AreEqual(1, container.FragmentTree!.Fragmentainers.Count);
     }
 
@@ -143,8 +125,6 @@ public sealed class ResumableBlockLayoutIntegrationTests
         Assert.IsNotNull(second);
         Assert.IsNotNull(third);
 
-        // The sibling after the break is reached only by the resumed pass, and still stacks immediately
-        // below its predecessor.
         Assert.AreEqual(second.ActualBottom, third.Location.Y, 1.0);
         Assert.AreEqual(container.PageIndexOf(second.Location.Y), container.PageIndexOf(third.Location.Y));
     }
@@ -154,9 +134,7 @@ public sealed class ResumableBlockLayoutIntegrationTests
     {
         var (root, _) = await BuildAsync(MarginTruncationDocument());
 
-        // Re-running the prologue on a resumed pass would reset and rebuild these, so a duplicate here is
-        // how that mistake would show up - meaningful in this port because DriveLayoutPasses really does
-        // call _root.PerformLayout(g) a second time for a forced/margin-truncated break.
+        // The resumed pass must not rebuild words or line boxes a second time.
         foreach (var box in Walk(root))
         {
             Assert.AreEqual(box.Words.Count, box.Words.Distinct().Count());
@@ -164,11 +142,7 @@ public sealed class ResumableBlockLayoutIntegrationTests
         }
     }
 
-    // These engines paginate their own content; the driver must not try to break inside them, or their
-    // internal bookkeeping would see a half-laid-out subtree. Narrowed from PeachPDF's
-    // flex/grid/table/column-count/break-inside:avoid set to table and break-inside:avoid - the only two
-    // that exist in this port (MonolithicContent.RunsAnEngineOfItsOwn's own doc comment does the same
-    // narrowing).
+    // Tables and avoid boxes paginate their own content, the driver must not break inside them.
     [TestMethod]
     [DataRow("display:table")]
     [DataRow("break-inside:avoid")]
@@ -195,8 +169,7 @@ public sealed class ResumableBlockLayoutIntegrationTests
     {
         var (root, _) = await BuildAsync(MarginTruncationDocument());
 
-        // Every box finished. A record left dangling would be resumed into by the next layout of the same
-        // tree (the unrestricted-width double layout, the per-page-width reflow loop).
+        // A leftover record would be resumed into by the next layout of the same tree.
         foreach (var box in Walk(root))
         {
             Assert.IsNull(box.PendingBreakToken);
@@ -205,13 +178,13 @@ public sealed class ResumableBlockLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task KeepWithNextRun_MovesWithTheBoxItIsChainedTo()
     {
         var (root, container) = await BuildAsync(
             "<div style='height:40px'>filler</div>"
             + "<h2 id='heading' style='margin:0;height:20px;break-after:avoid'>heading</h2>"
-            // Sized so the run plus the gap above it still fits the destination band - a larger margin
-            // makes the avoid unsatisfiable, which §5.3 says to relax rather than honor.
+            // A larger margin would make the avoid unsatisfiable.
             + "<div id='body' style='margin-top:120px;height:40px'>body</div>");
 
         var heading = FindById(root, "heading");
@@ -222,19 +195,9 @@ public sealed class ResumableBlockLayoutIntegrationTests
         Assert.AreEqual(container.PageIndexOf(heading.EffectiveTop), container.PageIndexOf(body.Location.Y));
     }
 
-    // An out-of-flow box is positioned against its containing block, not against the page the flow has
-    // reached - a break token recorded inside one has no link in the chain to travel up
-    // (CssBox.LayoutOutOfFlowChildren discards whatever a child leaves behind). Narrowed to table (the
-    // only "engine container" this port has) from PeachPDF's flex/grid/table set.
+    // An out-of-flow box doesn't leave a break token behind.
     [TestMethod]
-    [Ignore("Confirmed gap, found while calibrating this fixture: a position:absolute child of a table "
-        + "cell, under a real page grid, reliably loses one line of its own content from the fragment tree "
-        + "(5 authored lines, 4 placed) regardless of how generously the document's own measured height is "
-        + "padded out afterward. Left Ignored rather than root-caused further, since diagnosing table-"
-        + "internal absolute positioning is outside this port batch's scope (fragmentation-engine parity, "
-        + "not table layout) - the load-bearing part of this test, that no PendingBreakToken/"
-        + "RequestedBreakBeforeTop is ever left dangling on the out-of-flow box, is unaffected and still "
-        + "asserted below.")]
+    [Ignore("An absolutely positioned child of a table cell loses one of its 5 lines from the fragment tree")]
     public async Task TallOutOfFlowChildOfATableCell_KeepsAllOfItsContent()
     {
         var lines = string.Concat(Enumerable.Range(0, 5).Select(i => $"Line{i}<br>"));
@@ -242,11 +205,8 @@ public sealed class ResumableBlockLayoutIntegrationTests
             + "<span>in flow</span>"
             + $"<div id='abs' style='position:absolute;top:0;left:0;width:120px;line-height:20px'>{lines}</div>"
             + "</td></tr></table>"
-            // The table's own natural row height is tiny (one short line of "in flow" text) - without
-            // something after it holding the document's own measured height open, HtmlContainerInt.ActualSize
-            // stops short of where the absolutely-positioned sibling's own overflow content actually reaches,
-            // clipping the fragment tree's own word count to whatever falls within that (unrelated) bound.
-            + "<div style='height:150px'>tail</div>";
+            // Keeps the document tall enough to cover the absolute box's overflow.
+            +"<div style='height:150px'>tail</div>";
 
         var (root, container) = await BuildAsync(html);
         var abs = FindById(root, "abs");

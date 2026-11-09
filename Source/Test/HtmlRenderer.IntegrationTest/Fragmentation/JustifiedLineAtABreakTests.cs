@@ -11,24 +11,8 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/JustifiedLineAtABreakTests.cs: CSS Text §7.3 exempts the last
-/// line of a block from <c>text-align: justify</c> - a line that ends at a fragmentation break is not that
-/// line (the block continues in the next fragmentainer), so it must still be justified like any other.
+/// CSS Text §7.3: a line that ends at a page break isn't the last line of its block, so it's still justified.
 /// </summary>
-/// <remarks>
-/// Verified NOT to reproduce in this port, and ported anyway as a locked-in non-regression check (per the
-/// port plan's guidance for a scenario that doesn't reproduce but is still meaningful to pin). PeachPDF's
-/// bug depended on its own resumable-pass architecture: a pass that stops mid-block leaves
-/// <c>LineBoxes</c> looking complete when it is not, so "is this line the last one" (read off
-/// <c>LineBoxes.Count - 1</c>) gave a false positive for whatever line a pass happened to stop on.
-/// HTML-Renderer's <c>CssLayoutEngine.CreateLineBoxes</c> computes an entire paragraph's lines in one
-/// unbounded, side-effect-free call (confirmed by <c>InlineFragmentation.ApplyLineBreaking</c>'s own doc
-/// comment: the "run of already-laid-out lines... is monolithic and never straddles" - fragmentation only
-/// ever shifts already-finished lines' Y coordinates afterward, never touches <c>LineBoxes</c> membership),
-/// so by the time <c>CssLayoutEngine.ApplyJustifyAlignment</c> reads <c>LineBoxes[LineBoxes.Count - 1]</c>
-/// (its own exact check), that index always names the block's true last line, page break or not. All three
-/// tests below pass unmodified from PeachPDF's own assertions - none needed adaptation or <c>[Ignore]</c>.
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class JustifiedLineAtABreakTests
@@ -92,8 +76,7 @@ public sealed class JustifiedLineAtABreakTests
         Assert.AreEqual(block.ClientRight, lastOnFirstPage.Words[lastOnFirstPage.Words.Count - 1].Right, 1.0);
     }
 
-    /// <summary>The control, and the half that must not regress: the block's real last line is still
-    /// exempt.</summary>
+    /// <summary>The block's real last line is still exempt.</summary>
     [TestMethod]
     public async Task TheBlocksOwnLastLine_IsNotJustified()
     {

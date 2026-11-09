@@ -779,14 +779,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// The resumable per-fragmentainer pass loop (matching PeachPDF's <c>LayoutDocument</c>): lay the
-        /// whole document out once; if <see cref="_root"/> stopped partway through (its own
-        /// <see cref="CssBox.PendingBreakToken"/> is set - see that property's doc comment for how a break
-        /// discovered arbitrarily deep in the tree reaches it), resume from exactly that point and lay out
-        /// again; repeat until nothing is left pending. For a container with no real page grid (WinForms/
-        /// WPF's continuous-scroll convention), or a document with no forced breaks at all, this runs
-        /// exactly once - <see cref="CssBox.ResumeAt"/>'s default (no token, no override) is indistinguishable
-        /// from this engine's original single unbounded pass.
+        /// Lays the document out, and while <see cref="_root"/> stops at a forced break
+        /// (<see cref="CssBox.PendingBreakToken"/>), resumes from there in another pass. Without a page grid
+        /// or forced breaks this is a single pass.
         /// </summary>
         private void DriveLayoutPasses(RGraphics g)
         {
@@ -796,10 +791,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 return;
             }
 
-            // A backstop, not a real budget (matching PeachPDF's own sentinel) - a real document can only
-            // exhaust this many passes if something is genuinely wrong (a break token that never resolves
-            // forward), not from ordinary content length, since R1's scope (forced breaks only) resumes
-            // at most once per forced break in the whole document.
+            // A backstop against a break token that never moves forward, there's one pass per forced break.
             const int maxPasses = 100_000;
 
             BreakToken token = null;

@@ -10,38 +10,8 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/BreakPropagationIntegrationTests.cs: css-break-3 §3.1 forced-
-/// break combination and propagation - whether a break point stated before/after a box travels up to an
-/// ancestor that begins/ends with it.
+/// Whether a forced break or a keep stated on a first or last child applies to the break point of its ancestors.
 /// </summary>
-/// <remarks>
-/// Confirmed, by reading both the call site (<c>CssBox.PerformLayoutImp</c>'s child loop, which calls
-/// <c>BlockFragmentation.TryGetForcedBreakTarget(this, prevSibling, ...)</c> with <c>prevSibling</c> scoped
-/// to the box's OWN parent's child list) and <c>TryGetForcedBreakTarget</c>'s own remark: unlike PeachPDF's
-/// <c>BreakPropagation.PropagatesBreakBeforeOutward</c>, this port does NOT climb the ancestor chain for a
-/// forced <c>break-before</c>/<c>break-after</c> - a first-in-flow child's forced break-before is
-/// suppressed outright (never redirected onto its parent), and a last-in-flow child's <c>break-after</c>
-/// never bubbles up to make its parent's own <c>BreakAfter</c> "page" either (<c>CssBoxProperties</c> has
-/// no such cascade - confirmed by reading the <c>BreakAfter</c>/<c>BreakBefore</c> property getters, plain
-/// backing-field reads with no ancestor lookup). This is explicitly called out as "out of scope for this
-/// port" in <c>TryGetForcedBreakTarget</c>'s own doc remark. Real ancestor-following DOES exist, but only
-/// for the RELOCATION-triggered movers (<c>BlockFragmentation.PropagateContainerRelocation</c>, called from
-/// both <c>RelocateIfNeeded</c> and <c>EnforceKeepWithNext</c>) - confirmed working end to end by this
-/// repo's own pre-existing <c>ContainerLeftBehindTest.cs</c>/<c>ContainerLeftBehindKeepWithNextTest.cs</c>.
-/// Three tests below (<c>ForcedBreakBeforeAFirstChild_MovesTheContainer</c>,
-/// <c>ForcedBreakBeforeANestedFirstChild_MovesTheOutermostContainerItBegins</c>,
-/// <c>BreakAfterOnALastChild_ForcesTheBreakBeforeTheFollowingSibling</c>) are ported with their PeachPDF
-/// assertions intact but <c>[Ignore]</c>d against this confirmed gap; a fourth
-/// (<c>AForcedBreakPropagatedOutOfAContainer_BreaksTheKeepWithNextChain</c>) is dropped rather than
-/// Ignored, since its premise (a forced break that travelled out of the container) never occurs here at
-/// all, so there is nothing left of the scenario to characterize as pending.
-/// <para>
-/// Also dropped: the 2 directional-break-value tests (<c>recto</c>/<c>verso</c>, unsupported per the port
-/// plan's exclusion list) and <c>ForcedBreakBeforeAnEngineItem_DoesNotTravelOutOfTheEngine</c> (flex/grid -
-/// no such layout engine exists in this port, and PeachPDF's own <c>BreakPropagation</c> type it asserts
-/// against has no counterpart here either).
-/// </para>
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class BreakPropagationIntegrationTests
@@ -90,14 +60,11 @@ public sealed class BreakPropagationIntegrationTests
 
     private static int SlotOf(HtmlContainerInt container, CssBox box) => container.PageIndexOf(box.Location.Y);
 
-    #region Propagation moves the container, not only the child (confirmed gap - forced breaks only)
+    #region Propagation moves the container, not only the child
 
     [TestMethod]
-    [Ignore("Confirmed gap: BlockFragmentation.TryGetForcedBreakTarget suppresses a forced break-before on a "
-        + "first-in-flow child (no previous sibling) rather than redirecting it onto the parent - see this "
-        + "method's own doc remark ('Full cross-ancestor propagation is out of scope for this port'). Unlike "
-        + "PeachPDF, the break is simply dropped: 'wrap' never moves and 'first' lands wherever ordinary flow "
-        + "puts it, both on the original page.")]
+    [Ignore("Gap, see Spec/css21.yml")]
+    [Spec("css21", "page.html#forced")]
     public async Task ForcedBreakBeforeAFirstChild_MovesTheContainer()
     {
         var (root, container) = await BuildAsync(
@@ -116,8 +83,8 @@ public sealed class BreakPropagationIntegrationTests
     }
 
     [TestMethod]
-    [Ignore("Same confirmed gap as ForcedBreakBeforeAFirstChild_MovesTheContainer - see this class's own doc "
-        + "remark - just nested one level deeper.")]
+    [Ignore("Gap, see Spec/css21.yml")]
+    [Spec("css21", "page.html#forced")]
     public async Task ForcedBreakBeforeANestedFirstChild_MovesTheOutermostContainerItBegins()
     {
         var (root, container) = await BuildAsync(
@@ -132,9 +99,8 @@ public sealed class BreakPropagationIntegrationTests
         Assert.AreEqual(container.PageTopOf(1), outer.Location.Y, 3);
     }
 
-    // A box with an in-flow sibling above it names its own break point directly (prevSibling != null in
-    // TryGetForcedBreakTarget), so nothing needs to propagate and the container stays where it is.
     [TestMethod]
+    [Spec("css21", "page.html#forced")]
     public async Task ForcedBreakBeforeALaterChild_LeavesTheContainerWhereItIs()
     {
         var (root, container) = await BuildAsync(
@@ -152,11 +118,7 @@ public sealed class BreakPropagationIntegrationTests
         Assert.AreEqual(1, SlotOf(container, second));
     }
 
-    // §3.1 propagation would stop before breaking through the fragmentation root, so the chain here reaches
-    // the root either way (whether or not ancestor propagation exists) and no break is taken - which is
-    // also §4.4's "no empty fragmentainer" falling out rather than being asserted. Passes in this port for
-    // the same *suppression* that makes the two Ignored tests above fail their PeachPDF assertions - the
-    // observable outcome (nothing moves, single page) happens to coincide here.
+    // css-break-3 §3.1: a forced break before the first content of the root makes no blank page.
     [TestMethod]
     public async Task ForcedBreakBeforeTheFirstBoxInTheFlow_ManufacturesNoBlankPage()
     {
@@ -175,11 +137,8 @@ public sealed class BreakPropagationIntegrationTests
     #region Combination and precedence (§3.1)
 
     [TestMethod]
-    [Ignore("Confirmed gap: a container's own BreakAfter is a plain CSS-cascaded backing field "
-        + "(CssBoxProperties.BreakAfter) with no bubbling from its last in-flow child's break-after - "
-        + "TryGetForcedBreakTarget only ever tests prevSibling.BreakAfter directly, and prevSibling here is "
-        + "'wrap' itself (whose own break-after was never set), not 'tail' (whose break-after:page never "
-        + "reaches 'wrap'). So 'next' is not pushed to a new page at all.")]
+    [Ignore("Gap, see Spec/css21.yml")]
+    [Spec("css21", "page.html#forced")]
     public async Task BreakAfterOnALastChild_ForcesTheBreakBeforeTheFollowingSibling()
     {
         var (root, container) = await BuildAsync(
@@ -194,12 +153,10 @@ public sealed class BreakPropagationIntegrationTests
 
     #endregion
 
-    #region Keep-with-next across a container (relocation-triggered - confirmed working)
+    #region Keep-with-next across a container
 
-    // The §4.3 movers (RelocateIfNeeded/EnforceKeepWithNext) reach ancestor-propagation through a real,
-    // confirmed mechanism (PropagateContainerRelocation): the run is collected, the anchor (the first
-    // in-flow box the relocated box begins) travels, and the child loop that owns the run positions it.
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task BreakInsideAvoidOnAFirstChild_PullsTheRunAcrossTheContainer()
     {
         var (root, container) = await BuildAsync(

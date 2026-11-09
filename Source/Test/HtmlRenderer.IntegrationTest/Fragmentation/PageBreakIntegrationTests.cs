@@ -10,35 +10,8 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/PageBreakIntegrationTests.cs: core forced break-before/
-/// break-after end-to-end regressions, mapped onto <c>BlockFragmentation.TryGetForcedBreakTarget</c>'s
-/// forced-break handling and <c>BlockFragmentation.ResolveBlockTop</c>'s css-break-3 §5.2 margin
-/// truncation (both in Core/Fragmentation/BlockFragmentation.cs), driven end to end through
-/// <c>HtmlContainerInt.DriveLayoutPasses</c>. Fixtures use a 1000-unit page with a 50-unit margin (band
-/// <c>[50, 1050)</c>), all in CSS <c>px</c> (which this port's <see cref="RSize"/>-based
-/// <see cref="HtmlContainerInt.PageSize"/> matches 1:1 - unlike <c>pt</c>, which the WinForms adapter
-/// converts at a ~1.333 ratio, confirmed empirically while calibrating these fixtures).
+/// Forced breaks and margin truncation on a 1000px page with a 50px top margin (band <c>[50, 1050)</c>).
 /// </summary>
-/// <remarks>
-/// Three of PeachPDF's original 20 tests (<c>PageNameChange_ForcesBreak</c>,
-/// <c>SamePageName_DoesNotForceBreak</c>, <c>UnsetPageName_CarriesForwardWithoutForcingBreak</c>) are
-/// dropped: this port's <c>page</c> CSS property (<c>CssBoxProperties.PageName</c>,
-/// <c>PageNameProperty.cs</c>) is parsed and stored but never consulted anywhere in the fragmentation/
-/// layout code - confirmed by reading <c>BlockFragmentation.TryGetForcedBreakTarget</c> in full, which
-/// only ever tests <c>BreakValues.IsForcedBreak</c> on <c>break-before</c>/<c>break-after</c>. Named-page
-/// attribution/transitions are out of scope per the port plan's general exclusion list.
-/// <para>
-/// Confirmed by actually running these against the real engine (not just reading source): two more real
-/// behavioral differences from PeachPDF surfaced, each documented on its own test below -
-/// <c>BreakBeforeAlways_IsAcceptedAsAForcedBreak_UnlikePeachPDF</c> (inverted, not dropped: a deliberate,
-/// documented design choice - see <c>BreakValues.IsForcedBreak</c>'s own remark), and the "container left
-/// behind" gap extending to margin-truncation-caused
-/// overflow specifically (2 tests Ignored - <c>EnforceKeepWithNext</c>'s pull only fires on an actual slot
-/// gap between a container and ITS OWN previous sibling, which a grandchild's margin truncation alone never
-/// creates, unlike <c>RelocateIfNeeded</c>'s straddle-triggered relocation - the case
-/// <c>ContainerLeftBehindTest.cs</c> already confirms working).
-/// </para>
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class PageBreakIntegrationTests
@@ -60,10 +33,7 @@ public sealed class PageBreakIntegrationTests
         var container = GetInternal(wrapper);
         container.PageSize = new RSize(400, PageHeight);
         container.MarginTop = MarginTop;
-        // Content must actually start at MarginTop, matching production (PdfGenerator.SetContent) -
-        // otherwise PageIndexOf/PageTopOf's grid (anchored at MarginTop) disagrees with where box
-        // geometry actually begins (Y=0 by HtmlContainerInt's own default Location), corrupting every
-        // margin-truncation/forced-break slot computation that follows.
+        // Content starts at MarginTop like in PdfGenerator, the page grid is anchored there.
         container.Location = new RPoint(0, MarginTop);
         wrapper.MaxSize = new SizeF(400, 0);
 
@@ -103,9 +73,9 @@ public sealed class PageBreakIntegrationTests
         return null!;
     }
 
-    // Reproduces PeachPDF issue #50: page-break-inside: avoid splits content when preceded by an empty
-    // page-break-after: always div.
+    // An empty page-break-after:always div followed by a page-break-inside:avoid box.
     [TestMethod]
+    [Spec("css21", "page.html#forced")]
     public async Task PageBreakAfter_ForcesBreakBeforeNextSection()
     {
         var (root, container) = await BuildAsync(
@@ -126,6 +96,7 @@ public sealed class PageBreakIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#forced")]
     public async Task PageBreakBefore_ForcesBreak()
     {
         var (root, container) = await BuildAsync(
@@ -138,9 +109,9 @@ public sealed class PageBreakIntegrationTests
             $"Bordered box with break-before:page should start on page 2, but starts at y={bordered.Location.Y}");
     }
 
-    // The modern spelling of the same forced break: break-before: page is the css-break-3 §3.1 value
-    // "page-break-before: always" is defined (§3.3) to map onto, so both must paginate identically.
+    // css-break-3 §3.3 maps page-break-before:always onto break-before:page.
     [TestMethod]
+    [Spec("css21", "page.html#forced")]
     public async Task BreakBeforePage_ForcesBreak()
     {
         var (root, container) = await BuildAsync(ForcedBreakHtml("break-before:page"));
@@ -151,13 +122,7 @@ public sealed class PageBreakIntegrationTests
             $"break-before: page should start the box on page 2, but it starts at y={second.Location.Y}");
     }
 
-    // PeachPDF treats "break-before: always" as invalid (only the legacy page-break-before accepts
-    // "always") and expects it to fall back to "auto", not forcing a break. HTML-Renderer deliberately
-    // does not: BreakValues.IsForcedBreak's own remark documents that this port's CSS engine accepts
-    // "always" directly on the modern break-before/break-after properties too, rather than normalizing it
-    // away at parse time - confirmed here by BreakBeforeProperty's converter (BreakModeConverter, which
-    // parses "always" successfully) and by this test actually observing the forced break fire. Inverted
-    // rather than dropped, since it is a real, deliberate design choice worth pinning either way.
+    // 'always' is also accepted on the unprefixed break-before (css-break-4).
     [TestMethod]
     public async Task BreakBeforeAlways_IsAcceptedAsAForcedBreak_UnlikePeachPDF()
     {
@@ -167,18 +132,17 @@ public sealed class PageBreakIntegrationTests
         Assert.IsNotNull(second);
         Assert.AreEqual("always", second.BreakBefore);
         Assert.AreEqual(1, container.PageIndexOf(second.Location.Y),
-            $"break-before: always is accepted as a forced break in this port, but the box starts at y={second.Location.Y}");
+            $"break-before: always should force a break, but the box starts at y={second.Location.Y}");
     }
 
     private static string ForcedBreakHtml(string breakDeclaration) =>
         $"<div class='first' style='height:80px'>First</div>"
         + $"<div class='second' style='height:80px;{breakDeclaration}'>Second</div>";
 
-    // css-break-3 §3.2: `avoid` and `avoid-page` both forbid a page break, and must reposition the box to
-    // the next page's content top.
     [TestMethod]
     [DataRow("break-inside:avoid;page-break-inside:avoid")]
     [DataRow("break-inside:avoid-page")]
+    [Spec("css21", "page.html#page-break-props")]
     public async Task BreakInside_AvoidingAPageBreak_PositionsAtTopOfNextPage(string declaration)
     {
         var (root, container) = await BuildAsync(BreakInsideHtml(declaration));
@@ -198,8 +162,7 @@ public sealed class PageBreakIntegrationTests
             "Relocated box should sit flush at its page's content top");
     }
 
-    // The other half of §3.2: `avoid-column` and `avoid-region` name fragmentation contexts other than the
-    // page, so they must NOT suppress a page break.
+    // css-break-3 §3.2: avoid-column and avoid-region don't avoid page breaks.
     [TestMethod]
     [DataRow("break-inside:avoid-column")]
     [DataRow("break-inside:avoid-region")]
@@ -220,9 +183,8 @@ public sealed class PageBreakIntegrationTests
         "<div class='filler' style='height:900px'>filler</div>"
         + $"<div class='avoid' style='{declaration};margin:0;border:1px solid black;padding:8px;height:200px'>Keep together</div>";
 
-    // css-break-3 §5.2: a collapsed margin that stays within the same page as its previous sibling's
-    // bottom never triggers truncation.
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task Margin_NotCrossingPageBoundary_IsNotTruncated()
     {
         var (root, _) = await BuildAsync(
@@ -238,9 +200,8 @@ public sealed class PageBreakIntegrationTests
             "second's margin-top doesn't cross a page boundary, so it must be completely unaffected by truncation");
     }
 
-    // A margin just barely large enough to cross a page boundary must be discarded entirely - the box
-    // lands flush at the top of the very next page.
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task Margin_CrossingOnePageBoundary_TruncatesToZero_LandsAtTopOfNextPage()
     {
         var (root, container) = await BuildAsync(
@@ -261,9 +222,9 @@ public sealed class PageBreakIntegrationTests
             "Truncated margin should leave second flush at its page's content top");
     }
 
-    // Acid2's own actual scenario: a margin so large it would span several page heights with no real
-    // content in it at all. Truncation must land the box on the very NEXT page - not skip further pages.
+    // A margin spanning several pages still only moves the box to the next page.
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task HugeMultiPageMargin_TruncatesToZero_LandsOnVeryNextPage()
     {
         var (root, container) = await BuildAsync(
@@ -278,9 +239,8 @@ public sealed class PageBreakIntegrationTests
         Assert.AreEqual(container.PageTopOf(1), second.Location.Y, 0.5);
     }
 
-    // A forced break already relocates the previous sibling's bottom to the next page's top - per
-    // css-break-3 §5.2, PeachPDF preserves (does not truncate) the margin AFTER a forced break.
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task ForcedBreak_MarginAfterBreak_IsPreservedNotTruncated()
     {
         var (root, container) = await BuildAsync(
@@ -301,11 +261,11 @@ public sealed class PageBreakIntegrationTests
         + $"<div id='first' style='margin-top:{margin};height:80px'>first</div>"
         + "</div>";
 
-    // Either a border or padding on the container blocks margin-collapse-through, so the margin is the
-    // first child's own and the break falls before it.
+    // A border or padding on the container stops the margin from collapsing through it.
     [TestMethod]
     [DataRow("border-top:1px solid black")]
     [DataRow("padding-top:1px")]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task FirstChildOfACollapseBlockingContainer_HasItsOversizedMarginTruncated(string outerStyle)
     {
         var (root, container) = await BuildAsync(FirstChildDocument(outerStyle));
@@ -317,9 +277,8 @@ public sealed class PageBreakIntegrationTests
             "flush at the very next slot's content top - never wherever the untruncated margin reached");
     }
 
-    // The margin is taken as a break *before* the box, so the document really does resume in the next
-    // fragmentainer - a second, real fragmentainer must exist.
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task TruncatedFirstChildMargin_IsTakenAsABreakBefore()
     {
         var (_, container) = await BuildAsync(FirstChildDocument("border-top:1px solid black"));
@@ -328,8 +287,8 @@ public sealed class PageBreakIntegrationTests
             "the truncated margin must actually open a second fragmentainer");
     }
 
-    // A margin that stays inside its own slot is untouched, exactly as for a box with a sibling.
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task FirstChildMargin_StayingWithinItsOwnSlot_IsNotTruncated()
     {
         var (root, _) = await BuildAsync(FirstChildDocument("border-top:1px solid black", margin: "200px"));
@@ -342,21 +301,10 @@ public sealed class PageBreakIntegrationTests
         Assert.AreEqual(outer.ClientTop + 200, first.Location.Y, 1);
     }
 
-    // css-break-3 §3.1 keep-with-next across a container, via margin truncation rather than
-    // break-inside:avoid/monolithic relocation. Unlike RelocateIfNeeded (confirmed working end to end by
-    // this repo's own ContainerLeftBehindTest.cs), a margin-truncated FIRST child never gives its
-    // container's own EnforceKeepWithNext(wrap, prevSibling: head) anything to act on: 'wrap'.EffectiveTop
-    // never itself crosses a page boundary (only its grandchild 'body's truncated top does), so
-    // childTopSlot == prevBottomSlot from wrap's own perspective and EnforceKeepWithNext returns
-    // immediately ("no break actually falls between them"). Confirmed by running this test unignored: the
-    // heading never moves and stays on the original page while 'body' alone jumps to the next one, leaving
-    // 'wrap' spanning both - exactly the bug ContainerLeftBehindTest.cs fixes for the OTHER mover, still
-    // present for this one.
+    // The heading stays on the first page while 'body' moves, so 'wrap' spans both pages.
     [TestMethod]
-    [Ignore("Confirmed gap: margin-truncation-caused overflow of a container's own first/only child does "
-        + "not propagate a keep-with-next pull to the container's preceding avoid-chained sibling - see "
-        + "this test's own remark above for the exact mechanism. RelocateIfNeeded's break-inside:avoid "
-        + "trigger IS fixed for this (ContainerLeftBehindTest.cs); margin truncation (ResolveBlockTop) is not.")]
+    [Ignore("Gap, see Spec/css21.yml")]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task FirstChildRelocation_PullsTheRunAcrossTheContainer()
     {
         var (root, container) = await BuildAsync(
@@ -380,13 +328,9 @@ public sealed class PageBreakIntegrationTests
         Assert.AreEqual(container.PageIndexOf(head.Location.Y), container.PageIndexOf(body.Location.Y));
     }
 
-    // The structurally equivalent document, with the paragraph as the heading's own next sibling (no
-    // wrapping container). Same confirmed gap as above: the wrapped shape does not move its heading, the
-    // flat (sibling) shape does (an ordinary EnforceKeepWithNext(body, prevSibling: head) call, which
-    // sees a real slot gap directly), so the two shapes disagree.
+    // Same document with and without the wrapping container should put the heading on the same page.
     [TestMethod]
-    [Ignore("Same confirmed gap as FirstChildRelocation_PullsTheRunAcrossTheContainer - the nested shape's "
-        + "heading never moves, so it disagrees with the flat shape's, which does.")]
+    [Spec("css21", "page.html#allowed-page-breaks")]
     public async Task FirstChildRelocation_MatchesTheEquivalentSiblingShape()
     {
         static string Document(string open, string close) =>
@@ -407,16 +351,9 @@ public sealed class PageBreakIntegrationTests
         Assert.AreEqual(container.PageIndexOf(flatHead.Location.Y), container.PageIndexOf(nestedHead.Location.Y));
     }
 
-    // A box carrying a forced break that is *not* taken - because nothing precedes it in the flow - still
-    // counts as forced-break-governed in PeachPDF, so §5.2 leaves its margin alone there. HTML-Renderer's
-    // ResolveBlockTop has no such exemption: it applies its crossing-margin truncation uniformly, with no
-    // check of the box's own BreakBefore value at all (confirmed by reading ResolveBlockTop in full - the
-    // "untaken forced break" case falls into its plain `else` branch inside CssBox.PerformLayoutImp exactly
-    // like an ordinary box), so the oversized margin here IS truncated. Confirmed by running this test
-    // unignored: the box lands at exactly PageTopOf(1), not wrap.ClientTop + 500.
+    // css-break-3 §5.2 keeps the margin of a box whose forced break isn't taken.
     [TestMethod]
-    [Ignore("Confirmed gap: ResolveBlockTop truncates a crossing margin regardless of whether the box "
-        + "carries an untaken forced break-before - see this test's own remark above.")]
+    [Ignore("The crossing margin is truncated even when the box carries a forced break-before that isn't taken")]
     public async Task FirstBoxInTheFlow_CarryingAnUntakenForcedBreak_KeepsItsMargin()
     {
         var (root, _) = await BuildAsync(
@@ -431,15 +368,9 @@ public sealed class PageBreakIntegrationTests
         Assert.AreEqual(wrap.ClientTop + 1200, only.Location.Y, 1);
     }
 
-    // PeachPDF documents a known boundary here: with nothing on the ancestor chain to block collapse-
-    // through, the margin collapses all the way to the root, which (there) has no containing block for a
-    // break to fall at the top of, so the margin escapes truncation entirely. HTML-Renderer does not share
-    // this limitation: ResolveBlockTop is called directly on 'first' itself (using whatever its own
-    // MarginTopCollapse resolves to, wherever that collapse reaches), not through a separate "root margin"
-    // special case - so the truncation still applies. Confirmed by running this test unignored: 'first'
-    // lands at exactly PageTopOf(1), not past it.
     [TestMethod]
-    public async Task FirstChildMarginCollapsingToTheRoot_IsStillTruncated_UnlikePeachPDF()
+    [Spec("css21", "page.html#allowed-page-breaks")]
+    public async Task FirstChildMarginCollapsingToTheRoot_IsStillTruncated()
     {
         var (root, container) = await BuildAsync(FirstChildDocument(""));
 
@@ -447,7 +378,7 @@ public sealed class PageBreakIntegrationTests
         Assert.IsNotNull(first);
 
         Assert.AreEqual(container.PageTopOf(1), first.Location.Y, 1,
-            "unlike PeachPDF's own documented limitation, this port truncates the margin even when it collapses through to the root");
+            "the margin is truncated even when it collapses through to the root");
     }
 
     #endregion

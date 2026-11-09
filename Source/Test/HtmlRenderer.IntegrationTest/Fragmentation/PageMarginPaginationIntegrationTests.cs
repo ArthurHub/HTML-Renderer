@@ -11,28 +11,13 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/PageMarginPaginationIntegrationTests.cs: a regression class for
-/// "@page margins waste marginTop+marginBottom of every page" - <see cref="HtmlContainerInt.PageSize"/> is
-/// already margin-free, so the real per-page content band is the shifted grid
-/// <c>[k*PageSize.Height + MarginTop, (k+1)*PageSize.Height + MarginTop)</c>, and
-/// <see cref="HtmlContainerInt.PageIndexOf"/>/<see cref="HtmlContainerInt.PageTopOf"/> are the single
-/// definition of that grid.
+/// Pagination with page margins: <see cref="HtmlContainerInt.PageSize"/> is the page area without margins,
+/// so page k spans <c>[k*PageSize.Height + MarginTop, (k+1)*PageSize.Height + MarginTop)</c>.
 /// </summary>
-/// <remarks>
-/// Mirrors production's real relationship between <see cref="HtmlContainerInt.PageSize"/>,
-/// <see cref="HtmlContainerInt.MarginTop"/> and <see cref="HtmlContainerInt.Location"/> - the same
-/// relationship confirmed (the hard way, via a full test-run failure sweep while porting the sibling files
-/// in this folder) to matter for every margin-truncation/forced-break test in this batch: content must
-/// actually start at <c>Location = (0, MarginTop)</c>, not at the default <c>(0, 0)</c>, or the pagination
-/// grid disagrees with where box geometry begins.
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class PageMarginPaginationIntegrationTests
 {
-    // Roughly the customer's own repro proportions: a Letter-ish page, sizeable asymmetric top/bottom
-    // margins - the shape "double-subtracting" the margins from an already margin-free PageSize.Height
-    // breaks most visibly on.
     private const double RawPageHeight = 800;
     private const double MarginTopValue = 40;
     private const double MarginBottomValue = 50;
@@ -55,8 +40,7 @@ public sealed class PageMarginPaginationIntegrationTests
         container.MarginLeft = 0;
         container.MarginRight = 0;
 
-        // Mirrors PdfGenerator.SetContent exactly: PageSize.Height is the margin-free content band, and
-        // layout starts at (0, MarginTop) - not the raw page height/origin.
+        // Same setup as PdfGenerator.
         container.PageSize = new RSize(400, RawPageHeight - marginTop - marginBottom);
         container.Location = new RPoint(0, marginTop);
         wrapper.MaxSize = new SizeF(400, 0);
@@ -87,9 +71,7 @@ public sealed class PageMarginPaginationIntegrationTests
         return null!;
     }
 
-    // A <tr> box's own Location is never assigned by table layout - only its CELLS' is (see
-    // TableHeaderRepeat.cs's own doc remark, and CssLayoutEngineTable's row loop) - so geometry has to be
-    // read off each row's first cell, not the row box itself.
+    // Table layout positions the cells, not the <tr> box.
     private static List<CssBox> FindAllRows(CssBox table) =>
         Walk(table).Where(b => b.HtmlTag?.Name == "td").ToList();
 
@@ -103,6 +85,7 @@ public sealed class PageMarginPaginationIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-box")]
     public async Task Table_WithPageMargins_FillsEachFullPageCloseToBottomMargin()
     {
         var (root, container) = await BuildAsync(BuildManyRowTableHtml(80), MarginTopValue, MarginBottomValue);
@@ -117,19 +100,15 @@ public sealed class PageMarginPaginationIntegrationTests
         var lastRowOnPage0 = page0Rows.OrderByDescending(r => r.ActualBottom).First();
         var rowHeight = lastRowOnPage0.ActualBottom - lastRowOnPage0.Location.Y;
 
-        // Before the fix, availableHeight double-subtracted marginTop+marginBottom from an already
-        // margin-free PageSize.Height, so the page broke ~marginTop+marginBottom early - far more than one
-        // row's worth of slack. After the fix, the last row on the page should land within about one
-        // row-height of the real page-1 boundary.
         Assert.IsTrue(page0Bottom - lastRowOnPage0.ActualBottom <= rowHeight * 1.5,
             $"Page 0's last row (bottom={lastRowOnPage0.ActualBottom:F1}) stops {page0Bottom - lastRowOnPage0.ActualBottom:F1}px "
             + $"short of the real page boundary ({page0Bottom:F1}) - more than one row's worth (~{rowHeight:F1}px), indicating the page is under-filled.");
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-box")]
     public async Task Table_WithZeroPageMargins_StillFillsEachPage()
     {
-        // Guards the historical (always-correct) zero-margin default against regressing.
         var (root, container) = await BuildAsync(BuildManyRowTableHtml(80), marginTop: 0, marginBottom: 0);
 
         var rows = FindAllRows(root);
@@ -145,6 +124,8 @@ public sealed class PageMarginPaginationIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-box")]
+    [Spec("css21", "page.html#forced")]
     public async Task ForcedPageBreak_WithPageMargins_LandsAtShiftedPageTop()
     {
         var (root, container) = await BuildAsync(
@@ -160,6 +141,8 @@ public sealed class PageMarginPaginationIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-box")]
+    [Spec("css21", "page.html#page-break-props")]
     public async Task BreakInsideAvoid_WithPageMargins_PositionsAtShiftedPageTop()
     {
         var (root, container) = await BuildAsync(
@@ -180,6 +163,8 @@ public sealed class PageMarginPaginationIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "page.html#page-box")]
+    [Spec("css21", "page.html#break-inside")]
     public async Task OrphansWidows_WithPageMargins_PushesWholeParagraphToShiftedPageTop()
     {
         var (root, container) = await BuildAsync(
@@ -192,9 +177,7 @@ public sealed class PageMarginPaginationIntegrationTests
         var para = FindByClass(root, "para");
         Assert.IsNotNull(para);
 
-        // If orphans/widows relocated the whole paragraph, it should sit exactly at the shifted page-1
-        // top - if it didn't need to relocate (all lines already fit), that's fine too, but then we can't
-        // validate the push, so skip in that case.
+        // Nothing to check when all lines fit on the first page.
         if (para.Location.Y < container.PageSize.Height) return;
 
         var expectedTop = container.PageTopOf(1);

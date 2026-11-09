@@ -15,6 +15,7 @@ namespace HtmlRenderer.IntegrationTest.Painting;
 public sealed class PageOriginPaintIntegrationTests
 {
     [TestMethod]
+    [Spec("css21", "page.html#page-box")]
     public void EveryPage_KeepsTheTopMargin()
     {
         const double margin = 20;

@@ -6,22 +6,8 @@ using TheArtOfDev.HtmlRenderer.Core.Fragmentation;
 namespace HtmlRenderer.Test.Fragmentation;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Html/Core/Fragmentation/MonolithicContentTests.cs (MonolithicContentTests).
+/// The monolithic content classifier against css-break-3 §2.
 /// </summary>
-/// <remarks>
-/// The monolithic classifier, asserted against css-break-3 §2's own set rather than the engine's prior
-/// behaviour, the same way <see cref="BreakValuesTests"/> reads §3's value sets. Adapted for
-/// <c>Core/Fragmentation/MonolithicContent.cs</c>'s own reduced scope (see its class doc comment): no flex/
-/// grid/multi-column engine (so <c>PaginatesItsOwnContent</c> narrows to table/inline-table), and
-/// HTML-Renderer's smaller replaced-element set - only <c>&lt;img&gt;</c>/<c>&lt;iframe&gt;</c> are replaced
-/// (<c>CssBox.CreateBox</c>, Core/Dom/CssBox.cs), confirmed by direct source read: there is no
-/// <c>CssBoxObject</c>/inline-SVG/form-widget box type anywhere in this fork, so PeachPDF's own
-/// <c>&lt;svg&gt;</c>/<c>&lt;object&gt;</c> theory rows and its <c>UnresolvedObject_IsNotReplaced</c> test
-/// (which exists specifically to probe PeachPDF's dynamic object-resolution behaviour) are dropped rather
-/// than adapted - there is no dynamic resolution question to ask here. <c>FitsNoFragmentainer</c>/
-/// <c>FitsInBand</c> also lost their <c>clonedStart</c>/<c>clonedEnd</c> parameters (box-decoration-break
-/// clone insets do not exist in this port), so the theory rows that varied only those are dropped too.
-/// </remarks>
 [TestClass]
 public sealed class MonolithicContentTests
 {
@@ -54,9 +40,7 @@ public sealed class MonolithicContentTests
     [DataRow("scroll", true)]
     [DataRow("auto", true)]
     [DataRow("visible", false)]
-    // Not in Map.OverflowModes (Core/CssEngine/Model/Map.cs), so it never converts and the box keeps
-    // "visible" - which is the answer §2 wants for `clip` anyway, though by accident rather than by design
-    // (matching PeachPDF's own identically-accidental behaviour here).
+    // 'clip' isn't a known overflow value, the box stays 'visible', which is also what §2 wants.
     [DataRow("clip", false)]
     public void Overflow_DecidesScrollContainer(string overflow, bool expected)
     {
@@ -133,8 +117,7 @@ public sealed class MonolithicContentTests
         Assert.IsFalse(MonolithicContent.IsMonolithic(box));
     }
 
-    // The narrowed scope itself (see class remarks): PeachPDF also recognizes flex/grid/multi-column as
-    // self-paginating engines; none of the three exist in this fork, so none of them qualify here.
+    // Flex, grid and multi-column layout don't exist, so they don't paginate their own content.
     [TestMethod]
     [DataRow("display:flex")]
     [DataRow("display:grid")]
