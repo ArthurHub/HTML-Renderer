@@ -449,6 +449,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                 // if there is matching word
                 if (word != null)
                 {
+                    var previousStart = _selectionStart;
+                    var previousEnd = _selectionEnd;
+                    var previousStartIndex = _selectionStartIndex;
+                    var previousEndIndex = _selectionEndIndex;
+
                     if (_selectionStart == null)
                     {
                         // on start set the selection start word
@@ -476,7 +481,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 
                     _cursorChanged = true;
                     control.SetCursorIBeam();
-                    control.Invalidate();
+
+                    // Most mouse moves stay within the same character, repainting the whole control for
+                    // them only adds flicker, especially over remote desktop.
+                    if (_selectionStart != previousStart || _selectionEnd != previousEnd
+                        || _selectionStartIndex != previousStartIndex || _selectionEndIndex != previousEndIndex)
+                    {
+                        control.Invalidate();
+                    }
                 }
             }
         }
