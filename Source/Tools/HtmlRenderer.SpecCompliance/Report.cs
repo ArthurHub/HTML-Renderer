@@ -53,25 +53,9 @@ public static class Report
         sb.AppendLine().AppendLine("</details>").AppendLine();
     }
 
-    /// <summary>Groups the sections by their top-level number, i.e. chapter or appendix.</summary>
-    private static IEnumerable<List<SpecSection>> Chapters(SpecResult spec)
-    {
-        List<SpecSection>? chapter = null;
-        foreach (var section in spec.Sections)
-        {
-            if (!section.Number.Contains('.') || chapter == null)
-            {
-                if (chapter != null)
-                    yield return chapter;
-                chapter = [];
-            }
-
-            chapter.Add(section);
-        }
-
-        if (chapter != null)
-            yield return chapter;
-    }
+    /// <summary>Groups the sections by the spec page they're on, a chapter in CSS 2.1, a group of elements in HTML.</summary>
+    private static IEnumerable<List<SpecSection>> Chapters(SpecResult spec) =>
+        spec.Sections.GroupBy(s => s.Anchor.Split('#')[0]).Select(g => g.ToList());
 
     private static string Escape(string text) => text.Replace("|", "\\|").Replace("<", "&lt;").Replace(">", "&gt;");
 }

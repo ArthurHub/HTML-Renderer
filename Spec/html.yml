@@ -1,0 +1,2074 @@
+spec: html
+title: HTML Living Standard
+url: https://html.spec.whatwg.org/multipage/
+sections:
+  common-microsyntaxes.html#common-microsyntaxes:
+    title: 2.3 Common microsyntaxes
+    status: unknown
+  common-microsyntaxes.html#common-parser-idioms:
+    title: 2.3.1 Common parser idioms
+    status: unknown
+  common-microsyntaxes.html#boolean-attributes:
+    title: 2.3.2 Boolean attributes
+    status: unknown
+  common-microsyntaxes.html#keywords-and-enumerated-attributes:
+    title: 2.3.3 Keywords and enumerated attributes
+    status: unknown
+  common-microsyntaxes.html#numbers:
+    title: 2.3.4 Numbers
+    status: unknown
+  common-microsyntaxes.html#signed-integers:
+    title: 2.3.4.1 Signed integers
+    status: unknown
+  common-microsyntaxes.html#non-negative-integers:
+    title: 2.3.4.2 Non-negative integers
+    status: unknown
+  common-microsyntaxes.html#floating-point-numbers:
+    title: 2.3.4.3 Floating-point numbers
+    status: unknown
+  common-microsyntaxes.html#percentages-and-dimensions:
+    title: 2.3.4.4 Percentages and lengths
+    status: unknown
+  common-microsyntaxes.html#nonzero-percentages-and-lengths:
+    title: 2.3.4.5 Nonzero percentages and lengths
+    status: unknown
+  common-microsyntaxes.html#lists-of-floating-point-numbers:
+    title: 2.3.4.6 Lists of floating-point numbers
+    status: unknown
+  common-microsyntaxes.html#lists-of-dimensions:
+    title: 2.3.4.7 Lists of dimensions
+    status: unknown
+  common-microsyntaxes.html#dates-and-times:
+    title: 2.3.5 Dates and times
+    status: unknown
+  common-microsyntaxes.html#months:
+    title: 2.3.5.1 Months
+    status: unknown
+  common-microsyntaxes.html#dates:
+    title: 2.3.5.2 Dates
+    status: unknown
+  common-microsyntaxes.html#yearless-dates:
+    title: 2.3.5.3 Yearless dates
+    status: unknown
+  common-microsyntaxes.html#times:
+    title: 2.3.5.4 Times
+    status: unknown
+  common-microsyntaxes.html#local-dates-and-times:
+    title: 2.3.5.5 Local dates and times
+    status: unknown
+  common-microsyntaxes.html#time-zones:
+    title: 2.3.5.6 Time zones
+    status: unknown
+  common-microsyntaxes.html#global-dates-and-times:
+    title: 2.3.5.7 Global dates and times
+    status: unknown
+  common-microsyntaxes.html#weeks:
+    title: 2.3.5.8 Weeks
+    status: unknown
+  common-microsyntaxes.html#durations:
+    title: 2.3.5.9 Durations
+    status: unknown
+  common-microsyntaxes.html#vaguer-moments-in-time:
+    title: 2.3.5.10 Vaguer moments in time
+    status: unknown
+  common-microsyntaxes.html#colours:
+    title: 2.3.6 Legacy colors
+    status: unknown
+  common-microsyntaxes.html#space-separated-tokens:
+    title: 2.3.7 Space-separated tokens
+    status: unknown
+  common-microsyntaxes.html#comma-separated-tokens:
+    title: 2.3.8 Comma-separated tokens
+    status: unknown
+  common-microsyntaxes.html#syntax-references:
+    title: 2.3.9 References
+    status: unknown
+  common-microsyntaxes.html#mq:
+    title: 2.3.10 Media queries
+    status: unknown
+  common-microsyntaxes.html#unique-values:
+    title: 2.3.11 Unique internal values
+    status: unknown
+  dom.html#elements:
+    title: 3.2 Elements
+    status: unknown
+  dom.html#semantics-2:
+    title: 3.2.1 Semantics
+    status: unknown
+  dom.html#elements-in-the-dom:
+    title: 3.2.2 Elements in the DOM
+    status: unknown
+  dom.html#html-element-constructors:
+    title: 3.2.3 HTML element constructors
+    status: unknown
+  dom.html#element-definitions:
+    title: 3.2.4 Element definitions
+    status: unknown
+  dom.html#attributes:
+    title: 3.2.4.1 Attributes
+    status: unknown
+  dom.html#content-models:
+    title: 3.2.5 Content models
+    status: unknown
+  dom.html#the-nothing-content-model:
+    title: 3.2.5.1 The "nothing" content model
+    status: unknown
+  dom.html#kinds-of-content:
+    title: 3.2.5.2 Kinds of content
+    status: unknown
+  dom.html#metadata-content:
+    title: 3.2.5.2.1 Metadata content
+    status: unknown
+  dom.html#flow-content:
+    title: 3.2.5.2.2 Flow content
+    status: unknown
+  dom.html#sectioning-content:
+    title: 3.2.5.2.3 Sectioning content
+    status: unknown
+  dom.html#heading-content:
+    title: 3.2.5.2.4 Heading content
+    status: unknown
+  dom.html#phrasing-content:
+    title: 3.2.5.2.5 Phrasing content
+    status: unknown
+  dom.html#embedded-content-2:
+    title: 3.2.5.2.6 Embedded content
+    status: unknown
+  dom.html#interactive-content:
+    title: 3.2.5.2.7 Interactive content
+    status: unknown
+  dom.html#palpable-content:
+    title: 3.2.5.2.8 Palpable content
+    status: unknown
+  dom.html#script-supporting-elements:
+    title: 3.2.5.2.9 Script-supporting elements
+    status: unknown
+  dom.html#transparent-content-models:
+    title: 3.2.5.3 Transparent content models
+    status: unknown
+  dom.html#paragraphs:
+    title: 3.2.5.4 Paragraphs
+    status: unknown
+  dom.html#global-attributes:
+    title: 3.2.6 Global attributes
+    status: unknown
+  dom.html#the-title-attribute:
+    title: 3.2.6.1 The title attribute
+    status: unknown
+  dom.html#the-lang-and-xml:lang-attributes:
+    title: 3.2.6.2 The lang and xml:lang attributes
+    status: unknown
+  dom.html#the-translate-attribute:
+    title: 3.2.6.3 The translate attribute
+    status: unknown
+  dom.html#the-dir-attribute:
+    title: 3.2.6.4 The dir attribute
+    status: unknown
+  dom.html#the-style-attribute:
+    title: 3.2.6.5 The style attribute
+    status: unknown
+  dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes:
+    title: 3.2.6.6 Embedding custom non-visible data with the data-* attributes
+    status: unknown
+  dom.html#the-innertext-idl-attribute:
+    title: 3.2.7 The innerText and outerText properties
+    status: unknown
+  dom.html#requirements-relating-to-the-bidirectional-algorithm:
+    title: 3.2.8 Requirements relating to the bidirectional algorithm
+    status: unknown
+  dom.html#authoring-conformance-criteria-for-bidirectional-algorithm-formatting-characters:
+    title: 3.2.8.1 Authoring conformance criteria for bidirectional-algorithm formatting characters
+    status: unknown
+  dom.html#user-agent-conformance-criteria:
+    title: 3.2.8.2 User agent conformance criteria
+    status: unknown
+  dom.html#wai-aria:
+    title: 3.2.9 Requirements related to ARIA and to platform accessibility APIs
+    status: unknown
+  semantics.html#semantics:
+    title: 4 The elements of HTML
+    status: unknown
+  semantics.html#the-root-element:
+    title: 4.1 The document element
+    status: unknown
+  semantics.html#the-html-element:
+    title: 4.1.1 The html element
+    status: unknown
+  semantics.html#document-metadata:
+    title: 4.2 Document metadata
+    status: unknown
+  semantics.html#the-head-element:
+    title: 4.2.1 The head element
+    status: unknown
+  semantics.html#the-title-element:
+    title: 4.2.2 The title element
+    status: unknown
+  semantics.html#the-base-element:
+    title: 4.2.3 The base element
+    status: unknown
+  semantics.html#the-link-element:
+    title: 4.2.4 The link element
+    status: unknown
+  semantics.html#processing-the-media-attribute:
+    title: 4.2.4.1 Processing the media attribute
+    status: unknown
+  semantics.html#processing-the-type-attribute:
+    title: 4.2.4.2 Processing the type attribute
+    status: unknown
+  semantics.html#fetching-and-processing-a-resource-from-a-link-element:
+    title: 4.2.4.3 Fetching and processing a resource from a link element
+    status: unknown
+  semantics.html#processing-link-headers:
+    title: 4.2.4.4 Processing `Link` headers
+    status: unknown
+  semantics.html#early-hints:
+    title: 4.2.4.5 Early hints
+    status: unknown
+  semantics.html#providing-users-with-a-means-to-follow-hyperlinks-created-using-the-link-element:
+    title: 4.2.4.6 Providing users with a means to follow hyperlinks created using the link element
+    status: unknown
+  semantics.html#the-meta-element:
+    title: 4.2.5 The meta element
+    status: unknown
+  semantics.html#standard-metadata-names:
+    title: 4.2.5.1 Standard metadata names
+    status: unknown
+  semantics.html#other-metadata-names:
+    title: 4.2.5.2 Other metadata names
+    status: unknown
+  semantics.html#pragma-directives:
+    title: 4.2.5.3 Pragma directives
+    status: unknown
+  semantics.html#charset:
+    title: 4.2.5.4 Specifying the document's character encoding
+    status: unknown
+  semantics.html#the-style-element:
+    title: 4.2.6 The style element
+    status: unknown
+  semantics.html#interactions-of-styling-and-scripting:
+    title: 4.2.7 Interactions of styling and scripting
+    status: unknown
+  sections.html#sections:
+    title: 4.3 Sections
+    status: unknown
+  sections.html#the-body-element:
+    title: 4.3.1 The body element
+    status: unknown
+  sections.html#the-article-element:
+    title: 4.3.2 The article element
+    status: unknown
+  sections.html#the-section-element:
+    title: 4.3.3 The section element
+    status: unknown
+  sections.html#the-nav-element:
+    title: 4.3.4 The nav element
+    status: unknown
+  sections.html#the-aside-element:
+    title: 4.3.5 The aside element
+    status: unknown
+  sections.html#the-h1,-h2,-h3,-h4,-h5,-and-h6-elements:
+    title: 4.3.6 The h1, h2, h3, h4, h5, and h6 elements
+    status: unknown
+  sections.html#the-hgroup-element:
+    title: 4.3.7 The hgroup element
+    status: unknown
+  sections.html#the-header-element:
+    title: 4.3.8 The header element
+    status: unknown
+  sections.html#the-footer-element:
+    title: 4.3.9 The footer element
+    status: unknown
+  sections.html#the-address-element:
+    title: 4.3.10 The address element
+    status: unknown
+  sections.html#headings-and-outlines-2:
+    title: 4.3.11 Headings and outlines
+    status: unknown
+  sections.html#heading-levels-&-offsets:
+    title: 4.3.11.1 Heading levels & offsets
+    status: unknown
+  sections.html#sample-outlines:
+    title: 4.3.11.2 Sample outlines
+    status: unknown
+  sections.html#exposing-outlines-to-users:
+    title: 4.3.11.3 Exposing outlines to users
+    status: unknown
+  sections.html#usage-summary-2:
+    title: 4.3.12 Usage summary
+    status: unknown
+  sections.html#article-or-section:
+    title: 4.3.12.1 Article or section?
+    status: unknown
+  grouping-content.html#grouping-content:
+    title: 4.4 Grouping content
+    status: unknown
+  grouping-content.html#the-p-element:
+    title: 4.4.1 The p element
+    status: unknown
+  grouping-content.html#the-hr-element:
+    title: 4.4.2 The hr element
+    status: unknown
+  grouping-content.html#the-pre-element:
+    title: 4.4.3 The pre element
+    status: unknown
+  grouping-content.html#the-blockquote-element:
+    title: 4.4.4 The blockquote element
+    status: unknown
+  grouping-content.html#the-ol-element:
+    title: 4.4.5 The ol element
+    status: unknown
+  grouping-content.html#the-ul-element:
+    title: 4.4.6 The ul element
+    status: unknown
+  grouping-content.html#the-menu-element:
+    title: 4.4.7 The menu element
+    status: unknown
+  grouping-content.html#the-li-element:
+    title: 4.4.8 The li element
+    status: unknown
+  grouping-content.html#the-dl-element:
+    title: 4.4.9 The dl element
+    status: unknown
+  grouping-content.html#the-dt-element:
+    title: 4.4.10 The dt element
+    status: unknown
+  grouping-content.html#the-dd-element:
+    title: 4.4.11 The dd element
+    status: unknown
+  grouping-content.html#the-figure-element:
+    title: 4.4.12 The figure element
+    status: unknown
+  grouping-content.html#the-figcaption-element:
+    title: 4.4.13 The figcaption element
+    status: unknown
+  grouping-content.html#the-main-element:
+    title: 4.4.14 The main element
+    status: unknown
+  grouping-content.html#the-search-element:
+    title: 4.4.15 The search element
+    status: unknown
+  grouping-content.html#the-div-element:
+    title: 4.4.16 The div element
+    status: unknown
+  text-level-semantics.html#text-level-semantics:
+    title: 4.5 Text-level semantics
+    status: unknown
+  text-level-semantics.html#the-a-element:
+    title: 4.5.1 The a element
+    status: unknown
+  text-level-semantics.html#the-em-element:
+    title: 4.5.2 The em element
+    status: unknown
+  text-level-semantics.html#the-strong-element:
+    title: 4.5.3 The strong element
+    status: unknown
+  text-level-semantics.html#the-small-element:
+    title: 4.5.4 The small element
+    status: unknown
+  text-level-semantics.html#the-s-element:
+    title: 4.5.5 The s element
+    status: unknown
+  text-level-semantics.html#the-cite-element:
+    title: 4.5.6 The cite element
+    status: unknown
+  text-level-semantics.html#the-q-element:
+    title: 4.5.7 The q element
+    status: unknown
+  text-level-semantics.html#the-dfn-element:
+    title: 4.5.8 The dfn element
+    status: unknown
+  text-level-semantics.html#the-abbr-element:
+    title: 4.5.9 The abbr element
+    status: unknown
+  text-level-semantics.html#the-ruby-element:
+    title: 4.5.10 The ruby element
+    status: unknown
+  text-level-semantics.html#the-rt-element:
+    title: 4.5.11 The rt element
+    status: unknown
+  text-level-semantics.html#the-rp-element:
+    title: 4.5.12 The rp element
+    status: unknown
+  text-level-semantics.html#the-data-element:
+    title: 4.5.13 The data element
+    status: unknown
+  text-level-semantics.html#the-time-element:
+    title: 4.5.14 The time element
+    status: unknown
+  text-level-semantics.html#the-code-element:
+    title: 4.5.15 The code element
+    status: unknown
+  text-level-semantics.html#the-var-element:
+    title: 4.5.16 The var element
+    status: unknown
+  text-level-semantics.html#the-samp-element:
+    title: 4.5.17 The samp element
+    status: unknown
+  text-level-semantics.html#the-kbd-element:
+    title: 4.5.18 The kbd element
+    status: unknown
+  text-level-semantics.html#the-sub-and-sup-elements:
+    title: 4.5.19 The sub and sup elements
+    status: unknown
+  text-level-semantics.html#the-i-element:
+    title: 4.5.20 The i element
+    status: unknown
+  text-level-semantics.html#the-b-element:
+    title: 4.5.21 The b element
+    status: unknown
+  text-level-semantics.html#the-u-element:
+    title: 4.5.22 The u element
+    status: unknown
+  text-level-semantics.html#the-mark-element:
+    title: 4.5.23 The mark element
+    status: unknown
+  text-level-semantics.html#the-bdi-element:
+    title: 4.5.24 The bdi element
+    status: unknown
+  text-level-semantics.html#the-bdo-element:
+    title: 4.5.25 The bdo element
+    status: unknown
+  text-level-semantics.html#the-span-element:
+    title: 4.5.26 The span element
+    status: unknown
+  text-level-semantics.html#the-br-element:
+    title: 4.5.27 The br element
+    status: unknown
+  text-level-semantics.html#the-wbr-element:
+    title: 4.5.28 The wbr element
+    status: unknown
+  text-level-semantics.html#usage-summary:
+    title: 4.5.29 Usage summary
+    status: unknown
+  links.html#links:
+    title: 4.6 Links
+    status: unknown
+  links.html#introduction-2:
+    title: 4.6.1 Introduction
+    status: unknown
+  links.html#links-created-by-a-and-area-elements:
+    title: 4.6.2 Links created by a and area elements
+    status: unknown
+  links.html#api-for-hyperlink-elements:
+    title: 4.6.3 API for hyperlink elements
+    status: unknown
+  links.html#api-for-a-and-area-elements:
+    title: 4.6.4 API for a and area elements
+    status: unknown
+  links.html#following-hyperlinks:
+    title: 4.6.5 Following hyperlinks
+    status: unknown
+  links.html#downloading-resources:
+    title: 4.6.6 Downloading resources
+    status: unknown
+  links.html#hyperlink-auditing:
+    title: 4.6.7 Hyperlink auditing
+    status: unknown
+  links.html#the-ping-headers:
+    title: 4.6.7.1 The `Ping-From` and `Ping-To` headers
+    status: unknown
+  links.html#linkTypes:
+    title: 4.6.8 Link types
+    status: unknown
+  links.html#rel-alternate:
+    title: 4.6.8.1 Link type "alternate"
+    status: unknown
+  links.html#link-type-author:
+    title: 4.6.8.2 Link type "author"
+    status: unknown
+  links.html#link-type-bookmark:
+    title: 4.6.8.3 Link type "bookmark"
+    status: unknown
+  links.html#link-type-canonical:
+    title: 4.6.8.4 Link type "canonical"
+    status: unknown
+  links.html#link-type-dns-prefetch:
+    title: 4.6.8.5 Link type "dns-prefetch"
+    status: unknown
+  links.html#link-type-expect:
+    title: 4.6.8.6 Link type "expect"
+    status: unknown
+  links.html#link-type-external:
+    title: 4.6.8.7 Link type "external"
+    status: unknown
+  links.html#link-type-help:
+    title: 4.6.8.8 Link type "help"
+    status: unknown
+  links.html#rel-icon:
+    title: 4.6.8.9 Link type "icon"
+    status: unknown
+  links.html#link-type-license:
+    title: 4.6.8.10 Link type "license"
+    status: unknown
+  links.html#link-type-manifest:
+    title: 4.6.8.11 Link type "manifest"
+    status: unknown
+  links.html#link-type-modulepreload:
+    title: 4.6.8.12 Link type "modulepreload"
+    status: unknown
+  links.html#link-type-nofollow:
+    title: 4.6.8.13 Link type "nofollow"
+    status: unknown
+  links.html#link-type-noopener:
+    title: 4.6.8.14 Link type "noopener"
+    status: unknown
+  links.html#link-type-noreferrer:
+    title: 4.6.8.15 Link type "noreferrer"
+    status: unknown
+  links.html#link-type-opener:
+    title: 4.6.8.16 Link type "opener"
+    status: unknown
+  links.html#link-type-pingback:
+    title: 4.6.8.17 Link type "pingback"
+    status: unknown
+  links.html#link-type-preconnect:
+    title: 4.6.8.18 Link type "preconnect"
+    status: unknown
+  links.html#link-type-prefetch:
+    title: 4.6.8.19 Link type "prefetch"
+    status: unknown
+  links.html#link-type-preload:
+    title: 4.6.8.20 Link type "preload"
+    status: unknown
+  links.html#link-type-privacy-policy:
+    title: 4.6.8.21 Link type "privacy-policy"
+    status: unknown
+  links.html#link-type-search:
+    title: 4.6.8.22 Link type "search"
+    status: unknown
+  links.html#link-type-stylesheet:
+    title: 4.6.8.23 Link type "stylesheet"
+    status: unknown
+  links.html#link-type-tag:
+    title: 4.6.8.24 Link type "tag"
+    status: unknown
+  links.html#link-type-terms-of-service:
+    title: 4.6.8.25 Link Type "terms-of-service"
+    status: unknown
+  links.html#sequential-link-types:
+    title: 4.6.8.26 Sequential link types
+    status: unknown
+  links.html#link-type-next:
+    title: 4.6.8.26.1 Link type "next"
+    status: unknown
+  links.html#link-type-prev:
+    title: 4.6.8.26.2 Link type "prev"
+    status: unknown
+  links.html#other-link-types:
+    title: 4.6.8.27 Other link types
+    status: unknown
+  edits.html#edits:
+    title: 4.7 Edits
+    status: unknown
+  edits.html#the-ins-element:
+    title: 4.7.1 The ins element
+    status: unknown
+  edits.html#the-del-element:
+    title: 4.7.2 The del element
+    status: unknown
+  edits.html#attributes-common-to-ins-and-del-elements:
+    title: 4.7.3 Attributes common to ins and del elements
+    status: unknown
+  edits.html#edits-and-paragraphs:
+    title: 4.7.4 Edits and paragraphs
+    status: unknown
+  edits.html#edits-and-lists:
+    title: 4.7.5 Edits and lists
+    status: unknown
+  edits.html#edits-and-tables:
+    title: 4.7.6 Edits and tables
+    status: unknown
+  embedded-content.html#embedded-content:
+    title: 4.8 Embedded content
+    status: unknown
+  embedded-content.html#the-picture-element:
+    title: 4.8.1 The picture element
+    status: unknown
+  embedded-content.html#the-source-element:
+    title: 4.8.2 The source element
+    status: unknown
+  embedded-content.html#the-img-element:
+    title: 4.8.3 The img element
+    status: unknown
+  images.html#images:
+    title: 4.8.4 Images
+    status: unknown
+  images.html#introduction-3:
+    title: 4.8.4.1 Introduction
+    status: unknown
+  images.html#adaptive-images:
+    title: 4.8.4.1.1 Adaptive images
+    status: unknown
+  images.html#attributes-common-to-source-and-img-elements:
+    title: 4.8.4.2 Attributes common to source, img, and link elements
+    status: unknown
+  images.html#srcset-attributes:
+    title: 4.8.4.2.1 Srcset attributes
+    status: unknown
+  images.html#sizes-attributes:
+    title: 4.8.4.2.2 Sizes attributes
+    status: unknown
+  images.html#images-processing-model:
+    title: 4.8.4.3 Processing model
+    status: unknown
+  images.html#when-to-obtain-images:
+    title: 4.8.4.3.1 When to obtain images
+    status: unknown
+  images.html#reacting-to-dom-mutations:
+    title: 4.8.4.3.2 Reacting to DOM mutations
+    status: unknown
+  images.html#the-list-of-available-images:
+    title: 4.8.4.3.3 The list of available images
+    status: unknown
+  images.html#decoding-images:
+    title: 4.8.4.3.4 Decoding images
+    status: unknown
+  images.html#updating-the-image-data:
+    title: 4.8.4.3.5 Updating the image data
+    status: unknown
+  images.html#preparing-an-image-for-presentation:
+    title: 4.8.4.3.6 Preparing an image for presentation
+    status: unknown
+  images.html#selecting-an-image-source:
+    title: 4.8.4.3.7 Selecting an image source
+    status: unknown
+  images.html#creating-a-source-set-from-attributes:
+    title: 4.8.4.3.8 Creating a source set from attributes
+    status: unknown
+  images.html#updating-the-source-set:
+    title: 4.8.4.3.9 Updating the source set
+    status: unknown
+  images.html#parsing-a-srcset-attribute:
+    title: 4.8.4.3.10 Parsing a srcset attribute
+    status: unknown
+  images.html#parsing-a-sizes-attribute:
+    title: 4.8.4.3.11 Parsing a sizes attribute
+    status: unknown
+  images.html#normalizing-the-source-densities:
+    title: 4.8.4.3.12 Normalizing the source densities
+    status: unknown
+  images.html#reacting-to-environment-changes:
+    title: 4.8.4.3.13 Reacting to environment changes
+    status: unknown
+  images.html#alt:
+    title: 4.8.4.4 Requirements for providing text to act as an alternative for images
+    status: unknown
+  images.html#general-guidelines:
+    title: 4.8.4.4.1 General guidelines
+    status: unknown
+  images.html#a-link-or-button-containing-nothing-but-the-image:
+    title: 4.8.4.4.2 A link or button containing nothing but the image
+    status: unknown
+  images.html#a-phrase-or-paragraph-with-an-alternative-graphical-representation:-charts,-diagrams,-graphs,-maps,-illustrations:
+    title: '4.8.4.4.3 A phrase or paragraph with an alternative graphical representation: charts, diagrams, graphs, maps, illustrations'
+    status: unknown
+  images.html#a-short-phrase-or-label-with-an-alternative-graphical-representation:-icons,-logos:
+    title: '4.8.4.4.4 A short phrase or label with an alternative graphical representation: icons, logos'
+    status: unknown
+  images.html#text-that-has-been-rendered-to-a-graphic-for-typographical-effect:
+    title: 4.8.4.4.5 Text that has been rendered to a graphic for typographical effect
+    status: unknown
+  images.html#a-graphical-representation-of-some-of-the-surrounding-text:
+    title: 4.8.4.4.6 A graphical representation of some of the surrounding text
+    status: unknown
+  images.html#ancillary-images:
+    title: 4.8.4.4.7 Ancillary images
+    status: unknown
+  images.html#a-purely-decorative-image-that-doesn't-add-any-information:
+    title: 4.8.4.4.8 A purely decorative image that doesn't add any information
+    status: unknown
+  images.html#a-group-of-images-that-form-a-single-larger-picture-with-no-links:
+    title: 4.8.4.4.9 A group of images that form a single larger picture with no links
+    status: unknown
+  images.html#a-group-of-images-that-form-a-single-larger-picture-with-links:
+    title: 4.8.4.4.10 A group of images that form a single larger picture with links
+    status: unknown
+  images.html#a-key-part-of-the-content:
+    title: 4.8.4.4.11 A key part of the content
+    status: unknown
+  images.html#an-image-not-intended-for-the-user:
+    title: 4.8.4.4.12 An image not intended for the user
+    status: unknown
+  images.html#an-image-in-an-e-mail-or-private-document-intended-for-a-specific-person-who-is-known-to-be-able-to-view-images:
+    title: 4.8.4.4.13 An image in an email or private document intended for a specific person who is known to be able to view images
+    status: unknown
+  images.html#guidance-for-markup-generators:
+    title: 4.8.4.4.14 Guidance for markup generators
+    status: unknown
+  images.html#guidance-for-conformance-checkers:
+    title: 4.8.4.4.15 Guidance for conformance checkers
+    status: unknown
+  iframe-embed-object.html#the-iframe-element:
+    title: 4.8.5 The iframe element
+    status: unknown
+  iframe-embed-object.html#the-embed-element:
+    title: 4.8.6 The embed element
+    status: unknown
+  iframe-embed-object.html#the-object-element:
+    title: 4.8.7 The object element
+    status: unknown
+  media.html#the-video-element:
+    title: 4.8.8 The video element
+    status: unknown
+  media.html#the-audio-element:
+    title: 4.8.9 The audio element
+    status: unknown
+  media.html#the-track-element:
+    title: 4.8.10 The track element
+    status: unknown
+  media.html#media-elements:
+    title: 4.8.11 Media elements
+    status: unknown
+  media.html#error-codes:
+    title: 4.8.11.1 Error codes
+    status: unknown
+  media.html#location-of-the-media-resource:
+    title: 4.8.11.2 Location of the media resource
+    status: unknown
+  media.html#mime-types:
+    title: 4.8.11.3 MIME types
+    status: unknown
+  media.html#network-states:
+    title: 4.8.11.4 Network states
+    status: unknown
+  media.html#loading-the-media-resource:
+    title: 4.8.11.5 Loading the media resource
+    status: unknown
+  media.html#offsets-into-the-media-resource:
+    title: 4.8.11.6 Offsets into the media resource
+    status: unknown
+  media.html#ready-states:
+    title: 4.8.11.7 Ready states
+    status: unknown
+  media.html#playing-the-media-resource:
+    title: 4.8.11.8 Playing the media resource
+    status: unknown
+  media.html#seeking:
+    title: 4.8.11.9 Seeking
+    status: unknown
+  media.html#media-resources-with-multiple-media-tracks:
+    title: 4.8.11.10 Media resources with multiple media tracks
+    status: unknown
+  media.html#audiotracklist-and-videotracklist-objects:
+    title: 4.8.11.10.1 AudioTrackList and VideoTrackList objects
+    status: unknown
+  media.html#selecting-specific-audio-and-video-tracks-declaratively:
+    title: 4.8.11.10.2 Selecting specific audio and video tracks declaratively
+    status: unknown
+  media.html#timed-text-tracks:
+    title: 4.8.11.11 Timed text tracks
+    status: unknown
+  media.html#text-track-model:
+    title: 4.8.11.11.1 Text track model
+    status: unknown
+  media.html#sourcing-in-band-text-tracks:
+    title: 4.8.11.11.2 Sourcing in-band text tracks
+    status: unknown
+  media.html#sourcing-out-of-band-text-tracks:
+    title: 4.8.11.11.3 Sourcing out-of-band text tracks
+    status: unknown
+  media.html#guidelines-for-exposing-cues-in-various-formats-as-text-track-cues:
+    title: 4.8.11.11.4 Guidelines for exposing cues in various formats as text track cues
+    status: unknown
+  media.html#text-track-api:
+    title: 4.8.11.11.5 Text track API
+    status: unknown
+  media.html#cue-events:
+    title: 4.8.11.11.6 Event handlers for objects of the text track APIs
+    status: unknown
+  media.html#best-practices-for-metadata-text-tracks:
+    title: 4.8.11.11.7 Best practices for metadata text tracks
+    status: unknown
+  media.html#identifying-a-track-kind-through-a-url:
+    title: 4.8.11.12 Identifying a track kind through a URL
+    status: unknown
+  media.html#user-interface:
+    title: 4.8.11.13 User interface
+    status: unknown
+  media.html#time-ranges:
+    title: 4.8.11.14 Time ranges
+    status: unknown
+  media.html#the-trackevent-interface:
+    title: 4.8.11.15 The TrackEvent interface
+    status: unknown
+  media.html#mediaevents:
+    title: 4.8.11.16 Events summary
+    status: unknown
+  media.html#security-and-privacy-considerations:
+    title: 4.8.11.17 Security and privacy considerations
+    status: unknown
+  media.html#best-practices-for-authors-using-media-elements:
+    title: 4.8.11.18 Best practices for authors using media elements
+    status: unknown
+  media.html#best-practices-for-implementers-of-media-elements:
+    title: 4.8.11.19 Best practices for implementers of media elements
+    status: unknown
+  image-maps.html#the-map-element:
+    title: 4.8.12 The map element
+    status: unknown
+  image-maps.html#the-area-element:
+    title: 4.8.13 The area element
+    status: unknown
+  image-maps.html#image-maps:
+    title: 4.8.14 Image maps
+    status: unknown
+  image-maps.html#authoring:
+    title: 4.8.14.1 Authoring
+    status: unknown
+  image-maps.html#image-map-processing-model:
+    title: 4.8.14.2 Processing model
+    status: unknown
+  embedded-content-other.html#mathml:
+    title: 4.8.15 MathML
+    status: unknown
+  embedded-content-other.html#svg-0:
+    title: 4.8.16 SVG
+    status: unknown
+  embedded-content-other.html#dimension-attributes:
+    title: 4.8.17 Dimension attributes
+    status: unknown
+  tables.html#tables:
+    title: 4.9 Tabular data
+    status: unknown
+  tables.html#the-table-element:
+    title: 4.9.1 The table element
+    status: unknown
+  tables.html#table-descriptions-techniques:
+    title: 4.9.1.1 Techniques for describing tables
+    status: unknown
+  tables.html#table-layout-techniques:
+    title: 4.9.1.2 Techniques for table design
+    status: unknown
+  tables.html#the-caption-element:
+    title: 4.9.2 The caption element
+    status: unknown
+  tables.html#the-colgroup-element:
+    title: 4.9.3 The colgroup element
+    status: unknown
+  tables.html#the-col-element:
+    title: 4.9.4 The col element
+    status: unknown
+  tables.html#the-tbody-element:
+    title: 4.9.5 The tbody element
+    status: unknown
+  tables.html#the-thead-element:
+    title: 4.9.6 The thead element
+    status: unknown
+  tables.html#the-tfoot-element:
+    title: 4.9.7 The tfoot element
+    status: unknown
+  tables.html#the-tr-element:
+    title: 4.9.8 The tr element
+    status: unknown
+  tables.html#the-td-element:
+    title: 4.9.9 The td element
+    status: unknown
+  tables.html#the-th-element:
+    title: 4.9.10 The th element
+    status: unknown
+  tables.html#attributes-common-to-td-and-th-elements:
+    title: 4.9.11 Attributes common to td and th elements
+    status: unknown
+  tables.html#table-processing-model:
+    title: 4.9.12 Processing model
+    status: unknown
+  tables.html#forming-a-table:
+    title: 4.9.12.1 Forming a table
+    status: unknown
+  tables.html#header-and-data-cell-semantics:
+    title: 4.9.12.2 Forming relationships between data cells and header cells
+    status: unknown
+  tables.html#table-examples:
+    title: 4.9.13 Examples
+    status: unknown
+  forms.html#forms:
+    title: 4.10 Forms
+    status: unknown
+  forms.html#introduction-4:
+    title: 4.10.1 Introduction
+    status: unknown
+  forms.html#writing-a-form's-user-interface:
+    title: 4.10.1.1 Writing a form's user interface
+    status: unknown
+  forms.html#implementing-the-server-side-processing-for-a-form:
+    title: 4.10.1.2 Implementing the server-side processing for a form
+    status: unknown
+  forms.html#configuring-a-form-to-communicate-with-a-server:
+    title: 4.10.1.3 Configuring a form to communicate with a server
+    status: unknown
+  forms.html#client-side-form-validation:
+    title: 4.10.1.4 Client-side form validation
+    status: unknown
+  forms.html#enabling-client-side-automatic-filling-of-form-controls:
+    title: 4.10.1.5 Enabling client-side automatic filling of form controls
+    status: unknown
+  forms.html#improving-the-user-experience-on-mobile-devices:
+    title: 4.10.1.6 Improving the user experience on mobile devices
+    status: unknown
+  forms.html#the-difference-between-the-field-type,-the-autofill-field-name,-and-the-input-modality:
+    title: 4.10.1.7 The difference between the field type, the autofill field name, and the input modality
+    status: unknown
+  forms.html#input-author-notes:
+    title: 4.10.1.8 Date, time, and number formats
+    status: unknown
+  forms.html#categories:
+    title: 4.10.2 Categories
+    status: unknown
+  forms.html#the-form-element:
+    title: 4.10.3 The form element
+    status: unknown
+  forms.html#the-label-element:
+    title: 4.10.4 The label element
+    status: unknown
+  input.html#the-input-element:
+    title: 4.10.5 The input element
+    status: unknown
+  input.html#states-of-the-type-attribute:
+    title: 4.10.5.1 States of the type attribute
+    status: unknown
+  input.html#hidden-state-(type=hidden):
+    title: 4.10.5.1.1 Hidden state (type=hidden)
+    status: unknown
+  input.html#text-(type=text)-state-and-search-state-(type=search):
+    title: 4.10.5.1.2 Text (type=text) state and Search state (type=search)
+    status: unknown
+  input.html#telephone-state-(type=tel):
+    title: 4.10.5.1.3 Telephone state (type=tel)
+    status: unknown
+  input.html#url-state-(type=url):
+    title: 4.10.5.1.4 URL state (type=url)
+    status: unknown
+  input.html#email-state-(type=email):
+    title: 4.10.5.1.5 Email state (type=email)
+    status: unknown
+  input.html#password-state-(type=password):
+    title: 4.10.5.1.6 Password state (type=password)
+    status: unknown
+  input.html#date-state-(type=date):
+    title: 4.10.5.1.7 Date state (type=date)
+    status: unknown
+  input.html#month-state-(type=month):
+    title: 4.10.5.1.8 Month state (type=month)
+    status: unknown
+  input.html#week-state-(type=week):
+    title: 4.10.5.1.9 Week state (type=week)
+    status: unknown
+  input.html#time-state-(type=time):
+    title: 4.10.5.1.10 Time state (type=time)
+    status: unknown
+  input.html#local-date-and-time-state-(type=datetime-local):
+    title: 4.10.5.1.11 Local Date and Time state (type=datetime-local)
+    status: unknown
+  input.html#number-state-(type=number):
+    title: 4.10.5.1.12 Number state (type=number)
+    status: unknown
+  input.html#range-state-(type=range):
+    title: 4.10.5.1.13 Range state (type=range)
+    status: unknown
+  input.html#color-state-(type=color):
+    title: 4.10.5.1.14 Color state (type=color)
+    status: unknown
+  input.html#checkbox-state-(type=checkbox):
+    title: 4.10.5.1.15 Checkbox state (type=checkbox)
+    status: unknown
+  input.html#radio-button-state-(type=radio):
+    title: 4.10.5.1.16 Radio Button state (type=radio)
+    status: unknown
+  input.html#file-upload-state-(type=file):
+    title: 4.10.5.1.17 File Upload state (type=file)
+    status: unknown
+  input.html#submit-button-state-(type=submit):
+    title: 4.10.5.1.18 Submit Button state (type=submit)
+    status: unknown
+  input.html#image-button-state-(type=image):
+    title: 4.10.5.1.19 Image Button state (type=image)
+    status: unknown
+  input.html#reset-button-state-(type=reset):
+    title: 4.10.5.1.20 Reset Button state (type=reset)
+    status: unknown
+  input.html#button-state-(type=button):
+    title: 4.10.5.1.21 Button state (type=button)
+    status: unknown
+  input.html#input-impl-notes:
+    title: 4.10.5.2 Implementation notes regarding localization of form controls
+    status: unknown
+  input.html#common-input-element-attributes:
+    title: 4.10.5.3 Common input element attributes
+    status: unknown
+  input.html#the-maxlength-and-minlength-attributes:
+    title: 4.10.5.3.1 The maxlength and minlength attributes
+    status: unknown
+  input.html#the-size-attribute:
+    title: 4.10.5.3.2 The size attribute
+    status: unknown
+  input.html#the-readonly-attribute:
+    title: 4.10.5.3.3 The readonly attribute
+    status: unknown
+  input.html#the-required-attribute:
+    title: 4.10.5.3.4 The required attribute
+    status: unknown
+  input.html#the-multiple-attribute:
+    title: 4.10.5.3.5 The multiple attribute
+    status: unknown
+  input.html#the-pattern-attribute:
+    title: 4.10.5.3.6 The pattern attribute
+    status: unknown
+  input.html#the-min-and-max-attributes:
+    title: 4.10.5.3.7 The min and max attributes
+    status: unknown
+  input.html#the-step-attribute:
+    title: 4.10.5.3.8 The step attribute
+    status: unknown
+  input.html#the-list-attribute:
+    title: 4.10.5.3.9 The list attribute
+    status: unknown
+  input.html#the-placeholder-attribute:
+    title: 4.10.5.3.10 The placeholder attribute
+    status: unknown
+  input.html#common-input-element-apis:
+    title: 4.10.5.4 Common input element APIs
+    status: unknown
+  input.html#common-input-element-events:
+    title: 4.10.5.5 Common event behaviors
+    status: unknown
+  form-elements.html#the-button-element:
+    title: 4.10.6 The button element
+    status: unknown
+  form-elements.html#the-select-element:
+    title: 4.10.7 The select element
+    status: unknown
+  form-elements.html#the-datalist-element:
+    title: 4.10.8 The datalist element
+    status: unknown
+  form-elements.html#the-optgroup-element:
+    title: 4.10.9 The optgroup element
+    status: unknown
+  form-elements.html#the-option-element:
+    title: 4.10.10 The option element
+    status: unknown
+  form-elements.html#the-textarea-element:
+    title: 4.10.11 The textarea element
+    status: unknown
+  form-elements.html#the-output-element:
+    title: 4.10.12 The output element
+    status: unknown
+  form-elements.html#the-progress-element:
+    title: 4.10.13 The progress element
+    status: unknown
+  form-elements.html#the-meter-element:
+    title: 4.10.14 The meter element
+    status: unknown
+  form-elements.html#the-fieldset-element:
+    title: 4.10.15 The fieldset element
+    status: unknown
+  form-elements.html#the-legend-element:
+    title: 4.10.16 The legend element
+    status: unknown
+  form-elements.html#the-selectedcontent-element:
+    title: 4.10.17 The selectedcontent element
+    status: unknown
+  form-control-infrastructure.html#form-control-infrastructure:
+    title: 4.10.18 Form control infrastructure
+    status: unknown
+  form-control-infrastructure.html#a-form-control's-value:
+    title: 4.10.18.1 A form control's value
+    status: unknown
+  form-control-infrastructure.html#mutability:
+    title: 4.10.18.2 Mutability
+    status: unknown
+  form-control-infrastructure.html#association-of-controls-and-forms:
+    title: 4.10.18.3 Association of controls and forms
+    status: unknown
+  form-control-infrastructure.html#attributes-common-to-form-controls:
+    title: 4.10.19 Attributes common to form controls
+    status: unknown
+  form-control-infrastructure.html#naming-form-controls:-the-name-attribute:
+    title: '4.10.19.1 Naming form controls: the name attribute'
+    status: unknown
+  form-control-infrastructure.html#submitting-element-directionality:-the-dirname-attribute:
+    title: '4.10.19.2 Submitting element directionality: the dirname attribute'
+    status: unknown
+  form-control-infrastructure.html#limiting-user-input-length:-the-maxlength-attribute:
+    title: '4.10.19.3 Limiting user input length: the maxlength attribute'
+    status: unknown
+  form-control-infrastructure.html#setting-minimum-input-length-requirements:-the-minlength-attribute:
+    title: '4.10.19.4 Setting minimum input length requirements: the minlength attribute'
+    status: unknown
+  form-control-infrastructure.html#enabling-and-disabling-form-controls:-the-disabled-attribute:
+    title: '4.10.19.5 Enabling and disabling form controls: the disabled attribute'
+    status: unknown
+  form-control-infrastructure.html#form-submission-attributes:
+    title: 4.10.19.6 Form submission attributes
+    status: unknown
+  form-control-infrastructure.html#autofill:
+    title: 4.10.19.7 Autofill
+    status: unknown
+  form-control-infrastructure.html#autofilling-form-controls:-the-autocomplete-attribute:
+    title: '4.10.19.7.1 Autofilling form controls: the autocomplete attribute'
+    status: unknown
+  form-control-infrastructure.html#autofill-processing-model:
+    title: 4.10.19.7.2 Processing model
+    status: unknown
+  form-control-infrastructure.html#textFieldSelection:
+    title: 4.10.20 APIs for the text control selections
+    status: unknown
+  form-control-infrastructure.html#constraints:
+    title: 4.10.21 Constraints
+    status: unknown
+  form-control-infrastructure.html#definitions:
+    title: 4.10.21.1 Definitions
+    status: unknown
+  form-control-infrastructure.html#constraint-validation:
+    title: 4.10.21.2 Constraint validation
+    status: unknown
+  form-control-infrastructure.html#the-constraint-validation-api:
+    title: 4.10.21.3 The constraint validation API
+    status: unknown
+  form-control-infrastructure.html#security-forms:
+    title: 4.10.21.4 Security
+    status: unknown
+  form-control-infrastructure.html#form-submission-2:
+    title: 4.10.22 Form submission
+    status: unknown
+  form-control-infrastructure.html#introduction-5:
+    title: 4.10.22.1 Introduction
+    status: unknown
+  form-control-infrastructure.html#implicit-submission:
+    title: 4.10.22.2 Implicit submission
+    status: unknown
+  form-control-infrastructure.html#form-submission-algorithm:
+    title: 4.10.22.3 Form submission algorithm
+    status: unknown
+  form-control-infrastructure.html#constructing-form-data-set:
+    title: 4.10.22.4 Constructing the entry list
+    status: unknown
+  form-control-infrastructure.html#selecting-a-form-submission-encoding:
+    title: 4.10.22.5 Selecting a form submission encoding
+    status: unknown
+  form-control-infrastructure.html#converting-an-entry-list-to-a-list-of-name-value-pairs:
+    title: 4.10.22.6 Converting an entry list to a list of name-value pairs
+    status: unknown
+  form-control-infrastructure.html#url-encoded-form-data:
+    title: 4.10.22.7 URL-encoded form data
+    status: unknown
+  form-control-infrastructure.html#multipart-form-data:
+    title: 4.10.22.8 Multipart form data
+    status: unknown
+  form-control-infrastructure.html#plain-text-form-data:
+    title: 4.10.22.9 Plain text form data
+    status: unknown
+  form-control-infrastructure.html#the-submitevent-interface:
+    title: 4.10.22.10 The SubmitEvent interface
+    status: unknown
+  form-control-infrastructure.html#the-formdataevent-interface:
+    title: 4.10.22.11 The FormDataEvent interface
+    status: unknown
+  form-control-infrastructure.html#resetting-a-form:
+    title: 4.10.23 Resetting a form
+    status: unknown
+  interactive-elements.html#interactive-elements:
+    title: 4.11 Interactive elements
+    status: unknown
+  interactive-elements.html#the-details-element:
+    title: 4.11.1 The details element
+    status: unknown
+  interactive-elements.html#the-summary-element:
+    title: 4.11.2 The summary element
+    status: unknown
+  interactive-elements.html#commands:
+    title: 4.11.3 Commands
+    status: unknown
+  interactive-elements.html#facets-2:
+    title: 4.11.3.1 Facets
+    status: unknown
+  interactive-elements.html#using-the-a-element-to-define-a-command:
+    title: 4.11.3.2 Using the a element to define a command
+    status: unknown
+  interactive-elements.html#using-the-button-element-to-define-a-command:
+    title: 4.11.3.3 Using the button element to define a command
+    status: unknown
+  interactive-elements.html#using-the-input-element-to-define-a-command:
+    title: 4.11.3.4 Using the input element to define a command
+    status: unknown
+  interactive-elements.html#using-the-option-element-to-define-a-command:
+    title: 4.11.3.5 Using the option element to define a command
+    status: unknown
+  interactive-elements.html#using-the-accesskey-attribute-on-a-legend-element-to-define-a-command:
+    title: 4.11.3.6 Using the accesskey attribute on a legend element to define a command
+    status: unknown
+  interactive-elements.html#using-the-accesskey-attribute-to-define-a-command-on-other-elements:
+    title: 4.11.3.7 Using the accesskey attribute to define a command on other elements
+    status: unknown
+  interactive-elements.html#the-dialog-element:
+    title: 4.11.4 The dialog element
+    status: unknown
+  interactive-elements.html#dialog-light-dismiss:
+    title: 4.11.5 Dialog light dismiss
+    status: unknown
+  scripting.html#scripting-3:
+    title: 4.12 Scripting
+    status: unknown
+  scripting.html#the-script-element:
+    title: 4.12.1 The script element
+    status: unknown
+  scripting.html#script-processing-model:
+    title: 4.12.1.1 Processing model
+    status: unknown
+  scripting.html#scriptingLanguages:
+    title: 4.12.1.2 Scripting languages
+    status: unknown
+  scripting.html#restrictions-for-contents-of-script-elements:
+    title: 4.12.1.3 Restrictions for contents of script elements
+    status: unknown
+  scripting.html#inline-documentation-for-external-scripts:
+    title: 4.12.1.4 Inline documentation for external scripts
+    status: unknown
+  scripting.html#scriptTagXSLT:
+    title: 4.12.1.5 Interaction of script elements and XSLT
+    status: unknown
+  scripting.html#the-noscript-element:
+    title: 4.12.2 The noscript element
+    status: unknown
+  scripting.html#the-template-element:
+    title: 4.12.3 The template element
+    status: unknown
+  scripting.html#template-XSLT-XPath:
+    title: 4.12.3.1 Interaction of template elements with XSLT and XPath
+    status: unknown
+  scripting.html#the-slot-element:
+    title: 4.12.4 The slot element
+    status: unknown
+  canvas.html#the-canvas-element:
+    title: 4.12.5 The canvas element
+    status: unknown
+  canvas.html#2dcontext:
+    title: 4.12.5.1 The 2D rendering context
+    status: unknown
+  canvas.html#implementation-notes:
+    title: 4.12.5.1.1 Implementation notes
+    status: unknown
+  canvas.html#the-canvas-settings:
+    title: 4.12.5.1.2 The canvas settings
+    status: unknown
+  canvas.html#the-canvas-state:
+    title: 4.12.5.1.3 The canvas state
+    status: unknown
+  canvas.html#line-styles:
+    title: 4.12.5.1.4 Line styles
+    status: unknown
+  canvas.html#text-styles:
+    title: 4.12.5.1.5 Text styles
+    status: unknown
+  canvas.html#building-paths:
+    title: 4.12.5.1.6 Building paths
+    status: unknown
+  canvas.html#path2d-objects:
+    title: 4.12.5.1.7 Path2D objects
+    status: unknown
+  canvas.html#transformations:
+    title: 4.12.5.1.8 Transformations
+    status: unknown
+  canvas.html#image-sources-for-2d-rendering-contexts:
+    title: 4.12.5.1.9 Image sources for 2D rendering contexts
+    status: unknown
+  canvas.html#fill-and-stroke-styles:
+    title: 4.12.5.1.10 Fill and stroke styles
+    status: unknown
+  canvas.html#drawing-rectangles-to-the-bitmap:
+    title: 4.12.5.1.11 Drawing rectangles to the bitmap
+    status: unknown
+  canvas.html#drawing-text-to-the-bitmap:
+    title: 4.12.5.1.12 Drawing text to the bitmap
+    status: unknown
+  canvas.html#drawing-paths-to-the-canvas:
+    title: 4.12.5.1.13 Drawing paths to the canvas
+    status: unknown
+  canvas.html#drawing-focus-rings-and-scrolling-paths-into-view:
+    title: 4.12.5.1.14 Drawing focus rings
+    status: unknown
+  canvas.html#drawing-images:
+    title: 4.12.5.1.15 Drawing images
+    status: unknown
+  canvas.html#pixel-manipulation:
+    title: 4.12.5.1.16 Pixel manipulation
+    status: unknown
+  canvas.html#compositing:
+    title: 4.12.5.1.17 Compositing
+    status: unknown
+  canvas.html#image-smoothing:
+    title: 4.12.5.1.18 Image smoothing
+    status: unknown
+  canvas.html#shadows:
+    title: 4.12.5.1.19 Shadows
+    status: unknown
+  canvas.html#filters:
+    title: 4.12.5.1.20 Filters
+    status: unknown
+  canvas.html#working-with-externally-defined-svg-filters:
+    title: 4.12.5.1.21 Working with externally-defined SVG filters
+    status: unknown
+  canvas.html#drawing-model:
+    title: 4.12.5.1.22 Drawing model
+    status: unknown
+  canvas.html#best-practices:
+    title: 4.12.5.1.23 Best practices
+    status: unknown
+  canvas.html#examples:
+    title: 4.12.5.1.24 Examples
+    status: unknown
+  canvas.html#the-imagebitmap-rendering-context:
+    title: 4.12.5.2 The ImageBitmap rendering context
+    status: unknown
+  canvas.html#introduction-6:
+    title: 4.12.5.2.1 Introduction
+    status: unknown
+  canvas.html#the-imagebitmaprenderingcontext-interface:
+    title: 4.12.5.2.2 The ImageBitmapRenderingContext interface
+    status: unknown
+  canvas.html#the-offscreencanvas-interface:
+    title: 4.12.5.3 The OffscreenCanvas interface
+    status: unknown
+  canvas.html#the-offscreen-2d-rendering-context:
+    title: 4.12.5.3.1 The offscreen 2D rendering context
+    status: unknown
+  canvas.html#colour-spaces-and-colour-correction:
+    title: 4.12.5.4 Color spaces and color space conversion
+    status: unknown
+  canvas.html#serialising-bitmaps-to-a-file:
+    title: 4.12.5.5 Serializing bitmaps to a file
+    status: unknown
+  canvas.html#security-with-canvas-elements:
+    title: 4.12.5.6 Security with canvas elements
+    status: unknown
+  canvas.html#premultiplied-alpha-and-the-2d-rendering-context:
+    title: 4.12.5.7 Premultiplied alpha and the 2D rendering context
+    status: unknown
+  custom-elements.html#custom-elements:
+    title: 4.13 Custom elements
+    status: unknown
+  custom-elements.html#custom-elements-intro:
+    title: 4.13.1 Introduction
+    status: unknown
+  custom-elements.html#custom-elements-autonomous-example:
+    title: 4.13.1.1 Creating an autonomous custom element
+    status: unknown
+  custom-elements.html#custom-elements-face-example:
+    title: 4.13.1.2 Creating a form-associated custom element
+    status: unknown
+  custom-elements.html#custom-elements-accessibility-example:
+    title: 4.13.1.3 Creating a custom element with default accessible roles, states, and properties
+    status: unknown
+  custom-elements.html#custom-elements-customized-builtin-example:
+    title: 4.13.1.4 Creating a customized built-in element
+    status: unknown
+  custom-elements.html#custom-elements-autonomous-drawbacks:
+    title: 4.13.1.5 Drawbacks of autonomous custom elements
+    status: unknown
+  custom-elements.html#custom-elements-upgrades-examples:
+    title: 4.13.1.6 Upgrading elements after their creation
+    status: unknown
+  custom-elements.html#scoped-custom-element-registries:
+    title: 4.13.1.7 Scoped custom element registries
+    status: unknown
+  custom-elements.html#exposing-custom-element-states:
+    title: 4.13.1.8 Exposing custom element states
+    status: unknown
+  custom-elements.html#custom-element-conformance:
+    title: 4.13.2 Requirements for custom element constructors and reactions
+    status: unknown
+  custom-elements.html#preserving-custom-element-state-when-moved:
+    title: 4.13.2.1 Preserving custom element state when moved
+    status: unknown
+  custom-elements.html#custom-elements-core-concepts:
+    title: 4.13.3 Core concepts
+    status: unknown
+  custom-elements.html#custom-elements-api:
+    title: 4.13.4 The CustomElementRegistry interface
+    status: unknown
+  custom-elements.html#upgrades:
+    title: 4.13.5 Upgrades
+    status: unknown
+  custom-elements.html#custom-element-reactions:
+    title: 4.13.6 Custom element reactions
+    status: unknown
+  custom-elements.html#element-internals:
+    title: 4.13.7 Element internals
+    status: unknown
+  custom-elements.html#the-elementinternals-interface:
+    title: 4.13.7.1 The ElementInternals interface
+    status: unknown
+  custom-elements.html#shadow-root-access:
+    title: 4.13.7.2 Shadow root access
+    status: unknown
+  custom-elements.html#form-associated-custom-elements:
+    title: 4.13.7.3 Form-associated custom elements
+    status: unknown
+  custom-elements.html#accessibility-semantics:
+    title: 4.13.7.4 Accessibility semantics
+    status: unknown
+  custom-elements.html#custom-state-pseudo-class:
+    title: 4.13.7.5 Custom state pseudo-class
+    status: unknown
+  semantics-other.html#common-idioms:
+    title: 4.14 Common idioms without dedicated elements
+    status: unknown
+  semantics-other.html#rel-up:
+    title: 4.14.1 Breadcrumb navigation
+    status: unknown
+  semantics-other.html#tag-clouds:
+    title: 4.14.2 Tag clouds
+    status: unknown
+  semantics-other.html#conversations:
+    title: 4.14.3 Conversations
+    status: unknown
+  semantics-other.html#footnotes:
+    title: 4.14.4 Footnotes
+    status: unknown
+  semantics-other.html#disabled-elements:
+    title: 4.15 Disabled elements
+    status: unknown
+  semantics-other.html#selectors:
+    title: 4.16 Matching HTML elements using selectors and CSS
+    status: unknown
+  semantics-other.html#case-sensitivity-of-the-css-'attr()'-function:
+    title: 4.16.1 Case-sensitivity of the CSS 'attr()' function
+    status: unknown
+  semantics-other.html#case-sensitivity-of-selectors:
+    title: 4.16.2 Case-sensitivity of selectors
+    status: unknown
+  semantics-other.html#pseudo-classes:
+    title: 4.16.3 Pseudo-classes
+    status: unknown
+  syntax.html#syntax:
+    title: 13 The HTML syntax
+    status: unknown
+  syntax.html#writing:
+    title: 13.1 Writing HTML documents
+    status: unknown
+  syntax.html#the-doctype:
+    title: 13.1.1 The DOCTYPE
+    status: unknown
+  syntax.html#elements-2:
+    title: 13.1.2 Elements
+    status: unknown
+  syntax.html#start-tags:
+    title: 13.1.2.1 Start tags
+    status: unknown
+  syntax.html#end-tags:
+    title: 13.1.2.2 End tags
+    status: unknown
+  syntax.html#attributes-2:
+    title: 13.1.2.3 Attributes
+    status: unknown
+  syntax.html#optional-tags:
+    title: 13.1.2.4 Optional tags
+    status: unknown
+  syntax.html#element-restrictions:
+    title: 13.1.2.5 Restrictions on content models
+    status: unknown
+  syntax.html#cdata-rcdata-restrictions:
+    title: 13.1.2.6 Restrictions on the contents of raw text and escapable raw text elements
+    status: unknown
+  syntax.html#text-2:
+    title: 13.1.3 Text
+    status: unknown
+  syntax.html#newlines:
+    title: 13.1.3.1 Newlines
+    status: unknown
+  syntax.html#character-references:
+    title: 13.1.4 Character references
+    status: unknown
+  syntax.html#cdata-sections:
+    title: 13.1.5 CDATA sections
+    status: unknown
+  syntax.html#comments:
+    title: 13.1.6 Comments
+    status: unknown
+  syntax.html#processing-instructions:
+    title: 13.1.7 Processing instructions
+    status: unknown
+  parsing.html#parsing:
+    title: 13.2 Parsing HTML documents
+    status: unknown
+  parsing.html#overview-of-the-parsing-model:
+    title: 13.2.1 Overview of the parsing model
+    status: unknown
+  parsing.html#parse-errors:
+    title: 13.2.2 Parse errors
+    status: unknown
+  parsing.html#the-input-byte-stream:
+    title: 13.2.3 The input byte stream
+    status: unknown
+  parsing.html#parsing-with-a-known-character-encoding:
+    title: 13.2.3.1 Parsing with a known character encoding
+    status: unknown
+  parsing.html#determining-the-character-encoding:
+    title: 13.2.3.2 Determining the character encoding
+    status: unknown
+  parsing.html#character-encodings:
+    title: 13.2.3.3 Character encodings
+    status: unknown
+  parsing.html#changing-the-encoding-while-parsing:
+    title: 13.2.3.4 Changing the encoding while parsing
+    status: unknown
+  parsing.html#preprocessing-the-input-stream:
+    title: 13.2.3.5 Preprocessing the input stream
+    status: unknown
+  parsing.html#parse-state:
+    title: 13.2.4 Parse state
+    status: unknown
+  parsing.html#the-insertion-mode:
+    title: 13.2.4.1 The insertion mode
+    status: unknown
+  parsing.html#the-stack-of-open-elements:
+    title: 13.2.4.2 The stack of open elements
+    status: unknown
+  parsing.html#the-list-of-active-formatting-elements:
+    title: 13.2.4.3 The list of active formatting elements
+    status: unknown
+  parsing.html#the-element-pointers:
+    title: 13.2.4.4 The element pointers
+    status: unknown
+  parsing.html#other-parsing-state-flags:
+    title: 13.2.4.5 Other parsing state flags
+    status: unknown
+  parsing.html#tokenization:
+    title: 13.2.5 Tokenization
+    status: unknown
+  parsing.html#data-state:
+    title: 13.2.5.1 Data state
+    status: unknown
+  parsing.html#rcdata-state:
+    title: 13.2.5.2 RCDATA state
+    status: unknown
+  parsing.html#rawtext-state:
+    title: 13.2.5.3 RAWTEXT state
+    status: unknown
+  parsing.html#script-data-state:
+    title: 13.2.5.4 Script data state
+    status: unknown
+  parsing.html#plaintext-state:
+    title: 13.2.5.5 PLAINTEXT state
+    status: unknown
+  parsing.html#tag-open-state:
+    title: 13.2.5.6 Tag open state
+    status: unknown
+  parsing.html#end-tag-open-state:
+    title: 13.2.5.7 End tag open state
+    status: unknown
+  parsing.html#tag-name-state:
+    title: 13.2.5.8 Tag name state
+    status: unknown
+  parsing.html#rcdata-less-than-sign-state:
+    title: 13.2.5.9 RCDATA less-than sign state
+    status: unknown
+  parsing.html#rcdata-end-tag-open-state:
+    title: 13.2.5.10 RCDATA end tag open state
+    status: unknown
+  parsing.html#rcdata-end-tag-name-state:
+    title: 13.2.5.11 RCDATA end tag name state
+    status: unknown
+  parsing.html#rawtext-less-than-sign-state:
+    title: 13.2.5.12 RAWTEXT less-than sign state
+    status: unknown
+  parsing.html#rawtext-end-tag-open-state:
+    title: 13.2.5.13 RAWTEXT end tag open state
+    status: unknown
+  parsing.html#rawtext-end-tag-name-state:
+    title: 13.2.5.14 RAWTEXT end tag name state
+    status: unknown
+  parsing.html#script-data-less-than-sign-state:
+    title: 13.2.5.15 Script data less-than sign state
+    status: unknown
+  parsing.html#script-data-end-tag-open-state:
+    title: 13.2.5.16 Script data end tag open state
+    status: unknown
+  parsing.html#script-data-end-tag-name-state:
+    title: 13.2.5.17 Script data end tag name state
+    status: unknown
+  parsing.html#script-data-escape-start-state:
+    title: 13.2.5.18 Script data escape start state
+    status: unknown
+  parsing.html#script-data-escape-start-dash-state:
+    title: 13.2.5.19 Script data escape start dash state
+    status: unknown
+  parsing.html#script-data-escaped-state:
+    title: 13.2.5.20 Script data escaped state
+    status: unknown
+  parsing.html#script-data-escaped-dash-state:
+    title: 13.2.5.21 Script data escaped dash state
+    status: unknown
+  parsing.html#script-data-escaped-dash-dash-state:
+    title: 13.2.5.22 Script data escaped dash dash state
+    status: unknown
+  parsing.html#script-data-escaped-less-than-sign-state:
+    title: 13.2.5.23 Script data escaped less-than sign state
+    status: unknown
+  parsing.html#script-data-escaped-end-tag-open-state:
+    title: 13.2.5.24 Script data escaped end tag open state
+    status: unknown
+  parsing.html#script-data-escaped-end-tag-name-state:
+    title: 13.2.5.25 Script data escaped end tag name state
+    status: unknown
+  parsing.html#script-data-double-escape-start-state:
+    title: 13.2.5.26 Script data double escape start state
+    status: unknown
+  parsing.html#script-data-double-escaped-state:
+    title: 13.2.5.27 Script data double escaped state
+    status: unknown
+  parsing.html#script-data-double-escaped-dash-state:
+    title: 13.2.5.28 Script data double escaped dash state
+    status: unknown
+  parsing.html#script-data-double-escaped-dash-dash-state:
+    title: 13.2.5.29 Script data double escaped dash dash state
+    status: unknown
+  parsing.html#script-data-double-escaped-less-than-sign-state:
+    title: 13.2.5.30 Script data double escaped less-than sign state
+    status: unknown
+  parsing.html#script-data-double-escape-end-state:
+    title: 13.2.5.31 Script data double escape end state
+    status: unknown
+  parsing.html#before-attribute-name-state:
+    title: 13.2.5.32 Before attribute name state
+    status: unknown
+  parsing.html#attribute-name-state:
+    title: 13.2.5.33 Attribute name state
+    status: unknown
+  parsing.html#after-attribute-name-state:
+    title: 13.2.5.34 After attribute name state
+    status: unknown
+  parsing.html#before-attribute-value-state:
+    title: 13.2.5.35 Before attribute value state
+    status: unknown
+  parsing.html#attribute-value-(double-quoted)-state:
+    title: 13.2.5.36 Attribute value (double-quoted) state
+    status: unknown
+  parsing.html#attribute-value-(single-quoted)-state:
+    title: 13.2.5.37 Attribute value (single-quoted) state
+    status: unknown
+  parsing.html#attribute-value-(unquoted)-state:
+    title: 13.2.5.38 Attribute value (unquoted) state
+    status: unknown
+  parsing.html#after-attribute-value-(quoted)-state:
+    title: 13.2.5.39 After attribute value (quoted) state
+    status: unknown
+  parsing.html#self-closing-start-tag-state:
+    title: 13.2.5.40 Self-closing start tag state
+    status: unknown
+  parsing.html#bogus-comment-state:
+    title: 13.2.5.41 Bogus comment state
+    status: unknown
+  parsing.html#markup-declaration-open-state:
+    title: 13.2.5.42 Markup declaration open state
+    status: unknown
+  parsing.html#comment-start-state:
+    title: 13.2.5.43 Comment start state
+    status: unknown
+  parsing.html#comment-start-dash-state:
+    title: 13.2.5.44 Comment start dash state
+    status: unknown
+  parsing.html#comment-state:
+    title: 13.2.5.45 Comment state
+    status: unknown
+  parsing.html#comment-less-than-sign-state:
+    title: 13.2.5.46 Comment less-than sign state
+    status: unknown
+  parsing.html#comment-less-than-sign-bang-state:
+    title: 13.2.5.47 Comment less-than sign bang state
+    status: unknown
+  parsing.html#comment-less-than-sign-bang-dash-state:
+    title: 13.2.5.48 Comment less-than sign bang dash state
+    status: unknown
+  parsing.html#comment-less-than-sign-bang-dash-dash-state:
+    title: 13.2.5.49 Comment less-than sign bang dash dash state
+    status: unknown
+  parsing.html#comment-end-dash-state:
+    title: 13.2.5.50 Comment end dash state
+    status: unknown
+  parsing.html#comment-end-state:
+    title: 13.2.5.51 Comment end state
+    status: unknown
+  parsing.html#comment-end-bang-state:
+    title: 13.2.5.52 Comment end bang state
+    status: unknown
+  parsing.html#doctype-state:
+    title: 13.2.5.53 DOCTYPE state
+    status: unknown
+  parsing.html#before-doctype-name-state:
+    title: 13.2.5.54 Before DOCTYPE name state
+    status: unknown
+  parsing.html#doctype-name-state:
+    title: 13.2.5.55 DOCTYPE name state
+    status: unknown
+  parsing.html#after-doctype-name-state:
+    title: 13.2.5.56 After DOCTYPE name state
+    status: unknown
+  parsing.html#after-doctype-public-keyword-state:
+    title: 13.2.5.57 After DOCTYPE public keyword state
+    status: unknown
+  parsing.html#before-doctype-public-identifier-state:
+    title: 13.2.5.58 Before DOCTYPE public identifier state
+    status: unknown
+  parsing.html#doctype-public-identifier-(double-quoted)-state:
+    title: 13.2.5.59 DOCTYPE public identifier (double-quoted) state
+    status: unknown
+  parsing.html#doctype-public-identifier-(single-quoted)-state:
+    title: 13.2.5.60 DOCTYPE public identifier (single-quoted) state
+    status: unknown
+  parsing.html#after-doctype-public-identifier-state:
+    title: 13.2.5.61 After DOCTYPE public identifier state
+    status: unknown
+  parsing.html#between-doctype-public-and-system-identifiers-state:
+    title: 13.2.5.62 Between DOCTYPE public and system identifiers state
+    status: unknown
+  parsing.html#after-doctype-system-keyword-state:
+    title: 13.2.5.63 After DOCTYPE system keyword state
+    status: unknown
+  parsing.html#before-doctype-system-identifier-state:
+    title: 13.2.5.64 Before DOCTYPE system identifier state
+    status: unknown
+  parsing.html#doctype-system-identifier-(double-quoted)-state:
+    title: 13.2.5.65 DOCTYPE system identifier (double-quoted) state
+    status: unknown
+  parsing.html#doctype-system-identifier-(single-quoted)-state:
+    title: 13.2.5.66 DOCTYPE system identifier (single-quoted) state
+    status: unknown
+  parsing.html#after-doctype-system-identifier-state:
+    title: 13.2.5.67 After DOCTYPE system identifier state
+    status: unknown
+  parsing.html#bogus-doctype-state:
+    title: 13.2.5.68 Bogus DOCTYPE state
+    status: unknown
+  parsing.html#cdata-section-state:
+    title: 13.2.5.69 CDATA section state
+    status: unknown
+  parsing.html#cdata-section-bracket-state:
+    title: 13.2.5.70 CDATA section bracket state
+    status: unknown
+  parsing.html#cdata-section-end-state:
+    title: 13.2.5.71 CDATA section end state
+    status: unknown
+  parsing.html#processing-instruction-open-state:
+    title: 13.2.5.72 Processing instruction open state
+    status: unknown
+  parsing.html#processing-instruction-target-state:
+    title: 13.2.5.73 Processing instruction target state
+    status: unknown
+  parsing.html#after-processing-instruction-target-state:
+    title: 13.2.5.74 After processing instruction target state
+    status: unknown
+  parsing.html#processing-instruction-data-state:
+    title: 13.2.5.75 Processing instruction data state
+    status: unknown
+  parsing.html#processing-instruction-questionable-state:
+    title: 13.2.5.76 Processing instruction questionable state
+    status: unknown
+  parsing.html#character-reference-state:
+    title: 13.2.5.77 Character reference state
+    status: unknown
+  parsing.html#named-character-reference-state:
+    title: 13.2.5.78 Named character reference state
+    status: unknown
+  parsing.html#ambiguous-ampersand-state:
+    title: 13.2.5.79 Ambiguous ampersand state
+    status: unknown
+  parsing.html#numeric-character-reference-state:
+    title: 13.2.5.80 Numeric character reference state
+    status: unknown
+  parsing.html#hexadecimal-character-reference-start-state:
+    title: 13.2.5.81 Hexadecimal character reference start state
+    status: unknown
+  parsing.html#hexadecimal-character-reference-state:
+    title: 13.2.5.82 Hexadecimal character reference state
+    status: unknown
+  parsing.html#decimal-character-reference-state:
+    title: 13.2.5.83 Decimal character reference state
+    status: unknown
+  parsing.html#numeric-character-reference-end-state:
+    title: 13.2.5.84 Numeric character reference end state
+    status: unknown
+  parsing.html#tree-construction:
+    title: 13.2.6 Tree construction
+    status: unknown
+  parsing.html#creating-and-inserting-nodes:
+    title: 13.2.6.1 Creating and inserting nodes
+    status: unknown
+  parsing.html#parsing-elements-that-contain-only-text:
+    title: 13.2.6.2 Parsing elements that contain only text
+    status: unknown
+  parsing.html#closing-elements-that-have-implied-end-tags:
+    title: 13.2.6.3 Closing elements that have implied end tags
+    status: unknown
+  parsing.html#parsing-main-inhtml:
+    title: 13.2.6.4 The rules for parsing tokens in HTML content
+    status: unknown
+  parsing.html#the-initial-insertion-mode:
+    title: 13.2.6.4.1 The "initial" insertion mode
+    status: unknown
+  parsing.html#the-before-html-insertion-mode:
+    title: 13.2.6.4.2 The "before html" insertion mode
+    status: unknown
+  parsing.html#the-before-head-insertion-mode:
+    title: 13.2.6.4.3 The "before head" insertion mode
+    status: unknown
+  parsing.html#parsing-main-inhead:
+    title: 13.2.6.4.4 The "in head" insertion mode
+    status: unknown
+  parsing.html#parsing-main-inheadnoscript:
+    title: 13.2.6.4.5 The "in head noscript" insertion mode
+    status: unknown
+  parsing.html#the-after-head-insertion-mode:
+    title: 13.2.6.4.6 The "after head" insertion mode
+    status: unknown
+  parsing.html#parsing-main-inbody:
+    title: 13.2.6.4.7 The "in body" insertion mode
+    status: unknown
+  parsing.html#parsing-main-incdata:
+    title: 13.2.6.4.8 The "text" insertion mode
+    status: unknown
+  parsing.html#parsing-main-intable:
+    title: 13.2.6.4.9 The "in table" insertion mode
+    status: unknown
+  parsing.html#parsing-main-intabletext:
+    title: 13.2.6.4.10 The "in table text" insertion mode
+    status: unknown
+  parsing.html#parsing-main-incaption:
+    title: 13.2.6.4.11 The "in caption" insertion mode
+    status: unknown
+  parsing.html#parsing-main-incolgroup:
+    title: 13.2.6.4.12 The "in column group" insertion mode
+    status: unknown
+  parsing.html#parsing-main-intbody:
+    title: 13.2.6.4.13 The "in table body" insertion mode
+    status: unknown
+  parsing.html#parsing-main-intr:
+    title: 13.2.6.4.14 The "in row" insertion mode
+    status: unknown
+  parsing.html#parsing-main-intd:
+    title: 13.2.6.4.15 The "in cell" insertion mode
+    status: unknown
+  parsing.html#parsing-main-intemplate:
+    title: 13.2.6.4.16 The "in template" insertion mode
+    status: unknown
+  parsing.html#parsing-main-afterbody:
+    title: 13.2.6.4.17 The "after body" insertion mode
+    status: unknown
+  parsing.html#parsing-main-inframeset:
+    title: 13.2.6.4.18 The "in frameset" insertion mode
+    status: unknown
+  parsing.html#parsing-main-afterframeset:
+    title: 13.2.6.4.19 The "after frameset" insertion mode
+    status: unknown
+  parsing.html#the-after-after-body-insertion-mode:
+    title: 13.2.6.4.20 The "after after body" insertion mode
+    status: unknown
+  parsing.html#the-after-after-frameset-insertion-mode:
+    title: 13.2.6.4.21 The "after after frameset" insertion mode
+    status: unknown
+  parsing.html#parsing-main-inforeign:
+    title: 13.2.6.5 The rules for parsing tokens in foreign content
+    status: unknown
+  parsing.html#the-end:
+    title: 13.2.7 The end
+    status: unknown
+  parsing.html#speculative-html-parsing:
+    title: 13.2.8 Speculative HTML parsing
+    status: unknown
+  parsing.html#coercing-an-html-dom-into-an-infoset:
+    title: 13.2.9 Coercing an HTML DOM into an infoset
+    status: unknown
+  parsing.html#an-introduction-to-error-handling-and-strange-cases-in-the-parser:
+    title: 13.2.10 An introduction to error handling and strange cases in the parser
+    status: unknown
+  parsing.html#misnested-tags:-b-i-/b-/i:
+    title: '13.2.10.1 Misnested tags: <b><i></b></i>'
+    status: unknown
+  parsing.html#misnested-tags:-b-p-/b-/p:
+    title: '13.2.10.2 Misnested tags: <b><p></b></p>'
+    status: unknown
+  parsing.html#unexpected-markup-in-tables:
+    title: 13.2.10.3 Unexpected markup in tables
+    status: unknown
+  parsing.html#scripts-that-modify-the-page-as-it-is-being-parsed:
+    title: 13.2.10.4 Scripts that modify the page as it is being parsed
+    status: unknown
+  parsing.html#the-execution-of-scripts-that-are-moving-across-multiple-documents:
+    title: 13.2.10.5 The execution of scripts that are moving across multiple documents
+    status: unknown
+  parsing.html#unclosed-formatting-elements:
+    title: 13.2.10.6 Unclosed formatting elements
+    status: unknown
+  parsing.html#serialising-html-fragments:
+    title: 13.3 Serializing HTML fragments
+    status: unknown
+  parsing.html#parsing-html-fragments:
+    title: 13.4 Parsing HTML fragments
+    status: unknown
+  named-characters.html#named-character-references:
+    title: 13.5 Named character references
+    status: unknown
+  rendering.html#rendering:
+    title: 15 Rendering
+    status: unknown
+  rendering.html#introduction-17:
+    title: 15.1 Introduction
+    status: unknown
+  rendering.html#the-css-user-agent-style-sheet-and-presentational-hints:
+    title: 15.2 The CSS user agent style sheet and presentational hints
+    status: unknown
+  rendering.html#non-replaced-elements:
+    title: 15.3 Non-replaced elements
+    status: unknown
+  rendering.html#hidden-elements:
+    title: 15.3.1 Hidden elements
+    status: unknown
+  rendering.html#the-page:
+    title: 15.3.2 The page
+    status: unknown
+  rendering.html#flow-content-3:
+    title: 15.3.3 Flow content
+    status: unknown
+  rendering.html#phrasing-content-3:
+    title: 15.3.4 Phrasing content
+    status: unknown
+  rendering.html#bidi-rendering:
+    title: 15.3.5 Bidirectional text
+    status: unknown
+  rendering.html#sections-and-headings:
+    title: 15.3.6 Sections and headings
+    status: unknown
+  rendering.html#lists:
+    title: 15.3.7 Lists
+    status: unknown
+  rendering.html#tables-2:
+    title: 15.3.8 Tables
+    status: unknown
+  rendering.html#margin-collapsing-quirks:
+    title: 15.3.9 Margin collapsing quirks
+    status: unknown
+  rendering.html#form-controls:
+    title: 15.3.10 Form controls
+    status: unknown
+  rendering.html#the-hr-element-2:
+    title: 15.3.11 The hr element
+    status: unknown
+  rendering.html#the-fieldset-and-legend-elements:
+    title: 15.3.12 The fieldset and legend elements
+    status: unknown
+  rendering.html#replaced-elements:
+    title: 15.4 Replaced elements
+    status: unknown
+  rendering.html#embedded-content-rendering-rules:
+    title: 15.4.1 Embedded content
+    status: unknown
+  rendering.html#images-3:
+    title: 15.4.2 Images
+    status: unknown
+  rendering.html#attributes-for-embedded-content-and-images:
+    title: 15.4.3 Attributes for embedded content and images
+    status: unknown
+  rendering.html#image-maps-2:
+    title: 15.4.4 Image maps
+    status: unknown
+  rendering.html#widgets:
+    title: 15.5 Widgets
+    status: unknown
+  rendering.html#native-appearance-2:
+    title: 15.5.1 Native appearance
+    status: unknown
+  rendering.html#writing-mode:
+    title: 15.5.2 Writing mode
+    status: unknown
+  rendering.html#button-layout:
+    title: 15.5.3 Button layout
+    status: unknown
+  rendering.html#the-button-element-2:
+    title: 15.5.4 The button element
+    status: unknown
+  rendering.html#the-details-and-summary-elements:
+    title: 15.5.5 The details and summary elements
+    status: unknown
+  rendering.html#the-input-element-as-a-text-entry-widget:
+    title: 15.5.6 The input element as a text entry widget
+    status: unknown
+  rendering.html#the-input-element-as-domain-specific-widgets:
+    title: 15.5.7 The input element as domain-specific widgets
+    status: unknown
+  rendering.html#the-input-element-as-a-range-control:
+    title: 15.5.8 The input element as a range control
+    status: unknown
+  rendering.html#the-input-element-as-a-colour-well:
+    title: 15.5.9 The input element as a color well
+    status: unknown
+  rendering.html#the-input-element-as-a-checkbox-and-radio-button-widgets:
+    title: 15.5.10 The input element as a checkbox and radio button widgets
+    status: unknown
+  rendering.html#the-input-element-as-a-file-upload-control:
+    title: 15.5.11 The input element as a file upload control
+    status: unknown
+  rendering.html#the-input-element-as-a-button:
+    title: 15.5.12 The input element as a button
+    status: unknown
+  rendering.html#the-marquee-element-2:
+    title: 15.5.13 The marquee element
+    status: unknown
+  rendering.html#the-meter-element-2:
+    title: 15.5.14 The meter element
+    status: unknown
+  rendering.html#the-progress-element-2:
+    title: 15.5.15 The progress element
+    status: unknown
+  rendering.html#the-select-element-2:
+    title: 15.5.16 The select element
+    status: unknown
+  rendering.html#the-textarea-element-2:
+    title: 15.5.17 The textarea element
+    status: unknown
+  rendering.html#frames-and-framesets:
+    title: 15.6 Frames and framesets
+    status: unknown
+  rendering.html#interactive-media:
+    title: 15.7 Interactive media
+    status: unknown
+  rendering.html#links,-forms,-and-navigation:
+    title: 15.7.1 Links, forms, and navigation
+    status: unknown
+  rendering.html#the-title-attribute-2:
+    title: 15.7.2 The title attribute
+    status: unknown
+  rendering.html#editing-hosts:
+    title: 15.7.3 Editing hosts
+    status: unknown
+  rendering.html#text-rendered-in-native-user-interfaces:
+    title: 15.7.4 Text rendered in native user interfaces
+    status: unknown
+  rendering.html#print-media:
+    title: 15.8 Print media
+    status: unknown
+  rendering.html#unstyled-xml-documents:
+    title: 15.9 Unstyled XML documents
+    status: unknown
+  obsolete.html#obsolete:
+    title: 16 Obsolete features
+    status: unknown
+  obsolete.html#obsolete-but-conforming-features:
+    title: 16.1 Obsolete but conforming features
+    status: unknown
+  obsolete.html#warnings-for-obsolete-but-conforming-features:
+    title: 16.1.1 Warnings for obsolete but conforming features
+    status: unknown
+  obsolete.html#non-conforming-features:
+    title: 16.2 Non-conforming features
+    status: unknown
+  obsolete.html#requirements-for-implementations:
+    title: 16.3 Requirements for implementations
+    status: unknown
+  obsolete.html#the-marquee-element:
+    title: 16.3.1 The marquee element
+    status: unknown
+  obsolete.html#frames:
+    title: 16.3.2 Frames
+    status: unknown
+  obsolete.html#other-elements,-attributes-and-apis:
+    title: 16.3.3 Other elements, attributes and APIs
+    status: unknown
