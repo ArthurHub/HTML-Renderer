@@ -119,13 +119,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// Or from URI.
         /// </summary>
         /// <remarks>
-        /// File path and URI image loading is resolved against the document base and fetched through
-        /// <see cref="RAdapter.GetResourceStream"/> - uniformly for local files, <c>data:</c> URIs, and
-        /// remote HTTP(S) sources, matching how stylesheets and (eventually) <c>@font-face</c> fonts load.
-        /// When <see cref="HtmlContainerInt.AvoidAsyncImagesLoading"/> is set the fetch is awaited inline
-        /// (blocking this call) so the image is fully resolved before <see cref="LoadImage"/> returns;
-        /// otherwise it runs fire-and-forget and <see cref="ImageLoadComplete"/> requests a re-layout once
-        /// it finishes, matching this handler's pre-existing sync/async duality.
+        /// HTML §4.8.4.3.5. A path or URI is resolved against the document base URL and fetched through
+        /// <see cref="RAdapter.GetResourceStream"/>. With <see cref="HtmlContainerInt.AvoidAsyncImagesLoading"/>
+        /// the fetch blocks until the image is loaded, otherwise it runs in the background and the
+        /// completion callback requests a re-layout.
         /// </remarks>
         /// <param name="src">the source of the image to load</param>
         /// <param name="attributes">the collection of attributes on the element to use in event</param>
@@ -208,10 +205,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// Resolve <paramref name="path"/> (a bare file path/URI, or a <c>data:image...</c> URI) against
-        /// the document base and fetch it through <see cref="RAdapter.GetResourceStream"/> - the same
-        /// funnel used for stylesheets, so a <c>data:</c> source needs no separate decode path from a
-        /// remote or local one.
+        /// Resolve <paramref name="path"/> (a file path, URI or <c>data:</c> URI) against the document base
+        /// and fetch it through <see cref="RAdapter.GetResourceStream"/>.
         /// </summary>
         private async Task LoadImageFromPathAsync(string path, bool async)
         {

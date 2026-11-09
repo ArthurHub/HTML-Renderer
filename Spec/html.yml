@@ -608,16 +608,23 @@ sections:
     status: n/a
   embedded-content.html#embedded-content:
     title: 4.8 Embedded content
-    status: unknown
+    status: partial
   embedded-content.html#the-picture-element:
     title: 4.8.1 The picture element
-    status: unknown
+    status: partial
+    gaps:
+      - Its source elements are ignored, the img always loads its own src
   embedded-content.html#the-source-element:
     title: 4.8.2 The source element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Ignored, srcset, sizes, media and type of a source in a picture don't select an image
   embedded-content.html#the-img-element:
     title: 4.8.3 The img element
-    status: unknown
+    status: partial
+    gaps:
+      - An image that isn't available is drawn as a broken image icon instead of its alt text
+      - An img without src, with an empty src, or with alt="" and an unavailable image still takes up space instead of representing nothing
   images.html#images:
     title: 4.8.4 Images
     status: unknown

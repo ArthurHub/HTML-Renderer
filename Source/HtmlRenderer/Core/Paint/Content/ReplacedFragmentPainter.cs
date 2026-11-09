@@ -8,12 +8,9 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Paint.Content
 {
     /// <summary>
-    /// Shared clip/background/border sequence for replaced leaf elements (<see cref="CssBoxImage"/>,
-    /// <see cref="CssBoxFrame"/>) - both paint the same way (clip by overflow, then
-    /// <see cref="CssBox.PaintBackground"/>, then <see cref="BordersDrawHandler.DrawBoxBorders"/>) before
-    /// their own type-specific content, matching PeachPDF's <c>ReplacedFragmentPainter</c> base. Uses
-    /// <see cref="BoxFragment.PrimaryRect"/> rather than <c>CssBox.Rectangles</c> directly since replaced
-    /// elements are monolithic (one fragment always covers the whole box, css-break-3 4.1).
+    /// Paints a replaced element (<see cref="CssBoxImage"/>, <see cref="CssBoxFrame"/>): clip by overflow,
+    /// background, border and outline, then the element's own content. Replaced elements are monolithic
+    /// (CSS Fragmentation 3 §4.1), so <see cref="BoxFragment.PrimaryRect"/> covers the whole box.
     /// </summary>
     internal abstract class ReplacedFragmentPainter : IFragmentContentPainter
     {
@@ -21,9 +18,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint.Content
         {
             var box = fragment.Box;
 
-            // fragment.PrimaryRect is fragment-local; the image/video word rect DrawContent's
-            // implementations read is off the live tree (still absolute document-Y) - each needs its own
-            // offset flavor, see FragmentPainter.FragmentLocalOffset/LiveTreeOffset's doc comments.
+            // PrimaryRect is fragment-local, the image word DrawContent reads is in document coordinates
+            // of the live tree, so each gets its own offset.
             var rect = fragment.PrimaryRect;
             rect.Offset(painter.FragmentLocalOffset(box.IsFixed));
 

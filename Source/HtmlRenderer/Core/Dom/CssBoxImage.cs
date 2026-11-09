@@ -22,7 +22,7 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Dom
 {
     /// <summary>
-    /// CSS box for image element.
+    /// CSS box for the img element, HTML §4.8.3.
     /// </summary>
     internal sealed class CssBoxImage : CssBox
     {
@@ -67,11 +67,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Starts loading the image if it hasn't started already. This is the primary load trigger for
-        /// the common async case (<see cref="HtmlContainerInt.AvoidAsyncImagesLoading"/>/
-        /// <see cref="HtmlContainerInt.AvoidImagesLateLoading"/> both false) - <see cref="MeasureWordsSize"/>
-        /// only starts loading when one of those flags is set, so paint is where loading normally begins.
-        /// Called by <see cref="Paint.Content.ImageFragmentPainter"/>.
+        /// Starts loading the image unless layout already did. Layout only loads it when
+        /// <see cref="HtmlContainerInt.AvoidAsyncImagesLoading"/> or
+        /// <see cref="HtmlContainerInt.AvoidImagesLateLoading"/> is set, otherwise the image is obtained
+        /// on demand when it's first painted (HTML §4.8.4.3.1).
         /// </summary>
         internal void EnsureImageLoadStarted()
         {
@@ -162,14 +161,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         #region Private methods
 
         /// <summary>
-        /// Get the image source to load: a resolved <c>content: url(...)</c> value takes precedence
-        /// over the "src" attribute (CSS generated content replacing the element's own rendering, same
-        /// as this engine already gives generated content priority for pseudo-elements), falling back
-        /// to "src" when content is unset/none/normal or isn't a url().<br/>
-        /// <see cref="CssBox.Content"/> holds the literal declared CSS text (e.g. <c>url('data:...')</c>,
-        /// quotes and all) rather than an unwrapped source string, so the url() token's data has to be
-        /// pulled out here - <see cref="ImageLoadHandler.LoadImage"/> only recognizes a bare path or
-        /// "data:image..." URI, not CSS function syntax.
+        /// The image to load: a <c>content: url()</c> replaces the element's src (CSS Content 3 §1), else
+        /// the src attribute (HTML §4.8.4.3.5).<br/>
+        /// <see cref="CssBox.Content"/> holds the declared CSS text, so the url() is unwrapped here.
         /// </summary>
         private string GetImageSource()
         {
