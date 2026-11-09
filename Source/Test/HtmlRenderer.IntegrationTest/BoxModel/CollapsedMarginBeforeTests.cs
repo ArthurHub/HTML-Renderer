@@ -2,21 +2,6 @@ using HtmlRenderer.IntegrationTest.TestSupport;
 
 namespace HtmlRenderer.IntegrationTest.BoxModel;
 
-/// <summary>
-/// <see href="https://www.w3.org/TR/CSS21/box.html#collapsing-margins">CSS 2.1 §8.3.1</see>'s adjoining-margin
-/// set, resolved at one break point by the frame the boxes are children of.
-/// </summary>
-/// <remarks>
-/// <c>CssBox.MarginTopCollapse</c> (Dom/CssBox.cs) implements the real adjoining-margin-set algorithm:
-/// <c>CollapsedMarginTopChain</c>/<c>CollapsedMarginBottomChain</c> walk forward through an unblocked run of
-/// first/last-in-flow children (so a nested child sits flush with its parent instead of being pushed down a
-/// second time), <c>CollectAdjoiningMarginsBeforeSibling</c> walks backward through however many self-collapsing
-/// (empty) siblings precede a box - reaching all the way to the parent's own top margin if the whole run turns
-/// out self-collapsing - and <c>CollapseMarginSet</c> collapses the resulting set to
-/// <c>max(positives) + min(negatives)</c>, not a plain <c>Math.Max</c> between just two values (which only
-/// happens to match when both margins share a sign). A floated box's own margin never participates in
-/// collapsing at all (CSS 2.1 §8.3.1: floats are out of flow).
-/// </remarks>
 [DoNotParallelize]
 [TestClass]
 public sealed class CollapsedMarginBeforeTests
@@ -24,10 +9,9 @@ public sealed class CollapsedMarginBeforeTests
     private const double Delta = 0.5;
 
     [TestMethod]
+    [Spec("css21", "box.html#collapsing-margins")]
     public void AdjoiningSiblingMargins_CollapseToTheLargerPositive()
     {
-        // Same-sign case: Math.Max(30, 10) = 30 happens to equal the spec result (max of the positives), so this
-        // one genuinely passes on this fork.
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
             "<div id='a' style='height:40px;margin-bottom:30px'></div>"
             + "<div id='b' style='height:40px;margin-top:10px'></div>"));
@@ -39,6 +23,7 @@ public sealed class CollapsedMarginBeforeTests
     }
 
     [TestMethod]
+    [Spec("css21", "box.html#collapsing-margins")]
     public void MixedSignSiblingMargins_Sum()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -52,6 +37,21 @@ public sealed class CollapsedMarginBeforeTests
     }
 
     [TestMethod]
+    [Spec("css21", "box.html#collapsing-margins")]
+    public void NegativeSiblingMargins_CollapseToTheMostNegative()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div id='a' style='height:40px;margin-bottom:-10px'></div>"
+            + "<div id='b' style='height:40px;margin-top:-30px'></div>"));
+
+        var a = LayoutHarness.FindById(root, "a")!;
+        var b = LayoutHarness.FindById(root, "b")!;
+
+        Assert.AreEqual(-30, b.Location.Y - a.ActualBottom, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "box.html#collapsing-margins")]
     public void ASelfCollapsingSiblingBetweenTwoBoxes_JoinsTheSet()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -62,11 +62,11 @@ public sealed class CollapsedMarginBeforeTests
         var a = LayoutHarness.FindById(root, "a")!;
         var b = LayoutHarness.FindById(root, "b")!;
 
-        // The whole run should collapse to one value - the largest member, not a sum of the pairs.
         Assert.AreEqual(40, b.Location.Y - a.ActualBottom, Delta);
     }
 
     [TestMethod]
+    [Spec("css21", "box.html#collapsing-margins")]
     public void AFirstInFlowChildsTopMargin_JoinsItsParentsOwnSet()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -78,13 +78,26 @@ public sealed class CollapsedMarginBeforeTests
         var outer = LayoutHarness.FindById(root, "outer")!;
         var inner = LayoutHarness.FindById(root, "inner")!;
 
-        // One collapsed value for the whole chain, taken once: the outer box should move down by it and the
-        // inner box should sit at its parent's content top rather than being pushed down again.
         Assert.AreEqual(30, outer.Location.Y - a.ActualBottom, Delta);
         Assert.AreEqual(outer.Location.Y, inner.Location.Y, Delta);
     }
 
     [TestMethod]
+    [Spec("css21", "box.html#collapsing-margins")]
+    public void AutoHeightParent_PassesItsLastChildsBottomMarginOn()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div id='p'><div style='height:10px;margin-bottom:30px'></div></div>"
+            + "<div id='n' style='height:10px;margin-top:10px'></div>"));
+
+        var p = LayoutHarness.FindById(root, "p")!;
+        var n = LayoutHarness.FindById(root, "n")!;
+
+        Assert.AreEqual(30, n.Location.Y - p.ActualBottom, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "box.html#collapsing-margins")]
     public void ABorderOnTheParent_BlocksTheChainAndLeavesBothMarginsStanding()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -101,6 +114,7 @@ public sealed class CollapsedMarginBeforeTests
     }
 
     [TestMethod]
+    [Spec("css21", "box.html#collapsing-margins")]
     public void AFloatsOwnMarginDoesNotMerge_ButThePredecessorsStillOccupiesSpace()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -110,8 +124,6 @@ public sealed class CollapsedMarginBeforeTests
         var a = LayoutHarness.FindById(root, "a")!;
         var f = LayoutHarness.FindById(root, "f")!;
 
-        // Summed, not merged: a float is out of flow so its margin should never adjoin anything, but the
-        // predecessor's trailing margin is real space it must sit after.
         Assert.AreEqual(15, f.Location.Y - a.ActualBottom, Delta);
     }
 
@@ -119,6 +131,7 @@ public sealed class CollapsedMarginBeforeTests
     [DataRow("overflow:hidden")]
     [DataRow("float:left;width:100px")]
     [DataRow("position:absolute;width:100px")]
+    [Spec("css21", "box.html#collapsing-margins")]
     public void NewBlockFormattingContext_KeepsItsFirstChildsTopMarginInside(string parentStyle)
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -131,6 +144,7 @@ public sealed class CollapsedMarginBeforeTests
     }
 
     [TestMethod]
+    [Spec("css21", "box.html#collapsing-margins")]
     public void FixedHeightParent_DoesNotPassItsLastChildsBottomMarginOn()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

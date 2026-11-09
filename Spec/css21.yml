@@ -244,40 +244,53 @@ sections:
     status: unknown
   box.html#box-model:
     title: 8 Box model
-    status: unknown
+    status: partial
   box.html#box-dimensions:
     title: 8.1 Box dimensions
-    status: unknown
+    status: supported
   box.html#mpb-examples:
     title: 8.2 Example of margins, padding, and borders
-    status: unknown
+    status: n/a
   box.html#margin-properties:
     title: 8.3 Margin properties
-    status: unknown
+    status: partial
+    gaps:
+      - Horizontal percentage margins resolve against the box's own width instead of the containing block's width
   box.html#collapsing-margins:
     title: 8.3.1 Collapsing margins
-    status: unknown
+    status: supported
   box.html#padding-properties:
     title: 8.4 Padding properties
-    status: unknown
+    status: partial
+    gaps:
+      - Negative padding is applied instead of being rejected
   box.html#border-properties:
     title: 8.5 Border properties
-    status: unknown
+    status: partial
   box.html#border-width-properties:
     title: 8.5.1 Border width
-    status: unknown
+    status: partial
+    gaps:
+      - "'border-style: hidden' keeps the border width instead of computing it to 0"
+      - The initial width is 2px, while 'medium' is 3px
   box.html#border-color-properties:
     title: 8.5.2 Border color
-    status: unknown
+    status: partial
+    gaps:
+      - The initial color is black instead of the element's 'color'
   box.html#border-style-properties:
     title: 8.5.3 Border style
-    status: unknown
+    status: partial
+    gaps:
+      - double, groove and ridge are painted as solid
   box.html#border-shorthand-properties:
     title: 8.5.4 Border shorthand properties
-    status: unknown
+    status: supported
   box.html#bidi-box-model:
     title: 8.6 The box model for inline elements in bidirectional context
-    status: unknown
+    status: unsupported
+    gaps:
+      - A split inline box in RTL text gets its left border on the first line and its right border on the last, like in LTR
   visuren.html#q9.0:
     title: 9 Visual formatting model
     status: unknown
