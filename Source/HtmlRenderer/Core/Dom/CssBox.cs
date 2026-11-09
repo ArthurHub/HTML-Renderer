@@ -1986,6 +1986,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 word.Top += amount;
             }
 
+            foreach (var line in LineBoxes)
+            {
+                line.ShiftStrut(amount);
+            }
+
             foreach (CssBox b in Boxes)
             {
                 b.OffsetTop(amount);

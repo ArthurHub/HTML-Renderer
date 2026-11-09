@@ -151,6 +151,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             //Gets the rectangles for each line-box
             foreach (var linebox in blockBox.LineBoxes)
             {
+                ApplyBaselineAlignment(g, linebox);
                 ApplyHorizontalAlignment(g, linebox);
                 ApplyRightToLeft(blockBox, linebox);
                 BubbleRectangles(blockBox, linebox);
@@ -457,8 +458,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                     foreach (var word in b.Words)
                     {
-                        if (maxbottom - cury < box.ActualLineHeight)
-                            maxbottom += box.ActualLineHeight - (maxbottom - cury);
+                        // A line with text is at least as tall as the block's own font, even if all its text
+                        // is smaller (the strut, CSS 2.1 10.8.1).
+                        var lineHeight = word.IsImage
+                            ? box.ActualLineHeight
+                            : Math.Max(box.ActualLineHeight, Math.Max(blockbox.ActualLineHeight, GetFontHeight(g, blockbox.ActualFont)));
+                        if (maxbottom - cury < lineHeight)
+                            maxbottom += lineHeight - (maxbottom - cury);
 
                         double actualLimitRight = limitRight;
                         var rightObstructingFloat = DomUtils.GetLastRightIntersectingFloatBox(box, cury);
@@ -724,6 +730,73 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
+        /// Puts every text word of the line on one baseline, the lowest one any word or the block's own font
+        /// (the line's strut) needs. Words are flowed top-aligned, so a smaller font would otherwise hang from
+        /// the top of the line instead of sitting on it. Images and words inside a sub/super box keep their
+        /// current position, every other vertical-align value isn't supported and sits on the baseline.
+        /// </summary>
+        private static void ApplyBaselineAlignment(RGraphics g, CssLineBox lineBox)
+        {
+            double top = double.MaxValue;
+            double maxAscent = 0;
+            var aligned = new List<CssRect>();
+
+            foreach (var word in lineBox.Words)
+            {
+                if (word.IsImage || !IsOnParentBaseline(word.OwnerBox, lineBox.OwnerBox))
+                    continue;
+
+                aligned.Add(word);
+                top = Math.Min(top, word.Top);
+                maxAscent = Math.Max(maxAscent, GetAscent(g, word.OwnerBox.ActualFont));
+            }
+
+            if (aligned.Count == 0)
+                return;
+
+            var blockBox = lineBox.OwnerBox;
+            var baseline = top + Math.Max(maxAscent, GetAscent(g, blockBox.ActualFont));
+            lineBox.SetStrut(top, Math.Max(blockBox.ActualLineHeight, GetFontHeight(g, blockBox.ActualFont)));
+
+            foreach (var word in aligned)
+            {
+                word.Top = baseline - GetAscent(g, word.OwnerBox.ActualFont);
+            }
+        }
+
+        private static bool IsOnParentBaseline(CssBox box, CssBox blockBox)
+        {
+            for (var b = box; b != null && b != blockBox; b = b.ParentBox)
+            {
+                // sub/super are the only values ApplyVerticalAlignment positions itself
+                if (b.VerticalAlign == CssConstants.Sub || b.VerticalAlign == CssConstants.Super)
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// The distance from the top of a line of this font to its baseline. Some adapters only fill in the
+        /// font metrics on the first measurement.
+        /// </summary>
+        private static double GetAscent(RGraphics g, RFont font)
+        {
+            if (font.Height < 0)
+                g.MeasureString("a", font);
+
+            return font.UnderlineOffset;
+        }
+
+        private static double GetFontHeight(RGraphics g, RFont font)
+        {
+            if (font.Height < 0)
+                g.MeasureString("a", font);
+
+            return font.Height;
+        }
+
+        /// <summary>
         /// Applies vertical alignment to the linebox
         /// </summary>
         /// <param name="g"></param>
@@ -764,8 +837,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                         break;
                     default:
-                        //case: baseline
-                        lineBox.SetBaseLine(g, box, baseline);
+                        // baseline: already done by ApplyBaselineAlignment
                         break;
                 }
             }
