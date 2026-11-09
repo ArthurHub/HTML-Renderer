@@ -1021,58 +1021,51 @@ sections:
     status: n/a
   aural.html#q19.0:
     title: A Aural style sheets
-    status: unknown
+    status: unsupported
+    gaps:
+      - None of the aural properties are parsed
   aural.html#aural-media-group:
     title: A.1 The media types 'aural' and 'speech'
-    status: unknown
+    status: n/a
   aural.html#aural-intro:
     title: A.2 Introduction to aural style sheets
-    status: unknown
-  aural.html#angles:
-    title: A.2.1 Angles
-    status: unknown
-  aural.html#times:
-    title: A.2.2 Times
-    status: unknown
-  aural.html#frequencies:
-    title: A.2.3 Frequencies
-    status: unknown
+    status: n/a
   aural.html#volume-props:
     title: A.3 Volume properties
-    status: unknown
+    status: unsupported
   aural.html#speaking-props:
     title: A.4 Speaking properties
-    status: unknown
+    status: unsupported
   aural.html#pause-props:
     title: A.5 Pause properties
-    status: unknown
+    status: unsupported
   aural.html#cue-props:
     title: A.6 Cue properties
-    status: unknown
+    status: unsupported
   aural.html#mixing-props:
     title: A.7 Mixing properties
-    status: unknown
+    status: unsupported
   aural.html#spatial-props:
     title: A.8 Spatial properties
-    status: unknown
+    status: unsupported
   aural.html#voice-char-props:
     title: A.9 Voice characteristic properties
-    status: unknown
+    status: unsupported
   aural.html#speech-props:
     title: A.10 Speech properties
-    status: unknown
+    status: unsupported
   aural.html#aural-tables:
     title: A.11 Audio rendering of tables
-    status: unknown
+    status: unsupported
   aural.html#speak-headers:
     title: A.11.1 Speaking headers
-    status: unknown
+    status: unsupported
   aural.html#sample:
     title: A.12 Sample style sheet for HTML
-    status: unknown
+    status: n/a
   aural.html#Emacspeak:
     title: A.13 Emacspeak
-    status: unknown
+    status: n/a
   sample.html#q22.0:
     title: D Default style sheet for HTML 4
     status: unknown
