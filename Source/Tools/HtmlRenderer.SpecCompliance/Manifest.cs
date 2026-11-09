@@ -37,6 +37,9 @@ public sealed class Manifest
     /// <summary>Published URL, anchors are appended to it for links in the report.</summary>
     public string Url { get; set; } = "";
 
+    /// <summary>The commit of a living standard the sections were checked against, none for a fixed version.</summary>
+    public string? Snapshot { get; set; }
+
     public Dictionary<string, ManifestSection> Sections { get; set; } = new(StringComparer.Ordinal);
 
     private static readonly IDeserializer Deserializer = new DeserializerBuilder()

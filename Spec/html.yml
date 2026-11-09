@@ -1,6 +1,7 @@
 spec: html
 title: HTML Living Standard
 url: https://html.spec.whatwg.org/multipage/
+snapshot: 7a1d2b8107ef368c4951f15f091d82fb62e59dde
 sections:
   common-microsyntaxes.html#common-microsyntaxes:
     title: 2.3 Common microsyntaxes

@@ -24,6 +24,8 @@ public static class Report
         foreach (var spec in compliance.Specs)
         {
             sb.AppendLine().AppendLine($"### {spec.Manifest.Title}").AppendLine();
+            if (spec.Manifest.Snapshot != null)
+                sb.AppendLine($"Checked against commit `{spec.Manifest.Snapshot}`.").AppendLine();
             foreach (var chapter in Chapters(spec))
                 RenderChapter(sb, spec, chapter);
         }

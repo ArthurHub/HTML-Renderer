@@ -6,6 +6,8 @@
 
 `<spec>.yml` has the spec's `title` and `url`, and one entry per section, keyed by its anchor, with the numbered title, the `status` and, if anything is missing, the `gaps`. Every section of the spec is listed, except the subsections of an `n/a` section, so the report also shows what hasn't been reviewed yet. For HTML that's limited to the chapters that matter for rendering a static document: 2.3 microsyntaxes, 3.2 elements, 4 the elements of HTML, 13 the HTML syntax, 15 rendering and 16 obsolete features.
 
+HTML is a living standard without versions, so `html.yml` has a `snapshot`, the commit of [whatwg/html](https://github.com/whatwg/html) its sections were checked against. When the snapshot moves, the sections that changed in between need a recheck.
+
 Statuses:
 
 - `supported`: implemented as specified, needs at least one test
