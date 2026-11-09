@@ -4,16 +4,11 @@ using static HtmlRenderer.Test.CssEngineSupport.CssConstructionFunctions;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/MediaList.cs (<c>CssMediaListTests</c>). <c>@media</c> parsing, the
-/// <see cref="TheArtOfDev.HtmlRenderer.Core.CssEngine.MediaList"/> CSSOM, Media Queries Level 4 range syntax,
-/// and <c>ToCss()</c> round-trip all have identical shape to HTML-Renderer's <c>Model/MediaList.cs</c> /
-/// <c>Rules/MediaRule.cs</c>.
-/// </summary>
 [TestClass]
 public sealed class MediaListTests
 {
     [TestMethod]
+    [Spec("css21", "media.html#at-media-rule")]
     public void SimpleScreenMediaList()
     {
         var source = @"@media screen {
@@ -57,6 +52,7 @@ public sealed class MediaListTests
     }
 
     [TestMethod]
+    [Spec("css21", "media.html#at-media-rule")]
     public void SimpleScreenTvMediaList()
     {
         var source = @"@media screen,tv {
@@ -73,6 +69,7 @@ public sealed class MediaListTests
     }
 
     [TestMethod]
+    [Spec("css21", "media.html#at-media-rule")]
     public void SimpleScreenTvSpacesMediaList()
     {
         var source = @"@media              screen ,          tv {

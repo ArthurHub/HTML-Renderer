@@ -63,7 +63,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
         private static bool MediumMatches(Medium medium, MediaQueryContext context)
         {
-            // A feature-only query (e.g. `@media (min-width: 768px)`) has no type - treat as `all`.
+            // CSS 2.1 §7.3. A query with only features, e.g. `(min-width: 768px)`, has no type and matches
+            // like `all`.
             var typeMatches = string.IsNullOrEmpty(medium.Type)
                 || string.Equals(medium.Type, context.MediaType, StringComparison.OrdinalIgnoreCase)
                 || string.Equals(medium.Type, "all", StringComparison.OrdinalIgnoreCase)

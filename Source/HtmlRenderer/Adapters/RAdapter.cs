@@ -94,7 +94,7 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         }
 
         /// <summary>
-        /// The CSS media type this adapter renders for, used to evaluate <c>@media</c> queries -
+        /// The CSS media type this adapter renders for (CSS 2.1 §7.3), used to evaluate <c>@media</c> rules.
         /// <c>"screen"</c> for on-screen adapters (the default), <c>"print"</c> for paged output.
         /// </summary>
         public virtual string DefaultMediaType

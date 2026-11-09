@@ -271,22 +271,27 @@ sections:
       - Presentational attributes are applied after the author style sheets and override them
   media.html#q7.0:
     title: 7 Media types
-    status: unknown
+    status: partial
   media.html#media-intro:
     title: 7.1 Introduction to media types
-    status: unknown
+    status: n/a
   media.html#media-sheets:
     title: 7.2 Specifying media-dependent style sheets
-    status: unknown
+    status: partial
+    gaps:
+      - The media attribute of link and style elements is ignored, the style sheet applies to every media type
+      - "@import rules are never loaded, so their media list has no effect"
   media.html#at-media-rule:
     title: 7.2.1 The @media rule
-    status: unknown
+    status: supported
   media.html#media-types:
     title: 7.3 Recognized media types
-    status: unknown
+    status: partial
+    gaps:
+      - A malformed entry in a media list, e.g. '3D' in '@media screen, 3D', makes the whole list not match instead of only that entry
   media.html#media-groups:
     title: 7.3.1 Media groups
-    status: unknown
+    status: n/a
   box.html#box-model:
     title: 8 Box model
     status: partial
