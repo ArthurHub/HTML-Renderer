@@ -1032,142 +1032,66 @@ sections:
     status: n/a
   scripting.html#scripting-3:
     title: 4.12 Scripting
-    status: unknown
+    status: partial
   scripting.html#the-script-element:
     title: 4.12.1 The script element
-    status: unknown
+    status: supported
   scripting.html#script-processing-model:
     title: 4.12.1.1 Processing model
-    status: unknown
+    status: n/a
   scripting.html#scriptingLanguages:
     title: 4.12.1.2 Scripting languages
-    status: unknown
+    status: n/a
   scripting.html#restrictions-for-contents-of-script-elements:
     title: 4.12.1.3 Restrictions for contents of script elements
-    status: unknown
+    status: n/a
   scripting.html#inline-documentation-for-external-scripts:
     title: 4.12.1.4 Inline documentation for external scripts
-    status: unknown
+    status: n/a
   scripting.html#scriptTagXSLT:
     title: 4.12.1.5 Interaction of script elements and XSLT
-    status: unknown
+    status: n/a
   scripting.html#the-noscript-element:
     title: 4.12.2 The noscript element
-    status: unknown
+    status: supported
   scripting.html#the-template-element:
     title: 4.12.3 The template element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Its content is rendered, see 15.3.1
+      - shadowrootmode doesn't attach a shadow root, the host's own children render instead of the template's content
   scripting.html#template-XSLT-XPath:
     title: 4.12.3.1 Interaction of template elements with XSLT and XPath
-    status: unknown
+    status: n/a
   scripting.html#the-slot-element:
     title: 4.12.4 The slot element
-    status: unknown
+    status: supported
   canvas.html#the-canvas-element:
     title: 4.12.5 The canvas element
-    status: unknown
+    status: partial
+    gaps:
+      - width and height map to the CSS width and height, which sizes the fallback content, see 15.4.3
   canvas.html#2dcontext:
     title: 4.12.5.1 The 2D rendering context
-    status: unknown
-  canvas.html#implementation-notes:
-    title: 4.12.5.1.1 Implementation notes
-    status: unknown
-  canvas.html#the-canvas-settings:
-    title: 4.12.5.1.2 The canvas settings
-    status: unknown
-  canvas.html#the-canvas-state:
-    title: 4.12.5.1.3 The canvas state
-    status: unknown
-  canvas.html#line-styles:
-    title: 4.12.5.1.4 Line styles
-    status: unknown
-  canvas.html#text-styles:
-    title: 4.12.5.1.5 Text styles
-    status: unknown
-  canvas.html#building-paths:
-    title: 4.12.5.1.6 Building paths
-    status: unknown
-  canvas.html#path2d-objects:
-    title: 4.12.5.1.7 Path2D objects
-    status: unknown
-  canvas.html#transformations:
-    title: 4.12.5.1.8 Transformations
-    status: unknown
-  canvas.html#image-sources-for-2d-rendering-contexts:
-    title: 4.12.5.1.9 Image sources for 2D rendering contexts
-    status: unknown
-  canvas.html#fill-and-stroke-styles:
-    title: 4.12.5.1.10 Fill and stroke styles
-    status: unknown
-  canvas.html#drawing-rectangles-to-the-bitmap:
-    title: 4.12.5.1.11 Drawing rectangles to the bitmap
-    status: unknown
-  canvas.html#drawing-text-to-the-bitmap:
-    title: 4.12.5.1.12 Drawing text to the bitmap
-    status: unknown
-  canvas.html#drawing-paths-to-the-canvas:
-    title: 4.12.5.1.13 Drawing paths to the canvas
-    status: unknown
-  canvas.html#drawing-focus-rings-and-scrolling-paths-into-view:
-    title: 4.12.5.1.14 Drawing focus rings
-    status: unknown
-  canvas.html#drawing-images:
-    title: 4.12.5.1.15 Drawing images
-    status: unknown
-  canvas.html#pixel-manipulation:
-    title: 4.12.5.1.16 Pixel manipulation
-    status: unknown
-  canvas.html#compositing:
-    title: 4.12.5.1.17 Compositing
-    status: unknown
-  canvas.html#image-smoothing:
-    title: 4.12.5.1.18 Image smoothing
-    status: unknown
-  canvas.html#shadows:
-    title: 4.12.5.1.19 Shadows
-    status: unknown
-  canvas.html#filters:
-    title: 4.12.5.1.20 Filters
-    status: unknown
-  canvas.html#working-with-externally-defined-svg-filters:
-    title: 4.12.5.1.21 Working with externally-defined SVG filters
-    status: unknown
-  canvas.html#drawing-model:
-    title: 4.12.5.1.22 Drawing model
-    status: unknown
-  canvas.html#best-practices:
-    title: 4.12.5.1.23 Best practices
-    status: unknown
-  canvas.html#examples:
-    title: 4.12.5.1.24 Examples
-    status: unknown
+    status: n/a
   canvas.html#the-imagebitmap-rendering-context:
     title: 4.12.5.2 The ImageBitmap rendering context
-    status: unknown
-  canvas.html#introduction-6:
-    title: 4.12.5.2.1 Introduction
-    status: unknown
-  canvas.html#the-imagebitmaprenderingcontext-interface:
-    title: 4.12.5.2.2 The ImageBitmapRenderingContext interface
-    status: unknown
+    status: n/a
   canvas.html#the-offscreencanvas-interface:
     title: 4.12.5.3 The OffscreenCanvas interface
-    status: unknown
-  canvas.html#the-offscreen-2d-rendering-context:
-    title: 4.12.5.3.1 The offscreen 2D rendering context
-    status: unknown
+    status: n/a
   canvas.html#colour-spaces-and-colour-correction:
     title: 4.12.5.4 Color spaces and color space conversion
-    status: unknown
+    status: n/a
   canvas.html#serialising-bitmaps-to-a-file:
     title: 4.12.5.5 Serializing bitmaps to a file
-    status: unknown
+    status: n/a
   canvas.html#security-with-canvas-elements:
     title: 4.12.5.6 Security with canvas elements
-    status: unknown
+    status: n/a
   canvas.html#premultiplied-alpha-and-the-2d-rendering-context:
     title: 4.12.5.7 Premultiplied alpha and the 2D rendering context
-    status: unknown
+    status: n/a
   custom-elements.html#custom-elements:
     title: 4.13 Custom elements
     status: unknown
