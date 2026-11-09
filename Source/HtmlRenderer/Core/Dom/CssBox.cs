@@ -238,7 +238,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         public bool IsInline
         {
-            get { return (Display == CssConstants.Inline || Display == CssConstants.InlineBlock) && !IsBrElement; }
+            get { return Display == CssConstants.Inline || Display == CssConstants.InlineBlock; }
         }
 
         /// <summary>
@@ -1474,9 +1474,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             double maxSum = 0f;
             double paddingSum = 0f;
             double marginSum = 0f;
-            GetMinMaxSumWords(this, ref min, ref maxSum, ref paddingSum, ref marginSum);
+            double brokenLinesMax = 0f;
+            GetMinMaxSumWords(this, ref min, ref maxSum, ref paddingSum, ref marginSum, ref brokenLinesMax);
 
-            maxWidth = paddingSum + maxSum;
+            maxWidth = paddingSum + Math.Max(maxSum, brokenLinesMax);
             minWidth = paddingSum + (min < 90999 ? min : 0);
         }
 
@@ -1488,10 +1489,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="maxSum">the max width a single line of words can take without wrapping</param>
         /// <param name="paddingSum">the total amount of padding the content has </param>
         /// <param name="marginSum"></param>
+        /// <param name="brokenLinesMax">the widest line already ended by a line break in the current block</param>
         /// <returns></returns>
-        private static void GetMinMaxSumWords(CssBox box, ref double min, ref double maxSum, ref double paddingSum, ref double marginSum)
+        private static void GetMinMaxSumWords(CssBox box, ref double min, ref double maxSum, ref double paddingSum, ref double marginSum, ref double brokenLinesMax)
         {
             double? oldSum = null;
+            double oldBrokenLinesMax = 0;
 
             // paddingSum must be scoped per "line" the same way maxSum is (see the oldSum save/restore
             // below) - it represents the border/padding belonging to the WIDEST line found so far, not a
@@ -1509,6 +1512,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 maxSum = marginSum;
                 oldPaddingSum = paddingSum;
                 paddingSum = 0;
+                oldBrokenLinesMax = brokenLinesMax;
+                brokenLinesMax = 0;
             }
 
             // add the padding 
@@ -1524,6 +1529,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 // calculate the min and max sum for all the words in the box
                 foreach (CssRect word in box.Words)
                 {
+                    // A line break ends the line, so the next word starts a new one instead of adding to it.
+                    if (word.IsLineBreak)
+                    {
+                        brokenLinesMax = Math.Max(brokenLinesMax, maxSum);
+                        maxSum = marginSum;
+                        continue;
+                    }
+
                     maxSum += word.FullWidth + (word.HasSpaceBefore ? word.OwnerBox.ActualWordSpacing : 0);
                     min = Math.Max(min, word.Width);
                 }
@@ -1542,7 +1555,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                     //maxSum += childBox.ActualMarginLeft + childBox.ActualMarginRight;
                     var maxSumBeforeChild = maxSum;
-                    GetMinMaxSumWords(childBox, ref min, ref maxSum, ref paddingSum, ref marginSum);
+                    GetMinMaxSumWords(childBox, ref min, ref maxSum, ref paddingSum, ref marginSum, ref brokenLinesMax);
 
                     // This walk otherwise never consults a box's own explicit CSS `width` at all - only
                     // literal word/text content. That's usually fine (explicit width constrains layout
@@ -1575,7 +1588,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             // max sum (and its matching padding contribution) is the max of all the lines in the box
             if (oldSum.HasValue)
             {
-                maxSum = Math.Max(maxSum, oldSum.Value);
+                maxSum = Math.Max(Math.Max(maxSum, brokenLinesMax), oldSum.Value);
+                brokenLinesMax = oldBrokenLinesMax;
                 paddingSum = Math.Max(paddingSum, oldPaddingSum!.Value);
             }
         }

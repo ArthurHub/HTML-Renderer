@@ -467,9 +467,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                             actualLimitRight = rightObstructingFloat.Location.X - rightObstructingFloat.ActualMarginLeft - rightspacing;
                         }
 
+                        // A line break ends the current line, so the word after it starts the next one. Wrapping on
+                        // the break itself would add an empty line after a trailing <br> and drop the one a
+                        // leading <br> creates.
+                        var afterLineBreak = line.Words.Count > 0 && line.Words[line.Words.Count - 1].IsLineBreak;
+
                         if ((b.WhiteSpace != CssConstants.NoWrap && b.WhiteSpace != CssConstants.Pre && curx + word.Width + rightspacing > actualLimitRight
                              && (b.WhiteSpace != CssConstants.PreWrap || !word.IsSpaces))
-                            || word.IsLineBreak || wrapNoWrapBox)
+                            || afterLineBreak || wrapNoWrapBox)
                         {
                             wrapNoWrapBox = false;
                             curx = startx;
