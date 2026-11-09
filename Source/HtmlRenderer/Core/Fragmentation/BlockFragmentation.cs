@@ -120,7 +120,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         internal static void RelocateIfNeeded(RGraphics g, CssBox child)
         {
             var container = child.HtmlContainer;
-            if (container == null || !container.HasRealPageGrid || child.IsOutOfFlow)
+            if (container == null || !container.HasRealPageGrid || child.IsOutOfFlow || child.IsFixed)
                 return;
 
             var top = child.EffectiveTop;
@@ -188,7 +188,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         internal static void EnforceKeepWithNext(RGraphics g, CssBox child)
         {
             var container = child.HtmlContainer;
-            if (container == null || !container.HasRealPageGrid || child.IsOutOfFlow)
+            if (container == null || !container.HasRealPageGrid || child.IsOutOfFlow || child.IsFixed)
                 return;
 
             var prevSibling = DomUtils.GetPreviousSibling(child);

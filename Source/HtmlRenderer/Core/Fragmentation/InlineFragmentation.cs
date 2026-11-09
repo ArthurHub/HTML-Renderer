@@ -47,7 +47,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             // CollectFixedRoots) - unlike a float or an absolutely-positioned box, which stay in normal
             // document flow and must still paginate like anything else, the UA "must not paginate the
             // content of fixed-positioned boxes" (css-position-3), so this correction does not apply.
-            if (container == null || !container.HasRealPageGrid || blockBox.Position == CssConstants.Fixed)
+            if (container == null || !container.HasRealPageGrid || blockBox.IsFixed)
                 return;
 
             var lines = blockBox.LineBoxes;

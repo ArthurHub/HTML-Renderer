@@ -39,9 +39,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             if (!_container.HasRealPageGrid)
             {
                 // No bounded page grid (WinForms/WPF's continuous-scroll convention, or any container
-                // that never set a real PageSize) - the whole document is one fragmentainer.
+                // that never set a real PageSize) - the whole document is one fragmentainer. The band is
+                // unbounded since content starts at the root's Location.Y, not at 0.
                 var rect = new RRect(RPoint.Empty, _container.ActualSize);
-                var band = new PageBand(0, rect.Height);
+                var band = new PageBand(0, double.MaxValue);
                 var geometry = new PageBandGeometry(0, rect.Height, _container.MarginTop, _container.MarginRight, _container.MarginBottom, _container.MarginLeft);
                 var rootFragment = BuildBoxFragment(root, 0, band);
                 var fragmentainer = new FragmentainerFragment(rect, 0, geometry, 0, rootFragment);
@@ -71,7 +72,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             {
                 var bandTop = _container.PageTopOf(slot);
                 var bandBottom = _container.PageBottomOf(slot);
-                var band = new PageBand(bandTop, bandBottom);
+                var band = new PageBand(bandTop, bandBottom, bandTop - _container.MarginTop);
 
                 // CSS Paged Media 3 3.2: a page-slot no box has any content in is never materialized -
                 // this falls out of the walk rather than being special-cased, since a box only gets
@@ -94,7 +95,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 
                 var rect = new RRect(0, 0, _container.PageSize.Width, band.Height);
                 var geometry = new PageBandGeometry(bandTop, band.Height, _container.MarginTop, _container.MarginRight, _container.MarginBottom, _container.MarginLeft);
-                fragmentainers.Add(new FragmentainerFragment(rect, slot, geometry, bandTop, rootFragment));
+                fragmentainers.Add(new FragmentainerFragment(rect, slot, geometry, band.Origin, rootFragment));
             }
 
             return new FragmentTree(fragmentainers);
@@ -259,7 +260,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             return new RRect(rect.X, top, rect.Width, Math.Max(0, bottom - top));
         }
 
-        private static RRect ToLocal(RRect rect, PageBand band) => new RRect(rect.X, rect.Y - band.Top, rect.Width, rect.Height);
+        private static RRect ToLocal(RRect rect, PageBand band) => new RRect(rect.X, rect.Y - band.Origin, rect.Width, rect.Height);
 
         /// <summary>
         /// A no-op <see cref="SliceGeometry"/> - every edge is treated as a real box edge, since real
