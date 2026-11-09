@@ -161,6 +161,9 @@ sections:
   selector.html#pseudo-class-selectors:
     title: 5.11 Pseudo-classes
     status: unknown
+  selector.html#first-child:
+    title: 5.11.1 :first-child pseudo-class
+    status: unknown
   selector.html#link-pseudo-classes:
     title: 5.11.2 The link pseudo-classes
     status: unknown
@@ -174,13 +177,13 @@ sections:
     title: 5.12 Pseudo-elements
     status: unknown
   selector.html#first-line-pseudo:
-    title: 5.12.1 The
+    title: 5.12.1 The :first-line pseudo-element
     status: unknown
   selector.html#first-letter:
-    title: 5.12.2 The
+    title: 5.12.2 The :first-letter pseudo-element
     status: unknown
   selector.html#before-and-after:
-    title: 5.12.3 The
+    title: 5.12.3 The :before and :after pseudo-elements
     status: unknown
   cascade.html#q6.0:
     title: 6 Assigning property values, Cascading, and Inheritance
@@ -487,7 +490,7 @@ sections:
     title: 12 Generated content, automatic numbering, and lists
     status: unknown
   generate.html#before-after-content:
-    title: 12.1 The
+    title: 12.1 The :before and :after pseudo-elements
     status: unknown
   generate.html#content:
     title: 12.2 The 'content' property
