@@ -47,7 +47,7 @@ sections:
     status: partial
     gaps:
       - Uppercase units, at-keywords and '!important' aren't recognized, e.g. 10PX, @MEDIA and !IMPORTANT
-      - "Uppercase pseudo-class and pseudo-element names don't match, e.g. :FIRST-CHILD and ::BEFORE"
+      - Uppercase pseudo-class and pseudo-element names don't match, e.g. :FIRST-CHILD and ::BEFORE
   syndata.html#statements:
     title: 4.1.4 Statements
     status: supported
@@ -169,18 +169,18 @@ sections:
     title: 5.9 ID selectors
     status: partial
     gaps:
-      - IDs are matched case-insensitively, e.g. #Foo matches id="foo"
+      - 'IDs are matched case-insensitively, e.g. #Foo matches id="foo"'
   selector.html#pseudo-elements:
     title: 5.10 Pseudo-elements and pseudo-classes
     status: partial
     gaps:
-      - "Pseudo-class names are case-sensitive, 'p:FIRST-CHILD' never matches"
-      - "Pseudo-element names are case-sensitive, 'p:BEFORE' generates nothing"
+      - Pseudo-class names are case-sensitive, 'p:FIRST-CHILD' never matches
+      - Pseudo-element names are case-sensitive, 'p:BEFORE' generates nothing
   selector.html#pseudo-class-selectors:
     title: 5.11 Pseudo-classes
     status: partial
   selector.html#first-child:
-    title: "5.11.1 :first-child pseudo-class"
+    title: 5.11.1 :first-child pseudo-class
     status: supported
   selector.html#link-pseudo-classes:
     title: 5.11.2 The link pseudo-classes
@@ -189,13 +189,13 @@ sections:
     title: 5.11.3 The dynamic pseudo-classes
     status: unsupported
     gaps:
-      - ":hover rules are collected but never applied when the mouse is over the element, :active and :focus never match"
-      - "A :hover outside the subject, e.g. 'div:hover p', matches as if the element were always hovered"
+      - :hover rules are collected but never applied when the mouse is over the element, :active and :focus never match
+      - A :hover outside the subject, e.g. 'div:hover p', matches as if the element were always hovered
   selector.html#lang:
     title: 5.11.4 The language pseudo-class
     status: unsupported
     gaps:
-      - ":lang() never matches"
+      - :lang() never matches
   selector.html#pseudo-element-selectors:
     title: 5.12 Pseudo-elements
     status: partial
@@ -203,12 +203,12 @@ sections:
     title: 5.12.1 The :first-line pseudo-element
     status: parsed-only
     gaps:
-      - ":first-line is accepted but its declarations never apply"
+      - :first-line is accepted but its declarations never apply
   selector.html#first-letter:
     title: 5.12.2 The :first-letter pseudo-element
     status: parsed-only
     gaps:
-      - ":first-letter is accepted but its declarations never apply"
+      - :first-letter is accepted but its declarations never apply
   selector.html#before-and-after:
     title: 5.12.3 The :before and :after pseudo-elements
     status: supported
@@ -280,7 +280,7 @@ sections:
     status: partial
     gaps:
       - The media attribute of link and style elements is ignored, the style sheet applies to every media type
-      - "@import rules are never loaded, so their media list has no effect"
+      - '@import rules are never loaded, so their media list has no effect'
   media.html#at-media-rule:
     title: 7.2.1 The @media rule
     status: supported
@@ -668,7 +668,7 @@ sections:
     gaps:
       - disc, circle, square and none format the counter as a decimal number
   generate.html#undisplayed-counters:
-    title: 12.4.3 Counters in elements with 'display
+    title: "12.4.3 Counters in elements with 'display: none'"
     status: partial
     gaps:
       - "A ::before or ::after with 'content: none' or 'normal' still resets and increments counters"
