@@ -4,25 +4,7 @@ url: https://www.w3.org/TR/CSS21/
 sections:
   intro.html#q2.0:
     title: 2 Introduction to CSS 2.1
-    status: unknown
-  intro.html#html-tutorial:
-    title: 2.1 A brief CSS 2.1 tutorial for HTML
-    status: unknown
-  intro.html#xml-tutorial:
-    title: 2.2 A brief CSS 2.1 tutorial for XML
-    status: unknown
-  intro.html#processing-model:
-    title: 2.3 The CSS 2.1 processing model
-    status: unknown
-  intro.html#the-canvas:
-    title: 2.3.1 The canvas
-    status: unknown
-  intro.html#addressing:
-    title: 2.3.2 CSS 2.1 addressing model
-    status: unknown
-  intro.html#design-principles:
-    title: 2.4 CSS design principles
-    status: unknown
+    status: n/a
   conform.html#q3.0:
     title: 3 Conformance
     status: unknown
