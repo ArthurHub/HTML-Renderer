@@ -24,8 +24,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
     internal static class CssLayoutEngine
     {
         /// <summary>
-        /// Measure image box size by the width\height set on the box and the actual rendered image size.<br/>
-        /// If no image exists for the box error icon will be set.
+        /// Sizes an image word from the box's width and height, which the width and height attributes map
+        /// to (HTML §4.8.17), and the image's natural size, keeping its aspect ratio when only one is given.
+        /// Without an image the word gets the size of the broken image icon.
         /// </summary>
         /// <param name="imageWord">the image word to measure</param>
         public static void MeasureImageSize(CssRectImage imageWord)
