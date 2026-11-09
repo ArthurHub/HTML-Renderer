@@ -80,7 +80,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
                 SetTextSelectionStyle(htmlContainer, cssData);
 
-                CssCounterEngine.ResolveCounters(root, new Dictionary<string, int>());
+                CssCounterEngine.ResolveCounters(root);
 
                 CorrectTextBoxes(root);
 

@@ -21,74 +21,101 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
     /// Resolves CSS 2.1 §12.4 named counters (<c>counter-reset</c>/<c>counter-increment</c>) into a
     /// per-box snapshot of counter values, consulted by <c>content: counter()</c>
     /// (<see cref="CssContentEngine"/>).<br/>
-    /// Deliberately a subset of the full spec algorithm: counters thread forward through document order
-    /// (a box inherits its parent's counters for its first child, and each child's resulting counters
-    /// feed the next sibling) which covers ordinary sequential/nested counter usage, but
-    /// <c>reversed(&lt;name&gt;)</c> and <c>counter-set</c> are not implemented, and a nested
-    /// <c>counter-reset</c> for a name already in scope always starts a fresh inner value rather than
-    /// the spec's more precise "new scope only among this element's own following siblings" rule -
-    /// in practice indistinguishable from the full rule for the common case of one counter-reset per
-    /// counter name in a document, which is what this port's test coverage exercises.
+    /// <c>reversed(&lt;name&gt;)</c> and <c>counter-set</c> are not implemented.
     /// </summary>
     internal static class CssCounterEngine
     {
         /// <summary>
-        /// Walks <paramref name="box"/> and its descendants in document order, applying each box's own
+        /// Walks <paramref name="root"/> and its descendants in document order, applying each box's own
         /// <c>counter-reset</c>/<c>counter-increment</c> (plus the implicit <c>list-item</c> counter a
-        /// <c>display:list-item</c> box always increments) on top of <paramref name="inherited"/>, and
-        /// storing the result on <see cref="CssBoxProperties.Counters"/>. Must run once, before layout,
-        /// after every box's CSS properties are resolved (<c>counter-reset</c>/<c>counter-increment</c>
-        /// need their final cascaded values).
+        /// <c>display:list-item</c> box always increments) and storing the values in scope on
+        /// <see cref="CssBoxProperties.Counters"/>. Must run once, before layout, after every box's CSS
+        /// properties are resolved.
         /// </summary>
-        /// <returns>
-        /// The counters visible immediately after <paramref name="box"/> and its whole subtree - what a
-        /// following sibling should inherit.
-        /// </returns>
-        public static Dictionary<string, int> ResolveCounters(CssBox box, Dictionary<string, int> inherited)
+        public static void ResolveCounters(CssBox root)
         {
-            var counters = new Dictionary<string, int>(inherited);
-
-            ApplyCounterReset(box, counters);
-            ApplyCounterIncrement(box, counters);
-
-            box.Counters = new Dictionary<string, int>(counters);
-
-            foreach (var child in box.Boxes)
-            {
-                counters = ResolveCounters(child, counters);
-            }
-
-            return counters;
+            ResolveSiblings(new[] { root }, new Dictionary<string, List<int>>());
         }
 
-        private static void ApplyCounterReset(CssBox box, Dictionary<string, int> counters)
+        /// <summary>
+        /// Each counter name maps to a stack of instances. A reset creates a new instance that stays in
+        /// scope for the box's following siblings and all their descendants, and goes out of scope again
+        /// once the parent ends (§12.4.1). Boxes with <c>display:none</c> don't touch counters (§12.4.3).
+        /// </summary>
+        private static void ResolveSiblings(IEnumerable<CssBox> boxes, Dictionary<string, List<int>> counters)
+        {
+            var created = new HashSet<string>();
+
+            foreach (var box in boxes)
+            {
+                if (box.Display == CssConstants.None)
+                    continue;
+
+                ApplyCounterReset(box, counters, created);
+                ApplyCounterIncrement(box, counters, created);
+
+                var snapshot = new Dictionary<string, int>(counters.Count);
+                foreach (var pair in counters)
+                    snapshot[pair.Key] = pair.Value[pair.Value.Count - 1];
+                box.Counters = snapshot;
+
+                ResolveSiblings(box.Boxes, counters);
+            }
+
+            foreach (var name in created)
+            {
+                var instances = counters[name];
+                instances.RemoveAt(instances.Count - 1);
+                if (instances.Count == 0)
+                    counters.Remove(name);
+            }
+        }
+
+        private static void ApplyCounterReset(CssBox box, Dictionary<string, List<int>> counters, HashSet<string> created)
         {
             if (string.IsNullOrEmpty(box.CounterReset) || box.CounterReset == CssConstants.None) return;
 
-            ForEachNameValuePair(box.CounterReset, defaultValue: 0, (name, value) => counters[name] = value);
+            ForEachNameValuePair(box.CounterReset, defaultValue: 0, (name, value) => Reset(counters, created, name, value));
         }
 
-        private static void ApplyCounterIncrement(CssBox box, Dictionary<string, int> counters)
+        private static void ApplyCounterIncrement(CssBox box, Dictionary<string, List<int>> counters, HashSet<string> created)
         {
             if (box.Display == CssConstants.ListItem && !CounterNameAppears(box.CounterIncrement, CssConstants.ListItem))
             {
-                counters[CssConstants.ListItem] = GetOrDefault(counters, CssConstants.ListItem) + 1;
+                Increment(counters, created, CssConstants.ListItem, 1);
             }
 
             if (string.IsNullOrEmpty(box.CounterIncrement) || box.CounterIncrement == CssConstants.None) return;
 
-            ForEachNameValuePair(box.CounterIncrement, defaultValue: 1,
-                (name, value) => counters[name] = GetOrDefault(counters, name) + value);
+            ForEachNameValuePair(box.CounterIncrement, defaultValue: 1, (name, value) => Increment(counters, created, name, value));
         }
 
-        /// <summary>
-        /// <see cref="Dictionary{TKey,TValue}.GetValueOrDefault(TKey)"/> stand-in: this project also
-        /// targets netstandard2.0/net462, where that method doesn't exist.
-        /// </summary>
-        private static int GetOrDefault(Dictionary<string, int> counters, string name)
+        private static void Reset(Dictionary<string, List<int>> counters, HashSet<string> created, string name, int value)
         {
-            int value;
-            return counters.TryGetValue(name, out value) ? value : 0;
+            // A second reset among the same siblings replaces that instance instead of nesting a new one.
+            if (created.Add(name))
+            {
+                if (!counters.TryGetValue(name, out var instances))
+                    counters[name] = instances = new List<int>();
+                instances.Add(value);
+            }
+            else
+            {
+                var instances = counters[name];
+                instances[instances.Count - 1] = value;
+            }
+        }
+
+        private static void Increment(Dictionary<string, List<int>> counters, HashSet<string> created, string name, int value)
+        {
+            // Incrementing a counter that isn't in scope behaves as if this box had reset it to 0.
+            if (!counters.TryGetValue(name, out var instances))
+            {
+                Reset(counters, created, name, 0);
+                instances = counters[name];
+            }
+
+            instances[instances.Count - 1] += value;
         }
 
         private static bool CounterNameAppears(string counterPropertyValue, string counterName)

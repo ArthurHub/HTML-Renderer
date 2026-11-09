@@ -161,6 +161,51 @@ public sealed class CssContentEngineIntegrationTests
         Assert.AreEqual("5", before.Text);
     }
 
+    [TestMethod]
+    public void CounterReset_InANestedList_DoesNotLeakIntoTheOuterList()
+    {
+        // The inner list's reset creates a new counter that goes out of scope with the inner list, so
+        // the outer list continues at 2.
+        var html = LayoutHarness.Wrap(
+            "<div class='list'>"
+            + "<div class='item'><span id='a'>A</span>"
+            + "<div class='list'><p class='item'>x</p><p class='item'>y</p><p class='item'>z</p></div>"
+            + "</div>"
+            + "<div class='item'><span id='b'>B</span></div>"
+            + "</div>"
+            + "<style>.list { counter-reset: item; } .item { counter-increment: item; }"
+            + " #a::before, #b::before { content: counter(item); }</style>");
+        var (root, _) = LayoutHarness.Layout(html);
+
+        var a = LayoutHarness.FindById(root, "a")!.Boxes.First(b => b.IsBeforePseudoElement);
+        var b = LayoutHarness.FindById(root, "b")!.Boxes.First(b => b.IsBeforePseudoElement);
+
+        Assert.AreEqual("1", a.Text);
+        Assert.AreEqual("2", b.Text);
+    }
+
+    [TestMethod]
+    public void CounterIncrement_OnADisplayNoneElement_IsIgnored()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='counter-reset:item'>"
+            + "<p style='counter-increment:item'>a</p>"
+            + "<p style='counter-increment:item; display:none'>hidden</p>"
+            + "<p id='c' style='counter-increment:item'>c</p>"
+            + "</div>"
+            + "<style>#c::before { content: counter(item); }</style>");
+        var (root, _) = LayoutHarness.Layout(html);
+        var before = LayoutHarness.FindById(root, "c")!.Boxes.First(b => b.IsBeforePseudoElement);
+
+        Assert.AreEqual("2", before.Text);
+    }
+
+    [TestMethod]
+    public void Counter_NotInScope_ReadsAsZero()
+    {
+        Assert.AreEqual("0", ResolveBeforeContent("counter(nothing)").Text);
+    }
+
     // ── Helpers ────────────────────────────────────────────────────────────
 
     private static CssBox ResolveBeforeContent(string contentValue)
