@@ -259,7 +259,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                     var pageIndex = slotToPage[fragmentainer.SlotIndex];
 
                     // fucking position is from the bottom of the page
-                    var xRect = new XRect(link.Rectangle.Left, orgPageSize.Height - (link.Rectangle.Height + link.Rectangle.Top - bandTop), link.Rectangle.Width, link.Rectangle.Height);
+                    var xRect = new XRect(link.Rectangle.Left, orgPageSize.Height - (link.Rectangle.Height + link.Rectangle.Top - fragmentainer.LocalOriginY), link.Rectangle.Width, link.Rectangle.Height);
 
                     if (link.IsAnchor)
                     {
@@ -271,7 +271,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                             // document links to the same page as the link is not allowed
                             if (anchorSlot.HasValue && slotToPage.TryGetValue(anchorSlot.Value, out var anchorPageIdx) && pageIndex != anchorPageIdx)
                             {
-                                document.Pages[pageIndex].AddDocumentLink(new PdfRectangle(xRect), anchorPageIdx);
+                                document.Pages[pageIndex].AddDocumentLink(new PdfRectangle(xRect), anchorPageIdx + 1); // PdfSharp page numbers are one-based
                             }
                         }
                     }

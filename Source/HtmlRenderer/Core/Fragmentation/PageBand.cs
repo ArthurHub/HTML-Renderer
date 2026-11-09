@@ -10,13 +10,25 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
     internal readonly struct PageBand
     {
         public PageBand(double top, double bottom)
+            : this(top, bottom, top)
+        {
+        }
+
+        public PageBand(double top, double bottom, double origin)
         {
             Top = top;
             Bottom = bottom;
+            Origin = origin;
         }
 
         public double Top { get; }
         public double Bottom { get; }
+
+        /// <summary>
+        /// The document Y that maps to Y=0 on the fragmentainer's own surface. On a page this is the band's
+        /// top minus the page's top margin, so content keeps the margin above it.
+        /// </summary>
+        public double Origin { get; }
         public double Height => Bottom - Top;
 
         public bool Contains(double y) => y >= Top && y < Bottom;
