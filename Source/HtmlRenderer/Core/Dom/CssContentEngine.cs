@@ -95,10 +95,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         // ResolveCounters walks this pseudo-element box as an ordinary child of its
                         // generating element, so it already carries its own correct post-increment
                         // counter snapshot (inherited from the generating element's, per §12.4).
+                        // A counter that isn't in scope reads as 0 (§12.4).
                         int counterValue;
                         if (!box.Counters.TryGetValue(counterNameToken.Data, out counterValue))
                         {
-                            counterValue = 1;
+                            counterValue = 0;
                         }
                         sb.Append(CssCounterEngine.FormatCounterValue(counterValue, style));
                     }
