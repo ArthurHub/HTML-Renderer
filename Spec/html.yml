@@ -697,13 +697,19 @@ sections:
     status: n/a
   iframe-embed-object.html#the-iframe-element:
     title: 4.8.5 The iframe element
-    status: unknown
+    status: unsupported
+    gaps:
+      - The nested document isn't rendered, an empty box with a gray border is drawn instead, or a thumbnail for a YouTube or Vimeo src
   iframe-embed-object.html#the-embed-element:
     title: 4.8.6 The embed element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Not rendered, unknown inline element
   iframe-embed-object.html#the-object-element:
     title: 4.8.7 The object element
-    status: unknown
+    status: partial
+    gaps:
+      - The data resource isn't loaded, an image is shown as the fallback content instead
   media.html#the-video-element:
     title: 4.8.8 The video element
     status: unknown

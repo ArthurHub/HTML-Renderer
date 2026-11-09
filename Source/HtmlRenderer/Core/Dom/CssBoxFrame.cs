@@ -23,8 +23,8 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Dom
 {
     /// <summary>
-    /// CSS box for iframe element.<br/>
-    /// If the iframe is of embedded YouTube or Vimeo video it will show image with play.
+    /// CSS box for the iframe element, HTML §4.8.5. The nested document isn't rendered, an iframe of a
+    /// YouTube or Vimeo video shows the video's thumbnail with a play button instead.
     /// </summary>
     internal sealed class CssBoxFrame : CssBox
     {
@@ -66,9 +66,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         private bool _imageLoadingComplete;
 
         /// <summary>
-        /// the resolved YouTube/Vimeo oEmbed API URI to fetch, set in the constructor but not fetched
-        /// until <see cref="MeasureWordsSize"/> - see its own doc comment for why the fetch can't start
-        /// in the constructor.
+        /// The YouTube/Vimeo API URI to fetch the video data from, fetched in <see cref="MeasureWordsSize"/>.
         /// </summary>
         private RUri _videoApiUri;
 
@@ -158,12 +156,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         #region Private methods
 
         /// <summary>
-        /// Fetch and read <paramref name="apiUri"/> as text, fire-and-forget (matching
-        /// <see cref="ImageLoadHandler"/>'s pattern - nothing here blocks layout/paint), and hand the
-        /// result (or null on failure) to <paramref name="parseResult"/>. A null/unresolvable response is
-        /// reported the same way as any other "video not found" outcome - <see cref="RNetworkResponse"/>
-        /// has no HTTP status code to distinguish a 404 from another failure, matching every other
-        /// resource kind's fail-soft contract through this funnel.
+        /// Fetches <paramref name="apiUri"/> in the background and hands the text to
+        /// <paramref name="parseResult"/>. <see cref="RNetworkResponse"/> has no status code, so any
+        /// missing response is reported as a video that wasn't found.
         /// </summary>
         private async Task FetchVideoApiDataAsync(RUri apiUri, string source, Action<string> parseResult)
         {
@@ -407,10 +402,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Starts loading the video thumbnail if the video API call resolved a thumbnail URL and loading
-        /// hasn't started already - the same paint-time trigger pattern as <see cref="CssBoxImage"/>, see
-        /// its <see cref="CssBoxImage.EnsureImageLoadStarted"/> for why this can't move to measure time.
-        /// Called by <see cref="Paint.Content.FrameFragmentPainter"/>.
+        /// Starts loading the video thumbnail once the video data has a thumbnail URL, on first paint like
+        /// <see cref="CssBoxImage.EnsureImageLoadStarted"/>.
         /// </summary>
         internal void EnsureVideoImageLoadStarted()
         {
@@ -520,15 +513,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="g">the device to use</param>
         internal override void MeasureWordsSize(RGraphics g)
         {
-            // Kicks off the YouTube/Vimeo oEmbed API fetch (through the configured
-            // RAdapter.NetworkLoader - the same funnel used for images/stylesheets/fonts, so a consumer's
-            // custom loader applies here too) here rather than from the constructor: HtmlContainer walks
-            // up to the root box's own HtmlContainer, which DomParser.GenerateCssTree only assigns AFTER
-            // the whole box tree (including this one) has already been constructed - so at construction
-            // time it's always null. FetchVideoApiDataAsync dereferences it immediately (before its first
-            // genuine await), so starting the fetch from the constructor throws a NullReferenceException
-            // synchronously out of box-tree construction itself. MeasureWordsSize runs during layout, well
-            // after HtmlContainer is assigned, so it's a safe place to start this instead.
+            // Not started in the constructor, HtmlContainer is only assigned once the whole box tree is built.
             if (_isVideo && !_videoDataRequested)
             {
                 _videoDataRequested = true;
