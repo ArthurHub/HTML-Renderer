@@ -627,112 +627,74 @@ sections:
       - An img without src, with an empty src, or with alt="" and an unavailable image still takes up space instead of representing nothing
   images.html#images:
     title: 4.8.4 Images
-    status: unknown
+    status: partial
   images.html#introduction-3:
     title: 4.8.4.1 Introduction
-    status: unknown
-  images.html#adaptive-images:
-    title: 4.8.4.1.1 Adaptive images
-    status: unknown
+    status: n/a
   images.html#attributes-common-to-source-and-img-elements:
     title: 4.8.4.2 Attributes common to source, img, and link elements
-    status: unknown
-  images.html#srcset-attributes:
-    title: 4.8.4.2.1 Srcset attributes
-    status: unknown
-  images.html#sizes-attributes:
-    title: 4.8.4.2.2 Sizes attributes
-    status: unknown
+    status: n/a
   images.html#images-processing-model:
     title: 4.8.4.3 Processing model
-    status: unknown
+    status: partial
   images.html#when-to-obtain-images:
     title: 4.8.4.3.1 When to obtain images
-    status: unknown
+    status: supported
   images.html#reacting-to-dom-mutations:
     title: 4.8.4.3.2 Reacting to DOM mutations
-    status: unknown
+    status: n/a
   images.html#the-list-of-available-images:
     title: 4.8.4.3.3 The list of available images
-    status: unknown
+    status: n/a
   images.html#decoding-images:
     title: 4.8.4.3.4 Decoding images
-    status: unknown
+    status: n/a
   images.html#updating-the-image-data:
     title: 4.8.4.3.5 Updating the image data
-    status: unknown
+    status: supported
   images.html#preparing-an-image-for-presentation:
     title: 4.8.4.3.6 Preparing an image for presentation
-    status: unknown
+    status: unsupported
+    gaps:
+      - EXIF resolution metadata doesn't set the density-corrected natural size
   images.html#selecting-an-image-source:
     title: 4.8.4.3.7 Selecting an image source
-    status: unknown
+    status: unsupported
+    gaps:
+      - srcset is ignored, only src is loaded
   images.html#creating-a-source-set-from-attributes:
     title: 4.8.4.3.8 Creating a source set from attributes
-    status: unknown
+    status: unsupported
+    gaps:
+      - No source set is created, see 4.8.4.3.7
   images.html#updating-the-source-set:
     title: 4.8.4.3.9 Updating the source set
-    status: unknown
+    status: unsupported
+    gaps:
+      - The source elements of a picture are ignored
   images.html#parsing-a-srcset-attribute:
     title: 4.8.4.3.10 Parsing a srcset attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - srcset isn't parsed
   images.html#parsing-a-sizes-attribute:
     title: 4.8.4.3.11 Parsing a sizes attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - sizes isn't parsed
   images.html#normalizing-the-source-densities:
     title: 4.8.4.3.12 Normalizing the source densities
-    status: unknown
+    status: unsupported
+    gaps:
+      - Density and width descriptors don't scale the natural size
   images.html#reacting-to-environment-changes:
     title: 4.8.4.3.13 Reacting to environment changes
-    status: unknown
+    status: unsupported
+    gaps:
+      - No source selection to redo when the viewport changes, see 4.8.4.3.7
   images.html#alt:
     title: 4.8.4.4 Requirements for providing text to act as an alternative for images
-    status: unknown
-  images.html#general-guidelines:
-    title: 4.8.4.4.1 General guidelines
-    status: unknown
-  images.html#a-link-or-button-containing-nothing-but-the-image:
-    title: 4.8.4.4.2 A link or button containing nothing but the image
-    status: unknown
-  images.html#a-phrase-or-paragraph-with-an-alternative-graphical-representation:-charts,-diagrams,-graphs,-maps,-illustrations:
-    title: '4.8.4.4.3 A phrase or paragraph with an alternative graphical representation: charts, diagrams, graphs, maps, illustrations'
-    status: unknown
-  images.html#a-short-phrase-or-label-with-an-alternative-graphical-representation:-icons,-logos:
-    title: '4.8.4.4.4 A short phrase or label with an alternative graphical representation: icons, logos'
-    status: unknown
-  images.html#text-that-has-been-rendered-to-a-graphic-for-typographical-effect:
-    title: 4.8.4.4.5 Text that has been rendered to a graphic for typographical effect
-    status: unknown
-  images.html#a-graphical-representation-of-some-of-the-surrounding-text:
-    title: 4.8.4.4.6 A graphical representation of some of the surrounding text
-    status: unknown
-  images.html#ancillary-images:
-    title: 4.8.4.4.7 Ancillary images
-    status: unknown
-  images.html#a-purely-decorative-image-that-doesn't-add-any-information:
-    title: 4.8.4.4.8 A purely decorative image that doesn't add any information
-    status: unknown
-  images.html#a-group-of-images-that-form-a-single-larger-picture-with-no-links:
-    title: 4.8.4.4.9 A group of images that form a single larger picture with no links
-    status: unknown
-  images.html#a-group-of-images-that-form-a-single-larger-picture-with-links:
-    title: 4.8.4.4.10 A group of images that form a single larger picture with links
-    status: unknown
-  images.html#a-key-part-of-the-content:
-    title: 4.8.4.4.11 A key part of the content
-    status: unknown
-  images.html#an-image-not-intended-for-the-user:
-    title: 4.8.4.4.12 An image not intended for the user
-    status: unknown
-  images.html#an-image-in-an-e-mail-or-private-document-intended-for-a-specific-person-who-is-known-to-be-able-to-view-images:
-    title: 4.8.4.4.13 An image in an email or private document intended for a specific person who is known to be able to view images
-    status: unknown
-  images.html#guidance-for-markup-generators:
-    title: 4.8.4.4.14 Guidance for markup generators
-    status: unknown
-  images.html#guidance-for-conformance-checkers:
-    title: 4.8.4.4.15 Guidance for conformance checkers
-    status: unknown
+    status: n/a
   iframe-embed-object.html#the-iframe-element:
     title: 4.8.5 The iframe element
     status: unknown
