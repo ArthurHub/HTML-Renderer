@@ -31,6 +31,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint.Content
 
             box.PaintBackground(g, rect, true, true);
             BordersDrawHandler.DrawBoxBorders(g, box, rect, true, true);
+            OutlineDrawHandler.Draw(g, box, rect);
 
             DrawContent(g, fragment, painter.LiveTreeOffset(box.IsFixed));
 

@@ -793,6 +793,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 // treated the same as unset, since an invisible-by-default outline would defeat the point
                 // of the property entirely.
                 return string.IsNullOrEmpty(OutlineColor) || OutlineColor == "transparent"
+                       || OutlineColor.Equals("invert", StringComparison.OrdinalIgnoreCase)
                     ? ActualColor
                     : GetActualColor(OutlineColor);
             }
@@ -1997,6 +1998,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     _borderRightStyle = p._borderRightStyle;
                     _borderBottomStyle = p._borderBottomStyle;
                     _borderLeftStyle = p._borderLeftStyle;
+                    _outlineStyle = p._outlineStyle;
+                    _outlineColor = p._outlineColor;
+                    _outlineWidth = p._outlineWidth;
                     _bottom = p._bottom;
                     _borderTopLeftRadius = p._borderTopLeftRadius;
                     _borderTopRightRadius = p._borderTopRightRadius;
