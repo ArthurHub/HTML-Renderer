@@ -620,14 +620,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Whether this box's own height is "specified explicitly" per CSS 2.1 10.5: a definite
-        /// (non-auto) length, or a percentage against a containing block that is itself
-        /// height-calculated - or this box is the root/initial containing block (whose used height is
-        /// the page height regardless of its own computed `height`). Drives whether a DESCENDANT's
-        /// percentage height/min-height/max-height resolves against this box; computed by
-        /// <see cref="CssBox.ApplyHeight"/> once this box's own height is finalized, not a pure
-        /// computed getter (a descendant's own ApplyHeight needs to read it before this box's parent
-        /// has necessarily finished, so it can't be derived on demand from current state alone).
+        /// Whether a descendant's percentage height, min-height and max-height can resolve against this box,
+        /// CSS 2.1 §10.5. Set by <see cref="CssBox.ApplyHeight"/>, which runs after this box's children are
+        /// laid out.
         /// </summary>
         public bool IsHeightCalculated
         {
@@ -1123,11 +1118,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 {
                     var parsedHeight = CssValueParser.ParseLength(Height, Size.Height, this);
 
-                    // An explicit (non-auto) Height is a content-box measure under the default box-sizing
-                    // (CSS Box Sizing 3) - add this box's own padding+border to reach the border-box measure
-                    // this getter's one caller (CssBox.PerformLayoutImp's ActualBottom expansion) expects.
-                    // ActualBoxSizeIncludedHeight is 0 for box-sizing:border-box, where parsedHeight already
-                    // IS the border-box measure.
+                    // The border box height, ActualBoxSizeIncludedHeight adds the padding and border for
+                    // box-sizing: content-box
                     _actualHeight = Height != null && Height != CssConstants.Auto && !string.IsNullOrEmpty(Height)
                         ? parsedHeight + ActualBoxSizeIncludedHeight
                         : parsedHeight;
@@ -1137,7 +1129,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Gets the actual height
+        /// Gets the actual width, 0 for 'width: auto'
         /// </summary>
         public double ActualWidth
         {
@@ -1145,12 +1137,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             {
                 if (double.IsNaN(_actualWidth))
                 {
-                    // A percentage Width was already resolved to an absolute pixel value (against its
-                    // containing block, box-sizing-included) by CssBox.PerformLayoutImp's block-width pass
-                    // and baked into Size.Width - re-parsing it here against Size.Width (already-resolved
-                    // pixels, not a percentage base) would resolve the percentage against itself, squaring
-                    // it. A fixed-unit Width (em/px/pt) is unaffected either way, since ParseLength ignores
-                    // the percentage base for those units - only percentage Width ever hits this path.
+                    // Layout already resolved a percentage into Size.Width, parsing it again would apply
+                    // it to itself
                     _actualWidth = Width != null && Width.EndsWith("%")
                         ? Size.Width
                         : CssValueParser.ParseLength(Width, Size.Width, this);

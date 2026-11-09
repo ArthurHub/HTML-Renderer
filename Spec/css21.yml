@@ -466,85 +466,141 @@ sections:
       - "'direction' on an inline element reorders its words although 'unicode-bidi' is 'normal'"
   visudet.html#q10.0:
     title: 10 Visual formatting model details
-    status: unknown
+    status: partial
   visudet.html#containing-block-details:
     title: 10.1 Definition of "containing block"
-    status: unknown
+    status: partial
+    gaps:
+      - An absolutely positioned box is placed against the content edge of its positioned ancestor instead of the padding edge
+      - Percentages on an absolutely positioned box resolve against its parent instead of its containing block
+      - A block inside an inline is laid out inside the inline's padding instead of the content box of the nearest block container
   visudet.html#the-width-property:
     title: 10.2 Content width
-    status: unknown
+    status: partial
+    gaps:
+      - Negative widths are applied instead of being rejected
   visudet.html#Computing_widths_and_margins:
     title: 10.3 Calculating widths and margins
-    status: unknown
+    status: partial
   visudet.html#inline-width:
     title: 10.3.1 Inline, non-replaced elements
-    status: unknown
+    status: partial
+    gaps:
+      - "'width' is applied to non-replaced inline boxes, it widens the box on the line"
   visudet.html#inline-replaced-width:
     title: 10.3.2 Inline, replaced elements
-    status: unknown
+    status: partial
+    gaps:
+      - Widths in units other than px and % are ignored, the image keeps its intrinsic width
   visudet.html#blockwidth:
     title: 10.3.3 Block-level, non-replaced elements in normal flow
-    status: unknown
+    status: partial
+    gaps:
+      - Auto margins compute to 0, a block with a width is never centered or pushed right by them
+      - In RTL, an over-constrained block ignores 'margin-right' instead of 'margin-left'
   visudet.html#block-replaced-width:
     title: 10.3.4 Block-level, replaced elements in normal flow
-    status: unknown
+    status: partial
+    gaps:
+      - Auto margins compute to 0, a block image is never centered by them
   visudet.html#float-width:
     title: 10.3.5 Floating, non-replaced elements
-    status: unknown
+    status: partial
+    gaps:
+      - The shrink-to-fit width of an auto width float is computed before its content is measured, on the first layout it's 0 or NaN and the text wraps after every word
   visudet.html#float-replaced-width:
     title: 10.3.6 Floating, replaced elements
-    status: unknown
+    status: supported
   visudet.html#abs-non-replaced-width:
     title: 10.3.7 Absolutely positioned, non-replaced elements
-    status: unknown
+    status: partial
+    gaps:
+      - With 'left' and 'right' set, an auto width is 0 instead of filling the space between them
+      - The shrink-to-fit width of an auto width box is computed before its content is measured, on the first layout it's 0 or NaN
+      - With 'left', 'right' and 'width' set, auto margins compute to 0 instead of centering the box
   visudet.html#abs-replaced-width:
     title: 10.3.8 Absolutely positioned, replaced elements
-    status: unknown
+    status: supported
   visudet.html#inlineblock-width:
     title: 10.3.9 'Inline-block', non-replaced elements in normal flow
-    status: unknown
+    status: partial
+    gaps:
+      - An auto width inline-block is flowed like an inline, content too wide for the line wraps across lines instead of shrinking the box to the available width
   visudet.html#inlineblock-replaced-width:
     title: 10.3.10 'Inline-block', replaced elements in normal flow
-    status: unknown
+    status: supported
   visudet.html#min-max-widths:
     title: 10.4 Minimum and maximum widths
-    status: unknown
+    status: partial
+    gaps:
+      - "'min-width' is ignored"
+      - "'max-width' only applies to images, it's ignored on non-replaced boxes"
   visudet.html#the-height-property:
     title: 10.5 Content height
-    status: unknown
+    status: partial
+    gaps:
+      - Percentage heights compute to auto even when the containing block has an explicit height
+      - Negative heights are applied instead of being rejected
+      - "'height' is ignored on inline-block boxes"
   visudet.html#Computing_heights_and_margins:
     title: 10.6 Calculating heights and margins
-    status: unknown
+    status: partial
   visudet.html#inline-non-replaced:
     title: 10.6.1 Inline, non-replaced elements
-    status: unknown
+    status: partial
+    gaps:
+      - Vertical padding and border of an inline box can push the line's content down and make the line box taller
   visudet.html#inline-replaced-height:
     title: 10.6.2 Inline replaced elements, block-level replaced elements in normal flow, 'inline-block' replaced elements in normal flow and floating replaced elements
-    status: unknown
+    status: partial
+    gaps:
+      - Heights in units other than px are ignored, the image keeps its intrinsic height
   visudet.html#normal-block:
     title: 10.6.3 Block-level non-replaced elements in normal flow when 'overflow' computes to 'visible'
-    status: unknown
+    status: supported
   visudet.html#abs-non-replaced-height:
     title: 10.6.4 Absolutely positioned, non-replaced elements
-    status: unknown
+    status: partial
+    gaps:
+      - With 'top' and 'bottom' set, an auto height is the content height instead of filling the space between them
   visudet.html#abs-replaced-height:
     title: 10.6.5 Absolutely positioned, replaced elements
-    status: unknown
+    status: supported
   visudet.html#block-root-margin:
     title: 10.6.6 Complicated cases
-    status: unknown
+    status: partial
+    gaps:
+      - An inline-block with block-level content is split out of the line like an inline
+      - The bottom padding of an inline-block without top padding isn't part of its height
   visudet.html#root-height:
     title: 10.6.7 'Auto' heights for block formatting context roots
-    status: unknown
+    status: partial
+    gaps:
+      - The auto height of a block formatting context root doesn't grow to contain its floats
   visudet.html#min-max-heights:
     title: 10.7 Minimum and maximum heights
-    status: unknown
+    status: partial
+    gaps:
+      - Percentages are ignored even when the containing block has an explicit height
+      - "'min-height' and 'max-height' are ignored on images"
   visudet.html#line-height:
     title: 10.8 Line height calculations
-    status: unknown
+    status: partial
+    gaps:
+      - Images are aligned with the top of the line instead of sitting on the baseline
+      - Vertical margins of an inline-block don't make the line box taller
+      - "'line-height' on an inline box is ignored, only the block's own 'line-height' sizes the line"
   visudet.html#leading:
     title: 10.8.1 Leading and half-leading
-    status: unknown
+    status: partial
+    gaps:
+      - The used line height is 90% of 'line-height'
+      - A 'line-height' smaller than the font doesn't make the line shorter
+      - No half-leading, the text sits at the top of the line instead of in its middle
+      - Percentages compute to 'normal'
+      - A number is inherited as the parent's computed length instead of the number
+      - "'vertical-align' top, bottom, middle, text-top, text-bottom, lengths and percentages are treated as 'baseline'"
+      - "'vertical-align: sub' and 'super' both move the text to the top of the line"
   visufx.html#q11.0:
     title: 11 Visual effects
     status: unknown

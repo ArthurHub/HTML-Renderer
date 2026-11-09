@@ -715,16 +715,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         #region Private Methods
 
         /// <summary>
-        /// Computes this box's used height, ported from PeachPDF's CssLayoutEngine.GetBoxHeight -
-        /// scoped to the height features this engine supports (no aspect-ratio, no absolutely-
-        /// positioned top+bottom fill, no per-page height: PeachPDF features this engine never had).
-        /// PeachPDF's Size.Height is content-only, so its GetBoxHeight starts from
-        /// ActualBoxSizingHeight (Size.Height + padding/border) as the auto-height baseline and can
-        /// return null for an indeterminate percentage height, leaving ApplyHeight's Math.Max to
-        /// preserve whatever content-driven value is already there. This engine's Size.Height is
-        /// already the border-box measure (see <see cref="ActualRight"/>), so the equivalent baseline
-        /// is Size.Height itself, and there is no null case to thread through - an indeterminate
-        /// percentage height simply falls back to that same baseline directly.
+        /// The used border box height before 'max-height', CSS 2.1 §10.5 and §10.7. Size.Height holds the
+        /// content driven border box height, which is also what an auto or unresolvable percentage height
+        /// keeps.
         /// </summary>
         private double GetBoxHeight()
         {
@@ -748,21 +741,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Applies this box's used height (CSS 2.1 10.5/10.6.3/10.7) to <see cref="CssBoxProperties.ActualBottom"/>,
-        /// and computes whether this box counts as height-calculated for a descendant's percentage
-        /// height resolution. Ported from PeachPDF's CssLayoutEngine.ApplyHeight.
+        /// Sets <see cref="CssBoxProperties.ActualBottom"/> to the used height, CSS 2.1 §10.5, §10.6.3 and §10.7,
+        /// and whether a descendant's percentage height can resolve against this box.
         /// <para>
-        /// The assignment below is unconditional (not the plain <c>Math.Max(ActualBottom, ...)</c>
-        /// this replaced) - a no-op for auto height, since <see cref="GetBoxHeight"/>'s baseline is
-        /// already ActualBottom's own current value, but a real correction for a definite height,
-        /// able to shrink ActualBottom back down, which Math.Max alone never could. That correction is
-        /// what fixes a real bug this exposed: <see cref="CssLayoutEngine.FlowBox"/>'s own "handle
-        /// height setting" step (for a nested atomic inline-block) pushes a block's own maxBottom out
-        /// to the block's full ActualHeight measured from its content top, and CreateLineBoxes then
-        /// adds that same block's bottom padding/border again on top - inflating ActualBottom by one
-        /// extra padding+border box for any floated or block-level box with both an explicit height
-        /// and non-zero padding/border (e.g. every floated box in the W3C ACID1 test). A definite
-        /// height here authoritatively overwrites that inflated value instead of merely preserving it.
+        /// ActualBottom is overwritten, not maxed: <see cref="CssLayoutEngine.FlowBox"/> measures an explicit
+        /// height from the content top and CreateLineBoxes then adds the bottom padding and border on top of
+        /// it, so the content driven value can be too large.
         /// </para>
         /// </summary>
         private void ApplyHeight()
@@ -829,24 +813,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                     if (explicitWidth)
                     {
-                        // CSS 2.1 10.2: a percentage/length `width` resolves against the containing block's
-                        // content width. Per CSS Box Sizing 3, that resolved value is this box's CONTENT
-                        // width under the default `box-sizing: content-box` - its border-box width (what
-                        // Size.Width holds throughout this engine) additionally includes this box's own
-                        // padding+border (ActualBoxSizeIncludedWidth is 0 for `box-sizing: border-box`,
-                        // where the resolved value already IS the border-box width).
+                        // CSS 2.1 §10.2, Size.Width is the border box, ActualBoxSizeIncludedWidth adds the
+                        // padding and border for box-sizing: content-box.
                         width = CssValueParser.ParseLength(Width, availableWidth, this) + ActualBoxSizeIncludedWidth;
                     }
                     else if (IsFloated || Position == CssConstants.Absolute)
                     {
-                        // CSS 2.1 10.3.5/10.3.7: a floated box, or an absolutely positioned box with no
-                        // explicit width (the common case - both `left`/`right` auto), shrinks to fit its
-                        // content instead of taking the full containing-block width like an ordinary block.
-                        // (The full §10.3.7 seven-case width-auto-resolution algorithm - solving width from
-                        // explicit left+right+margins - is not implemented; this covers the shrink-to-fit
-                        // case PeachPDF's own Acid2 regression tests exercise.) GetMinMaxWidth already
-                        // returns border-box-inclusive bounds (its own padding/border baked in), so no
-                        // box-sizing adjustment is needed here.
+                        // Shrink-to-fit, CSS 2.1 §10.3.5 and §10.3.7. GetMinMaxWidth already includes the
+                        // padding and border.
                         double minWidth, maxWidth;
                         GetMinMaxWidth(out minWidth, out maxWidth);
                         width = Math.Min(Math.Max(minWidth, width), maxWidth);
@@ -856,11 +830,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                     if (!explicitWidth && !IsFloated)
                     {
-                        // CSS 2.1 10.3.3: only a plain (non-floated) width:auto block absorbs its own
-                        // margin into the available fill width to become its used (border-box) width - an
-                        // explicit width, or a floated shrink-to-fit width, is the used width as-is; margin
-                        // is separate space outside the border box (already accounted for via this box's
-                        // Location.X), not a further reduction of Size.Width on top of that.
+                        // CSS 2.1 §10.3.3, an auto width fills what the margins leave of the containing block
                         Size = new RSize(width - ActualMarginLeft - ActualMarginRight, Size.Height);
                     }
                 }
@@ -1056,14 +1026,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         }
                         ActualRight = CalculateActualRight();
 
-                        // CSS 2.1 10.6.3/10.6.7: a plain (non-BFC-establishing) box's own auto-height
-                        // doesn't contribute from out-of-flow (floated/absolutely-positioned) children
-                        // at all - if EVERY child is out-of-flow (e.g. a <ul> whose only children are
-                        // floated <li>s), there is no in-flow content to measure, so ActualBottom is
-                        // left exactly as the static-position commit above already set it (its own
-                        // top, i.e. zero content height) rather than being pulled down to match a
-                        // floated child's position. Ported from PeachPDF's CssBox.PerformLayoutImp
-                        // (`if (Boxes.Any(b => !b.IsOutOfFlow)) { ActualBottom = MarginBottomCollapse(); }`).
+                        // CSS 2.1 §10.6.3, with only floats and absolutely positioned children there is no
+                        // content and the height stays 0
                         if (Boxes.Exists(b => !b.IsOutOfFlow))
                         {
                             ActualBottom = MarginBottomCollapse();
@@ -1457,13 +1421,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             double? oldSum = null;
             double oldBrokenLinesMax = 0;
 
-            // paddingSum must be scoped per "line" the same way maxSum is (see the oldSum save/restore
-            // below) - it represents the border/padding belonging to the WIDEST line found so far, not a
-            // running total across every sibling's own unrelated line. Without oldPaddingSum, a block
-            // box's own border/padding (and every descendant's, recursively) permanently accumulated into
-            // paddingSum and was never reset between siblings - e.g. a content-bearing box followed by
-            // border-only siblings summed all their unrelated border/padding into one shrink-to-fit width
-            // instead of using only the widest line's own padding. Ported from PeachPDF's GetMinMaxSumWords.
+            // paddingSum is per line like maxSum, the padding and border of the widest line, not of all lines
             double? oldPaddingSum = null;
 
             // not inline (block) boxes start a new line so we need to reset the max sum
@@ -1518,18 +1476,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     var maxSumBeforeChild = maxSum;
                     GetMinMaxSumWords(childBox, ref min, ref maxSum, ref paddingSum, ref marginSum, ref brokenLinesMax);
 
-                    // This walk otherwise never consults a box's own explicit CSS `width` at all - only
-                    // literal word/text content. That's usually fine (explicit width constrains layout
-                    // AFTER content is measured) but breaks down for a child whose only real sizing
-                    // signal IS an explicit width with no word content to measure (e.g. a solid-color
-                    // box). A plain absolute length (not a percentage, which would read this box's own
-                    // not-yet-final ActualWidth) is folded in as an explicit floor for this line's
-                    // running total. Excludes a non-replaced inline box (Display:Inline with no Words of
-                    // its own): per CSS2.1 10.3.3, `width` has no effect on a non-replaced inline-level
-                    // box. A child that starts its OWN new "line" must have its explicit width combined
-                    // via Math.Max against maxSum, NOT added to maxSumBeforeChild - which already
-                    // reflects whatever an earlier, unrelated block-level sibling contributed and must
-                    // compete for "widest line wins", not accumulate. Ported from PeachPDF.
+                    // A child's own length width counts as content, e.g. for an empty box with a width.
+                    // Percentages are skipped, the width they resolve against isn't known yet. 'width' doesn't
+                    // apply to a non-replaced inline, CSS 2.1 §10.3.1. A block child starts its own line, so
+                    // its width competes with the widest line instead of adding to the current one.
                     if (CssValueParser.IsValidLength(childBox.Width) && !childBox.Width.EndsWith("%")
                         && !(childBox.Display == CssConstants.Inline && childBox.Words.Count == 0))
                     {

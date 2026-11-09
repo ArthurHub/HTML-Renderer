@@ -269,7 +269,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="baseline">baseline</param>
         internal void SetBaseLine(RGraphics g, CssBox b, double baseline)
         {
-            //TODO: Aqui me quede, checar poniendo "by the" con un font-size de 3em
             List<CssRect> ws = WordsOf(b);
 
             if (!Rectangles.ContainsKey(b))
@@ -295,8 +294,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
 
             //New top that words will have
-            //float newtop = baseline - (Height - OwnerBox.FontDescent - 3); //OLD
-            double newtop = baseline; // -GetBaseLineHeight(b, g); //OLD
+            double newtop = baseline;
 
             if (b.ParentBox != null &&
                 b.ParentBox.Rectangles.ContainsKey(this) &&

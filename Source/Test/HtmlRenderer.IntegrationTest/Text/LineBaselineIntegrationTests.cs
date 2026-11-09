@@ -4,9 +4,8 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 namespace HtmlRenderer.IntegrationTest.Text;
 
 /// <summary>
-/// Text of different sizes on one line shares a baseline, and a line is at least as tall as the block's own
-/// font (CSS 2.1 10.8). The layout uses real fonts, so the expected positions come from their metrics, where
-/// <c>UnderlineOffset</c> is the distance from the top of the line to the baseline.
+/// The expected positions come from the real font metrics, where <c>UnderlineOffset</c> is the distance from
+/// the top of the text to its baseline.
 /// </summary>
 [DoNotParallelize]
 [TestClass]
@@ -15,6 +14,7 @@ public sealed class LineBaselineIntegrationTests
     private const double Delta = 0.5;
 
     [TestMethod]
+    [Spec("css21", "visudet.html#leading")]
     public void SmallerText_SitsOnTheBaselineOfTheLargerText()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -27,6 +27,7 @@ public sealed class LineBaselineIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visudet.html#leading")]
     public void SmallerText_SitsOnTheBaselineOfTheBlocksOwnFont()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -38,6 +39,7 @@ public sealed class LineBaselineIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visudet.html#leading")]
     public void LineWithOnlySmallerText_IsAsTallAsTheBlocksFont()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

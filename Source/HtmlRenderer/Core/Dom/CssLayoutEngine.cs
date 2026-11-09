@@ -444,7 +444,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     foreach (var word in b.Words)
                     {
                         // A line with text is at least as tall as the block's own font, even if all its text
-                        // is smaller (the strut, CSS 2.1 10.8.1).
+                        // is smaller (the strut, CSS 2.1 §10.8.1).
                         var lineHeight = word.IsImage
                             ? box.ActualLineHeight
                             : Math.Max(box.ActualLineHeight, Math.Max(blockbox.ActualLineHeight, GetFontHeight(g, blockbox.ActualFont)));
@@ -716,9 +716,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
         /// <summary>
         /// Puts every text word of the line on one baseline, the lowest one any word or the block's own font
-        /// (the line's strut) needs. Words are flowed top-aligned, so a smaller font would otherwise hang from
-        /// the top of the line instead of sitting on it. Images and words inside a sub/super box keep their
-        /// current position, every other vertical-align value isn't supported and sits on the baseline.
+        /// (the line's strut) needs, CSS 2.1 §10.8.1. Words are flowed top-aligned, so a smaller font would
+        /// otherwise hang from the top of the line. Images keep their position, words inside a sub/super box
+        /// are moved by <see cref="ApplyVerticalAlignment"/>.
         /// </summary>
         private static void ApplyBaselineAlignment(RGraphics g, CssLineBox lineBox)
         {
@@ -797,7 +797,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             var boxes = new List<CssBox>(lineBox.Rectangles.Keys);
             foreach (CssBox box in boxes)
             {
-                //Important notes on http://www.w3.org/TR/CSS21/tables.html#height-layout
+                // CSS 2.1 §10.8.1
                 switch (box.VerticalAlign)
                 {
                     case CssConstants.Sub:

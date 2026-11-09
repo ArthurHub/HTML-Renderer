@@ -59,6 +59,7 @@ public sealed class MarginIntegrationTests
 
     [TestMethod]
     [Spec("css21", "box.html#margin-properties")]
+    [Spec("css21", "visudet.html#inline-non-replaced")]
     public void InlineVerticalMargins_DontChangeTheLineHeight()
     {
         var (plainRoot, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='p'>x <span>y</span> z</div>"));
