@@ -495,12 +495,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     cssBox.WordSpacing = value;
                     break;
                 case "font-family":
-                    // The declared value may be a comma-separated fallback list and/or have quoted
-                    // candidates (e.g. "'Helvetica Neue', Arial, sans-serif") - resolve it down to the
-                    // first candidate that's actually installed, same as the legacy <font face="...">
-                    // attribute already does, rather than handing the literal, possibly-quoted CSS
-                    // text straight to font creation (which fails to match any real font by name and
-                    // silently falls back to a generic system font for every unresolved candidate).
                     cssBox.FontFamily = cssBox.HtmlContainer.CssParser.ParseFontFamily(value);
                     break;
                 case "font-size":

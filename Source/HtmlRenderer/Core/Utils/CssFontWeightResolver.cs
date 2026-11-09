@@ -3,10 +3,7 @@ using System;
 namespace TheArtOfDev.HtmlRenderer.Core.Utils
 {
     /// <summary>
-    /// Resolves a box's cascaded <c>font-weight</c> value (<c>normal</c>/<c>bold</c>/<c>bolder</c>/
-    /// <c>lighter</c>/a number) to a concrete CSS Fonts Level 4 numeric weight (1-1000), for
-    /// <see cref="Dom.CssBoxProperties.ActualFont"/>'s face-matching call into
-    /// <see cref="Handlers.FontsHandler.GetCachedFont(string,double,Adapters.Entities.RFontStyle,int,int,int?)"/>.
+    /// Resolves a box's <c>font-weight</c> to a number (CSS 2.1 §15.6).
     /// </summary>
     internal static class CssFontWeightResolver
     {
@@ -14,11 +11,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         internal const int Bold = 700;
 
         /// <summary>
-        /// <c>bolder</c>/<c>lighter</c> are relative to the parent's resolved weight; true CSS2.1 defines
-        /// this via a lookup table over 9 named weight steps, not a fixed offset. A flat +/-300 clamped to
-        /// [1,1000] is a real, explicitly-simplified approximation of that table - close enough to move a
-        /// normal-weight (400) parent to bold (700) and back, without reproducing the full step table for
-        /// a CSS feature real-world content rarely nests more than one level deep.
+        /// Step of <c>bolder</c> and <c>lighter</c>, a fixed step instead of the table of CSS 2.1 §15.6.
         /// </summary>
         private const int RelativeStep = 300;
 

@@ -46,13 +46,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
     }
 
     /// <summary>
-    /// One registered family: either a legacy simple <see cref="RFontFamily"/> (the pre-existing
-    /// <see cref="FontsHandler.AddFontFamily"/> path - e.g. a WinForms demo's <c>LoadCustomFonts</c>,
-    /// unchanged behavior), or a list of <c>@font-face</c>-registered faces (new path), or both at once.
-    /// Named to match PeachPDF's <c>Fonts\FontFamilyModel.cs</c>, since it's the same "one family, its
-    /// registered faces" concept - extended here with the <see cref="SimpleFamily"/> escape hatch
-    /// PeachPDF's PDF-only resolver has no equivalent of, since this registry is shared across backends
-    /// that still need the legacy single-family API to keep working unchanged.
+    /// One registered family: an installed or <see cref="FontsHandler.AddFontFamily"/> family
+    /// (<see cref="SimpleFamily"/>), the faces registered by <c>@font-face</c> rules, or both.
     /// </summary>
     internal sealed class FontFamilyModel
     {
@@ -84,16 +79,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         private readonly Dictionary<string, FontFamilyModel> _existingFontFamilies = new Dictionary<string, FontFamilyModel>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
-        /// cache of all the font used not to create same font again and again (legacy family-string path)
+        /// cache of all the font used not to create same font again and again
         /// </summary>
         private readonly Dictionary<string, Dictionary<double, Dictionary<RFontStyle, RFont>>> _fontsCache = new Dictionary<string, Dictionary<double, Dictionary<RFontStyle, RFont>>>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
-        /// cache of fonts resolved through the <c>@font-face</c> matching path, keyed by everything that
-        /// can change which face gets chosen (family, size, weight, italic, stretch, and the codepoint used
-        /// for <c>unicode-range</c> disambiguation, -1 when none) - a wider key than <see cref="_fontsCache"/>
-        /// needs, since two requests with the same <see cref="RFontStyle"/> can still resolve to different
-        /// faces (e.g. weight 300 vs 600, both non-bold).
+        /// cache of fonts resolved from <c>@font-face</c> faces, keyed by everything that can change which
+        /// face gets chosen (codepoint -1 when none). Two requests with the same <see cref="RFontStyle"/> can
+        /// still resolve to different faces, e.g. weight 300 and 500.
         /// </summary>
         private readonly Dictionary<string, Dictionary<(double Size, int Weight, bool Italic, int Stretch, int Codepoint), RFont>> _faceFontsCache = new Dictionary<string, Dictionary<(double, int, bool, int, int), RFont>>(StringComparer.InvariantCultureIgnoreCase);
 
@@ -130,13 +123,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// Finds an already-registered family's representative <see cref="RFontFamily"/> by name - a
-        /// system font, an <see cref="AddFontFamily"/> registration, or an earlier <see cref="AddFontFace"/>
-        /// registration (its first face, arbitrarily - this is used to satisfy an <c>@font-face</c>
-        /// <c>src: local(...)</c> candidate, which only needs *a* face to exist under that name, not a
-        /// specific one). Returns null if no family is registered under that exact name (mapping via
-        /// <see cref="AddFontFamilyMapping"/> is deliberately not consulted here - <c>local()</c> refers to
-        /// an actual installed/registered font by its own name, not this renderer's not-found fallback).
+        /// Finds a registered family by its exact name, for <c>@font-face</c> <c>src: local(...)</c>, which
+        /// only needs some face to exist under that name. Mappings from <see cref="AddFontFamilyMapping"/>
+        /// aren't consulted, <c>local()</c> names an actual font. Returns null if there's none.
         /// </summary>
         public RFontFamily TryGetExistingFamily(string family)
         {
@@ -214,9 +203,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 
             model.Faces.Add(new FontFaceEntry(weight, isItalic, stretch, ranges, fontFamily));
 
-            // Faces changed under this family name - any font already resolved/cached against the old face
-            // set (legacy or @font-face path alike) could now be stale (a re-registration can change which
-            // face is nearest for a given request).
+            // A new face can change which face is nearest for a request.
             _fontsCache.Remove(familyName);
             _faceFontsCache.Remove(familyName);
         }
@@ -256,12 +243,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// Get cached font instance for the given font properties, matching against any <c>@font-face</c>
-        /// faces registered for <paramref name="family"/> via <see cref="AddFontFace"/> using the CSS
-        /// Fonts Level 4 §5 nearest-match algorithm (<see cref="TryFindNearestFace"/>). Falls through to
-        /// the legacy <see cref="GetCachedFont(string,double,RFontStyle)"/> path when the family has no
-        /// registered faces (the common case - no <c>@font-face</c> for this family), so existing
-        /// system-font/<see cref="AddFontFamily"/> behavior is unaffected.
+        /// Get cached font instance for the given font properties, matching against the <c>@font-face</c>
+        /// faces registered for <paramref name="family"/> (CSS Fonts 4 §5, <see cref="TryFindNearestFace"/>).
+        /// A family without such faces goes through <see cref="GetCachedFont(string,double,RFontStyle)"/>,
+        /// where the platform picks the face from the <see cref="RFontStyle"/> (CSS 2.1 §15.2).
         /// </summary>
         /// <param name="family">the css font-family name</param>
         /// <param name="size">the font size</param>
@@ -271,9 +256,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <param name="codepoint">the box's first non-whitespace character's codepoint, for <c>unicode-range</c> face disambiguation, or null to skip it</param>
         /// <returns>
         /// the resolved font, or null when <paramref name="codepoint"/> is given and no registered face
-        /// covers it (a real "this family can't render this character" outcome - see the unicode-range
-        /// scope note on <see cref="TryFindNearestFace"/> - the caller falls back to the box's next
-        /// candidate/default font, matching today's existing "nothing matched" behavior)
+        /// covers it, the caller then falls back to the default font
         /// </returns>
         public RFont GetCachedFont(string family, double size, RFontStyle style, int weight, int stretch, int? codepoint)
         {
@@ -290,14 +273,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 
                 if (codepoint != null)
                 {
-                    // A codepoint-scoped miss must not substitute an arbitrary non-covering face - report
-                    // it so the caller (CssBoxProperties.ActualFont) falls back to the box's next candidate
-                    // family / CssConstants.DefaultFont, matching today's existing "nothing matched" behavior.
+                    // Don't substitute a face that doesn't cover the character.
                     return null;
                 }
 
-                // Codepoint-less miss shouldn't happen (AddFontFace always leaves >=1 face registered), but
-                // degrade to the legacy path rather than throw if it ever does.
+                // Can't happen, AddFontFace always leaves a face registered.
             }
 
             return GetCachedFont(family, size, style);
@@ -307,11 +287,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         #region Private methods
 
         /// <summary>
-        /// Resolves the chosen <paramref name="face"/>'s actual <see cref="RFont"/>, computing the
-        /// residual <see cref="RFontStyle"/> - only the gap between what was requested and what was
-        /// actually found (e.g. faux-bold when no true bold face exists), plus the box's own
-        /// underline/strikeout bits, which apply regardless of which face was chosen - and caching by
-        /// every axis that could change the result.
+        /// Creates the chosen <paramref name="face"/>'s <see cref="RFont"/>, synthesizing bold or italic
+        /// when the face lacks what was requested.
         /// </summary>
         private RFont GetCachedFaceFont(string family, FontFaceEntry face, double size, RFontStyle requestedStyle, int requestedWeight, bool requestedItalic, int requestedStretch, int codepointKey)
         {
@@ -330,20 +307,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                 return font;
             }
 
-            // Every backend's face.FontFamily is a FAMILY handle, not distinct per-face content - WinForms'
-            // PrivateFontCollection and WPF's AddFontMemResourceEx-registered FontFamily both group every
-            // face of one family (Regular/Bold/Italic/BoldItalic) under one platform family object, and
-            // rely on the RFontStyle passed to CreateFont to pick the actual glyphs at that point (exactly
-            // like a plain installed font). So the requested style must always carry the CHOSEN face's own
-            // weight/italic bits (faceIsBold/face.Italic below), not just a synthesis gap - dropping them
-            // on an exact match would ask the platform for the wrong (regular) face despite having found
-            // and registered the real bold/italic one.
-            //
-            // Synthesis on top of that: the chosen face may still be a compromise (nearest-weight/slant
-            // match, not exact) - decide whether the gap is large enough that faux-bold/italic should also
-            // kick in, so e.g. "font-weight: bold" against a Regular-only family doesn't render with zero
-            // visual distinction. Threshold mirrors the common UA convention that weights >=600 read as
-            // "bold" and <600 don't.
+            // face.FontFamily is a platform family handle that groups all faces, the style passed to
+            // CreateFont picks the face. So the style carries the chosen face's own bold and italic bits,
+            // plus synthesized ones when the nearest face is lighter or upright. Weights from 600 count as
+            // bold, like the regular/bold matching of CSS 2.1 §15.6.
             var faceIsBold = face.Weight >= 600;
             var mustSimulateBold = requestedWeight >= 600 && !faceIsBold;
             var mustSimulateItalic = requestedItalic && !face.Italic;
@@ -358,14 +325,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// CSS Fonts Level 4 §5 face matching, direct port of PeachPDF's <c>FontResolver.TryFindNearestFace</c>.
-        /// When <paramref name="codepoint"/> is supplied, only faces whose explicit <c>unicode-range</c>
-        /// covers it are candidates (a face with no declared range is treated as covering everything - see
-        /// the class-level unicode-range scope note; unlike PeachPDF, there is no cmap-coverage fallback
-        /// for an unlabeled face, since per-box single-font resolution has no per-glyph text-shaping layer
-        /// to exploit that precision). Otherwise every face is a candidate. Within the candidates it
-        /// narrows italic/slant first, then stretch, then weight; an exact axis match short-circuits.
-        /// Returns false when no candidate face qualifies.
+        /// CSS Fonts 4 §5 face matching: italic first, then stretch, then weight. With a
+        /// <paramref name="codepoint"/>, only faces whose <c>unicode-range</c> covers it are candidates. A
+        /// face without a <c>unicode-range</c> is assumed to cover everything, its glyphs aren't checked.
+        /// Returns false when no face qualifies.
         /// </summary>
         private static bool TryFindNearestFace(FontFamilyModel family, int weight, bool isItalic, int stretch, int? codepoint, out FontFaceEntry face)
         {
@@ -401,8 +364,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 
         /// <summary>
         /// Whether <paramref name="entry"/> is used for <paramref name="codepoint"/>: inside its declared
-        /// <c>unicode-range</c> if it has one, else it covers everything (see the unicode-range scope note
-        /// on <see cref="TryFindNearestFace"/>).
+        /// <c>unicode-range</c> if it has one, else it covers everything.
         /// </summary>
         private static bool FaceCovers(FontFaceEntry entry, int codepoint)
         {
@@ -429,13 +391,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// CSS Fonts Level 4 §5.2's nearest-weight search order (the standard browser algorithm): a target
-        /// in [400,500] searches upward to 500 first, then below the target, then above 500; a target
-        /// below 400 searches downward first, then upward; a target above 500 searches upward first, then
-        /// downward. <paramref name="availableWeights"/> must be non-empty and is assumed to NOT already
-        /// contain an exact match for <paramref name="target"/> (the caller checks that separately, since
-        /// an exact match also has to match the requested italic-ness, which this purely-numeric helper
-        /// doesn't know about).
+        /// CSS Fonts 4 §5.2 nearest weight, the CSS 2.1 §15.6 order extended to any number.
+        /// <paramref name="availableWeights"/> must be non-empty. Outside [400,500] it skips
+        /// <paramref name="target"/> itself, the caller handles exact matches.
         /// </summary>
         private static int PickNearestWeight(List<int> availableWeights, int target)
         {

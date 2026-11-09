@@ -1646,9 +1646,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Gets the box's own resolved CSS Fonts Level 4 numeric <c>font-weight</c> (1-1000) - cached and
-        /// computed lazily like <see cref="ActualFont"/>, since <c>bolder</c>/<c>lighter</c> resolve
-        /// relative to the parent's own resolved weight (see <see cref="CssFontWeightResolver"/>).
+        /// Gets the numeric <c>font-weight</c>, <c>bolder</c> and <c>lighter</c> are relative to the
+        /// parent's (CSS 2.1 §15.6).
         /// </summary>
         internal int ActualFontWeight
         {
@@ -1756,10 +1755,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     _actualFont = GetCachedFont(FontFamily, fsize, st, weight, stretch, codepoint);
                     if (_actualFont == null)
                     {
-                        // A codepoint-scoped miss (the family has @font-face faces registered, but none
-                        // of them cover this box's first character) - fall back to the default font family
-                        // rather than propagate null, matching the pre-existing "nothing matched" behavior
-                        // for any other unresolvable font-family value.
+                        // No @font-face face of the family covers the box's first character.
                         _actualFont = GetCachedFont(CssConstants.DefaultFont, fsize, st, weight, stretch, null);
                     }
                 }
@@ -1861,13 +1857,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         protected abstract CssBoxProperties GetParent();
 
         /// <summary>
-        /// Gets the size of 1em in CSS pixels, per spec: an element's own computed font-size, not
-        /// the font's line-spacing metric (ascent+descent+leading), which is typically 15-30%+
-        /// larger and would inflate every em-based margin/padding/line-height. <see cref="ActualFont"/>
-        /// is created from a font-size already converted to points (<see cref="Parse.CssValueParser.ParseLength(string, double, double, double, string, bool, bool)"/>'s
-        /// fontAdjust factor, 72/96, applied when the declared value is in CSS px), so its own
-        /// <see cref="Adapters.RFont.Size"/> is in points too - convert back to CSS px (the unit
-        /// every other length in this engine resolves to) with the inverse, 96/72.
+        /// Gets the size of 1em in CSS pixels, the computed font-size (CSS 2.1 §15.7), not the font's
+        /// line spacing. <see cref="ActualFont"/> is sized in points.
         /// </summary>
         /// <returns></returns>
         public double GetEmHeight()

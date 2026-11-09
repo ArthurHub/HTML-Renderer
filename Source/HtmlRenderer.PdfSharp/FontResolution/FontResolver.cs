@@ -14,32 +14,14 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.PdfSharp.FontResolution
 {
     /// <summary>
-    /// PDFsharp <see cref="IFontResolver"/> implementation backing the PdfSharp backend's font handling -
-    /// OS font discovery plus CSS Fonts Level 4 §5 nearest-match (slant→stretch→weight) face selection,
-    /// ported from PeachPDF's <c>Fonts\FontResolver.cs</c>. Unlike WinForms/WPF (which register an
-    /// <c>@font-face</c> face as an opaque platform font-family handle and let the OS/UI framework do
-    /// matching), PDFsharp's <see cref="IFontResolver"/> contract needs raw font bytes at PDF-generation
-    /// time for embedding, so this type does its own matching entirely and is called directly by
-    /// <c>Adapters.PdfSharpAdapter</c>'s <c>AddFontFace</c>/<c>GetFont</c> overrides, bypassing the shared
-    /// <c>Core.Handlers.FontsHandler</c> registry other backends use.
+    /// PDFsharp <see cref="IFontResolver"/> of the PdfSharp backend: system font discovery and
+    /// CSS Fonts 4 §5 face matching (slant, stretch, weight). PDFsharp needs the font bytes for embedding,
+    /// so this does its own matching instead of going through <c>Core.Handlers.FontsHandler</c>.
     /// </summary>
     /// <remarks>
-    /// Two deliberate scope departures from PeachPDF's own resolver, both already established for this
-    /// port's shared <c>Core.Handlers.FontsHandler</c> (see its own doc comments):
-    /// <list type="bullet">
-    /// <item>No cmap-coverage extraction fallback for <c>unicode-range</c>-less faces - a face with no
-    /// explicit <c>unicode-range</c> is simply treated as covering everything. This codebase resolves one
-    /// font per box (not per glyph/run), so there's no per-glyph precision for cmap coverage to buy.</item>
-    /// <item>No per-<c>FontResolver</c>-instance glyph-typeface/descriptor caching. PeachPDF supports many
-    /// concurrent <c>PdfGenerator</c>s each with their own <c>FontResolver</c>, so it isolates their custom
-    /// font caches from each other. This backend's <c>PdfSharpAdapter</c> (and this resolver with it) is a
-    /// single process-wide singleton via <see cref="Register"/>, matching this project's pre-existing
-    /// architecture - there's only ever one instance, so nothing to isolate.</item>
-    /// </list>
-    /// System font discovery itself is also adapted, not verbatim: no Android/iOS branches (this project's
-    /// <c>netstandard2.0;net8.0</c> target framework list has no mobile leg to run them on), and Linux
-    /// discovery shells out to the <c>fc-list</c> CLI rather than P/Invoking <c>libfontconfig.so.1</c>
-    /// directly (see <see cref="LinuxSystemFontResolver"/>'s own doc comment for why).
+    /// A face without <c>unicode-range</c> is assumed to cover everything, its glyphs aren't checked,
+    /// there's one font per box anyway. The resolver is a process-wide singleton (<see cref="Register"/>).
+    /// On Linux, fonts are found with the <c>fc-list</c> CLI, see <see cref="LinuxSystemFontResolver"/>.
     /// </remarks>
     public sealed class FontResolver : IFontResolver
     {

@@ -5,22 +5,7 @@ using static HtmlRenderer.Test.CssEngineSupport.CssConstructionFunctions;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/FontProperty.cs (source class <c>CssFontPropertyTests</c>), the
-/// standalone font-related keyword/value longhands: <c>font-variant</c> (base css2 grammar only -
-/// see the class remarks below), <c>font-style</c>, <c>font-size</c>, <c>font-weight</c>, <c>font-stretch</c>,
-/// <c>letter-spacing</c>, and <c>font-size-adjust</c>. All under
-/// Source/HtmlRenderer/Core/CssEngine/StyleProperties/Font/.
-///
-/// Not ported: PeachPDF's <c>font-variant-ligatures</c>, <c>font-variant-caps</c>, <c>font-variant-numeric</c>,
-/// <c>font-variant-east-asian</c>, and <c>font-feature-settings</c> tests - none of those properties exist in
-/// this fork (confirmed: no matching type under StyleProperties/Font/, no <c>PropertyNames</c> entries). For
-/// the same reason, <c>Converters.FontVariantConverter</c> = <c>Map.FontVariants.ToConverter()</c>
-/// (Converters.cs) only recognizes the original CSS2 two-keyword grammar - <c>Map.FontVariants</c>
-/// (Model/Map.cs) maps just "normal" and "small-caps", not the CSS Fonts 4 <c>font-variant-caps</c>
-/// seven-keyword grammar PeachPDF's own font-variant shorthand now also accepts standalone. So PeachPDF's
-/// CssFontVariantNoneLegal, CssFontVariantCombinesCapsAndLigaturesAxesLegal, and
-/// CssFontVariantShorthandAcceptsPreviouslyRejectedCapsKeywords (all-small-caps/petite-caps/etc.) are skipped
-/// too - they'd need font-variant-caps/-ligatures support this fork doesn't have.
+/// Parsing of the font longhands. <c>font-variant</c> only knows the CSS 2.1 keywords normal and small-caps.
 /// </summary>
 [TestClass]
 public sealed class FontKeywordPropertyTests
@@ -28,6 +13,7 @@ public sealed class FontKeywordPropertyTests
     // ── font-variant (base keywords only) ────────────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css21", "fonts.html#small-caps")]
     public void CssFontVariantNormalUppercaseLegal()
     {
         var property = ParseDeclaration("font-variant : NORMAL");
@@ -41,6 +27,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#small-caps")]
     public void CssFontVariantSmallCapsLegal()
     {
         var property = ParseDeclaration("font-variant : small-caps ");
@@ -54,6 +41,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#small-caps")]
     public void CssFontVariantSmallCapsIllegal()
     {
         var property = ParseDeclaration("font-variant : smallCaps ");
@@ -68,6 +56,7 @@ public sealed class FontKeywordPropertyTests
     // ── font-style ────────────────────────────────────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-styling")]
     public void CssFontStyleItalicLegal()
     {
         var property = ParseDeclaration("font-style : italic");
@@ -81,6 +70,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-styling")]
     public void CssFontStyleObliqueLegal()
     {
         var property = ParseDeclaration("font-style : oblique ");
@@ -96,8 +86,7 @@ public sealed class FontKeywordPropertyTests
     [TestMethod]
     public void CssFontStyleObliqueWithAngleLegal()
     {
-        // CSS Fonts 4's "oblique <angle>" form - Converters.FontStyleConverter's second branch
-        // (Model/Converters.cs), a StartsWithValueConverter over AngleConverter.
+        // CSS Fonts 4 "oblique <angle>"
         var property = ParseDeclaration("font-style : oblique 10deg");
         Assert.AreEqual("font-style", property.Name);
         Assert.IsFalse(property.IsImportant);
@@ -122,6 +111,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-styling")]
     public void CssFontStyleNormalImportantLegal()
     {
         var property = ParseDeclaration("font-style : normal !important");
@@ -137,6 +127,7 @@ public sealed class FontKeywordPropertyTests
     // ── font-size ─────────────────────────────────────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-size-props")]
     public void CssFontSizeAbsoluteImportantXxSmallLegal()
     {
         var property = ParseDeclaration("font-size : xx-small !important");
@@ -150,6 +141,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-size-props")]
     public void CssFontSizeAbsoluteMediumUppercaseLegal()
     {
         var property = ParseDeclaration("font-size : medium");
@@ -163,6 +155,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-size-props")]
     public void CssFontSizeAbsoluteLargeImportantLegal()
     {
         var property = ParseDeclaration("font-size : large !important");
@@ -176,6 +169,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-size-props")]
     public void CssFontSizeRelativeLargerLegal()
     {
         var property = ParseDeclaration("font-size : larger ");
@@ -189,9 +183,9 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-size-props")]
     public void CssFontSizeRelativeLargestIllegal()
     {
-        // "largest" isn't a real CSS keyword (the relative pair is larger/smaller) - not in Map.FontSizes.
         var property = ParseDeclaration("font-size : largest ");
         Assert.AreEqual("font-size", property.Name);
         Assert.IsFalse(property.IsImportant);
@@ -202,6 +196,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-size-props")]
     public void CssFontSizePercentLegal()
     {
         var property = ParseDeclaration("font-size : 120% ");
@@ -215,6 +210,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-size-props")]
     public void CssFontSizeZeroLegal()
     {
         var property = ParseDeclaration("font-size : 0 ");
@@ -228,6 +224,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-size-props")]
     public void CssFontSizeLengthLegal()
     {
         var property = ParseDeclaration("font-size : 3.5em ");
@@ -241,10 +238,9 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-size-props")]
     public void CssFontSizeNumberIllegal()
     {
-        // A bare non-zero number has no unit and isn't a percentage - font-size doesn't treat unitless
-        // numbers specially (that's line-height's job), so it's rejected.
         var property = ParseDeclaration("font-size : 120.3 ");
         Assert.AreEqual("font-size", property.Name);
         Assert.IsFalse(property.IsImportant);
@@ -257,6 +253,7 @@ public sealed class FontKeywordPropertyTests
     // ── font-weight ───────────────────────────────────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-boldness")]
     public void CssFontWeightPercentllegal()
     {
         var property = ParseDeclaration("font-weight : 100% ");
@@ -269,6 +266,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-boldness")]
     public void CssFontWeightBolderLegalImportant()
     {
         var property = ParseDeclaration("font-weight : bolder !important");
@@ -282,6 +280,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-boldness")]
     public void CssFontWeightBoldLegal()
     {
         var property = ParseDeclaration("font-weight : bold");
@@ -295,6 +294,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-boldness")]
     public void CssFontWeight400Legal()
     {
         var property = ParseDeclaration("font-weight : 400 ");
@@ -308,12 +308,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
-    [Ignore("This fork's font-weight grammar hasn't picked up CSS Fonts 4's <number [1,1000]> - " +
-            "ValueExtensions.ToWeightInteger (Extensions/ValueExtensions.cs) delegates to the private " +
-            "IsWeight(int) helper, which only accepts the nine exact multiples of 100 from 100 to 900 " +
-            "(the old CSS2.1 grammar), not an arbitrary integer in [1,1000]. PeachPDF's own port already " +
-            "closed this gap (issue #655, matching its CssFontWeight550Legal); this fork hasn't yet, so " +
-            "550 is currently rejected rather than accepted.")]
+    [Ignore("CSS Fonts 4 <number [1,1000]> weights aren't parsed, only the CSS 2.1 multiples of 100")]
     public void CssFontWeight550Legal()
     {
         var property = ParseDeclaration("font-weight : 550 ");
@@ -329,8 +324,6 @@ public sealed class FontKeywordPropertyTests
     [TestMethod]
     public void CssFontWeight550IsCurrentlyIllegal()
     {
-        // Mirrors CSS Fonts 4's font-weight: 550 (see the [Ignore]d CssFontWeight550Legal above) - documents
-        // this fork's actual current behavior: rejected, because IsWeight only allows multiples of 100.
         var property = ParseDeclaration("font-weight : 550 ");
         Assert.AreEqual("font-weight", property.Name);
         Assert.IsFalse(property.IsImportant);
@@ -341,6 +334,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-boldness")]
     public void CssFontWeightOutOfRangeIllegal()
     {
         var property = ParseDeclaration("font-weight : 1001 ");
@@ -353,6 +347,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "fonts.html#font-boldness")]
     public void CssFontWeightZeroIllegal()
     {
         var property = ParseDeclaration("font-weight : 0 ");
@@ -395,8 +390,6 @@ public sealed class FontKeywordPropertyTests
     [TestMethod]
     public void CssFontStretchSemiExpandedSpaceBetweenIllegal()
     {
-        // "semi-expanded" must be a single ident token - the space breaks it into two tokens, and
-        // Map.FontStretches.ToConverter() (a DictionaryValueConverter) only matches a lone identifier.
         var property = ParseDeclaration("font-stretch : semi expanded ");
         Assert.AreEqual("font-stretch", property.Name);
         Assert.IsFalse(property.IsImportant);
@@ -491,8 +484,6 @@ public sealed class FontKeywordPropertyTests
     [TestMethod]
     public void CssFontSizeAdjustLengthIllegal()
     {
-        // font-size-adjust : Converters.OptionalNumberConverter.OrDefault() - a bare <number> or "none",
-        // never a <length>.
         var property = ParseDeclaration("font-size-adjust : 1.1em ");
         Assert.AreEqual("font-size-adjust", property.Name);
         Assert.IsFalse(property.IsImportant);

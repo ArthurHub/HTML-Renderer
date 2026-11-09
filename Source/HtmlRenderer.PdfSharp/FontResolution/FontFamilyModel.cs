@@ -5,18 +5,11 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.PdfSharp.FontResolution
 {
     /// <summary>
-    /// One registered face of a <see cref="FontFamilyModel"/>: its CSS Fonts Level 4 matching axes
-    /// (numeric weight, italic, stretch), the codepoint <see cref="CodepointRange"/>s it is restricted to
-    /// (from an <c>@font-face</c> <c>unicode-range</c> descriptor) or null when it has none - a face with
-    /// no explicit ranges is treated as covering everything (matching the same, deliberately simpler,
-    /// scope as the shared <c>Core.Handlers.FontsHandler</c> face registry - see its own doc comments for
-    /// why cmap-based coverage extraction isn't ported here: this codebase resolves one font per box, not
-    /// per glyph, so there is no per-glyph precision to exploit) - and the sniffed description
-    /// <see cref="FontResolver.ResolveTypeface(string,int,bool,int,int?)"/> hands back once this face is
-    /// chosen; <see cref="TtfFontDescription.FontNameInvariantCulture"/> doubles as this face's storage
-    /// key into <see cref="FontResolver.GetFont"/>.
+    /// One registered face of a <see cref="FontFamilyModel"/>: its CSS Fonts 4 matching axes, its
+    /// <c>unicode-range</c> or null when it has none (then it covers everything), and its description.
+    /// <see cref="TtfFontDescription.FontNameInvariantCulture"/> is the face's key into
+    /// <see cref="FontResolver.GetFont"/>.
     /// </summary>
-    /// <remarks>Ported from PeachPDF's <c>Fonts\FontFamilyModel.cs</c>.</remarks>
     internal sealed class FontFaceEntry
     {
         public FontFaceEntry(int weight, bool italic, int stretch, IReadOnlyList<CodepointRange> explicitRanges, TtfFontDescription description)
@@ -35,7 +28,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.FontResolution
         public TtfFontDescription Description { get; }
     }
 
-    /// <summary>One CSS font-family: its registered faces. Ported from PeachPDF's <c>Fonts\FontFamilyModel.cs</c>.</summary>
+    /// <summary>One CSS font-family: its registered faces.</summary>
     internal sealed class FontFamilyModel
     {
         public string Name { get; set; }

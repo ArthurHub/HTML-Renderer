@@ -189,7 +189,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         public const double FontSize = 11f;
 
         /// <summary>
-        /// Default font used for the generic 'serif' family
+        /// Font used when no family of 'font-family' is installed (CSS 2.1 §15.2)
         /// </summary>
         public const string DefaultFont = "Segoe UI";
     }

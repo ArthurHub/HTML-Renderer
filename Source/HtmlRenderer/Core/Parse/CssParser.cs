@@ -159,11 +159,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Parse a "font-family" value - possibly a comma-separated fallback list, each candidate
-        /// possibly quoted (e.g. <c>'Helvetica Neue', Arial, sans-serif</c>) - into the first
-        /// candidate that's actually installed/registered, or <see cref="CssConstants.DefaultFont"/>
-        /// if none of them are. Previously returned the literal string "inherit" as a not-found
-        /// sentinel, which was confusable with the real CSS <c>inherit</c> keyword downstream.
+        /// Resolves a "font-family" list to its first installed or mapped family, or
+        /// <see cref="CssConstants.DefaultFont"/> if there's none (CSS 2.1 §15.2). The choice is made
+        /// once per element, not per character. Quotes are stripped, so a quoted generic name matches
+        /// the generic family.
         /// </summary>
         /// <param name="value">the font-family value to parse</param>
         /// <returns>parsed font-family value</returns>
