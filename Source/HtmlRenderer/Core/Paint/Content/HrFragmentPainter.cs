@@ -2,6 +2,7 @@ using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Fragments;
+using TheArtOfDev.HtmlRenderer.Core.Handlers;
 
 namespace TheArtOfDev.HtmlRenderer.Core.Paint.Content
 {
@@ -25,6 +26,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint.Content
             var rect = fragment.PrimaryRect;
             rect.Offset(offset);
             box.DrawHrContent(g, rect);
+            OutlineDrawHandler.Draw(g, box, rect);
         }
     }
 }

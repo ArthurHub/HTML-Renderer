@@ -130,4 +130,45 @@ public sealed class OutlineStylePaintIntegrationTests
 
         Assert.AreEqual(borderBox.Y - 10 - 5, top.Y, 0.1);
     }
+
+    [TestMethod]
+    public void OutlineColorInvert_FallsBackToCurrentColor()
+    {
+        var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(
+            "<div style='width:100px;height:50px;color:rgb(51,51,51);outline:5px solid invert'></div>"));
+
+        var g = PaintHarness.PaintPage(container);
+        var rects = g.Log.OfType<RecordingGraphics.DrawRectCall>()
+            .Where(r => r.Color == RColor.FromArgb(51, 51, 51)).ToList();
+
+        Assert.AreEqual(4, rects.Count);
+    }
+
+    [TestMethod]
+    [DataRow("<img id='e' style='width:20px;height:20px;outline:5px solid rgb(51,51,51)'>")]
+    [DataRow("<hr id='e' style='outline:5px solid rgb(51,51,51)'>")]
+    public void ReplacedAndRuleElements_PaintTheirOutline(string element)
+    {
+        var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(element));
+
+        var g = PaintHarness.PaintPage(container);
+        var rects = g.Log.OfType<RecordingGraphics.DrawRectCall>()
+            .Where(r => r.Color == RColor.FromArgb(51, 51, 51)).ToList();
+
+        Assert.AreEqual(4, rects.Count);
+    }
+
+    [TestMethod]
+    public void InlineSplitAroundABlock_KeepsTheOutlineOnEveryPart()
+    {
+        // The span gets split into a part before and a part after the block, and both parts are copies.
+        var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(
+            "<span style='outline:2px solid rgb(51,51,51)'>before<div>block</div>after</span>"));
+
+        var g = PaintHarness.PaintPage(container);
+        var rects = g.Log.OfType<RecordingGraphics.DrawRectCall>()
+            .Where(r => r.Color == RColor.FromArgb(51, 51, 51)).ToList();
+
+        Assert.IsGreaterThanOrEqualTo(8, rects.Count, "both the part before and the part after the block need a ring");
+    }
 }
