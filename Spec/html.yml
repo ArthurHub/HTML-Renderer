@@ -1870,25 +1870,28 @@ sections:
     status: n/a
   obsolete.html#obsolete:
     title: 16 Obsolete features
-    status: unknown
+    status: partial
   obsolete.html#obsolete-but-conforming-features:
     title: 16.1 Obsolete but conforming features
-    status: unknown
-  obsolete.html#warnings-for-obsolete-but-conforming-features:
-    title: 16.1.1 Warnings for obsolete but conforming features
-    status: unknown
+    status: n/a
   obsolete.html#non-conforming-features:
     title: 16.2 Non-conforming features
-    status: unknown
+    status: n/a
   obsolete.html#requirements-for-implementations:
     title: 16.3 Requirements for implementations
-    status: unknown
+    status: partial
   obsolete.html#the-marquee-element:
     title: 16.3.1 The marquee element
-    status: unknown
+    status: unsupported
+    gaps:
+      - marquee isn't animated, behavior, direction, loop, scrollamount, scrolldelay and truespeed are ignored
   obsolete.html#frames:
     title: 16.3.2 Frames
-    status: unknown
+    status: unsupported
+    gaps:
+      - frameset doesn't act as the body and frames aren't loaded, see 15.6
   obsolete.html#other-elements,-attributes-and-apis:
     title: 16.3.3 Other elements, attributes and APIs
-    status: unknown
+    status: partial
+    gaps:
+      - listing, plaintext and xmp aren't rendered like pre, see 15.3.3
