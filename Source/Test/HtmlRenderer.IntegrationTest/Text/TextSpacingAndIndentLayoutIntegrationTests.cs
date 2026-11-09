@@ -3,48 +3,15 @@ using HtmlRenderer.IntegrationTest.TestSupport;
 
 namespace HtmlRenderer.IntegrationTest.Text;
 
-/// <summary>
-/// CSS 2.1 §16.1 (<c>text-indent</c>) and §16.4 (<c>word-spacing</c>) layout coverage - both properties were
-/// already fully implemented (unlike <c>letter-spacing</c>, which this port found has zero layout wiring at
-/// all - see remarks below), just untested at the layout level (only CSS-OM parsing existed). Ported/adapted
-/// from PeachPDF's TextIndentLayoutIntegrationTests.cs/LetterWordSpacingLayoutIntegrationTests.cs, restricted
-/// to the CSS 2.1 subset: a single <c>text-indent</c> length applied to a block's first line only (no
-/// <c>hanging</c>/<c>each-line</c> - CSS Text Level 4 - and no RTL-specific cases, since this fork's
-/// text-indent implementation is the plain CSS2.1 one).
-/// </summary>
-/// <remarks>
-/// <c>letter-spacing</c> is a confirmed, real gap found while porting this file: it parses fine
-/// (<c>CSS/FontKeywordPropertyTests.cs</c>) but has zero wiring anywhere in <c>Core</c> - no
-/// <c>CssBoxProperties.LetterSpacing</c> field, and no case in <c>CssUtils.GetPropertyValue</c>/
-/// <c>SetPropertyValue</c>/<c>_knownPropertyNames</c> (confirmed by grep - contrast with <c>word-spacing</c>,
-/// which has all of these). Implementing it is a real, separate word-measurement change (not a small
-/// backport - PeachPDF's own fix touched word-box-width reservation, inter-word-gap collapse prevention, and
-/// adjacent-inline-run overlap, per that file's own remarks) and is out of scope for this pass; flagged as a
-/// follow-up rather than built here.
-/// <para>
-/// A second, more fundamental gap this file's own tests found: <c>word-spacing</c>, however it's set
-/// (directly on the text-owning block, or on an ancestor further up - both fail identically), never
-/// actually reaches the inter-word gap for plain adjacent words in normal text flow. Root cause, confirmed
-/// by direct inspection: the CssRectWord that owns each word is an anonymous child text box, and that
-/// anonymous child's own <c>WordSpacing</c> reads back "normal" regardless of what any ancestor - including
-/// the direct parent - has set, so <c>CssRect.FullWidth</c>'s <c>OwnerBox.ActualWordSpacing</c> term is
-/// always the unspaced default. (<c>CssLayoutEngine.cs</c> has two call sites that DO add
-/// <c>ActualWordSpacing</c> correctly - for a stray whitespace-only box between two separately-styled
-/// inline elements - plus a third, commented-out block that looks like an abandoned attempt at exactly
-/// this normal-adjacent-word case.) Not fixed here - the anonymous text-box creation/inheritance path
-/// (<c>CorrectTextBoxes</c> et al. in <c>Parse/DomParser.cs</c>) is a shared, high-traffic piece of the
-/// engine, and root-causing this precisely was out of this pass's budget.
-/// </para>
-/// </remarks>
 [DoNotParallelize]
 [TestClass]
 public sealed class TextSpacingAndIndentLayoutIntegrationTests
 {
-    [Ignore("word-spacing set directly on the block that owns the words has no effect - see this class's own " +
-            "remarks for the root cause (the anonymous text child that actually owns the words doesn't inherit " +
-            "its own parent's directly-set word-spacing, confirmed by direct inspection: the child's own " +
-            "WordSpacing reads back \"normal\").")]
+    private const string WrappingText = "This text is long enough that it wraps onto a second line for sure.";
+
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "text.html#spacing-props")]
     public void WordSpacing_IncreasesGapBetweenAdjacentWords()
     {
         var spacedGap = InterWordGap("<p id='p' style='word-spacing:10px'>AA BB</p>");
@@ -53,10 +20,9 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
         Assert.AreEqual(plainGap + 10, spacedGap, 1);
     }
 
-    [Ignore("Same root cause as WordSpacing_IncreasesGapBetweenAdjacentWords above, and fails identically " +
-            "whether word-spacing is set directly on the text-owning block or (as here) an ancestor further " +
-            "up - see this class's own remarks.")]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "text.html#spacing-props")]
     public void WordSpacing_OnAncestor_AffectsDescendantGap()
     {
         var spacedGap = InterWordGap("<div style='word-spacing:10px'><p id='p'>AA BB</p></div>");
@@ -66,6 +32,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "text.html#spacing-props")]
     public void WordSpacingNormal_LeavesGapUnchanged()
     {
         var normalGap = InterWordGap("<p id='p' style='word-spacing:normal'>AA BB</p>");
@@ -74,9 +41,9 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
         Assert.AreEqual(plainGap, normalGap, 1);
     }
 
-    [Ignore("Same root cause as WordSpacing_IncreasesGapBetweenAdjacentWords above - word-spacing set " +
-            "directly on the text-owning block has no effect.")]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "text.html#spacing-props")]
     public void WordSpacingNegative_ReducesGap()
     {
         var negativeGap = InterWordGap("<p id='p' style='word-spacing:-5px'>AA BB</p>");
@@ -85,12 +52,23 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
         Assert.AreEqual(plainGap - 5, negativeGap, 1);
     }
 
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "text.html#spacing-props")]
+    public void LetterSpacing_WidensTheWordByTheSpacingPerCharacter()
+    {
+        var spaced = FirstWordWidth("<p id='p' style='letter-spacing:10px'>AAAA</p>");
+        var plain = FirstWordWidth("<p id='p'>AAAA</p>");
+
+        Assert.IsTrue(spaced >= plain + 30, $"expected at least 3 x 10px more than {plain}, got {spaced}");
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#indentation-prop")]
     public void TextIndent_IndentsOnlyTheFirstLine()
     {
         var html = LayoutHarness.Wrap(
-            "<p id='p' style='width:120px; text-indent:40px; margin:0;'>"
-            + "This text is long enough that it wraps onto a second line for sure.</p>");
+            "<p id='p' style='width:120px; text-indent:40px; margin:0;'>" + WrappingText + "</p>");
         var (root, _) = LayoutHarness.Layout(html);
         var p = LayoutHarness.FindById(root, "p")!;
 
@@ -105,6 +83,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "text.html#indentation-prop")]
     public void TextIndentZero_NoIndentOnAnyLine()
     {
         var html = LayoutHarness.Wrap("<p id='p' style='margin:0;'>Hello world</p>");
@@ -115,7 +94,89 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
         Assert.AreEqual(0, firstWord.Left, 1);
     }
 
-    // ── Helpers ────────────────────────────────────────────────────────────
+    [TestMethod]
+    [Spec("css21", "text.html#indentation-prop")]
+    public void NegativeTextIndent_PullsTheFirstLineOutOfTheBlock()
+    {
+        Assert.AreEqual(30, FirstWordLeft(
+            "<div style='width:400px;padding-left:50px'><p id='p' style='margin:0;text-indent:-20px'>hi</p></div>"), 1);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#indentation-prop")]
+    public void TextIndent_IsInheritedByABlockChild()
+    {
+        Assert.AreEqual(40, FirstWordLeft(
+            "<div style='text-indent:40px'><p id='p' style='margin:0'>hi</p></div>"), 1);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#indentation-prop")]
+    public void TextIndent_DoesntApplyAfterALineBreak()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='p' style='text-indent:40px'>aa<br>bb</div>"));
+        var words = AllWords(LayoutHarness.FindById(root, "p")!).Where(w => !w.IsLineBreak).ToList();
+
+        Assert.AreEqual(40, words[0].Left, 1);
+        Assert.AreEqual(0, words[1].Left, 1);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#indentation-prop")]
+    public void PercentageTextIndent_ResolvesAgainstTheContainingBlockWidth()
+    {
+        Assert.AreEqual(40, FirstWordLeft(
+            "<div style='width:400px'><p id='p' style='width:200px;margin:0;text-indent:10%'>hi</p></div>"), 1);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#indentation-prop")]
+    public void TextIndent_DoesntApplyToAnAnonymousBlockThatIsntTheFirstChild()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='p' style='text-indent:40px'><div>bb</div>cc</div>"));
+        var cc = AllWords(LayoutHarness.FindById(root, "p")!).Single(w => w.Text == "cc");
+
+        Assert.AreEqual(0, cc.Left, 1);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#indentation-prop")]
+    public void TextIndent_InRtl_IndentsFromTheRightEdge()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<p id='p' dir='rtl' style='margin:0;text-indent:40px;width:200px;text-align:right'>hi</p>"));
+        var word = AllWords(LayoutHarness.FindById(root, "p")!).Single();
+
+        Assert.AreEqual(160, word.Right, 1);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#indentation-prop")]
+    public void TextIndent_IndentsTheFirstLineOfAnInlineBlock()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div><span id='p' style='display:inline-block;width:200px;text-indent:40px'>bb</span></div>"));
+        var p = LayoutHarness.FindById(root, "p")!;
+        var word = AllWords(p).Single();
+
+        Assert.AreEqual(p.Location.X + 40, word.Left, 1);
+    }
+
+    private static double FirstWordLeft(string bodyHtml)
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(bodyHtml));
+        return AllWords(LayoutHarness.FindById(root, "p")!).First().Left;
+    }
+
+    private static double FirstWordWidth(string bodyHtml)
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(bodyHtml));
+        return AllWords(LayoutHarness.FindById(root, "p")!).First().Width;
+    }
 
     private static double InterWordGap(string bodyHtml)
     {

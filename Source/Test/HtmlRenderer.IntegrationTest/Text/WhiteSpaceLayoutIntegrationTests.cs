@@ -1,17 +1,17 @@
 using System.Linq;
 using HtmlRenderer.IntegrationTest.TestSupport;
+using TheArtOfDev.HtmlRenderer.Core.Dom;
 
 namespace HtmlRenderer.IntegrationTest.Text;
 
-/// <summary>
-/// Verifies <c>white-space</c> actually affects whitespace-collapsing and line-wrapping -
-/// <c>CssBox.ParseToWords</c>/<c>CssLayoutEngine.FlowBox</c> fully implement it.
-/// </summary>
 [DoNotParallelize]
 [TestClass]
 public sealed class WhiteSpaceLayoutIntegrationTests
 {
+    private const double Delta = 0.5;
+
     [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
     public void Pre_PreservesMultipleConsecutiveSpacesAsLiteralWord()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='white-space:pre'>A     B</p>"));
@@ -22,6 +22,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
     public void Normal_CollapsesConsecutiveSpaces_NoLiteralSpaceWord()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p'>A     B</p>"));
@@ -32,6 +33,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
     public void Pre_TreatsExplicitNewlineAsForcedLineBreak()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='white-space:pre'>A\nB</p>"));
@@ -41,6 +43,38 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
+    public void Pre_TreatsCrLfAsASingleNewline()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='white-space:pre'>A\r\nB</p>"));
+        var p = LayoutHarness.FindById(root, "p")!;
+
+        Assert.AreEqual(2, p.LineBoxes.Count);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
+    public void Pre_TreatsALoneCarriageReturnAsANewline()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='white-space:pre'>A\rB</p>"));
+        var p = LayoutHarness.FindById(root, "p")!;
+
+        Assert.AreEqual(2, p.LineBoxes.Count);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
+    public void Pre_DoesntWrapAtTheLineBoxEdge()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='margin:0;white-space:pre;width:30px'>AAAA BBBB</p>"));
+        var p = LayoutHarness.FindById(root, "p")!;
+
+        Assert.AreEqual(1, p.LineBoxes.Count);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
     public void Normal_IgnoresEmbeddedNewline_NoForcedBreak()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p'>A\nB</p>"));
@@ -50,6 +84,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
     public void NoWrap_PreventsWrapping_EvenWhenNarrowerThanContent()
     {
         var html = LayoutHarness.Wrap("<p id='p' style='white-space:nowrap; width:50px'>a long run of unwrapped text here</p>");
@@ -60,6 +95,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
     public void Normal_WrapsAtNarrowWidth_ForContrastWithNoWrap()
     {
         var html = LayoutHarness.Wrap("<p id='p' style='width:50px'>a long run of unwrapped text here</p>");
@@ -69,14 +105,120 @@ public sealed class WhiteSpaceLayoutIntegrationTests
         Assert.IsTrue(p.LineBoxes.Count > 1);
     }
 
-    // ─── &nbsp; (U+00A0) is significant, non-collapsible, non-breaking content - unlike ordinary
-    // whitespace, which stays collapsible/breakable (CSS2.1 §16.4.1) ───────────
-
-    [Ignore("HtmlUtils.DecodeHtml decodes &nbsp; to a plain U+0020 space rather than U+00A0 (non-breaking " +
-            "space), so it is collapsed away like ordinary whitespace-only content instead of surviving as " +
-            "significant content with real height. Confirmed real engine behavior, not a porting mistake - " +
-            "same root cause tracked for HtmlEntityDecodingIntegrationTests.")]
     [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
+    public void PreWrap_PreservesSpacesAndWraps()
+    {
+        var words = Words("<p id='p' style='margin:0;white-space:pre-wrap;width:40px'>AAAA   BBBB CCCC</p>");
+
+        Assert.IsTrue(words.Any(w => w.Text == "   "));
+        Assert.AreEqual(3, words.Where(w => !w.IsSpaces).Select(w => w.Top).Distinct().Count());
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
+    public void PreLine_CollapsesSpacesButKeepsNewlines()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='margin:0;white-space:pre-line'>A    B\nC</p>"));
+        var p = LayoutHarness.FindById(root, "p")!;
+        var words = AllWords(p).ToList();
+
+        Assert.AreEqual(2, p.LineBoxes.Count);
+        Assert.IsFalse(words.Any(w => w.IsSpaces && !w.IsLineBreak));
+        Assert.AreEqual(GapBetween("<p id='p' style='margin:0'>A B</p>", "A", "B"), Gap(words, "A", "B"), Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
+    public void PreLine_WrapsAtTheLineBoxEdge()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='margin:0;white-space:pre-line;width:40px'>AAAA BBBB CCCC</p>"));
+        var p = LayoutHarness.FindById(root, "p")!;
+
+        Assert.AreEqual(3, p.LineBoxes.Count);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
+    public void WhiteSpace_IsInherited()
+    {
+        var words = Words("<div style='white-space:pre'><p id='p' style='margin:0'>A   B</p></div>");
+
+        Assert.IsTrue(words.Any(w => w.Text == "   "));
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-model")]
+    public void Normal_TransformsALinefeedAndTheSpacesAroundItIntoOneSpace()
+    {
+        var expected = GapBetween("<p id='p' style='margin:0'>AA BB</p>", "AA", "BB");
+
+        Assert.AreEqual(expected, GapBetween("<p id='p' style='margin:0'>AA   \n   BB</p>", "AA", "BB"), Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-model")]
+    public void Normal_ConvertsATabToASpace()
+    {
+        var expected = GapBetween("<p id='p' style='margin:0'>AA BB</p>", "AA", "BB");
+
+        Assert.AreEqual(expected, GapBetween("<p id='p' style='margin:0'>AA\tBB</p>", "AA", "BB"), Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-model")]
+    public void Normal_RemovesASpaceAtTheBeginningOfALine()
+    {
+        var word = Words("<p id='p' style='margin:0'>   AA</p>").Single();
+
+        Assert.AreEqual(0, word.Left, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-model")]
+    public void Normal_CollapsesASpaceAtTheStartOfAnInlineWithOneBeforeIt_WhenTheFirstHasNoSpaceAfter()
+    {
+        var expected = GapBetween("<p id='p' style='margin:0'>AA BB</p>", "AA", "BB");
+
+        Assert.AreEqual(expected, GapBetween("<p id='p' style='margin:0'>AA<span> BB</span></p>", "AA", "BB"), Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-model")]
+    public void Normal_RemovesASpaceFollowingAnotherSpaceAcrossAnElementBoundary()
+    {
+        var expected = GapBetween("<p id='p' style='margin:0'>AA BB</p>", "AA", "BB");
+
+        Assert.AreEqual(expected, GapBetween("<p id='p' style='margin:0'>AA <span> BB</span></p>", "AA", "BB"), Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-model")]
+    public void Pre_RendersATabUpToTheNextTabStop()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<p id='p' style='margin:0;white-space:pre'>A\tB</p><p id='s' style='margin:0;white-space:pre'>        </p>"));
+        var b = AllWords(LayoutHarness.FindById(root, "p")!).Single(w => w.Text == "B");
+        var eightSpaces = AllWords(LayoutHarness.FindById(root, "s")!).Single();
+
+        Assert.AreEqual(eightSpaces.Width, b.Left, 1);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-model")]
+    public void NoBreakSpaces_ArentCollapsed()
+    {
+        var expected = GapBetween("<p id='p' style='margin:0'>A B</p>", "A", "B");
+
+        Assert.IsTrue(GapBetween("<p id='p' style='margin:0'>A  B</p>", "A", "B") > expected + 1);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-model")]
     public void Nbsp_OnlyContent_ProducesNonZeroHeight_MatchingRealText()
     {
         var (nbspRoot, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='b'>&nbsp;</div>"));
@@ -92,6 +234,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "text.html#white-space-model")]
     public void OrdinaryWhitespaceOnlyContent_StillProducesZeroHeight_NoRegression()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='b'>   </div>"));
@@ -101,15 +244,12 @@ public sealed class WhiteSpaceLayoutIntegrationTests
         Assert.IsTrue(height >= 0 && height <= 0.5);
     }
 
-    [Ignore("HtmlUtils.DecodeHtml decodes &nbsp; to a plain U+0020 space rather than U+00A0, so it is treated " +
-            "as an ordinary breakable/collapsible space instead of a non-breaking one - the narrow-width case " +
-            "wraps just like the plain-space case instead of staying on one line. Confirmed real engine " +
-            "behavior, not a porting mistake - same root cause tracked for HtmlEntityDecodingIntegrationTests.")]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "text.html#white-space-model")]
     public void Nbsp_BetweenTokens_PreventsLineWrap_ContrastOrdinarySpace()
     {
-        // Narrow enough that an ordinary space between "10" and "km" wraps to two lines, but a
-        // non-breaking space between them must never be treated as a break opportunity.
+        // Narrow enough that an ordinary space between "10" and "km" wraps.
         var (nbspRoot, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='width:35px'>10&nbsp;km</p>"));
         var pNbsp = LayoutHarness.FindById(nbspRoot, "p")!;
 
@@ -121,13 +261,54 @@ public sealed class WhiteSpaceLayoutIntegrationTests
             "expected ordinary space to still allow wrapping, for contrast with nbsp");
     }
 
-    // ─── word-break: break-all forces a mid-word break normal cannot find ──────
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-model")]
+    public void ElementBoundaryWithoutWhiteSpace_IsntALineBreakingOpportunity()
+    {
+        var words = Words("<p id='p' style='margin:0;width:60px'>AAAA<b>BBBB</b></p>");
 
+        Assert.AreEqual(1, words.Select(w => w.Top).Distinct().Count());
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-model")]
+    public void Float_DoesntIntroduceALineBreakingOpportunity()
+    {
+        var words = Words("<p id='p' style='margin:0;width:60px'>AAAA<span style='float:right'>x</span>BBBB</p>");
+
+        Assert.AreEqual(
+            words.Single(w => w.Text == "AAAA").Top,
+            words.Single(w => w.Text == "BBBB").Top, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#ctrlchars")]
+    public void CombiningCharacter_StaysWithItsBaseCharacter()
+    {
+        var word = Words("<p id='p' style='margin:0'>öx</p>").Single();
+
+        Assert.AreEqual("öx", word.Text);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#ctrlchars")]
+    [DataRow("\u000B")]
+    [DataRow("\u0085")]
+    public void ControlCharacter_IsRenderedLikeANormalCharacter(string control)
+    {
+        var words = Words($"<p id='p' style='margin:0'>A{control}B</p>");
+
+        Assert.AreEqual(1, words.Count);
+    }
+
+    // word-break is CSS Text 3, not CSS 2.1.
     [TestMethod]
     public void BreakAll_ForcesMidWordBreak_ContrastNormal()
     {
-        // A single unbroken run with no space anywhere: "normal" has no break opportunity at all
-        // and must lay the whole word out on one (overflowing) line, while "break-all" must wrap it.
+        // No space anywhere: "normal" has no break opportunity and overflows, "break-all" wraps.
         const string longWord = "abcdefghijklmnopqrstuvwxyz";
 
         var (normalRoot, _) = LayoutHarness.Layout(LayoutHarness.Wrap($"<p id='p' style='width:50px'>{longWord}</p>"));
@@ -137,12 +318,27 @@ public sealed class WhiteSpaceLayoutIntegrationTests
             LayoutHarness.Wrap($"<p id='p' style='width:50px; word-break:break-all'>{longWord}</p>"));
         var pBreakAll = LayoutHarness.FindById(breakAllRoot, "p")!;
 
-        // An overflowing word can push a leading empty line box ahead of it regardless of
-        // word-break - count only the lines that actually carry part of the word.
+        // An overflowing word pushes an empty line box ahead of it, count only lines with text.
         Assert.AreEqual(1, LinesWithWordContent(pNormal));
         Assert.IsTrue(LinesWithWordContent(pBreakAll) > 1, "expected break-all to force a mid-word break");
     }
 
-    private static int LinesWithWordContent(TheArtOfDev.HtmlRenderer.Core.Dom.CssBox box) =>
+    private static int LinesWithWordContent(CssBox box) =>
         box.LineBoxes.Count(lb => lb.Words.Any(w => !string.IsNullOrEmpty(w.Text)));
+
+    private static List<CssRect> Words(string bodyHtml)
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(bodyHtml));
+        return AllWords(LayoutHarness.FindById(root, "p")!).Where(w => !w.IsLineBreak).ToList();
+    }
+
+    private static double GapBetween(string bodyHtml, string first, string second) => Gap(Words(bodyHtml), first, second);
+
+    private static double Gap(IEnumerable<CssRect> words, string first, string second)
+    {
+        var list = words.ToList();
+        return list.Single(w => w.Text == second).Left - list.Single(w => w.Text == first).Right;
+    }
+
+    private static IEnumerable<CssRect> AllWords(CssBox box) => LayoutHarness.Descendants(box).SelectMany(b => b.Words);
 }

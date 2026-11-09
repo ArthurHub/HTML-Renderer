@@ -219,8 +219,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
                 }
             }
 
-            // Width.Length > 0 gate matches CssBox's own former PaintWords guard - preserved here since
-            // it's the caller's job now that word painting reads the fragment tree, not the live box.
             if (box.Width.Length > 0)
             {
                 foreach (var wordFragment in fragment.Words)

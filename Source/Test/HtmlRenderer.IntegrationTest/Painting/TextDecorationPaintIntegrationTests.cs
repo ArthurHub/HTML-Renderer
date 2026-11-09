@@ -4,29 +4,12 @@ using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 
 namespace HtmlRenderer.IntegrationTest.Painting;
 
-/// <summary>
-/// Verifies <c>text-decoration</c> actually draws a stroke at a plausible baseline-relative position with the
-/// right color - <c>CssBox.PaintDecoration</c> is fully implemented for the single-keyword case
-/// (underline/line-through/overline), using <see cref="PaintHarness"/>'s recording graphics to assert the real
-/// draw-call geometry/color, not just that painting completes.
-/// </summary>
-/// <remarks>
-/// PeachPDF.Tests' source file also covers two cases this fork has no equivalent feature for, so they are
-/// intentionally dropped rather than ported:
-/// <list type="bullet">
-/// <item>Combined decoration lines (<c>text-decoration:underline overline</c> drawing both). HTML-Renderer's
-/// <c>CssBoxProperties.TextDecoration</c> is a single string compared with <c>==</c> against one keyword at a
-/// time (see <c>CssBox.PaintDecoration</c>) - there is no multi-keyword parsing to draw more than one line.</item>
-/// <item><c>text-decoration-color</c> overriding the element color. <c>PaintDecoration</c> always strokes with
-/// <c>ActualColor</c> (the text color) - there is no separate decoration-color property anywhere in
-/// <c>CssBoxProperties</c>.</item>
-/// </list>
-/// </remarks>
 [DoNotParallelize]
 [TestClass]
 public sealed class TextDecorationPaintIntegrationTests
 {
     [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
     public void Underline_DrawsLineBelowRectangleTop()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -44,6 +27,7 @@ public sealed class TextDecorationPaintIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
     public void Overline_DrawsLineAtRectangleTop()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -59,6 +43,7 @@ public sealed class TextDecorationPaintIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
     public void LineThrough_DrawsLineNearRectangleMiddle()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -75,6 +60,7 @@ public sealed class TextDecorationPaintIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
     public void Underline_OverlineLineThrough_ProduceDifferentYPositions()
     {
         var underlineY = GetDecorationY("underline");
@@ -86,6 +72,7 @@ public sealed class TextDecorationPaintIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
     public void TextDecorationNone_DrawsNoLine()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -97,7 +84,102 @@ public sealed class TextDecorationPaintIntegrationTests
         Assert.IsFalse(g.Log.OfType<RecordingGraphics.DrawLineCall>().Any());
     }
 
+    [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
+    public void SeveralLines_AreAllDrawn()
+    {
+        var lines = PageLines("<span style='text-decoration:underline overline'>text</span>");
+
+        Assert.AreEqual(2, lines.Select(l => l.Y1).Distinct().Count());
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
+    public void Blink_DrawsNoLine()
+    {
+        Assert.AreEqual(0, PageLines("<span style='text-decoration:blink'>text</span>").Count);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
+    public void Block_PropagatesTheDecorationToItsText()
+    {
+        Assert.AreEqual(1, PageLines("<div style='text-decoration:underline'>text</div>").Count);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
+    public void Inline_PropagatesTheDecorationToTheBlockThatSplitsIt()
+    {
+        Assert.AreEqual(3, PageLines("<span style='text-decoration:underline'>a<div>b</div>c</span>").Count);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
+    public void Underline_SkipsMarginAndPadding()
+    {
+        var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
+            "<span id='s' style='text-decoration:underline;padding-left:20px;padding-right:20px;margin-left:10px'>text</span>"));
+        var s = PaintHarness.FindById(root, "s")!;
+        var word = LayoutHarness.Descendants(s).SelectMany(b => b.Words).Single();
+
+        var line = PaintHarness.PaintPage(container).Log.OfType<RecordingGraphics.DrawLineCall>().Single();
+
+        Assert.AreEqual(word.Left, line.X1, 0.5);
+        Assert.AreEqual(word.Right, line.X2, 0.5);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
+    public void Image_IsntUnderlined()
+    {
+        var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
+            "<div style='text-decoration:underline'>a <img id='i' style='width:20px;height:20px'></div>"));
+        var image = PaintHarness.FindById(root, "i")!.Words.Single();
+
+        var lines = PaintHarness.PaintPage(container).Log.OfType<RecordingGraphics.DrawLineCall>().ToList();
+
+        Assert.AreEqual(1, lines.Count);
+        Assert.IsTrue(lines[0].X2 <= image.Left);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
+    public void PropagatedDecoration_KeepsTheColorOfTheElementItIsSetOn()
+    {
+        var lines = PageLines("<div style='text-decoration:underline;color:rgb(0,0,255)'>a <span style='color:rgb(255,0,0)'>b</span></div>");
+
+        Assert.AreEqual(2, lines.Count);
+        Assert.IsTrue(lines.All(l => l.Color == RColor.FromArgb(0, 0, 255)));
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
+    public void Descendant_CantRemoveTheDecorationOfAnAncestor()
+    {
+        Assert.AreEqual(2, PageLines("<div style='text-decoration:underline'>a <span style='text-decoration:none'>b</span></div>").Count);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#lining-striking-props")]
+    [DataRow("float:left")]
+    [DataRow("position:absolute;top:100px")]
+    [DataRow("display:inline-block")]
+    public void Decoration_IsntPropagatedToFloatsAbsolutesAndInlineBlocks(string style)
+    {
+        Assert.AreEqual(1, PageLines($"<div style='text-decoration:underline'>a <span style='{style}'>b</span></div>").Count);
+    }
+
     // ─── Helpers ─────────────────────────────────────────────────────────────
+
+    private static List<RecordingGraphics.DrawLineCall> PageLines(string bodyHtml)
+    {
+        var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(bodyHtml));
+        return PaintHarness.PaintPage(container).Log.OfType<RecordingGraphics.DrawLineCall>().ToList();
+    }
 
     private static double GetDecorationY(string decorationLine)
     {

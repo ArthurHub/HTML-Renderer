@@ -830,37 +830,63 @@ sections:
       - The system fonts (caption, icon, menu, message-box, small-caption, status-bar) reset the font to its initial values instead of using the system's font
   text.html#q16.0:
     title: 16 Text
-    status: unknown
+    status: partial
   text.html#indentation-prop:
     title: 16.1 Indentation
-    status: unknown
+    status: partial
+    gaps:
+      - A percentage resolves against the block's own width instead of the containing block's width
+      - An anonymous block that isn't the first child is indented too
+      - In right-to-left text the indentation is applied at the left edge
+      - The first line of an inline-block isn't indented
   text.html#alignment-prop:
     title: 16.2 Alignment
-    status: unknown
+    status: partial
+    gaps:
+      - "The initial value acts as 'left' also when 'direction' is 'rtl'"
+      - "'justify' stretches preserved white space in 'pre' and 'pre-wrap' text"
   text.html#decoration:
     title: 16.3 Decoration
-    status: unknown
+    status: partial
   text.html#lining-striking-props:
     title: 16.3.1 Underlining, overlining, striking, and blinking
-    status: unknown
+    status: partial
+    gaps:
+      - A propagated decoration is drawn in the color of the descendant instead of the element it's set on
+      - "A descendant's 'text-decoration: none' removes the decoration of its ancestor"
+      - Decorations propagate to floats, absolutely positioned boxes and inline-blocks
   text.html#spacing-props:
     title: 16.4 Letter and word spacing
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'letter-spacing' is ignored"
+      - "'word-spacing' has no effect, the anonymous boxes that hold the text don't inherit it, see 6.2"
   text.html#caps-prop:
     title: 16.5 Capitalization
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'text-transform' is ignored"
   text.html#white-space-prop:
     title: 16.6 White space
-    status: unknown
+    status: partial
+    gaps:
+      - A lone carriage return is dropped instead of being treated as a newline
   text.html#white-space-model:
     title: 16.6.1 The 'white-space' processing model
-    status: unknown
+    status: partial
+    gaps:
+      - A space following another space isn't removed when an element boundary is between them
+      - Tabs in 'pre' and 'pre-wrap' are as wide as their glyph instead of reaching the next tab stop
+      - U+00A0 (and &nbsp;) is collapsed and breakable like a space
+      - A line can break at an element boundary or a float without white space in the text
   text.html#egbidiwscollapse:
     title: 16.6.2 Example of bidirectionality with white space collapsing
-    status: unknown
+    status: n/a
   text.html#ctrlchars:
     title: 16.6.3 Control and combining characters' details
-    status: unknown
+    status: partial
+    gaps:
+      - Control characters such as U+000B and U+0085 are treated as white space instead of being rendered
   tables.html#q17.0:
     title: 17 Tables
     status: unknown

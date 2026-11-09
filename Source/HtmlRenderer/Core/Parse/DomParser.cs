@@ -290,7 +290,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             ResolveCustomProperties(box);
             ResolveDeferredVarProperties(box, pendingVarProperties);
 
-            // cascade text decoration only to boxes that actually have text so it will be handled correctly.
+            // CSS 2.1 §16.3.1, decorations are painted by the boxes that hold the text, so they're pushed down to them.
             if (box.TextDecoration != String.Empty && box.Text == null)
             {
                 foreach (var childBox in box.Boxes)

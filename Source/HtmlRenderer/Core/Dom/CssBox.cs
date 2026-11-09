@@ -642,7 +642,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Splits the text into words and saves the result
+        /// Splits the text into words, collapsing white space per 'white-space' (CSS 2.1 §16.6.1).
         /// </summary>
         public void ParseToWords()
         {
@@ -684,7 +684,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         }
                     }
 
-                    // create new-line word so it will effect the layout
+                    // A preserved newline becomes its own word, the line layout breaks on it.
                     if (endIdx < _text.Length && _text[endIdx] == '\n')
                     {
                         endIdx++;
@@ -1963,8 +1963,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             pen.Width = 1;
             pen.DashStyle = RDashStyle.Solid;
 
-            // text-decoration-line may list several space-separated line keywords (e.g. "underline
-            // overline") - draw each one present rather than only the first/only value.
+            // CSS 2.1 §16.3.1, the value can list several lines.
             foreach (var line in TextDecoration.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 double y;

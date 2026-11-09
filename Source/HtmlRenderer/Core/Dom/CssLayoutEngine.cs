@@ -829,7 +829,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Applies centered alignment to the text on the linebox
+        /// Spreads the words over the line box, except on the last line (CSS 2.1 §16.2).
         /// </summary>
         /// <param name="g"></param>
         /// <param name="lineBox"></param>
@@ -934,28 +934,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Simplest alignment, just arrange words.
+        /// Left alignment, the words already are where <see cref="FlowBox"/> put them.
         /// </summary>
         /// <param name="g"></param>
         /// <param name="line"></param>
         private static void ApplyLeftAlignment(RGraphics g, CssLineBox line)
         {
-            //No alignment needed.
-
-            //foreach (LineBoxRectangle r in line.Rectangles)
-            //{
-            //    double curx = r.Left + (r.Index == 0 ? r.OwnerBox.ActualPaddingLeft + r.OwnerBox.ActualBorderLeftWidth / 2 : 0);
-
-            //    if (r.SpaceBefore) curx += r.OwnerBox.ActualWordSpacing;
-
-            //    foreach (BoxWord word in r.Words)
-            //    {
-            //        word.Left = curx;
-            //        word.Top = r.Top;// +r.OwnerBox.ActualPaddingTop + r.OwnerBox.ActualBorderTopWidth / 2;
-
-            //        curx = word.Right + r.OwnerBox.ActualWordSpacing;
-            //    }
-            //}
         }
 
         /// <summary>
