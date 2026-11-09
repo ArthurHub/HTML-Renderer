@@ -587,25 +587,25 @@ sections:
     status: n/a
   edits.html#edits:
     title: 4.7 Edits
-    status: unknown
+    status: supported
   edits.html#the-ins-element:
     title: 4.7.1 The ins element
-    status: unknown
+    status: supported
   edits.html#the-del-element:
     title: 4.7.2 The del element
-    status: unknown
+    status: supported
   edits.html#attributes-common-to-ins-and-del-elements:
     title: 4.7.3 Attributes common to ins and del elements
-    status: unknown
+    status: n/a
   edits.html#edits-and-paragraphs:
     title: 4.7.4 Edits and paragraphs
-    status: unknown
+    status: n/a
   edits.html#edits-and-lists:
     title: 4.7.5 Edits and lists
-    status: unknown
+    status: n/a
   edits.html#edits-and-tables:
     title: 4.7.6 Edits and tables
-    status: unknown
+    status: n/a
   embedded-content.html#embedded-content:
     title: 4.8 Embedded content
     status: unknown
