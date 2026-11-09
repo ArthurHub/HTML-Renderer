@@ -137,19 +137,20 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
         }
 
         /// <summary>
-        /// Paints one box fragment: display/visibility gate, fixed-position clip suspension, and the
-        /// same "is this rect actually in the visible area" cull the old live-tree walk used, before
-        /// handing off to the box's own content.
+        /// Paints one box fragment and its descendants, skipping it when it's hidden (CSS 2.1 §11.2) or
+        /// lies entirely outside the current clip.
         /// </summary>
         private void PaintFragment(RGraphics g, BoxFragment fragment)
         {
             var box = fragment.Box;
             try
             {
+                // Returning here also skips descendants that set 'visibility: visible' again.
                 if (box.Display == CssConstants.None || box.Visibility != CssConstants.Visible)
                     return;
 
-                // Only this box's own Position, not IsFixed's ancestor-aware sense - matching the old live-tree walk.
+                // CSS 2.1 §11.1.1, the containing block of a fixed box is the viewport, so the clips of its
+                // ancestors don't apply.
                 var suspendsClip = box.Position == CssConstants.Fixed;
                 if (suspendsClip)
                     g.SuspendClipping();
@@ -157,9 +158,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
                 var visible = box.Rectangles.Count == 0;
                 if (!visible)
                 {
-                    // box.ContainingBlock.ClientRectangle is read off the live box tree - still absolute
-                    // document-Y, unlike fragment-tree geometry, so this needs LiveTreeOffset (not just
-                    // ScrollOffset) to land in this painter's target frame.
+                    // The containing block's rectangle is in document coordinates, unlike fragment geometry.
                     var clip = g.GetClip();
                     var rect = box.ContainingBlock.ClientRectangle;
                     rect.X -= 2;

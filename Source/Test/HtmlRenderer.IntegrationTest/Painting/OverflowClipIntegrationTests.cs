@@ -1,42 +1,20 @@
+using System.Collections.Generic;
 using System.Linq;
 using HtmlRenderer.IntegrationTest.TestSupport;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 
 namespace HtmlRenderer.IntegrationTest.Painting;
 
 /// <summary>
-/// Port of PeachPDF.Tests' <c>OverflowClipIntegrationTests</c>, which verifies that <c>overflow:hidden</c> clips
-/// at the CSS padding edge (not the content edge) - PeachPDF's own fix for a bug where table cells (which
-/// inherit <c>overflow:hidden</c> from the default stylesheet) clipped rounded children too tightly.
+/// 'overflow' and 'clip'. The clip tests replay the recorded PushClip/PopClip calls to find the clip that was
+/// active when a box painted its background.
 /// </summary>
-/// <remarks>
-/// This fork shares the same default-stylesheet detail PeachPDF's bug report relies on - confirmed by direct
-/// source read of <c>Core/CssDefaults.cs</c> line 111: <c>td, th { border-color:#dfdfdf; overflow: hidden; }</c>.
-///
-/// However, direct source read of the actual clip mechanism shows the opposite divergence from what this port
-/// was originally briefed on. <c>RenderUtils.ClipGraphicsByOverflow</c> (<c>Core/Utils/RenderUtils.cs</c>
-/// ~42-59) clips to <c>box.ContainingBlock.ClientRectangle</c> (plus an unrelated 2px left-edge fudge). And
-/// <c>CssBoxProperties.ClientLeft</c>/<c>ClientRight</c> (<c>Core/Dom/CssBoxProperties.cs</c> ~751-769) each
-/// subtract BOTH border and padding on their own side: <c>ClientLeft = Location.X + ActualBorderLeftWidth +
-/// ActualPaddingLeft</c>, <c>ClientRight = ActualRight - ActualPaddingRight - ActualBorderRightWidth</c>. That
-/// makes <c>ClientRectangle</c> the CONTENT box (border and padding both excluded, symmetrically), not the
-/// padding box - so this fork's real overflow:hidden clip lands at the content edge, narrower than a padding-box
-/// clip, not wider. See the one test below marked <c>[Ignore]</c> for where this actually breaks a
-/// padding-box-precision assertion; every other case here is a pure child-containment geometry check that holds
-/// regardless of which edge the clip itself lands at (an auto-width/height child naturally stays within its
-/// parent's content box, which is always the smallest of the three candidate edges).
-///
-/// Standard CSS <c>border-radius</c> (and its longhands) used to not be recognized anywhere in this fork's
-/// Core, so PeachPDF's rounded-corner fixtures were originally re-expressed here using this fork's then-only
-/// proprietary <c>corner-radius</c>/<c>corner-*-radius</c> properties instead. The CSS engine port added real,
-/// standard <c>border-radius</c> support (see the sibling <c>BorderRadiusIntegrationTests</c> class's remarks)
-/// and removed the proprietary mechanism entirely, so the fixtures below now use the real property directly.
-/// Since border-radius only affects paint shape, never box geometry, this substitution does not change what
-/// any of the geometry assertions below are actually checking.
-/// </remarks>
 [DoNotParallelize]
 [TestClass]
 public sealed class OverflowClipIntegrationTests
 {
+    private static readonly RColor Red = RColor.FromArgb(255, 0, 0);
+
     // --- Geometry tests (verify clip bounds after layout) ---
 
     [TestMethod]
@@ -61,8 +39,7 @@ public sealed class OverflowClipIntegrationTests
     [TestMethod]
     public void RoundedBoxInTableCell_NonUniformRadius_BoundsWithinPaddingBoxClip()
     {
-        // Reproduces the original bug's setup: td gets overflow:hidden from the default stylesheet, and a
-        // non-uniformly-rounded div fills the td content area.
+        // td gets overflow:hidden from the default stylesheet, a non-uniformly rounded div fills its content area.
         var (root, _) = PaintHarness.Layout(PaintHarness.Wrap(
             "<table style='border-collapse:collapse; width:300px;'><tr>"
             + "<td id='cell' style='padding:3px;'><div id='box' style='border-top-left-radius:10px; border-bottom-right-radius:30px; height:60px; border:2px solid black;'></div></td>"
@@ -99,7 +76,7 @@ public sealed class OverflowClipIntegrationTests
     [TestMethod]
     public void OverflowHidden_ZeroPadding_ClipEqualsContentBox()
     {
-        // When padding is 0, padding-box == content-box. The clip right should equal ClientRight (no expansion).
+        // With zero padding the padding box and the content box coincide.
         var (root, _) = PaintHarness.Layout(PaintHarness.Wrap(
             "<div id='outer' style='overflow:hidden; padding:0; width:100px; height:100px;'>"
             + "<div id='inner' style='height:80px;'></div></div>"));
@@ -120,9 +97,6 @@ public sealed class OverflowClipIntegrationTests
     [TestMethod]
     public void RoundedBoxInTableCell_MultipleRadii_LayoutAndPaintDoNotThrow()
     {
-        // Adapted from PeachPDF's PDF-generation smoke test - this fork has no PdfGenerator, so the equivalent
-        // "must not throw" check is a plain layout + paint pass over several varied rounded-corner combinations
-        // inside table cells (using the real border-radius/border-*-radius properties).
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
             "<table id='t' style='border-collapse:collapse; width:400px;'><tr>"
             + "<td style='padding:3px;'><div style='border-radius:20px; height:60px; background:blue; border:2px solid #1a6b8a;'></div></td>"
@@ -135,19 +109,9 @@ public sealed class OverflowClipIntegrationTests
         PaintHarness.PaintBox(container, table);
     }
 
-    [Ignore("CONTRADICTS THIS FILE'S ORIGINAL PORTING BRIEF - confirmed by direct source read: " +
-            "CssBoxProperties.ClientLeft/ClientRight (Core/Dom/CssBoxProperties.cs ~751-769) subtract BOTH " +
-            "border AND padding on EACH side (ClientLeft = Location.X + ActualBorderLeftWidth + " +
-            "ActualPaddingLeft; ClientRight = ActualRight - ActualPaddingRight - ActualBorderRightWidth), so " +
-            "ClientRectangle is the CONTENT box, not the padding box. RenderUtils.ClipGraphicsByOverflow " +
-            "(Core/Utils/RenderUtils.cs ~42-59) clips directly to box.ContainingBlock.ClientRectangle with only " +
-            "an unrelated 2px left-edge fudge factor (a standing 'TODO: find a better way to fix it') - it never " +
-            "adds padding back the way PeachPDF's fix does. So this fork's real overflow:hidden clip lands at " +
-            "the CONTENT edge, narrower than the padding-box edge this test (and PeachPDF's current/fixed " +
-            "behavior) expects - the OPPOSITE direction of divergence from what this port was originally " +
-            "briefed on (which described the clip as too wide, not too narrow). Left in and ignored, rather than " +
-            "silently deleted, specifically so this correction is visible for the follow-up verification pass.")]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "visufx.html#overflow")]
     public void OverflowHidden_WithPadding_PaintClipReachesThePaddingBoxEdge()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -158,12 +122,183 @@ public sealed class OverflowClipIntegrationTests
 
         var g = PaintHarness.PaintBox(container, outer);
 
-        // The clip is pushed while painting 'inner' (whose containing block, 'outer', has overflow:hidden) - not
-        // while painting 'outer' itself. The harness's own container-bounds clip is pushed first, so the clip
-        // we want is the last one on the log.
+        // The harness pushes the container bounds first, the overflow clip is the last push.
         var clip = g.Log.OfType<RecordingGraphics.PushClipCall>().Last().Rect;
         var paddingBoxRight = outer.ClientRight + outer.ActualPaddingRight;
 
         Assert.AreEqual(paddingBoxRight, clip.Right, 1.5);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visufx.html#overflow")]
+    public void OverflowVisible_DoesNotClipOverflowingContent()
+    {
+        var clip = ClipOfRedBox(
+            "<div style='width:50px;height:50px'><div style='width:150px;height:150px;background:rgb(255,0,0)'></div></div>");
+
+        Assert.AreEqual(1000, clip.Right, 0.5);
+        Assert.AreEqual(4000, clip.Bottom, 0.5);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visufx.html#overflow")]
+    public void OverflowHidden_ClipsOverflowingChildToTheBox()
+    {
+        var clip = ClipOfRedBox(
+            "<div style='overflow:hidden;width:50px;height:60px'><div style='width:150px;height:150px;background:rgb(255,0,0)'></div></div>");
+
+        Assert.AreEqual(0, clip.Top, 0.5);
+        Assert.AreEqual(50, clip.Right, 0.5);
+        Assert.AreEqual(60, clip.Bottom, 0.5);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visufx.html#overflow")]
+    public void OverflowHidden_ClipsOverflowingText()
+    {
+        var (_, container) = PaintHarness.Layout(Doc(
+            "<div style='overflow:hidden;width:30px;height:10px'>aaa bbb ccc ddd</div>"));
+        var g = PaintHarness.PaintPage(container);
+
+        Assert.AreEqual(10, ClipAt(g, e => e is RecordingGraphics.DrawStringCall s && s.Text == "aaa").Bottom, 0.5);
+        if (g.DrawStringCalls.Any(c => c.Text == "ddd"))
+            Assert.AreEqual(10, ClipAt(g, e => e is RecordingGraphics.DrawStringCall s && s.Text == "ddd").Bottom, 0.5);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visufx.html#overflow")]
+    public void OverflowHidden_ClipsAbsoluteDescendantWhoseContainingBlockIsTheBox()
+    {
+        var clip = ClipOfRedBox(
+            "<div style='position:relative;overflow:hidden;width:50px;height:50px'>"
+            + "<div style='position:absolute;left:0;top:0;width:150px;height:150px;background:rgb(255,0,0)'></div></div>");
+
+        Assert.AreEqual(50, clip.Right, 0.5);
+        Assert.AreEqual(50, clip.Bottom, 0.5);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visufx.html#overflow")]
+    public void OverflowHidden_OnAnInlineElement_DoesNotClip()
+    {
+        var clip = ClipOfRedBox(
+            "<div><span style='overflow:hidden'><span style='display:inline-block;width:150px;height:150px;background:rgb(255,0,0)'></span></span></div>");
+
+        Assert.AreEqual(1000, clip.Right, 0.5);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visufx.html#overflow")]
+    [DataRow("scroll")]
+    [DataRow("auto")]
+    public void ScrollAndAuto_ClipOverflowingContent(string overflow)
+    {
+        var clip = ClipOfRedBox(
+            $"<div style='overflow:{overflow};width:50px;height:50px'><div style='width:150px;height:150px;background:rgb(255,0,0)'></div></div>");
+
+        Assert.AreEqual(50, clip.Right, 0.5);
+        Assert.AreEqual(50, clip.Bottom, 0.5);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visufx.html#overflow")]
+    public void OverflowHidden_DoesNotClipAtAnIntermediateNonClippingBox()
+    {
+        var clip = ClipOfRedBox(
+            "<div style='overflow:hidden;width:200px;height:200px'><div style='width:50px;height:50px'>"
+            + "<div style='width:150px;height:150px;background:rgb(255,0,0)'></div></div></div>");
+
+        Assert.AreEqual(200, clip.Right, 0.5);
+        Assert.AreEqual(200, clip.Bottom, 0.5);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visufx.html#overflow")]
+    public void OverflowHidden_DoesNotClipAbsoluteDescendantWhoseContainingBlockIsAnAncestor()
+    {
+        var clip = ClipOfRedBox(
+            "<div style='position:relative'><div style='overflow:hidden;width:50px;height:50px'>"
+            + "<div style='position:absolute;left:0;top:0;width:150px;height:150px;background:rgb(255,0,0)'></div></div></div>");
+
+        Assert.AreEqual(1000, clip.Right, 0.5);
+        Assert.AreEqual(4000, clip.Bottom, 0.5);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visufx.html#overflow")]
+    public void OverflowHidden_DoesNotClipFixedDescendant()
+    {
+        var clip = ClipOfRedBox(
+            "<div style='overflow:hidden;width:50px;height:50px'>"
+            + "<div style='position:fixed;left:0;top:0;width:150px;height:150px;background:rgb(255,0,0)'></div></div>");
+
+        Assert.AreEqual(1000, clip.Right, 0.5);
+        Assert.AreEqual(4000, clip.Bottom, 0.5);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visufx.html#overflow")]
+    public void OverflowOnBody_IsAppliedToTheViewport()
+    {
+        var (_, container) = PaintHarness.Layout(
+            "<!DOCTYPE html><html><body style='overflow:hidden;height:10px;margin:0'><div style='height:100px;background:rgb(255,0,0)'></div></body></html>",
+            300, 300);
+        var g = PaintHarness.PaintPage(container);
+
+        var clip = ClipAt(g, e => e is RecordingGraphics.DrawRectCall r && r.Color == Red);
+
+        Assert.AreEqual(300, clip.Bottom, 0.5);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visufx.html#clipping")]
+    public void ClipRect_ClipsAnAbsolutelyPositionedBox()
+    {
+        var clip = ClipOfRedBox(
+            "<div style='position:absolute;left:0;top:0;clip:rect(0,10px,20px,0);width:50px;height:50px;background:rgb(255,0,0)'></div>");
+
+        Assert.AreEqual(10, clip.Right, 0.5);
+        Assert.AreEqual(20, clip.Bottom, 0.5);
+    }
+
+    private static string Doc(string body) => $"<!DOCTYPE html><html><head></head><body style='margin:0'>{body}</body></html>";
+
+    private static RRect ClipOfRedBox(string body)
+    {
+        var (_, container) = PaintHarness.Layout(Doc(body));
+        var g = PaintHarness.PaintPage(container);
+
+        return ClipAt(g, e => e is RecordingGraphics.DrawRectCall r && r.Color == Red);
+    }
+
+    /// <summary>The intersection of all clips pushed and not yet popped when the first matching call was recorded.</summary>
+    private static RRect ClipAt(RecordingGraphics g, System.Func<object, bool> match)
+    {
+        var stack = new List<RRect>();
+        foreach (var entry in g.Log)
+        {
+            switch (entry)
+            {
+                case RecordingGraphics.PushClipCall push:
+                    stack.Add(push.Rect);
+                    break;
+                case RecordingGraphics.PopClipCall:
+                    stack.RemoveAt(stack.Count - 1);
+                    break;
+                default:
+                    if (match(entry))
+                        return stack.Aggregate(RRect.Intersect);
+                    break;
+            }
+        }
+
+        Assert.Fail("No matching draw call was recorded");
+        return RRect.Empty;
     }
 }

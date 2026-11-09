@@ -10,30 +10,9 @@ using TheArtOfDev.HtmlRenderer.Core.Fragments;
 namespace HtmlRenderer.IntegrationTest.Painting;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/FragmentPaintIntegrationTests.cs: paint driven by the fragment
-/// tree - each page paints its own fragmentainer and nothing else, and every drawn rectangle is the one the
-/// fragment carries. Maps directly to <c>Core/Paint/FragmentPainter.cs</c>, and (for the multi-page tests)
-/// its production per-page entry point <c>HtmlContainerInt.PerformPaint(RGraphics, FragmentainerFragment)</c>,
-/// exercised here through <see cref="PaintHarness.PaintPage(TheArtOfDev.HtmlRenderer.Core.HtmlContainerInt, int)"/>.
+/// Paint driven by the fragment tree: each page paints its own fragmentainer and nothing else, and every drawn
+/// rectangle is the one the fragment carries.
 /// </summary>
-/// <remarks>
-/// All 8 of PeachPDF's tests port. Fixtures use CSS <c>px</c> directly (this port's <see cref="RSize"/>-based
-/// <c>PageSize</c> matches 1:1, per the convention <c>PageBreakIntegrationTests</c> already established)
-/// rather than PeachPDF's <c>pt</c>.
-/// <para>
-/// One confirmed gap surfaced while porting: <c>StackingOrder_IsPreservedWhenPaintingFromFragments</c> is
-/// <c>[Ignore]</c>d - z-index is a parse-only stub, never consulted by paint order (see that test's own
-/// remarks). A second, more consequential real bug was found and fixed as part of this batch, not merely
-/// documented: <c>HtmlContainerInt.PerformPaint(RGraphics, FragmentainerFragment)</c> - the per-page paint
-/// entry point <c>PdfGenerator</c>'s own page loop calls - pushed a paint clip starting at Y=<c>MarginTop</c>
-/// rather than Y=0, silently clipping away the first <c>MarginTop</c>-tall strip of every single page's own
-/// content (fragment-tree geometry is already band-local, where a band's own top is local Y=0, not
-/// <c>MarginTop</c> - see <c>FragmentEmitter</c>'s own doc comment). Found while adapting
-/// <c>StraddlingListMarkerTests.EveryMarker_IsDrawnOnExactlyOnePage</c> (a list item landing entirely within
-/// the clipped strip and never appearing in any page's paint log, with no exception raised), fixed at its
-/// source in <c>HtmlContainerInt.cs</c> - see that method's own updated remarks for the full mechanism.
-/// </para>
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class FragmentPaintIntegrationTests
@@ -133,16 +112,9 @@ public sealed class FragmentPaintIntegrationTests
         Assert.AreEqual(painted[0].Y, painted[1].Y, 0.001);
     }
 
-    // CSS 2.1 Appendix E within one stacking context: the lower z-index sibling should paint first.
-    [Ignore("Confirmed gap, unrelated to fragment-tree painting: z-index is parsed and stored " +
-        "(CssEngine/StyleProperties/Flow/ZIndexProperty.cs) but never consulted anywhere in " +
-        "Core/Paint/ - confirmed by grepping the whole paint tree for it (no matches). " +
-        "FragmentPainter.PaintFragmentContent paints absolutely-positioned children in fragment.Children " +
-        "(document/DOM) order, with no z-index sort at all - so this fixture paints blue (DOM-first, " +
-        "higher z-index) before red (DOM-second, lower z-index), the opposite of what css-break-3 - " +
-        "unrelated, this is a pre-existing paint-order gap - requires. Confirmed by running this test " +
-        "unignored.")]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "zindex.html#painting-order")]
     public void StackingOrder_IsPreservedWhenPaintingFromFragments()
     {
         var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -175,10 +147,9 @@ public sealed class FragmentPaintIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visufx.html#visibility")]
     public void VisibilityHidden_ReservesLayoutSpace_ButPaintsNothing_VisibleSiblingStillPaints()
     {
-        // Unlike display:none (which removes the box from layout entirely), visibility:hidden must still
-        // reserve its own space - the visible sibling starts right after it, not overlapping.
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
             "<div id='hidden' style='visibility:hidden;height:50px;background:rgb(10,20,30)'>Hidden</div>"
             + "<div id='visible' style='height:50px;background:rgb(40,50,60)'>Visible</div>"));
@@ -198,12 +169,9 @@ public sealed class FragmentPaintIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visufx.html#visibility")]
     public void VisibilityCollapse_ReservesLayoutSpace_ButPaintsNothing_VisibleSiblingStillPaints()
     {
-        // HTML-Renderer doesn't implement table row/column collapse layout either - FragmentPainter's own
-        // paint gate (Core/Paint/FragmentPainter.cs's PaintFragment) checks only "!= CssConstants.Visible",
-        // not the specific value, so visibility:collapse renders identically to visibility:hidden here too.
-        // Confirmed by direct source read.
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
             "<div id='collapsed' style='visibility:collapse;height:50px;background:rgb(10,20,30)'>Collapsed</div>"
             + "<div id='visible' style='height:50px;background:rgb(40,50,60)'>Visible</div>"));

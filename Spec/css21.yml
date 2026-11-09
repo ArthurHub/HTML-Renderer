@@ -603,19 +603,29 @@ sections:
       - "'vertical-align: sub' and 'super' both move the text to the top of the line"
   visufx.html#q11.0:
     title: 11 Visual effects
-    status: unknown
+    status: partial
   visufx.html#overflow-clipping:
     title: 11.1 Overflow and clipping
-    status: unknown
+    status: partial
   visufx.html#overflow:
     title: 11.1.1 Overflow
-    status: unknown
+    status: partial
+    gaps:
+      - "'hidden' clips at the content edge (widened by 2px on the left) instead of the padding edge"
+      - "'scroll' and 'auto' don't clip, they behave like 'visible'"
+      - Content overflowing a non-clipping box inside a clipping one is clipped at the content edge of the non-clipping box
+      - Absolutely positioned and fixed descendants are clipped even when their containing block is outside the clipping box
+      - "'overflow' on the root or body clips that box instead of being applied to the viewport"
   visufx.html#clipping:
     title: 11.1.2 Clipping
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'clip' is ignored, absolutely positioned boxes are painted unclipped"
   visufx.html#visibility:
     title: 11.2 Visibility
-    status: unknown
+    status: partial
+    gaps:
+      - "Descendants with 'visibility: visible' of a hidden element are not painted"
   generate.html#generated-text:
     title: 12 Generated content, automatic numbering, and lists
     status: unknown
