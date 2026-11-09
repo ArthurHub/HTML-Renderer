@@ -1094,70 +1094,28 @@ sections:
     status: n/a
   custom-elements.html#custom-elements:
     title: 4.13 Custom elements
-    status: unknown
+    status: supported
   custom-elements.html#custom-elements-intro:
     title: 4.13.1 Introduction
-    status: unknown
-  custom-elements.html#custom-elements-autonomous-example:
-    title: 4.13.1.1 Creating an autonomous custom element
-    status: unknown
-  custom-elements.html#custom-elements-face-example:
-    title: 4.13.1.2 Creating a form-associated custom element
-    status: unknown
-  custom-elements.html#custom-elements-accessibility-example:
-    title: 4.13.1.3 Creating a custom element with default accessible roles, states, and properties
-    status: unknown
-  custom-elements.html#custom-elements-customized-builtin-example:
-    title: 4.13.1.4 Creating a customized built-in element
-    status: unknown
-  custom-elements.html#custom-elements-autonomous-drawbacks:
-    title: 4.13.1.5 Drawbacks of autonomous custom elements
-    status: unknown
-  custom-elements.html#custom-elements-upgrades-examples:
-    title: 4.13.1.6 Upgrading elements after their creation
-    status: unknown
-  custom-elements.html#scoped-custom-element-registries:
-    title: 4.13.1.7 Scoped custom element registries
-    status: unknown
-  custom-elements.html#exposing-custom-element-states:
-    title: 4.13.1.8 Exposing custom element states
-    status: unknown
+    status: n/a
   custom-elements.html#custom-element-conformance:
     title: 4.13.2 Requirements for custom element constructors and reactions
-    status: unknown
-  custom-elements.html#preserving-custom-element-state-when-moved:
-    title: 4.13.2.1 Preserving custom element state when moved
-    status: unknown
+    status: n/a
   custom-elements.html#custom-elements-core-concepts:
     title: 4.13.3 Core concepts
-    status: unknown
+    status: supported
   custom-elements.html#custom-elements-api:
     title: 4.13.4 The CustomElementRegistry interface
-    status: unknown
+    status: n/a
   custom-elements.html#upgrades:
     title: 4.13.5 Upgrades
-    status: unknown
+    status: n/a
   custom-elements.html#custom-element-reactions:
     title: 4.13.6 Custom element reactions
-    status: unknown
+    status: n/a
   custom-elements.html#element-internals:
     title: 4.13.7 Element internals
-    status: unknown
-  custom-elements.html#the-elementinternals-interface:
-    title: 4.13.7.1 The ElementInternals interface
-    status: unknown
-  custom-elements.html#shadow-root-access:
-    title: 4.13.7.2 Shadow root access
-    status: unknown
-  custom-elements.html#form-associated-custom-elements:
-    title: 4.13.7.3 Form-associated custom elements
-    status: unknown
-  custom-elements.html#accessibility-semantics:
-    title: 4.13.7.4 Accessibility semantics
-    status: unknown
-  custom-elements.html#custom-state-pseudo-class:
-    title: 4.13.7.5 Custom state pseudo-class
-    status: unknown
+    status: n/a
   semantics-other.html#common-idioms:
     title: 4.14 Common idioms without dedicated elements
     status: unknown
