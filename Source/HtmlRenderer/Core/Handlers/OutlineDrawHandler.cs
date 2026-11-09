@@ -18,16 +18,7 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 {
     /// <summary>
-    /// Paints <c>outline</c> (CSS 2.1 §18.1) as a plain rectangular ring around the box's own border-box
-    /// edge - unlike <see cref="BordersDrawHandler"/>, an outline has no per-side bevel/corner-joining to
-    /// account for (it isn't part of the box model and doesn't affect layout), so this is a single flat
-    /// four-rectangle fill rather than a per-side polygon.<br/>
-    /// Deliberately a subset of the full property: only <c>solid</c> (and <c>auto</c>, treated the same
-    /// as <c>solid</c> per spec) is painted - <c>dotted</c>/<c>dashed</c>/<c>double</c>/<c>groove</c>/
-    /// <c>ridge</c>/<c>inset</c>/<c>outset</c> are not (a box with one of those styles simply paints no
-    /// outline, same as <c>none</c>). <c>outline-offset</c> is not implemented either (the CSS-OM here has
-    /// no <c>outline-offset</c> property at all to read a value from), so the ring always sits flush
-    /// against the border-box edge.
+    /// Paints <c>outline</c>, CSS 2.1 §18.4, as a ring of four rectangles just outside the border box.
     /// </summary>
     internal static class OutlineDrawHandler
     {

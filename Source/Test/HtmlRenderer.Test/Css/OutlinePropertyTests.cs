@@ -3,25 +3,11 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/OutlineProperty.cs (source class
-/// <c>CssOutlinePropertyTests</c>).
-/// <see cref="OutlineStyleProperty"/>, <see cref="OutlineColorProperty"/>, <see cref="OutlineWidthProperty"/>,
-/// and the <see cref="OutlineProperty"/> shorthand all exist and mirror PeachPDF's grammar
-/// (outline-width || outline-style || outline-color, CSS-UI-4 §4).
-/// Dropped entirely (not ported, not [Ignore]d): CssOutlineOffsetPositiveLengthLegal,
-/// CssOutlineOffsetNegativeLengthLegal, CssOutlineOffsetKeywordIllegal, and
-/// CssOutlineShorthandDoesNotExpandOffset. All four require an <c>OutlineOffsetProperty</c> type and a
-/// <c>StyleDeclaration.OutlineOffset</c> accessor - <c>outline-offset</c> has no representation anywhere in
-/// HTML-Renderer's CSS engine port (confirmed zero hits for "OutlineOffset" under
-/// Source/HtmlRenderer/Core/CssEngine, unlike outline-width/-style/-color which all exist under
-/// StyleProperties/Outline/): a newly-discovered gap beyond the ones the triage brief called out, and one
-/// with no existing type to attach an [Ignore] to - there is nothing to instantiate or assert against.
-/// </summary>
 [TestClass]
 public sealed class OutlinePropertyTests
 {
     [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void CssOutlineStyleDottedLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-style   :  dotTED");
@@ -35,6 +21,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void CssOutlineStyleSolidLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-style   :  solid");
@@ -59,7 +46,18 @@ public sealed class OutlinePropertyTests
         Assert.IsFalse(concrete.HasValue);
     }
 
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
+    public void CssOutlineStyleHiddenIllegal()
+    {
+        var property = CssConstructionFunctions.ParseDeclaration("outline-style : hidden");
+        Assert.IsInstanceOfType<OutlineStyleProperty>(property);
+        Assert.IsFalse(((OutlineStyleProperty)property).HasValue);
+    }
+
+    [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void CssOutlineColorInvertLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-color :  invert ");
@@ -163,6 +161,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void CssOutlineSingleLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline :  thin");
@@ -176,6 +175,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void CssOutlineDualLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline :  thin   invert");
@@ -189,6 +189,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void CssOutlineAllDottedLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline :  dotted 0.3em rgb(255, 255, 255)");
@@ -214,6 +215,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void CssOutlineAllSolidLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline :  1px solid #000");

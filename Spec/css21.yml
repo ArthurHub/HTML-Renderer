@@ -991,25 +991,34 @@ sections:
       - "'hidden' doesn't suppress the other borders at the same edge"
   ui.html#q18.0:
     title: 18 User interface
-    status: unknown
+    status: partial
   ui.html#cursor-props:
     title: 18.1 Cursors
-    status: unknown
+    status: parsed-only
+    gaps:
+      - The controls ignore 'cursor' and show a hand over links, an I-beam over text and the default cursor elsewhere
   ui.html#system-colors:
     title: 18.2 System Colors
-    status: unknown
+    status: supported
   ui.html#system-fonts:
     title: 18.3 User preferences for fonts
-    status: unknown
+    status: n/a
   ui.html#dynamic-outlines:
     title: 18.4 Dynamic outlines
-    status: unknown
+    status: partial
+    gaps:
+      - Only solid outlines are painted, the other border styles paint nothing
+      - "'hidden' is accepted as an outline style instead of being rejected"
+      - The outline is painted right after the box's border, so its content and later boxes paint over it
+      - An inline broken across lines gets a separate ring per line box instead of one outline enclosing all its boxes
   ui.html#outline-focus:
     title: 18.4.1 Outlines and the focus
-    status: unknown
+    status: unsupported
+    gaps:
+      - The focus isn't tracked or represented
   ui.html#magnification:
     title: 18.5 Magnification
-    status: unknown
+    status: n/a
   aural.html#q19.0:
     title: A Aural style sheets
     status: unknown

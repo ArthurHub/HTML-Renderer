@@ -4,18 +4,12 @@ using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 
 namespace HtmlRenderer.IntegrationTest.Painting;
 
-/// <summary>
-/// Ported from PeachPDF.Tests' OutlineStylePaintIntegrationTests.cs, adapted to this fork's new (and more
-/// limited) <c>OutlineDrawHandler</c> - see that class's remarks for exactly what's implemented: a plain
-/// rectangular ring for <c>solid</c>/<c>auto</c> only, no <c>outline-offset</c> (this fork's CSS-OM has no
-/// such property to read a value from), and every other style (<c>dotted</c>/<c>dashed</c>/<c>double</c>/
-/// <c>groove</c>/<c>ridge</c>/<c>inset</c>/<c>outset</c>) paints nothing, same as <c>none</c>.
-/// </summary>
 [DoNotParallelize]
 [TestClass]
 public sealed class OutlineStylePaintIntegrationTests
 {
     [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void SolidOutline_PaintsAFourSidedRingAroundTheBorderBox()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -28,19 +22,12 @@ public sealed class OutlineStylePaintIntegrationTests
 
         Assert.AreEqual(4, rects.Count, "expected one filled rect per side of the outline ring");
 
-        // Two of the four bands are 5px tall (top/bottom, spanning the full outer width including
-        // corners) and two are 5px wide (left/right, spanning just the box's own height) - regardless of
-        // which order OutlineDrawHandler emits them in.
+        // Top and bottom bands are 5px tall, left and right bands 5px wide
         Assert.AreEqual(2, rects.Count(r => System.Math.Abs(r.Height - 5) < 0.1));
         Assert.AreEqual(2, rects.Count(r => System.Math.Abs(r.Width - 5) < 0.1));
     }
 
-    [Ignore("outline-style:auto cannot be parsed at all on this fork: Map.LineStyles (Core/CssEngine/Model/" +
-            "Map.cs), the shared keyword table outline-style's converter reuses from border-style, has no " +
-            "\"auto\" entry - adding one there would also make it a legal (but spec-invalid) border-style " +
-            "value, so this needs its own dedicated converter rather than a shared-map edit, which is out of " +
-            "scope for this pass. OutlineDrawHandler.Draw's own \"style == Auto\" check is consequently dead " +
-            "code today - reachable only by setting the property programmatically, never via CSS text.")]
+    [Ignore("outline-style: auto (CSS UI 3) isn't parsed")]
     [TestMethod]
     public void OutlineAuto_PaintsTheSameAsSolid()
     {
@@ -56,6 +43,7 @@ public sealed class OutlineStylePaintIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void OutlineColorUnset_FallsBackToCurrentColor()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -70,10 +58,9 @@ public sealed class OutlineStylePaintIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void Outline_PaintsAfterBorder()
     {
-        // Paint-order: DrawBoxBorders runs, then OutlineDrawHandler - the outline's draw calls must come
-        // after the border's in the recording.
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
             "<div id='b' style='width:100px;height:50px;border:3px solid rgb(1,2,3);outline:5px solid rgb(4,5,6)'>x</div>"));
         var div = PaintHarness.FindById(root, "b")!;
@@ -90,6 +77,7 @@ public sealed class OutlineStylePaintIntegrationTests
     [TestMethod]
     [DataRow("none")]
     [DataRow("hidden")]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void OutlineStyleNoneOrHidden_PaintsNothing(string style)
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -102,6 +90,7 @@ public sealed class OutlineStylePaintIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void ZeroWidthOutline_PaintsNothing()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -113,10 +102,7 @@ public sealed class OutlineStylePaintIntegrationTests
         Assert.IsFalse(g.Log.OfType<RecordingGraphics.DrawRectCall>().Any(r => r.Color == RColor.FromArgb(51, 51, 51)));
     }
 
-    [Ignore("outline-offset is not implemented on this fork: the CSS-OM here has no OutlineOffsetProperty at " +
-            "all (confirmed - no PropertyNames.OutlineOffset, no case in PropertyFactory), so there is no value " +
-            "for OutlineDrawHandler to read; the ring always sits flush against the border-box edge instead of " +
-            "the requested 10px further out.")]
+    [Ignore("outline-offset (CSS UI 3) isn't parsed")]
     [TestMethod]
     public void OutlineOffset_PushesTheRingFurtherFromTheBorderBox()
     {
@@ -132,6 +118,7 @@ public sealed class OutlineStylePaintIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void OutlineColorInvert_FallsBackToCurrentColor()
     {
         var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -147,6 +134,7 @@ public sealed class OutlineStylePaintIntegrationTests
     [TestMethod]
     [DataRow("<img id='e' style='width:20px;height:20px;outline:5px solid rgb(51,51,51)'>")]
     [DataRow("<hr id='e' style='outline:5px solid rgb(51,51,51)'>")]
+    [Spec("css21", "ui.html#dynamic-outlines")]
     public void ReplacedAndRuleElements_PaintTheirOutline(string element)
     {
         var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(element));
@@ -170,5 +158,77 @@ public sealed class OutlineStylePaintIntegrationTests
             .Where(r => r.Color == RColor.FromArgb(51, 51, 51)).ToList();
 
         Assert.IsGreaterThanOrEqualTo(8, rects.Count, "both the part before and the part after the block need a ring");
+    }
+
+    [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
+    public void Outline_DoesNotTakeUpSpace()
+    {
+        var (root, _) = PaintHarness.Layout(PaintHarness.Wrap(
+            "<div id='a' style='height:50px;outline:10px solid black'></div><div id='b' style='height:10px'></div>"));
+
+        var a = PaintHarness.FindById(root, "a")!;
+        var b = PaintHarness.FindById(root, "b")!;
+
+        Assert.AreEqual(0, a.Location.X, 0.1);
+        Assert.AreEqual(0, a.Location.Y, 0.1);
+        Assert.AreEqual(50, b.Location.Y, 0.1);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [DataRow("dotted")]
+    [DataRow("dashed")]
+    [DataRow("double")]
+    [DataRow("groove")]
+    [DataRow("ridge")]
+    [DataRow("inset")]
+    [DataRow("outset")]
+    [Spec("css21", "ui.html#dynamic-outlines")]
+    public void OutlineStyle_AcceptsEveryBorderStyle(string style)
+    {
+        var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
+            $"<div id='b' style='width:100px;height:50px;outline:6px {style} rgb(51,51,51)'>x</div>"));
+
+        var g = PaintHarness.PaintBox(container, PaintHarness.FindById(root, "b")!);
+
+        // The box has no background or border, every shape painted belongs to the outline
+        var shapes = g.Log.Count(c => c is RecordingGraphics.DrawRectCall or RecordingGraphics.DrawLineCall or RecordingGraphics.DrawPolygonCall);
+        Assert.IsGreaterThan(0, shapes, $"'{style}' outline painted nothing");
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
+    public void Outline_IsPaintedOnTopOfTheContent()
+    {
+        var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
+            "<div id='b' style='width:100px;height:50px;outline:5px solid rgb(51,51,51)'>"
+            + "<div style='margin:-5px;height:60px;background-color:rgb(10,20,30)'></div></div>"));
+
+        var g = PaintHarness.PaintBox(container, PaintHarness.FindById(root, "b")!);
+
+        var outlineIndex = g.Log.FindLastIndex(c => c is RecordingGraphics.DrawRectCall r && r.Color == RColor.FromArgb(51, 51, 51));
+        var childIndex = g.Log.FindIndex(c => c is RecordingGraphics.DrawRectCall r && r.Color == RColor.FromArgb(10, 20, 30));
+
+        Assert.IsTrue(outlineIndex >= 0 && childIndex >= 0);
+        Assert.IsTrue(outlineIndex > childIndex, "the child's background covers the outline");
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
+    public void InlineBrokenAcrossLines_GetsOneOutlineEnclosingAllItsBoxes()
+    {
+        var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(
+            "<div style='width:60px'><span style='outline:2px solid rgb(51,51,51)'>aaaa bbbb cccc</span></div>"));
+
+        var g = PaintHarness.PaintPage(container);
+
+        // Horizontal bands of the outline, the lines are equally wide so only the top and bottom edge remain
+        var bandTops = g.Log.OfType<RecordingGraphics.DrawRectCall>()
+            .Where(r => r.Color == RColor.FromArgb(51, 51, 51) && r.Width > 2)
+            .Select(r => r.Y).Distinct().ToList();
+        Assert.AreEqual(2, bandTops.Count);
     }
 }
