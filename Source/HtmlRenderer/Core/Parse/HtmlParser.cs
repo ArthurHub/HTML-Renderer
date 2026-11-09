@@ -23,15 +23,15 @@ using HtmlUtils = TheArtOfDev.HtmlRenderer.Core.Utils.HtmlUtils;
 namespace TheArtOfDev.HtmlRenderer.Core.Parse
 {
     /// <summary>
-    ///
+    /// Builds the box tree from HtmlKit's tokens (HTML §13.2.5). Tree construction (HTML §13.2.6) is a
+    /// simplified version: the boxes form the stack of open elements, there are no insertion modes and no
+    /// list of active formatting elements, see Spec/html.yml for what's missing.
     /// </summary>
     internal static class HtmlParser
     {
         /// <summary>
-        /// Parses the source html to css boxes tree structure.
+        /// Parses <paramref name="source"/> into boxes below <paramref name="root"/>, a new anonymous block if null.
         /// </summary>
-        /// <param name="source">the html source to parse</param>
-        /// <param name="root">the root box (null for document root)</param>
         public static CssBox ParseDocument(string source, CssBox root = null)
         {
             if (root == null)
@@ -101,19 +101,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         #region Private methods
 
         /// <summary>
-        /// Add html text anon box to the current box, this box will have the rendered text<br/>
-        /// Adding box also for text that contains only whitespaces because we don't know yet if
-        /// the box is preformatted. At later stage they will be removed if not relevant.
+        /// Adds the text as an anonymous child box of the current box. Every data token gets its own box, also
+        /// a whitespace-only one, white space is only collapsed later, once 'white-space' is known.
         /// </summary>
-        /// <param name="token">the html token to parse</param>
-        /// <param name="curBox">the current box in html tree parsing</param>
         private static void AddTextBox(HtmlDataToken token, ref CssBox curBox)
         {
             var text = token.Data;
 
             if (text == null) return;
 
-            // HTML drops a single newline directly after the <pre>, <listing> or <textarea> start tag.
+            // HTML §13.2.6.4.7: a newline right after the pre, listing or textarea start tag is dropped.
+            // CRLF is checked as well, the input stream isn't normalized (HTML §13.2.3.5).
             if (curBox.Boxes.Count == 0 && curBox.HtmlTag != null && IsNewlineStrippingElement(curBox.HtmlTag.Name))
             {
                 if (text.StartsWith("\r\n", StringComparison.Ordinal))
@@ -146,10 +144,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Parse the html part, the part from prev parsing index to the beginning of the next html tag.<br/>
+        /// Handles a start or end tag: an end tag closes the nearest open element with its name, a start tag
+        /// first closes the elements whose end tag it implies and then opens its element, unless it's void.
         /// </summary>
-        /// <param name="token">the html tag token</param>
-        /// <param name="curBox">the current box in html tree parsing</param>
         private static void ParseHtmlTag(HtmlTagToken token, ref CssBox curBox)
         {
             string tagName;
@@ -159,7 +156,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             {
                 if (!HtmlUtils.IsSingleTag(tagName.ToLowerInvariant()) && curBox.ParentBox != null)
                 {
-                    // need to find the parent tag to go one level up
                     curBox = CloseElement(curBox, tagName);
                 }
             }
@@ -177,17 +173,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                     }
                 }
 
+                // HTML §13.2.6.4.7 ignores the self-closing flag on non-void elements, this doesn't.
                 var isSingle = HtmlUtils.IsSingleTag(tagName.ToLowerInvariant()) || token.IsEmptyElement;
                 var tag = new HtmlTag(tagName, isSingle, tagAttributes);
 
                 if (isSingle)
                 {
-                    // the current box is not changed
                     CssBox.CreateBox(tag, curBox);
                 }
                 else
                 {
-                    // go one level down, make the new box the current box
                     curBox = CssBox.CreateBox(tag, curBox);
                 }
             }
@@ -199,12 +194,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        ///
+        /// Reads the tag's name and, for a start tag, its attributes. Returns whether it's an end tag.
         /// </summary>
-        /// <param name="token"></param>
-        /// <param name="name"></param>
-        /// <param name="attributes"></param>
-        /// <returns></returns>
+        /// <remarks>
+        /// Names keep the case of the source, HTML §13.2.5.33 lowercases them. Of attributes with the same
+        /// name only the first is kept.
+        /// </remarks>
         private static bool ParseHtmlTag(HtmlTagToken token, out string name, out Dictionary<string, string> attributes)
         {
             var isClosing = token.IsEndTag;

@@ -1150,408 +1150,422 @@ sections:
     status: partial
   syntax.html#writing:
     title: 13.1 Writing HTML documents
-    status: unknown
-  syntax.html#the-doctype:
-    title: 13.1.1 The DOCTYPE
-    status: unknown
-  syntax.html#elements-2:
-    title: 13.1.2 Elements
-    status: unknown
-  syntax.html#start-tags:
-    title: 13.1.2.1 Start tags
-    status: unknown
-  syntax.html#end-tags:
-    title: 13.1.2.2 End tags
-    status: unknown
-  syntax.html#attributes-2:
-    title: 13.1.2.3 Attributes
-    status: unknown
-  syntax.html#optional-tags:
-    title: 13.1.2.4 Optional tags
-    status: unknown
-  syntax.html#element-restrictions:
-    title: 13.1.2.5 Restrictions on content models
-    status: unknown
-  syntax.html#cdata-rcdata-restrictions:
-    title: 13.1.2.6 Restrictions on the contents of raw text and escapable raw text elements
-    status: unknown
-  syntax.html#text-2:
-    title: 13.1.3 Text
-    status: unknown
-  syntax.html#newlines:
-    title: 13.1.3.1 Newlines
-    status: unknown
-  syntax.html#character-references:
-    title: 13.1.4 Character references
-    status: unknown
-  syntax.html#cdata-sections:
-    title: 13.1.5 CDATA sections
-    status: unknown
-  syntax.html#comments:
-    title: 13.1.6 Comments
-    status: unknown
-  syntax.html#processing-instructions:
-    title: 13.1.7 Processing instructions
-    status: unknown
+    status: n/a
   parsing.html#parsing:
     title: 13.2 Parsing HTML documents
     status: partial
   parsing.html#overview-of-the-parsing-model:
     title: 13.2.1 Overview of the parsing model
-    status: unknown
+    status: n/a
   parsing.html#parse-errors:
     title: 13.2.2 Parse errors
-    status: unknown
+    status: n/a
   parsing.html#the-input-byte-stream:
     title: 13.2.3 The input byte stream
-    status: unknown
+    status: partial
   parsing.html#parsing-with-a-known-character-encoding:
     title: 13.2.3.1 Parsing with a known character encoding
-    status: unknown
+    status: n/a
   parsing.html#determining-the-character-encoding:
     title: 13.2.3.2 Determining the character encoding
-    status: unknown
+    status: n/a
   parsing.html#character-encodings:
     title: 13.2.3.3 Character encodings
-    status: unknown
+    status: n/a
   parsing.html#changing-the-encoding-while-parsing:
     title: 13.2.3.4 Changing the encoding while parsing
-    status: unknown
+    status: n/a
   parsing.html#preprocessing-the-input-stream:
     title: 13.2.3.5 Preprocessing the input stream
-    status: unknown
+    status: partial
+    gaps:
+      - CR and CRLF aren't normalized to LF, a lone CR in text is lost
   parsing.html#parse-state:
     title: 13.2.4 Parse state
-    status: unknown
+    status: partial
   parsing.html#the-insertion-mode:
     title: 13.2.4.1 The insertion mode
-    status: unknown
+    status: unsupported
   parsing.html#the-stack-of-open-elements:
     title: 13.2.4.2 The stack of open elements
-    status: unknown
+    status: partial
+    gaps:
+      - There are no element scopes, an end tag also closes elements outside a table cell or other scope boundary
   parsing.html#the-list-of-active-formatting-elements:
     title: 13.2.4.3 The list of active formatting elements
-    status: unknown
+    status: unsupported
   parsing.html#the-element-pointers:
     title: 13.2.4.4 The element pointers
-    status: unknown
+    status: unsupported
   parsing.html#other-parsing-state-flags:
     title: 13.2.4.5 Other parsing state flags
-    status: unknown
+    status: partial
+    gaps:
+      - No frameset-ok flag, a frameset start tag after body content isn't ignored
   parsing.html#tokenization:
     title: 13.2.5 Tokenization
-    status: unknown
+    status: partial
   parsing.html#data-state:
     title: 13.2.5.1 Data state
-    status: unknown
+    status: supported
   parsing.html#rcdata-state:
     title: 13.2.5.2 RCDATA state
-    status: unknown
+    status: supported
   parsing.html#rawtext-state:
     title: 13.2.5.3 RAWTEXT state
-    status: unknown
+    status: partial
+    gaps:
+      - Character references in RAWTEXT (xmp, iframe, noembed, noframes) are decoded when the text is split into words
   parsing.html#script-data-state:
     title: 13.2.5.4 Script data state
-    status: unknown
+    status: supported
   parsing.html#plaintext-state:
     title: 13.2.5.5 PLAINTEXT state
-    status: unknown
+    status: supported
   parsing.html#tag-open-state:
     title: 13.2.5.6 Tag open state
-    status: unknown
+    status: supported
   parsing.html#end-tag-open-state:
     title: 13.2.5.7 End tag open state
-    status: unknown
+    status: supported
   parsing.html#tag-name-state:
     title: 13.2.5.8 Tag name state
-    status: unknown
+    status: supported
   parsing.html#rcdata-less-than-sign-state:
     title: 13.2.5.9 RCDATA less-than sign state
-    status: unknown
+    status: supported
   parsing.html#rcdata-end-tag-open-state:
     title: 13.2.5.10 RCDATA end tag open state
-    status: unknown
+    status: supported
   parsing.html#rcdata-end-tag-name-state:
     title: 13.2.5.11 RCDATA end tag name state
-    status: unknown
+    status: supported
   parsing.html#rawtext-less-than-sign-state:
     title: 13.2.5.12 RAWTEXT less-than sign state
-    status: unknown
+    status: supported
   parsing.html#rawtext-end-tag-open-state:
     title: 13.2.5.13 RAWTEXT end tag open state
-    status: unknown
+    status: supported
   parsing.html#rawtext-end-tag-name-state:
     title: 13.2.5.14 RAWTEXT end tag name state
-    status: unknown
+    status: supported
   parsing.html#script-data-less-than-sign-state:
     title: 13.2.5.15 Script data less-than sign state
-    status: unknown
+    status: supported
   parsing.html#script-data-end-tag-open-state:
     title: 13.2.5.16 Script data end tag open state
-    status: unknown
+    status: supported
   parsing.html#script-data-end-tag-name-state:
     title: 13.2.5.17 Script data end tag name state
-    status: unknown
+    status: supported
   parsing.html#script-data-escape-start-state:
     title: 13.2.5.18 Script data escape start state
-    status: unknown
+    status: supported
   parsing.html#script-data-escape-start-dash-state:
     title: 13.2.5.19 Script data escape start dash state
-    status: unknown
+    status: supported
   parsing.html#script-data-escaped-state:
     title: 13.2.5.20 Script data escaped state
-    status: unknown
+    status: supported
   parsing.html#script-data-escaped-dash-state:
     title: 13.2.5.21 Script data escaped dash state
-    status: unknown
+    status: supported
   parsing.html#script-data-escaped-dash-dash-state:
     title: 13.2.5.22 Script data escaped dash dash state
-    status: unknown
+    status: supported
   parsing.html#script-data-escaped-less-than-sign-state:
     title: 13.2.5.23 Script data escaped less-than sign state
-    status: unknown
+    status: supported
   parsing.html#script-data-escaped-end-tag-open-state:
     title: 13.2.5.24 Script data escaped end tag open state
-    status: unknown
+    status: supported
   parsing.html#script-data-escaped-end-tag-name-state:
     title: 13.2.5.25 Script data escaped end tag name state
-    status: unknown
+    status: supported
   parsing.html#script-data-double-escape-start-state:
     title: 13.2.5.26 Script data double escape start state
-    status: unknown
+    status: supported
   parsing.html#script-data-double-escaped-state:
     title: 13.2.5.27 Script data double escaped state
-    status: unknown
+    status: supported
   parsing.html#script-data-double-escaped-dash-state:
     title: 13.2.5.28 Script data double escaped dash state
-    status: unknown
+    status: supported
   parsing.html#script-data-double-escaped-dash-dash-state:
     title: 13.2.5.29 Script data double escaped dash dash state
-    status: unknown
+    status: supported
   parsing.html#script-data-double-escaped-less-than-sign-state:
     title: 13.2.5.30 Script data double escaped less-than sign state
-    status: unknown
+    status: supported
   parsing.html#script-data-double-escape-end-state:
     title: 13.2.5.31 Script data double escape end state
-    status: unknown
+    status: supported
   parsing.html#before-attribute-name-state:
     title: 13.2.5.32 Before attribute name state
-    status: unknown
+    status: supported
   parsing.html#attribute-name-state:
     title: 13.2.5.33 Attribute name state
-    status: unknown
+    status: partial
+    gaps:
+      - Attribute names aren't lowercased, CLASS isn't class and ID and id are kept as two attributes
   parsing.html#after-attribute-name-state:
     title: 13.2.5.34 After attribute name state
-    status: unknown
+    status: supported
   parsing.html#before-attribute-value-state:
     title: 13.2.5.35 Before attribute value state
-    status: unknown
+    status: supported
   parsing.html#attribute-value-(double-quoted)-state:
     title: 13.2.5.36 Attribute value (double-quoted) state
-    status: unknown
+    status: supported
   parsing.html#attribute-value-(single-quoted)-state:
     title: 13.2.5.37 Attribute value (single-quoted) state
-    status: unknown
+    status: supported
   parsing.html#attribute-value-(unquoted)-state:
     title: 13.2.5.38 Attribute value (unquoted) state
-    status: unknown
+    status: supported
   parsing.html#after-attribute-value-(quoted)-state:
     title: 13.2.5.39 After attribute value (quoted) state
-    status: unknown
+    status: supported
   parsing.html#self-closing-start-tag-state:
     title: 13.2.5.40 Self-closing start tag state
-    status: unknown
+    status: supported
   parsing.html#bogus-comment-state:
     title: 13.2.5.41 Bogus comment state
-    status: unknown
+    status: supported
   parsing.html#markup-declaration-open-state:
     title: 13.2.5.42 Markup declaration open state
-    status: unknown
+    status: supported
   parsing.html#comment-start-state:
     title: 13.2.5.43 Comment start state
-    status: unknown
+    status: supported
   parsing.html#comment-start-dash-state:
     title: 13.2.5.44 Comment start dash state
-    status: unknown
+    status: supported
   parsing.html#comment-state:
     title: 13.2.5.45 Comment state
-    status: unknown
+    status: supported
   parsing.html#comment-less-than-sign-state:
     title: 13.2.5.46 Comment less-than sign state
-    status: unknown
+    status: supported
   parsing.html#comment-less-than-sign-bang-state:
     title: 13.2.5.47 Comment less-than sign bang state
-    status: unknown
+    status: supported
   parsing.html#comment-less-than-sign-bang-dash-state:
     title: 13.2.5.48 Comment less-than sign bang dash state
-    status: unknown
+    status: supported
   parsing.html#comment-less-than-sign-bang-dash-dash-state:
     title: 13.2.5.49 Comment less-than sign bang dash dash state
-    status: unknown
+    status: supported
   parsing.html#comment-end-dash-state:
     title: 13.2.5.50 Comment end dash state
-    status: unknown
+    status: supported
   parsing.html#comment-end-state:
     title: 13.2.5.51 Comment end state
-    status: unknown
+    status: supported
   parsing.html#comment-end-bang-state:
     title: 13.2.5.52 Comment end bang state
-    status: unknown
+    status: supported
   parsing.html#doctype-state:
     title: 13.2.5.53 DOCTYPE state
-    status: unknown
+    status: supported
   parsing.html#before-doctype-name-state:
     title: 13.2.5.54 Before DOCTYPE name state
-    status: unknown
+    status: supported
   parsing.html#doctype-name-state:
     title: 13.2.5.55 DOCTYPE name state
-    status: unknown
+    status: supported
   parsing.html#after-doctype-name-state:
     title: 13.2.5.56 After DOCTYPE name state
-    status: unknown
+    status: supported
   parsing.html#after-doctype-public-keyword-state:
     title: 13.2.5.57 After DOCTYPE public keyword state
-    status: unknown
+    status: supported
   parsing.html#before-doctype-public-identifier-state:
     title: 13.2.5.58 Before DOCTYPE public identifier state
-    status: unknown
+    status: supported
   parsing.html#doctype-public-identifier-(double-quoted)-state:
     title: 13.2.5.59 DOCTYPE public identifier (double-quoted) state
-    status: unknown
+    status: supported
   parsing.html#doctype-public-identifier-(single-quoted)-state:
     title: 13.2.5.60 DOCTYPE public identifier (single-quoted) state
-    status: unknown
+    status: supported
   parsing.html#after-doctype-public-identifier-state:
     title: 13.2.5.61 After DOCTYPE public identifier state
-    status: unknown
+    status: supported
   parsing.html#between-doctype-public-and-system-identifiers-state:
     title: 13.2.5.62 Between DOCTYPE public and system identifiers state
-    status: unknown
+    status: supported
   parsing.html#after-doctype-system-keyword-state:
     title: 13.2.5.63 After DOCTYPE system keyword state
-    status: unknown
+    status: supported
   parsing.html#before-doctype-system-identifier-state:
     title: 13.2.5.64 Before DOCTYPE system identifier state
-    status: unknown
+    status: supported
   parsing.html#doctype-system-identifier-(double-quoted)-state:
     title: 13.2.5.65 DOCTYPE system identifier (double-quoted) state
-    status: unknown
+    status: supported
   parsing.html#doctype-system-identifier-(single-quoted)-state:
     title: 13.2.5.66 DOCTYPE system identifier (single-quoted) state
-    status: unknown
+    status: supported
   parsing.html#after-doctype-system-identifier-state:
     title: 13.2.5.67 After DOCTYPE system identifier state
-    status: unknown
+    status: supported
   parsing.html#bogus-doctype-state:
     title: 13.2.5.68 Bogus DOCTYPE state
-    status: unknown
+    status: supported
   parsing.html#cdata-section-state:
     title: 13.2.5.69 CDATA section state
-    status: unknown
+    status: parsed-only
   parsing.html#cdata-section-bracket-state:
     title: 13.2.5.70 CDATA section bracket state
-    status: unknown
+    status: parsed-only
   parsing.html#cdata-section-end-state:
     title: 13.2.5.71 CDATA section end state
-    status: unknown
+    status: parsed-only
   parsing.html#processing-instruction-open-state:
     title: 13.2.5.72 Processing instruction open state
-    status: unknown
+    status: supported
   parsing.html#processing-instruction-target-state:
     title: 13.2.5.73 Processing instruction target state
-    status: unknown
+    status: supported
   parsing.html#after-processing-instruction-target-state:
     title: 13.2.5.74 After processing instruction target state
-    status: unknown
+    status: supported
   parsing.html#processing-instruction-data-state:
     title: 13.2.5.75 Processing instruction data state
-    status: unknown
+    status: supported
   parsing.html#processing-instruction-questionable-state:
     title: 13.2.5.76 Processing instruction questionable state
-    status: unknown
+    status: supported
   parsing.html#character-reference-state:
     title: 13.2.5.77 Character reference state
-    status: unknown
+    status: partial
+    gaps:
+      - Text is decoded a second time when it's split into words, so &amp;lt; renders as < instead of &lt;
   parsing.html#named-character-reference-state:
     title: 13.2.5.78 Named character reference state
-    status: unknown
+    status: supported
   parsing.html#ambiguous-ampersand-state:
     title: 13.2.5.79 Ambiguous ampersand state
-    status: unknown
+    status: supported
   parsing.html#numeric-character-reference-state:
     title: 13.2.5.80 Numeric character reference state
-    status: unknown
+    status: supported
   parsing.html#hexadecimal-character-reference-start-state:
     title: 13.2.5.81 Hexadecimal character reference start state
-    status: unknown
+    status: supported
   parsing.html#hexadecimal-character-reference-state:
     title: 13.2.5.82 Hexadecimal character reference state
-    status: unknown
+    status: partial
+    gaps:
+      - A hexadecimal character reference without a semicolon stays literal text in an attribute value
   parsing.html#decimal-character-reference-state:
     title: 13.2.5.83 Decimal character reference state
-    status: unknown
+    status: partial
+    gaps:
+      - A decimal character reference without a semicolon stays literal text in an attribute value
   parsing.html#numeric-character-reference-end-state:
     title: 13.2.5.84 Numeric character reference end state
-    status: unknown
+    status: partial
+    gaps:
+      - '&#13; stays literal text in an attribute value'
   parsing.html#tree-construction:
     title: 13.2.6 Tree construction
     status: partial
   parsing.html#creating-and-inserting-nodes:
     title: 13.2.6.1 Creating and inserting nodes
-    status: unknown
+    status: partial
+    gaps:
+      - No foster parenting, content misplaced in a table stays inside the table
   parsing.html#parsing-elements-that-contain-only-text:
     title: 13.2.6.2 Parsing elements that contain only text
-    status: unknown
+    status: supported
   parsing.html#closing-elements-that-have-implied-end-tags:
     title: 13.2.6.3 Closing elements that have implied end tags
-    status: unknown
+    status: partial
+    gaps:
+      - Only p, td and tr have implied end tags, rb, rp, rt and rtc don't close each other
   parsing.html#parsing-main-inhtml:
     title: 13.2.6.4 The rules for parsing tokens in HTML content
     status: partial
   parsing.html#the-initial-insertion-mode:
     title: 13.2.6.4.1 The "initial" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - No quirks mode, a document without DOCTYPE is parsed as no-quirks (a table closes an open p)
   parsing.html#the-before-html-insertion-mode:
     title: 13.2.6.4.2 The "before html" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - No html element is created when its start tag is missing
   parsing.html#the-before-head-insertion-mode:
     title: 13.2.6.4.3 The "before head" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - No head element is created when its start tag is missing
   parsing.html#parsing-main-inhead:
     title: 13.2.6.4.4 The "in head" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - Body content inside head stays in the hidden head instead of closing it
   parsing.html#parsing-main-inheadnoscript:
     title: 13.2.6.4.5 The "in head noscript" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - Body content inside a noscript in head stays in the hidden head instead of closing it
   parsing.html#the-after-head-insertion-mode:
     title: 13.2.6.4.6 The "after head" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - No body element is created when its start tag is missing
   parsing.html#parsing-main-inbody:
     title: 13.2.6.4.7 The "in body" insertion mode
     status: partial
     gaps:
       - A start tag that closes an open p only does so while the p is the current element, an inline element still open inside it keeps the p open
+      - center, dir, summary, listing, xmp, plaintext, li, dd and dt don't close an open p
       - li, dt and dd don't close the previous item
       - option doesn't close the previous option
       - An end tag without a matching open element closes the current element instead of being ignored
       - An end tag p without an open p doesn't insert an empty paragraph
+      - embed, keygen, source, track, wbr and bgsound aren't void, the content that follows ends up inside them
+      - isindex is treated as a void element
+      - A col start tag outside a table creates an element instead of being ignored
+      - A self-closing slash on a non-void element (<div/>) creates an empty element instead of being ignored
+      - An end tag br is ignored instead of inserting a br
+      - An image start tag isn't changed to img
+      - U+0000 in text isn't dropped
+      - A heading start tag doesn't close an open heading
+      - A button start tag doesn't close an open button
+      - A form start tag inside a form isn't ignored
+      - An a start tag doesn't close an open a
+      - No adoption agency algorithm, a misnested formatting end tag closes everything opened after it
+      - Formatting elements closed implicitly aren't reopened in the following content
+      - A second body start tag creates a nested body instead of adding its attributes to the first
   parsing.html#parsing-main-incdata:
     title: 13.2.6.4.8 The "text" insertion mode
-    status: unknown
+    status: supported
   parsing.html#parsing-main-intable:
     title: 13.2.6.4.9 The "in table" insertion mode
     status: partial
     gaps:
       - A tr outside of a table section doesn't get an implied tbody
+      - td and th outside a row don't get an implied tr
+      - col outside a colgroup doesn't get an implied colgroup
+      - A table start tag inside a table nests the table instead of closing the open one
   parsing.html#parsing-main-intabletext:
     title: 13.2.6.4.10 The "in table text" insertion mode
-    status: unknown
+    status: unsupported
   parsing.html#parsing-main-incaption:
     title: 13.2.6.4.11 The "in caption" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - Table structure start tags (tbody, tr, td, ...) don't close an open caption
   parsing.html#parsing-main-incolgroup:
     title: 13.2.6.4.12 The "in column group" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - Content other than col doesn't close an open colgroup
   parsing.html#parsing-main-intbody:
     title: 13.2.6.4.13 The "in table body" insertion mode
     status: partial
@@ -1559,72 +1573,61 @@ sections:
       - thead, tbody and tfoot don't close the previous table section
   parsing.html#parsing-main-intr:
     title: 13.2.6.4.14 The "in row" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - tbody, thead and tfoot don't close an open row
   parsing.html#parsing-main-intd:
     title: 13.2.6.4.15 The "in cell" insertion mode
     status: partial
     gaps:
       - th doesn't close the previous cell
+      - tbody, thead, tfoot, caption, col and colgroup don't close an open cell
   parsing.html#parsing-main-intemplate:
     title: 13.2.6.4.16 The "in template" insertion mode
-    status: unknown
+    status: unsupported
   parsing.html#parsing-main-afterbody:
     title: 13.2.6.4.17 The "after body" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - Content after the body end tag goes into html instead of body
   parsing.html#parsing-main-inframeset:
     title: 13.2.6.4.18 The "in frameset" insertion mode
-    status: unknown
+    status: unsupported
   parsing.html#parsing-main-afterframeset:
     title: 13.2.6.4.19 The "after frameset" insertion mode
-    status: unknown
+    status: unsupported
   parsing.html#the-after-after-body-insertion-mode:
     title: 13.2.6.4.20 The "after after body" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - Content after the html end tag ends up outside html instead of in body
   parsing.html#the-after-after-frameset-insertion-mode:
     title: 13.2.6.4.21 The "after after frameset" insertion mode
-    status: unknown
+    status: unsupported
   parsing.html#parsing-main-inforeign:
     title: 13.2.6.5 The rules for parsing tokens in foreign content
-    status: unknown
+    status: unsupported
   parsing.html#the-end:
     title: 13.2.7 The end
-    status: unknown
+    status: n/a
   parsing.html#speculative-html-parsing:
     title: 13.2.8 Speculative HTML parsing
-    status: unknown
+    status: n/a
   parsing.html#coercing-an-html-dom-into-an-infoset:
     title: 13.2.9 Coercing an HTML DOM into an infoset
-    status: unknown
+    status: n/a
   parsing.html#an-introduction-to-error-handling-and-strange-cases-in-the-parser:
     title: 13.2.10 An introduction to error handling and strange cases in the parser
-    status: unknown
-  parsing.html#misnested-tags:-b-i-/b-/i:
-    title: '13.2.10.1 Misnested tags: <b><i></b></i>'
-    status: unknown
-  parsing.html#misnested-tags:-b-p-/b-/p:
-    title: '13.2.10.2 Misnested tags: <b><p></b></p>'
-    status: unknown
-  parsing.html#unexpected-markup-in-tables:
-    title: 13.2.10.3 Unexpected markup in tables
-    status: unknown
-  parsing.html#scripts-that-modify-the-page-as-it-is-being-parsed:
-    title: 13.2.10.4 Scripts that modify the page as it is being parsed
-    status: unknown
-  parsing.html#the-execution-of-scripts-that-are-moving-across-multiple-documents:
-    title: 13.2.10.5 The execution of scripts that are moving across multiple documents
-    status: unknown
-  parsing.html#unclosed-formatting-elements:
-    title: 13.2.10.6 Unclosed formatting elements
-    status: unknown
+    status: n/a
   parsing.html#serialising-html-fragments:
     title: 13.3 Serializing HTML fragments
-    status: unknown
+    status: n/a
   parsing.html#parsing-html-fragments:
     title: 13.4 Parsing HTML fragments
-    status: unknown
+    status: n/a
   named-characters.html#named-character-references:
     title: 13.5 Named character references
-    status: unknown
+    status: supported
   rendering.html#rendering:
     title: 15 Rendering
     status: partial

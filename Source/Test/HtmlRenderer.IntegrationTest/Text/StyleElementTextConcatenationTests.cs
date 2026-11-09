@@ -2,18 +2,14 @@ using HtmlRenderer.IntegrationTest.TestSupport;
 
 namespace HtmlRenderer.IntegrationTest.Text;
 
-// This fork's CssParser keeps a process-wide, non-thread-safe regex cache
-// (RegexParserUtils.GetRegex's static Dictionary) that SetHtml/DefaultCssData populate lazily on first use per
-// AppDomain; running HtmlContainerInt.SetHtml from more than one thread at once (as MSTestSettings.cs's
-// assembly-wide [Parallelize(Scope = ExecutionScope.MethodLevel)] does by default) can corrupt it and throw
-// "A concurrent update was performed on this collection". [DoNotParallelize] avoids tripping that pre-existing
-// library race rather than masking it.
+// RegexParserUtils caches its regexes in a static Dictionary, parallel SetHtml calls can corrupt it
 [DoNotParallelize]
 [TestClass]
 public sealed class StyleElementTextConcatenationTests
 {
     [TestMethod]
     [Spec("html", "semantics.html#the-style-element")]
+    [Spec("html", "parsing.html#creating-and-inserting-nodes")]
     public void RuleAfterLessThanInDeclaration_StillApplies()
     {
         const string html = """
@@ -29,6 +25,6 @@ public sealed class StyleElementTextConcatenationTests
         var b = LayoutHarness.FindById(root, "b")!;
 
         Assert.IsNotNull(b);
-        Assert.AreEqual("green", b.Color);
+        Assert.AreEqual("rgb(0, 128, 0)", b.Color);
     }
 }

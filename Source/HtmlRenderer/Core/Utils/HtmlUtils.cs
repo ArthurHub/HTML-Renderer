@@ -20,7 +20,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         #region Fields and Consts
 
         /// <summary>
-        /// List of html tags that don't have content
+        /// Elements the parser never opens (HTML §13.2.6.4.7). Not the spec's list of void elements: embed,
+        /// keygen, source, track, wbr and bgsound are missing, isindex isn't special anymore.
         /// </summary>
         private static readonly List<string> _list = new List<string>(
             new[]
@@ -43,7 +44,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         };
 
         /// <summary>
-        /// the html decode only pairs
+        /// A subset of the named character references (HTML §13.5) for <see cref="DecodeHtml"/>, some names
+        /// case-insensitive, which the spec's never are.
         /// </summary>
         private static readonly Dictionary<string, char> _decodeOnly = new Dictionary<string, char>(StringComparer.InvariantCultureIgnoreCase);
         private static readonly Dictionary<string, char> _decodeOnlyCaseSensitive = new Dictionary<string, char>(StringComparer.InvariantCulture);
@@ -301,16 +303,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Is the given HTML tag is single tag or can have content.
+        /// Whether the element is void, i.e. never has content. <paramref name="tagName"/> must be lowercase.
         /// </summary>
-        /// <param name="tagName">the tag to check (must be lower case)</param>
-        /// <returns>true - is single tag, false - otherwise</returns>
         public static bool IsSingleTag(string tagName)
         {
             return _list.Contains(tagName);
         }
 
-        // https://html.spec.whatwg.org/dev/dom.html#concept-element-tag-omission
+        /// <summary>
+        /// Whether a <paramref name="tagName"/> start tag closes the current element (HTML §13.2.6.4.7,
+        /// §13.2.6.4.14 and §13.2.6.4.15). Only covers p, td and tr as the current element.
+        /// </summary>
         public static bool CanEndTagBeOmitted(string currentTagName, string tagName)
         {
             switch (currentTagName)
@@ -326,7 +329,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             }
         }
 
-        // Close <p> tags per https://html.spec.whatwg.org/dev/grouping-content.html#the-p-element
+        // HTML §13.2.6.4.7, the start tags that close a p in button scope. table only does so in no-quirks
+        // mode, which is assumed here.
         public static bool ShouldTagCloseParagraph(string tagName)
         {
             switch (tagName)
@@ -369,7 +373,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             }
         }
 
-        // Close <td> tags per https://html.spec.whatwg.org/dev/tables.html#the-td-element
+        // HTML §13.2.6.4.15, only for td as the current element, an open th isn't closed.
         public static bool ShouldTagCloseTableCell(string tagName)
         {
             switch (tagName)
@@ -389,11 +393,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Decode HTML encoded string to regular string.<br/>
-        /// Handles &lt;, &gt;, "&amp;.
+        /// Decodes character references in <paramref name="str"/>.
         /// </summary>
-        /// <param name="str">the string to decode</param>
-        /// <returns>decoded string</returns>
+        /// <remarks>
+        /// Text from the parser is already decoded by the tokenizer (HTML §13.2.5.77), decoding it here again
+        /// turns escaped references such as &amp;amp;lt; into characters.
+        /// </remarks>
         public static string DecodeHtml(string str)
         {
             if (!string.IsNullOrEmpty(str))
@@ -462,7 +467,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Decode HTML special characters encoded using char entity name (&#euro;)
+        /// Decode HTML special characters encoded using char entity name (&amp;euro;)
         /// </summary>
         /// <param name="str">the string to decode</param>
         /// <returns>decoded string</returns>

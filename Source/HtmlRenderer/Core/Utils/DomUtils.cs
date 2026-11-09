@@ -94,11 +94,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Recursively searches for the parent with the specified HTML Tag name
+        /// Walks up from <paramref name="box"/> to the nearest box with the given tag name and returns that
+        /// box's parent, or <paramref name="root"/> if no ancestor matches. The parser uses it to close an
+        /// element by its end tag, without the element scopes of HTML §13.2.4.2.
         /// </summary>
-        /// <param name="root"></param>
-        /// <param name="tagName"></param>
-        /// <param name="box"></param>
         public static CssBox FindParent(CssBox root, string tagName, CssBox box)
         {
             if (box == null)
