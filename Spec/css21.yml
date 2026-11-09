@@ -7,19 +7,23 @@ sections:
     status: n/a
   conform.html#q3.0:
     title: 3 Conformance
-    status: unknown
+    status: partial
   conform.html#defs:
     title: 3.1 Definitions
-    status: unknown
+    status: supported
   conform.html#conformance:
     title: 3.2 UA Conformance
-    status: unknown
+    status: partial
+    gaps:
+      - There is no user origin, a base stylesheet given to SetHtml cascades as author style sheet
+      - Alternate style sheets are never loaded, the user can't select a style sheet set
+      - Author style sheets can't be turned off
   conform.html#errors:
     title: 3.3 Error conditions
-    status: unknown
+    status: n/a
   conform.html#text-css:
     title: 3.4 The text/css content type
-    status: unknown
+    status: supported
   syndata.html#q4.0:
     title: 4 Syntax and basic data types
     status: unknown

@@ -100,11 +100,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                 return string.Empty;
             }
 
-            // A response served with a Content-Type other than text/css (e.g. a 404 HTML error page
-            // returned with a 200 status by a misconfigured server) is treated as "not a stylesheet" -
-            // return empty and keep rendering, same fail-soft behavior as a missing resource. A response
-            // with no Content-Type header at all (a local file with an unrecognized extension, etc.) is
-            // still accepted, matching this handler's pre-existing behavior of trusting the source.
+            // CSS 2.1 §3.4. A response of another type is skipped like a missing one. A response without
+            // a Content-Type, e.g. a local file, is trusted.
             if (networkResponse.ResponseHeaders != null &&
                 networkResponse.ResponseHeaders.TryGetValue("Content-Type", out var contentTypeValues) &&
                 contentTypeValues.Length > 0 &&
