@@ -98,10 +98,28 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
             if (text == null) return;
 
+            // HTML drops a single newline directly after the <pre>, <listing> or <textarea> start tag.
+            if (curBox.Boxes.Count == 0 && curBox.HtmlTag != null && IsNewlineStrippingElement(curBox.HtmlTag.Name))
+            {
+                if (text.StartsWith("\r\n", StringComparison.Ordinal))
+                    text = text.Substring(2);
+                else if (text.StartsWith("\n", StringComparison.Ordinal))
+                    text = text.Substring(1);
+
+                if (text.Length == 0) return;
+            }
+
             var box = CssBox.CreateBox(curBox);
             box.Text = text;
         }
 
+
+        private static bool IsNewlineStrippingElement(string tagName)
+        {
+            return tagName.Equals("pre", StringComparison.OrdinalIgnoreCase)
+                   || tagName.Equals("listing", StringComparison.OrdinalIgnoreCase)
+                   || tagName.Equals("textarea", StringComparison.OrdinalIgnoreCase);
+        }
 
         /// <summary>
         /// Parse the html part, the part from prev parsing index to the beginning of the next html tag.<br/>

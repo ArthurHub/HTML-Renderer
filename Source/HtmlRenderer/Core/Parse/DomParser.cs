@@ -1174,10 +1174,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             if (!box.IsBrElement) return;
 
             var previousSibling = DomUtils.GetPreviousSibling(box);
-            if (previousSibling == null || previousSibling.IsBlock || previousSibling.IsBrElement)
+            if (previousSibling == null || previousSibling.IsBlock)
             {
                 var nextSibling = DomUtils.GetFollowingSiblings(box, b => b.IsInline && !b.IsBrElement, true).FirstOrDefault();
-                if (nextSibling == null || previousSibling?.IsBrElement == true)
+                if (nextSibling == null)
                 {
                     box.Text = "\n";
                     box.ParseToWords();
