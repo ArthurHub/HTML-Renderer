@@ -23,11 +23,7 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Parse
 {
     /// <summary>
-    /// Parser to parse CSS stylesheet source string into CSS objects.<br/>
-    /// Derived from the same CSS-OM lineage as the vendored engine, adapted to stay fully synchronous
-    /// (HTML-Renderer's whole SetHtml/DomParser pipeline is synchronous, and <see cref="StylesheetLoadHandler"/>
-    /// already does its own blocking I/O) - the recursive @import-walk logic is kept, just without
-    /// any Task/await plumbing.
+    /// Parser to parse CSS stylesheet source string into CSS objects.
     /// </summary>
     internal sealed class CssParser
     {
@@ -44,10 +40,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         private readonly CssValueParser _valueParser;
 
         /// <summary>
-        /// Used to resolve @import references (loads via the same synchronous, event-overridable
-        /// path as &lt;link rel=stylesheet&gt;). Null when this parser is used outside of a live
-        /// document parse (e.g. the public <see cref="CssData.Parse"/> convenience API) - in that
-        /// case @import rules are silently skipped, since there is no container to resolve them through.
+        /// Loads @import references like &lt;link rel=stylesheet&gt;. Without it @import rules are skipped.
         /// </summary>
         private readonly HtmlContainerInt _htmlContainer;
 
@@ -209,13 +202,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             var stylesheet = ParseStyleSheetText(stylesheetText);
             stylesheet.BaseUri = baseUri;
 
-            // Guards against circular @import chains (A imports B imports A) recursing forever; also
-            // stops a stylesheet from importing itself directly.
+            // Guards against circular @import chains.
             if (baseUri != null)
             {
                 visitedImportUris.Add(baseUri.AbsoluteUri);
             }
 
+            // CSS 2.1 §4.1.5: an @import after any other statement is ignored.
             var hasReachedNonImportRules = false;
 
             foreach (var rule in stylesheet.Children)
@@ -225,16 +218,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 {
                     if (importRule.Href == null || _htmlContainer == null) continue;
 
-                    // Relative references inside an already-loaded stylesheet resolve against that
-                    // stylesheet's own location, not the document's base.
+                    // CSS 2.1 §4.3.4: relative to the importing style sheet.
                     var resolvedHref = ResolveImportHref(importRule.Href, baseUri);
 
-                    // Bridges into the async StylesheetLoadHandler.LoadStylesheet from this synchronous
-                    // CssParser.ParseStyleSheet public API. Deliberately, permanently blocking: this
-                    // method is called directly from several WinForms/WPF UI controls' own public API
-                    // (HtmlPanel/HtmlLabel/HtmlToolTip's BaseStylesheet-adjacent paths), so making it async
-                    // would ripple into a much larger, unrelated public-API break well beyond this
-                    // @font-face/network conversion's scope - not a temporary stopgap awaiting a later stage.
+                    // Blocks on purpose, the WinForms/WPF controls call ParseStyleSheet synchronously.
                     var (importedContent, importedCssData) = StylesheetLoadHandler.LoadStylesheet(_htmlContainer, resolvedHref, null).GetAwaiter().GetResult();
 
                     if (!string.IsNullOrEmpty(importedContent))
@@ -252,8 +239,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 }
                 else if (!(rule is LayerStatementRule))
                 {
-                    // A bare `@layer a, b;` statement is allowed before @import (CSS Cascade 5 §6.4.1), so
-                    // it must not close the @import prologue - otherwise every following @import is skipped.
+                    // CSS Cascade 5 §6.4.1 allows `@layer a, b;` before @import.
                     hasReachedNonImportRules = true;
                 }
             }
@@ -262,9 +248,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Resolves an @import href against the importing stylesheet's own base URI (if any), so
-        /// nested @import chains resolve relative references correctly instead of against the
-        /// document's base - matching browser behavior for fetched CSS.
+        /// Resolves an @import href against the importing stylesheet's own base URI (if any).
         /// </summary>
         private static string ResolveImportHref(string href, Uri baseUri)
         {

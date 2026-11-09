@@ -330,10 +330,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             Back();
 
-            // A '#' always begins a <hash-token>, consuming a whole <name> (CSS Syntax §4.3.4). Classify it as
-            // a color literal only when the name is entirely hex digits (e.g. "#f00"); otherwise keep it as an
-            // id hash-token (e.g. "#hero" — an id-selector inside element()), instead of truncating at the
-            // first non-hex character (which turned "#hero" into an empty color plus a stray "hero" ident).
+            // CSS Syntax §4.3.4: the hash consumes the whole name. Only an all-hex name ("#f00") is a color
+            // literal, anything else ("#hero") stays an id hash.
             var allHex = true;
 
             while (true)
@@ -941,15 +939,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 current = GetNext();
             }
 
-            // Fewer than 6 hex digits may be followed by '?' wildcards (which pad the value and are
-            // mutually exclusive with the start-end range form) OR - like a full 6-digit start - by a
-            // '-<hex>' range end (e.g. U+41-5A). Only the wildcard form is handled here; a '-' falls
-            // through to the shared range handling below.
+            // Wildcards ("U+4??") and a range end ("U+41-5A") exclude each other, the range end is handled below.
             if (StringBuffer.Length != 6 && current == Symbols.QuestionMark)
             {
-                // The wildcard budget must be captured up front: appending to StringBuffer inside the loop
-                // would otherwise shrink a "6 - StringBuffer.Length" bound on every iteration, so only half
-                // the available wildcards were ever consumed (U+?????? stopped after three).
+                // Captured up front, the loop appends to StringBuffer.
                 var wildcards = 6 - StringBuffer.Length;
 
                 for (var i = 0; i < wildcards; i++)
@@ -1093,12 +1086,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var function = new FunctionToken(value, _position);
 
-            // Tracks paren depth so a bare (non-function) parenthesized group nested inside the
-            // function's arguments - e.g. calc((1px + 2px) * 3) - doesn't get mistaken for the end of
-            // the function: only the closing paren that matches this function's own opening paren (depth
-            // returning to 0) should terminate it. A nested function call's own parens are already fully
-            // consumed by its own (recursive) call to this method before it's added as a single token
-            // here, so they never surface as bare RoundBracketOpen/Close tokens at this level.
+            // Depth of bare parentheses, e.g. calc((1px + 2px) * 3). Nested functions consume their own
+            // parentheses recursively.
             var depth = 1;
             var token = Get();
             while (token.Type != TokenType.EndOfFile)

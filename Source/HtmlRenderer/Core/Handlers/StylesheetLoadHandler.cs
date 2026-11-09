@@ -130,7 +130,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// Make relative URLs absolute in the stylesheet using the URI of the stylesheet.
+        /// Make relative URLs absolute in the stylesheet using the URI of the stylesheet (CSS 2.1 §4.3.4).
         /// </summary>
         /// <param name="stylesheet">the stylesheet to correct</param>
         /// <param name="baseUri">the stylesheet uri to use to create absolute URLs</param>

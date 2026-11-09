@@ -26,79 +26,99 @@ sections:
     status: supported
   syndata.html#q4.0:
     title: 4 Syntax and basic data types
-    status: unknown
+    status: partial
   syndata.html#syntax:
     title: 4.1 Syntax
-    status: unknown
+    status: partial
   syndata.html#tokenization:
     title: 4.1.1 Tokenization
-    status: unknown
+    status: supported
   syndata.html#keywords:
     title: 4.1.2 Keywords
-    status: unknown
+    status: supported
   syndata.html#vendor-keywords:
     title: 4.1.2.1 Vendor-specific extensions
-    status: unknown
+    status: supported
   syndata.html#vendor-keyword-history:
     title: 4.1.2.2 Informative Historical Notes
-    status: unknown
+    status: n/a
   syndata.html#characters:
     title: 4.1.3 Characters and case
-    status: unknown
+    status: partial
+    gaps:
+      - Uppercase units, at-keywords and '!important' aren't recognized, e.g. 10PX, @MEDIA and !IMPORTANT
+      - "Uppercase pseudo-class and pseudo-element names don't match, e.g. :FIRST-CHILD and ::BEFORE"
   syndata.html#statements:
     title: 4.1.4 Statements
-    status: unknown
+    status: supported
   syndata.html#at-rules:
     title: 4.1.5 At-rules
-    status: unknown
+    status: supported
   syndata.html#block:
     title: 4.1.6 Blocks
-    status: unknown
+    status: partial
+    gaps:
+      - A {}-block inside a declaration value drops the declarations after it
   syndata.html#rule-sets:
     title: 4.1.7 Rule sets, declaration blocks, and selectors
-    status: unknown
+    status: supported
   syndata.html#declaration:
     title: 4.1.8 Declarations and properties
-    status: unknown
+    status: supported
   syndata.html#comments:
     title: 4.1.9 Comments
-    status: unknown
+    status: supported
   syndata.html#parsing-errors:
     title: 4.2 Rules for handling parsing errors
-    status: unknown
+    status: supported
   syndata.html#values:
     title: 4.3 Values
-    status: unknown
+    status: partial
   syndata.html#numbers:
     title: 4.3.1 Integers and real numbers
-    status: unknown
+    status: supported
   syndata.html#length-units:
     title: 4.3.2 Lengths
-    status: unknown
+    status: partial
+    gaps:
+      - Negative lengths are accepted for width, height, padding, border widths, font-size and line-height instead of being ignored
   syndata.html#percentage-units:
     title: 4.3.3 Percentages
-    status: unknown
+    status: partial
+    gaps:
+      - A percentage font-size is inherited as the percentage and applied again in each descendant
+      - A percentage line-height resolves to 0 instead of a percentage of the font size
   syndata.html#uri:
     title: 4.3.4 URLs and URIs
-    status: unknown
+    status: supported
   syndata.html#counter:
     title: 4.3.5 Counters
-    status: unknown
+    status: partial
+    gaps:
+      - counter(x, none) yields the counter value instead of an empty string
+      - counters() isn't accepted, the 'content' declaration is dropped
   syndata.html#color-units:
     title: 4.3.6 Colors
-    status: unknown
+    status: partial
+    gaps:
+      - Out-of-range rgb() values aren't clipped, a negative component makes the color invalid and a percentage above 100% wraps around
+      - rgb() with mixed integers and percentages or with two components isn't ignored
   syndata.html#strings:
     title: 4.3.7 Strings
-    status: unknown
+    status: partial
+    gaps:
+      - A backslash followed by a newline in a string is kept as a line break instead of being removed
   syndata.html#unsupported-values:
     title: 4.3.8 Unsupported Values
-    status: unknown
+    status: supported
   syndata.html#charset:
     title: 4.4 CSS style sheet representation
-    status: unknown
+    status: partial
+    gaps:
+      - The @charset rule and the HTTP charset parameter are ignored, an external style sheet is decoded from its BOM or as UTF-8
   syndata.html#escaping:
     title: 4.4.1 Referring to characters not represented in a character encoding
-    status: unknown
+    status: supported
   selector.html#q5.0:
     title: 5 Selectors
     status: unknown

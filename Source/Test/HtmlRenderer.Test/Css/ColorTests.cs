@@ -2,12 +2,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/Color.cs (<c>ColorTests</c>). Every static factory (<c>TryFromHex</c>,
-/// <c>FromRgb(a)</c>, <c>FromName</c>, <c>Mix</c>, <c>FromHsl</c>, <c>FromFlexHex</c>, <c>FromGray</c>,
-/// <c>FromHwb(a)</c>) exists on HTML-Renderer's <see cref="TheArtOfDev.HtmlRenderer.Core.CssEngine.Color"/>
-/// with a matching signature.
-/// </summary>
 [TestClass]
 public sealed class ColorTests
 {
@@ -19,6 +13,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#color-units")]
     public void ColorInvalidHexDigitString()
     {
         var color = "BCDEFG";
@@ -36,6 +31,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#color-units")]
     public void ColorInvalidLengthString()
     {
         var color = "abcde";
@@ -60,6 +56,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#color-units")]
     public void ColorWhiteShortString()
     {
         var color = "fff";
@@ -68,6 +65,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#color-units")]
     public void ColorRedShortString()
     {
         var color = "f00";
@@ -76,6 +74,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#color-units")]
     public void ColorFromRedName()
     {
         var color = "red";
@@ -85,6 +84,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#color-units")]
     public void ColorFromWhiteName()
     {
         var color = "white";

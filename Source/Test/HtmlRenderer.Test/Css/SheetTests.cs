@@ -4,21 +4,13 @@ using static HtmlRenderer.Test.CssEngineSupport.CssConstructionFunctions;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/Sheet.cs (<c>CssSheetTests</c>). Core stylesheet-composition, parsing,
-/// serialization, comment-preservation, and <c>@import</c>/<c>@-ms-viewport</c> handling all verified 1:1
-/// against HTML-Renderer's <c>Parser/StylesheetComposer.cs</c>, <c>Model/Stylesheet.cs</c>,
-/// <c>Model/StyleDeclaration.cs</c>.
-/// </summary>
 [TestClass]
 public sealed class SheetTests
 {
     [TestMethod]
     public void CssSheetBareSemicolonInsideBlockIsDiscarded()
     {
-        // "Consume a block's contents" discards a <semicolon-token> just like whitespace
-        // (CSS Syntax 3 §5.5.5), so a stray ';' inside a grouping rule must not disturb the block or
-        // anything after it.
+        // CSS Syntax 3 §5.5.5 discards the ';'. CSS 2.1 §4.2 would drop ".b" with the malformed statement.
         var sheet = ParseStyleSheet(@"
             @media screen {
                 .a { color: red; }
@@ -35,8 +27,6 @@ public sealed class SheetTests
     [TestMethod]
     public void CssSheetBareSemicolonInsideBlockDoesNotSwallowFollowingRule()
     {
-        // The trailing ';' used to be folded into a run-on selector that consumed the block's closing
-        // brace, taking the *next* top-level rule with it.
         var sheet = ParseStyleSheet(@"
             @media screen { .a { color: red; } ; }
             @media print { .b { color: blue; } }");
@@ -56,22 +46,18 @@ public sealed class SheetTests
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetBareTopLevelSemicolonInvalidatesTheFollowingRule()
     {
-        // Deliberately asymmetric with the block case above. "Consume a stylesheet's contents"
-        // (CSS Syntax 3 §5.5.1) has no <semicolon-token> case, so a stray top-level ';' falls to
-        // "anything else" and is consumed into the next qualified rule's prelude by §5.5.3, leaving an
-        // invalid selector. Only a block passes <semicolon-token> as that algorithm's stop token.
-        //
-        // The Acid2 parser-torture block depends on this: its ".parser { m\argin: 2em; };" is followed
-        // by ".parser { height: 3em; }", which must NOT apply - one of a run of deliberately-dropped
-        // rules alongside "width: 200" and "border: 5em solid red ! error".
+        // Unlike inside a block, a top-level ';' becomes part of the next rule's prelude.
+        // Acid2 relies on this to drop ".parser { height: 3em; }".
         var sheet = ParseStyleSheet(@".a { color: red; } ; .b { color: blue; }");
         Assert.AreEqual(1, sheet.Rules.Length);
         Assert.AreEqual(".a", ((StyleRule)sheet.Rules[0]).SelectorText);
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetOnEofDuringRuleWithoutSemicolon()
     {
         var sheet = ParseStyleSheet(@"
@@ -87,6 +73,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#comments")]
     public void CssSheet1WithDoubleMarkedCommentFromIssue93()
     {
         var sheet = ParseStyleSheet(@"
@@ -103,6 +90,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#comments")]
     public void CssSheet2WithDoubleMarkedCommentFromIssue93()
     {
         var sheet = ParseStyleSheet(@"
@@ -156,6 +144,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#vendor-keywords")]
     public void CssSheetIgnoreVendorPrefixes()
     {
         var css = @".something {
@@ -188,6 +177,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetCloseStringsEndOfLine()
     {
         var sheet = ParseStyleSheet(@"p {
@@ -206,6 +196,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetOnEofDuringRuleWithinString()
     {
         var sheet = ParseStyleSheet(@"
@@ -219,6 +210,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetOnEofDuringAtMediaRuleWithinString()
     {
         var sheet = ParseStyleSheet(@"  @media screen {
@@ -235,6 +227,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetIgnoreUnknownProperty()
     {
         var sheet = ParseStyleSheet(@"h1 { color: red; rotation: 70minutes }");
@@ -248,6 +241,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetInvalidStatementRulesetUnexpectedAtKeyword()
     {
         var sheet = ParseStyleSheet(@"p @here {color: red}");
@@ -255,6 +249,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetInvalidStatementAtRuleUnexpectedAtKeyword()
     {
         var sheet = ParseStyleSheet(@"@foo @bar;");
@@ -262,6 +257,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetInvalidStatementRulesetUnexpectedRightBrace()
     {
         var sheet = ParseStyleSheet(@"}} {{ - }}");
@@ -269,6 +265,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetInvalidStatementRulesetUnexpectedRightBraceWithValidQualifiedRule()
     {
         var sheet = ParseStyleSheet(@"}} {{ - }}
@@ -282,6 +279,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetInvalidStatementRulesetUnexpectedRightParenthesis()
     {
         var sheet = ParseStyleSheet(@") ( {} ) p {color: red }");
@@ -289,6 +287,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetInvalidStatementRulesetUnexpectedRightParenthesisWithValidQualifiedRule()
     {
         var sheet = ParseStyleSheet(@") {} p {color: green }");
@@ -301,6 +300,7 @@ h1 {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetIgnoreUnknownAtRule()
     {
         var sheet = ParseStyleSheet(@"@three-dee {
@@ -321,6 +321,7 @@ h1 { color: blue }");
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetKeepValidValueFloat()
     {
         var sheet = ParseStyleSheet(@"img { float: left }");
@@ -334,6 +335,7 @@ h1 { color: blue }");
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetIgnoreInvalidValueFloat()
     {
         var sheet = ParseStyleSheet(@"img { float: left here }");
@@ -345,6 +347,7 @@ h1 { color: blue }");
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetIgnoreInvalidValueBackground()
     {
         var sheet = ParseStyleSheet(@"img { background: ""red"" }");
@@ -356,6 +359,7 @@ h1 { color: blue }");
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetIgnoreInvalidValueBorderWidth()
     {
         var sheet = ParseStyleSheet(@"img { border-width: 3 }");
@@ -367,6 +371,7 @@ h1 { color: blue }");
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetWellformedDeclaration()
     {
         var sheet = ParseStyleSheet(@"p { color:green; }");
@@ -380,6 +385,7 @@ h1 { color: blue }");
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetMalformedDeclarationMissingColon()
     {
         var sheet = ParseStyleSheet(@"p { color:green; color }");
@@ -393,6 +399,7 @@ h1 { color: blue }");
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetMalformedDeclarationMissingColonWithRecovery()
     {
         var sheet = ParseStyleSheet(@"p { color:red;   color; color:green }");
@@ -406,6 +413,7 @@ h1 { color: blue }");
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetMalformedDeclarationMissingValue()
     {
         var sheet = ParseStyleSheet(@"p { color:green; color: }");
@@ -419,6 +427,7 @@ h1 { color: blue }");
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetMalformedDeclarationUnexpectedTokens()
     {
         var sheet = ParseStyleSheet(@"p { color:green; color{;color:maroon} }");
@@ -432,6 +441,7 @@ h1 { color: blue }");
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#parsing-errors")]
     public void CssSheetMalformedDeclarationUnexpectedTokensWithRecovery()
     {
         var sheet = ParseStyleSheet(@"p { color:red;   color{;color:maroon}; color:green }");
@@ -733,17 +743,8 @@ h1 { color: blue }");
         Assert.AreEqual("\"Helvetica Neue\", Helvetica, Arial, sans-serif", prop.Value);
     }
 
-    /// <summary>
-    /// PORT-UNIT-IGNORED: PeachPDF's <c>font</c> shorthand expands to 10 longhands (font-family, font-size,
-    /// font-stretch, font-style, font-variant-caps, font-variant-ligatures, font-variant-numeric,
-    /// font-variant-east-asian, font-weight, line-height) + content = 11. HTML-Renderer's <c>FontProperty</c>
-    /// (<see cref="TheArtOfDev.HtmlRenderer.Core.CssEngine.StylesheetParser"/> via
-    /// <c>StyleProperties/Font/FontProperty.cs:7-18</c>) only wires font-style/font-variant/font-weight/
-    /// font-stretch/font-size/line-height/font-family (7 longhands, no font-variant-ligatures/numeric/
-    /// east-asian sub-expansion) - so together with content this totals 8, not 11.
-    /// </summary>
     [TestMethod]
-    [Ignore("not yet spec compliant - see doc comment: HTML-Renderer's font shorthand expands to 7 longhands, not 10 (StyleProperties/Font/FontProperty.cs:7-18)")]
+    [Ignore("font-variant-caps, -ligatures, -numeric and -east-asian aren't properties here, so font expands to 7 longhands, not 10")]
     public void CssFontWithSlashAndContent()
     {
         var decl = ParseDeclarations("font: bold 1em/2em monospace; content: \" (\" attr(href) \")\"");
@@ -1144,6 +1145,7 @@ font-weight:bold;}";
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#comments")]
     public void CssStyleSheetShouldIgnoreHtmlCommentTokens()
     {
         var parser = new StylesheetParser();

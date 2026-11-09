@@ -4,11 +4,6 @@ using static HtmlRenderer.Test.CssEngineSupport.CssConstructionFunctions;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/Cases.cs (<c>CssCasesTests</c>). <c>@namespace</c>, charset/linebreak
-/// handling, and general stylesheet edge cases are all present 1:1 against HTML-Renderer's
-/// <c>Parser/StylesheetParser.cs</c> / <c>Model/Stylesheet.cs</c>.
-/// </summary>
 [TestClass]
 public sealed class CasesTests
 {
@@ -163,6 +158,7 @@ public sealed class CasesTests
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#comments")]
     public void StyleSheetCommentIn()
     {
         var sheet = ParseSheet(@"a {
@@ -187,6 +183,7 @@ public sealed class CasesTests
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#comments")]
     public void StyleSheetCommentUrl()
     {
         var sheet = ParseSheet(@"/* http://foo.com/bar/baz.html */
@@ -203,6 +200,7 @@ foo { /*/*/
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#comments")]
     public void StyleSheetComment()
     {
         var sheet = ParseSheet(@"/* 1 */
@@ -279,6 +277,7 @@ head, /* footer, */body/*, nav */ { /* 2 */
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#characters")]
     public void StyleSheetEscapes()
     {
         var sheet = ParseSheet(@"/* tests compressed for easy testing */
@@ -936,6 +935,7 @@ tobi loki jane {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#strings")]
     public void StyleSheetQuoteEscape()
     {
         var sheet = ParseSheet(@"p[qwe=""a\"",b""] { color: red }
@@ -947,6 +947,7 @@ tobi loki jane {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#declaration")]
     public void StyleSheetQuoted()
     {
         var sheet = ParseSheet(@"body {
@@ -1058,6 +1059,7 @@ baz {
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#characters")]
     public void StyleSheetUnicodeEscapeLiteral()
     {
         var sheet = ParseSheet(@"h1 { background-color: \000062
@@ -1066,6 +1068,7 @@ lack; }");
     }
 
     [TestMethod]
+    [Spec("css21", "syndata.html#characters")]
     public void StyleSheetUnicodeEscapeVarious()
     {
         var sheet = ParseSheet(
