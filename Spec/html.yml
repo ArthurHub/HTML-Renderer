@@ -187,7 +187,7 @@ sections:
     status: unknown
   semantics.html#semantics:
     title: 4 The elements of HTML
-    status: unknown
+    status: partial
   semantics.html#the-root-element:
     title: 4.1 The document element
     status: unknown
@@ -301,55 +301,65 @@ sections:
     status: unknown
   grouping-content.html#grouping-content:
     title: 4.4 Grouping content
-    status: unknown
+    status: partial
   grouping-content.html#the-p-element:
     title: 4.4.1 The p element
-    status: unknown
+    status: supported
   grouping-content.html#the-hr-element:
     title: 4.4.2 The hr element
-    status: unknown
+    status: supported
   grouping-content.html#the-pre-element:
     title: 4.4.3 The pre element
-    status: unknown
+    status: supported
   grouping-content.html#the-blockquote-element:
     title: 4.4.4 The blockquote element
-    status: unknown
+    status: supported
   grouping-content.html#the-ol-element:
     title: 4.4.5 The ol element
-    status: unknown
+    status: partial
+    gaps:
+      - reversed without a value, i.e. <ol reversed>, counts up
   grouping-content.html#the-ul-element:
     title: 4.4.6 The ul element
-    status: unknown
+    status: supported
   grouping-content.html#the-menu-element:
     title: 4.4.7 The menu element
-    status: unknown
+    status: supported
   grouping-content.html#the-li-element:
     title: 4.4.8 The li element
-    status: unknown
+    status: supported
   grouping-content.html#the-dl-element:
     title: 4.4.9 The dl element
-    status: unknown
+    status: supported
   grouping-content.html#the-dt-element:
     title: 4.4.10 The dt element
-    status: unknown
+    status: supported
   grouping-content.html#the-dd-element:
     title: 4.4.11 The dd element
-    status: unknown
+    status: supported
   grouping-content.html#the-figure-element:
     title: 4.4.12 The figure element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, rendered inline, see 15.3.3
   grouping-content.html#the-figcaption-element:
     title: 4.4.13 The figcaption element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, rendered inline, see 15.3.3
   grouping-content.html#the-main-element:
     title: 4.4.14 The main element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, rendered inline, see 15.3.3
   grouping-content.html#the-search-element:
     title: 4.4.15 The search element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, rendered inline, see 15.3.3
   grouping-content.html#the-div-element:
     title: 4.4.16 The div element
-    status: unknown
+    status: supported
   text-level-semantics.html#text-level-semantics:
     title: 4.5 Text-level semantics
     status: unknown
@@ -1441,7 +1451,7 @@ sections:
     status: unknown
   syntax.html#syntax:
     title: 13 The HTML syntax
-    status: unknown
+    status: partial
   syntax.html#writing:
     title: 13.1 Writing HTML documents
     status: unknown
@@ -1489,7 +1499,7 @@ sections:
     status: unknown
   parsing.html#parsing:
     title: 13.2 Parsing HTML documents
-    status: unknown
+    status: partial
   parsing.html#overview-of-the-parsing-model:
     title: 13.2.1 Overview of the parsing model
     status: unknown
@@ -1789,7 +1799,7 @@ sections:
     status: unknown
   parsing.html#tree-construction:
     title: 13.2.6 Tree construction
-    status: unknown
+    status: partial
   parsing.html#creating-and-inserting-nodes:
     title: 13.2.6.1 Creating and inserting nodes
     status: unknown
@@ -1801,7 +1811,7 @@ sections:
     status: unknown
   parsing.html#parsing-main-inhtml:
     title: 13.2.6.4 The rules for parsing tokens in HTML content
-    status: unknown
+    status: partial
   parsing.html#the-initial-insertion-mode:
     title: 13.2.6.4.1 The "initial" insertion mode
     status: unknown
@@ -1822,13 +1832,21 @@ sections:
     status: unknown
   parsing.html#parsing-main-inbody:
     title: 13.2.6.4.7 The "in body" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - A start tag that closes an open p only does so while the p is the current element, an inline element still open inside it keeps the p open
+      - li, dt and dd don't close the previous item
+      - option doesn't close the previous option
+      - An end tag without a matching open element closes the current element instead of being ignored
+      - An end tag p without an open p doesn't insert an empty paragraph
   parsing.html#parsing-main-incdata:
     title: 13.2.6.4.8 The "text" insertion mode
     status: unknown
   parsing.html#parsing-main-intable:
     title: 13.2.6.4.9 The "in table" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - A tr outside of a table section doesn't get an implied tbody
   parsing.html#parsing-main-intabletext:
     title: 13.2.6.4.10 The "in table text" insertion mode
     status: unknown
@@ -1840,13 +1858,17 @@ sections:
     status: unknown
   parsing.html#parsing-main-intbody:
     title: 13.2.6.4.13 The "in table body" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - thead, tbody and tfoot don't close the previous table section
   parsing.html#parsing-main-intr:
     title: 13.2.6.4.14 The "in row" insertion mode
     status: unknown
   parsing.html#parsing-main-intd:
     title: 13.2.6.4.15 The "in cell" insertion mode
-    status: unknown
+    status: partial
+    gaps:
+      - th doesn't close the previous cell
   parsing.html#parsing-main-intemplate:
     title: 13.2.6.4.16 The "in template" insertion mode
     status: unknown
@@ -1909,7 +1931,7 @@ sections:
     status: unknown
   rendering.html#rendering:
     title: 15 Rendering
-    status: unknown
+    status: partial
   rendering.html#introduction-17:
     title: 15.1 Introduction
     status: unknown
@@ -1918,16 +1940,22 @@ sections:
     status: unknown
   rendering.html#non-replaced-elements:
     title: 15.3 Non-replaced elements
-    status: unknown
+    status: partial
   rendering.html#hidden-elements:
     title: 15.3.1 Hidden elements
-    status: unknown
+    status: partial
+    gaps:
+      - The hidden attribute is ignored
+      - template, datalist, noembed, rp and dialog without open are displayed
   rendering.html#the-page:
     title: 15.3.2 The page
     status: unknown
   rendering.html#flow-content-3:
     title: 15.3.3 Flow content
-    status: unknown
+    status: partial
+    gaps:
+      - article, aside, details, figcaption, figure, footer, header, hgroup, legend, listing, main, nav, plaintext, search, section, summary and xmp are inline
+      - p and blockquote have 1.12em vertical margins instead of 1em, pre has 15px above and nothing below, figure has no margins
   rendering.html#phrasing-content-3:
     title: 15.3.4 Phrasing content
     status: unknown
@@ -1939,7 +1967,10 @@ sections:
     status: unknown
   rendering.html#lists:
     title: 15.3.7 Lists
-    status: unknown
+    status: partial
+    gaps:
+      - ol, ul and menu are indented with margin-left instead of padding-inline-start
+      - The type attribute of ol, ul and li is ignored
   rendering.html#tables-2:
     title: 15.3.8 Tables
     status: unknown
@@ -1951,7 +1982,9 @@ sections:
     status: unknown
   rendering.html#the-hr-element-2:
     title: 15.3.11 The hr element
-    status: unknown
+    status: partial
+    gaps:
+      - hr isn't centered, has no vertical margins and isn't gray
   rendering.html#the-fieldset-and-legend-elements:
     title: 15.3.12 The fieldset and legend elements
     status: unknown
