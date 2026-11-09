@@ -761,58 +761,71 @@ sections:
     status: supported
   tables.html#tables:
     title: 4.9 Tabular data
-    status: unknown
+    status: partial
   tables.html#the-table-element:
     title: 4.9.1 The table element
-    status: unknown
+    status: supported
   tables.html#table-descriptions-techniques:
     title: 4.9.1.1 Techniques for describing tables
-    status: unknown
+    status: n/a
   tables.html#table-layout-techniques:
     title: 4.9.1.2 Techniques for table design
-    status: unknown
+    status: n/a
   tables.html#the-caption-element:
     title: 4.9.2 The caption element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Not rendered, see CSS 2.1 17.4
   tables.html#the-colgroup-element:
     title: 4.9.3 The colgroup element
-    status: unknown
+    status: supported
   tables.html#the-col-element:
     title: 4.9.4 The col element
-    status: unknown
+    status: supported
   tables.html#the-tbody-element:
     title: 4.9.5 The tbody element
-    status: unknown
+    status: supported
   tables.html#the-thead-element:
     title: 4.9.6 The thead element
-    status: unknown
+    status: supported
   tables.html#the-tfoot-element:
     title: 4.9.7 The tfoot element
-    status: unknown
+    status: supported
   tables.html#the-tr-element:
     title: 4.9.8 The tr element
-    status: unknown
+    status: supported
   tables.html#the-td-element:
     title: 4.9.9 The td element
-    status: unknown
+    status: supported
   tables.html#the-th-element:
     title: 4.9.10 The th element
-    status: unknown
+    status: supported
   tables.html#attributes-common-to-td-and-th-elements:
     title: 4.9.11 Attributes common to td and th elements
-    status: unknown
+    status: partial
+    gaps:
+      - rowspan=0 spans a single row instead of the rest of the row group
   tables.html#table-processing-model:
     title: 4.9.12 Processing model
-    status: unknown
+    status: partial
   tables.html#forming-a-table:
     title: 4.9.12.1 Forming a table
-    status: unknown
+    status: partial
+    gaps:
+      - The column count is the highest number of cells in a row, colspan doesn't add columns, so a cell past it gets no width
+      - A cell spanning past that column count breaks the layout of the whole table
+      - Cells past the columns declared by col and colgroup aren't laid out
+      - A colspan of 0 or below breaks the layout of the whole table instead of counting as 1
+      - colspan isn't clamped to 1000
+      - span, colspan and rowspan with trailing characters, e.g. 2px, count as 1 instead of using the leading digits
+      - A span with a fraction is rounded instead of cut off, e.g. 1.5 counts as 2
+      - A rowspan reaching past its row group continues into the next one
   tables.html#header-and-data-cell-semantics:
     title: 4.9.12.2 Forming relationships between data cells and header cells
-    status: unknown
+    status: n/a
   tables.html#table-examples:
     title: 4.9.13 Examples
-    status: unknown
+    status: n/a
   forms.html#forms:
     title: 4.10 Forms
     status: unknown

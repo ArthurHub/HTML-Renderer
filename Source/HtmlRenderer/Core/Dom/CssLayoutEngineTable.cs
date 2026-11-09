@@ -238,7 +238,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Insert EmptyBoxes for vertical cell spanning.
+        /// Inserts a <see cref="CssSpacingBox"/> into each row a rowspan cell covers below its own (HTML §4.9.12.1).
         /// </summary>
         private void InsertEmptyBoxes()
         {
@@ -845,9 +845,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Gets the rowspan of the specified box
+        /// Gets the rowspan of the specified box (HTML §4.9.12.1)
         /// </summary>
-        /// <param name="b"></param>
         private static int GetRowSpan(CssBox b)
         {
             string att = b.GetAttribute("rowspan", "1");
@@ -1065,9 +1064,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Gets the span attribute of the tag of the specified box
+        /// Gets the span of a col or colgroup box (HTML §4.9.12.1)
         /// </summary>
-        /// <param name="b"></param>
         private static int GetSpan(CssBox b)
         {
             double f = CssValueParser.ParseNumber(b.GetAttribute("span"), 1);

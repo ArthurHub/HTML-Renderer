@@ -846,10 +846,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// Reads a box's "colspan" HTML attribute (default 1 if absent/invalid). Deliberately
-        /// duplicated from <see cref="Dom.CssLayoutEngineTable"/>'s private equivalent rather than
-        /// shared - this runs at cascade time, before the layout-phase state that method's column
-        /// bookkeeping otherwise depends on exists.
+        /// Reads a cell's colspan, 1 when it's missing or invalid (HTML §4.9.12.1).
         /// </summary>
         private static int GetColSpan(CssBox box)
         {
