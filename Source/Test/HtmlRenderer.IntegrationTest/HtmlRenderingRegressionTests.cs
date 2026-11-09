@@ -23,6 +23,7 @@ public sealed class HtmlRenderingRegressionTests
     private static bool _samplesLoaded;
 
     [TestMethod]
+    [Spec("html", "text-level-semantics.html#the-br-element")]
     public async Task Render_ConsecutiveBreaks_LeaveAnEmptyLine()
     {
         EnsureSamplesLoaded();

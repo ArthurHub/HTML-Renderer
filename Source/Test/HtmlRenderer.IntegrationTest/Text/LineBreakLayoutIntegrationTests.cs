@@ -13,6 +13,7 @@ public sealed class LineBreakLayoutIntegrationTests
     private const double Delta = 0.5;
 
     [TestMethod]
+    [Spec("html", "text-level-semantics.html#the-br-element")]
     [DataRow("<div id='x'>first<br>second</div>", 40)]
     [DataRow("<div id='x'>first<br><br>second</div>", 60)]
     [DataRow("<div id='x'><span>first</span><br/><br/><span>second</span></div>", 60)]
@@ -28,6 +29,7 @@ public sealed class LineBreakLayoutIntegrationTests
     }
 
     [TestMethod]
+    [Spec("html", "text-level-semantics.html#the-br-element")]
     public void BreakBetweenBlocks_LeavesOneEmptyLine()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='a'>a</div><br><div id='b'>b</div>"));

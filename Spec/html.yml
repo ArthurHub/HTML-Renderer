@@ -354,94 +354,112 @@ sections:
     status: supported
   text-level-semantics.html#text-level-semantics:
     title: 4.5 Text-level semantics
-    status: unknown
+    status: partial
   text-level-semantics.html#the-a-element:
     title: 4.5.1 The a element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-em-element:
     title: 4.5.2 The em element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-strong-element:
     title: 4.5.3 The strong element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-small-element:
     title: 4.5.4 The small element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-s-element:
     title: 4.5.5 The s element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-cite-element:
     title: 4.5.6 The cite element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-q-element:
     title: 4.5.7 The q element
-    status: unknown
+    status: unsupported
+    gaps:
+      - No quotation marks around the content, see 15.3.4
   text-level-semantics.html#the-dfn-element:
     title: 4.5.8 The dfn element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, rendered inline without its default style, see 15.3.4
   text-level-semantics.html#the-abbr-element:
     title: 4.5.9 The abbr element
-    status: unknown
+    status: partial
+    gaps:
+      - abbr with a title isn't underlined, see 15.3.4
   text-level-semantics.html#the-ruby-element:
     title: 4.5.10 The ruby element
-    status: unknown
+    status: unsupported
+    gaps:
+      - No ruby layout, the annotations are rendered inline after the base text, see 15.3.4
   text-level-semantics.html#the-rt-element:
     title: 4.5.11 The rt element
-    status: unknown
+    status: unsupported
+    gaps:
+      - No ruby layout, rendered inline after the base text, see 15.3.4
   text-level-semantics.html#the-rp-element:
     title: 4.5.12 The rp element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Displayed, see 15.3.1
   text-level-semantics.html#the-data-element:
     title: 4.5.13 The data element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-time-element:
     title: 4.5.14 The time element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-code-element:
     title: 4.5.15 The code element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-var-element:
     title: 4.5.16 The var element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-samp-element:
     title: 4.5.17 The samp element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-kbd-element:
     title: 4.5.18 The kbd element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-sub-and-sup-elements:
     title: 4.5.19 The sub and sup elements
-    status: unknown
+    status: supported
   text-level-semantics.html#the-i-element:
     title: 4.5.20 The i element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-b-element:
     title: 4.5.21 The b element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-u-element:
     title: 4.5.22 The u element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-mark-element:
     title: 4.5.23 The mark element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, rendered inline without its default style, see 15.3.4
   text-level-semantics.html#the-bdi-element:
     title: 4.5.24 The bdi element
-    status: unknown
+    status: unsupported
+    gaps:
+      - Unknown element, its content isn't isolated from the surrounding text, see 15.3.5
   text-level-semantics.html#the-bdo-element:
     title: 4.5.25 The bdo element
-    status: unknown
+    status: partial
+    gaps:
+      - dir=rtl only reverses the order of the words, the characters within a word keep their order, see 15.3.5
   text-level-semantics.html#the-span-element:
     title: 4.5.26 The span element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-br-element:
     title: 4.5.27 The br element
-    status: unknown
+    status: supported
   text-level-semantics.html#the-wbr-element:
     title: 4.5.28 The wbr element
-    status: unknown
+    status: supported
   text-level-semantics.html#usage-summary:
     title: 4.5.29 Usage summary
-    status: unknown
+    status: n/a
   links.html#links:
     title: 4.6 Links
     status: unknown
