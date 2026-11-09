@@ -49,11 +49,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         };
 
         /// <summary>
-        /// Table to convert numbers into hebrew digits - CSS Counter Styles Level 3 §6.1's "hebrew"
-        /// <c>@counter-style</c>. Row 3 (thousands) is each units-row letter with a geresh (U+05F3)
-        /// appended, per the spec's additive-symbols list (e.g. 1000 is the same letter as 1 plus a
-        /// geresh) - a 3-row table silently drops the thousands digit entirely for any value >= 1000.
-        /// 15 and 16 need a further, non-tabular override - see <see cref="ConvertToAlphaNumber"/>.
+        /// Table to convert numbers into hebrew digits (CSS Counter Styles 3 §6.1). The thousands are the
+        /// units with a geresh, 15 and 16 are handled in <see cref="ConvertToHebrewNumber"/>.
         /// </summary>
         private static readonly string[,] _hebrewDigitsTable =
         {
@@ -71,10 +68,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         };
 
         /// <summary>
-        /// Table to convert numbers into armenian digits - CSS Counter Styles Level 3 §6.1's
-        /// "armenian" <c>@counter-style</c>. Row 3 (thousands) added for the same reason as
-        /// <see cref="_hebrewDigitsTable"/>'s - a 3-row table silently drops the thousands digit for
-        /// any value >= 1000.
+        /// Table to convert numbers into armenian digits (CSS Counter Styles 3 §6.1).
         /// </summary>
         private static readonly string[,] _armenianDigitsTable =
         {
@@ -531,11 +525,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Hebrew's additive algorithm (<see cref="ConvertToSpecificNumbers"/> over
-        /// <see cref="_hebrewDigitsTable"/>) with the CSS Counter Styles Level 3 §6.1 override for a
-        /// tens-and-units value of 15 or 16: the naive per-digit-group combination would produce יה/יו,
-        /// which closely resembles the Tetragrammaton, so the spec mandates טו/טז instead. 17-19 don't
-        /// need an override - their naive combination (יז/יח/יט) already matches the spec's table.
+        /// Hebrew numbering (CSS Counter Styles 3 §6.1). 15 and 16 are written טו and טז, because the
+        /// additive יה and יו resemble the Tetragrammaton.
         /// </summary>
         /// <param name="number">the number to convert</param>
         /// <returns>the hebrew number string</returns>

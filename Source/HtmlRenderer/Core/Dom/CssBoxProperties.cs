@@ -791,10 +791,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// This box's resolved named-counter values (CSS 2.1 §12.4), as of just after its own
-        /// <c>counter-reset</c>/<c>counter-increment</c> have been applied - populated once, by
-        /// <see cref="CssCounterEngine.ResolveCounters"/>, before layout runs. Consulted by
-        /// <c>content: counter()</c> (<see cref="CssContentEngine"/>).
+        /// The counter values in scope after this box's own <c>counter-reset</c> and <c>counter-increment</c>
+        /// (CSS 2.1 §12.4), set by <see cref="CssCounterEngine.ResolveCounters"/>.
         /// </summary>
         internal System.Collections.Generic.Dictionary<string, int> Counters { get; set; }
             = new System.Collections.Generic.Dictionary<string, int>();

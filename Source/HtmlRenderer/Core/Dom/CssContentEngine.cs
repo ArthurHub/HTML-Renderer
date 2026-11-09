@@ -20,26 +20,13 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Dom
 {
     /// <summary>
-    /// Resolves a synthesized <c>::before</c>/<c>::after</c> pseudo-element box's <see cref="CssBox.Content"/>
-    /// value into literal text, so it renders through the box's normal <see cref="CssBox.Text"/>/
-    /// <see cref="CssBox.ParseToWords"/> machinery like any other text box.<br/>
-    /// Deliberately a small, self-contained subset of the full content grammar: literal strings,
-    /// <c>attr()</c>, and the four quote keywords are supported; <c>counter()</c>/<c>counters()</c>/
-    /// <c>string()</c>/<c>content()</c> are not (CSS counters and named strings remain out of scope
-    /// for this backport - an unrecognized component is simply skipped, the same graceful-ignore
-    /// behavior this engine already applies to unsupported CSS elsewhere).<br/>
-    /// Tokenizes via the shared CSS lexer (<see cref="CssValueParser.GetCssTokens"/>) rather than
-    /// hand-parsing the CSS text, so string literals (e.g. <c>"\A"</c>, the standard UA-stylesheet
-    /// line-break trick used by <c>br:before</c>) get the same correct escape decoding the lexer
-    /// already applies when the stylesheet is first parsed - see CalcParser/BackgroundPositionGrammar
-    /// for the same "don't write two independent parsers for the same grammar" precedent.
+    /// Turns the <c>content</c> value of a <c>::before</c>/<c>::after</c> box into its <see cref="CssBox.Text"/>
+    /// (CSS 2.1 §12.2). Components it doesn't know are skipped.
     /// </summary>
     internal static class CssContentEngine
     {
         /// <summary>
-        /// If <paramref name="box"/> is a synthesized pseudo-element with a resolved <c>content</c> value,
-        /// sets its <see cref="CssBox.Text"/> to the resolved literal text. No-op for any other box, or
-        /// if content is <c>none</c>/<c>normal</c>/empty.
+        /// Sets the text of a pseudo-element box from its <c>content</c>, other boxes are left alone.
         /// </summary>
         public static void ApplyContent(CssBox box)
         {
@@ -60,6 +47,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         {
             var sb = new StringBuilder();
 
+            // The CSS lexer decodes string escapes such as "\A"
             foreach (var token in CssValueParser.GetCssTokens(content))
             {
                 if (token is StringToken stringToken)
@@ -79,11 +67,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 else if (token is FunctionToken counterFunctionToken &&
                          counterFunctionToken.Data.Equals(FunctionNames.Counter, StringComparison.OrdinalIgnoreCase))
                 {
-                    // counter(<name> [, <style>]?) - a bare counter() with no name argument (malformed,
-                    // or the counters()-with-separator form this subset doesn't support) contributes no
-                    // text, matching this engine's graceful-ignore-the-unsupported-part behavior.
-                    // ArgumentTokens.ToList() (ValueExtensions' comma-splitting overload, not System.Linq's)
-                    // groups the raw token stream into one List<Token> per comma-separated argument.
+                    // ValueExtensions.ToList, not LINQ's: one token list per comma-separated argument
                     var counterArgs = counterFunctionToken.ArgumentTokens.ToList();
                     if (counterArgs.Count > 0 && counterArgs[0].FirstOrDefault() is KeywordToken counterNameToken)
                     {
@@ -91,11 +75,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                             ? styleToken.Data
                             : CssConstants.Decimal;
 
-                        // Unlike attr() above, no parent fallback is needed here: CssCounterEngine.
-                        // ResolveCounters walks this pseudo-element box as an ordinary child of its
-                        // generating element, so it already carries its own correct post-increment
-                        // counter snapshot (inherited from the generating element's, per §12.4).
-                        // A counter that isn't in scope reads as 0 (§12.4).
+                        // The pseudo-element has its own counter snapshot, a counter not in scope reads as 0
+                        // (CSS 2.1 §12.4.1)
                         int counterValue;
                         if (!box.Counters.TryGetValue(counterNameToken.Data, out counterValue))
                         {
@@ -114,11 +95,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     {
                         sb.Append('”');
                     }
-                    // no-open-quote/no-close-quote produce no text, but still count as a quoting depth
-                    // change per spec - depth tracking isn't implemented here (no "quotes" property
-                    // support), so they (like any other unrecognized keyword) are a no-op.
+                    // The quote depth isn't tracked, no-open-quote and no-close-quote do nothing
                 }
-                // counter()/counters()/string()/content() and anything else unrecognized: skip.
             }
 
             return sb.ToString();

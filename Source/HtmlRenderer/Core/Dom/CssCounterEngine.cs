@@ -18,19 +18,13 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Dom
 {
     /// <summary>
-    /// Resolves CSS 2.1 §12.4 named counters (<c>counter-reset</c>/<c>counter-increment</c>) into a
-    /// per-box snapshot of counter values, consulted by <c>content: counter()</c>
-    /// (<see cref="CssContentEngine"/>).<br/>
-    /// <c>reversed(&lt;name&gt;)</c> and <c>counter-set</c> are not implemented.
+    /// Counters (CSS 2.1 §12.4), resolved into a per-box snapshot that <c>content: counter()</c> reads.
     /// </summary>
     internal static class CssCounterEngine
     {
         /// <summary>
-        /// Walks <paramref name="root"/> and its descendants in document order, applying each box's own
-        /// <c>counter-reset</c>/<c>counter-increment</c> (plus the implicit <c>list-item</c> counter a
-        /// <c>display:list-item</c> box always increments) and storing the values in scope on
-        /// <see cref="CssBoxProperties.Counters"/>. Must run once, before layout, after every box's CSS
-        /// properties are resolved.
+        /// Stores the counter values in scope on every box's <see cref="CssBoxProperties.Counters"/>,
+        /// including the implicit <c>list-item</c> counter. Runs once after the cascade, before layout.
         /// </summary>
         public static void ResolveCounters(CssBox root)
         {
@@ -38,9 +32,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Each counter name maps to a stack of instances. A reset creates a new instance that stays in
-        /// scope for the box's following siblings and all their descendants, and goes out of scope again
-        /// once the parent ends (§12.4.1). Boxes with <c>display:none</c> don't touch counters (§12.4.3).
+        /// Each counter name maps to a stack of instances, one per nested scope (CSS 2.1 §12.4.1).
+        /// A reset's instance is popped again once all its siblings are done.
         /// </summary>
         private static void ResolveSiblings(IEnumerable<CssBox> boxes, Dictionary<string, List<int>> counters)
         {
@@ -48,6 +41,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             foreach (var box in boxes)
             {
+                // CSS 2.1 §12.4.3
                 if (box.Display == CssConstants.None)
                     continue;
 
@@ -108,7 +102,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
         private static void Increment(Dictionary<string, List<int>> counters, HashSet<string> created, string name, int value)
         {
-            // Incrementing a counter that isn't in scope behaves as if this box had reset it to 0.
+            // Not in scope, reset it to 0 on this box (CSS 2.1 §12.4.1)
             if (!counters.TryGetValue(name, out var instances))
             {
                 Reset(counters, created, name, 0);
@@ -128,9 +122,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Parses a <c>counter-reset</c>/<c>counter-increment</c> value - a space-separated sequence of
-        /// <c>&lt;name&gt; [&lt;integer&gt;]?</c> pairs - invoking <paramref name="apply"/> once per name,
-        /// with <paramref name="defaultValue"/> when no integer follows a given name.
+        /// Calls <paramref name="apply"/> for each name of a <c>counter-reset</c>/<c>counter-increment</c>
+        /// value, with <paramref name="defaultValue"/> when no integer follows the name.
         /// </summary>
         private static void ForEachNameValuePair(string value, int defaultValue, Action<string, int> apply)
         {
@@ -154,12 +147,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Formats a resolved counter value as a string using the given CSS counter style (<c>decimal</c>,
-        /// <c>decimal-leading-zero</c>, <c>lower-roman</c>, <c>upper-alpha</c>, etc.) - the single
-        /// counter-style resolver <c>content: counter()</c> uses. Per
-        /// <see href="https://www.w3.org/TR/css-counter-styles-3/">CSS Counter Styles Level 3 §2</see>, an
-        /// unknown/invalid style, or a value an alphabetic/symbolic style cannot represent (0 or negative),
-        /// falls back to <c>decimal</c> rather than rendering nothing.
+        /// Formats a counter value for <c>content: counter()</c> (CSS 2.1 §12.4.2). Unknown styles and
+        /// values a style can't represent fall back to decimal (CSS Counter Styles 3 §2).
         /// </summary>
         public static string FormatCounterValue(int number, string style)
         {
@@ -175,15 +164,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             if (IsAlphabeticCounterStyle(style))
             {
+                // Empty for 0 and negative values
                 var formatted = CommonUtils.ConvertToAlphaNumber(number, style);
-
-                // Alphabetic/symbolic styles have no representation for values outside their range (e.g.
-                // 0 or negatives, for which ConvertToAlphaNumber yields the empty string) - such values
-                // fall back to decimal too, per CSS Counter Styles Level 3 §2.
                 return formatted.Length > 0 ? formatted : number.ToString(CultureInfo.InvariantCulture);
             }
 
-            // Any other unknown/invalid style falls back to decimal.
             return number.ToString(CultureInfo.InvariantCulture);
         }
 

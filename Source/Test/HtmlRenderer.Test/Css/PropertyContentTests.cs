@@ -5,22 +5,6 @@ using static HtmlRenderer.Test.CssEngineSupport.CssConstructionFunctions;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/Property.cs (the Color/Content/Quotes cases).
-///
-/// color (StyleProperties/Font/ColorProperty.cs) uses <c>Converters.ColorConverter</c>, which resolves
-/// hex/named colors to a normalized <c>rgb(r, g, b)</c>/<c>rgba(r, g, b, a)</c> text form while keeping
-/// <c>Original</c> as authored - confirmed identical to the color normalization already exercised by
-/// BorderPropertyTests.cs's border-color/border-*-color ports.
-///
-/// content (StyleProperties/ContentProperty.cs) accepts <c>normal</c>, <c>none</c>, one or more
-/// &lt;string&gt;s, <c>url()</c>, and the open-quote/close-quote/no-open-quote/no-close-quote keywords
-/// (all present in Enumerations/Keywords.cs) via <c>ContentModes.ToConverter().Or(UrlConverter)...Many()</c>.
-///
-/// quotes (StyleProperties/QuotesProperty.cs) uses <c>Converters.EvenStringsConverter.OrNone()</c> - an
-/// even (2, 4, ...) list of quote-mark string pairs, or the literal keyword <c>none</c>; an odd count or
-/// non-string tokens are rejected.
-/// </summary>
 [TestClass]
 public sealed class PropertyContentTests
 {
@@ -113,6 +97,7 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#content")]
     public void CssContentNormalLegal()
     {
         var snippet = "content : normal ";
@@ -128,6 +113,7 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#content")]
     public void CssContentNoneLegalUppercaseN()
     {
         var snippet = "content : noNe ";
@@ -143,6 +129,7 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#content")]
     public void CssContentStringLegal()
     {
         var snippet = "content : 'hi' ";
@@ -158,6 +145,7 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#content")]
     public void CssContentNoOpenQuoteNoCloseQuoteLegal()
     {
         var snippet = "content : no-open-quote no-close-quote ";
@@ -173,6 +161,7 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#content")]
     public void CssContentUrlLegal()
     {
         var snippet = "content : url(test.html) ";
@@ -188,6 +177,7 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#content")]
     public void CssContentStringsLegal()
     {
         var snippet = "content : 'how' 'are' 'you' ";
@@ -203,6 +193,7 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#quotes-specify")]
     public void CssQuoteStringIllegal()
     {
         var snippet = "quotes : '\"' ";
@@ -216,6 +207,7 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#quotes-specify")]
     public void CssQuoteStringsLegal()
     {
         var snippet = "quotes : '\"' '\"' ";
@@ -231,6 +223,7 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#quotes-specify")]
     public void CssQuoteStringsIllegal()
     {
         var snippet = "quotes : \"'\"";
@@ -244,10 +237,10 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#quotes-specify")]
     public void CssQuoteStringsMultipleLegal()
     {
-        // The fourth quote mark is a literal U+FFFD REPLACEMENT CHARACTER, exactly as authored in
-        // PeachPDF's own source file (src/PeachPDF.Tests/CSS/Property.cs) - not a mangled encoding here.
+        // The fourth quote mark is a literal U+FFFD on purpose
         var snippet = "quotes : '\"' '\"' '`' '�' ";
         var property = ParseDeclaration(snippet);
         Assert.AreEqual("quotes", property.Name);
@@ -261,6 +254,7 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#quotes-specify")]
     public void CssQuoteStringsMultipleIllegal()
     {
         var snippet = "quotes : '\"' '\"' '`' ";
@@ -274,6 +268,7 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#quotes-specify")]
     public void CssQuoteNoneLegal()
     {
         var snippet = "quotes : none";
@@ -289,6 +284,7 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#quotes-specify")]
     public void CssQuoteNoneStringIllegal()
     {
         var snippet = "quotes : 'none'";
@@ -302,6 +298,7 @@ public sealed class PropertyContentTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#quotes-specify")]
     public void CssQuoteNormalIllegal()
     {
         var snippet = "quotes : normal ";

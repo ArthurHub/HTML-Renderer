@@ -628,40 +628,61 @@ sections:
       - "Descendants with 'visibility: visible' of a hidden element are not painted"
   generate.html#generated-text:
     title: 12 Generated content, automatic numbering, and lists
-    status: unknown
+    status: partial
   generate.html#before-after-content:
     title: 12.1 The :before and :after pseudo-elements
-    status: unknown
+    status: partial
+    gaps:
+      - A block-level ::before or ::after gets no height, its text overlaps the element's content
+      - "A ::before or ::after with 'content: none' or 'normal' still generates a box"
   generate.html#content:
     title: 12.2 The 'content' property
-    status: unknown
+    status: partial
+    gaps:
+      - counters() inserts nothing
+      - url() inserts nothing instead of the image
+      - "\"\\A\" breaks the line even when 'white-space' collapses newlines"
   generate.html#quotes:
     title: 12.3 Quotation marks
-    status: unknown
+    status: partial
   generate.html#quotes-specify:
     title: 12.3.1 Specifying quotes with the 'quotes' property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'quotes' is ignored, open-quote and close-quote always insert “ and ”"
   generate.html#quotes-insert:
     title: 12.3.2 Inserting quotes with the 'content' property
-    status: unknown
+    status: partial
+    gaps:
+      - The quote depth isn't tracked, nested quotes use the same pair and no-open-quote/no-close-quote do nothing
+      - A close-quote at depth 0 still inserts a quote mark
   generate.html#counters:
     title: 12.4 Automatic counters and numbering
-    status: unknown
+    status: supported
   generate.html#scope:
     title: 12.4.1 Nested counters and scope
-    status: unknown
+    status: supported
   generate.html#counter-styles:
     title: 12.4.2 Counter styles
-    status: unknown
+    status: partial
+    gaps:
+      - disc, circle, square and none format the counter as a decimal number
   generate.html#undisplayed-counters:
     title: 12.4.3 Counters in elements with 'display
-    status: unknown
+    status: partial
+    gaps:
+      - "A ::before or ::after with 'content: none' or 'normal' still resets and increments counters"
   generate.html#lists:
     title: 12.5 Lists
-    status: unknown
+    status: partial
   generate.html#list-style:
     title: 12.5.1 Lists
-    status: unknown
+    status: partial
+    gaps:
+      - "'list-style-image' is ignored, the marker is always a glyph or number"
+      - "'list-style-position' is ignored, the marker is always outside"
+      - "The marker is on the left with 'direction: rtl'"
+      - georgian renders 20 as პ instead of კ
   page.html#the-page:
     title: 13 Paged media
     status: unknown

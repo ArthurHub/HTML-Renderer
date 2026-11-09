@@ -4,18 +4,11 @@ using static HtmlRenderer.Test.CssEngineSupport.CssConstructionFunctions;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/ListProperty.cs. Exercises <c>list-style-position</c>
-/// (<see cref="ListStylePositionProperty"/>), <c>list-style-image</c> (<see cref="ListStyleImageProperty"/>),
-/// <c>list-style-type</c> (<see cref="ListStyleTypeProperty"/>), the <c>list-style</c> shorthand
-/// (<see cref="ListStyleProperty"/>), and <c>counter-reset</c>/<c>counter-increment</c>
-/// (<see cref="CounterResetProperty"/>/<see cref="CounterIncrementProperty"/>) — all under
-/// Source/HtmlRenderer/Core/CssEngine/StyleProperties/List/.
-/// </summary>
 [TestClass]
 public sealed class ListPropertyTests
 {
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStylePositionOutsideLegal()
     {
         var property = ParseDeclaration("list-style-position: outside ");
@@ -29,6 +22,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStylePositionOutsideIllegal()
     {
         var property = ParseDeclaration("list-style-position: out-side ");
@@ -41,6 +35,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStylePositionNoneIllegal()
     {
         var property = ParseDeclaration("list-style-position: none ");
@@ -53,6 +48,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStylePositionInsideLegal()
     {
         var property = ParseDeclaration("list-style-position: insiDe ");
@@ -66,6 +62,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStyleImageNoneLegal()
     {
         var property = ParseDeclaration("list-style-image: none ");
@@ -79,6 +76,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStyleImageUrlLegal()
     {
         var property = ParseDeclaration("list-style-image: url(http://www.example.com/images/list.png)");
@@ -92,6 +90,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStyleTypeDiscLegal()
     {
         var property = ParseDeclaration("list-style-type: disc ");
@@ -105,6 +104,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStyleTypeLowerAlphaLegal()
     {
         var property = ParseDeclaration("list-style-type: lower-ALPHA ");
@@ -121,6 +121,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStyleTypeGeorgianLegal()
     {
         var property = ParseDeclaration("list-style-type: georgian ");
@@ -134,6 +135,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStyleTypeDecimalLeadingZeroLegal()
     {
         var property = ParseDeclaration("list-style-type: decimal-leading-zerO ");
@@ -149,12 +151,7 @@ public sealed class ListPropertyTests
     [TestMethod]
     public void CssListStyleTypeHebrewLegal()
     {
-        // "hebrew" is the one CSS2-era list-style-type keyword from PeachPDF's extended-keyword-set
-        // theory (CSS Counter Styles Level 3 predefined counter styles) that Map.ListStyles /
-        // ListStyle actually defines here. The rest of that set (hiragana, katakana, arabic-indic,
-        // cjk-decimal, the lower-armenian/upper-armenian split, disclosure-open/closed, etc.) has no
-        // ListStyle enum member or Map entry at all - see CssListStyleTypeExtendedKeywordSetUnsupported
-        // below.
+        // CSS 2.0 keyword, dropped from CSS 2.1, still defined in Map.ListStyles
         var property = ParseDeclaration("list-style-type: HEbrew ");
         Assert.AreEqual("list-style-type", property.Name);
         Assert.IsFalse(property.IsImportant);
@@ -204,6 +201,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStyleTypeNumberIllegal()
     {
         var property = ParseDeclaration("list-style-type: number ");
@@ -216,6 +214,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStyleCircleLegal()
     {
         var property = ParseDeclaration("list-style: circle ");
@@ -229,6 +228,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStyleNone()
     {
         var property = ParseDeclaration("list-style: none");
@@ -242,6 +242,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStyleSquareInsideLegal()
     {
         var property = ParseDeclaration("list-style: square inside ");
@@ -255,6 +256,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStyleSquareImageInsideLegal()
     {
         var property = ParseDeclaration("list-style: square url('image.png') inside ");
@@ -268,6 +270,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#counters")]
     public void CssCounterResetLegal()
     {
         var property = ParseDeclaration("counter-reset: chapter section 1 page;");
@@ -281,6 +284,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#counters")]
     public void CssCounterResetSingleLegal()
     {
         var property = ParseDeclaration("counter-reset: counter-name");
@@ -294,6 +298,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#counters")]
     public void CssCounterResetNoneLegal()
     {
         var property = ParseDeclaration("counter-reset: none");
@@ -307,6 +312,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#counters")]
     public void CssCounterResetNumberIllegal()
     {
         var property = ParseDeclaration("counter-reset: 3");
@@ -319,6 +325,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#counters")]
     public void CssCounterResetNegativeLegal()
     {
         var property = ParseDeclaration("counter-reset  :  counter-name   -1");
@@ -332,6 +339,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#counters")]
     public void CssCounterResetTwoCountersExplicitLegal()
     {
         var property = ParseDeclaration("counter-reset  :  counter1   1   counter2   4  ");
@@ -345,6 +353,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#counters")]
     public void CssCounterIncrementNoneLegal()
     {
         var property = ParseDeclaration("counter-increment: none");
@@ -358,6 +367,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#counters")]
     public void CssCounterIncrementLegal()
     {
         var property = ParseDeclaration("counter-increment: chapter section 2 page");
@@ -371,6 +381,7 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "generate.html#list-style")]
     public void CssListStyleNoneSquareLegal()
     {
         var property = ParseDeclaration("list-style: none square");
