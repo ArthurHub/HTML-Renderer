@@ -318,6 +318,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#preshint")]
+    [Spec("html", "rendering.html#the-css-user-agent-style-sheet-and-presentational-hints")]
     public void PresentationalHint_BeatsTheDefaultStyleSheet()
     {
         var x = Box("<table><tr><th id=x align=left>a</th></tr></table>");
@@ -327,6 +328,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#preshint")]
+    [Spec("html", "rendering.html#the-css-user-agent-style-sheet-and-presentational-hints")]
     public void StyleAttribute_BeatsAPresentationalHint()
     {
         var x = Box("<font id=x color=red style='color:green'>a</font>");
@@ -337,6 +339,7 @@ public sealed class CascadeTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "cascade.html#preshint")]
+    [Spec("html", "rendering.html#the-css-user-agent-style-sheet-and-presentational-hints")]
     public void PresentationalHint_LosesToAnAuthorRule()
     {
         Assert.AreEqual(Green, Box("<style>* { color: green }</style><font id=x color=red>a</font>").ActualColor);

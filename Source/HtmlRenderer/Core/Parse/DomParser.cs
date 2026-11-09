@@ -915,7 +915,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Translates presentational HTML attributes to CSS, CSS 2.1 §6.4.4.
+        /// Maps presentational attributes to CSS, HTML §15. The cascade calls this after the author
+        /// rules, and the attributes are mapped on whatever element carries them.
         /// </summary>
         private void TranslateAttributes(HtmlTag tag, CssBox box)
         {
@@ -1017,10 +1018,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Cascades to the TD's the border spacified in the TABLE tag.
+        /// HTML §15.3.8, the border attribute of a table also gives its cells a border.
         /// </summary>
-        /// <param name="table"></param>
-        /// <param name="border"></param>
         private static void ApplyTableBorder(CssBox table, string border)
         {
             SetForAllCells(table, cell =>
@@ -1031,7 +1030,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Cascades the cellpadding of the TABLE tag to its TDs.
+        /// HTML §15.3.8, cellpadding is the padding of the table's cells.
         /// </summary>
         private static void ApplyTablePadding(CssBox table, string padding)
         {
@@ -1040,11 +1039,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Execute action on all the "td" cells of the table.<br/>
-        /// Handle if there is "theader" or "tbody" exists.
+        /// Runs <paramref name="action"/> on the cells of the rows that are children of the table or
+        /// of its row groups. Only td is recognized as a cell at the row level, anything else is
+        /// taken as a row group.
         /// </summary>
-        /// <param name="table">the table element</param>
-        /// <param name="action">the action to execute</param>
         private static void SetForAllCells(CssBox table, ActionInt<CssBox> action)
         {
             foreach (var l1 in table.Boxes)

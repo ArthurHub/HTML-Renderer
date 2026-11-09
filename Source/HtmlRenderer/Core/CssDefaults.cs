@@ -15,7 +15,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
     internal static class CssDefaults
     {
         /// <summary>
-        /// The user agent style sheet, based on CSS 2.1 Appendix D.
+        /// The user agent style sheet, based on CSS 2.1 Appendix D rather than the HTML §15 one.
         /// </summary>
         public const string DefaultStyleSheet = @"
         html, address,
@@ -88,7 +88,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         :link, :visited { text-decoration: underline }
         :focus          { outline: thin dotted invert }
 
-        /* Begin bidirectionality settings (do not change) */
+        /* HTML §15.3.5 */
         BDO[DIR=""ltr""]  { direction: ltr; unicode-bidi: bidi-override }
         BDO[DIR=""rtl""]  { direction: rtl; unicode-bidi: bidi-override }
 
@@ -106,7 +106,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
           thead, tfoot  { break-inside: avoid }
         }
 
-        /* Not in the specification but necessary */
+        /* Not in CSS 2.1 Appendix D: the hidden elements of HTML §15.3.1 and this renderer's own look
+           for links, tables, hr and pre */
         a               { color: #0055BB; text-decoration:underline }
         table           { border-color:#dfdfdf; }
         td, th          { border-color:#dfdfdf; overflow: hidden; }
@@ -117,7 +118,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         hr              { border-top-color: #9A9A9A; border-left-color: #9A9A9A; border-bottom-color: #EEEEEE; border-right-color: #EEEEEE; }
         pre             { font-size: 10pt; margin-top: 15px; }
         
-        /*This is the background of the HtmlToolTip*/
+        /* The look of HtmlToolTip */
         .htmltooltip {
             border:solid 1px #767676;
             background-color:#E4E5F0;

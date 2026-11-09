@@ -1633,10 +1633,15 @@ sections:
     status: partial
   rendering.html#introduction-17:
     title: 15.1 Introduction
-    status: unknown
+    status: n/a
   rendering.html#the-css-user-agent-style-sheet-and-presentational-hints:
     title: 15.2 The CSS user agent style sheet and presentational hints
-    status: unknown
+    status: partial
+    gaps:
+      - Presentational hints override author style sheets, see CSS 2.1 6.4.4
+      - Attributes are mapped on every element, e.g. width on div, nowrap on span or bgcolor on span
+      - Legacy color values are parsed as CSS colors, so bgcolor=ff0000 or bgcolor=chucknorris are ignored
+      - Dimension values with trailing garbage, e.g. width=100abc, are ignored instead of read as 100
   rendering.html#non-replaced-elements:
     title: 15.3 Non-replaced elements
     status: partial
@@ -1645,141 +1650,224 @@ sections:
     status: partial
     gaps:
       - The hidden attribute is ignored
-      - template, datalist, noembed, rp and dialog without open are displayed
+      - basefont, template, datalist, noembed, noframes, rp, dialog without open and input type=hidden are displayed
   rendering.html#the-page:
     title: 15.3.2 The page
-    status: unknown
+    status: partial
+    gaps:
+      - marginwidth, marginheight, leftmargin and topmargin on body are ignored
+      - text, link, vlink and alink on body are ignored
+      - The background attribute isn't wrapped in url(), so it shows no image
   rendering.html#flow-content-3:
     title: 15.3.3 Flow content
     status: partial
     gaps:
-      - article, aside, details, figcaption, figure, footer, header, hgroup, legend, listing, main, nav, plaintext, search, section, summary and xmp are inline
+      - figcaption, figure, footer, header, legend, listing, main, plaintext, search and xmp are inline
+      - listing, plaintext and xmp don't preserve white space
       - p and blockquote have 1.12em vertical margins instead of 1em, pre has 15px above and nothing below, figure has no margins
+      - form has 1.12em vertical margins, it has none outside quirks mode
+      - An open dialog is inline instead of an absolutely positioned, bordered block, popover is ignored
+      - The wrap attribute of pre is ignored
+      - div align=middle sets vertical-align instead of centering the text
+      - center and div align don't align descendant blocks, see CSS 2.1 10.3.3
   rendering.html#phrasing-content-3:
     title: 15.3.4 Phrasing content
-    status: unknown
+    status: partial
+    gaps:
+      - dfn isn't italic
+      - "Links are #0055BB instead of #0000EE, also on a without href"
+      - mark has no yellow background
+      - abbr and acronym with a title aren't underlined
+      - q has no quotation marks
+      - nobr doesn't prevent wrapping
+      - The clear attribute of br is ignored
+      - Ruby isn't laid out, rt follows its base inline without parentheses
+      - The size attribute of font is ignored
   rendering.html#bidi-rendering:
     title: 15.3.5 Bidirectional text
-    status: unknown
+    status: partial
+    gaps:
+      - dir=auto and bdi don't take the direction of their text
+      - "'unicode-bidi' is ignored, so bdo doesn't override and bdi and dir don't isolate, see CSS 2.1 9.10"
   rendering.html#sections-and-headings:
     title: 15.3.6 Sections and headings
-    status: unknown
+    status: partial
+    gaps:
+      - article, aside, hgroup, nav and section are inline
+      - h2 to h6 have the CSS 2.1 margins, e.g. .83em instead of 1em on h3, and h6 is .75em instead of .67em
   rendering.html#lists:
     title: 15.3.7 Lists
     status: partial
     gaps:
       - ol, ul and menu are indented with margin-left instead of padding-inline-start
       - The type attribute of ol, ul and li is ignored
+      - The reversed attribute of ol is ignored
+      - dir, dl and menu nested in a list keep their vertical margins, nested dir and menu don't switch to circle
   rendering.html#tables-2:
     title: 15.3.8 Tables
-    status: unknown
+    status: partial
+    gaps:
+      - td and th have no 1px padding and get overflow hidden
+      - "Tables and cells have a #dfdfdf border color instead of the text color"
+      - th is centered also when the row's text-align isn't the initial value
+      - Captions aren't rendered, see CSS 2.1 17.4.1
+      - cellpadding doesn't reach th cells of a row outside a row group
+      - The background attribute isn't wrapped in url(), so it shows no image
+      - border gives the table and its cells solid instead of outset and inset borders, border without a value draws none
+      - rules and frame are ignored
+      - align=middle and align=absmiddle on rows and cells set vertical-align instead of centering the text
+      - table align=left and right set text-align instead of floating, align=center doesn't center a table with a width
+      - hidden on rows, row groups and columns doesn't collapse them
+      - A form that's a child of table, thead, tbody, tfoot or tr is displayed
   rendering.html#margin-collapsing-quirks:
     title: 15.3.9 Margin collapsing quirks
-    status: unknown
+    status: unsupported
+    gaps:
+      - There's no quirks mode, neither these rules nor the other quirks-mode rules of 15.3 apply
   rendering.html#form-controls:
     title: 15.3.10 Form controls
-    status: unknown
+    status: partial
+    gaps:
+      - button and input buttons don't center their text
+      - textarea doesn't preserve white space
+      - button and select aren't border-box
   rendering.html#the-hr-element-2:
     title: 15.3.11 The hr element
     status: partial
     gaps:
       - hr isn't centered, has no vertical margins and isn't gray
+      - align sets text-align instead of the margins
+      - size sets the height including the borders, noshade is ignored and color doesn't make the border solid
   rendering.html#the-fieldset-and-legend-elements:
     title: 15.3.12 The fieldset and legend elements
-    status: unknown
+    status: partial
+    gaps:
+      - fieldset has 1.12em vertical margins and no groove border, padding or 2px inline margins
+      - legend is an inline box in the content instead of being rendered over the top border
   rendering.html#replaced-elements:
     title: 15.4 Replaced elements
-    status: unknown
+    status: partial
   rendering.html#embedded-content-rendering-rules:
     title: 15.4.1 Embedded content
-    status: unknown
+    status: partial
+    gaps:
+      - iframe content isn't loaded (YouTube and Vimeo get a thumbnail), an iframe is drawn as a small error icon with a solid gray border instead of 300x150 with a 2px inset border
+      - embed, object, video, audio and canvas aren't replaced elements, object and video show their fallback content
+      - audio without controls is displayed
   rendering.html#images-3:
     title: 15.4.2 Images
-    status: unknown
+    status: partial
+    gaps:
+      - An unavailable image is drawn as an error icon instead of its alt text
   rendering.html#attributes-for-embedded-content-and-images:
     title: 15.4.3 Attributes for embedded content and images
-    status: unknown
+    status: partial
+    gaps:
+      - align=left and right set text-align instead of floating
+      - align=texttop, absmiddle and abscenter aren't mapped
+      - The frameborder attribute of iframe is ignored
   rendering.html#image-maps-2:
     title: 15.4.4 Image maps
-    status: unknown
+    status: unsupported
   rendering.html#widgets:
     title: 15.5 Widgets
-    status: unknown
+    status: partial
   rendering.html#native-appearance-2:
     title: 15.5.1 Native appearance
-    status: unknown
+    status: unsupported
+    gaps:
+      - Widgets aren't drawn, only their content is laid out
   rendering.html#writing-mode:
     title: 15.5.2 Writing mode
-    status: unknown
+    status: n/a
   rendering.html#button-layout:
     title: 15.5.3 Button layout
-    status: unknown
+    status: partial
+    gaps:
+      - A button with display block is as wide as its container instead of fit-content
+      - The line box doesn't grow to cover the bottom padding of a button
   rendering.html#the-button-element-2:
     title: 15.5.4 The button element
-    status: unknown
+    status: partial
+    gaps:
+      - It isn't depicted as a button, only its content is drawn
   rendering.html#the-details-and-summary-elements:
     title: 15.5.5 The details and summary elements
-    status: unknown
+    status: unsupported
+    gaps:
+      - details and summary are inline, summary has no marker and the content of a closed details is displayed
   rendering.html#the-input-element-as-a-text-entry-widget:
     title: 15.5.6 The input element as a text entry widget
-    status: unknown
+    status: unsupported
+    gaps:
+      - An empty inline-block without the value
   rendering.html#the-input-element-as-domain-specific-widgets:
     title: 15.5.7 The input element as domain-specific widgets
-    status: unknown
+    status: unsupported
   rendering.html#the-input-element-as-a-range-control:
     title: 15.5.8 The input element as a range control
-    status: unknown
+    status: unsupported
   rendering.html#the-input-element-as-a-colour-well:
     title: 15.5.9 The input element as a color well
-    status: unknown
+    status: unsupported
   rendering.html#the-input-element-as-a-checkbox-and-radio-button-widgets:
     title: 15.5.10 The input element as a checkbox and radio button widgets
-    status: unknown
+    status: unsupported
   rendering.html#the-input-element-as-a-file-upload-control:
     title: 15.5.11 The input element as a file upload control
-    status: unknown
+    status: unsupported
   rendering.html#the-input-element-as-a-button:
     title: 15.5.12 The input element as a button
-    status: unknown
+    status: unsupported
+    gaps:
+      - An empty inline-block without the value
   rendering.html#the-marquee-element-2:
     title: 15.5.13 The marquee element
-    status: unknown
+    status: partial
+    gaps:
+      - marquee is inline instead of an inline-block with hidden overflow
   rendering.html#the-meter-element-2:
     title: 15.5.14 The meter element
-    status: unknown
+    status: unsupported
   rendering.html#the-progress-element-2:
     title: 15.5.15 The progress element
-    status: unknown
+    status: unsupported
   rendering.html#the-select-element-2:
     title: 15.5.16 The select element
-    status: unknown
+    status: unsupported
+    gaps:
+      - An inline-block with all options inline, no drop-down or list box
   rendering.html#the-textarea-element-2:
     title: 15.5.17 The textarea element
-    status: unknown
+    status: unsupported
+    gaps:
+      - An inline-block with the text, white space collapsed and wrap ignored
   rendering.html#frames-and-framesets:
     title: 15.6 Frames and framesets
-    status: unknown
+    status: unsupported
+    gaps:
+      - frameset and frame are empty blocks, frames aren't loaded
   rendering.html#interactive-media:
     title: 15.7 Interactive media
-    status: unknown
+    status: unsupported
   rendering.html#links,-forms,-and-navigation:
     title: 15.7.1 Links, forms, and navigation
-    status: unknown
+    status: n/a
   rendering.html#the-title-attribute-2:
     title: 15.7.2 The title attribute
-    status: unknown
+    status: unsupported
   rendering.html#editing-hosts:
     title: 15.7.3 Editing hosts
-    status: unknown
+    status: n/a
   rendering.html#text-rendered-in-native-user-interfaces:
     title: 15.7.4 Text rendered in native user interfaces
-    status: unknown
+    status: n/a
   rendering.html#print-media:
     title: 15.8 Print media
-    status: unknown
+    status: supported
   rendering.html#unstyled-xml-documents:
     title: 15.9 Unstyled XML documents
-    status: unknown
+    status: n/a
   obsolete.html#obsolete:
     title: 16 Obsolete features
     status: unknown
