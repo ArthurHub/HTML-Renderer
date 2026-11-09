@@ -114,4 +114,32 @@ public sealed class CollapsedMarginBeforeTests
         // predecessor's trailing margin is real space it must sit after.
         Assert.AreEqual(15, f.Location.Y - a.ActualBottom, Delta);
     }
+
+    [TestMethod]
+    [DataRow("overflow:hidden")]
+    [DataRow("float:left;width:100px")]
+    [DataRow("position:absolute;width:100px")]
+    public void NewBlockFormattingContext_KeepsItsFirstChildsTopMarginInside(string parentStyle)
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            $"<div id='p' style='{parentStyle}'><div id='c' style='margin-top:20px;height:10px'></div></div>"));
+
+        var p = LayoutHarness.FindById(root, "p")!;
+        var c = LayoutHarness.FindById(root, "c")!;
+
+        Assert.AreEqual(20, c.Location.Y - p.Location.Y, Delta);
+    }
+
+    [TestMethod]
+    public void FixedHeightParent_DoesNotPassItsLastChildsBottomMarginOn()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div id='p' style='height:50px'><div style='height:10px;margin-bottom:30px'></div></div>"
+            + "<div id='n' style='height:10px'></div>"));
+
+        var p = LayoutHarness.FindById(root, "p")!;
+        var n = LayoutHarness.FindById(root, "n")!;
+
+        Assert.AreEqual(p.ActualBottom, n.Location.Y, Delta);
+    }
 }

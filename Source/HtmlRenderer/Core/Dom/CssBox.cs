@@ -1820,13 +1820,32 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                    // CSS 2.1 §8.3.1 margin collapsing is a block-formatting-context concept - an inline
                    // parent (e.g. a block-level child anonymously boxed inside a <span>) is not a block
                    // container to collapse "through" in the first place.
-                   || parent.Display == CssConstants.Inline || parent.Display == CssConstants.InlineBlock;
+                   || parent.Display == CssConstants.Inline || parent.Display == CssConstants.InlineBlock
+                   || EstablishesBlockFormattingContext(parent);
         }
 
-        /// <summary>A box's own bottom border/padding blocks the bottom-margin join with its last child.</summary>
+        /// <summary>
+        /// A box's own bottom border/padding, a height other than auto, or a new block formatting context
+        /// blocks the bottom-margin join with its last child.
+        /// </summary>
         private static bool BlocksParentChildBottomJoin(CssBox box)
         {
-            return box.ActualBorderBottomWidth > 0.1 || box.ActualPaddingBottom > 0.1;
+            return box.ActualBorderBottomWidth > 0.1 || box.ActualPaddingBottom > 0.1
+                   || (!string.IsNullOrEmpty(box.Height) && box.Height != CssConstants.Auto)
+                   || EstablishesBlockFormattingContext(box);
+        }
+
+        /// <summary>
+        /// Floats, absolutely positioned boxes, table cells and captions, and boxes with overflow other than
+        /// visible start a new block formatting context, so their margins never collapse with their
+        /// children's (CSS 2.1 §8.3.1, §9.4.1).
+        /// </summary>
+        private static bool EstablishesBlockFormattingContext(CssBox box)
+        {
+            return box.IsFloated
+                   || box.Position == CssConstants.Absolute || box.Position == CssConstants.Fixed
+                   || box.Display == CssConstants.TableCell || box.Display == CssConstants.TableCaption
+                   || (!string.IsNullOrEmpty(box.Overflow) && box.Overflow != CssConstants.Visible);
         }
 
         /// <summary>
