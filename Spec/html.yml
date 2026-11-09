@@ -5,91 +5,77 @@ snapshot: 7a1d2b8107ef368c4951f15f091d82fb62e59dde
 sections:
   common-microsyntaxes.html#common-microsyntaxes:
     title: 2.3 Common microsyntaxes
-    status: unknown
+    status: partial
   common-microsyntaxes.html#common-parser-idioms:
     title: 2.3.1 Common parser idioms
-    status: unknown
+    status: n/a
   common-microsyntaxes.html#boolean-attributes:
     title: 2.3.2 Boolean attributes
-    status: unknown
+    status: supported
   common-microsyntaxes.html#keywords-and-enumerated-attributes:
     title: 2.3.3 Keywords and enumerated attributes
-    status: unknown
+    status: partial
+    gaps:
+      - "The align keywords are matched case-sensitively, align=CENTER becomes 'vertical-align: center'"
+      - An invalid keyword is passed on to CSS instead of falling back to the invalid value default, e.g. dir=sideways doesn't take the parent's direction
   common-microsyntaxes.html#numbers:
     title: 2.3.4 Numbers
-    status: unknown
+    status: partial
   common-microsyntaxes.html#signed-integers:
     title: 2.3.4.1 Signed integers
-    status: unknown
+    status: partial
+    gaps:
+      - Characters after the digits make the value an error instead of being ignored, e.g. start=5th
   common-microsyntaxes.html#non-negative-integers:
     title: 2.3.4.2 Non-negative integers
-    status: unknown
+    status: partial
+    gaps:
+      - Characters after the digits make the value an error instead of being ignored, e.g. colspan=2cols
   common-microsyntaxes.html#floating-point-numbers:
     title: 2.3.4.3 Floating-point numbers
-    status: unknown
+    status: unsupported
   common-microsyntaxes.html#percentages-and-dimensions:
     title: 2.3.4.4 Percentages and lengths
-    status: unknown
+    status: partial
+    gaps:
+      - Characters after the number aren't ignored, width=10em is 10em instead of 10px and width=100abc is invalid
+      - Invalid values aren't ignored, hr width=-5 or width=abc makes the rule 0 wide instead of full width
   common-microsyntaxes.html#nonzero-percentages-and-lengths:
     title: 2.3.4.5 Nonzero percentages and lengths
-    status: unknown
+    status: supported
   common-microsyntaxes.html#lists-of-floating-point-numbers:
     title: 2.3.4.6 Lists of floating-point numbers
-    status: unknown
+    status: unsupported
   common-microsyntaxes.html#lists-of-dimensions:
     title: 2.3.4.7 Lists of dimensions
-    status: unknown
+    status: unsupported
   common-microsyntaxes.html#dates-and-times:
     title: 2.3.5 Dates and times
-    status: unknown
-  common-microsyntaxes.html#months:
-    title: 2.3.5.1 Months
-    status: unknown
-  common-microsyntaxes.html#dates:
-    title: 2.3.5.2 Dates
-    status: unknown
-  common-microsyntaxes.html#yearless-dates:
-    title: 2.3.5.3 Yearless dates
-    status: unknown
-  common-microsyntaxes.html#times:
-    title: 2.3.5.4 Times
-    status: unknown
-  common-microsyntaxes.html#local-dates-and-times:
-    title: 2.3.5.5 Local dates and times
-    status: unknown
-  common-microsyntaxes.html#time-zones:
-    title: 2.3.5.6 Time zones
-    status: unknown
-  common-microsyntaxes.html#global-dates-and-times:
-    title: 2.3.5.7 Global dates and times
-    status: unknown
-  common-microsyntaxes.html#weeks:
-    title: 2.3.5.8 Weeks
-    status: unknown
-  common-microsyntaxes.html#durations:
-    title: 2.3.5.9 Durations
-    status: unknown
-  common-microsyntaxes.html#vaguer-moments-in-time:
-    title: 2.3.5.10 Vaguer moments in time
-    status: unknown
+    status: n/a
   common-microsyntaxes.html#colours:
     title: 2.3.6 Legacy colors
-    status: unknown
+    status: partial
+    gaps:
+      - Values other than named colors, #rgb and #rrggbb are parsed as CSS colors instead of as hex digits, e.g. ff0000 and chucknorris aren't colors and rgb(255,0,0) is red
   common-microsyntaxes.html#space-separated-tokens:
     title: 2.3.7 Space-separated tokens
-    status: unknown
+    status: partial
+    gaps:
+      - class is only split on spaces, not on tabs, line feeds, form feeds or carriage returns
   common-microsyntaxes.html#comma-separated-tokens:
     title: 2.3.8 Comma-separated tokens
-    status: unknown
+    status: n/a
   common-microsyntaxes.html#syntax-references:
     title: 2.3.9 References
-    status: unknown
+    status: unsupported
   common-microsyntaxes.html#mq:
     title: 2.3.10 Media queries
-    status: unknown
+    status: unsupported
+    gaps:
+      - The media attribute of style and link is ignored
   common-microsyntaxes.html#unique-values:
     title: 2.3.11 Unique internal values
-    status: unknown
+    status: n/a
   dom.html#elements:
     title: 3.2 Elements
     status: unknown

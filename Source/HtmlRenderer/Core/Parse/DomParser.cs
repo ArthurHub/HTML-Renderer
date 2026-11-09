@@ -1002,10 +1002,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Converts an HTML length into a Css length
+        /// Converts a dimension attribute value to a CSS length, HTML §2.3.4.4.
         /// </summary>
-        /// <param name="htmlLength"></param>
-        /// <returns></returns>
         private static string TranslateLength(string htmlLength)
         {
             CssLength len = new CssLength(htmlLength);
