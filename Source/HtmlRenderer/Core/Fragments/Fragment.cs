@@ -45,12 +45,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragments
 
     /// <summary>
     /// The portion of one <see cref="CssBox"/> living in one fragmentainer. A box spanning a page boundary
-    /// produces one <see cref="BoxFragment"/> per page. <see cref="Lines"/>/<see cref="Words"/>/<see cref="Children"/>
-    /// mirror what the old live-tree paint walk painted, in the same order: own decoration rects, own words,
-    /// then stacking-ordered child box fragments. <see cref="MarkerFragment"/> (a list item's marker, if any)
-    /// is kept separate from <see cref="Children"/> rather than folded in, matching the old live-tree
-    /// walk's own paint order - the marker paints last, after this fragment's own overflow clip is popped, since a
-    /// <c>list-style-position: outside</c> marker can legitimately hang outside the content box's clip.
+    /// produces one <see cref="BoxFragment"/> per page. <see cref="Children"/> are in tree order.
+    /// <see cref="MarkerFragment"/> (a list item's marker, if any) is kept out of <see cref="Children"/> because
+    /// it's painted after the box's overflow clip is popped, an outside marker hangs outside the content box.
     /// </summary>
     internal sealed record BoxFragment(
         RRect Rect,

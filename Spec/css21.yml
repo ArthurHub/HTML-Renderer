@@ -1071,16 +1071,24 @@ sections:
     status: n/a
   zindex.html#q23.0:
     title: E Elaborate description of Stacking Contexts
-    status: unknown
+    status: partial
   zindex.html#stacking-defs:
     title: E.1 Definitions
-    status: unknown
+    status: n/a
   zindex.html#painting-order:
     title: E.2 Painting order
-    status: unknown
+    status: partial
+    gaps:
+      - "'z-index' is ignored, no stacking contexts are created and negative z-index boxes paint over the in-flow content"
+      - Relatively positioned boxes paint in tree order with the normal flow instead of after it
+      - Absolutely positioned and fixed boxes paint after their parent's children instead of after all in-flow content of the stacking context
+      - Floats paint in tree order with the blocks, so a later block's background covers a preceding float
+      - Each block paints its inline content before the backgrounds of later blocks
+      - Underline and overline paint after the text instead of before it
+      - The root element's background covers only the root's border box instead of the whole canvas
   zindex.html#stacking-notes:
     title: E.3 Notes
-    status: unknown
+    status: n/a
   grammar.html#q25.0:
     title: G Grammar of CSS 2.1
     status: unknown

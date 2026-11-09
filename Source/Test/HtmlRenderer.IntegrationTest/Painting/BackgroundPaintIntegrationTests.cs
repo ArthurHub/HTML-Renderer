@@ -61,6 +61,7 @@ public sealed class BackgroundPaintIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "zindex.html#painting-order")]
     public void BackgroundColor_PaintsBeforeBorderAndOutline()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(

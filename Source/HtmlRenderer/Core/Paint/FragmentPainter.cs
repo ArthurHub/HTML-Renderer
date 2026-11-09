@@ -10,51 +10,24 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Paint
 {
     /// <summary>
-    /// Paints a fragmentainer from the immutable fragment tree - the sole paint path now that the old
-    /// live-tree walk (formerly <c>CssBox.Paint</c>/<c>PaintImp</c>) has been deleted. Every geometric
-    /// decision reads from the <see cref="BoxFragment"/> being painted, including text: each word paints
-    /// at its own <see cref="TextFragment.Rect"/>, not <c>CssRect.Rectangle</c> read off the live box.
-    /// The box back-reference (<see cref="BoxFragment.Box"/>) is consulted only for computed style and
-    /// paint primitives themselves (<see cref="CssBox.PaintBackground"/>/<see cref="CssBox.PaintWord"/>/
-    /// <see cref="CssBox.PaintDecoration"/> - widened from <c>protected</c>/<c>private</c> to <c>internal</c>
-    /// rather than duplicated here, so this stays a faithful re-shaping of the existing, tested paint code
-    /// rather than a parallel reimplementation).
+    /// Paints a fragmentainer from the fragment tree. Geometry comes from the fragments, the
+    /// <see cref="BoxFragment.Box"/> only provides the computed style and the paint primitives.
+    /// Replaced and other leaf boxes are painted by their <see cref="Content.IFragmentContentPainter"/>.
     /// </summary>
-    /// <remarks>
-    /// Leaf/replaced types dispatch to their own <see cref="Content.IFragmentContentPainter"/> (matching
-    /// PeachPDF's <c>IFragmentContentPainter</c>/<c>FragmentContentPainters</c> shape, see
-    /// <see cref="Content.FragmentContentPainters.For"/>); everything else uses the generic box-fragment
-    /// path below. Stacking-context paint order and <c>box-decoration-break</c> slicing are follow-on
-    /// work once real fragmentation (multiple fragments per box) exists for them to matter.
-    /// </remarks>
     internal sealed class FragmentPainter
     {
         private readonly HtmlContainerInt _container;
 
         /// <summary>
-        /// Added to every painted rect on top of <see cref="HtmlContainerInt.ScrollOffset"/> - zero for
-        /// every ordinary caller (one fragmentainer already in its own native coordinate system: a PDF
-        /// page's own <c>XGraphics</c>, or the single always-page-local-zero fragmentainer WinForms/WPF's
-        /// continuous document produces). Non-zero only when <see cref="HtmlContainerInt.PerformPaint(RGraphics)"/>
-        /// paints several fragmentainers onto one continuous surface (its multi-fragmentainer branch) -
-        /// there each fragmentainer's content is fragment-tree-local (translated so the band's own top is
-        /// Y=0) and must be translated back by the band's real document-Y top to land in the right place
-        /// on the shared surface, matching what painting the old, unfragmented box tree once did directly.
+        /// Added to every painted rect on top of the scroll offset. Only non-zero when several
+        /// fragmentainers are painted onto one continuous surface, there it moves each band back to its
+        /// document position.
         /// </summary>
         private readonly RPoint _pageOrigin;
 
         /// <summary>
-        /// The real document-Y top of the fragmentainer currently being painted (<see cref="FragmentainerFragment.LocalOriginY"/>),
-        /// set once per <see cref="Paint"/> call. Geometry sourced from the fragment tree (<see cref="BoxFragment.Lines"/>/
-        /// <see cref="BoxFragment.Words"/>/<see cref="BoxFragment.PrimaryRect"/>) is already local to this band
-        /// (<see cref="Fragmentation.FragmentEmitter"/> subtracts it at build time) and needs no further
-        /// adjustment for it. Geometry read straight off the live <see cref="CssBox"/> tree instead
-        /// (<see cref="CssBoxImage.DrawImageContent"/>'s image-word rect, the visibility cull below) is
-        /// still absolute document-Y and must have this subtracted to land in the same target frame -
-        /// missing this distinction for text was a real bug (found while building the continuous-surface
-        /// paint path this field supports, since fixed by moving word painting onto the fragment tree
-        /// entirely rather than reconciling it): every page after the first silently painted zero text,
-        /// since a fresh per-page surface's origin is this band's top, not the document's.
+        /// Document Y of the top of the fragmentainer being painted. Fragment geometry is already relative
+        /// to it, geometry read from the live <see cref="CssBox"/> tree is not and has to subtract it.
         /// </summary>
         private double _bandTop;
 
@@ -65,12 +38,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
         }
 
         /// <summary>
-        /// The offset to apply to a box's fragment-local rect (already local to the fragmentainer being
-        /// painted) to reach its paint position: scroll offset (suppressed for a fixed-position box,
-        /// matching the old live-tree walk's behavior) plus <see cref="_pageOrigin"/> (applies regardless
-        /// of <paramref name="isFixed"/> - the old, single continuous-surface paint path this replaced
-        /// never gave "fixed" boxes special treatment with respect to which page's content they belonged
-        /// to, only whether scroll offset applied to them).
+        /// Offset from fragment geometry to paint position: scroll offset (not for fixed boxes) plus
+        /// <see cref="_pageOrigin"/>.
         /// </summary>
         internal RPoint FragmentLocalOffset(bool isFixed)
         {
@@ -79,29 +48,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
         }
 
         /// <summary>
-        /// The offset to apply to a rect read straight off the live <see cref="CssBox"/> tree (still
-        /// absolute document-Y, unlike fragment-tree geometry) to reach the same paint position
-        /// <see cref="FragmentLocalOffset"/> gives fragment-local geometry: undoes <see cref="_bandTop"/>
-        /// - except for a fixed (or fixed-ancestor) box, whose live geometry is already page-relative
-        /// (see the remark below), where undoing this painter's current band top would double-subtract
-        /// it, pushing the box far outside every page except the one whose band top happens to equal its
-        /// own small top offset.
+        /// Offset from live box tree geometry to paint position. A fixed box is laid out relative to the
+        /// page already, so the band top isn't subtracted for it.
         /// </summary>
-        /// <remarks>
-        /// A real bug found while confirming <see cref="FragmentEmitter"/>'s fixed-position repeat-per-page
-        /// support through actual PDF output: <c>CssBox.PerformLayoutImp</c> never routes a
-        /// <c>Position==Fixed</c> box through normal top-computing flow at all (its <c>Left</c>/<c>Top</c>
-        /// property setters assign <c>Location</c> directly, from <c>GetActualLocation</c>, resolved
-        /// against the page size) - so unlike ordinary content, whose live <c>Location</c> genuinely is an
-        /// absolute document-Y this painter's current band top needs undoing from, a fixed box's live
-        /// <c>Location</c> already IS the small, page-relative offset the fragment tree also uses. This
-        /// only affected the containing-block visibility/overflow-clip checks below (<see cref="PaintFragment"/>'s
-        /// own check, and <see cref="RenderUtils.ClipGraphicsByOverflow"/> via <see cref="LiveTreeExtraOffset"/>)
-        /// - the fragment tree's own already-correct geometry (<c>fragment.Lines</c>/<c>fragment.Words</c>,
-        /// via <see cref="FragmentLocalOffset"/> alone) was never affected, which is why the fixed content
-        /// was confirmed correctly PRESENT in the fragment tree on every page before this was found - it
-        /// was being computed correctly and then clipped away on every page except one.
-        /// </remarks>
         internal RPoint LiveTreeOffset(bool isFixed)
         {
             var offset = FragmentLocalOffset(isFixed);
@@ -109,10 +58,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
         }
 
         /// <summary>
-        /// The portion of <see cref="LiveTreeOffset"/> that <see cref="RenderUtils.ClipGraphicsByOverflow"/>
-        /// doesn't already add itself (it applies <see cref="HtmlContainerInt.ScrollOffset"/> gating
-        /// internally) - pass as its <c>extraOffset</c> parameter. See <see cref="LiveTreeOffset"/>'s own
-        /// remark for why <paramref name="isFixed"/> must gate the band-top term here too.
+        /// <see cref="LiveTreeOffset"/> without the scroll offset, which
+        /// <see cref="RenderUtils.ClipGraphicsByOverflow"/> applies itself.
         /// </summary>
         internal RPoint LiveTreeExtraOffset(bool isFixed) =>
             isFixed ? new RPoint(_pageOrigin.X, _pageOrigin.Y) : new RPoint(_pageOrigin.X, _pageOrigin.Y - _bandTop);
@@ -124,11 +71,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
         }
 
         /// <summary>
-        /// Test-support entry point: paints one box fragment (and its descendants) directly, without
-        /// painting the rest of its fragmentainer - mirrors what the old live-tree <c>CssBox.Paint(g)</c>
-        /// did for an arbitrary box, for tests that want the draw-call log of just one subtree.
-        /// <paramref name="bandTop"/> should be the owning fragmentainer's own
-        /// <see cref="FragmentainerFragment.LocalOriginY"/>.
+        /// Paints one fragment and its descendants without the rest of its fragmentainer, for tests.
+        /// <paramref name="bandTop"/> is the owning fragmentainer's <see cref="FragmentainerFragment.LocalOriginY"/>.
         /// </summary>
         internal void PaintFragmentSubtree(RGraphics g, BoxFragment fragment, double bandTop = 0)
         {
@@ -181,7 +125,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
         }
 
         /// <summary>
-        /// Paints one box fragment's own decorations, words, and children.
+        /// Paints the box's background, border and outline per line, then its text and text decorations,
+        /// then its children (CSS 2.1 Appendix E, within this box only).
         /// </summary>
         private void PaintFragmentContent(RGraphics g, BoxFragment fragment)
         {
@@ -202,8 +147,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
 
             var clipped = RenderUtils.ClipGraphicsByOverflow(g, box, LiveTreeExtraOffset(box.IsFixed));
             var clip = g.GetClip();
-            // fragment.Lines/fragment.Words are already fragment-local (FragmentEmitter subtracted the
-            // band top at build time) - only FragmentLocalOffset (scroll + page-origin) applies to either.
             var offset = FragmentLocalOffset(box.IsFixed);
             var lines = fragment.Lines;
 
@@ -259,8 +202,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Paint
             if (clipped)
                 g.PopClip();
 
-            // Marker paints last, after this fragment's own overflow clip is popped - see
-            // BoxFragment.MarkerFragment's doc comment for why it's kept separate from Children.
+            // The marker is outside the principal box, so the box's overflow clip doesn't apply to it.
             if (fragment.MarkerFragment != null)
                 PaintFragment(g, fragment.MarkerFragment);
         }
