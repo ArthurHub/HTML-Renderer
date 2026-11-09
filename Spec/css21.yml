@@ -1068,7 +1068,7 @@ sections:
     status: n/a
   sample.html#q22.0:
     title: D Default style sheet for HTML 4
-    status: unknown
+    status: n/a
   zindex.html#q23.0:
     title: E Elaborate description of Stacking Contexts
     status: unknown

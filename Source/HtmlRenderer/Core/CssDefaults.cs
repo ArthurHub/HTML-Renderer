@@ -15,11 +15,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
     internal static class CssDefaults
     {
         /// <summary>
-        /// CSS Specification's Default Style Sheet for HTML 4
+        /// The user agent style sheet, based on CSS 2.1 Appendix D.
         /// </summary>
-        /// <remarks>
-        /// http://www.w3.org/TR/CSS21/sample.html
-        /// </remarks>
         public const string DefaultStyleSheet = @"
         html, address,
         blockquote,

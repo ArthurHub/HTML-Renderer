@@ -70,8 +70,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// <summary>
         /// Parse the given stylesheet source to a <see cref="CssData"/>.<br/>
         /// If <paramref name="combineWithDefault"/> is true the parsed stylesheet is combined with a
-        /// clone of the default (UA) css data (as defined by W3) - a clone so the adapter's cached
-        /// default data is never mutated by this call. If false only the data in the given stylesheet is returned.
+        /// clone of the default (user agent) css data, a clone so the adapter's cached default data is
+        /// never mutated by this call. If false only the data in the given stylesheet is returned.
         /// </summary>
         /// <seealso cref="http://www.w3.org/TR/CSS21/sample.html"/>
         /// <param name="stylesheet">raw css stylesheet to parse</param>
