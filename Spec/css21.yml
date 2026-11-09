@@ -214,46 +214,61 @@ sections:
     status: supported
   cascade.html#q6.0:
     title: 6 Assigning property values, Cascading, and Inheritance
-    status: unknown
+    status: partial
   cascade.html#value-stages:
     title: 6.1 Specified, computed, and actual values
-    status: unknown
+    status: partial
   cascade.html#specified-value:
     title: 6.1.1 Specified values
-    status: unknown
+    status: supported
   cascade.html#computed-value:
     title: 6.1.2 Computed values
-    status: unknown
+    status: partial
+    gaps:
+      - An em length declared before the element's own 'font-size' is computed against the parent's font size
   cascade.html#used-value:
     title: 6.1.3 Used values
-    status: unknown
+    status: supported
   cascade.html#actual-value:
     title: 6.1.4 Actual values
-    status: unknown
+    status: n/a
   cascade.html#inheritance:
     title: 6.2 Inheritance
-    status: unknown
+    status: partial
+    gaps:
+      - A percentage 'font-size' is inherited as the percentage and compounds, instead of as the computed size
+      - "'word-spacing' isn't inherited"
   cascade.html#value-def-inherit:
     title: 6.2.1 The 'inherit' value
-    status: unknown
+    status: partial
+    gaps:
+      - "'inherit' copies the parent's specified value, so an em margin is resolved against the child's font size"
+      - "'inherit' on the root element takes the value of the anonymous box around it (display: block) instead of the initial value"
   cascade.html#at-import:
     title: 6.3 The @import rule
-    status: unknown
+    status: parsed-only
+    gaps:
+      - The imported style sheet is never loaded
+      - The media list of an @import isn't evaluated
   cascade.html#cascade:
     title: 6.4 The cascade
-    status: unknown
+    status: partial
   cascade.html#cascading-order:
     title: 6.4.1 Cascading order
-    status: unknown
+    status: partial
+    gaps:
+      - The media attribute of <link> and <style> is ignored, the style sheet always applies
   cascade.html#important-rules:
     title: 6.4.2 !important rules
-    status: unknown
+    status: supported
   cascade.html#specificity:
     title: 6.4.3 Calculating a selector's specificity
-    status: unknown
+    status: supported
   cascade.html#preshint:
     title: 6.4.4 Precedence of non-CSS presentational hints
-    status: unknown
+    status: partial
+    gaps:
+      - Presentational attributes are applied after the author style sheets and override them
   media.html#q7.0:
     title: 7 Media types
     status: unknown

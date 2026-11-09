@@ -3,11 +3,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/ImportRule.cs (<c>CssImportRuleTests</c>). <c>ImportRule</c>, <c>Rule.Text</c>,
-/// <c>Href</c>, and <c>Media.MediaText</c>/<c>Length</c> all match HTML-Renderer's
-/// <see cref="TheArtOfDev.HtmlRenderer.Core.CssEngine.ImportRule"/> exactly.
-/// </summary>
 [TestClass]
 public sealed class ImportRuleTests
 {
@@ -19,6 +14,7 @@ public sealed class ImportRuleTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#at-import")]
     public void CssImportWithNonQuotedUrl()
     {
         var source = "@import url(button.css);";
@@ -28,6 +24,7 @@ public sealed class ImportRuleTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#at-import")]
     public void CssImportWithDoubleQuotedUrl()
     {
         var source = "@import url(\"button.css\");";
@@ -37,6 +34,7 @@ public sealed class ImportRuleTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#at-import")]
     public void CssImportWithSingleQuotedUrl()
     {
         var source = "@import url('button.css');";
@@ -46,6 +44,7 @@ public sealed class ImportRuleTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#at-import")]
     public void CssImportWithDoubleQuotedStringAsUrl()
     {
         var source = "@import \"button.css\";";
@@ -55,6 +54,7 @@ public sealed class ImportRuleTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#at-import")]
     public void CssImportWithSingleQuotedStringAsUrl()
     {
         var source = "@import 'button.css';";
@@ -64,6 +64,7 @@ public sealed class ImportRuleTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#at-import")]
     public void CssImportWithUrlAndAllMedia()
     {
         var media = "all";
@@ -75,6 +76,7 @@ public sealed class ImportRuleTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#at-import")]
     public void CssImportWithUrlAndComplicatedMedia()
     {
         var media = "screen and (color), projection and (min-color: 256)";

@@ -129,14 +129,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }";
 
         /// <summary>
-        /// The initial value of every property this engine recognizes (<see cref="Utils.CssUtils"/>'s exact
-        /// whitelist), used to resolve the <c>initial</c>/<c>unset</c>/<c>revert</c>/<c>revert-layer</c>
-        /// CSS-wide keywords in the six-phase cascade (<see cref="Parse.DomParser"/>). Deliberately matches
-        /// this engine's own existing field defaults (<see cref="Dom.CssBoxProperties"/>'s private field
-        /// initializers) rather than the CSS spec's initial values where the two differ (e.g. this engine's
-        /// border-color default is "black", not the spec's "currentcolor"; text-align/text-decoration/
-        /// list-style-image default to an empty string here, not "left"/"none"/"none") - so resolving
-        /// "initial" produces exactly what an unstyled box already looks like today, not a new value.
+        /// The initial value of every property in <see cref="Utils.CssUtils"/>'s whitelist, for the
+        /// CSS-wide keywords. Must match the field initializers in <see cref="Dom.CssBoxProperties"/>,
+        /// which is why some differ from the spec (e.g. border colors are "black", text-align is "").
         /// </summary>
         internal static readonly System.Collections.Generic.Dictionary<string, string> InitialValues =
             new System.Collections.Generic.Dictionary<string, string>(System.StringComparer.OrdinalIgnoreCase)
@@ -218,10 +213,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
         };
 
         /// <summary>
-        /// Properties inherited from parent to child during cascade - kept exactly in sync with the set
-        /// <see cref="Dom.CssBoxProperties.InheritStyle"/> already (independently) copies, since this is
-        /// used only to decide whether the <c>unset</c> keyword should behave like <c>inherit</c> or
-        /// <c>initial</c> for a given property, and the two must agree for "unset" to make sense.
+        /// The inherited properties, used to resolve <c>unset</c>. Must match what
+        /// <see cref="Dom.CssBoxProperties.InheritStyle"/> copies.
         /// </summary>
         internal static readonly System.Collections.Generic.HashSet<string> InheritedProperties =
             new System.Collections.Generic.HashSet<string>(System.StringComparer.OrdinalIgnoreCase)

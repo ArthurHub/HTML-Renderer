@@ -2,14 +2,6 @@ using HtmlRenderer.IntegrationTest.TestSupport;
 
 namespace HtmlRenderer.IntegrationTest.Layout;
 
-/// <summary>
-/// Ported from PeachPDF.Tests' GlobalKeywordCascadeTests.cs - the CSS 2.1-relevant subset (CSS 2.1 §6.1/
-/// §6.2's inheritance and cascade-order rules, plus <c>inherit</c>/<c>initial</c>/<c>unset</c>, the latter
-/// from CSS Cascading and Inheritance Level 3 but already ported at the CSS-OM/parse level in
-/// <c>Css/GlobalKeywordPropertyTests.cs</c> - this file is the cascade-RESOLUTION level that was still
-/// untested). <c>revert</c>/<c>revert-layer</c>, cascade layers, and PeachPDF's own eager em-to-pt UA
-/// font-size conversion are not ported - out of CSS 2.1 scope or specific to PeachPDF's own architecture.
-/// </summary>
 [DoNotParallelize]
 [TestClass]
 public sealed class GlobalKeywordCascadeTests
@@ -17,6 +9,7 @@ public sealed class GlobalKeywordCascadeTests
     // ── inherit ────────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css21", "cascade.html#value-def-inherit")]
     public void Inherit_ColorFromParent_ChildGetsParentColor()
     {
         var html = LayoutHarness.Wrap(
@@ -28,9 +21,9 @@ public sealed class GlobalKeywordCascadeTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#value-def-inherit")]
     public void Inherit_NonInheritedProperty_ChildGetsParentValue()
     {
-        // margin-top is NOT inherited by default; explicit "inherit" should force it.
         var html = LayoutHarness.Wrap(
             "<div id='parent' style='margin-top: 30px'><div id='child' style='margin-top: inherit'>text</div></div>");
         var (root, _) = LayoutHarness.Layout(html);
@@ -40,6 +33,7 @@ public sealed class GlobalKeywordCascadeTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#value-def-inherit")]
     public void Inherit_ColorWithoutExplicitParent_UsesInitialBlack()
     {
         var html = LayoutHarness.Wrap("<div id='el' style='color: inherit'>text</div>");
@@ -117,9 +111,10 @@ public sealed class GlobalKeywordCascadeTests
         Assert.AreEqual("black", el.Color);
     }
 
-    // ── cascade order regressions ────────────────────────────────────────
+    // ── cascade order ────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css21", "cascade.html#inheritance")]
     public void Regression_ColorInheritsFromParentWithoutKeyword()
     {
         var html = LayoutHarness.Wrap(
@@ -131,6 +126,7 @@ public sealed class GlobalKeywordCascadeTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#specificity")]
     public void Regression_InlineStyleOverridesAuthorRule()
     {
         var html = LayoutHarness.Wrap(
@@ -142,6 +138,7 @@ public sealed class GlobalKeywordCascadeTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#cascading-order")]
     public void Regression_AuthorRuleOverridesUaDefault()
     {
         var html = LayoutHarness.Wrap("<style>h1 { font-size: 10px; }</style><h1 id='el'>heading</h1>");
@@ -152,6 +149,7 @@ public sealed class GlobalKeywordCascadeTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#important-rules")]
     public void Regression_ImportantAuthorRuleBeatsInlineStyle()
     {
         var html = LayoutHarness.Wrap(
@@ -163,6 +161,7 @@ public sealed class GlobalKeywordCascadeTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#important-rules")]
     public void InlineImportant_BeatsAuthorImportantRule()
     {
         var html = LayoutHarness.Wrap(
@@ -174,6 +173,7 @@ public sealed class GlobalKeywordCascadeTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#cascading-order")]
     public void Regression_LaterAuthorRuleOverridesEarlierSameSpecificity()
     {
         var html = LayoutHarness.Wrap("<style>div { color: red; } div { color: blue; }</style><div id='el'>text</div>");

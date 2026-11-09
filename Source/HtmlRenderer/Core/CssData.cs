@@ -22,16 +22,9 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core
 {
     /// <summary>
-    /// Holds parsed stylesheets (UA default + author + inline), and provides origin-aware,
-    /// specificity-ordered selector matching against the box tree.<br/>
+    /// Holds the parsed style sheets (UA default and author) and matches their rules against the
+    /// box tree, ordered for the cascade.
     /// </summary>
-    /// <remarks>
-    /// Derived from the same ExCSS lineage as the vendored CSS-OM (originally Tyler Brinks' ExCSS),
-    /// adapted to HTML-Renderer's CssBox/HtmlTag shape. One deliberate omission from the source: the
-    /// <c>::marker</c> pseudo-element box-synthesis path is removed - <c>::before</c>/<c>::after</c>
-    /// synthesis is kept, but this codebase has no <c>CssBox.IsMarkerPseudoElement</c> concept and no
-    /// consumer for it (list markers are painted procedurally, not via a synthesized box).
-    /// </remarks>
     public sealed class CssData
     {
         /// <summary>
@@ -491,9 +484,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 }
             }
 
-            // Stable sort by specificity, tie-broken by DocumentOrder (true source order, including
-            // across the plain-rule/@media boundary, assigned once up front by IndexRules) - equal-
-            // specificity rules keep true document order for correct source-order tiebreaking.
+            // CSS 2.1 §6.4.1 steps 3 and 4
             return matched
                 .OrderBy(indexed => GetMatchedSpecificity(indexed.Rule.Selector, box))
                 .ThenBy(indexed => indexed.DocumentOrder)
@@ -501,14 +492,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// The effective specificity of a matched rule's selector for cascade-ordering purposes,
-        /// relative to a specific matched box. This deliberately differs from calling
-        /// <c>selector.Specificity</c> directly for a top-level <see cref="ListSelector"/> (comma-
-        /// separated rule selector, e.g. "h1, h2 {}"): per spec a selector list used as a whole
-        /// rule's selector is cascade-equivalent to separate rules, so the specificity that governs
-        /// THIS box's cascade is whichever one alternative actually matched it - not every
-        /// alternative's static max (which is what <see cref="ListSelector.Specificity"/> reports,
-        /// correctly, for its OTHER use as an argument to :is()/:not()/:has()).
+        /// The specificity of a matched rule for <paramref name="box"/>, CSS 2.1 §6.4.3. A rule's
+        /// selector list counts with the highest matching selector, unlike
+        /// <see cref="ListSelector.Specificity"/>, which is the static maximum used inside :is() and :not().
         /// </summary>
         private static Priority GetMatchedSpecificity(ISelector selector, CssBox box)
         {

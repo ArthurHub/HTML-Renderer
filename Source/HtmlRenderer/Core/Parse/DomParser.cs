@@ -111,7 +111,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// <param name="htmlContainer">the html container to use for reference resolve</param>
         /// <param name="cssData">the style data to fill with found styles</param>
         /// <param name="cssDataChanged">check if the css data has been modified by the handled html not to change the base css data</param>
-        /// <returns>the (possibly cloned) css data and whether it has been cloned yet, threaded through the recursive tree walk in place of the original ref parameters (async methods cannot take ref/out parameters)</returns>
+        /// <returns>the (possibly cloned) css data and whether it has been cloned yet</returns>
         private async Task<(CssData cssData, bool cssDataChanged)> CascadeParseStyles(CssBox box, HtmlContainerInt htmlContainer, CssData cssData, bool cssDataChanged)
         {
             if (box.HtmlTag != null)
@@ -202,35 +202,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
 
         /// <summary>
-        /// Applies style to all boxes in the tree via a spec-correct, origin-aware six-phase cascade:
-        /// UA-normal, Author-normal, Inline-normal, Author-!important, Inline-!important, UA-!important
-        /// (origin order reverses for the !important tier, per spec). Each phase's revert/revert-layer
-        /// target is a snapshot of the box's state immediately before that phase ran.
+        /// Applies the cascade (CSS 2.1 §6.4) to every box in the tree. Declarations are applied from
+        /// lowest to highest precedence, so the last write wins: UA normal, author normal, style
+        /// attribute normal, author !important, style attribute !important, UA !important.
         /// </summary>
         /// <param name="box">the box to apply the style to</param>
         /// <param name="cssData">the style data for the html</param>
         private void CascadeApplyStyles(CssBox box, CssData cssData, MediaQueryContext media)
         {
-            // Every box's fields already start at their initial value (CssBoxProperties's private
-            // field initializers, which CssDefaults.InitialValues was itself built to mirror exactly -
-            // see CssDefaults.cs) - so unlike a from-initial cascade, there is no separate "set every
-            // property to its initial value" pass here. Deliberately: a handful of this engine's
-            // property setters (e.g. LineHeight, CssBoxProperties.cs:550) are eager - they immediately
-            // resolve the assigned value to an absolute pixel string using the box's CURRENT font/size,
-            // rather than storing it as-is for lazy resolution later. Calling every whitelisted
-            // property's setter unconditionally on every box, before InheritStyle() has propagated a
-            // real font-size down and before layout has given the box a real size, fires those eager
-            // setters against not-yet-meaningful state and bakes in garbage (observed: line-height
-            // resolving to "-0px", corrupting all downstream layout). CssDefaults.InitialValues is
-            // still very much used - see GetInitialValue() calls below - just only consulted on demand
-            // when a declaration literally says initial/unset/revert, never as a blanket pre-pass.
+            // There's no pass that resets every property to its initial value, the fields already
+            // start there. Some setters (e.g. LineHeight) resolve lengths eagerly against the box's
+            // current font and size, and calling them before inheritance and layout bakes in wrong values.
 
-            // 1. Inherit inheritable properties from parent
+            // CSS 2.1 §6.2
             box.InheritStyle();
 
-            // Regular property declarations whose value contains var(...) are deferred here and resolved
-            // once, after the whole cascade (all phases below) has finished, so var() sees this box's
-            // FINAL custom property values regardless of which phase declared them.
+            // Declarations with var() are resolved after all phases, against the final custom properties
             var pendingVarProperties = new Dictionary<string, string>();
 
             // Anonymous boxes aren't elements and match nothing. ::before/::after boxes have no HtmlTag
@@ -239,27 +226,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             var uaRules = canMatchRules ? cssData.GetUserAgentStyleRules(media, box).ToList() : new List<IStyleRule>();
             var authorRules = canMatchRules ? cssData.GetAuthorStyleRules(media, box).ToList() : new List<IStyleRule>();
 
-            // Inline style is parsed up front - parsing is pure text -> rule with no cascade side
-            // effects, so hoisting it here (ahead of TranslateAttributes, which still runs at its
-            // original point below) doesn't change behavior, and lets RulesUseRevertKeyword below see it too.
             IStyleRule inlineRule = null;
             if (box.HtmlTag != null && box.HtmlTag.HasAttribute("style"))
             {
                 inlineRule = _cssParser.ParseInlineStyle(box.HtmlTag.TryGetAttribute("style"));
             }
 
-            // The relatively expensive property/custom-property snapshots below are only ever read
-            // back when a later phase's declaration is literally revert/revert-layer, so each is only
-            // captured when something that will actually consult it uses one of those keywords.
+            // The snapshots used as revert targets are only taken when a phase uses revert
             var authorUsesRevert = RulesUseRevertKeyword(authorRules);
             var uaUsesRevert = RulesUseRevertKeyword(uaRules);
             var inlineUsesRevert = inlineRule != null && RulesUseRevertKeyword(new[] { inlineRule });
-
-            // Cascade precedence (lowest to highest, i.e. applied in this order so "last write wins"
-            // naturally produces the correct winner): UA-normal, Author-normal (inline-normal wins ties
-            // within this tier), Author-!important (inline-!important wins ties within this tier),
-            // UA-!important (per spec, origin order REVERSES for !important, so it's applied - and wins
-            // - last).
 
             // 3. UA normal
             AssignCssBlocks(box, uaRules, false, null, null, pendingVarProperties);
@@ -289,10 +265,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 inlineNormalCustomSnapshot = needsInlineNormalSnapshot ? CssUtils.SnapshotCustomProperties(box) : null;
             }
 
-            // 6. Author !important. Note this means an author-!important "revert" can roll back to a
-            // value inline *normal* style just set, not all the way back to the UA snapshot - a
-            // deliberate choice for mechanical consistency ("revert = state right before this phase")
-            // rather than a stricter per-origin reading of the spec.
+            // 6. Author !important. Its revert target is the state after the style attribute's normal
+            // declarations, not the UA snapshot.
             AssignCssBlocks(box, authorRules, true, inlineNormalSnapshot, inlineNormalCustomSnapshot, pendingVarProperties);
             var needsAuthorImportantSnapshot = inlineUsesRevert || uaUsesRevert;
             var authorImportantSnapshot = needsAuthorImportantSnapshot ? CssUtils.SnapshotProperties(box) : null;
@@ -309,8 +283,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 afterInlineImportantCustomSnapshot = needsAfterInlineImportantSnapshot ? CssUtils.SnapshotCustomProperties(box) : null;
             }
 
-            // 8. UA !important - applied globally last so it wins over everything else, per spec's
-            // origin reversal for the !important tier.
+            // 8. UA !important
             AssignCssBlocks(box, uaRules, true, afterInlineImportantSnapshot, afterInlineImportantCustomSnapshot, pendingVarProperties);
 
             // 9. Resolve var() references now that every custom property's final cascaded value is known
@@ -408,15 +381,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Assigns the given css style rule's declarations to the given css box, applying only the
-        /// declarations whose !important flag matches <paramref name="importantPass"/> (the caller is
-        /// expected to call this once per origin per pass - see <see cref="CascadeApplyStyles"/> - so
-        /// that within a properly-ordered sequence of calls, "last write wins" alone produces the
-        /// spec-correct result). Handles the CSS-wide keywords: inherit, initial, unset, revert,
-        /// revert-layer. Custom property declarations (--foo) are routed to
-        /// <see cref="AssignCustomPropertyDeclaration"/> instead. Regular declarations whose value
-        /// contains var(...) are deferred into <paramref name="pendingVarProperties"/> rather than
-        /// applied immediately - see <see cref="ResolveDeferredVarProperties"/> for why.
+        /// Applies the declarations of the given rule whose !important flag matches
+        /// <paramref name="importantPass"/>, resolving the CSS-wide keywords. Custom properties go to
+        /// <see cref="AssignCustomPropertyDeclaration"/>, values with var() are deferred to
+        /// <see cref="ResolveDeferredVarProperties"/>.
         /// </summary>
         private static void AssignCssBlock(
             CssBox box,
@@ -438,6 +406,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 }
 
                 string value;
+                // CSS 2.1 §6.2.1
                 if (prop.Value == CssConstants.Inherit)
                 {
                     value = box.ParentBox != null
@@ -946,10 +915,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        ///
+        /// Translates presentational HTML attributes to CSS, CSS 2.1 §6.4.4.
         /// </summary>
-        /// <param name="tag"></param>
-        /// <param name="box"></param>
         private void TranslateAttributes(HtmlTag tag, CssBox box)
         {
             if (tag.HasAttributes())

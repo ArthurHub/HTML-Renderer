@@ -100,7 +100,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
         /// <summary>
         /// Parse the given stylesheet source and add its rules into the given css data (author origin),
-        /// recursively resolving @import rules (guarded against circular imports).
+        /// preceded by the style sheets it imports.
         /// </summary>
         /// <param name="cssData">the CSS data to fill with parsed CSS objects</param>
         /// <param name="stylesheet">raw css stylesheet to parse</param>

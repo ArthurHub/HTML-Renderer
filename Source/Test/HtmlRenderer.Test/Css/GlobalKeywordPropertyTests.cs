@@ -3,9 +3,7 @@ using HtmlRenderer.Test.CssEngineSupport;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Unit tests verifying that the CSS module correctly parses all five global keywords
-/// (inherit, initial, unset, revert, revert-layer) for a representative set of properties.
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/GlobalKeywordPropertyTests.cs.
+/// Parsing of the CSS-wide keywords inherit, initial, unset, revert and revert-layer.
 /// </summary>
 [TestClass]
 public sealed class GlobalKeywordPropertyTests
@@ -13,6 +11,7 @@ public sealed class GlobalKeywordPropertyTests
     // -- inherit ---------------------------------------------------------
 
     [TestMethod]
+    [Spec("css21", "cascade.html#value-def-inherit")]
     public void Color_Inherit_IsMarkedAsInherited()
     {
         var property = CssConstructionFunctions.ParseDeclaration("color: inherit");
@@ -22,6 +21,7 @@ public sealed class GlobalKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#value-def-inherit")]
     public void MarginTop_Inherit_IsMarkedAsInherited()
     {
         var property = CssConstructionFunctions.ParseDeclaration("margin-top: inherit");
@@ -31,6 +31,7 @@ public sealed class GlobalKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#value-def-inherit")]
     public void FontSize_Inherit_IsMarkedAsInherited()
     {
         var property = CssConstructionFunctions.ParseDeclaration("font-size: inherit");
@@ -40,6 +41,7 @@ public sealed class GlobalKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css21", "cascade.html#value-def-inherit")]
     public void Display_Inherit_IsMarkedAsInherited()
     {
         var property = CssConstructionFunctions.ParseDeclaration("display: inherit");
@@ -167,6 +169,7 @@ public sealed class GlobalKeywordPropertyTests
     // -- !important is preserved alongside global keywords -----------------------
 
     [TestMethod]
+    [Spec("css21", "cascade.html#value-def-inherit")]
     public void Color_InheritImportant_IsImportantAndInherited()
     {
         var property = CssConstructionFunctions.ParseDeclaration("color: inherit !important");
