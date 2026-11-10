@@ -18,11 +18,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private readonly Dictionary<string, ShorthandCreator> _shorthandsBuilder = new Dictionary<string, ShorthandCreator>(StringComparer.OrdinalIgnoreCase);
 
-        // Shorthands that parse and expand normally but are excluded from serialization reconstruction:
-        // the logical shorthands, whose longhands are the physical ones (margin-top/-bottom/…), so letting
-        // the serializer collapse e.g. margin-top+margin-bottom into `margin-block` would change existing
-        // output. Excluded from GetShorthands (the serialization query) only; CreateShorthand,
-        // GetLonghands and IsShorthand still work.
+        // Shorthands that parse and expand but are never rebuilt from their longhands when serializing:
+        // the flow-relative ones, whose longhands are the physical ones, and grid/grid-template.
         private readonly HashSet<string> _logicalShorthands = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         private readonly Dictionary<string, LonghandCreator> _fonts;
@@ -407,18 +404,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             AddShorthand(PropertyNames.PlaceSelf, () => new PlaceSelfProperty(),
                 PropertyNames.AlignSelf, PropertyNames.JustifySelf);
 
-            // CSS Logical Properties and Values Level 1. Layout here is always LTR / horizontal-tb,
-            // so each logical property is registered to produce/export the existing physical
-            // longhands (block-start = top, block-end = bottom, inline-start = left,
-            // inline-end = right). Nothing downstream needs to change, since it already handles
-            // every physical longhand.
-
-            // Logical margin longhands (aliases to the physical longhand classes).
+            // CSS Logical 1 §4. The flow-relative properties are aliases of the physical ones, mapped as
+            // horizontal-tb ltr whatever the element's direction.
             AddLonghand(PropertyNames.MarginBlockStart, () => new MarginTopProperty(), true);
             AddLonghand(PropertyNames.MarginBlockEnd, () => new MarginBottomProperty(), true);
             AddLonghand(PropertyNames.MarginInlineStart, () => new MarginLeftProperty(), true);
             AddLonghand(PropertyNames.MarginInlineEnd, () => new MarginRightProperty(), true);
-            // Logical margin shorthands.
             AddLogicalShorthand(PropertyNames.MarginBlock, () => new MarginBlockProperty(),
                 PropertyNames.MarginTop,
                 PropertyNames.MarginBottom);
@@ -426,12 +417,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 PropertyNames.MarginLeft,
                 PropertyNames.MarginRight);
 
-            // Logical padding longhands (aliases to the physical longhand classes).
             AddLonghand(PropertyNames.PaddingBlockStart, () => new PaddingTopProperty(), true);
             AddLonghand(PropertyNames.PaddingBlockEnd, () => new PaddingBottomProperty(), true);
             AddLonghand(PropertyNames.PaddingInlineStart, () => new PaddingLeftProperty(), true);
             AddLonghand(PropertyNames.PaddingInlineEnd, () => new PaddingRightProperty(), true);
-            // Logical padding shorthands.
             AddLogicalShorthand(PropertyNames.PaddingBlock, () => new PaddingBlockProperty(),
                 PropertyNames.PaddingTop,
                 PropertyNames.PaddingBottom);
@@ -439,12 +428,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 PropertyNames.PaddingLeft,
                 PropertyNames.PaddingRight);
 
-            // Logical inset longhands (aliases to the physical coordinate longhand classes).
             AddLonghand(PropertyNames.InsetBlockStart, () => new TopProperty(), true);
             AddLonghand(PropertyNames.InsetBlockEnd, () => new BottomProperty(), true);
             AddLonghand(PropertyNames.InsetInlineStart, () => new LeftProperty(), true);
             AddLonghand(PropertyNames.InsetInlineEnd, () => new RightProperty(), true);
-            // Inset shorthands.
             AddLogicalShorthand(PropertyNames.Inset, () => new InsetProperty(),
                 PropertyNames.Top,
                 PropertyNames.Right,
@@ -457,7 +444,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 PropertyNames.Left,
                 PropertyNames.Right);
 
-            // Logical per-edge border longhands (aliases to the physical longhand classes).
             AddLonghand(PropertyNames.BorderBlockStartWidth, () => new BorderTopWidthProperty(), true);
             AddLonghand(PropertyNames.BorderBlockStartStyle, () => new BorderTopStyleProperty());
             AddLonghand(PropertyNames.BorderBlockStartColor, () => new BorderTopColorProperty(), true);
@@ -471,7 +457,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             AddLonghand(PropertyNames.BorderInlineEndStyle, () => new BorderRightStyleProperty());
             AddLonghand(PropertyNames.BorderInlineEndColor, () => new BorderRightColorProperty(), true);
 
-            // Logical per-edge border shorthands (aliases to the physical edge shorthand classes).
             AddLogicalShorthand(PropertyNames.BorderBlockStart, () => new BorderTopProperty(),
                 PropertyNames.BorderTopWidth,
                 PropertyNames.BorderTopStyle,
@@ -489,7 +474,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 PropertyNames.BorderRightStyle,
                 PropertyNames.BorderRightColor);
 
-            // Logical two-edge border shorthands (both block/inline edges the same value).
             AddLogicalShorthand(PropertyNames.BorderBlock, () => new BorderBlockProperty(),
                 PropertyNames.BorderTopWidth,
                 PropertyNames.BorderTopStyle,
@@ -505,7 +489,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 PropertyNames.BorderRightStyle,
                 PropertyNames.BorderRightColor);
 
-            // Logical two-edge border width/style/color shorthands.
             AddLogicalShorthand(PropertyNames.BorderBlockWidth, () => new BorderBlockWidthProperty(),
                 PropertyNames.BorderTopWidth,
                 PropertyNames.BorderBottomWidth);
@@ -554,8 +537,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             _mappingsBuilder.Add(name, longhands);
         }
 
-        // A logical shorthand: registered for parsing/expansion, but excluded from serialization
-        // reconstruction (see the _logicalShorthands field comment).
         private void AddLogicalShorthand(string name, ShorthandCreator creator, params string[] longhands)
         {
             AddShorthand(name, creator, longhands);

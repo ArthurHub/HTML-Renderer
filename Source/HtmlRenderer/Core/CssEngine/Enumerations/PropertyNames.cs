@@ -272,10 +272,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string ObjectPosition = "object-position";
         public static readonly string Size = "size";
 
-        // CSS Logical Properties and Values Level 1. Layout here is always LTR / horizontal-tb,
-        // so each logical property maps 1:1 to a physical one (block-start = top,
-        // block-end = bottom, inline-start = left, inline-end = right) and is registered to
-        // produce/export the existing physical longhands.
+        // CSS Logical 1 §4
         public static readonly string MarginBlock = "margin-block";
         public static readonly string MarginBlockStart = "margin-block-start";
         public static readonly string MarginBlockEnd = "margin-block-end";

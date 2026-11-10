@@ -5,64 +5,91 @@ snapshot: https://www.w3.org/TR/2025/WD-css-logical-1-20251204/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#values':
-    title: 1.1 Value Definitions
-    status: unknown
+    status: n/a
   '#directional-keywords':
     title: '2 Flow-Relative Values: block-start, block-end, inline-start, inline-end'
-    status: unknown
+    status: unsupported
   '#caption-side':
     title: 2.1 Logical Values for the caption-side Property
-    status: unknown
+    status: n/a
+    gaps:
+      - Only for implementations with caption-side left and right, which isn't accepted
   '#float-clear':
     title: 2.2 Flow-Relative Values for the float and clear Properties
-    status: unknown
+    status: unsupported
+    gaps:
+      - inline-start and inline-end aren't accepted for float and clear
   '#text-align':
     title: 2.3 Flow-Relative Values for the text-align Property
-    status: unknown
+    status: unsupported
+    gaps:
+      - 'start and end aren''t accepted, see css-text-3 #text-align-property'
   '#page':
     title: 3 Flow-Relative Page Classifications
-    status: unknown
+    status: unsupported
+    gaps:
+      - recto and verso aren't accepted for the break properties, and @page :left and :right aren't applied, see css-page-3
   '#box':
     title: 4 Flow-Relative Box Model Properties
-    status: unknown
+    status: partial
+    gaps:
+      - Flow-relative properties always map as horizontal-tb ltr, direction rtl doesn't swap inline-start and inline-end
   '#dimension-properties':
     title: '4.1 Logical Height and Logical Width: the block-size/inline-size, min-block-size/min-inline-size, and max-block-size/max-inline-size properties'
-    status: unknown
+    status: unsupported
+    gaps:
+      - inline-size, block-size and their min and max variants are ignored, see css-sizing-3
   '#margin-properties':
     title: '4.2 Flow-Relative Margins: the margin-block-start, margin-block-end, margin-inline-start, margin-inline-end properties and margin-block and margin-inline shorthands'
-    status: unknown
+    status: partial
+    gaps:
+      - margin-inline-start is the left margin also in rtl
   '#position-properties':
     title: '4.3 Flow-Relative Offsets: the inset-block-start, inset-block-end, inset-inline-start, inset-inline-end properties and inset-block, inset-inline, and inset shorthands'
-    status: unknown
+    status: partial
+    gaps:
+      - inset-inline-start is left also in rtl, see css-position-3
   '#padding-properties':
     title: '4.4 Flow-Relative Padding: the padding-block-start, padding-block-end, padding-inline-start, padding-inline-end properties and padding-block and padding-inline shorthands'
-    status: unknown
+    status: partial
+    gaps:
+      - padding-inline-start is the left padding also in rtl
   '#border-properties':
     title: 4.5 Flow-Relative Borders
-    status: unknown
+    status: partial
   '#border-width':
     title: '4.5.1 Flow-Relative Border Widths: the border-block-start-width, border-block-end-width, border-inline-start-width, border-inline-end-width properties and border-block-width and border-inline-width shorthands'
-    status: unknown
+    status: partial
+    gaps:
+      - border-inline-start-width is the left side also in rtl
   '#border-style':
     title: '4.5.2 Flow-Relative Border Styles: the border-block-start-style, border-block-end-style, border-inline-start-style, border-inline-end-style properties and border-block-style and border-inline-style shorthands'
-    status: unknown
+    status: partial
+    gaps:
+      - border-inline-start-style is the left side also in rtl
   '#border-color':
     title: '4.5.3 Flow-Relative Border Colors: the border-block-start-color, border-block-end-color, border-inline-start-color, border-inline-end-color properties and border-block-color and border-inline-color shorthands'
-    status: unknown
+    status: partial
+    gaps:
+      - border-inline-start-color is the left side also in rtl
   '#border-shorthands':
     title: '4.5.4 Flow-Relative Border Shorthands: the border-block-start, border-block-end, border-inline-start, border-inline-end properties and border-block and border-inline shorthands'
-    status: unknown
+    status: partial
+    gaps:
+      - border-inline-start is the left side also in rtl
   '#border-radius-properties':
     title: '4.6 Flow-Relative Corner Rounding: the border-start-start-radius, border-start-end-radius, border-end-start-radius, border-end-end-radius properties'
-    status: unknown
+    status: unsupported
+    gaps:
+      - border-start-start-radius and the other flow-relative radii aren't accepted
   '#logical-shorthand-keyword':
     title: '4.7 Four-Directional Shorthand Properties: the margin, padding, border-width, border-style, and border-color shorthands'
-    status: unknown
+    status: unsupported
+    gaps:
+      - The logical keyword isn't accepted
   '#acknowledgements':
     title: 5 Acknowledgements
-    status: unknown
+    status: n/a
   '#changes':
     title: 6 Changes
-    status: unknown
+    status: n/a

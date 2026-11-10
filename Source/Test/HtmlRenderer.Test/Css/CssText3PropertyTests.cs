@@ -37,6 +37,7 @@ public sealed class CssText3PropertyTests
     [DataRow("end")]
     [DataRow("match-parent")]
     [DataRow("justify-all")]
+    [Spec("css-logical-1", "#text-align")]
     public void TextAlign_Text3Keywords_AreParsed(string value)
     {
         Assert.AreEqual(value, Value("text-align", value));

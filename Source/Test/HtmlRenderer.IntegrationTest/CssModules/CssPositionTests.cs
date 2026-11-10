@@ -75,6 +75,7 @@ public sealed class CssPositionTests
 
     [TestMethod]
     [Spec("css-position-3", "#inset-shorthands")]
+    [Spec("css-logical-1", "#position-properties")]
     public void InsetBlockAndInsetInline_SetTheirAxis()
     {
         var root = Layout(string.Format(Container, "<div id='a' style='position:absolute;inset-block:10px auto;inset-inline:20px auto;width:30px;height:30px'></div>"));
@@ -85,6 +86,7 @@ public sealed class CssPositionTests
 
     [TestMethod]
     [Spec("css-position-3", "#insets")]
+    [Spec("css-logical-1", "#position-properties")]
     public void FlowRelativeInsets_MapToThePhysicalSidesInLtr()
     {
         var root = Layout(string.Format(Container, "<div id='a' style='position:absolute;inset-block-end:10px;inset-inline-end:20px;width:30px;height:30px'></div>"));
@@ -96,6 +98,7 @@ public sealed class CssPositionTests
     [Ignore("Gap, see Spec/css-position-3.yml")]
     [TestMethod]
     [Spec("css-position-3", "#insets")]
+    [Spec("css-logical-1", "#position-properties")]
     public void InsetInlineStart_IsTheRightSideInRtl()
     {
         var root = Layout("<div style='position:relative;direction:rtl;width:200px;height:100px'>"

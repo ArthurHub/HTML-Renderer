@@ -66,6 +66,7 @@ public sealed class CssSizingTests
     [DataRow("inline-size:100px", "width")]
     [DataRow("block-size:40px", "height")]
     [Spec("css-sizing-3", "#preferred-size-properties")]
+    [Spec("css-logical-1", "#dimension-properties")]
     public void FlowRelativePreferredSize_MapsToThePhysicalSize(string style, string axis)
     {
         var root = Layout($"<div style='width:300px'><div id='b' style='{style}'><div style='height:10px'></div></div></div>");
@@ -77,6 +78,7 @@ public sealed class CssSizingTests
     [Ignore("Gap, see Spec/css-sizing-3.yml")]
     [TestMethod]
     [Spec("css-sizing-3", "#min-size-properties")]
+    [Spec("css-logical-1", "#dimension-properties")]
     public void MinBlockSize_GrowsTheBox()
     {
         var root = Layout("<div id='b' style='min-block-size:40px'></div>");
@@ -87,6 +89,7 @@ public sealed class CssSizingTests
     [Ignore("Gap, see Spec/css-sizing-3.yml")]
     [TestMethod]
     [Spec("css-sizing-3", "#max-size-properties")]
+    [Spec("css-logical-1", "#dimension-properties")]
     public void MaxInlineSize_LimitsTheBox()
     {
         var root = Layout("<div style='width:300px'><div id='b' style='max-inline-size:100px;height:10px'></div></div>");
