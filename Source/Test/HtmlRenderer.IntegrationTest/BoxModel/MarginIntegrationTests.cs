@@ -11,6 +11,7 @@ public sealed class MarginIntegrationTests
 
     [TestMethod]
     [Spec("css21", "box.html#margin-properties")]
+    [Spec("css-box-3", "#margin-physical")]
     public void NegativeMargin_PullsTheBoxOutOfTheContentArea()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -23,6 +24,7 @@ public sealed class MarginIntegrationTests
 
     [TestMethod]
     [Spec("css21", "box.html#margin-properties")]
+    [Spec("css-box-3", "#margin-physical")]
     public void VerticalPercentageMargin_ResolvesAgainstTheContainingBlockWidth()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -35,6 +37,7 @@ public sealed class MarginIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "box.html#margin-properties")]
+    [Spec("css-box-3", "#margin-physical")]
     public void HorizontalPercentageMargin_ResolvesAgainstTheContainingBlockWidth()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

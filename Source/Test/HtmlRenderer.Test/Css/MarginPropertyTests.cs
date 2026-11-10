@@ -3,21 +3,6 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/MarginProperty.cs.
-/// Only the 1-4 value `margin` shorthand-splitting cases apply. The individual longhand-property
-/// tests (margin-left, margin-right, margin-top, margin-bottom) and the CSS text
-/// recombination/simplification tests (MarginShouldBeRecombinedCorrectly and friends, which depend on
-/// PeachPDF's own CSSOM re-serializing a rule back to text) have no equivalent surface in HTML-Renderer
-/// and were dropped.
-/// The old <c>CssParser.ParseCssBlock</c> raw-property-dictionary API no longer exists - the CSS engine
-/// port replaced it with a real, spec-compliant "margin" <c>ShorthandProperty</c> (the same vendored
-/// engine PeachPDF itself uses), exercised here through <see cref="CssParser.ParseInlineStyle"/> and its
-/// resulting <c>StyleDeclaration</c>'s typed margin-* longhands. Per CSS Box Model: 1 value applies to
-/// all sides, 2 values are (vertical, horizontal), 3 values are (top, horizontal, bottom), 4 values are
-/// (top, right, bottom, left); a value with any other token count is invalid and leaves the shorthand -
-/// and so every margin-* longhand - entirely unset.
-/// </summary>
 [TestClass]
 public sealed class MarginPropertyTests
 {
@@ -29,6 +14,7 @@ public sealed class MarginPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#margin-shorthand")]
     public void MarginAllZeroLegal()
     {
         const string declaration = "margin: 0";
@@ -40,6 +26,7 @@ public sealed class MarginPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#margin-shorthand")]
     public void MarginAllPercentLegal()
     {
         const string declaration = "margin: 25%";
@@ -51,6 +38,7 @@ public sealed class MarginPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#margin-shorthand")]
     public void MarginAutoLegal()
     {
         const string declaration = "margin: auto";
@@ -62,6 +50,7 @@ public sealed class MarginPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#margin-shorthand")]
     public void MarginSidesLengthLegal()
     {
         const string declaration = "margin: 10px 3em";
@@ -73,6 +62,7 @@ public sealed class MarginPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#margin-shorthand")]
     public void MarginSidesLengthAndAutoLegal()
     {
         const string declaration = "margin: 10px auto";
@@ -84,6 +74,7 @@ public sealed class MarginPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#margin-shorthand")]
     public void MarginThreeValuesLegal()
     {
         const string declaration = "margin: 10px 3em 5px";
@@ -95,6 +86,7 @@ public sealed class MarginPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#margin-shorthand")]
     public void MarginAllValuesWithPercentAndAutoLegal()
     {
         const string declaration = "margin: 10px 5% auto 2%";
@@ -106,6 +98,7 @@ public sealed class MarginPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#margin-shorthand")]
     public void MarginTooManyValuesIllegal()
     {
         const string declaration = "margin: 10px 5% 8px 2% 3px auto";

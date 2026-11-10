@@ -3,17 +3,6 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/PaddingProperty.cs.
-/// Only the 1-4 value `padding` shorthand-splitting cases apply, mirroring MarginPropertyTests. The
-/// individual longhand-property tests were dropped (out of scope per the porting brief).
-/// The old <c>CssParser.ParseCssBlock</c> raw-property-dictionary API no longer exists - the CSS engine
-/// port replaced it with a real, spec-compliant "padding" <c>ShorthandProperty</c> (the same vendored
-/// engine PeachPDF itself uses), exercised here through <see cref="CssParser.ParseInlineStyle"/>.
-/// Unlike the old hand-rolled <c>ParsePaddingProperty</c> (which only split on whitespace with no
-/// keyword validation), the real engine's padding longhands only accept a length-percentage - "auto" is
-/// correctly rejected (CssPaddingAutoIllegal, previously dropped as out of reach, is restored here).
-/// </summary>
 [TestClass]
 public sealed class PaddingPropertyTests
 {
@@ -25,6 +14,7 @@ public sealed class PaddingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#padding-shorthand")]
     public void CssPaddingAllZeroLegal()
     {
         const string declaration = "padding: 0";
@@ -36,6 +26,7 @@ public sealed class PaddingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#padding-shorthand")]
     public void CssPaddingAllPercentLegal()
     {
         const string declaration = "padding: 25%";
@@ -47,6 +38,7 @@ public sealed class PaddingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#padding-shorthand")]
     public void CssPaddingSidesLengthLegal()
     {
         const string declaration = "padding: 10px 3em";
@@ -58,11 +50,9 @@ public sealed class PaddingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#padding-shorthand")]
     public void CssPaddingAutoIllegal()
     {
-        // "auto" is not a legal padding value (padding only accepts <length-percentage>) - restored
-        // against the real engine, which now actually validates this (the old hand-rolled
-        // ParsePaddingProperty had no keyword validation at all and let "auto" through unfiltered).
         const string declaration = "padding: auto";
 
         Assert.IsTrue(string.IsNullOrEmpty(GetProperty(declaration, "padding-left")));
@@ -72,6 +62,7 @@ public sealed class PaddingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#padding-shorthand")]
     public void CssPaddingThreeValuesLegal()
     {
         const string declaration = "padding: 10px 3em 5px";
@@ -83,6 +74,7 @@ public sealed class PaddingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#padding-shorthand")]
     public void CssPaddingAllValuesWithPercentLegal()
     {
         const string declaration = "padding: 10px 5% 8px 2%";
@@ -94,6 +86,7 @@ public sealed class PaddingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-box-3", "#padding-shorthand")]
     public void CssPaddingTooManyValuesIllegal()
     {
         const string declaration = "padding: 10px 5% 8px 2% 3px";

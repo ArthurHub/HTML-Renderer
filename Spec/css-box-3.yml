@@ -5,58 +5,52 @@ snapshot: https://www.w3.org/TR/2024/REC-css-box-3-20240411/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#values':
-    title: 1.1 Value Definitions
-    status: unknown
-  '#placement':
-    title: 1.2 Module Interactions
-    status: unknown
+    status: n/a
   '#box-model':
     title: 2 The CSS Box Model
-    status: unknown
+    status: partial
   '#box-edges':
     title: 2.1 Boxes and Edges
-    status: unknown
+    status: supported
   '#fragmentation':
     title: 2.2 Fragmentation
-    status: unknown
+    status: n/a
   '#keywords':
     title: 2.3 Box-edge Keywords
-    status: unknown
+    status: parsed-only
+    gaps:
+      - margin-box, fill-box, stroke-box and view-box are rejected
   '#margins':
     title: 3 Margins
-    status: unknown
+    status: partial
   '#margin-physical':
     title: '3.1 Page-relative (Physical) Margin Properties: the margin-top, margin-right, margin-bottom, and margin-left properties'
-    status: unknown
+    status: partial
+    gaps:
+      - Horizontal percentage margins resolve against the box's own width, see CSS 2.1 8.3
   '#margin-shorthand':
     title: '3.2 Margin Shorthand: the margin property'
-    status: unknown
+    status: supported
   '#paddings':
     title: 4 Padding
-    status: unknown
+    status: partial
   '#padding-physical':
     title: '4.1 Page-relative (Physical) Padding Properties: the padding-top, padding-right, padding-bottom, and padding-left properties'
-    status: unknown
+    status: partial
+    gaps:
+      - Negative padding is applied instead of being rejected, see CSS 2.1 8.4
   '#padding-shorthand':
     title: '4.2 Padding Shorthand: the padding property'
-    status: unknown
+    status: supported
   '#borders':
     title: 5 Borders
-    status: unknown
+    status: supported
   '#changes':
     title: 6 Changes
-    status: unknown
-  '#changes-recent':
-    title: 6.1 Recent Changes
-    status: unknown
-  '#changes-since-L2':
-    title: 6.2 Changes Since CSS Level 2
-    status: unknown
+    status: n/a
   '#priv':
     title: 7 Privacy Considerations
-    status: unknown
+    status: n/a
   '#sec':
     title: 8 Security Considerations
-    status: unknown
+    status: n/a
