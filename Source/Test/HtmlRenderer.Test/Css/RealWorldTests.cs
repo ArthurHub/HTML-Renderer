@@ -45,6 +45,17 @@ public sealed class RealWorldTests
         Assert.AreEqual(RColor.FromArgb(255, 0, 0), h2Box.ActualBackgroundColor);
     }
 
+    [TestMethod]
+    [DataRow("#a { --x: \"<\"; } p { color: red }")]
+    [DataRow("p::before { content: \"<\" } p { color: red }")]
+    [DataRow("@media (width < 100000px) { p { color: red } }")]
+    public void StyleElement_TextWithLessThanSign_IsOneStyleSheet(string css)
+    {
+        var (root, _) = LayoutHarness.Layout($"<html><head><style>{css}</style></head><body><p>Text</p></body></html>");
+
+        Assert.AreEqual(RColor.FromArgb(255, 0, 0), FindByTag(root, "p").ActualColor);
+    }
+
     private static CssBox FindByTag(CssBox root, string tag)
     {
         var box = LayoutHarness.Descendants(root).FirstOrDefault(b => b.HtmlTag != null && b.HtmlTag.Name == tag);
