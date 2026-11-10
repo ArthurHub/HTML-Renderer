@@ -63,9 +63,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
                             if (targetIndex == i)
                             {
-                                // This is the right slot for this time value - actually consume it
-                                TryMatchTime(list, out timeValue);
-                                options[i] = timeValue;
+                                // This is the right slot for this time value - actually consume it,
+                                // through the slot's converter so the value only extracts for its longhand
+                                options[i] = _converters[i].VaryStart(list);
                                 matched[i] = true;
                                 timeValuesFound++;
                                 foundMatch = true;
