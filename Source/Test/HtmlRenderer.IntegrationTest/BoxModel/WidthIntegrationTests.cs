@@ -276,6 +276,18 @@ public sealed class WidthIntegrationTests
         Assert.AreEqual(50, Box(root, "a").Location.X, Delta);
     }
 
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visudet.html#abs-non-replaced-width")]
+    [Spec("css-position-3", "#staticpos-rect")]
+    public void Absolute_WithAutoLeftAndRight_IsPlacedAtItsStaticPosition()
+    {
+        var root = Layout("<div style='position:relative;width:200px;height:100px'><div style='margin-left:30px'>"
+                          + "<div id='a' style='position:absolute;width:10px;height:10px'></div></div></div>");
+
+        Assert.AreEqual(30, Box(root, "a").Location.X, Delta);
+    }
+
     [TestMethod]
     [Spec("css21", "visudet.html#abs-replaced-width")]
     [Spec("css-position-3", "#abs-replaced-width")]

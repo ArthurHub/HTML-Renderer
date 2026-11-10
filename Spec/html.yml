@@ -1701,7 +1701,7 @@ sections:
     gaps:
       - ol, ul and menu are indented with margin-left instead of padding-inline-start
       - The type attribute of ol, ul and li is ignored
-      - The reversed attribute of ol is ignored
+      - reversed without a value, i.e. <ol reversed>, counts up
       - dir, dl and menu nested in a list keep their vertical margins, nested dir and menu don't switch to circle
   rendering.html#tables-2:
     title: 15.3.8 Tables

@@ -214,6 +214,18 @@ public sealed class HeightIntegrationTests
         Assert.AreEqual(60, Height(Box(root, "a")), Delta);
     }
 
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visudet.html#abs-non-replaced-height")]
+    [Spec("css-position-3", "#staticpos-rect")]
+    public void Absolute_WithAutoTopAndBottom_IsPlacedAtItsStaticPosition()
+    {
+        var root = Layout("<div style='position:relative;width:200px;height:100px'><div style='height:30px'></div>"
+                          + "<div id='a' style='position:absolute;left:0;width:10px;height:10px'></div></div>");
+
+        Assert.AreEqual(30, Box(root, "a").Location.Y, Delta);
+    }
+
     [TestMethod]
     [Spec("css21", "visudet.html#abs-replaced-height")]
     [Spec("css-position-3", "#abs-replaced-height")]
