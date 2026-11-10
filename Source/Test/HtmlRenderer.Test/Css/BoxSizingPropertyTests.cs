@@ -3,11 +3,11 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>Ported from PeachPDF.Tests/CSS/PropertyTests/BoxSizingPropertyTests.cs. Pure CSSOM parse tests.</summary>
 [TestClass]
 public sealed class BoxSizingPropertyTests
 {
     [TestMethod]
+    [Spec("css-sizing-3", "#box-sizing")]
     public void BoxSizingContentBoxLegal()
     {
         var snippet = "box-sizing: content-box";
@@ -22,6 +22,7 @@ public sealed class BoxSizingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-sizing-3", "#box-sizing")]
     public void BoxSizingBorderBoxLegal()
     {
         var snippet = "box-sizing: border-box";

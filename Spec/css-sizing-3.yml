@@ -5,76 +5,83 @@ snapshot: https://www.w3.org/TR/2026/WD-css-sizing-3-20260904/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
+    status: n/a
   '#terms':
     title: 2 Terminology
-    status: unknown
-  '#auto-box-sizes':
-    title: 2.1 Auto Box Sizes
-    status: unknown
-  '#contributions':
-    title: 2.2 Intrinsic Size Contributions
-    status: unknown
-  '#constraints':
-    title: 2.3 Intrinsic Size Constraints
-    status: unknown
+    status: n/a
   '#specifying-sizes':
     title: 3 Specifying Box Sizes
-    status: unknown
+    status: partial
   '#sizing-properties':
     title: 3.1 Sizing Properties
-    status: unknown
+    status: partial
   '#preferred-size-properties':
     title: '3.1.1 Preferred Size Properties: the width, height, inline-size, and block-size properties'
-    status: unknown
+    status: partial
+    gaps:
+      - "'inline-size' and 'block-size' are ignored"
+      - "'height' is ignored on inline-block boxes, see CSS 2.1 10.5"
   '#min-size-properties':
     title: '3.1.2 Minimum Size Properties: the min-width, min-height, min-inline-size, and min-block-size properties'
-    status: unknown
+    status: partial
+    gaps:
+      - "'min-width' is ignored, see CSS 2.1 10.4"
+      - "'auto' is rejected"
+      - "'min-inline-size' and 'min-block-size' are ignored"
   '#max-size-properties':
     title: '3.1.3 Maximum Size Properties: the max-width, max-height, max-inline-size, and max-block-size properties'
-    status: unknown
+    status: partial
+    gaps:
+      - "'max-width' only applies to images and 'max-height' doesn't apply to them, see CSS 2.1 10.4 and 10.7"
+      - "'max-inline-size' and 'max-block-size' are ignored"
   '#sizing-values':
     title: '3.2 Sizing Values: the <length-percentage>, auto | none, stretch, min-content, max-content, and fit-content values'
-    status: unknown
+    status: partial
+    gaps:
+      - stretch, min-content, max-content and fit-content are rejected
+      - Negative sizes are accepted and applied instead of being rejected
   '#behave-auto':
     title: 3.2.1 “Behaving as auto”
-    status: unknown
+    status: supported
   '#the-contain-floats-value':
     title: 3.2.2 Containing or Excluding Floats
-    status: unknown
+    status: n/a
   '#box-sizing':
     title: '3.3 Box Edges for Sizing: the box-sizing property'
-    status: unknown
+    status: partial
+    gaps:
+      - With 'border-box', a padding and border larger than the size don't floor the content box at zero, the box keeps the specified size
   '#column-sizing':
     title: '3.4 New Column Sizing Values: the stretch, min-content, max-content, and fit-content values'
-    status: unknown
+    status: unsupported
   '#extrinsic':
     title: 4 Extrinsic Size Determination
-    status: unknown
+    status: partial
   '#percentage-sizing':
     title: 4.1 Percentage Sizing
-    status: unknown
+    status: partial
+    gaps:
+      - Percentage heights and max-heights compute to auto even against a definite height, see CSS 2.1 10.5
   '#stretch-fit-sizing':
     title: '4.2 Stretch-fit Sizing: filling the containing block'
-    status: unknown
+    status: partial
+    gaps:
+      - "'stretch' is rejected, only an auto width block is stretch-fit sized"
   '#intrinsic':
     title: 5 Intrinsic Size Determination
-    status: unknown
+    status: partial
   '#intrinsic-sizes':
     title: 5.1 Intrinsic Sizes
-    status: unknown
+    status: partial
+    gaps:
+      - The fit-content width of an auto width float is computed before its content is measured, see CSS 2.1 10.3.5
+      - An auto width inline-block wider than the line wraps across lines instead of shrinking, see CSS 2.1 10.3.9
   '#intrinsic-contribution':
     title: 5.2 Intrinsic Contributions
-    status: unknown
+    status: supported
   '#cyclic-percentage-contribution':
     title: 5.2.1 Intrinsic Contributions of Percentage-Sized Boxes
-    status: unknown
+    status: supported
   '#min-content-zero':
     title: 5.2.2 Compressible Replaced Elements
-    status: unknown
+    status: unsupported

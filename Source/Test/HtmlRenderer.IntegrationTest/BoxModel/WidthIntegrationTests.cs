@@ -17,6 +17,7 @@ public sealed class WidthIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#the-width-property")]
+    [Spec("css-sizing-3", "#preferred-size-properties")]
     public void LengthWidth_IsTheContentWidth()
     {
         var root = Layout("<div id='c' style='width:100px;padding:0 10px;border:0 solid;border-width:0 5px;height:5px'></div>");
@@ -26,6 +27,7 @@ public sealed class WidthIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#the-width-property")]
+    [Spec("css-sizing-3", "#percentage-sizing")]
     public void PercentageWidth_ResolvesAgainstTheContainingBlockWidth()
     {
         var root = Layout("<div style='width:200px;padding:0 50px'><div id='c' style='width:50%;padding:0 5px;height:5px'></div></div>");
@@ -38,6 +40,7 @@ public sealed class WidthIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#the-width-property")]
+    [Spec("css-sizing-3", "#sizing-values")]
     public void NegativeWidth_IsIgnored()
     {
         var root = Layout("<div style='width:200px'><div id='c' style='width:-50px;height:5px'></div></div>");
@@ -105,6 +108,7 @@ public sealed class WidthIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#blockwidth")]
+    [Spec("css-sizing-3", "#stretch-fit-sizing")]
     public void AutoWidth_FillsTheContainingBlockMinusTheMargins()
     {
         var root = Layout("<div style='width:200px'><div id='c' style='margin-left:10px;margin-right:20px;height:5px'></div></div>");
@@ -190,6 +194,7 @@ public sealed class WidthIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#float-width")]
+    [Spec("css-sizing-3", "#intrinsic-sizes")]
     public void AutoWidthFloat_ShrinksToFitItsContent()
     {
         var root = Layout("<div id='f' style='float:left'>xx yy</div><div id='t'>zz</div>");
@@ -294,6 +299,7 @@ public sealed class WidthIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#inlineblock-width")]
+    [Spec("css-sizing-3", "#intrinsic-sizes")]
     public void InlineBlock_WithAutoWidth_IsAsWideAsItsContent()
     {
         var root = Layout("<div>a<span id='s' style='display:inline-block'>xx</span><span id='t'>y</span></div>");
@@ -306,6 +312,7 @@ public sealed class WidthIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#inlineblock-width")]
+    [Spec("css-sizing-3", "#intrinsic-sizes")]
     public void InlineBlock_TooWideForTheLine_ShrinksToTheAvailableWidthAsOneBox()
     {
         var root = Layout("<div style='width:200px'>a <span id='s' style='display:inline-block'>aaaa bbbb cccc dddd eeee ffff gggg hhhh</span></div>");
@@ -326,6 +333,7 @@ public sealed class WidthIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#min-max-widths")]
+    [Spec("css-sizing-3", "#max-size-properties")]
     public void MaxWidth_ScalesDownAnImageKeepingItsRatio()
     {
         var root = TestImages.Layout($"<img id='i' style='max-width:20px' src='{Image}'>");
@@ -337,6 +345,7 @@ public sealed class WidthIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#min-max-widths")]
+    [Spec("css-sizing-3", "#max-size-properties")]
     public void MaxWidth_LimitsABlock()
     {
         var root = Layout("<div style='width:200px'><div id='c' style='max-width:100px;height:5px'></div></div>");
@@ -347,6 +356,7 @@ public sealed class WidthIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#min-max-widths")]
+    [Spec("css-sizing-3", "#min-size-properties")]
     public void MinWidth_WidensABlock()
     {
         var root = Layout("<div style='width:200px'><div id='c' style='width:50px;min-width:100px;height:5px'></div></div>");
@@ -357,6 +367,7 @@ public sealed class WidthIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#min-max-widths")]
+    [Spec("css-sizing-3", "#min-size-properties")]
     public void MinWidth_WidensAnImage()
     {
         var root = TestImages.Layout($"<img id='i' style='min-width:80px' src='{Image}'>");

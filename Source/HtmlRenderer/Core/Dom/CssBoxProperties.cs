@@ -1011,10 +1011,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// The padding+border this box's own explicit <see cref="Width"/>/<see cref="Height"/> value needs
-        /// added on top of it to reach the border-box measure - zero for <c>box-sizing: border-box</c>
-        /// (where the declared value already IS the border-box measure), padding+border for the default
-        /// <c>content-box</c> (where the declared value is the content measure alone).
+        /// What has to be added to an explicit <see cref="Width"/> to get the border-box width, the padding and
+        /// border for <c>content-box</c> and nothing for <c>border-box</c> (CSS Sizing 3 §3.3).
         /// </summary>
         public double ActualBoxSizeIncludedWidth
         {

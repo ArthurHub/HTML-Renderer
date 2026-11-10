@@ -21,6 +21,7 @@ public sealed class HeightIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#the-height-property")]
+    [Spec("css-sizing-3", "#preferred-size-properties")]
     public void LengthHeight_IsTheContentHeight()
     {
         var root = Layout("<div id='c' style='height:50px;padding:10px 0;border-top:5px solid'></div>");
@@ -30,6 +31,7 @@ public sealed class HeightIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#the-height-property")]
+    [Spec("css-sizing-3", "#behave-auto")]
     public void PercentageHeight_AgainstAnAutoHeightContainingBlock_IsAuto()
     {
         var root = Layout("<div><div id='c' style='height:50%'>x</div></div>");
@@ -40,6 +42,7 @@ public sealed class HeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#the-height-property")]
+    [Spec("css-sizing-3", "#percentage-sizing")]
     public void PercentageHeight_ResolvesAgainstAnExplicitContainingBlockHeight()
     {
         var root = Layout("<div style='height:200px'><div id='c' style='height:50%'></div></div>");
@@ -50,6 +53,7 @@ public sealed class HeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#the-height-property")]
+    [Spec("css-sizing-3", "#sizing-values")]
     public void NegativeHeight_IsIgnored()
     {
         var root = Layout("<div id='c' style='height:-50px'>x</div>");
@@ -70,6 +74,7 @@ public sealed class HeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#the-height-property")]
+    [Spec("css-sizing-3", "#preferred-size-properties")]
     public void HeightOnAnInlineBlock_IsApplied()
     {
         var root = Layout("<div id='p'>a<span id='s' style='display:inline-block;height:100px'>x</span></div>");
@@ -271,6 +276,7 @@ public sealed class HeightIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#min-max-heights")]
+    [Spec("css-sizing-3", "#min-size-properties")]
     public void MinHeight_GrowsAnAutoHeightBlock()
     {
         var root = Layout("<div id='c' style='min-height:50px'>x</div>");
@@ -280,6 +286,7 @@ public sealed class HeightIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#min-max-heights")]
+    [Spec("css-sizing-3", "#max-size-properties")]
     public void MaxHeight_LimitsAnAutoHeightBlock()
     {
         var root = Layout("<div id='c' style='max-height:5px'>x<br>y<br>z</div>");
@@ -299,6 +306,7 @@ public sealed class HeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#min-max-heights")]
+    [Spec("css-sizing-3", "#percentage-sizing")]
     public void PercentageMaxHeight_ResolvesAgainstAnExplicitContainingBlockHeight()
     {
         var root = Layout("<div style='height:200px'><div id='c' style='height:150px;max-height:50%'></div></div>");
@@ -309,6 +317,7 @@ public sealed class HeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#min-max-heights")]
+    [Spec("css-sizing-3", "#max-size-properties")]
     public void MaxHeight_ScalesDownAnImageKeepingItsRatio()
     {
         var root = TestImages.Layout($"<img id='i' style='max-height:10px' src='{Image}'>");
