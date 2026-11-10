@@ -5,58 +5,61 @@ snapshot: https://www.w3.org/TR/2025/CR-css-color-adjust-1-20251216/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#values':
-    title: 1.1 Value Definitions
-    status: unknown
+    status: n/a
   '#preferred':
     title: 2 Preferred Color Schemes
-    status: unknown
+    status: unsupported
   '#color-scheme-prop':
     title: '2.1 Opting Into a Preferred Color Scheme: the color-scheme property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'color-scheme' isn't a known property, only the prefers-color-scheme media feature follows the adapter's color scheme"
   '#color-scheme-effect':
     title: 2.2 Effects of the Used Color Scheme
-    status: unknown
+    status: unsupported
+    gaps:
+      - The used color scheme doesn't change the canvas or the default colors of form controls
   '#color-scheme-override':
     title: 2.3 Overriding the Color Scheme
-    status: unknown
+    status: n/a
   '#forced':
     title: 3 Forced Color Palettes
-    status: unknown
+    status: unsupported
+    gaps:
+      - There's no forced colors mode, a high contrast system palette is never applied
   '#forced-colors-properties':
     title: 3.1 Properties Affected by Forced Colors Mode
-    status: unknown
+    status: unsupported
   '#forced-color-adjust-prop':
     title: '3.2 Opting Out of a Forced Color Palette: the forced-color-adjust property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'forced-color-adjust' isn't a known property"
   '#perf':
     title: 4 Performance-based Color Adjustments
-    status: unknown
+    status: unsupported
   '#print-color-adjust':
     title: '4.1 Ink Economy: the print-color-adjust property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'print-color-adjust' isn't a known property, colors are never adjusted for printing, as with 'exact'"
   '#color-adjust':
     title: 4.2 The color-adjust Shorthand
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'color-adjust' isn't a known property"
   '#color-adjust-emulation':
     title: 5 Emulation
-    status: unknown
-  '#emulate-forced-colors-mode':
-    title: 5.1 Emulate Forced Colors Mode
-    status: unknown
-  '#forced-color-palettes':
-    title: 5.2 Forced Colors Mode Color Palettes
-    status: unknown
+    status: n/a
   '#privacy':
     title: 6 Privacy Considerations
-    status: unknown
+    status: n/a
   '#security':
     title: 7 Security Considerations
-    status: unknown
+    status: n/a
   '#acknowledgements':
     title: 8 Acknowledgements
-    status: unknown
+    status: n/a
   '#changes':
     title: 9 Changes
-    status: unknown
+    status: n/a
