@@ -5,106 +5,50 @@ snapshot: https://www.w3.org/TR/2023/CRD-css-speech-1-20230214/
 sections:
   '#intro':
     title: 1 Introduction, design goals
-    status: unknown
+    status: n/a
+    gaps:
+      - The library is a visual renderer and doesn't speak, none of the speech properties are parsed
   '#background':
     title: 2 Background information, CSS 2.1
-    status: unknown
+    status: n/a
   '#ssml-rel':
     title: 3 Relationship with SSML
-    status: unknown
-  '#values':
-    title: 3.1 Value Definitions
-    status: unknown
+    status: n/a
   '#example':
     title: 4 Example
-    status: unknown
+    status: n/a
   '#aural-model':
     title: 5 The aural formatting model
-    status: unknown
+    status: n/a
+    gaps:
+      - There's no aural rendering, the speech properties don't change the visual rendering
   '#mixing-props':
     title: 6 Mixing properties
-    status: unknown
-  '#mixing-props-voice-volume':
-    title: 6.1 The voice-volume property
-    status: unknown
-  '#mixing-props-voice-balance':
-    title: 6.2 The voice-balance property
-    status: unknown
+    status: n/a
   '#speaking-props':
     title: 7 Speaking properties
-    status: unknown
-  '#speaking-props-speak':
-    title: 7.1 The speak property
-    status: unknown
-  '#speaking-props-speak-as':
-    title: 7.2 The speak-as property
-    status: unknown
+    status: n/a
   '#pause-props':
     title: 8 Pause properties
-    status: unknown
-  '#pause-props-pause-before-after':
-    title: 8.1 The pause-before and pause-after properties
-    status: unknown
-  '#pause-props-pause':
-    title: 8.2 The pause shorthand property
-    status: unknown
-  '#collapsed-pauses':
-    title: 8.3 Collapsing pauses
-    status: unknown
+    status: n/a
   '#rest-props':
     title: 9 Rest properties
-    status: unknown
-  '#rest-props-rest-before-after':
-    title: 9.1 The rest-before and rest-after properties
-    status: unknown
-  '#rest-props-rest':
-    title: 9.2 The rest shorthand property
-    status: unknown
+    status: n/a
   '#cue-props':
     title: 10 Cue properties
-    status: unknown
-  '#cue-props-cue-before-after':
-    title: 10.1 The cue-before and cue-after properties
-    status: unknown
-  '#cue-props-volume':
-    title: 10.2 Relation between audio cues and speech synthesis volume levels
-    status: unknown
-  '#cue-props-cue':
-    title: 10.3 The cue shorthand property
-    status: unknown
+    status: n/a
   '#voice-char-props':
     title: 11 Voice characteristic properties
-    status: unknown
-  '#voice-props-voice-family':
-    title: 11.1 The voice-family property
-    status: unknown
-  '#voice-selection':
-    title: 11.1.1 Voice selection, content language
-    status: unknown
-  '#voice-props-voice-rate':
-    title: 11.2 The voice-rate property
-    status: unknown
-  '#voice-props-voice-pitch':
-    title: 11.3 The voice-pitch property
-    status: unknown
-  '#voice-props-voice-range':
-    title: 11.4 The voice-range property
-    status: unknown
-  '#voice-props-voice-stress':
-    title: 11.5 The voice-stress property
-    status: unknown
+    status: n/a
   '#duration-props':
     title: 12 Voice duration property
-    status: unknown
-  '#mixing-props-voice-duration':
-    title: 12.1 The voice-duration property
-    status: unknown
+    status: n/a
   '#lists':
     title: 13 List items and counters styles
-    status: unknown
+    status: n/a
   '#content':
     title: 14 Inserted and replaced content
-    status: unknown
+    status: n/a
   '#pronunciation':
     title: 15 Pronunciation, phonemes
-    status: unknown
+    status: n/a
