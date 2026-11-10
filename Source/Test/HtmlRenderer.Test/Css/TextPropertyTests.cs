@@ -65,6 +65,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-shadow-property")]
     public void TextShadowLegalInsetAtLast()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-shadow: 0 0 2px black inset");
@@ -78,6 +79,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-shadow-property")]
     public void TextShadowLegalColorInFront()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-shadow: rgba(255,255,255,0.5) 0px 3px 3px");
@@ -91,6 +93,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-shadow-property")]
     public void TextShadowLegalMultipleMultilines()
     {
         const string snippet = @"text-shadow: 0px 3px 0px #b2a98f,
@@ -110,6 +113,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-shadow-property")]
     public void TextShadowLegalMultipleInline()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-shadow: 4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15)");
@@ -123,6 +127,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-shadow-property")]
     public void TextShadowLegalColorRgbaLast()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-shadow: 2px 4px 3px rgba(0,0,0,0.3)");
@@ -285,6 +290,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-decoration-property")]
     public void TextDecorationIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-decoration: line-pass");
@@ -296,6 +302,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-decoration-property")]
     public void TextDecorationLegalLineThrough()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-decoration: line-Through");
@@ -309,6 +316,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-decoration-property")]
     public void TextDecorationLegalUnderlineOverline()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-decoration:  underline  overline");
@@ -322,6 +330,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-decoration-color-property")]
     public void TextDecorationColorLegalHex()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-decoration-color: #F00");
@@ -335,6 +344,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-decoration-color-property")]
     public void TextDecorationColorLegalRed()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-decoration-color: red");
@@ -348,6 +358,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-decoration-line-property")]
     public void TextDecorationLineIllegalInteger()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-decoration-line: 5");
@@ -359,6 +370,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-decoration-line-property")]
     public void TextDecorationLineLegalNone()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-decoration-line: none");
@@ -372,6 +384,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-decoration-line-property")]
     public void TextDecorationLineLegalOverlineUnderlineLineThrough()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-decoration-line: overline    underline line-through  ");
@@ -385,6 +398,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-decoration-style-property")]
     public void TextDecorationStyleLegalWavyUppercase()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-decoration-style: WAVY ");
@@ -398,6 +412,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-decoration-style-property")]
     public void TextDecorationStyleIllegalMultiple()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-decoration-style: wavy dotted");
@@ -409,6 +424,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-3", "#text-decoration-property")]
     public void TextDecorationExpansionAndRecombination()
     {
         const string snippet = ".centered {text-decoration:underline;}";

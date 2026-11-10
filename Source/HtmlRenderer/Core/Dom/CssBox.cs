@@ -1931,12 +1931,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Paints the text decoration (underline/strike-through/over-line)
+        /// Paints the line decorations of one line of the box (CSS Text Decoration 3 §2), as solid lines
+        /// in the text color.
         /// </summary>
         /// <param name="g">the device to draw into</param>
-        /// <param name="rectangle"> </param>
-        /// <param name="isFirst"> </param>
-        /// <param name="isLast"> </param>
+        /// <param name="rectangle">the box's rectangle on this line</param>
+        /// <param name="isFirst">whether it's the first line, where the start padding and border are skipped</param>
+        /// <param name="isLast">whether it's the last line, where the end padding and border are skipped</param>
         internal void PaintDecoration(RGraphics g, RRect rectangle, bool isFirst, bool isLast)
         {
             if (string.IsNullOrEmpty(TextDecoration) || TextDecoration == CssConstants.None)
