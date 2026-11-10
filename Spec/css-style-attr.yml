@@ -5,19 +5,21 @@ snapshot: https://www.w3.org/TR/2013/REC-css-style-attr-20131107/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
+    status: n/a
   '#conformance':
     title: 2 Conformance
-    status: unknown
+    status: n/a
   '#syntax':
     title: 3 Syntax and Parsing
-    status: unknown
+    status: partial
+    gaps:
+      - A closing brace ends the style attribute, the declarations after it are dropped
   '#interpret':
     title: 4 Cascading and Interpretation
-    status: unknown
+    status: supported
   '#ack':
     title: 5 Acknowledgments
-    status: unknown
+    status: n/a
   '#references':
     title: 6 References
-    status: unknown
+    status: n/a

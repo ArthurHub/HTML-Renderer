@@ -62,6 +62,7 @@ public sealed class DomTests
 
     [TestMethod]
     [Spec("html", "dom.html#the-style-attribute")]
+    [Spec("css-style-attr", "#interpret")]
     public void StyleAttribute_OverridesStylesheets()
     {
         AssertColor(0, 255, 0, Box("<style>#x { color: #ff0000 }</style><p id=x style='color: #00ff00'>a</p>").ActualColor);
@@ -69,6 +70,7 @@ public sealed class DomTests
 
     [TestMethod]
     [Spec("html", "dom.html#the-style-attribute")]
+    [Spec("css-style-attr", "#syntax")]
     public void StyleAttribute_SkipsInvalidDeclarations()
     {
         var box = Box("<p id=x style='color: nonsense; background-color: #0000ff; : ; color: #00ff00'>a</p>");

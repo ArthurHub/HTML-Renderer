@@ -291,6 +291,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#specificity")]
+    [Spec("css-style-attr", "#interpret")]
     public void StyleAttribute_BeatsAnIdSelector()
     {
         var x = Box("<style>#x { color: red }</style><p id=x style='color: green'>a</p>");

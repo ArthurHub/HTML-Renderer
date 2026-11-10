@@ -118,8 +118,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Parses the value of a style attribute, HTML §3.2.6.5. The declarations are wrapped in a
-        /// universal rule to go through the same parser as a stylesheet.
+        /// Parses the value of a style attribute, HTML §3.2.6.5 and CSS Style Attributes §3. The declarations
+        /// are wrapped in a universal rule to go through the same parser as a stylesheet, so a '}' ends them.
         /// </summary>
         /// <param name="declarations">the raw declaration list, e.g. "color: red; font-weight: bold"</param>
         /// <returns>the single parsed style rule, or null if the declaration block was empty/invalid</returns>
