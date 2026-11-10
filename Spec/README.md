@@ -4,7 +4,7 @@
 
 ## Manifest
 
-`<spec>.yml` has the spec's `title` and `url`, and one entry per section, keyed by its anchor, with the numbered title, the `status` and, if anything is missing, the `gaps`. Every section of the spec is listed, except the subsections of an `n/a` section, so the report also shows what hasn't been reviewed yet. For HTML that's limited to the chapters that matter for rendering a static document: 2.3 microsyntaxes, 3.2 elements, 4 the elements of HTML, 13 the HTML syntax, 15 rendering and 16 obsolete features.
+`<spec>.yml` has the spec's `title` and `url`, and one entry per section, keyed by its anchor, with the numbered title, the `status` and, if anything is missing, the `gaps`. Every section of the spec is listed, except the subsections of an `n/a` section, so the report also shows what hasn't been reviewed yet.
 
 Each CSS module level has its own manifest, named like its /TR URL, e.g. `css-color-4.yml`. Where one level replaces the previous, only the newer one is tracked (`css-cascade-5`, `selectors-4`), a level that only adds to the previous one is tracked next to it (`css-color-4` and `css-color-5`). A module is a single page, so its sections are keyed by the bare anchor, e.g. `#break-between`.
 

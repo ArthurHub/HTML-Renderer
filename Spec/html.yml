@@ -3,6 +3,117 @@ title: HTML Living Standard
 url: https://html.spec.whatwg.org/multipage/
 snapshot: 7a1d2b8107ef368c4951f15f091d82fb62e59dde
 sections:
+  introduction.html#introduction:
+    title: 1 Introduction
+    status: unknown
+  introduction.html#abstract:
+    title: 1.1 Where does this specification fit?
+    status: unknown
+  introduction.html#is-this-html5?:
+    title: 1.2 Is this HTML5?
+    status: unknown
+  introduction.html#background:
+    title: 1.3 Background
+    status: unknown
+  introduction.html#audience:
+    title: 1.4 Audience
+    status: unknown
+  introduction.html#scope:
+    title: 1.5 Scope
+    status: unknown
+  introduction.html#history-2:
+    title: 1.6 History
+    status: unknown
+  introduction.html#design-notes:
+    title: 1.7 Design notes
+    status: unknown
+  introduction.html#serialisability-of-script-execution:
+    title: 1.7.1 Serializability of script execution
+    status: unknown
+  introduction.html#extensibility:
+    title: 1.7.2 Extensibility
+    status: unknown
+  introduction.html#html-vs-xhtml:
+    title: 1.8 HTML vs XML syntax
+    status: unknown
+  introduction.html#structure-of-this-specification:
+    title: 1.9 Structure of this specification
+    status: unknown
+  introduction.html#how-to-read-this-specification:
+    title: 1.9.1 How to read this specification
+    status: unknown
+  introduction.html#typographic-conventions:
+    title: 1.9.2 Typographic conventions
+    status: unknown
+  introduction.html#a-quick-introduction-to-html:
+    title: 1.10 A quick introduction to HTML
+    status: unknown
+  introduction.html#writing-secure-applications-with-html:
+    title: 1.10.1 Writing secure applications with HTML
+    status: unknown
+  introduction.html#common-pitfalls-to-avoid-when-using-the-scripting-apis:
+    title: 1.10.2 Common pitfalls to avoid when using the scripting APIs
+    status: unknown
+  introduction.html#how-to-catch-mistakes-when-writing-html:-validators-and-conformance-checkers:
+    title: '1.10.3 How to catch mistakes when writing HTML: validators and conformance checkers'
+    status: unknown
+  introduction.html#conformance-requirements-for-authors:
+    title: 1.11 Conformance requirements for authors
+    status: unknown
+  introduction.html#presentational-markup:
+    title: 1.11.1 Presentational markup
+    status: unknown
+  introduction.html#syntax-errors:
+    title: 1.11.2 Syntax errors
+    status: unknown
+  introduction.html#restrictions-on-content-models-and-on-attribute-values:
+    title: 1.11.3 Restrictions on content models and on attribute values
+    status: unknown
+  introduction.html#suggested-reading:
+    title: 1.12 Suggested reading
+    status: unknown
+  infrastructure.html#infrastructure:
+    title: 2 Common infrastructure
+    status: unknown
+  infrastructure.html#terminology:
+    title: 2.1 Terminology
+    status: unknown
+  infrastructure.html#parallelism:
+    title: 2.1.1 Parallelism
+    status: unknown
+  infrastructure.html#resources:
+    title: 2.1.2 Resources
+    status: unknown
+  infrastructure.html#xml:
+    title: 2.1.3 XML compatibility
+    status: unknown
+  infrastructure.html#dom-trees:
+    title: 2.1.4 DOM trees
+    status: unknown
+  infrastructure.html#scripting-2:
+    title: 2.1.5 Scripting
+    status: unknown
+  infrastructure.html#plugins:
+    title: 2.1.6 Plugins
+    status: unknown
+  infrastructure.html#encoding-terminology:
+    title: 2.1.7 Character encodings
+    status: unknown
+  infrastructure.html#conformance-classes:
+    title: 2.1.8 Conformance classes
+    status: unknown
+  infrastructure.html#dependencies:
+    title: 2.1.9 Dependencies
+    status: unknown
+  infrastructure.html#extensibility-2:
+    title: 2.1.10 Extensibility
+    status: unknown
+  infrastructure.html#interactions-with-xpath-and-xslt:
+    title: 2.1.11 Interactions with XPath and XSLT
+    status: unknown
+  infrastructure.html#policy-controlled-features:
+    title: 2.2 Policy-controlled features
+    status: unknown
   common-microsyntaxes.html#common-microsyntaxes:
     title: 2.3 Common microsyntaxes
     status: partial
@@ -76,6 +187,141 @@ sections:
   common-microsyntaxes.html#unique-values:
     title: 2.3.11 Unique internal values
     status: n/a
+  urls-and-fetching.html#urls:
+    title: 2.4 URLs
+    status: unknown
+  urls-and-fetching.html#terminology-2:
+    title: 2.4.1 Terminology
+    status: unknown
+  urls-and-fetching.html#resolving-urls:
+    title: 2.4.2 Parsing URLs
+    status: unknown
+  urls-and-fetching.html#document-base-urls:
+    title: 2.4.3 Document base URLs
+    status: unknown
+  urls-and-fetching.html#fetching-resources:
+    title: 2.5 Fetching resources
+    status: unknown
+  urls-and-fetching.html#terminology-3:
+    title: 2.5.1 Terminology
+    status: unknown
+  urls-and-fetching.html#content-type-sniffing:
+    title: 2.5.2 Determining the type of a resource
+    status: unknown
+  urls-and-fetching.html#extracting-character-encodings-from-meta-elements:
+    title: 2.5.3 Extracting character encodings from meta elements
+    status: unknown
+  urls-and-fetching.html#cors-settings-attributes:
+    title: 2.5.4 CORS settings attributes
+    status: unknown
+  urls-and-fetching.html#referrer-policy-attributes:
+    title: 2.5.5 Referrer policy attributes
+    status: unknown
+  urls-and-fetching.html#nonce-attributes:
+    title: 2.5.6 Nonce attributes
+    status: unknown
+  urls-and-fetching.html#lazy-loading-attributes:
+    title: 2.5.7 Lazy loading attributes
+    status: unknown
+  urls-and-fetching.html#blocking-attributes:
+    title: 2.5.8 Blocking attributes
+    status: unknown
+  urls-and-fetching.html#fetch-priority-attributes:
+    title: 2.5.9 Fetch priority attributes
+    status: unknown
+  common-dom-interfaces.html#common-dom-interfaces:
+    title: 2.6 Common DOM interfaces
+    status: unknown
+  common-dom-interfaces.html#reflecting-content-attributes-in-idl-attributes:
+    title: 2.6.1 Reflecting content attributes in IDL attributes
+    status: unknown
+  common-dom-interfaces.html#using-reflect-via-idl-extended-attributes:
+    title: 2.6.2 Using reflect via IDL extended attributes
+    status: unknown
+  common-dom-interfaces.html#using-reflect-in-specifications:
+    title: 2.6.3 Using reflect in specifications
+    status: unknown
+  common-dom-interfaces.html#collections:
+    title: 2.6.4 Collections
+    status: unknown
+  common-dom-interfaces.html#the-htmlallcollection-interface:
+    title: 2.6.4.1 The HTMLAllCollection interface
+    status: unknown
+  common-dom-interfaces.html#HTMLAllCollection-call:
+    title: 2.6.4.1.1 [[Call]] ( thisArgument, argumentsList )
+    status: unknown
+  common-dom-interfaces.html#the-htmlformcontrolscollection-interface:
+    title: 2.6.4.2 The HTMLFormControlsCollection interface
+    status: unknown
+  common-dom-interfaces.html#the-htmloptionscollection-interface:
+    title: 2.6.4.3 The HTMLOptionsCollection interface
+    status: unknown
+  common-dom-interfaces.html#the-domstringlist-interface:
+    title: 2.6.5 The DOMStringList interface
+    status: unknown
+  structured-data.html#safe-passing-of-structured-data:
+    title: 2.7 Safe passing of structured data
+    status: unknown
+  structured-data.html#serializable-objects:
+    title: 2.7.1 Serializable objects
+    status: unknown
+  structured-data.html#transferable-objects:
+    title: 2.7.2 Transferable objects
+    status: unknown
+  structured-data.html#restricting-to-the-same-agent-cluster:
+    title: 2.7.3 Restricting to the same agent cluster
+    status: unknown
+  structured-data.html#structuredserializeinternal:
+    title: 2.7.4 StructuredSerializeInternal ( value, forStorage [ , memory ] )
+    status: unknown
+  structured-data.html#structuredserialize:
+    title: 2.7.5 StructuredSerialize ( value )
+    status: unknown
+  structured-data.html#structuredserializeforstorage:
+    title: 2.7.6 StructuredSerializeForStorage ( value )
+    status: unknown
+  structured-data.html#structureddeserialize:
+    title: 2.7.7 StructuredDeserialize ( serialized, targetRealm [ , memory ] )
+    status: unknown
+  structured-data.html#structuredserializewithtransfer:
+    title: 2.7.8 StructuredSerializeWithTransfer ( value, transferList )
+    status: unknown
+  structured-data.html#structureddeserializewithtransfer:
+    title: 2.7.9 StructuredDeserializeWithTransfer ( serializeWithTransferResult, targetRealm )
+    status: unknown
+  structured-data.html#performing-structured-clones-from-other-specifications:
+    title: 2.7.10 Performing serialization and transferring from other specifications
+    status: unknown
+  structured-data.html#structured-cloning:
+    title: 2.7.11 Structured cloning API
+    status: unknown
+  dom.html#dom:
+    title: 3 Semantics, structure, and APIs of HTML documents
+    status: unknown
+  dom.html#documents:
+    title: 3.1 Documents
+    status: unknown
+  dom.html#the-document-object:
+    title: 3.1.1 The Document object
+    status: unknown
+  dom.html#the-documentorshadowroot-interface:
+    title: 3.1.2 The DocumentOrShadowRoot interface
+    status: unknown
+  dom.html#ancestor-origins:
+    title: 3.1.3 Ancestor origins
+    status: unknown
+  dom.html#resource-metadata-management:
+    title: 3.1.4 Resource metadata management
+    status: unknown
+  dom.html#reporting-document-loading-status:
+    title: 3.1.5 Reporting document loading status
+    status: unknown
+  dom.html#render-blocking-mechanism:
+    title: 3.1.6 Render-blocking mechanism
+    status: unknown
+  dom.html#dom-tree-accessors:
+    title: 3.1.7 DOM tree accessors
+    status: unknown
   dom.html#elements:
     title: 3.2 Elements
     status: partial
@@ -1145,6 +1391,1323 @@ sections:
       - ":valid, :invalid, :in-range and :out-of-range never match"
       - ":dir(), :heading and :open never match"
       - ":paused and :muted never match a media element"
+  microdata.html#microdata:
+    title: 5 Microdata
+    status: unknown
+  microdata.html#introduction-7:
+    title: 5.1 Introduction
+    status: unknown
+  microdata.html#overview:
+    title: 5.1.1 Overview
+    status: unknown
+  microdata.html#the-basic-syntax:
+    title: 5.1.2 The basic syntax
+    status: unknown
+  microdata.html#typed-items:
+    title: 5.1.3 Typed items
+    status: unknown
+  microdata.html#global-identifiers-for-items:
+    title: 5.1.4 Global identifiers for items
+    status: unknown
+  microdata.html#selecting-names-when-defining-vocabularies:
+    title: 5.1.5 Selecting names when defining vocabularies
+    status: unknown
+  microdata.html#encoding-microdata:
+    title: 5.2 Encoding microdata
+    status: unknown
+  microdata.html#the-microdata-model:
+    title: 5.2.1 The microdata model
+    status: unknown
+  microdata.html#items:
+    title: 5.2.2 Items
+    status: unknown
+  microdata.html#names:-the-itemprop-attribute:
+    title: '5.2.3 Names: the itemprop attribute'
+    status: unknown
+  microdata.html#values:
+    title: 5.2.4 Values
+    status: unknown
+  microdata.html#associating-names-with-items:
+    title: 5.2.5 Associating names with items
+    status: unknown
+  microdata.html#microdata-and-other-namespaces:
+    title: 5.2.6 Microdata and other namespaces
+    status: unknown
+  microdata.html#mdvocabs:
+    title: 5.3 Sample microdata vocabularies
+    status: unknown
+  microdata.html#vcard:
+    title: 5.3.1 vCard
+    status: unknown
+  microdata.html#conversion-to-vcard:
+    title: 5.3.1.1 Conversion to vCard
+    status: unknown
+  microdata.html#examples-2:
+    title: 5.3.1.2 Examples
+    status: unknown
+  microdata.html#vevent:
+    title: 5.3.2 vEvent
+    status: unknown
+  microdata.html#conversion-to-icalendar:
+    title: 5.3.2.1 Conversion to iCalendar
+    status: unknown
+  microdata.html#examples-3:
+    title: 5.3.2.2 Examples
+    status: unknown
+  microdata.html#licensing-works:
+    title: 5.3.3 Licensing works
+    status: unknown
+  microdata.html#examples-4:
+    title: 5.3.3.1 Examples
+    status: unknown
+  microdata.html#converting-html-to-other-formats:
+    title: 5.4 Converting HTML to other formats
+    status: unknown
+  microdata.html#json:
+    title: 5.4.1 JSON
+    status: unknown
+  interaction.html#editing:
+    title: 6 User interaction
+    status: unknown
+  interaction.html#the-hidden-attribute:
+    title: 6.1 The hidden attribute
+    status: unknown
+  interaction.html#page-visibility:
+    title: 6.2 Page visibility
+    status: unknown
+  interaction.html#the-visibilitystateentry-interface:
+    title: 6.2.1 The VisibilityStateEntry interface
+    status: unknown
+  interaction.html#inert-subtrees:
+    title: 6.3 Inert subtrees
+    status: unknown
+  interaction.html#modal-dialogs-and-inert-subtrees:
+    title: 6.3.1 Modal dialogs and inert subtrees
+    status: unknown
+  interaction.html#the-inert-attribute:
+    title: 6.3.2 The inert attribute
+    status: unknown
+  interaction.html#tracking-user-activation:
+    title: 6.4 Tracking user activation
+    status: unknown
+  interaction.html#user-activation-data-model:
+    title: 6.4.1 Data model
+    status: unknown
+  interaction.html#user-activation-processing-model:
+    title: 6.4.2 Processing model
+    status: unknown
+  interaction.html#user-activation-gated-apis:
+    title: 6.4.3 APIs gated by user activation
+    status: unknown
+  interaction.html#the-useractivation-interface:
+    title: 6.4.4 The UserActivation interface
+    status: unknown
+  interaction.html#user-activation-user-agent-automation:
+    title: 6.4.5 User agent automation
+    status: unknown
+  interaction.html#activation:
+    title: 6.5 Activation behavior of elements
+    status: unknown
+  interaction.html#the-toggleevent-interface:
+    title: 6.5.1 The ToggleEvent interface
+    status: unknown
+  interaction.html#the-commandevent-interface:
+    title: 6.5.2 The CommandEvent interface
+    status: unknown
+  interaction.html#focus:
+    title: 6.6 Focus
+    status: unknown
+  interaction.html#introduction-8:
+    title: 6.6.1 Introduction
+    status: unknown
+  interaction.html#data-model:
+    title: 6.6.2 Data model
+    status: unknown
+  interaction.html#the-tabindex-attribute:
+    title: 6.6.3 The tabindex attribute
+    status: unknown
+  interaction.html#focus-processing-model:
+    title: 6.6.4 Processing model
+    status: unknown
+  interaction.html#sequential-focus-navigation:
+    title: 6.6.5 Sequential focus navigation
+    status: unknown
+  interaction.html#focus-management-apis:
+    title: 6.6.6 Focus management APIs
+    status: unknown
+  interaction.html#the-autofocus-attribute:
+    title: 6.6.7 The autofocus attribute
+    status: unknown
+  interaction.html#assigning-keyboard-shortcuts:
+    title: 6.7 Assigning keyboard shortcuts
+    status: unknown
+  interaction.html#introduction-9:
+    title: 6.7.1 Introduction
+    status: unknown
+  interaction.html#the-accesskey-attribute:
+    title: 6.7.2 The accesskey attribute
+    status: unknown
+  interaction.html#keyboard-shortcuts-processing-model:
+    title: 6.7.3 Processing model
+    status: unknown
+  interaction.html#editing-2:
+    title: 6.8 Editing
+    status: unknown
+  interaction.html#contenteditable:
+    title: '6.8.1 Making document regions editable: The contenteditable content attribute'
+    status: unknown
+  interaction.html#making-entire-documents-editable:-the-designmode-idl-attribute:
+    title: '6.8.2 Making entire documents editable: the designMode getter and setter'
+    status: unknown
+  interaction.html#best-practices-for-in-page-editors:
+    title: 6.8.3 Best practices for in-page editors
+    status: unknown
+  interaction.html#editing-apis:
+    title: 6.8.4 Editing APIs
+    status: unknown
+  interaction.html#spelling-and-grammar-checking:
+    title: 6.8.5 Spelling and grammar checking
+    status: unknown
+  interaction.html#writing-suggestions:
+    title: 6.8.6 Writing suggestions
+    status: unknown
+  interaction.html#autocapitalization:
+    title: 6.8.7 Autocapitalization
+    status: unknown
+  interaction.html#autocorrection:
+    title: 6.8.8 Autocorrection
+    status: unknown
+  interaction.html#input-modalities:-the-inputmode-attribute:
+    title: '6.8.9 Input modalities: the inputmode attribute'
+    status: unknown
+  interaction.html#input-modalities:-the-enterkeyhint-attribute:
+    title: '6.8.10 Input modalities: the enterkeyhint attribute'
+    status: unknown
+  interaction.html#find-in-page:
+    title: 6.9 Find-in-page
+    status: unknown
+  interaction.html#introduction-10:
+    title: 6.9.1 Introduction
+    status: unknown
+  interaction.html#interaction-with-details-and-hidden=until-found:
+    title: 6.9.2 Interaction with details and hidden=until-found
+    status: unknown
+  interaction.html#interaction-with-selection:
+    title: 6.9.3 Interaction with selection
+    status: unknown
+  interaction.html#close-requests-and-close-watchers:
+    title: 6.10 Close requests and close watchers
+    status: unknown
+  interaction.html#close-requests:
+    title: 6.10.1 Close requests
+    status: unknown
+  interaction.html#close-watcher-infrastructure:
+    title: 6.10.2 Close watcher infrastructure
+    status: unknown
+  interaction.html#the-closewatcher-interface:
+    title: 6.10.3 The CloseWatcher interface
+    status: unknown
+  dnd.html#dnd:
+    title: 6.11 Drag and drop
+    status: unknown
+  dnd.html#event-drag:
+    title: 6.11.1 Introduction
+    status: unknown
+  dnd.html#the-drag-data-store:
+    title: 6.11.2 The drag data store
+    status: unknown
+  dnd.html#the-datatransfer-interface:
+    title: 6.11.3 The DataTransfer interface
+    status: unknown
+  dnd.html#the-datatransferitemlist-interface:
+    title: 6.11.3.1 The DataTransferItemList interface
+    status: unknown
+  dnd.html#the-datatransferitem-interface:
+    title: 6.11.3.2 The DataTransferItem interface
+    status: unknown
+  dnd.html#the-dragevent-interface:
+    title: 6.11.4 The DragEvent interface
+    status: unknown
+  dnd.html#drag-and-drop-processing-model:
+    title: 6.11.5 Processing model
+    status: unknown
+  dnd.html#dndevents:
+    title: 6.11.6 Events summary
+    status: unknown
+  dnd.html#the-draggable-attribute:
+    title: 6.11.7 The draggable attribute
+    status: unknown
+  dnd.html#security-risks-in-the-drag-and-drop-model:
+    title: 6.11.8 Security risks in the drag-and-drop model
+    status: unknown
+  popover.html#the-popover-attribute:
+    title: 6.12 The popover attribute
+    status: unknown
+  popover.html#the-popover-target-attributes:
+    title: 6.12.1 The popover target attributes
+    status: unknown
+  popover.html#popover-light-dismiss:
+    title: 6.12.2 Popover light dismiss
+    status: unknown
+  browsers.html#browsers:
+    title: 7 Loading web pages
+    status: unknown
+  browsers.html#loading-web-pages-supporting-concepts:
+    title: 7.1 Supporting concepts
+    status: unknown
+  browsers.html#origin:
+    title: 7.1.1 Origins
+    status: unknown
+  browsers.html#sites:
+    title: 7.1.1.1 Sites
+    status: unknown
+  browsers.html#relaxing-the-same-origin-restriction:
+    title: 7.1.1.2 Relaxing the same-origin restriction
+    status: unknown
+  browsers.html#the-origin-interface:
+    title: 7.1.1.3 The Origin interface
+    status: unknown
+  browsers.html#origin-keyed-agent-clusters:
+    title: 7.1.2 Origin-keyed agent clusters
+    status: unknown
+  browsers.html#cross-origin-opener-policies:
+    title: 7.1.3 Cross-origin opener policies
+    status: unknown
+  browsers.html#the-coop-headers:
+    title: 7.1.3.1 The headers
+    status: unknown
+  browsers.html#browsing-context-group-switches-due-to-cross-origin-opener-policy:
+    title: 7.1.3.2 Browsing context group switches due to opener policy
+    status: unknown
+  browsers.html#coop-reporting:
+    title: 7.1.3.3 Reporting
+    status: unknown
+  browsers.html#coep:
+    title: 7.1.4 Cross-origin embedder policies
+    status: unknown
+  browsers.html#the-coep-headers:
+    title: 7.1.4.1 The headers
+    status: unknown
+  browsers.html#embedder-policy-checks:
+    title: 7.1.4.2 Embedder policy checks
+    status: unknown
+  browsers.html#sandboxing:
+    title: 7.1.5 Sandboxing
+    status: unknown
+  browsers.html#iframe-element-referrer-policy:
+    title: 7.1.6 iframe element referrer policy
+    status: unknown
+  browsers.html#policy-containers:
+    title: 7.1.7 Policy containers
+    status: unknown
+  nav-history-apis.html#nav-traversal-apis:
+    title: 7.2 APIs related to navigation and session history
+    status: unknown
+  nav-history-apis.html#cross-origin-objects:
+    title: 7.2.1 Security infrastructure for Window, WindowProxy, and Location objects
+    status: unknown
+  nav-history-apis.html#integration-with-idl:
+    title: 7.2.1.1 Integration with IDL
+    status: unknown
+  nav-history-apis.html#shared-internal-slot:-crossoriginpropertydescriptormap:
+    title: '7.2.1.2 Shared internal slot: [[CrossOriginPropertyDescriptorMap]]'
+    status: unknown
+  nav-history-apis.html#shared-abstract-operations:
+    title: 7.2.1.3 Shared abstract operations
+    status: unknown
+  nav-history-apis.html#crossoriginproperties-(-o-):
+    title: 7.2.1.3.1 CrossOriginProperties ( O )
+    status: unknown
+  nav-history-apis.html#crossoriginpropertyfallback-(-p-):
+    title: 7.2.1.3.2 CrossOriginPropertyFallback ( P )
+    status: unknown
+  nav-history-apis.html#isplatformobjectsameorigin-(-o-):
+    title: 7.2.1.3.3 IsPlatformObjectSameOrigin ( O )
+    status: unknown
+  nav-history-apis.html#crossorigingetownpropertyhelper-(-o,-p-):
+    title: 7.2.1.3.4 CrossOriginGetOwnPropertyHelper ( O, P )
+    status: unknown
+  nav-history-apis.html#crossoriginget-(-o,-p,-receiver-):
+    title: 7.2.1.3.5 CrossOriginGet ( O, P, Receiver )
+    status: unknown
+  nav-history-apis.html#crossoriginset-(-o,-p,-v,-receiver-):
+    title: 7.2.1.3.6 CrossOriginSet ( O, P, V, Receiver )
+    status: unknown
+  nav-history-apis.html#crossoriginownpropertykeys-(-o-):
+    title: 7.2.1.3.7 CrossOriginOwnPropertyKeys ( O )
+    status: unknown
+  nav-history-apis.html#the-window-object:
+    title: 7.2.2 The Window object
+    status: unknown
+  nav-history-apis.html#apis-for-creating-and-navigating-browsing-contexts-by-name:
+    title: 7.2.2.1 Opening and closing windows
+    status: unknown
+  nav-history-apis.html#accessing-other-browsing-contexts:
+    title: 7.2.2.2 Indexed access on the Window object
+    status: unknown
+  nav-history-apis.html#named-access-on-the-window-object:
+    title: 7.2.2.3 Named access on the Window object
+    status: unknown
+  nav-history-apis.html#navigating-nested-browsing-contexts-in-the-dom:
+    title: 7.2.2.4 Accessing related windows
+    status: unknown
+  nav-history-apis.html#browser-interface-elements:
+    title: 7.2.2.5 Historical browser interface element APIs
+    status: unknown
+  nav-history-apis.html#script-settings-for-window-objects:
+    title: 7.2.2.6 Script settings for Window objects
+    status: unknown
+  nav-history-apis.html#the-windowproxy-exotic-object:
+    title: 7.2.3 The WindowProxy exotic object
+    status: unknown
+  nav-history-apis.html#windowproxy-getprototypeof:
+    title: 7.2.3.1 [[GetPrototypeOf]] ( )
+    status: unknown
+  nav-history-apis.html#windowproxy-setprototypeof:
+    title: 7.2.3.2 [[SetPrototypeOf]] ( V )
+    status: unknown
+  nav-history-apis.html#windowproxy-isextensible:
+    title: 7.2.3.3 [[IsExtensible]] ( )
+    status: unknown
+  nav-history-apis.html#windowproxy-preventextensions:
+    title: 7.2.3.4 [[PreventExtensions]] ( )
+    status: unknown
+  nav-history-apis.html#windowproxy-getownproperty:
+    title: 7.2.3.5 [[GetOwnProperty]] ( P )
+    status: unknown
+  nav-history-apis.html#windowproxy-defineownproperty:
+    title: 7.2.3.6 [[DefineOwnProperty]] ( P, Desc )
+    status: unknown
+  nav-history-apis.html#windowproxy-get:
+    title: 7.2.3.7 [[Get]] ( P, Receiver )
+    status: unknown
+  nav-history-apis.html#windowproxy-set:
+    title: 7.2.3.8 [[Set]] ( P, V, Receiver )
+    status: unknown
+  nav-history-apis.html#windowproxy-delete:
+    title: 7.2.3.9 [[Delete]] ( P )
+    status: unknown
+  nav-history-apis.html#windowproxy-ownpropertykeys:
+    title: 7.2.3.10 [[OwnPropertyKeys]] ( )
+    status: unknown
+  nav-history-apis.html#the-location-interface:
+    title: 7.2.4 The Location interface
+    status: unknown
+  nav-history-apis.html#location-getprototypeof:
+    title: 7.2.4.1 [[GetPrototypeOf]] ( )
+    status: unknown
+  nav-history-apis.html#location-setprototypeof:
+    title: 7.2.4.2 [[SetPrototypeOf]] ( V )
+    status: unknown
+  nav-history-apis.html#location-isextensible:
+    title: 7.2.4.3 [[IsExtensible]] ( )
+    status: unknown
+  nav-history-apis.html#location-preventextensions:
+    title: 7.2.4.4 [[PreventExtensions]] ( )
+    status: unknown
+  nav-history-apis.html#location-getownproperty:
+    title: 7.2.4.5 [[GetOwnProperty]] ( P )
+    status: unknown
+  nav-history-apis.html#location-defineownproperty:
+    title: 7.2.4.6 [[DefineOwnProperty]] ( P, Desc )
+    status: unknown
+  nav-history-apis.html#location-get:
+    title: 7.2.4.7 [[Get]] ( P, Receiver )
+    status: unknown
+  nav-history-apis.html#location-set:
+    title: 7.2.4.8 [[Set]] ( P, V, Receiver )
+    status: unknown
+  nav-history-apis.html#location-delete:
+    title: 7.2.4.9 [[Delete]] ( P )
+    status: unknown
+  nav-history-apis.html#location-ownpropertykeys:
+    title: 7.2.4.10 [[OwnPropertyKeys]] ( )
+    status: unknown
+  nav-history-apis.html#the-history-interface:
+    title: 7.2.5 The History interface
+    status: unknown
+  nav-history-apis.html#navigation-api:
+    title: 7.2.6 The navigation API
+    status: unknown
+  nav-history-apis.html#navigation-api-intro:
+    title: 7.2.6.1 Introduction
+    status: unknown
+  nav-history-apis.html#navigation-interface:
+    title: 7.2.6.2 The Navigation interface
+    status: unknown
+  nav-history-apis.html#navigation-api-core:
+    title: 7.2.6.3 Core infrastructure
+    status: unknown
+  nav-history-apis.html#navigation-api-entry-updates:
+    title: 7.2.6.4 Initializing and updating the entry list
+    status: unknown
+  nav-history-apis.html#the-navigationhistoryentry-interface:
+    title: 7.2.6.5 The NavigationHistoryEntry interface
+    status: unknown
+  nav-history-apis.html#the-history-entry-list:
+    title: 7.2.6.6 The history entry list
+    status: unknown
+  nav-history-apis.html#navigation-api-initiating-navigations:
+    title: 7.2.6.7 Initiating navigations
+    status: unknown
+  nav-history-apis.html#ongoing-navigation-tracking:
+    title: 7.2.6.8 Ongoing navigation tracking
+    status: unknown
+  nav-history-apis.html#navigation-activation-interface:
+    title: 7.2.6.9 The NavigationActivation interface
+    status: unknown
+  nav-history-apis.html#the-navigate-event:
+    title: 7.2.6.10 The navigate event
+    status: unknown
+  nav-history-apis.html#the-navigateevent-interface:
+    title: 7.2.6.10.1 The NavigateEvent interface
+    status: unknown
+  nav-history-apis.html#the-navigationprecommitcontroller-interface:
+    title: 7.2.6.10.2 The NavigationPrecommitController interface
+    status: unknown
+  nav-history-apis.html#the-navigationdestination-interface:
+    title: 7.2.6.10.3 The NavigationDestination interface
+    status: unknown
+  nav-history-apis.html#navigate-event-firing:
+    title: 7.2.6.10.4 Firing the event
+    status: unknown
+  nav-history-apis.html#navigate-event-scroll-focus:
+    title: 7.2.6.10.5 Scroll and focus behavior
+    status: unknown
+  nav-history-apis.html#nav-traversal-event-interfaces:
+    title: 7.2.7 Event interfaces
+    status: unknown
+  nav-history-apis.html#the-navigationcurrententrychangeevent-interface:
+    title: 7.2.7.1 The NavigationCurrentEntryChangeEvent interface
+    status: unknown
+  nav-history-apis.html#the-popstateevent-interface:
+    title: 7.2.7.2 The PopStateEvent interface
+    status: unknown
+  nav-history-apis.html#the-hashchangeevent-interface:
+    title: 7.2.7.3 The HashChangeEvent interface
+    status: unknown
+  nav-history-apis.html#the-pageswapevent-interface:
+    title: 7.2.7.4 The PageSwapEvent interface
+    status: unknown
+  nav-history-apis.html#the-pagerevealevent-interface:
+    title: 7.2.7.5 The PageRevealEvent interface
+    status: unknown
+  nav-history-apis.html#the-pagetransitionevent-interface:
+    title: 7.2.7.6 The PageTransitionEvent interface
+    status: unknown
+  nav-history-apis.html#the-beforeunloadevent-interface:
+    title: 7.2.7.7 The BeforeUnloadEvent interface
+    status: unknown
+  nav-history-apis.html#the-notrestoredreasons-interface:
+    title: 7.2.8 The NotRestoredReasons interface
+    status: unknown
+  document-sequences.html#infrastructure-for-sequences-of-documents:
+    title: 7.3 Infrastructure for sequences of documents
+    status: unknown
+  document-sequences.html#navigables:
+    title: 7.3.1 Navigables
+    status: unknown
+  document-sequences.html#traversable-navigables:
+    title: 7.3.1.1 Traversable navigables
+    status: unknown
+  document-sequences.html#top-level-traversables:
+    title: 7.3.1.2 Top-level traversables
+    status: unknown
+  document-sequences.html#child-navigables:
+    title: 7.3.1.3 Child navigables
+    status: unknown
+  document-sequences.html#jake-diagrams:
+    title: 7.3.1.4 Jake diagrams
+    status: unknown
+  document-sequences.html#related-navigable-collections:
+    title: 7.3.1.5 Related navigable collections
+    status: unknown
+  document-sequences.html#garbage-collection-and-browsing-contexts:
+    title: 7.3.1.6 Navigable destruction
+    status: unknown
+  document-sequences.html#navigable-target-names:
+    title: 7.3.1.7 Navigable target names
+    status: unknown
+  document-sequences.html#windows:
+    title: 7.3.2 Browsing contexts
+    status: unknown
+  document-sequences.html#creating-browsing-contexts:
+    title: 7.3.2.1 Creating browsing contexts
+    status: unknown
+  document-sequences.html#nested-browsing-contexts:
+    title: 7.3.2.2 Related browsing contexts
+    status: unknown
+  document-sequences.html#groupings-of-browsing-contexts:
+    title: 7.3.2.3 Groupings of browsing contexts
+    status: unknown
+  document-sequences.html#fully-active-documents:
+    title: 7.3.3 Fully active documents
+    status: unknown
+  browsing-the-web.html#navigation-and-session-history:
+    title: 7.4 Navigation and session history
+    status: unknown
+  browsing-the-web.html#session-history-infrastructure:
+    title: 7.4.1 Session history
+    status: unknown
+  browsing-the-web.html#session-history-entries:
+    title: 7.4.1.1 Session history entries
+    status: unknown
+  browsing-the-web.html#document-state:
+    title: 7.4.1.2 Document state
+    status: unknown
+  browsing-the-web.html#centralized-modifications-of-session-history:
+    title: 7.4.1.3 Centralized modifications of session history
+    status: unknown
+  browsing-the-web.html#low-level-operations-on-session-history:
+    title: 7.4.1.4 Low-level operations on session history
+    status: unknown
+  browsing-the-web.html#navigating-across-documents:
+    title: 7.4.2 Navigation
+    status: unknown
+  browsing-the-web.html#navigation-supporting-concepts:
+    title: 7.4.2.1 Supporting concepts
+    status: unknown
+  browsing-the-web.html#beginning-navigation:
+    title: 7.4.2.2 Beginning navigation
+    status: unknown
+  browsing-the-web.html#ending-navigation:
+    title: 7.4.2.3 Ending navigation
+    status: unknown
+  browsing-the-web.html#the-usual-cross-document-navigation-case:
+    title: 7.4.2.3.1 The usual cross-document navigation case
+    status: unknown
+  browsing-the-web.html#the-javascript:-url-special-case:
+    title: '7.4.2.3.2 The javascript: URL special case'
+    status: unknown
+  browsing-the-web.html#scroll-to-fragid:
+    title: 7.4.2.3.3 Fragment navigations
+    status: unknown
+  browsing-the-web.html#non-fetch-schemes-and-external-software:
+    title: 7.4.2.3.4 Non-fetch schemes and external software
+    status: unknown
+  browsing-the-web.html#preventing-navigation:
+    title: 7.4.2.4 Preventing navigation
+    status: unknown
+  browsing-the-web.html#aborting-navigation:
+    title: 7.4.2.5 Aborting navigation
+    status: unknown
+  browsing-the-web.html#reloading-and-traversing:
+    title: 7.4.3 Reloading and traversing
+    status: unknown
+  browsing-the-web.html#navigate-non-frag-sync:
+    title: 7.4.4 Non-fragment synchronous "navigations"
+    status: unknown
+  browsing-the-web.html#populating-a-session-history-entry:
+    title: 7.4.5 Populating a session history entry
+    status: unknown
+  browsing-the-web.html#applying-the-history-step:
+    title: 7.4.6 Applying the history step
+    status: unknown
+  browsing-the-web.html#updating-the-traversable:
+    title: 7.4.6.1 Updating the traversable
+    status: unknown
+  browsing-the-web.html#updating-the-document:
+    title: 7.4.6.2 Updating the document
+    status: unknown
+  browsing-the-web.html#revealing-the-document:
+    title: 7.4.6.3 Revealing the document
+    status: unknown
+  browsing-the-web.html#scrolling-to-a-fragment:
+    title: 7.4.6.4 Scrolling to a fragment
+    status: unknown
+  browsing-the-web.html#persisted-user-state-restoration:
+    title: 7.4.6.5 Persisted history entry state
+    status: unknown
+  document-lifecycle.html#document-lifecycle:
+    title: 7.5 Document lifecycle
+    status: unknown
+  document-lifecycle.html#shared-document-creation-infrastructure:
+    title: 7.5.1 Shared document creation infrastructure
+    status: unknown
+  document-lifecycle.html#read-html:
+    title: 7.5.2 Loading HTML documents
+    status: unknown
+  document-lifecycle.html#read-xml:
+    title: 7.5.3 Loading XML documents
+    status: unknown
+  document-lifecycle.html#read-text:
+    title: 7.5.4 Loading text documents
+    status: unknown
+  document-lifecycle.html#read-multipart-x-mixed-replace:
+    title: 7.5.5 Loading multipart/x-mixed-replace documents
+    status: unknown
+  document-lifecycle.html#read-media:
+    title: 7.5.6 Loading media documents
+    status: unknown
+  document-lifecycle.html#read-ua-inline:
+    title: 7.5.7 Loading a document for inline content that doesn't have a DOM
+    status: unknown
+  document-lifecycle.html#loading-documents:
+    title: 7.5.8 Finishing the loading process
+    status: unknown
+  document-lifecycle.html#unloading-documents:
+    title: 7.5.9 Unloading documents
+    status: unknown
+  document-lifecycle.html#destroying-documents:
+    title: 7.5.10 Destroying documents
+    status: unknown
+  document-lifecycle.html#aborting-a-document-load:
+    title: 7.5.11 Aborting a document load
+    status: unknown
+  speculative-loading.html#speculative-loading:
+    title: 7.6 Speculative loading
+    status: unknown
+  speculative-loading.html#speculation-rules:
+    title: 7.6.1 Speculation rules
+    status: unknown
+  speculative-loading.html#speculation-rules-data-model:
+    title: 7.6.1.1 Data model
+    status: unknown
+  speculative-loading.html#speculation-rules-parsing:
+    title: 7.6.1.2 Parsing
+    status: unknown
+  speculative-loading.html#speculation-rules-processing-model:
+    title: 7.6.1.3 Processing model
+    status: unknown
+  speculative-loading.html#navigational-prefetching:
+    title: 7.6.2 Navigational prefetching
+    status: unknown
+  speculative-loading.html#the-speculation-rules-header:
+    title: 7.6.3 The `Speculation-Rules` header
+    status: unknown
+  speculative-loading.html#the-sec-speculation-tags-header:
+    title: 7.6.4 The `Sec-Speculation-Tags` header
+    status: unknown
+  speculative-loading.html#speculative-loading-security:
+    title: 7.6.5 Security considerations
+    status: unknown
+  speculative-loading.html#speculative-loading-cross-site-requests:
+    title: 7.6.5.1 Cross-site requests
+    status: unknown
+  speculative-loading.html#speculative-loading-injected-content:
+    title: 7.6.5.2 Injected content
+    status: unknown
+  speculative-loading.html#speculative-loading-ip-anonymization:
+    title: 7.6.5.3 IP anonymization
+    status: unknown
+  speculative-loading.html#speculative-loading-privacy:
+    title: 7.6.6 Privacy considerations
+    status: unknown
+  speculative-loading.html#speculative-loading-heuristics:
+    title: 7.6.6.1 Heuristics and optionality
+    status: unknown
+  speculative-loading.html#speculative-loading-state-partitioning:
+    title: 7.6.6.2 State partitioning
+    status: unknown
+  speculative-loading.html#speculative-loading-identity-joining:
+    title: 7.6.6.3 Identity joining
+    status: unknown
+  speculative-loading.html#the-x-frame-options-header:
+    title: 7.7 The `X-Frame-Options` header
+    status: unknown
+  speculative-loading.html#the-refresh-header:
+    title: 7.8 The `Refresh` header
+    status: unknown
+  speculative-loading.html#nav-traversal-ui:
+    title: 7.9 Browser user interface considerations
+    status: unknown
+  webappapis.html#webappapis:
+    title: 8 Web application APIs
+    status: unknown
+  webappapis.html#scripting:
+    title: 8.1 Scripting
+    status: unknown
+  webappapis.html#introduction-11:
+    title: 8.1.1 Introduction
+    status: unknown
+  webappapis.html#agents-and-agent-clusters:
+    title: 8.1.2 Agents and agent clusters
+    status: unknown
+  webappapis.html#integration-with-the-javascript-agent-formalism:
+    title: 8.1.2.1 Integration with the JavaScript agent formalism
+    status: unknown
+  webappapis.html#integration-with-the-javascript-agent-cluster-formalism:
+    title: 8.1.2.2 Integration with the JavaScript agent cluster formalism
+    status: unknown
+  webappapis.html#realms-and-their-counterparts:
+    title: 8.1.3 Realms and their counterparts
+    status: unknown
+  webappapis.html#environments:
+    title: 8.1.3.1 Environments
+    status: unknown
+  webappapis.html#environment-settings-objects:
+    title: 8.1.3.2 Environment settings objects
+    status: unknown
+  webappapis.html#realms-settings-objects-global-objects:
+    title: 8.1.3.3 Realms, settings objects, and global objects
+    status: unknown
+  webappapis.html#entry:
+    title: 8.1.3.3.1 Entry
+    status: unknown
+  webappapis.html#incumbent:
+    title: 8.1.3.3.2 Incumbent
+    status: unknown
+  webappapis.html#current:
+    title: 8.1.3.3.3 Current
+    status: unknown
+  webappapis.html#relevant:
+    title: 8.1.3.3.4 Relevant
+    status: unknown
+  webappapis.html#enabling-and-disabling-scripting:
+    title: 8.1.3.4 Enabling and disabling scripting
+    status: unknown
+  webappapis.html#secure-contexts:
+    title: 8.1.3.5 Secure contexts
+    status: unknown
+  webappapis.html#scripting-processing-model:
+    title: 8.1.4 Script processing model
+    status: unknown
+  webappapis.html#script-structs:
+    title: 8.1.4.1 Scripts
+    status: unknown
+  webappapis.html#fetching-scripts:
+    title: 8.1.4.2 Fetching scripts
+    status: unknown
+  webappapis.html#creating-scripts:
+    title: 8.1.4.3 Creating scripts
+    status: unknown
+  webappapis.html#calling-scripts:
+    title: 8.1.4.4 Calling scripts
+    status: unknown
+  webappapis.html#killing-scripts:
+    title: 8.1.4.5 Killing scripts
+    status: unknown
+  webappapis.html#runtime-script-errors:
+    title: 8.1.4.6 Runtime script errors
+    status: unknown
+  webappapis.html#unhandled-promise-rejections:
+    title: 8.1.4.7 Unhandled promise rejections
+    status: unknown
+  webappapis.html#import-map-parse-results:
+    title: 8.1.4.8 Import map parse results
+    status: unknown
+  webappapis.html#speculation-rules-parse-results:
+    title: 8.1.4.9 Speculation rules parse results
+    status: unknown
+  webappapis.html#module-specifier-resolution:
+    title: 8.1.5 Module specifier resolution
+    status: unknown
+  webappapis.html#the-resolution-algorithm:
+    title: 8.1.5.1 The resolution algorithm
+    status: unknown
+  webappapis.html#import-maps:
+    title: 8.1.5.2 Import maps
+    status: unknown
+  webappapis.html#import-map-processing-model:
+    title: 8.1.5.3 Import map processing model
+    status: unknown
+  webappapis.html#javascript-specification-host-hooks:
+    title: 8.1.6 JavaScript specification host hooks
+    status: unknown
+  webappapis.html#the-hostensurecanaddprivateelement-implementation:
+    title: 8.1.6.1 HostEnsureCanAddPrivateElement(O)
+    status: unknown
+  webappapis.html#hostensurecancompilestrings(realm,-parameterstrings,-bodystring,-codestring,-compilationtype,-parameterargs,-bodyarg):
+    title: 8.1.6.2 HostEnsureCanCompileStrings(realm, parameterStrings, bodyString, codeString, compilationType, parameterArgs, bodyArg)
+    status: unknown
+  webappapis.html#hostgetcodeforeval(argument):
+    title: 8.1.6.3 HostGetCodeForEval(argument)
+    status: unknown
+  webappapis.html#the-hostpromiserejectiontracker-implementation:
+    title: 8.1.6.4 HostPromiseRejectionTracker(promise, operation)
+    status: unknown
+  webappapis.html#hostsystemutcepochnanoseconds:
+    title: 8.1.6.5 HostSystemUTCEpochNanoseconds(global)
+    status: unknown
+  webappapis.html#integration-with-javascript-jobs:
+    title: 8.1.6.6 Job-related host hooks
+    status: unknown
+  webappapis.html#hostcalljobcallback:
+    title: 8.1.6.6.1 HostCallJobCallback(callback, V, argumentsList)
+    status: unknown
+  webappapis.html#hostenqueuefinalizationregistrycleanupjob:
+    title: 8.1.6.6.2 HostEnqueueFinalizationRegistryCleanupJob(finalizationRegistry)
+    status: unknown
+  webappapis.html#hostenqueuegenericjob:
+    title: 8.1.6.6.3 HostEnqueueGenericJob(job, realm)
+    status: unknown
+  webappapis.html#hostenqueuepromisejob:
+    title: 8.1.6.6.4 HostEnqueuePromiseJob(job, realm)
+    status: unknown
+  webappapis.html#hostenqueuetimeoutjob:
+    title: 8.1.6.6.5 HostEnqueueTimeoutJob(job, realm, milliseconds)
+    status: unknown
+  webappapis.html#hostmakejobcallback:
+    title: 8.1.6.6.6 HostMakeJobCallback(callable)
+    status: unknown
+  webappapis.html#integration-with-the-javascript-module-system:
+    title: 8.1.6.7 Module-related host hooks
+    status: unknown
+  webappapis.html#hostgetimportmetaproperties:
+    title: 8.1.6.7.1 HostGetImportMetaProperties(moduleRecord)
+    status: unknown
+  webappapis.html#hostgetsupportedimportattributes:
+    title: 8.1.6.7.2 HostGetSupportedImportAttributes()
+    status: unknown
+  webappapis.html#hostloadimportedmodule:
+    title: 8.1.6.7.3 HostLoadImportedModule(referrer, moduleRequest, loadState, payload)
+    status: unknown
+  webappapis.html#event-loops:
+    title: 8.1.7 Event loops
+    status: unknown
+  webappapis.html#definitions-3:
+    title: 8.1.7.1 Definitions
+    status: unknown
+  webappapis.html#queuing-tasks:
+    title: 8.1.7.2 Queuing tasks
+    status: unknown
+  webappapis.html#event-loop-processing-model:
+    title: 8.1.7.3 Processing model
+    status: unknown
+  webappapis.html#generic-task-sources:
+    title: 8.1.7.4 Generic task sources
+    status: unknown
+  webappapis.html#event-loop-for-spec-authors:
+    title: 8.1.7.5 Dealing with the event loop from other specifications
+    status: unknown
+  webappapis.html#events:
+    title: 8.1.8 Events
+    status: unknown
+  webappapis.html#event-handler-attributes:
+    title: 8.1.8.1 Event handlers
+    status: unknown
+  webappapis.html#event-handlers-on-elements,-document-objects,-and-window-objects:
+    title: 8.1.8.2 Event handlers on elements, Document objects, and Window objects
+    status: unknown
+  webappapis.html#idl-definitions:
+    title: 8.1.8.2.1 IDL definitions
+    status: unknown
+  webappapis.html#event-firing:
+    title: 8.1.8.3 Event firing
+    status: unknown
+  webappapis.html#windoworworkerglobalscope-mixin:
+    title: 8.2 The WindowOrWorkerGlobalScope mixin
+    status: unknown
+  webappapis.html#atob:
+    title: 8.3 Base64 utility methods
+    status: unknown
+  dynamic-markup-insertion.html#dynamic-markup-insertion:
+    title: 8.4 Dynamic markup insertion
+    status: unknown
+  dynamic-markup-insertion.html#opening-the-input-stream:
+    title: 8.4.1 Opening the input stream
+    status: unknown
+  dynamic-markup-insertion.html#closing-the-input-stream:
+    title: 8.4.2 Closing the input stream
+    status: unknown
+  dynamic-markup-insertion.html#document.write():
+    title: 8.4.3 document.write()
+    status: unknown
+  dynamic-markup-insertion.html#document.writeln():
+    title: 8.4.4 document.writeln()
+    status: unknown
+  dynamic-markup-insertion.html#dom-parsing-and-serialization:
+    title: 8.5 DOM parsing and serialization APIs
+    status: unknown
+  dynamic-markup-insertion.html#the-domparser-interface:
+    title: 8.5.1 The DOMParser interface
+    status: unknown
+  dynamic-markup-insertion.html#html-parsing-methods:
+    title: 8.5.2 HTML parsing and insertion methods
+    status: unknown
+  dynamic-markup-insertion.html#html-streaming-methods:
+    title: 8.5.3 HTML streaming methods
+    status: unknown
+  dynamic-markup-insertion.html#html-serialization-methods:
+    title: 8.5.4 HTML serialization methods
+    status: unknown
+  dynamic-markup-insertion.html#the-innerhtml-property:
+    title: 8.5.5 The innerHTML property
+    status: unknown
+  dynamic-markup-insertion.html#the-outerhtml-property:
+    title: 8.5.6 The outerHTML property
+    status: unknown
+  dynamic-markup-insertion.html#the-insertadjacenthtml()-method:
+    title: 8.5.7 The insertAdjacentHTML() method
+    status: unknown
+  dynamic-markup-insertion.html#the-createcontextualfragment()-method:
+    title: 8.5.8 The createContextualFragment() method
+    status: unknown
+  dynamic-markup-insertion.html#the-xmlserializer-interface:
+    title: 8.5.9 The XMLSerializer interface
+    status: unknown
+  dynamic-markup-insertion.html#html-sanitization:
+    title: 8.6 HTML sanitization
+    status: unknown
+  dynamic-markup-insertion.html#introduction-12:
+    title: 8.6.1 Introduction
+    status: unknown
+  dynamic-markup-insertion.html#safe-and-unsafe:
+    title: 8.6.1.1 Safe and unsafe
+    status: unknown
+  dynamic-markup-insertion.html#the-sanitizer-interface:
+    title: 8.6.2 The Sanitizer interface
+    status: unknown
+  dynamic-markup-insertion.html#sanitizer-configuration:
+    title: 8.6.3 Sanitizer configuration
+    status: unknown
+  dynamic-markup-insertion.html#configuration-invariants:
+    title: 8.6.3.1 Configuration invariants
+    status: unknown
+  dynamic-markup-insertion.html#sanitization-algorithms:
+    title: 8.6.4 Sanitization algorithms
+    status: unknown
+  dynamic-markup-insertion.html#sanitization-constants:
+    title: 8.6.5 Sanitization constants
+    status: unknown
+  dynamic-markup-insertion.html#sanitizer-security-considerations:
+    title: 8.6.6 Security considerations
+    status: unknown
+  dynamic-markup-insertion.html#sanitizer-security-server-reflected:
+    title: 8.6.6.1 Server-side reflected and stored XSS
+    status: unknown
+  dynamic-markup-insertion.html#sanitizer-security-dom-clobbering:
+    title: 8.6.6.2 DOM clobbering
+    status: unknown
+  dynamic-markup-insertion.html#sanitizer-security-script-gadgets:
+    title: 8.6.6.3 XSS with script gadgets
+    status: unknown
+  dynamic-markup-insertion.html#sanitizer-security-mxss:
+    title: 8.6.6.4 Mutation XSS
+    status: unknown
+  timers-and-user-prompts.html#timers:
+    title: 8.7 Timers
+    status: unknown
+  timers-and-user-prompts.html#microtask-queuing:
+    title: 8.8 Microtask queuing
+    status: unknown
+  timers-and-user-prompts.html#user-prompts:
+    title: 8.9 User prompts
+    status: unknown
+  timers-and-user-prompts.html#simple-dialogs:
+    title: 8.9.1 Simple dialogs
+    status: unknown
+  timers-and-user-prompts.html#printing:
+    title: 8.9.2 Printing
+    status: unknown
+  system-state.html#system-state-and-capabilities:
+    title: 8.10 System state and capabilities
+    status: unknown
+  system-state.html#the-navigator-object:
+    title: 8.10.1 The Navigator object
+    status: unknown
+  system-state.html#client-identification:
+    title: 8.10.1.1 Client identification
+    status: unknown
+  system-state.html#language-preferences:
+    title: 8.10.1.2 Language preferences
+    status: unknown
+  system-state.html#navigator.online:
+    title: 8.10.1.3 Browser state
+    status: unknown
+  system-state.html#custom-handlers:
+    title: '8.10.1.4 Custom scheme handlers: the registerProtocolHandler() method'
+    status: unknown
+  system-state.html#security-and-privacy:
+    title: 8.10.1.4.1 Security and privacy
+    status: unknown
+  system-state.html#user-agent-automation:
+    title: 8.10.1.4.2 User agent automation
+    status: unknown
+  system-state.html#cookies:
+    title: 8.10.1.5 Cookies
+    status: unknown
+  system-state.html#pdf-viewing-support:
+    title: 8.10.1.6 PDF viewing support
+    status: unknown
+  imagebitmap-and-animations.html#images-2:
+    title: 8.11 Images
+    status: unknown
+  imagebitmap-and-animations.html#the-imagedata-interface:
+    title: 8.11.1 The ImageData interface
+    status: unknown
+  imagebitmap-and-animations.html#the-imagebitmap-interface:
+    title: 8.11.2 The ImageBitmap interface
+    status: unknown
+  imagebitmap-and-animations.html#animation-frames:
+    title: 8.12 Animation frames
+    status: unknown
+  comms.html#comms:
+    title: 9 Communication
+    status: unknown
+  comms.html#the-messageevent-interface:
+    title: 9.1 The MessageEvent interface
+    status: unknown
+  server-sent-events.html#server-sent-events:
+    title: 9.2 Server-sent events
+    status: unknown
+  server-sent-events.html#server-sent-events-intro:
+    title: 9.2.1 Introduction
+    status: unknown
+  server-sent-events.html#the-eventsource-interface:
+    title: 9.2.2 The EventSource interface
+    status: unknown
+  server-sent-events.html#sse-processing-model:
+    title: 9.2.3 Processing model
+    status: unknown
+  server-sent-events.html#the-last-event-id-header:
+    title: 9.2.4 The `Last-Event-ID` header
+    status: unknown
+  server-sent-events.html#parsing-an-event-stream:
+    title: 9.2.5 Parsing an event stream
+    status: unknown
+  server-sent-events.html#event-stream-interpretation:
+    title: 9.2.6 Interpreting an event stream
+    status: unknown
+  server-sent-events.html#authoring-notes:
+    title: 9.2.7 Authoring notes
+    status: unknown
+  server-sent-events.html#eventsource-push:
+    title: 9.2.8 Connectionless push and other features
+    status: unknown
+  server-sent-events.html#garbage-collection:
+    title: 9.2.9 Garbage collection
+    status: unknown
+  server-sent-events.html#implementation-advice:
+    title: 9.2.10 Implementation advice
+    status: unknown
+  web-messaging.html#web-messaging:
+    title: 9.3 Cross-document messaging
+    status: unknown
+  web-messaging.html#introduction-13:
+    title: 9.3.1 Introduction
+    status: unknown
+  web-messaging.html#security-postmsg:
+    title: 9.3.2 Security
+    status: unknown
+  web-messaging.html#authors:
+    title: 9.3.2.1 Authors
+    status: unknown
+  web-messaging.html#user-agents:
+    title: 9.3.2.2 User agents
+    status: unknown
+  web-messaging.html#posting-messages:
+    title: 9.3.3 Posting messages
+    status: unknown
+  web-messaging.html#channel-messaging:
+    title: 9.4 Channel messaging
+    status: unknown
+  web-messaging.html#introduction-14:
+    title: 9.4.1 Introduction
+    status: unknown
+  web-messaging.html#examples-5:
+    title: 9.4.1.1 Examples
+    status: unknown
+  web-messaging.html#ports-as-the-basis-of-an-object-capability-model-on-the-web:
+    title: 9.4.1.2 Ports as the basis of an object-capability model on the web
+    status: unknown
+  web-messaging.html#ports-as-the-basis-of-abstracting-out-service-implementations:
+    title: 9.4.1.3 Ports as the basis of abstracting out service implementations
+    status: unknown
+  web-messaging.html#message-channels:
+    title: 9.4.2 Message channels
+    status: unknown
+  web-messaging.html#the-messageeventtarget-mixin:
+    title: 9.4.3 The MessageEventTarget mixin
+    status: unknown
+  web-messaging.html#message-ports:
+    title: 9.4.4 Message ports
+    status: unknown
+  web-messaging.html#broadcasting-to-many-ports:
+    title: 9.4.5 Broadcasting to many ports
+    status: unknown
+  web-messaging.html#ports-and-garbage-collection:
+    title: 9.4.6 Ports and garbage collection
+    status: unknown
+  web-messaging.html#broadcasting-to-other-browsing-contexts:
+    title: 9.5 Broadcasting to other browsing contexts
+    status: unknown
+  workers.html#workers:
+    title: 10 Web workers
+    status: unknown
+  workers.html#introduction-15:
+    title: 10.1 Introduction
+    status: unknown
+  workers.html#scope-2:
+    title: 10.1.1 Scope
+    status: unknown
+  workers.html#examples-6:
+    title: 10.1.2 Examples
+    status: unknown
+  workers.html#a-background-number-crunching-worker:
+    title: 10.1.2.1 A background number-crunching worker
+    status: unknown
+  workers.html#module-worker-example:
+    title: 10.1.2.2 Using a JavaScript module as a worker
+    status: unknown
+  workers.html#shared-workers-introduction:
+    title: 10.1.2.3 Shared workers introduction
+    status: unknown
+  workers.html#shared-state-using-a-shared-worker:
+    title: 10.1.2.4 Shared state using a shared worker
+    status: unknown
+  workers.html#delegation:
+    title: 10.1.2.5 Delegation
+    status: unknown
+  workers.html#providing-libraries:
+    title: 10.1.2.6 Providing libraries
+    status: unknown
+  workers.html#tutorials:
+    title: 10.1.3 Tutorials
+    status: unknown
+  workers.html#creating-a-dedicated-worker:
+    title: 10.1.3.1 Creating a dedicated worker
+    status: unknown
+  workers.html#communicating-with-a-dedicated-worker:
+    title: 10.1.3.2 Communicating with a dedicated worker
+    status: unknown
+  workers.html#shared-workers:
+    title: 10.1.3.3 Shared workers
+    status: unknown
+  workers.html#infrastructure-2:
+    title: 10.2 Infrastructure
+    status: unknown
+  workers.html#the-global-scope:
+    title: 10.2.1 The global scope
+    status: unknown
+  workers.html#the-workerglobalscope-common-interface:
+    title: 10.2.1.1 The WorkerGlobalScope common interface
+    status: unknown
+  workers.html#dedicated-workers-and-the-dedicatedworkerglobalscope-interface:
+    title: 10.2.1.2 Dedicated workers and the DedicatedWorkerGlobalScope interface
+    status: unknown
+  workers.html#shared-workers-and-the-sharedworkerglobalscope-interface:
+    title: 10.2.1.3 Shared workers and the SharedWorkerGlobalScope interface
+    status: unknown
+  workers.html#worker-event-loop:
+    title: 10.2.2 The event loop
+    status: unknown
+  workers.html#the-worker's-lifetime:
+    title: 10.2.3 The worker's lifetime
+    status: unknown
+  workers.html#worker-processing-model:
+    title: 10.2.4 Processing model
+    status: unknown
+  workers.html#runtime-script-errors-2:
+    title: 10.2.5 Runtime script errors
+    status: unknown
+  workers.html#creating-workers:
+    title: 10.2.6 Creating workers
+    status: unknown
+  workers.html#the-abstractworker-mixin:
+    title: 10.2.6.1 The AbstractWorker mixin
+    status: unknown
+  workers.html#script-settings-for-workers:
+    title: 10.2.6.2 Script settings for workers
+    status: unknown
+  workers.html#dedicated-workers-and-the-worker-interface:
+    title: 10.2.6.3 Dedicated workers and the Worker interface
+    status: unknown
+  workers.html#shared-workers-and-the-sharedworker-interface:
+    title: 10.2.6.4 Shared workers and the SharedWorker interface
+    status: unknown
+  workers.html#navigator.hardwareconcurrency:
+    title: 10.2.7 Concurrent hardware capabilities
+    status: unknown
+  workers.html#apis-available-to-workers:
+    title: 10.3 APIs available to workers
+    status: unknown
+  workers.html#importing-scripts-and-libraries:
+    title: 10.3.1 Importing scripts and libraries
+    status: unknown
+  workers.html#the-workernavigator-object:
+    title: 10.3.2 The WorkerNavigator interface
+    status: unknown
+  workers.html#worker-locations:
+    title: 10.3.3 The WorkerLocation interface
+    status: unknown
+  worklets.html#worklets:
+    title: 11 Worklets
+    status: unknown
+  worklets.html#worklets-intro:
+    title: 11.1 Introduction
+    status: unknown
+  worklets.html#worklets-motivations:
+    title: 11.1.1 Motivations
+    status: unknown
+  worklets.html#worklets-idempotent:
+    title: 11.1.2 Code idempotence
+    status: unknown
+  worklets.html#worklets-speculative:
+    title: 11.1.3 Speculative evaluation
+    status: unknown
+  worklets.html#worklets-examples:
+    title: 11.2 Examples
+    status: unknown
+  worklets.html#worklets-examples-loading:
+    title: 11.2.1 Loading scripts
+    status: unknown
+  worklets.html#worklets-example-registering:
+    title: 11.2.2 Registering a class and invoking its methods
+    status: unknown
+  worklets.html#worklets-infrastructure:
+    title: 11.3 Infrastructure
+    status: unknown
+  worklets.html#worklets-global:
+    title: 11.3.1 The global scope
+    status: unknown
+  worklets.html#worklet-agents-and-event-loops:
+    title: 11.3.1.1 Agents and event loops
+    status: unknown
+  worklets.html#worklets-creation-termination:
+    title: 11.3.1.2 Creation and termination
+    status: unknown
+  worklets.html#script-settings-for-worklets:
+    title: 11.3.1.3 Script settings for worklets
+    status: unknown
+  worklets.html#worklets-worklet:
+    title: 11.3.2 The Worklet class
+    status: unknown
+  worklets.html#worklets-lifetime:
+    title: 11.3.3 The worklet's lifetime
+    status: unknown
+  webstorage.html#webstorage:
+    title: 12 Web storage
+    status: unknown
+  webstorage.html#introduction-16:
+    title: 12.1 Introduction
+    status: unknown
+  webstorage.html#storage:
+    title: 12.2 The API
+    status: unknown
+  webstorage.html#the-storage-interface:
+    title: 12.2.1 The Storage interface
+    status: unknown
+  webstorage.html#the-sessionstorage-attribute:
+    title: 12.2.2 The sessionStorage getter
+    status: unknown
+  webstorage.html#the-localstorage-attribute:
+    title: 12.2.3 The localStorage getter
+    status: unknown
+  webstorage.html#the-storageevent-interface:
+    title: 12.2.4 The StorageEvent interface
+    status: unknown
+  webstorage.html#privacy:
+    title: 12.3 Privacy
+    status: unknown
+  webstorage.html#user-tracking:
+    title: 12.3.1 User tracking
+    status: unknown
+  webstorage.html#sensitivity-of-data:
+    title: 12.3.2 Sensitivity of data
+    status: unknown
+  webstorage.html#security-storage:
+    title: 12.4 Security
+    status: unknown
+  webstorage.html#dns-spoofing-attacks:
+    title: 12.4.1 DNS spoofing attacks
+    status: unknown
+  webstorage.html#cross-directory-attacks:
+    title: 12.4.2 Cross-directory attacks
+    status: unknown
+  webstorage.html#implementation-risks:
+    title: 12.4.3 Implementation risks
+    status: unknown
   syntax.html#syntax:
     title: 13 The HTML syntax
     status: partial
@@ -1628,6 +3191,21 @@ sections:
   named-characters.html#named-character-references:
     title: 13.5 Named character references
     status: supported
+  xhtml.html#the-xhtml-syntax:
+    title: 14 The XML syntax
+    status: unknown
+  xhtml.html#writing-xhtml-documents:
+    title: 14.1 Writing documents in the XML syntax
+    status: unknown
+  xhtml.html#parsing-xhtml-documents:
+    title: 14.2 Parsing XML documents
+    status: unknown
+  xhtml.html#serialising-xhtml-fragments:
+    title: 14.3 Serializing XML fragments
+    status: unknown
+  xhtml.html#parsing-xhtml-fragments:
+    title: 14.4 Parsing XML fragments
+    status: unknown
   rendering.html#rendering:
     title: 15 Rendering
     status: partial
@@ -1895,3 +3473,30 @@ sections:
     status: partial
     gaps:
       - listing, plaintext and xmp aren't rendered like pre, see 15.3.3
+  iana.html#iana:
+    title: 17 IANA considerations
+    status: unknown
+  iana.html#text/html:
+    title: 17.1 text/html
+    status: unknown
+  iana.html#multipart/x-mixed-replace:
+    title: 17.2 multipart/x-mixed-replace
+    status: unknown
+  iana.html#application/xhtml+xml:
+    title: 17.3 application/xhtml+xml
+    status: unknown
+  iana.html#text/ping:
+    title: 17.4 text/ping
+    status: unknown
+  iana.html#application/microdata+json:
+    title: 17.5 application/microdata+json
+    status: unknown
+  iana.html#application/speculationrules+json:
+    title: 17.6 application/speculationrules+json
+    status: unknown
+  iana.html#text/event-stream:
+    title: 17.7 text/event-stream
+    status: unknown
+  iana.html#web+-scheme-prefix:
+    title: 17.8 web+ scheme prefix
+    status: unknown
