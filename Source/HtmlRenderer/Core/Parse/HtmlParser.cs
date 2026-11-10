@@ -109,6 +109,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 if (text.Length == 0) return;
             }
 
+            // HtmlKit splits text into several data tokens, e.g. at each '<' in a style element,
+            // HTML appends them to the preceding Text node (parsing.html#insert-a-char)
+            var lastChild = curBox.Boxes.Count > 0 ? curBox.Boxes[curBox.Boxes.Count - 1] : null;
+            if (lastChild != null && lastChild.HtmlTag == null && lastChild.Text != null)
+            {
+                lastChild.Text += text;
+                return;
+            }
+
             var box = CssBox.CreateBox(curBox);
             box.Text = text;
         }
