@@ -1,0 +1,353 @@
+spec: selectors-4
+title: Selectors Level 4
+url: https://www.w3.org/TR/selectors-4/
+snapshot: https://www.w3.org/TR/2026/WD-selectors-4-20260122/
+sections:
+  '#context':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#overview':
+    title: 2 Selectors Overview
+    status: unknown
+  '#syntax':
+    title: 3 Selector Syntax and Structure
+    status: unknown
+  '#structure':
+    title: 3.1 Structure and Terminology
+    status: unknown
+  '#data-model':
+    title: 3.2 Data Model
+    status: unknown
+  '#featureless-elements':
+    title: 3.2.1 Featureless Elements
+    status: unknown
+  '#scoping':
+    title: 3.3 Scoped Selectors
+    status: unknown
+  '#relative':
+    title: 3.4 Relative Selectors
+    status: unknown
+  '#pseudo-classes':
+    title: 3.5 Pseudo-classes
+    status: unknown
+  '#pseudo-elements':
+    title: 3.6 Pseudo-elements
+    status: unknown
+  '#pseudo-element-syntax':
+    title: 3.6.1 Syntax
+    status: unknown
+  '#pseudo-element-attachment':
+    title: 3.6.2 Binding to the Document Tree
+    status: unknown
+  '#pseudo-element-states':
+    title: 3.6.3 Pseudo-classing Pseudo-elements
+    status: unknown
+  '#sub-pseudo-elements':
+    title: 3.6.4 Sub-pseudo-elements
+    status: unknown
+  '#pseudo-element-structure':
+    title: 3.6.5 Internal Structure
+    status: unknown
+  '#case-sensitive':
+    title: 3.7 Characters and case sensitivity
+    status: unknown
+  '#namespaces':
+    title: 3.8 Declaring Namespace Prefixes
+    status: unknown
+  '#invalid':
+    title: 3.9 Invalid Selectors and Error Handling
+    status: unknown
+  '#legacy-aliasing':
+    title: 3.10 Legacy Aliases
+    status: unknown
+  '#logical-combination':
+    title: 4 Logical Combinations
+    status: unknown
+  '#grouping':
+    title: 4.1 Selector Lists
+    status: unknown
+  '#matches':
+    title: '4.2 The Matches-Any Pseudo-class: :is()'
+    status: unknown
+  '#negation':
+    title: '4.3 The Negation (Matches-None) Pseudo-class: :not()'
+    status: unknown
+  '#zero-matches':
+    title: '4.4 The Specificity-adjustment Pseudo-class: :where()'
+    status: unknown
+  '#relational':
+    title: '4.5 The Relational Pseudo-class: :has()'
+    status: unknown
+  '#elemental-selectors':
+    title: 5 Elemental selectors
+    status: unknown
+  '#type-selectors':
+    title: 5.1 Type (tag name) selector
+    status: unknown
+  '#the-universal-selector':
+    title: 5.2 Universal selector
+    status: unknown
+  '#type-nmsp':
+    title: 5.3 Namespaces in Elemental Selectors
+    status: unknown
+  '#the-defined-pseudo':
+    title: '5.4 The Defined Pseudo-class: :defined'
+    status: unknown
+  '#attribute-selectors':
+    title: 6 Attribute selectors
+    status: unknown
+  '#attribute-representation':
+    title: 6.1 Attribute presence and value selectors
+    status: unknown
+  '#attribute-substrings':
+    title: 6.2 Substring matching attribute selectors
+    status: unknown
+  '#attribute-case':
+    title: 6.3 Case-sensitivity
+    status: unknown
+  '#attrnmsp':
+    title: 6.4 Attribute selectors and namespaces
+    status: unknown
+  '#def-values':
+    title: 6.5 Default attribute values in DTDs
+    status: unknown
+  '#class-html':
+    title: 6.6 Class selectors
+    status: unknown
+  '#id-selectors':
+    title: 6.7 ID selectors
+    status: unknown
+  '#linguistic-pseudos':
+    title: 7 Linguistic Pseudo-classes
+    status: unknown
+  '#the-dir-pseudo':
+    title: '7.1 The Directionality Pseudo-class: :dir()'
+    status: unknown
+  '#the-lang-pseudo':
+    title: '7.2 The Language Pseudo-class: :lang()'
+    status: unknown
+  '#location':
+    title: 8 Location Pseudo-classes
+    status: unknown
+  '#the-any-link-pseudo':
+    title: '8.1 The Hyperlink Pseudo-class: :any-link'
+    status: unknown
+  '#link':
+    title: '8.2 The Link History Pseudo-classes: :link and :visited'
+    status: unknown
+  '#the-target-pseudo':
+    title: '8.3 The Target Pseudo-class: :target'
+    status: unknown
+  '#the-scope-pseudo':
+    title: '8.4 The Reference Element Pseudo-class: :scope'
+    status: unknown
+  '#useraction-pseudos':
+    title: 9 User Action Pseudo-classes
+    status: unknown
+  '#the-hover-pseudo':
+    title: '9.1 The Pointer Hover Pseudo-class: :hover'
+    status: unknown
+  '#the-active-pseudo':
+    title: '9.2 The Activation Pseudo-class: :active'
+    status: unknown
+  '#the-focus-pseudo':
+    title: '9.3 The Input Focus Pseudo-class: :focus'
+    status: unknown
+  '#the-focus-visible-pseudo':
+    title: '9.4 The Focus-Indicated Pseudo-class: :focus-visible'
+    status: unknown
+  '#the-focus-within-pseudo':
+    title: '9.5 The Focus Container Pseudo-class: :focus-within'
+    status: unknown
+  '#resource-pseudos':
+    title: 10 Resource State Pseudo-classes
+    status: unknown
+  '#video-state':
+    title: '10.1 Media Playback State: the :playing, :paused, and :seeking pseudo-classes'
+    status: unknown
+  '#media-loading-state':
+    title: '10.2 Media Loading State: the :buffering and :stalled pseudo-classes'
+    status: unknown
+  '#sound-state':
+    title: '10.3 Sound State: the :muted and :volume-locked pseudo-classes'
+    status: unknown
+  '#display-state-pseudos':
+    title: 11 Element Display State Pseudo-classes
+    status: unknown
+  '#open-state':
+    title: '11.1 Collapse State: the :open pseudo-class'
+    status: unknown
+  '#popover-open-state':
+    title: '11.2 Popover State: the :popover-open pseudo-class'
+    status: unknown
+  '#modal-state':
+    title: '11.3 Modal (Exclusive Interaction) State: the :modal pseudo-class'
+    status: unknown
+  '#fullscreen-state':
+    title: '11.4 Fullscreen Presentation State: the :fullscreen pseudo-class'
+    status: unknown
+  '#pip-state':
+    title: '11.5 Picture-in-Picture Presentation State: the :picture-in-picture pseudo-class'
+    status: unknown
+  '#input-pseudos':
+    title: 12 The Input Pseudo-classes
+    status: unknown
+  '#input-states':
+    title: 12.1 Input Control States
+    status: unknown
+  '#enableddisabled':
+    title: 12.1.1 The :enabled and :disabled Pseudo-classes
+    status: unknown
+  '#rw-pseudos':
+    title: '12.1.2 The Mutability Pseudo-classes: :read-only and :read-write'
+    status: unknown
+  '#placeholder':
+    title: '12.1.3 The Placeholder-shown Pseudo-class: :placeholder-shown'
+    status: unknown
+  '#autofill':
+    title: '12.1.4 The Automatic Input Pseudo-class: :autofill'
+    status: unknown
+  '#the-default-pseudo':
+    title: '12.1.5 The Default-option Pseudo-class: :default'
+    status: unknown
+  '#input-value-states':
+    title: 12.2 Input Value States
+    status: unknown
+  '#checked':
+    title: '12.2.1 The Selected-option Pseudo-classes: :checked, :unchecked, and :indeterminate'
+    status: unknown
+  '#ui-validity':
+    title: 12.3 Input Value-checking
+    status: unknown
+  '#validity-pseudos':
+    title: '12.3.1 The Validity Pseudo-classes: :valid and :invalid'
+    status: unknown
+  '#range-pseudos':
+    title: '12.3.2 The Range Pseudo-classes: :in-range and :out-of-range'
+    status: unknown
+  '#opt-pseudos':
+    title: '12.3.3 The Optionality Pseudo-classes: :required and :optional'
+    status: unknown
+  '#user-pseudos':
+    title: '12.3.4 The User-interaction Pseudo-classes: :user-valid and :user-invalid'
+    status: unknown
+  '#structural-pseudos':
+    title: 13 Tree-Structural pseudo-classes
+    status: unknown
+  '#the-root-pseudo':
+    title: 13.1 :root pseudo-class
+    status: unknown
+  '#the-empty-pseudo':
+    title: 13.2 :empty pseudo-class
+    status: unknown
+  '#child-index':
+    title: 13.3 Child-indexed Pseudo-classes
+    status: unknown
+  '#the-nth-child-pseudo':
+    title: 13.3.1 :nth-child() pseudo-class
+    status: unknown
+  '#the-nth-last-child-pseudo':
+    title: 13.3.2 :nth-last-child() pseudo-class
+    status: unknown
+  '#the-first-child-pseudo':
+    title: 13.3.3 :first-child pseudo-class
+    status: unknown
+  '#the-last-child-pseudo':
+    title: 13.3.4 :last-child pseudo-class
+    status: unknown
+  '#the-only-child-pseudo':
+    title: 13.3.5 :only-child pseudo-class
+    status: unknown
+  '#typed-child-index':
+    title: 13.4 Typed Child-indexed Pseudo-classes
+    status: unknown
+  '#the-nth-of-type-pseudo':
+    title: 13.4.1 :nth-of-type() pseudo-class
+    status: unknown
+  '#the-nth-last-of-type-pseudo':
+    title: 13.4.2 :nth-last-of-type() pseudo-class
+    status: unknown
+  '#the-first-of-type-pseudo':
+    title: 13.4.3 :first-of-type pseudo-class
+    status: unknown
+  '#the-last-of-type-pseudo':
+    title: 13.4.4 :last-of-type pseudo-class
+    status: unknown
+  '#the-only-of-type-pseudo':
+    title: 13.4.5 :only-of-type pseudo-class
+    status: unknown
+  '#combinators':
+    title: 14 Combinators
+    status: unknown
+  '#descendant-combinators':
+    title: 14.1 Descendant combinator ( )
+    status: unknown
+  '#child-combinators':
+    title: 14.2 Child combinator (>)
+    status: unknown
+  '#adjacent-sibling-combinators':
+    title: 14.3 Next-sibling combinator (+)
+    status: unknown
+  '#general-sibling-combinators':
+    title: 14.4 Subsequent-sibling combinator (~)
+    status: unknown
+  '#specificity-rules':
+    title: 15 Calculating a selector’s specificity
+    status: unknown
+  '#grammar':
+    title: 16 Grammar
+    status: unknown
+  '#forgiving-selector':
+    title: 16.1 <forgiving-selector-list> and <forgiving-relative-selector-list>
+    status: unknown
+  '#api-hooks':
+    title: 17 API Hooks
+    status: unknown
+  '#parse-selector':
+    title: 17.1 Parse A Selector
+    status: unknown
+  '#parse-relative-selector':
+    title: 17.2 Parse A Relative Selector
+    status: unknown
+  '#match-against-element':
+    title: 17.3 Match a Selector Against an Element
+    status: unknown
+  '#match-against-pseudo-element':
+    title: 17.4 Match a Selector Against a Pseudo-element
+    status: unknown
+  '#match-against-tree':
+    title: 17.5 Match a Selector Against a Tree
+    status: unknown
+  '#changes':
+    title: 18 Changes
+    status: unknown
+  '#changes-2022-11':
+    title: 18.1 Changes since the 11 November 2022 Working Draft
+    status: unknown
+  '#changes-2022-05':
+    title: 18.2 Changes since the 7 May 2022 Working Draft
+    status: unknown
+  '#changes-2018-11':
+    title: 18.3 Changes since the 21 November 2018 Working Draft
+    status: unknown
+  '#changes-2018-02':
+    title: 18.4 Changes since the 2 February 2018 Working Draft
+    status: unknown
+  '#changes-2013':
+    title: 18.5 Changes since the 2 May 2013 Working Draft
+    status: unknown
+  '#changes-2012':
+    title: 18.6 Changes since the 23 August 2012 Working Draft
+    status: unknown
+  '#changes-2011':
+    title: 18.7 Changes since the 29 September 2011 Working Draft
+    status: unknown
+  '#changes-level-3':
+    title: 18.8 Changes Since Level 3
+    status: unknown
+  '#acknowledgements':
+    title: 19 Acknowledgements
+    status: unknown

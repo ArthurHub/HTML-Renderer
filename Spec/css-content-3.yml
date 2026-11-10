@@ -1,0 +1,89 @@
+spec: css-content-3
+title: CSS Generated Content Module Level 3
+url: https://www.w3.org/TR/css-content-3/
+snapshot: https://www.w3.org/TR/2025/WD-css-content-3-20251204/
+sections:
+  '#content-property':
+    title: '1 Inserting and Replacing Content: the content property'
+    status: unknown
+  '#accessibility':
+    title: 1.1 Accessibility of Generated Content
+    status: unknown
+  '#alt':
+    title: 1.2 Alternative Text for Accessibility
+    status: unknown
+  '#content-values':
+    title: '2 Generated Content Values: the <content-list> type'
+    status: unknown
+  '#strings':
+    title: '2.1 Basic Strings: <string> and <attr()> values'
+    status: unknown
+  '#content-uri':
+    title: '2.2 2D Images: <image> values'
+    status: unknown
+  '#element-content':
+    title: '2.3 Elemental Content: the contents keyword'
+    status: unknown
+  '#quotes':
+    title: 2.4 Quotation Marks
+    status: unknown
+  '#quotes-property':
+    title: '2.4.1 Quotation Mark System: the quotes property'
+    status: unknown
+  '#quote-values':
+    title: '2.4.2 Inserting Quotation Marks: the *-quote keywords'
+    status: unknown
+  '#leaders':
+    title: 2.5 Leaders
+    status: unknown
+  '#leader-function':
+    title: 2.5.1 The leader() function
+    status: unknown
+  '#leader-rules':
+    title: 2.5.2 Rendering leaders
+    status: unknown
+  '#leader-alignment':
+    title: 2.5.3 Procedure for rendering leaders
+    status: unknown
+  '#cross-references':
+    title: 2.6 Cross References
+    status: unknown
+  '#target-counter':
+    title: 2.6.1 The target-counter() function
+    status: unknown
+  '#target-counters':
+    title: 2.6.2 The target-counters() function
+    status: unknown
+  '#target-text':
+    title: 2.6.3 The target-text() function
+    status: unknown
+  '#named-strings':
+    title: 2.7 Named Strings
+    status: unknown
+  '#string-set':
+    title: '2.7.1 Naming Strings: the string-set property'
+    status: unknown
+  '#string-function':
+    title: '2.7.2 Inserting Named Strings: the string() function'
+    status: unknown
+  '#content-function':
+    title: 2.7.3 The content() function
+    status: unknown
+  '#counters':
+    title: 2.8 Automatic Counters and Numbering
+    status: unknown
+  '#bookmark-generation':
+    title: 3 Bookmarks
+    status: unknown
+  '#bookmark-level':
+    title: '3.1 Setting a Bookmark: the bookmark-level property'
+    status: unknown
+  '#bookmark-label':
+    title: '3.2 Labelling a Bookmark: the bookmark-label property'
+    status: unknown
+  '#bookmark-state':
+    title: '3.3 Initial Bookmark Toggle State: the bookmark-state property'
+    status: unknown
+  '#changes':
+    title: 4 Changes
+    status: unknown

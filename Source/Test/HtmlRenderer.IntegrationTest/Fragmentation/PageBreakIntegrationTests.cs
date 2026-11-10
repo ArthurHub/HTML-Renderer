@@ -353,7 +353,8 @@ public sealed class PageBreakIntegrationTests
 
     // css-break-3 §5.2 keeps the margin of a box whose forced break isn't taken.
     [TestMethod]
-    [Ignore("The crossing margin is truncated even when the box carries a forced break-before that isn't taken")]
+    [Ignore("Gap, see Spec/css-break-3.yml")]
+    [Spec("css-break-3", "#break-margins")]
     public async Task FirstBoxInTheFlow_CarryingAnUntakenForcedBreak_KeepsItsMargin()
     {
         var (root, _) = await BuildAsync(

@@ -1,0 +1,173 @@
+spec: css-cascade-5
+title: CSS Cascading and Inheritance Level 5
+url: https://www.w3.org/TR/css-cascade-5/
+snapshot: https://www.w3.org/TR/2022/CR-css-cascade-5-20220113/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#at-import':
+    title: '2 Importing Style Sheets: the @import rule'
+    status: unknown
+  '#conditional-import':
+    title: 2.1 Conditional @import Rules
+    status: unknown
+  '#import-processing':
+    title: 2.2 Processing Stylesheet Imports
+    status: unknown
+  '#content-type':
+    title: 2.3 Content-Type of CSS Style Sheets
+    status: unknown
+  '#shorthand':
+    title: 3 Shorthand Properties
+    status: unknown
+  '#aliasing':
+    title: 3.1 Property Aliasing
+    status: unknown
+  '#all-shorthand':
+    title: '3.2 Resetting All Properties: the all property'
+    status: unknown
+  '#value-stages':
+    title: 4 Value Processing
+    status: unknown
+  '#declared':
+    title: 4.1 Declared Values
+    status: unknown
+  '#value-aliasing':
+    title: 4.1.1 Value Aliasing
+    status: unknown
+  '#cascaded':
+    title: 4.2 Cascaded Values
+    status: unknown
+  '#specified':
+    title: 4.3 Specified Values
+    status: unknown
+  '#computed':
+    title: 4.4 Computed Values
+    status: unknown
+  '#used':
+    title: 4.5 Used Values
+    status: unknown
+  '#applies-to':
+    title: 4.5.1 Applicable Properties
+    status: unknown
+  '#actual':
+    title: 4.6 Actual Values
+    status: unknown
+  '#stages-examples':
+    title: 4.7 Examples
+    status: unknown
+  '#fragments':
+    title: 4.8 Per-Fragment Value Processing
+    status: unknown
+  '#filtering':
+    title: 5 Filtering
+    status: unknown
+  '#cascading':
+    title: 6 Cascading
+    status: unknown
+  '#cascade-sort':
+    title: 6.1 Cascade Sorting Order
+    status: unknown
+  '#cascading-origins':
+    title: 6.2 Cascading Origins
+    status: unknown
+  '#importance':
+    title: '6.3 Important Declarations: the !important annotation'
+    status: unknown
+  '#layering':
+    title: 6.4 Cascade Layers
+    status: unknown
+  '#layer-declaration':
+    title: 6.4.1 Declaring Cascade Layers
+    status: unknown
+  '#layer-names':
+    title: 6.4.2 Layer Naming and Nesting
+    status: unknown
+  '#unnamed-layers':
+    title: 6.4.2.1 Anonymous Layers
+    status: unknown
+  '#layer-ordering':
+    title: 6.4.3 Layer Ordering
+    status: unknown
+  '#at-layer':
+    title: '6.4.4 Declaring Layers Inline: the @layer rule'
+    status: unknown
+  '#layer-block':
+    title: '6.4.4.1 Assigning Styles Inline: the @layer block at-rule'
+    status: unknown
+  '#layer-empty':
+    title: '6.4.4.2 Declaring Without Styles: the @layer statement at-rule'
+    status: unknown
+  '#preshint':
+    title: 6.5 Precedence of Non-CSS Presentational Hints
+    status: unknown
+  '#defaulting':
+    title: 7 Defaulting
+    status: unknown
+  '#initial-values':
+    title: 7.1 Initial Values
+    status: unknown
+  '#inheriting':
+    title: 7.2 Inheritance
+    status: unknown
+  '#defaulting-keywords':
+    title: 7.3 Explicit Defaulting
+    status: unknown
+  '#initial':
+    title: '7.3.1 Resetting a Property: the initial keyword'
+    status: unknown
+  '#inherit':
+    title: '7.3.2 Explicit Inheritance: the inherit keyword'
+    status: unknown
+  '#inherit-initial':
+    title: '7.3.3 Erasing All Declarations: the unset keyword'
+    status: unknown
+  '#default':
+    title: '7.3.4 Rolling Back Cascade Origins: the revert keyword'
+    status: unknown
+  '#revert-layer':
+    title: '7.3.5 Rolling Back Cascade Layers: the revert-layer keyword'
+    status: unknown
+  '#layer-apis':
+    title: 8 Layer APIs
+    status: unknown
+  '#extensions-to-cssimportrule-interface':
+    title: 8.1 Extensions to the CSSImportRule interface
+    status: unknown
+  '#the-csslayerblockrule-interface':
+    title: 8.2 The CSSLayerBlockRule interface
+    status: unknown
+  '#the-csslayerstatementrule-interface':
+    title: 8.3 The CSSLayerStatementRule interface
+    status: unknown
+  '#changes':
+    title: 9 Changes
+    status: unknown
+  '#changes-2021-10':
+    title: 9.1 Changes since the 15 Oct 2021 Working Draft
+    status: unknown
+  '#changes-2021-08':
+    title: 9.2 Changes since the 29 August 2021 Working Draft
+    status: unknown
+  '#changes-2021-06':
+    title: 9.3 Changes since the 8 June 2021 Working Draft
+    status: unknown
+  '#changes-2021-03':
+    title: 9.4 Changes since the 19 March 2021 Working Draft
+    status: unknown
+  '#changes-2021-01':
+    title: 9.5 Changes since the 19 January 2021 Working Draft
+    status: unknown
+  '#additions-l4':
+    title: 9.6 Additions Since Level 4
+    status: unknown
+  '#additions-l3':
+    title: 9.7 Additions Since Level 3
+    status: unknown
+  '#changes-2':
+    title: 9.8 Additions Since Level 2
+    status: unknown

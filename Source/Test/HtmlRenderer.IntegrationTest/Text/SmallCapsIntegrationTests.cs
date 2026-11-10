@@ -102,8 +102,9 @@ public sealed class SmallCapsIntegrationTests
         Assert.AreEqual("123", box.Words[0].Text);
     }
 
-    [Ignore("font-variant-caps isn't supported")]
+    [Ignore("Gap, see Spec/css-fonts-4.yml")]
     [TestMethod]
+    [Spec("css-fonts-4", "#font-variant-caps-prop")]
     public void AllSmallCaps_MixedCaseWord_WouldSplitIntoThreeRuns()
     {
         var (root, _) = LayoutHarness.Layout(
@@ -116,8 +117,9 @@ public sealed class SmallCapsIntegrationTests
         Assert.AreEqual("C", box.Words[2].Text);
     }
 
-    [Ignore("font-variant-caps isn't supported")]
+    [Ignore("Gap, see Spec/css-fonts-4.yml")]
     [TestMethod]
+    [Spec("css-fonts-4", "#font-variant-caps-prop")]
     public void AllSmallCaps_DigitRunBetweenLowercaseRuns_WouldSplitIntoThreeRuns()
     {
         var (root, _) = LayoutHarness.Layout(

@@ -1,0 +1,71 @@
+spec: css-lists-3
+title: CSS Lists and Counters Module Level 3
+url: https://www.w3.org/TR/css-lists-3/
+snapshot: https://www.w3.org/TR/2020/WD-css-lists-3-20201117/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#declaring-a-list-item':
+    title: 2 Declaring a List Item
+    status: unknown
+  '#markers':
+    title: 3 Markers
+    status: unknown
+  '#marker-pseudo':
+    title: 3.1 The ::marker Pseudo-Element
+    status: unknown
+  '#marker-properties':
+    title: 3.1.1 Properties Applying to ::marker
+    status: unknown
+  '#content-property':
+    title: 3.2 Generating Marker Contents
+    status: unknown
+  '#image-markers':
+    title: '3.3 Image Markers: the list-style-image property'
+    status: unknown
+  '#text-markers':
+    title: '3.4 Text-based Markers: the list-style-type property'
+    status: unknown
+  '#list-style-position-property':
+    title: '3.5 Positioning Markers: The list-style-position property'
+    status: unknown
+  '#list-style-property':
+    title: '3.6 Styling Markers: the list-style shorthand property'
+    status: unknown
+  '#marker-side':
+    title: 3.7 The marker-side property
+    status: unknown
+  '#auto-numbering':
+    title: 4 Automatic Numbering With Counters
+    status: unknown
+  '#counter-reset':
+    title: '4.1 Creating Counters: the counter-reset property'
+    status: unknown
+  '#increment-set':
+    title: '4.2 Manipulating Counter Values: the counter-increment and counter-set properties'
+    status: unknown
+  '#nested-counters':
+    title: 4.3 Nested Counters and Scope
+    status: unknown
+  '#creating-counters':
+    title: 4.4 Creating and Inheriting Counters
+    status: unknown
+  '#inheriting-counters':
+    title: 4.4.1 Inheriting Counters
+    status: unknown
+  '#instantiating-counters':
+    title: 4.4.2 Instantiating Counters
+    status: unknown
+  '#counters-without-boxes':
+    title: 4.5 Counters in elements that do not generate boxes
+    status: unknown
+  '#list-item-counter':
+    title: 4.6 The Implicit list-item Counter
+    status: unknown
+  '#counter-functions':
+    title: '4.7 Outputting Counters: the counter() and counters() functions'
+    status: unknown

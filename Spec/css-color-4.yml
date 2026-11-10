@@ -1,0 +1,350 @@
+spec: css-color-4
+title: CSS Color Module Level 4
+url: https://www.w3.org/TR/css-color-4/
+snapshot: https://www.w3.org/TR/2026/CRD-css-color-4-20261103/
+sections:
+  '#introduction':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#terminology':
+    title: 2 Color Terminology
+    status: unknown
+  '#applying-color':
+    title: 3 Applying Color in CSS
+    status: unknown
+  '#accessibility':
+    title: 3.1 Accessibility and Conveying Information By Color
+    status: unknown
+  '#the-color-property':
+    title: '3.2 Foreground Color: the color property'
+    status: unknown
+  '#transparency':
+    title: '3.3 Transparency: the opacity property'
+    status: unknown
+  '#tagged-images':
+    title: 3.4 Color Space of Tagged Images
+    status: unknown
+  '#untagged':
+    title: 3.5 Color Spaces of Untagged Colors
+    status: unknown
+  '#color-type':
+    title: '4 Representing Colors: the <color> type'
+    status: unknown
+  '#color-syntax':
+    title: 4.1 The <color> syntax
+    status: unknown
+  '#color-syntax-modern':
+    title: 4.1.1 Modern (Space-separated) Color Function Syntax
+    status: unknown
+  '#color-syntax-legacy':
+    title: 4.1.2 Legacy (Comma-separated) Color Function Syntax
+    status: unknown
+  '#alpha-syntax':
+    title: '4.2 Representing Transparency in Colors: the <alpha-value> syntax'
+    status: unknown
+  '#hue-syntax':
+    title: '4.3 Representing Cylindrical-coordinate Hues: the <hue> syntax'
+    status: unknown
+  '#missing':
+    title: 4.4 “Missing” Color Components and the none Keyword
+    status: unknown
+  '#powerless':
+    title: 4.4.1 “Powerless” Color Components
+    status: unknown
+  '#parse-color':
+    title: 4.5 Parsing a <color> Value
+    status: unknown
+  '#numeric-srgb':
+    title: 5 sRGB Colors
+    status: unknown
+  '#rgb-functions':
+    title: '5.1 The RGB functions: rgb() and rgba()'
+    status: unknown
+  '#hex-notation':
+    title: '5.2 The RGB Hexadecimal Notations: #RRGGBB'
+    status: unknown
+  '#color-keywords':
+    title: 6 Color Keywords
+    status: unknown
+  '#named-colors':
+    title: 6.1 Named Colors
+    status: unknown
+  '#css-system-colors':
+    title: 6.2 System Colors
+    status: unknown
+  '#transparent-color':
+    title: 6.3 The transparent keyword
+    status: unknown
+  '#currentcolor-color':
+    title: 6.4 The currentcolor keyword
+    status: unknown
+  '#the-hsl-notation':
+    title: '7 HSL Colors: hsl() and hsla() functions'
+    status: unknown
+  '#hsl-to-rgb':
+    title: 7.1 Converting HSL Colors to sRGB
+    status: unknown
+  '#rgb-to-hsl':
+    title: 7.2 Converting sRGB Colors to HSL
+    status: unknown
+  '#hsl-examples':
+    title: 7.3 Examples of HSL Colors
+    status: unknown
+  '#the-hwb-notation':
+    title: '8 HWB Colors: hwb() function'
+    status: unknown
+  '#hwb-to-rgb':
+    title: 8.1 Converting HWB Colors to sRGB
+    status: unknown
+  '#rgb-to-hwb':
+    title: 8.2 Converting sRGB Colors to HWB
+    status: unknown
+  '#hwb-examples':
+    title: 8.3 Examples of HWB Colors
+    status: unknown
+  '#lab-colors':
+    title: '9 Device-independent Colors: CIE Lab and LCH, Oklab and OkLCh'
+    status: unknown
+  '#cie-lab':
+    title: 9.1 CIE Lab and LCH
+    status: unknown
+  '#ok-lab':
+    title: 9.2 Oklab and OkLCh
+    status: unknown
+  '#specifying-lab-lch':
+    title: '9.3 Specifying Lab and LCH: the lab() and lch() functional notations'
+    status: unknown
+  '#specifying-oklab-oklch':
+    title: '9.4 Specifying Oklab and OkLCh: the oklab() and oklch() functional notations'
+    status: unknown
+  '#lab-to-lch':
+    title: 9.5 Converting Lab or Oklab colors to LCH or OkLCh colors
+    status: unknown
+  '#lch-to-lab':
+    title: 9.6 Converting LCH or OkLCh colors to Lab or Oklab colors
+    status: unknown
+  '#predefined':
+    title: 10 Predefined Color Spaces
+    status: unknown
+  '#color-function':
+    title: '10.1 Specifying Predefined Colors: the color() function'
+    status: unknown
+  '#predefined-sRGB':
+    title: '10.2 The Predefined sRGB Color Space: the sRGB keyword'
+    status: unknown
+  '#predefined-sRGB-linear':
+    title: '10.3 The Predefined Linear-Light sRGB Color Space: the srgb-linear keyword'
+    status: unknown
+  '#predefined-display-p3':
+    title: '10.4 The Predefined Display P3 Color Space: the display-p3 keyword'
+    status: unknown
+  '#predefined-display-p3-linear':
+    title: '10.5 The Predefined Linear-Light Display P3 Color Space: the display-p3-linear keyword'
+    status: unknown
+  '#predefined-a98-rgb':
+    title: '10.6 The Predefined A98 RGB Color Space: the a98-rgb keyword'
+    status: unknown
+  '#predefined-prophoto-rgb':
+    title: '10.7 The Predefined ProPhoto RGB Color Space: the prophoto-rgb keyword'
+    status: unknown
+  '#predefined-rec2020':
+    title: '10.8 The Predefined ITU-R BT.2020-2 Color Space: the rec2020 keyword'
+    status: unknown
+  '#predefined-xyz':
+    title: '10.9 The Predefined CIE XYZ Color Spaces: the xyz-d50, xyz-d65, and xyz keywords'
+    status: unknown
+  '#predefined-to-lab-oklab':
+    title: 10.10 Converting Predefined Color Spaces to Lab or Oklab
+    status: unknown
+  '#oklab-lab-to-predefined':
+    title: 10.11 Converting Lab or Oklab to Predefined RGB Color Spaces
+    status: unknown
+  '#predefined-to-predefined':
+    title: 10.12 Converting Between Predefined RGB Color Spaces
+    status: unknown
+  '#alpha':
+    title: 10.13 Simple Alpha Compositing
+    status: unknown
+  '#color-conversion':
+    title: 11 Converting Colors
+    status: unknown
+  '#color-convert-intro':
+    title: 11.1 Introduction to Converting Colors
+    status: unknown
+  '#color-convert-algorithm':
+    title: 11.2 Algorithm for Converting Colors
+    status: unknown
+  '#comparing-color-values':
+    title: 12 Comparing <color> Values
+    status: unknown
+  '#interpolation':
+    title: 13 Color Interpolation
+    status: unknown
+  '#interpolate-gamut':
+    title: 13.1 Interpolation and color gamuts
+    status: unknown
+  '#component-wise-linear-interpolation':
+    title: 13.2 Component-wise Linear Interpolation
+    status: unknown
+  '#interpolation-space':
+    title: 13.3 Color Space for Interpolation
+    status: unknown
+  '#interpolation-missing':
+    title: 13.4 Interpolating with Missing Components
+    status: unknown
+  '#interpolation-alpha':
+    title: 13.5 Interpolating with Alpha
+    status: unknown
+  '#hue-interpolation':
+    title: 13.6 Hue Interpolation
+    status: unknown
+  '#hue-shorter':
+    title: 13.6.1 shorter
+    status: unknown
+  '#hue-longer':
+    title: 13.6.2 longer
+    status: unknown
+  '#hue-increasing':
+    title: 13.6.3 increasing
+    status: unknown
+  '#hue-decreasing':
+    title: 13.6.4 decreasing
+    status: unknown
+  '#gamut-mapping':
+    title: 14 Gamut Mapping
+    status: unknown
+  '#gamut-mapping-intro':
+    title: 14.1 An Introduction to Gamut Mapping
+    status: unknown
+  '#GM-clip':
+    title: 14.1.1 Clipping
+    status: unknown
+  '#GM-closest':
+    title: 14.1.2 Closest Color (MINDE)
+    status: unknown
+  '#GM-chroma':
+    title: 14.1.3 Chroma Reduction
+    status: unknown
+  '#GM-excessive-reduction':
+    title: 14.1.4 Excessive Chroma Reduction
+    status: unknown
+  '#GM-chroma-local-MINDE':
+    title: 14.1.5 Chroma Reduction with Local Clipping
+    status: unknown
+  '#GM-hue-curvature':
+    title: '14.1.6 Deviations from Perceptual Uniformity: Hue Curvature'
+    status: unknown
+  '#css-gamut-mapping':
+    title: 14.2 CSS Gamut Mapping to an RGB Destination
+    status: unknown
+  '#GMA-Binary-local-MINDE':
+    title: 14.2.1 Binary Search Gamut Mapping with Local MINDE
+    status: unknown
+  '#pseudo-binsearch':
+    title: 14.2.2 Sample Pseudocode for the Binary Search Gamut Mapping with Local MINDE
+    status: unknown
+  '#GMA-EdgeSeeker':
+    title: 14.2.3 The EdgeSeeker Gamut Mapping
+    status: unknown
+  '#pseudo-edgeseeker':
+    title: 14.2.4 Sample Pseudocode for the EdgeSeeker Gamut Mapping
+    status: unknown
+  '#GMA-Raytrace':
+    title: 14.2.5 The Ray Trace Gamut Mapping
+    status: unknown
+  '#pseudo-raytrace':
+    title: 14.2.6 Sample Pseudocode for the Ray Trace Gamut Mapping
+    status: unknown
+  '#raytrace-footnotes':
+    title: 14.2.6.1 Footnotes for Ray Trace algorithm
+    status: unknown
+  '#resolving-color-values':
+    title: 15 Resolving <color> Values
+    status: unknown
+  '#resolving-sRGB-values':
+    title: 15.1 Resolving sRGB values
+    status: unknown
+  '#resolving-lab-lch-values':
+    title: 15.2 Resolving Lab and LCH values
+    status: unknown
+  '#resolving-oklab-oklch-values':
+    title: 15.3 Resolving Oklab and OkLCh values
+    status: unknown
+  '#resolving-color-function-values':
+    title: 15.4 Resolving values of the color() function
+    status: unknown
+  '#resolving-other-colors':
+    title: 15.5 Resolving other colors
+    status: unknown
+  '#serializing-color-values':
+    title: 16 Serializing <color> Values
+    status: unknown
+  '#serializing-alpha-values':
+    title: 16.1 Serializing alpha values
+    status: unknown
+  '#serializing-legacy-alpha-values':
+    title: 16.1.1 Serializing legacy alpha values
+    status: unknown
+  '#serializing-modern-alpha-values':
+    title: 16.1.2 Serializing modern alpha values
+    status: unknown
+  '#serializing-sRGB-values':
+    title: 16.2 Serializing sRGB values
+    status: unknown
+  '#HTML-compatible-serialization-of-srgb':
+    title: 16.2.1 HTML-compatible serialization of sRGB values
+    status: unknown
+  '#css-serialization-of-srgb':
+    title: 16.2.2 CSS serialization of sRGB values
+    status: unknown
+  '#serializing-lab-lch':
+    title: 16.3 Serializing Lab and LCH values
+    status: unknown
+  '#serializing-oklab-oklch':
+    title: 16.4 Serializing Oklab and OkLCh values
+    status: unknown
+  '#serializing-color-function-values':
+    title: 16.5 Serializing values of the color() function
+    status: unknown
+  '#serializing-other-colors':
+    title: 16.6 Serializing other colors
+    status: unknown
+  '#serializing-opacity-values':
+    title: 17 Serializing <opacity-value>
+    status: unknown
+  '#sample':
+    title: 18 Default Style Rules
+    status: unknown
+  '#color-conversion-code':
+    title: 19 Sample code for Color Conversions
+    status: unknown
+  '#color-difference-code':
+    title: 20 Color Difference Formulae
+    status: unknown
+  '#color-differences-intro':
+    title: 20.1 Introduction to Color Difference metrics.
+    status: unknown
+  '#color-difference-2000':
+    title: 20.2 ΔE2000
+    status: unknown
+  '#color-difference-OK':
+    title: 20.3 ΔEOK
+    status: unknown
+  '#color-difference-OK2':
+    title: 20.4 ΔEOK2
+    status: unknown
+  '#color-difference-OK2r':
+    title: 20.5 ΔEOKr2
+    status: unknown
+  '#security':
+    title: 21 Security Considerations
+    status: unknown
+  '#privacy':
+    title: 22 Privacy Considerations
+    status: unknown
+  '#a11y-sec':
+    title: 23 Accessibility Considerations
+    status: unknown

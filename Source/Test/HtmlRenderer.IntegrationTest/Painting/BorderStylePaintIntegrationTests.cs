@@ -141,8 +141,9 @@ public sealed class BorderStylePaintIntegrationTests
         Assert.AreEqual(RColor.FromArgb(90, 90, 90), left.Color);
     }
 
-    [Ignore("Gap: currentColor isn't supported in border-color")]
+    [Ignore("Gap, see Spec/css-color-4.yml")]
     [TestMethod]
+    [Spec("css-color-4", "#currentcolor-color")]
     public void BorderColorPerSide_CurrentColor_ResolvesToElementColor()
     {
         var (root, _) = PaintHarness.Layout(PaintHarness.Wrap(

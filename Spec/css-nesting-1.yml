@@ -1,0 +1,50 @@
+spec: css-nesting-1
+title: CSS Nesting Module Level 1
+url: https://www.w3.org/TR/css-nesting-1/
+snapshot: https://www.w3.org/TR/2026/WD-css-nesting-1-20260122/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#values':
+    title: 1.2 Values
+    status: unknown
+  '#explainer':
+    title: 2 Explainer
+    status: unknown
+  '#nesting':
+    title: 3 Nesting Style Rules
+    status: unknown
+  '#syntax':
+    title: 3.1 Syntax
+    status: unknown
+  '#syntax-examples':
+    title: 3.2 Examples
+    status: unknown
+  '#conditionals':
+    title: 3.3 Nesting Other At-Rules
+    status: unknown
+  '#nesting-at-scope':
+    title: 3.3.1 Nested @scope Rules
+    status: unknown
+  '#mixing':
+    title: 3.4 Mixing Nesting Rules and Declarations
+    status: unknown
+  '#nest-selector':
+    title: '4 Nesting Selector: the & selector'
+    status: unknown
+  '#nested-declarations':
+    title: 5 The Nested Declarations Rule
+    status: unknown
+  '#cssom':
+    title: 6 CSSOM
+    status: unknown
+  '#the-cssnestrule':
+    title: 6.1 The CSSNestedDeclarations Interface
+    status: unknown
+  '#changes':
+    title: 7 Changes
+    status: unknown

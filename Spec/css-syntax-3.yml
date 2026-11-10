@@ -1,0 +1,233 @@
+spec: css-syntax-3
+title: CSS Syntax Module Level 3
+url: https://www.w3.org/TR/css-syntax-3/
+snapshot: https://www.w3.org/TR/2026/CRD-css-syntax-3-20261001/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module interactions
+    status: unknown
+  '#syntax-description':
+    title: 2 Description of CSS’s Syntax
+    status: unknown
+  '#escaping':
+    title: 2.1 Escaping
+    status: unknown
+  '#error-handling':
+    title: 2.2 Error Handling
+    status: unknown
+  '#tokenizing-and-parsing':
+    title: 3 Tokenizing and Parsing CSS
+    status: unknown
+  '#parsing-overview':
+    title: 3.1 Overview of the Parsing Model
+    status: unknown
+  '#input-byte-stream':
+    title: 3.2 The input byte stream
+    status: unknown
+  '#input-preprocessing':
+    title: 3.3 Preprocessing the input stream
+    status: unknown
+  '#tokenization':
+    title: 4 Tokenization
+    status: unknown
+  '#token-diagrams':
+    title: 4.1 Token Railroad Diagrams
+    status: unknown
+  '#tokenizer-definitions':
+    title: 4.2 Definitions
+    status: unknown
+  '#tokenizer-algorithms':
+    title: 4.3 Tokenizer Algorithms
+    status: unknown
+  '#consume-token':
+    title: 4.3.1 Consume a token
+    status: unknown
+  '#consume-comment':
+    title: 4.3.2 Consume comments
+    status: unknown
+  '#consume-numeric-token':
+    title: 4.3.3 Consume a numeric token
+    status: unknown
+  '#consume-ident-like-token':
+    title: 4.3.4 Consume an ident-like token
+    status: unknown
+  '#consume-string-token':
+    title: 4.3.5 Consume a string token
+    status: unknown
+  '#consume-url-token':
+    title: 4.3.6 Consume a url token
+    status: unknown
+  '#consume-escaped-code-point':
+    title: 4.3.7 Consume an escaped code point
+    status: unknown
+  '#starts-with-a-valid-escape':
+    title: 4.3.8 Check if two code points are a valid escape
+    status: unknown
+  '#would-start-an-identifier':
+    title: 4.3.9 Check if three code points would start an ident sequence
+    status: unknown
+  '#starts-with-a-number':
+    title: 4.3.10 Check if three code points would start a number
+    status: unknown
+  '#starts-a-unicode-range':
+    title: 4.3.11 Check if three code points would start a unicode-range
+    status: unknown
+  '#consume-name':
+    title: 4.3.12 Consume an ident sequence
+    status: unknown
+  '#consume-number':
+    title: 4.3.13 Consume a number
+    status: unknown
+  '#consume-unicode-range-token':
+    title: 4.3.14 Consume a unicode-range token
+    status: unknown
+  '#consume-remnants-of-bad-url':
+    title: 4.3.15 Consume the remnants of a bad url
+    status: unknown
+  '#parsing':
+    title: 5 Parsing
+    status: unknown
+  '#parser-diagrams':
+    title: 5.1 Parser Railroad Diagrams
+    status: unknown
+  '#css-tree':
+    title: 5.2 CSS Parsing Results
+    status: unknown
+  '#parser-definitions':
+    title: 5.3 Token Streams
+    status: unknown
+  '#parser-entry-points':
+    title: 5.4 Parser Entry Points
+    status: unknown
+  '#parse-grammar':
+    title: 5.4.1 Parse something according to a CSS grammar
+    status: unknown
+  '#parse-comma-list':
+    title: 5.4.2 Parse a comma-separated list according to a CSS grammar
+    status: unknown
+  '#parse-stylesheet':
+    title: 5.4.3 Parse a stylesheet
+    status: unknown
+  '#parse-stylesheet-contents':
+    title: 5.4.4 Parse a stylesheet’s contents
+    status: unknown
+  '#parse-block-contents':
+    title: 5.4.5 Parse a block’s contents
+    status: unknown
+  '#parse-rule':
+    title: 5.4.6 Parse a rule
+    status: unknown
+  '#parse-declaration':
+    title: 5.4.7 Parse a declaration
+    status: unknown
+  '#parse-component-value':
+    title: 5.4.8 Parse a component value
+    status: unknown
+  '#parse-list-of-component-values':
+    title: 5.4.9 Parse a list of component values
+    status: unknown
+  '#parse-comma-separated-list-of-component-values':
+    title: 5.4.10 Parse a comma-separated list of component values
+    status: unknown
+  '#parser-algorithms':
+    title: 5.5 Parser Algorithms
+    status: unknown
+  '#consume-stylesheet-contents':
+    title: 5.5.1 Consume a stylesheet’s contents
+    status: unknown
+  '#consume-at-rule':
+    title: 5.5.2 Consume an at-rule
+    status: unknown
+  '#consume-qualified-rule':
+    title: 5.5.3 Consume a qualified rule
+    status: unknown
+  '#consume-block':
+    title: 5.5.4 Consume a block
+    status: unknown
+  '#consume-block-contents':
+    title: 5.5.5 Consume a block’s contents
+    status: unknown
+  '#consume-declaration':
+    title: 5.5.6 Consume a declaration
+    status: unknown
+  '#consume-list-of-components':
+    title: 5.5.7 Consume a list of component values
+    status: unknown
+  '#consume-component-value':
+    title: 5.5.8 Consume a component value
+    status: unknown
+  '#consume-simple-block':
+    title: 5.5.9 Consume a simple block
+    status: unknown
+  '#consume-function':
+    title: 5.5.10 Consume a function
+    status: unknown
+  '#consume-unicode-range-value':
+    title: 5.5.11 Consume a unicode-range value
+    status: unknown
+  '#anb-microsyntax':
+    title: 6 The An+B microsyntax
+    status: unknown
+  '#anb-syntax':
+    title: 6.1 Informal Syntax Description
+    status: unknown
+  '#the-anb-type':
+    title: 6.2 The <a-n-plus-b> type
+    status: unknown
+  '#rule-defs':
+    title: 7 Defining Grammars for Rules and Other Values
+    status: unknown
+  '#block-contents':
+    title: '7.1 Defining Block Contents: the <block-contents>, <declaration-list>, <qualified-rule-list>, <declaration-rule-list>, and <rule-list> productions'
+    status: unknown
+  '#any-value':
+    title: '7.2 Defining Arbitrary Contents: the <declaration-value> and <any-value> productions'
+    status: unknown
+  '#css-stylesheets':
+    title: 8 CSS stylesheets
+    status: unknown
+  '#style-rules':
+    title: 8.1 Style rules
+    status: unknown
+  '#at-rules':
+    title: 8.2 At-rules
+    status: unknown
+  '#charset-rule':
+    title: 8.3 The @charset Rule
+    status: unknown
+  '#serialization':
+    title: 9 Serialization
+    status: unknown
+  '#serializing-anb':
+    title: 9.1 Serializing <a-n-plus-b>
+    status: unknown
+  '#privacy':
+    title: 10 Privacy Considerations
+    status: unknown
+  '#security':
+    title: 11 Security Considerations
+    status: unknown
+  '#changes':
+    title: 12 Changes
+    status: unknown
+  '#changes-CR-20211224':
+    title: 12.1 Changes from the 24 December 2021 Candidate Recommendation Draft
+    status: unknown
+  '#changes-CR-20190716':
+    title: 12.2 Changes from the 16 August 2019 Candidate Recommendation
+    status: unknown
+  '#changes-CR-20140220':
+    title: 12.3 Changes from the 20 February 2014 Candidate Recommendation
+    status: unknown
+  '#changes-WD-20131105':
+    title: 12.4 Changes from the 5 November 2013 Last Call Working Draft
+    status: unknown
+  '#changes-WD-20130919':
+    title: 12.5 Changes from the 19 September 2013 Working Draft
+    status: unknown
+  '#changes-css21':
+    title: 12.6 Changes from CSS 2.1 and Selectors Level 3
+    status: unknown

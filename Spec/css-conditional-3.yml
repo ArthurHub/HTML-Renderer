@@ -1,0 +1,53 @@
+spec: css-conditional-3
+title: CSS Conditional Rules Module Level 3
+url: https://www.w3.org/TR/css-conditional-3/
+snapshot: https://www.w3.org/TR/2024/CRD-css-conditional-3-20240815/
+sections:
+  '#introduction':
+    title: 1 Introduction
+    status: unknown
+  '#context':
+    title: 1.1 Background
+    status: unknown
+  '#placement':
+    title: 1.2 Module Interactions
+    status: unknown
+  '#processing':
+    title: 2 Processing of conditional group rules
+    status: unknown
+  '#contents-of':
+    title: 3 Contents of conditional group rules
+    status: unknown
+  '#use':
+    title: 4 Placement of conditional group rules
+    status: unknown
+  '#at-media':
+    title: '5 Media-specific style sheets: the @media rule'
+    status: unknown
+  '#at-supports':
+    title: '6 Feature queries: the @supports rule'
+    status: unknown
+  '#support-definition':
+    title: 6.1 Definition of support
+    status: unknown
+  '#apis':
+    title: 7 APIs
+    status: unknown
+  '#extensions-to-cssrule-interface':
+    title: 7.1 Extensions to the CSSRule interface
+    status: unknown
+  '#the-cssconditionrule-interface':
+    title: 7.2 The CSSConditionRule interface
+    status: unknown
+  '#the-cssmediarule-interface':
+    title: 7.3 The CSSMediaRule interface
+    status: unknown
+  '#the-csssupportsrule-interface':
+    title: 7.4 The CSSSupportsRule interface
+    status: unknown
+  '#the-css-namespace':
+    title: 7.5 The CSS namespace, and the supports() function
+    status: unknown
+  '#changes':
+    title: 8 Changes
+    status: unknown

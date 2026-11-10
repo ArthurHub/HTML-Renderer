@@ -24,8 +24,11 @@ public static class Report
         foreach (var spec in compliance.Specs)
         {
             sb.AppendLine().AppendLine($"### {spec.Manifest.Title}").AppendLine();
-            if (spec.Manifest.Snapshot != null)
-                sb.AppendLine($"Checked against commit `{spec.Manifest.Snapshot}`.").AppendLine();
+            var snapshot = spec.Manifest.Snapshot;
+            if (snapshot != null && snapshot.StartsWith("https://", StringComparison.Ordinal))
+                sb.AppendLine($"Checked against [{snapshot.TrimEnd('/').Split('/')[^1]}]({snapshot}).").AppendLine();
+            else if (snapshot != null)
+                sb.AppendLine($"Checked against commit `{snapshot}`.").AppendLine();
             foreach (var chapter in Chapters(spec))
                 RenderChapter(sb, spec, chapter);
         }
@@ -55,9 +58,12 @@ public static class Report
         sb.AppendLine().AppendLine("</details>").AppendLine();
     }
 
-    /// <summary>Groups the sections by the spec page they're on, a chapter in CSS 2.1, a group of elements in HTML.</summary>
+    /// <summary>
+    /// Groups the sections by the spec page they're on, a chapter in CSS 2.1, a group of elements in HTML, or by
+    /// chapter for a spec on a single page ("#id" anchors).
+    /// </summary>
     private static IEnumerable<List<SpecSection>> Chapters(SpecResult spec) =>
-        spec.Sections.GroupBy(s => s.Anchor.Split('#')[0]).Select(g => g.ToList());
+        spec.Sections.GroupBy(s => s.Anchor.StartsWith('#') ? s.Number.Split('.')[0] : s.Anchor.Split('#')[0]).Select(g => g.ToList());
 
     private static string Escape(string text) => text.Replace("|", "\\|").Replace("<", "&lt;").Replace(">", "&gt;");
 }

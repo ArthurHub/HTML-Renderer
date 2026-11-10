@@ -1,0 +1,134 @@
+spec: css-text-3
+title: CSS Text Module Level 3
+url: https://www.w3.org/TR/css-text-3/
+snapshot: https://www.w3.org/TR/2026/CRD-css-text-3-20260814/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#values':
+    title: 1.2 Value Definitions
+    status: unknown
+  '#languages':
+    title: 1.3 Languages and Typesetting
+    status: unknown
+  '#characters':
+    title: 1.4 Characters and Letters
+    status: unknown
+  '#text-encoding':
+    title: 1.5 Text Processing
+    status: unknown
+  '#transforming':
+    title: 2 Transforming Text
+    status: unknown
+  '#text-transform-property':
+    title: '2.1 Case Transforms: the text-transform property'
+    status: unknown
+  '#text-transform-mapping':
+    title: 2.1.1 Mapping Rules
+    status: unknown
+  '#text-transform-order':
+    title: 2.1.2 Order of Operations
+    status: unknown
+  '#white-space-property':
+    title: '3 White Space and Wrapping: the white-space property'
+    status: unknown
+  '#white-space-processing':
+    title: 4 White Space Processing & Control Characters
+    status: unknown
+  '#white-space-rules':
+    title: 4.1 The White Space Processing Rules
+    status: unknown
+  '#white-space-phase-1':
+    title: '4.1.1 Phase I: Collapsing and Transformation'
+    status: unknown
+  '#white-space-phase-2':
+    title: '4.1.2 Phase II: Trimming and Positioning'
+    status: unknown
+  '#line-break-transform':
+    title: 4.1.3 Segment Break Transformation Rules
+    status: unknown
+  '#tab-size-property':
+    title: '4.2 Tab Character Size: the tab-size property'
+    status: unknown
+  '#line-breaking':
+    title: 5 Line Breaking and Word Boundaries
+    status: unknown
+  '#word-break-property':
+    title: '5.1 Breaking Rules for Letters: the word-break property'
+    status: unknown
+  '#line-break-property':
+    title: '5.2 Line Breaking Strictness: the line-break property'
+    status: unknown
+  '#hyphenation':
+    title: '5.3 Hyphenation: the hyphens property'
+    status: unknown
+  '#overflow-wrap-property':
+    title: '5.4 Overflow Wrapping: the overflow-wrap (word-wrap) property'
+    status: unknown
+  '#line-break-details':
+    title: 5.5 Line Breaking Details
+    status: unknown
+  '#justification':
+    title: 6 Alignment and Justification
+    status: unknown
+  '#text-align-property':
+    title: '6.1 Text Alignment: the text-align shorthand'
+    status: unknown
+  '#text-align-all-property':
+    title: '6.2 Default Text Alignment: the text-align-all property'
+    status: unknown
+  '#text-align-last-property':
+    title: '6.3 Last Line Alignment: the text-align-last property'
+    status: unknown
+  '#text-justify-property':
+    title: '6.4 Justification Method: the text-justify property'
+    status: unknown
+  '#expanding-text':
+    title: 6.4.1 Expanding and Compressing Text
+    status: unknown
+  '#justify-symbols':
+    title: 6.4.2 Handling Symbols and Punctuation
+    status: unknown
+  '#justify-limits':
+    title: 6.4.3 Unexpandable Text
+    status: unknown
+  '#justify-cursive':
+    title: 6.4.4 Cursive Scripts
+    status: unknown
+  '#justify-algos':
+    title: 6.4.5 Minimum Requirements for auto Justification
+    status: unknown
+  '#spacing':
+    title: 7 Spacing
+    status: unknown
+  '#word-spacing-property':
+    title: '7.1 Word Spacing: the word-spacing property'
+    status: unknown
+  '#letter-spacing-property':
+    title: '7.2 Tracking: the letter-spacing property'
+    status: unknown
+  '#cursive-tracking':
+    title: 7.2.1 Cursive Scripts
+    status: unknown
+  '#boundary-shaping':
+    title: 7.3 Shaping Across Element Boundaries
+    status: unknown
+  '#edge-effects':
+    title: 8 Edge Effects
+    status: unknown
+  '#text-indent-property':
+    title: '8.1 First Line Indentation: the text-indent property'
+    status: unknown
+  '#hanging':
+    title: 8.2 Hanging Glyphs
+    status: unknown
+  '#hanging-punctuation-property':
+    title: '8.2.1 Hanging Punctuation: the hanging-punctuation property'
+    status: unknown
+  '#bidi-linebox':
+    title: 8.3 Bidirectionality and Line Boxes
+    status: unknown

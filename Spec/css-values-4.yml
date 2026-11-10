@@ -1,0 +1,260 @@
+spec: css-values-4
+title: CSS Values and Units Module Level 4
+url: https://www.w3.org/TR/css-values-4/
+snapshot: https://www.w3.org/TR/2024/WD-css-values-4-20240312/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#value-defs':
+    title: 2 Value Definition Syntax
+    status: unknown
+  '#component-types':
+    title: 2.1 Component Value Types
+    status: unknown
+  '#component-combinators':
+    title: 2.2 Component Value Combinators
+    status: unknown
+  '#component-multipliers':
+    title: 2.3 Component Value Multipliers
+    status: unknown
+  '#combinator-multiplier-patterns':
+    title: 2.4 Combinator and Multiplier Patterns
+    status: unknown
+  '#component-whitespace':
+    title: 2.5 Component Values and White Space
+    status: unknown
+  '#component-functions':
+    title: 2.6 Functional Notation Definitions
+    status: unknown
+  '#value-examples':
+    title: 2.7 Property Value Examples
+    status: unknown
+  '#production-blocks':
+    title: 2.8 Non-Terminal Definitions and Grammar Production Blocks
+    status: unknown
+  '#combining-values':
+    title: '3 Combining Values: Interpolation, Addition, and Accumulation'
+    status: unknown
+  '#combining-range':
+    title: 3.1 Range Checking
+    status: unknown
+  '#textual-values':
+    title: 4 Textual Data Types
+    status: unknown
+  '#keywords':
+    title: 4.1 Pre-defined Keywords
+    status: unknown
+  '#common-keywords':
+    title: '4.1.1 CSS-wide keywords: initial, inherit and unset'
+    status: unknown
+  '#custom-idents':
+    title: '4.2 Unprefixed Author-defined Identifiers: the <custom-ident> type'
+    status: unknown
+  '#dashed-idents':
+    title: '4.3 Prefixed Author-defined Identifiers: the <dashed-ident> type'
+    status: unknown
+  '#strings':
+    title: '4.4 Quoted Strings: the <string> type'
+    status: unknown
+  '#urls':
+    title: '4.5 Resource Locators: the <url> type'
+    status: unknown
+  '#relative-urls':
+    title: 4.5.1 Relative URLs
+    status: unknown
+  '#local-urls':
+    title: 4.5.1.1 Fragment URLs
+    status: unknown
+  '#url-empty':
+    title: 4.5.2 Empty URLs
+    status: unknown
+  '#url-modifiers':
+    title: 4.5.3 URL Modifiers
+    status: unknown
+  '#url-processing':
+    title: 4.5.4 URL Processing Model
+    status: unknown
+  '#numeric-types':
+    title: 5 Numeric Data Types
+    status: unknown
+  '#numeric-ranges':
+    title: 5.1 Range Restrictions and Range Definition Notation
+    status: unknown
+  '#integers':
+    title: '5.2 Integers: the <integer> type'
+    status: unknown
+  '#combine-integers':
+    title: 5.2.1 Computation and Combination of <integer>
+    status: unknown
+  '#numbers':
+    title: '5.3 Real Numbers: the <number> type'
+    status: unknown
+  '#combine-numbers':
+    title: 5.3.1 Computation and Combination of <number>
+    status: unknown
+  '#dimensions':
+    title: '5.4 Numbers with Units: dimension values'
+    status: unknown
+  '#compat':
+    title: 5.4.1 Compatible Units
+    status: unknown
+  '#combine-dimensions':
+    title: 5.4.2 Combination of Dimensions
+    status: unknown
+  '#percentages':
+    title: '5.5 Percentages: the <percentage> type'
+    status: unknown
+  '#combine-percentages':
+    title: 5.5.1 Computation and Combination of <percentage>
+    status: unknown
+  '#mixed-percentages':
+    title: 5.6 Mixing Percentages and Dimensions
+    status: unknown
+  '#combine-mixed':
+    title: 5.6.1 Computation and Combination of Percentage and Dimension Mixes
+    status: unknown
+  '#ratios':
+    title: '5.7 Ratios: the <ratio> type'
+    status: unknown
+  '#combine-ratio':
+    title: 5.7.1 Combination of <ratio>
+    status: unknown
+  '#lengths':
+    title: '6 Distance Units: the <length> type'
+    status: unknown
+  '#relative-lengths':
+    title: 6.1 Relative Lengths
+    status: unknown
+  '#font-relative-lengths':
+    title: '6.1.1 Font-relative Lengths: the em, rem, ex, rex, cap, rcap, ch, rch, ic, ric, lh, rlh units'
+    status: unknown
+  '#viewport-relative-lengths':
+    title: '6.1.2 Viewport-percentage Lengths: the *vw, *vh, *vi, *vb, *vmin, *vmax units'
+    status: unknown
+  '#viewport-variants':
+    title: 6.1.2.1 The Large, Small, and Dynamic Viewport Sizes
+    status: unknown
+  '#viewport-relative-units':
+    title: 6.1.2.2 The Various Viewport-relative Units
+    status: unknown
+  '#absolute-lengths':
+    title: '6.2 Absolute Lengths: the cm, mm, Q, in, pt, pc, px units'
+    status: unknown
+  '#other-units':
+    title: 7 Other Quantities
+    status: unknown
+  '#angles':
+    title: '7.1 Angle Units: the <angle> type and deg, grad, rad, turn units'
+    status: unknown
+  '#time':
+    title: '7.2 Duration Units: the <time> type and s, ms units'
+    status: unknown
+  '#frequency':
+    title: '7.3 Frequency Units: the <frequency> type and Hz, kHz units'
+    status: unknown
+  '#resolution':
+    title: '7.4 Resolution Units: the <resolution> type and dpi, dpcm, dppx units'
+    status: unknown
+  '#defined-elsewhere':
+    title: 8 Data Types Defined Elsewhere
+    status: unknown
+  '#colors':
+    title: '8.1 Colors: the <color> type'
+    status: unknown
+  '#combine-colors':
+    title: 8.1.1 Combination of <color>
+    status: unknown
+  '#images':
+    title: '8.2 Images: the <image> type'
+    status: unknown
+  '#combine-images':
+    title: 8.2.1 Combination of <image>
+    status: unknown
+  '#position':
+    title: '8.3 2D Positioning: the <position> type'
+    status: unknown
+  '#position-parsing':
+    title: 8.3.1 Parsing <position>
+    status: unknown
+  '#position-serialization':
+    title: 8.3.2 Serializing <position>
+    status: unknown
+  '#combine-positions':
+    title: 8.3.3 Combination of <position>
+    status: unknown
+  '#functional-notations':
+    title: 9 Functional Notations
+    status: unknown
+  '#math':
+    title: 10 Mathematical Expressions
+    status: unknown
+  '#calc-func':
+    title: '10.1 Basic Arithmetic: calc()'
+    status: unknown
+  '#comp-func':
+    title: '10.2 Comparison Functions: min(), max(), and clamp()'
+    status: unknown
+  '#round-func':
+    title: '10.3 Stepped Value Functions: round(), mod(), and rem()'
+    status: unknown
+  '#round-infinities':
+    title: 10.3.1 Argument Ranges
+    status: unknown
+  '#trig-funcs':
+    title: '10.4 Trigonometric Functions: sin(), cos(), tan(), asin(), acos(), atan(), and atan2()'
+    status: unknown
+  '#trig-infinities':
+    title: 10.4.1 Argument Ranges
+    status: unknown
+  '#exponent-funcs':
+    title: '10.5 Exponential Functions: pow(), sqrt(), hypot(), log(), exp()'
+    status: unknown
+  '#exponent-infinities':
+    title: 10.5.1 Argument Ranges
+    status: unknown
+  '#sign-funcs':
+    title: '10.6 Sign-Related Functions: abs(), sign()'
+    status: unknown
+  '#calc-keywords':
+    title: 10.7 Numeric Keywords
+    status: unknown
+  '#calc-constants':
+    title: '10.7.1 Numeric Constants: e, pi'
+    status: unknown
+  '#calc-error-constants':
+    title: '10.7.2 Degenerate Numeric Constants: infinity, -infinity, NaN'
+    status: unknown
+  '#calc-variables':
+    title: 10.7.3 Numeric Variables
+    status: unknown
+  '#calc-syntax':
+    title: 10.8 Syntax
+    status: unknown
+  '#calc-type-checking':
+    title: 10.9 Type Checking
+    status: unknown
+  '#calc-ieee':
+    title: 10.9.1 Infinities, NaN, and Signed Zero
+    status: unknown
+  '#calc-internal':
+    title: 10.10 Internal Representation
+    status: unknown
+  '#calc-simplification':
+    title: 10.10.1 Simplification
+    status: unknown
+  '#calc-computed-value':
+    title: 10.11 Computed Value
+    status: unknown
+  '#calc-range':
+    title: 10.12 Range Checking
+    status: unknown
+  '#calc-serialize':
+    title: 10.13 Serialization
+    status: unknown
+  '#combine-math':
+    title: 10.14 Combination of Math Functions
+    status: unknown

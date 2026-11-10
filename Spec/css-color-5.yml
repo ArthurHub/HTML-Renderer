@@ -1,0 +1,182 @@
+spec: css-color-5
+title: CSS Color Module Level 5
+url: https://www.w3.org/TR/css-color-5/
+snapshot: https://www.w3.org/TR/2026/WD-css-color-5-20261029/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#color-syntax':
+    title: 2 The <color> syntax
+    status: unknown
+  '#color-mix':
+    title: '3 Mixing Colors: the color-mix() Function'
+    status: unknown
+  '#color-mix-space':
+    title: 3.1 Colorspace for mixing
+    status: unknown
+  '#color-mix-percent-norm':
+    title: 3.2 Percentage Normalization
+    status: unknown
+  '#color-mix-result':
+    title: 3.3 Calculating the Result of color-mix
+    status: unknown
+  '#color-mix-color-space-effect':
+    title: 3.4 Effect of Mixing Color Space on color-mix
+    status: unknown
+  '#color-mix-with-alpha':
+    title: 3.5 Effect of Non-Unity Alpha on color-mix
+    status: unknown
+  '#relative-colors':
+    title: 4 Relative Colors
+    status: unknown
+  '#rcs-intro':
+    title: 4.1 Processing Model for Relative Colors
+    status: unknown
+  '#relative-syntax':
+    title: 4.2 Relative Color Syntax
+    status: unknown
+  '#relative-RGB':
+    title: 4.3 Relative sRGB Colors
+    status: unknown
+  '#relative-HSL':
+    title: 4.4 Relative HSL Colors
+    status: unknown
+  '#relative-HWB':
+    title: 4.5 Relative HWB Colors
+    status: unknown
+  '#relative-Lab':
+    title: 4.6 Relative Lab Colors
+    status: unknown
+  '#relative-Oklab':
+    title: 4.7 Relative Oklab Colors
+    status: unknown
+  '#relative-LCH':
+    title: 4.8 Relative LCH Colors
+    status: unknown
+  '#relative-OkLCh':
+    title: 4.9 Relative OkLCh Colors
+    status: unknown
+  '#relative-alpha':
+    title: 4.10 Relative Alpha Colors
+    status: unknown
+  '#color-function':
+    title: '5 Specifying Predefined and Custom Color Spaces: the color() Function'
+    status: unknown
+  '#relative-color-function':
+    title: 5.1 Relative Color-Function Colors
+    status: unknown
+  '#custom-color':
+    title: 5.2 Custom Color Spaces
+    status: unknown
+  '#at-profile':
+    title: '5.3 Specifying a Color Profile: the @color-profile at-rule'
+    status: unknown
+  '#cal-cmyk':
+    title: '5.4 CSS and Print: Using Calibrated CMYK and Other Printed Color Spaces'
+    status: unknown
+  '#cmyk-to-lab':
+    title: 5.5 Converting CMYK colors to Lab
+    status: unknown
+  '#lab-to-cmyk':
+    title: 5.6 Converting Lab colors to CMYK
+    status: unknown
+  '#device-cmyk':
+    title: '6 Uncalibrated CMYK Colors: the device-cmyk() Function'
+    status: unknown
+  '#cmyk-rgb':
+    title: 6.1 Naively Converting Between Uncalibrated CMYK and sRGB-Based Color
+    status: unknown
+  '#light-dark':
+    title: '7 Reacting to the used color-scheme: the light-dark() Function'
+    status: unknown
+  '#contrast-color':
+    title: '8 Dynamically specifying a text color with adequate contrast: the contrast-color() Function'
+    status: unknown
+  '#interpolation':
+    title: 9 Color Interpolation
+    status: unknown
+  '#interpolation-space':
+    title: 9.1 Color Space for Interpolation
+    status: unknown
+  '#resolving-color-values':
+    title: 10 Resolving <color> Values
+    status: unknown
+  '#resolving-mix':
+    title: 10.1 Resolving color-mix() Values
+    status: unknown
+  '#resolving-rcs':
+    title: 10.2 Resolving Relative Color Syntax Values
+    status: unknown
+  '#resolving-device-cmyk-values':
+    title: 10.3 Resolving device-cmyk Values
+    status: unknown
+  '#serial':
+    title: 11 Serialization
+    status: unknown
+  '#serial-color-mix':
+    title: 11.1 Serializing color-mix()
+    status: unknown
+  '#serial-origin-color':
+    title: 11.2 Serializing Origin Colors
+    status: unknown
+  '#serial-relative-color':
+    title: 11.3 Serializing Relative Color Functions
+    status: unknown
+  '#serial-custom-color':
+    title: 11.4 Serializing Custom Color Spaces
+    status: unknown
+  '#serializing-device-cmyk-values':
+    title: 11.5 Serializing device-cmyk Values
+    status: unknown
+  '#apis':
+    title: 12 APIs
+    status: unknown
+  '#the-csscolorprofilerule-interface':
+    title: 12.1 The CSSColorProfileRule interface
+    status: unknown
+  '#sample':
+    title: 13 Default Style Rules
+    status: unknown
+  '#color-conversion-code':
+    title: 14 Sample code for Color Conversions
+    status: unknown
+  '#security':
+    title: 15 Security Considerations
+    status: unknown
+  '#privacy':
+    title: 16 Privacy Considerations
+    status: unknown
+  '#a11y-sec':
+    title: 17 Accessibility Considerations
+    status: unknown
+  '#changes':
+    title: 18 Changes
+    status: unknown
+  '#changes-20260113':
+    title: 18.1 Since the Working Draft of 13 January 2026
+    status: unknown
+  '#changes-20250318':
+    title: 18.2 Since the Working Draft of 18 March 2025
+    status: unknown
+  '#changes-20240229':
+    title: 18.3 Since the Working Draft of 29 February 2024
+    status: unknown
+  '#changes-20220628':
+    title: 18.4 Since the Working Draft of 28 June 2022
+    status: unknown
+  '#changes-20220428':
+    title: 18.5 Since the Working Draft of 28 April 2022
+    status: unknown
+  '#changes-20211215':
+    title: 18.6 Since the Working Draft of 15 December 2021
+    status: unknown
+  '#changes-20210601':
+    title: 18.7 Since the Working Draft of 1 June 2021
+    status: unknown
+  '#changes-20200303':
+    title: 18.8 Since the FPWD of 10 June 2020
+    status: unknown
+  '#changes-from-4':
+    title: 18.9 Changes from CSS Color 4
+    status: unknown

@@ -69,8 +69,10 @@ public sealed partial class Compliance
 
     public static Compliance Load(string root)
     {
+        // CSS 2.1, the CSS modules, then HTML
         var specs = Directory.EnumerateFiles(SpecDirectory(root), "*.yml")
-            .Order(StringComparer.Ordinal)
+            .OrderBy(path => Path.GetFileNameWithoutExtension(path) switch { "css21" => 0, "html" => 2, _ => 1 })
+            .ThenBy(path => path, StringComparer.Ordinal)
             .Select(path => new SpecResult(Manifest.Load(path)))
             .ToList();
 

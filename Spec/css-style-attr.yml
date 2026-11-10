@@ -1,0 +1,23 @@
+spec: css-style-attr
+title: CSS Style Attributes
+url: https://www.w3.org/TR/css-style-attr/
+snapshot: https://www.w3.org/TR/2013/REC-css-style-attr-20131107/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#conformance':
+    title: 2 Conformance
+    status: unknown
+  '#syntax':
+    title: 3 Syntax and Parsing
+    status: unknown
+  '#interpret':
+    title: 4 Cascading and Interpretation
+    status: unknown
+  '#ack':
+    title: 5 Acknowledgments
+    status: unknown
+  '#references':
+    title: 6 References
+    status: unknown

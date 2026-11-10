@@ -197,7 +197,8 @@ public sealed class ResumableBlockLayoutIntegrationTests
 
     // An out-of-flow box doesn't leave a break token behind.
     [TestMethod]
-    [Ignore("An absolutely positioned child of a table cell loses one of its 5 lines from the fragment tree")]
+    [Ignore("Gap, see Spec/css-position-3.yml")]
+    [Spec("css-position-3", "#abspos-breaking")]
     public async Task TallOutOfFlowChildOfATableCell_KeepsAllOfItsContent()
     {
         var lines = string.Concat(Enumerable.Range(0, 5).Select(i => $"Line{i}<br>"));

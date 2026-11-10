@@ -1,0 +1,401 @@
+spec: css-fonts-4
+title: CSS Fonts Module Level 4
+url: https://www.w3.org/TR/css-fonts-4/
+snapshot: https://www.w3.org/TR/2026/WD-css-fonts-4-20261104/
+sections:
+  '#introduction':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#font-relative':
+    title: 1.2 Interaction With Font-Relative Units
+    status: unknown
+  '#basic-font-props':
+    title: 2 Basic Font Properties
+    status: unknown
+  '#font-family-prop':
+    title: '2.1 Font family: the font-family property'
+    status: unknown
+  '#font-family-name-syntax':
+    title: 2.1.1 Syntax of <font-family-name>
+    status: unknown
+  '#generic-family-name-syntax':
+    title: 2.1.2 Syntax of <generic-font-family>
+    status: unknown
+  '#system':
+    title: 2.1.3 Syntax of <system-font-family-name>
+    status: unknown
+  '#font-families':
+    title: 2.1.4 Relationship Between Faces and Families
+    status: unknown
+  '#generic-font-families':
+    title: 2.1.5 Generic font families
+    status: unknown
+  '#font-weight-prop':
+    title: '2.2 Font weight: the font-weight property'
+    status: unknown
+  '#relative-weights':
+    title: 2.2.1 Relative Weights
+    status: unknown
+  '#missing-weights':
+    title: 2.2.2 Missing weights
+    status: unknown
+  '#font-width-prop':
+    title: '2.3 Font width: the font-width property'
+    status: unknown
+  '#font-stretch-prop':
+    title: '2.3.1 Font width: the font-stretch legacy name alias'
+    status: unknown
+  '#font-style-prop':
+    title: '2.4 Font style: the font-style property'
+    status: unknown
+  '#font-size-prop':
+    title: '2.5 Font size: the font-size property'
+    status: unknown
+  '#absolute-size-mapping':
+    title: 2.5.1 Absolute Size Keyword Mapping Table
+    status: unknown
+  '#font-size-adjust-prop':
+    title: '2.6 Relative sizing: the font-size-adjust property'
+    status: unknown
+  '#font-prop':
+    title: '2.7 Shorthand font property: the font property'
+    status: unknown
+  '#font-synthesis-intro':
+    title: 2.8 Controlling synthetic faces
+    status: unknown
+  '#font-synthesis-weight':
+    title: '2.8.1 Controlling synthesized bold: The font-synthesis-weight property'
+    status: unknown
+  '#font-synthesis-style':
+    title: '2.8.2 Controlling synthesized oblique: The font-synthesis-style property'
+    status: unknown
+  '#font-synthesis-small-caps':
+    title: '2.8.3 Controlling synthesized small caps: The font-synthesis-small-caps property'
+    status: unknown
+  '#font-synthesis-position':
+    title: '2.8.4 Controlling synthesized super- and subscripts: The font-synthesis-position property'
+    status: unknown
+  '#font-synthesis':
+    title: '2.8.5 Controlling synthetic faces: the font-synthesis shorthand'
+    status: unknown
+  '#font-rendering-controls':
+    title: 3 Font Rendering Controls
+    status: unknown
+  '#font-rendering-controls-introduction':
+    title: 3.1 Introduction to Font Rendering Controls
+    status: unknown
+  '#font-display-timeline':
+    title: 3.2 The Font Display Timeline
+    status: unknown
+  '#font-resources':
+    title: 4 Font Resources
+    status: unknown
+  '#font-face-rule':
+    title: 4.1 The @font-face rule
+    status: unknown
+  '#font-family-desc':
+    title: '4.2 Font family: the font-family descriptor'
+    status: unknown
+  '#src-desc':
+    title: '4.3 Font reference: the src descriptor'
+    status: unknown
+  '#font-face-src-parsing':
+    title: 4.3.1 Parsing the src descriptor
+    status: unknown
+  '#font-face-src-loading':
+    title: 4.3.2 Loading an individual item in the src descriptor
+    status: unknown
+  '#font-face-src-formats':
+    title: 4.3.3 Selecting items in the src
+    status: unknown
+  '#local-font-fallback':
+    title: 4.3.3.1 Local font fallback
+    status: unknown
+  '#font-prop-desc':
+    title: '4.4 Font property descriptors: the font-style, font-weight, and font-width descriptors'
+    status: unknown
+  '#font-stretch-desc':
+    title: '4.4.1 Font width: the font-stretch legacy name alias'
+    status: unknown
+  '#unicode-range-desc':
+    title: '4.5 Character range: the unicode-range descriptor'
+    status: unknown
+  '#composite-fonts':
+    title: 4.5.1 Using character ranges to define composite fonts
+    status: unknown
+  '#font-rend-desc':
+    title: '4.6 Font features and variations: the font-feature-settings and font-variation-settings descriptors'
+    status: unknown
+  '#font-named-instance':
+    title: '4.7 Using named instances from variable fonts: the font-named-instance descriptor'
+    status: unknown
+  '#font-requests':
+    title: 4.8 Font request guidelines
+    status: unknown
+  '#font-face-loading':
+    title: 4.8.1 Font loading guidelines
+    status: unknown
+  '#font-fetching-requirements':
+    title: 4.8.2 Font fetching requirements
+    status: unknown
+  '#font-display-desc':
+    title: '4.9 Controlling Font Display Per Font-Face: the font-display descriptor'
+    status: unknown
+  '#font-display-font-feature-values':
+    title: 4.9.1 Controlling Font Display Per Font-Family via @font-feature-values
+    status: unknown
+  '#font-language-override-desc':
+    title: '4.10 Default font language overriding: the font-language-override descriptor'
+    status: unknown
+  '#font-metrics-override-desc':
+    title: '4.11 Default font metrics overriding: the ascent-override, descent-override and line-gap-override descriptors'
+    status: unknown
+  '#font-matching-algorithm':
+    title: 5 Font Matching Algorithm
+    status: unknown
+  '#localized-name-matching':
+    title: 5.1 Localized name matching
+    status: unknown
+  '#font-style-matching':
+    title: 5.2 Matching font styles
+    status: unknown
+  '#cluster-matching':
+    title: 5.3 Cluster matching
+    status: unknown
+  '#char-handling-issues':
+    title: 5.4 Character handling issues
+    status: unknown
+  '#font-rend-props':
+    title: 6 Font Feature Properties
+    status: unknown
+  '#glyph-selection-positioning':
+    title: 6.1 Glyph selection and positioning
+    status: unknown
+  '#language-specific-support':
+    title: 6.2 Language-specific display
+    status: unknown
+  '#font-kerning-prop':
+    title: '6.3 Kerning: the font-kerning property'
+    status: unknown
+  '#horizontal-kerning':
+    title: 6.3.1 Horizontal kerning
+    status: unknown
+  '#vertical-kerning':
+    title: 6.3.2 Vertical kerning
+    status: unknown
+  '#font-variant-ligatures-prop':
+    title: '6.4 Ligatures: the font-variant-ligatures property'
+    status: unknown
+  '#font-variant-position-prop':
+    title: '6.5 Subscript and superscript forms: the font-variant-position property'
+    status: unknown
+  '#font-variant-caps-prop':
+    title: '6.6 Capitalization: the font-variant-caps property'
+    status: unknown
+  '#font-variant-numeric-prop':
+    title: '6.7 Numerical formatting: the font-variant-numeric property'
+    status: unknown
+  '#font-variant-alternates-prop':
+    title: '6.8 Alternates and swashes: the font-variant-alternates property'
+    status: unknown
+  '#font-feature-values':
+    title: '6.9 Defining font specific alternates: the @font-feature-values rule'
+    status: unknown
+  '#font-feature-values-syntax':
+    title: 6.9.1 Basic syntax
+    status: unknown
+  '#multi-value-features':
+    title: 6.9.2 Multi-valued feature value definitions
+    status: unknown
+  '#font-variant-east-asian-prop':
+    title: '6.10 East Asian text rendering: the font-variant-east-asian property'
+    status: unknown
+  '#font-variant-prop':
+    title: '6.11 Overall shorthand for font rendering: the font-variant property'
+    status: unknown
+  '#font-feature-settings-prop':
+    title: '6.12 Low-level font feature settings control: the font-feature-settings property'
+    status: unknown
+  '#font-language-override-prop':
+    title: '6.13 Font language override: the font-language-override property'
+    status: unknown
+  '#font-feature-variation-resolution':
+    title: 7 Font Feature and Variation Resolution
+    status: unknown
+  '#default-features':
+    title: 7.1 Default features
+    status: unknown
+  '#feature-variation-precedence':
+    title: 7.2 Feature and variation precedence
+    status: unknown
+  '#feature-precedence-examples':
+    title: 7.3 Feature precedence examples
+    status: unknown
+  '#font-variation-props':
+    title: 8 Font Variation Properties
+    status: unknown
+  '#font-optical-sizing-def':
+    title: '8.1 Optical sizing control: the font-optical-sizing property'
+    status: unknown
+  '#font-variation-settings-def':
+    title: '8.2 Low-level font variation settings control: the font-variation-settings property'
+    status: unknown
+  '#color-font-support':
+    title: 9 Color Font Support
+    status: unknown
+  '#font-palette-prop':
+    title: '9.1 Controlling Color Font Palettes: The font-palette property'
+    status: unknown
+  '#font-palette-values':
+    title: '9.2 User-defined font color palettes: The @font-palette-values rule'
+    status: unknown
+  '#font-family-2-desc':
+    title: '9.2.1 Font family: the font-family descriptor'
+    status: unknown
+  '#base-palette-desc':
+    title: '9.2.2 Specifying the base palette: the base-palette descriptor'
+    status: unknown
+  '#override-color':
+    title: '9.2.3 Overriding a colors from a palette: The override-colors descriptor'
+    status: unknown
+  '#font-variant-emoji-prop':
+    title: '9.3 Selecting the text presentation style: The font-variant-emoji property'
+    status: unknown
+  '#font-taxonomy':
+    title: 10 Font Taxonomy
+    status: unknown
+  '#installed-fonts':
+    title: 10.1 Installed Fonts
+    status: unknown
+  '#web-fonts':
+    title: 10.2 Web Fonts
+    status: unknown
+  '#preinstalled-and-user-installed-fonts':
+    title: 10.3 Preinstalled Fonts and User-Installed Fonts
+    status: unknown
+  '#system-font':
+    title: 10.4 System Font
+    status: unknown
+  '#font-technologies-formats':
+    title: 11 Font Technologies and Formats
+    status: unknown
+  '#font-tech-definitions':
+    title: 11.1 Font tech
+    status: unknown
+  '#font-format-definitions':
+    title: 11.2 Font formats
+    status: unknown
+  '#object-model':
+    title: 12 Object Model
+    status: unknown
+  '#om-fontface':
+    title: 12.1 The CSSFontFaceRule interface
+    status: unknown
+  '#om-fontfeaturevalues':
+    title: 12.2 The CSSFontFeatureValuesRule interface
+    status: unknown
+  '#om-fontpalettevalues':
+    title: 12.3 The CSSFontPaletteValuesRule interface
+    status: unknown
+  '#serializing':
+    title: 13 Serializing
+    status: unknown
+  '#serializing-properties':
+    title: 13.1 Serializing font-related properties
+    status: unknown
+  '#serializing-at-rules':
+    title: 13.2 Serializing font-related at-rules
+    status: unknown
+  '#security':
+    title: 14 Security Considerations
+    status: unknown
+  '#privacy':
+    title: 15 Privacy Considerations
+    status: unknown
+  '#sp201':
+    title: 15.1 What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
+    status: unknown
+  '#sp202':
+    title: 15.2 Is this specification exposing the minimum amount of information necessary to power the feature?
+    status: unknown
+  '#sp203':
+    title: 15.3 How does this specification deal with personal information or personally-identifiable information or information derived thereof?
+    status: unknown
+  '#sp204':
+    title: 15.4 How does this specification deal with sensitive information?
+    status: unknown
+  '#sp205':
+    title: 15.5 Does this specification introduce new state for an origin that persists across browsing sessions?
+    status: unknown
+  '#sp206':
+    title: 15.6 What information from the underlying platform, e.g. configuration data, is exposed by this specification to an origin?
+    status: unknown
+  '#sp207':
+    title: 15.7 Does this specification allow an origin access to sensors on a user’s device
+    status: unknown
+  '#sp208':
+    title: 15.8 What data does this specification expose to an origin? Please also document what data is identical to data exposed by other features, in the same or different contexts.
+    status: unknown
+  '#sp209':
+    title: 15.9 Does this specification enable new script execution/loading mechanisms?
+    status: unknown
+  '#sp210':
+    title: 15.10 Does this specification allow an origin to access other devices?
+    status: unknown
+  '#sp211':
+    title: 15.11 Does this specification allow an origin some measure of control over a user agent’s native UI?
+    status: unknown
+  '#sp212':
+    title: 15.12 What temporary identifiers might this specification create or expose to the web?
+    status: unknown
+  '#sp213':
+    title: 15.13 How does this specification distinguish between behavior in first-party and third-party contexts?
+    status: unknown
+  '#sp214':
+    title: 15.14 How does this specification work in the context of a user agent’s Private Browsing or "incognito" mode?
+    status: unknown
+  '#sp215':
+    title: 15.15 Does this specification have a "Security Considerations" and "Privacy Considerations" section?
+    status: unknown
+  '#sp216':
+    title: 15.16 Does this specification allow downgrading default security characteristics?
+    status: unknown
+  '#sp217':
+    title: 15.17 What should this questionnaire have asked?
+    status: unknown
+  '#a11y':
+    title: 16 Accessibility Considerations
+    status: unknown
+  '#acknowledgments':
+    title: 17 Acknowledgments
+    status: unknown
+  '#changes':
+    title: 18 Changes
+    status: unknown
+  '#changes-20240201':
+    title: 18.1 Changes from the 1 February 2024 working draft
+    status: unknown
+  '#changes-2021-12-21':
+    title: 18.2 Changes from the 21 December 2021 Working Draft
+    status: unknown
+  '#changes-2021-07-29':
+    title: 18.3 Changes from the 29 July 2021 Working Draft
+    status: unknown
+  '#changes-2020-11-17':
+    title: 18.4 Changes from the 17 November 2020 Working Draft
+    status: unknown
+  '#changes-2019-11-13':
+    title: 18.5 Changes from the 13 November 2019 Working Draft
+    status: unknown
+  '#changes-2018-09-20':
+    title: 18.6 Changes from the 20 September 2018 Working Draft
+    status: unknown
+  '#changes-2018-04-10':
+    title: 18.7 Changes from the 10 April 2018 Working Draft
+    status: unknown
+  '#changes-fonts-3':
+    title: 18.8 Changes from the 20 September 2018 CSS Fonts 3 Recommendation
+    status: unknown

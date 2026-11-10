@@ -1,0 +1,194 @@
+spec: css-backgrounds-3
+title: CSS Backgrounds and Borders Module Level 3
+url: https://www.w3.org/TR/css-backgrounds-3/
+snapshot: https://www.w3.org/TR/2024/CRD-css-backgrounds-3-20240311/
+sections:
+  '#introduction':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#values':
+    title: 1.2 Value Definitions
+    status: unknown
+  '#backgrounds':
+    title: 2 Backgrounds
+    status: unknown
+  '#layering':
+    title: 2.1 Layering Multiple Background Images
+    status: unknown
+  '#background-color':
+    title: '2.2 Base Color: the background-color property'
+    status: unknown
+  '#background-image':
+    title: '2.3 Image Sources: the background-image property'
+    status: unknown
+  '#background-repeat':
+    title: '2.4 Tiling Images: the background-repeat property'
+    status: unknown
+  '#background-attachment':
+    title: '2.5 Affixing Images: the background-attachment property'
+    status: unknown
+  '#background-position':
+    title: '2.6 Positioning Images: the background-position property'
+    status: unknown
+  '#bg-position-serialization':
+    title: 2.6.1 Serialization of background-position values
+    status: unknown
+  '#background-clip':
+    title: '2.7 Painting Area: the background-clip property'
+    status: unknown
+  '#background-origin':
+    title: '2.8 Positioning Area: the background-origin property'
+    status: unknown
+  '#background-size':
+    title: '2.9 Sizing Images: the background-size property'
+    status: unknown
+  '#background':
+    title: '2.10 Backgrounds Shorthand: the background property'
+    status: unknown
+  '#special-backgrounds':
+    title: 2.11 Backgrounds of Special Elements
+    status: unknown
+  '#root-background':
+    title: 2.11.1 The Canvas Background and the Root Element
+    status: unknown
+  '#body-background':
+    title: 2.11.2 The Canvas Background and the HTML <body> Element
+    status: unknown
+  '#first-line-background':
+    title: 2.11.3 The ::first-line Pseudo-element‘s Background
+    status: unknown
+  '#borders':
+    title: 3 Borders
+    status: unknown
+  '#border-color':
+    title: '3.1 Line Colors: the border-color properties'
+    status: unknown
+  '#border-style':
+    title: '3.2 Line Patterns: the border-style properties'
+    status: unknown
+  '#border-width':
+    title: '3.3 Line Thickness: the border-width properties'
+    status: unknown
+  '#border-shorthands':
+    title: 3.4 Border Shorthand Properties
+    status: unknown
+  '#corners':
+    title: 4 Rounded Corners
+    status: unknown
+  '#border-radius':
+    title: '4.1 Curve Radii: the border-radius properties'
+    status: unknown
+  '#corner-shaping':
+    title: 4.2 Corner Shaping
+    status: unknown
+  '#corner-clipping':
+    title: 4.3 Corner Clipping
+    status: unknown
+  '#corner-transitions':
+    title: 4.4 Color and Style Transitions
+    status: unknown
+  '#corner-overlap':
+    title: 4.5 Overlapping Curves
+    status: unknown
+  '#border-radius-tables':
+    title: 4.6 Effect on Tables
+    status: unknown
+  '#border-images':
+    title: 5 Border Images
+    status: unknown
+  '#border-image-source':
+    title: '5.1 Image Source: the border-image-source property'
+    status: unknown
+  '#border-image-slice':
+    title: '5.2 Image Slicing: the border-image-slice property'
+    status: unknown
+  '#border-image-width':
+    title: '5.3 Drawing Areas: the border-image-width property'
+    status: unknown
+  '#border-image-outset':
+    title: '5.4 Edge Overhang: the border-image-outset property'
+    status: unknown
+  '#border-image-repeat':
+    title: '5.5 Image Tiling: the border-image-repeat property'
+    status: unknown
+  '#border-image-process':
+    title: 5.6 Drawing the Border Image
+    status: unknown
+  '#border-image':
+    title: '5.7 Border Image Shorthand: the border-image property'
+    status: unknown
+  '#border-image-tables':
+    title: 5.8 Effect on Tables
+    status: unknown
+  '#misc':
+    title: 6 Miscellaneous Effects
+    status: unknown
+  '#box-shadow':
+    title: '6.1 Drop Shadows: the box-shadow property'
+    status: unknown
+  '#shadow-shape':
+    title: 6.1.1 Shadow Shape, Spread, and Knockout
+    status: unknown
+  '#shadow-blur':
+    title: 6.1.2 Blurring Shadow Edges
+    status: unknown
+  '#shadow-layers':
+    title: 6.1.3 Layering, Layout, and Other Details
+    status: unknown
+  '#levels':
+    title: 7 Levels
+    status: unknown
+  '#level-1':
+    title: 7.1 Level 1
+    status: unknown
+  '#level-2':
+    title: 7.2 Level 2
+    status: unknown
+  '#level-3':
+    title: 7.3 Level 3
+    status: unknown
+  '#changes':
+    title: 8 Changes
+    status: unknown
+  '#changes-2023-02':
+    title: 8.1 Changes since the 14 February 2023 Candidate Recommendation Snapshot
+    status: unknown
+  '#changes-2020-12':
+    title: 8.2 Changes since the 22 December 2020 Candidate Recommendation Snapshot
+    status: unknown
+  '#changes-2017-10':
+    title: 8.3 Changes since the 17 October 2017 Candidate Recommendation
+    status: unknown
+  '#changes-2014-09':
+    title: 8.4 Changes since the 9 September 2014 Candidate Recommendation
+    status: unknown
+  '#changes-2014-02':
+    title: 8.5 Changes since the 4 February 2014 Last Call Working Draft
+    status: unknown
+  '#changes-2012-07':
+    title: 8.6 Changes since the 24 July 2012 Candidate Recommendation
+    status: unknown
+  '#changes-2012-04':
+    title: 8.7 Changes since the 17 April 2012 Candidate Recommendation
+    status: unknown
+  '#changes-2012LC':
+    title: 8.8 Changes since the 14 February 2012 “Last Call” Working Draft
+    status: unknown
+  '#changes-2011':
+    title: 8.9 Changes Since the 15 February 2011 Candidate Recommendation
+    status: unknown
+  '#changes-2009':
+    title: 8.10 Changes Since the 17 December 2009 Candidate Recommendation
+    status: unknown
+  '#acknowledgments':
+    title: 9 Acknowledgments
+    status: unknown
+  '#privacy':
+    title: 10 Privacy Considerations
+    status: unknown
+  '#security':
+    title: 11 Security Considerations
+    status: unknown

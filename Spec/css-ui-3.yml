@@ -1,0 +1,77 @@
+spec: css-ui-3
+title: CSS Basic User Interface Module Level 3 (CSS3 UI)
+url: https://www.w3.org/TR/css-ui-3/
+snapshot: https://www.w3.org/TR/2026/REC-css-ui-3-20260407/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#purpose':
+    title: 1.1 Purpose
+    status: unknown
+  '#interaction':
+    title: 2 Module Interactions
+    status: unknown
+  '#values':
+    title: 2.1 Value Definitions
+    status: unknown
+  '#box-model':
+    title: 3 Box Model addition
+    status: unknown
+  '#box-sizing':
+    title: '3.1 Changing the Box Model: the box-sizing property'
+    status: unknown
+  '#outline-props':
+    title: 4 Outline properties
+    status: unknown
+  '#outline':
+    title: '4.1 Outlines Shorthand: the outline property'
+    status: unknown
+  '#outline-width':
+    title: '4.2 Outline Thickness: the outline-width property'
+    status: unknown
+  '#outline-style':
+    title: '4.3 Outline Patterns: the outline-style property'
+    status: unknown
+  '#outline-color':
+    title: '4.4 Outline Colors: the outline-color property'
+    status: unknown
+  '#outline-offset':
+    title: '4.5 Offsetting the Outline: the outline-offset property'
+    status: unknown
+  '#resizing-and-overflow':
+    title: 5 Resizing & Overflow
+    status: unknown
+  '#resize':
+    title: '5.1 Resizing Boxes: the resize property'
+    status: unknown
+  '#text-overflow':
+    title: '5.2 Overflow Ellipsis: the text-overflow property'
+    status: unknown
+  '#pointing-keyboard':
+    title: 6 Pointing Devices and Keyboards
+    status: unknown
+  '#pointer-interaction':
+    title: 6.1 Pointer interaction
+    status: unknown
+  '#cursor':
+    title: '6.1.1 Styling the Cursor: the cursor property'
+    status: unknown
+  '#predefined-cursors':
+    title: 6.1.1.1 Predefined Cursors
+    status: unknown
+  '#canvas_cursor':
+    title: 6.1.1.2 Cursor of the canvas
+    status: unknown
+  '#insertion-caret':
+    title: 6.2 Insertion caret
+    status: unknown
+  '#caret-color':
+    title: '6.2.1 Coloring the Insertion Caret: the caret-color property'
+    status: unknown
+  '#keyboard':
+    title: 6.3 Keyboard control
+    status: unknown
+  '#input-method-editor':
+    title: '6.3.1 Obsolete: the ime-mode property'
+    status: unknown

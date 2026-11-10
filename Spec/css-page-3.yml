@@ -1,0 +1,131 @@
+spec: css-page-3
+title: CSS Paged Media Module Level 3
+url: https://www.w3.org/TR/css-page-3/
+snapshot: https://www.w3.org/TR/2023/WD-css-page-3-20230914/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#page-terms':
+    title: 2 Page Terminology
+    status: unknown
+  '#page-model':
+    title: 3 The Page Model
+    status: unknown
+  '#painting':
+    title: 3.1 Page Backgrounds and Painting Order
+    status: unknown
+  '#content-outside-box':
+    title: 3.2 Content outside the page box
+    status: unknown
+  '#progression':
+    title: 3.3 Page Progression
+    status: unknown
+  '#page-selector-and-context':
+    title: 4 Page Selectors and the Page Context
+    status: unknown
+  '#at-page-rule':
+    title: 4.1 The @page Rule
+    status: unknown
+  '#page-selectors':
+    title: 4.2 Page selectors
+    status: unknown
+  '#spread-pseudos':
+    title: '4.2.1 Spread pseudo-classes: :left, :right'
+    status: unknown
+  '#first-pseudo':
+    title: '4.2.2 First-page pseudo-class: :first'
+    status: unknown
+  '#blank-pseudo':
+    title: '4.2.3 Blank-page pseudo-class: :blank'
+    status: unknown
+  '#syntax-page-selector':
+    title: 4.3 @page rule grammar
+    status: unknown
+  '#cascading-and-page-context':
+    title: 4.4 Cascading in the page context
+    status: unknown
+  '#margin-boxes':
+    title: 5 Page-Margin Boxes
+    status: unknown
+  '#margin-at-rules':
+    title: 5.1 At-rules for page-margin boxes
+    status: unknown
+  '#populating-margin-boxes':
+    title: 5.2 Populating page-margin boxes
+    status: unknown
+  '#margin-dimension':
+    title: 5.3 Computing Page-margin Box Dimensions
+    status: unknown
+  '#margin-box-terms':
+    title: 5.3.1 Page-Margin Box Layout Terminology
+    status: unknown
+  '#variable-sizing':
+    title: 5.3.2 Page-Margin Box Variable Dimension Computation Rules
+    status: unknown
+  '#variable-auto-margins':
+    title: 5.3.2.1 Margins
+    status: unknown
+  '#variable-auto-sizing':
+    title: 5.3.2.2 Resolving auto widths
+    status: unknown
+  '#variable-minmax':
+    title: 5.3.2.3 Handling min-width and max-width
+    status: unknown
+  '#variable-position':
+    title: 5.3.2.4 Positioning
+    status: unknown
+  '#variable-mapping':
+    title: 5.3.2.5 Boxes on other sides
+    status: unknown
+  '#fixed-sizing':
+    title: 5.3.3 Page-Margin Box Fixed Dimension Computation Rules
+    status: unknown
+  '#margin-box-ex':
+    title: 5.4 Page-margin box examples
+    status: unknown
+  '#page-properties':
+    title: 6 Page Properties
+    status: unknown
+  '#page-based-counters':
+    title: 6.1 Page-based counters
+    status: unknown
+  '#margin-text-alignment':
+    title: 6.2 Page-margin boxes and default values
+    status: unknown
+  '#page-size':
+    title: 7 Page Size
+    status: unknown
+  '#page-size-prop':
+    title: '7.1 Page size: the size property'
+    status: unknown
+  '#page-size-media-query':
+    title: 7.1.1 Media Queries
+    status: unknown
+  '#page-orientation-prop':
+    title: '7.1.2 Rotating The Printed Page: the page-orientation property'
+    status: unknown
+  '#marks':
+    title: '7.2 Crop and Registration Marks: the marks property'
+    status: unknown
+  '#bleed':
+    title: '7.3 Bleed Area: the bleed property'
+    status: unknown
+  '#renderingpages':
+    title: 7.4 Rendering page boxes that do not fit a page sheet
+    status: unknown
+  '#positioning-page-box':
+    title: 7.5 Positioning the page box on the sheet
+    status: unknown
+  '#page-breaks':
+    title: 8 Page Breaks
+    status: unknown
+  '#using-named-pages':
+    title: '8.1 Using named pages: page'
+    status: unknown
+  '#image-properties':
+    title: 9 Image Properties
+    status: unknown

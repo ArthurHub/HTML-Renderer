@@ -1,0 +1,233 @@
+spec: css-tables-3
+title: CSS Table Module Level 3
+url: https://www.w3.org/TR/css-tables-3/
+snapshot: https://www.w3.org/TR/2025/WD-css-tables-3-20251216/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#content-model':
+    title: 2 Content Model
+    status: unknown
+  '#table-structure':
+    title: 2.1 Table Structure
+    status: unknown
+  '#terminology':
+    title: 2.1.1 Terminology
+    status: unknown
+  '#fixup':
+    title: 2.2 Fixup
+    status: unknown
+  '#fixup-algorithm':
+    title: 2.2.1 Fixup Algorithm
+    status: unknown
+  '#fixup-boxes':
+    title: 2.2.2 Characteristics of fixup boxes
+    status: unknown
+  '#fixup-examples':
+    title: 2.2.3 Examples
+    status: unknown
+  '#layout':
+    title: 3 Layout
+    status: unknown
+  '#layout-principles':
+    title: 3.1 Core layout principles
+    status: unknown
+  '#table-layout-algorithm':
+    title: 3.2 Table layout algorithm
+    status: unknown
+  '#dimensioning-the-row-column-grid':
+    title: 3.3 Dimensioning the row/column grid
+    status: unknown
+  '#dimensioning-the-row-column-grid--step1':
+    title: 3.3.1 HTML Algorithm
+    status: unknown
+  '#dimensioning-the-row-column-grid--step2':
+    title: 3.3.2 Track merging
+    status: unknown
+  '#missing-cells-fixup':
+    title: 3.4 Missing cells fixup
+    status: unknown
+  '#layout-modes':
+    title: 3.5 Table layout modes
+    status: unknown
+  '#table-layout-property':
+    title: 3.5.1 The Table-Layout property
+    status: unknown
+  '#border-collapse-property':
+    title: 3.5.2 The Border-Collapse property
+    status: unknown
+  '#border-spacing-property':
+    title: 3.5.2.1 The Border-Spacing property
+    status: unknown
+  '#caption-side-property':
+    title: 3.5.3 The Caption-Side property
+    status: unknown
+  '#style-overrides':
+    title: 3.6 Style overrides
+    status: unknown
+  '#global-style-overrides':
+    title: 3.6.1 Overrides applying in all modes
+    status: unknown
+  '#collapsed-style-overrides':
+    title: 3.6.2 Overrides applying in collapsed-borders mode
+    status: unknown
+  '#border-collapsing':
+    title: 3.7 Border-collapsing
+    status: unknown
+  '#conflict-resolution-for-collapsed-borders':
+    title: 3.7.1 Conflict Resolution for Collapsed Borders
+    status: unknown
+  '#border-conflict-resolution-algorithm':
+    title: 3.7.1.1 Conflict Resolution Algorithm for Collapsed Borders
+    status: unknown
+  '#border-style-harmonization-algorithm':
+    title: 3.7.1.2 Harmonization Algorithm for Collapsed Borders
+    status: unknown
+  '#border-specificity':
+    title: 3.7.1.3 Specificity of a border style
+    status: unknown
+  '#content-measure':
+    title: 3.8 Computing table measures
+    status: unknown
+  '#computing-undistributable-space':
+    title: 3.8.1 Computing Undistributable Space
+    status: unknown
+  '#computing-cell-measures':
+    title: 3.8.2 Computing Cell Measures
+    status: unknown
+  '#computing-column-measures':
+    title: 3.8.3 Computing Column Measures
+    status: unknown
+  '#width-distribution':
+    title: 3.9 Available Width Distribution
+    status: unknown
+  '#computing-the-table-width':
+    title: 3.9.1 Computing the table width
+    status: unknown
+  '#width-distribution-principles':
+    title: 3.9.2 Core distribution principles
+    status: unknown
+  '#width-distribution-principles-rN':
+    title: 3.9.2.1 Rules
+    status: unknown
+  '#width-distribution-principles-rR':
+    title: 3.9.2.2 Available sizings
+    status: unknown
+  '#width-distribution-algorithm':
+    title: 3.9.3 Distribution algorithm
+    status: unknown
+  '#width-distribution-in-fixed-mode':
+    title: 3.9.3.1 Changes to width distribution in fixed mode
+    status: unknown
+  '#distributing-width-to-columns':
+    title: 3.9.3.2 Distributing excess width to columns
+    status: unknown
+  '#height-distribution':
+    title: 3.10 Available Height Distribution
+    status: unknown
+  '#computing-the-table-height':
+    title: 3.10.1 Computing the table height
+    status: unknown
+  '#row-layout':
+    title: 3.10.2 Row layout (first pass)
+    status: unknown
+  '#row-relayout':
+    title: 3.10.3 Row layout (second pass)
+    status: unknown
+  '#height-distribution-principles':
+    title: 3.10.4 Core distribution principles
+    status: unknown
+  '#height-distribution-algorithm':
+    title: 3.10.5 Distribution algorithm
+    status: unknown
+  '#table-cell-content-relayout':
+    title: 3.10.6 Table-cell content layout (second pass)
+    status: unknown
+  '#bounding-box-assignment':
+    title: 3.11 Positioning of cells, captions and other internal table boxes
+    status: unknown
+  '#abspos':
+    title: 4 Absolute Positioning
+    status: unknown
+  '#abspos-boxes-in-table-root':
+    title: 4.1 With a table-root as containing block
+    status: unknown
+  '#abspos-boxes-in-table-internal':
+    title: 4.2 With a table-internal as containing block
+    status: unknown
+  '#static-position':
+    title: 4.3 With a table-internal box as non-containing block parent
+    status: unknown
+  '#rendering':
+    title: 5 Rendering
+    status: unknown
+  '#paint-order':
+    title: 5.1 Paint order of cells
+    status: unknown
+  '#empty-cell-rendering':
+    title: 5.2 Empty cell rendering (separated-borders mode)
+    status: unknown
+  '#drawing-backgrounds-and-borders':
+    title: 5.3 Drawing backgrounds and borders
+    status: unknown
+  '#drawing-table-backgrounds-and-borders':
+    title: 5.3.1 Drawing table backgrounds and borders
+    status: unknown
+  '#drawing-collapsed-borders-1':
+    title: 5.3.1.1 Changes in collapsed-borders mode
+    status: unknown
+  '#drawing-cell-backgrounds':
+    title: 5.3.2 Drawing cell backgrounds
+    status: unknown
+  '#drawing-cell-borders':
+    title: 5.3.3 Drawing cell borders
+    status: unknown
+  '#drawing-collapsed-borders-2':
+    title: 5.3.3.1 Changes in collapsed-borders mode
+    status: unknown
+  '#border-style-overrides':
+    title: 5.3.4 Border styles (collapsed-borders mode)
+    status: unknown
+  '#visibility-collapse-rendering':
+    title: '5.4 Rendering for visibility: collapse'
+    status: unknown
+  '#visibility-collapse-cell-rendering':
+    title: '5.4.1 Rendering a visibility: collapse table cell'
+    status: unknown
+  '#visibility-collapse-track-rendering':
+    title: '5.4.2 Rendering a visibility: collapse table-track or table-track-group'
+    status: unknown
+  '#fragmentation':
+    title: 6 Fragmentation
+    status: unknown
+  '#breaking-rules':
+    title: 6.1 Breaking across fragmentainers
+    status: unknown
+  '#repeated-headers':
+    title: 6.2 Repeating headers across pages
+    status: unknown
+  '#security':
+    title: 7 Security Considerations
+    status: unknown
+  '#privacy':
+    title: 8 Privacy Considerations
+    status: unknown
+  '#bug-list':
+    title: 9 List of bugs being tracked
+    status: unknown
+  '#appendices':
+    title: 10 Appendices
+    status: unknown
+  '#mapping':
+    title: 10.1 Mapping between CSS & HTML attributes
+    status: unknown
+  '#TODO':
+    title: 11 (link here for missing sections)
+    status: unknown
+  '#changes':
+    title: 12 Changes
+    status: unknown
