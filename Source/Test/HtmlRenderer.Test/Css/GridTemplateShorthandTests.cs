@@ -4,12 +4,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/GridTemplateShorthandTests.cs.
-/// The <c>grid</c> / <c>grid-template</c> mega-shorthands (CSS Grid §7.4 / §7.8, issue #264) parse and
-/// expand to the grid longhands at parse time, and — like the other reconstruction-excluded shorthands —
-/// are never re-collapsed when a declaration block is serialized.
-/// </summary>
 [TestClass]
 public sealed class GridTemplateShorthandTests
 {
@@ -19,6 +13,7 @@ public sealed class GridTemplateShorthandTests
     // ── grid-template ────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css-grid-2", "#explicit-grid-shorthand")]
     public void GridTemplate_None_ResetsAllThree()
     {
         var style = Style("grid-template: none;");
@@ -28,6 +23,7 @@ public sealed class GridTemplateShorthandTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#explicit-grid-shorthand")]
     public void GridTemplate_RowsSlashColumns_SetsBothAxesAreasNone()
     {
         var style = Style("grid-template: 1fr 2fr / 100px 200px;");
@@ -38,6 +34,7 @@ public sealed class GridTemplateShorthandTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#explicit-grid-shorthand")]
     public void GridTemplate_AreasForm_SynthesizesRowsAndColumns()
     {
         var style = Style("grid-template: \"a a\" 40px \"b b\" / 1fr 1fr;");
@@ -47,6 +44,7 @@ public sealed class GridTemplateShorthandTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#explicit-grid-shorthand")]
     public void GridTemplate_AreasForm_WithLineNames_PreservesThem()
     {
         var style = Style("grid-template: [r1] \"a\" 10px [r2] \"b\" [r3];");
@@ -57,6 +55,7 @@ public sealed class GridTemplateShorthandTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#explicit-grid-shorthand")]
     // `none` is a valid <grid-template-rows>/<grid-template-columns> value on either side of the slash.
     [DataRow("grid-template: none / 1fr 1fr;", "none", "1fr 1fr")]
     [DataRow("grid-template: 1fr 2fr / none;", "1fr 2fr", "none")]
@@ -70,6 +69,7 @@ public sealed class GridTemplateShorthandTests
     // ── grid ─────────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css-grid-2", "#grid-shorthand")]
     public void Grid_TemplateForm_ResetsAutoProperties()
     {
         var style = Style("grid: \"a\" / 1fr;");
@@ -83,6 +83,7 @@ public sealed class GridTemplateShorthandTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#grid-shorthand")]
     public void Grid_ColumnAutoFlowForm_SetsRowsFlowAndAutoColumns()
     {
         var style = Style("grid: 1fr / auto-flow 2fr;");
@@ -93,6 +94,7 @@ public sealed class GridTemplateShorthandTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#grid-shorthand")]
     public void Grid_RowAutoFlowForm_WithDense_SetsColumnsFlowAndAutoRows()
     {
         var style = Style("grid: auto-flow dense 10px / 1fr;");
@@ -102,6 +104,7 @@ public sealed class GridTemplateShorthandTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#grid-shorthand")]
     public void Grid_NoneRows_WithColumnAutoFlow_IsAccepted()
     {
         // The <grid-template-rows> side of the auto-flow form also accepts `none`.
@@ -114,6 +117,8 @@ public sealed class GridTemplateShorthandTests
     // ── rejection (whole declaration dropped) ────────────────────────────
 
     [TestMethod]
+    [Spec("css-grid-2", "#explicit-grid-shorthand")]
+    [Spec("css-grid-2", "#grid-shorthand")]
     [DataRow("grid-template: 10px \"a\";")]            // track-size before the first string
     [DataRow("grid-template: \"a\" repeat(2, 1fr);")]  // repeat() is not a valid row <track-size>
     [DataRow("grid-template: \"a\" \"b\" / repeat(2, 1fr);")] // trailing columns are an <explicit-track-list> (no repeat())

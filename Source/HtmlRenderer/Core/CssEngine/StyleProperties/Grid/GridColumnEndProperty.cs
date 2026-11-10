@@ -1,9 +1,6 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary>
-    /// The <c>grid-column-end</c> longhand (CSS Grid §8.3), one edge of a
-    /// grid item's placement. Validated by the shared <see cref="GridLineGrammar"/>.
-    /// </summary>
+    /// <summary><c>grid-column-end</c>, CSS Grid 2 §8.3.</summary>
     internal sealed class GridColumnEndProperty : Property
     {
         private static readonly IValueConverter StyleConverter = Converters.GridLineConverter.OrDefault();

@@ -3,11 +3,7 @@ using System.Linq;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary>
-    /// Validates a <c>grid-auto-flow</c> value (CSS Grid §7.7): <c>[ row | column ] || dense</c> — one of
-    /// <c>row</c>/<c>column</c> optionally combined with <c>dense</c>, in either order. The authored text is
-    /// preserved for the grid layout engine.
-    /// </summary>
+    /// <summary><c>grid-auto-flow</c>, CSS Grid 2 §7.7.</summary>
     internal sealed class GridAutoFlowValueConverter : IValueConverter
     {
         public IPropertyValue Convert(IEnumerable<Token> value)
@@ -23,7 +19,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             {
                 if (t.Data.Isi(Keywords.Row) || t.Data.Isi(Keywords.Column))
                 {
-                    if (hasAxis) return null; // row and column are mutually exclusive
+                    if (hasAxis) return null;
                     hasAxis = true;
                 }
                 else if (t.Data.Isi(Keywords.Dense))

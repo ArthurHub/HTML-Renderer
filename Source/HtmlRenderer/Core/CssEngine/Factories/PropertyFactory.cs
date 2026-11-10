@@ -370,9 +370,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             _fontsBuilder.Add(PropertyNames.Src, () => new SrcProperty());
             _fontsBuilder.Add(PropertyNames.UnicodeRange, () => new UnicodeRangeProperty());
 
-            // CSS Grid Layout Level 1/2. The engine parses and validates the full grid property set;
-            // the renderer has no grid layout engine yet, so these cascade and are then ignored at the
-            // box boundary.
+            // CSS Grid 2, parsed and cascaded, there's no grid layout
             AddLonghand(PropertyNames.GridTemplateColumns, () => new GridTemplateColumnsProperty());
             AddLonghand(PropertyNames.GridTemplateRows, () => new GridTemplateRowsProperty());
             AddLonghand(PropertyNames.GridTemplateAreas, () => new GridTemplateAreasProperty());
@@ -393,9 +391,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             AddLonghand(PropertyNames.GridAutoColumns, () => new GridAutoColumnsProperty());
             AddLonghand(PropertyNames.GridAutoRows, () => new GridAutoRowsProperty());
 
-            // The grid mega-shorthands parse/expand like any other, but are excluded from serialization
-            // reconstruction (via _logicalShorthands) - reconstructing a `grid`/`grid-template` from its
-            // longhands is not worth the complexity and could change existing output.
+            // Never reconstructed from their longhands when serializing.
             AddLogicalShorthand(PropertyNames.GridTemplate, () => new GridTemplateProperty(),
                 PropertyNames.GridTemplateRows, PropertyNames.GridTemplateColumns, PropertyNames.GridTemplateAreas);
             AddLogicalShorthand(PropertyNames.Grid, () => new GridProperty(),

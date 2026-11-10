@@ -3,24 +3,14 @@ using System.Linq;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary>
-    /// The <c>grid</c> shorthand (CSS Grid §7.8): either a <c>&lt;grid-template&gt;</c>, or one of the two
-    /// auto-flow forms
-    /// <c>&lt;grid-template-rows&gt; / [ auto-flow &amp;&amp; dense? ] &lt;grid-auto-columns&gt;?</c> and
-    /// <c>[ auto-flow &amp;&amp; dense? ] &lt;grid-auto-rows&gt;? / &lt;grid-template-columns&gt;</c>. Expands to
-    /// the three <c>grid-template-*</c> longhands plus <c>grid-auto-flow</c>/<c>-rows</c>/<c>-columns</c>;
-    /// every longhand it doesn't set is reset to its initial value (an absent slice — §7.8).
-    /// </summary>
+    /// <summary><c>grid</c>, CSS Grid 2 §7.8. A longhand without a slice is reset to its initial value.</summary>
     internal sealed class GridShorthandValueConverter : IValueConverter
     {
         public IPropertyValue Convert(IEnumerable<Token> value)
         {
-            // NB: the domain-specific IEnumerable<Token>.ToList() extension splits on commas; materialize the
-            // flat token list explicitly instead.
+            // Not ToList(), the IEnumerable<Token> extension of that name splits on commas.
             var tokens = new List<Token>(value);
 
-            // Form 1: <grid-template>. The three template longhands are set; grid-auto-flow/-rows/-columns
-            // are omitted here so they reset to their initial values (row / auto / auto).
             if (GridTemplateShorthand.TryParseTemplate(tokens, out var rows, out var columns, out var areas))
             {
                 var templateMap = new Dictionary<string, IReadOnlyList<Token>>();
@@ -30,7 +20,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 return new MappedShorthandValue(templateMap, tokens);
             }
 
-            // Forms 2/3: an auto-flow form — requires exactly one top-level '/'.
             var groups = GridTemplateShorthand.SplitTopLevelSlash(tokens);
             if (groups.Count != 2) return null;
 
@@ -41,7 +30,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             var leftHasFlow = left.Any(t => t.Type == TokenType.Ident && t.Data.Isi(Keywords.AutoFlow));
             var rightHasFlow = right.Any(t => t.Type == TokenType.Ident && t.Data.Isi(Keywords.AutoFlow));
-            if (leftHasFlow == rightHasFlow) return null; // exactly one side carries auto-flow
+            if (leftHasFlow == rightHasFlow) return null;
 
             var map = new Dictionary<string, IReadOnlyList<Token>>();
 

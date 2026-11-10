@@ -1,10 +1,6 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary>
-    /// The <c>grid-template-areas</c> property (CSS Grid §7.3). Validated by the shared
-    /// <see cref="GridTemplateAreasGrammar"/>; the authored text is preserved for the grid layout engine,
-    /// which derives implicit <c>name-start</c>/<c>name-end</c> lines from each named area.
-    /// </summary>
+    /// <summary><c>grid-template-areas</c>, CSS Grid 2 §7.3.</summary>
     internal sealed class GridTemplateAreasProperty : Property
     {
         private static readonly IValueConverter StyleConverter = new GridTemplateAreasValueConverter().OrDefault();

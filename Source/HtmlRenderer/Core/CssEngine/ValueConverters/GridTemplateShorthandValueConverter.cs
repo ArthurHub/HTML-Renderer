@@ -3,9 +3,8 @@ using System.Collections.Generic;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// The <c>grid-template</c> shorthand (CSS Grid §7.4), expanding to <c>grid-template-rows</c> /
-    /// <c>grid-template-columns</c> / <c>grid-template-areas</c>. An omitted axis is reset to its initial
-    /// value (<c>none</c>) by <see cref="ShorthandProperty.Export"/> when its slice is absent.
+    /// <c>grid-template</c>, CSS Grid 2 §7.4. <see cref="ShorthandProperty.Export"/> resets a longhand without
+    /// a slice to its initial value.
     /// </summary>
     internal sealed class GridTemplateShorthandValueConverter : IValueConverter
     {

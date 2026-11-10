@@ -460,12 +460,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             IntegerConverter.Required(),
             IntegerConverter.StartsWithDelimiter().Required());
 
-        // A single grid <grid-line> (auto | <integer> | span <integer>), validated by GridLineGrammar.
         public static readonly IValueConverter GridLineConverter = new GridLineValueConverter();
 
-        // grid-column / grid-row / grid-area: slash-separated <grid-line> components with the CSS Grid
-        // §8.3.1 omitted-value copy rule (a bare <custom-ident> propagates to the paired/all edges) — the
-        // generic WithOrder(...).Option() DSL resets omitted slots to auto, which is wrong for named areas.
         public static readonly IValueConverter GridColumnConverter =
             new GridColumnRowShorthandValueConverter(PropertyNames.GridColumnStart, PropertyNames.GridColumnEnd);
 

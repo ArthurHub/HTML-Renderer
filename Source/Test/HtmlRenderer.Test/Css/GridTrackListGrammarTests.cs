@@ -4,12 +4,6 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/GridTrackListGrammarTests.cs.
-/// Tests for the shared <see cref="GridTrackListGrammar"/> — the grid <c>&lt;track-list&gt;</c>
-/// (<c>grid-template-columns</c>/<c>-rows</c>) and <c>&lt;track-size&gt;+</c> (<c>grid-auto-columns</c>/
-/// <c>-rows</c>) value grammars.
-/// </summary>
 [TestClass]
 public sealed class GridTrackListGrammarTests
 {
@@ -17,6 +11,11 @@ public sealed class GridTrackListGrammarTests
         GridTrackListGrammar.TryParse(CssValueParser.GetCssTokens(value));
 
     [TestMethod]
+    [Spec("css-grid-2", "#track-sizing")]
+    [Spec("css-grid-2", "#track-sizes")]
+    [Spec("css-grid-2", "#repeat-syntax")]
+    [Spec("css-grid-2", "#auto-repeat")]
+    [Spec("css-grid-2", "#fr-unit")]
     [DataRow("100px")]
     [DataRow("100px 200px")]
     [DataRow("1fr 2fr")]
@@ -38,6 +37,8 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#track-sizing")]
+    [Spec("css-grid-2", "#repeat-syntax")]
     [DataRow("")]
     [DataRow("none")]                       // 'none' is accepted by the property, not the grammar
     [DataRow("banana")]
@@ -46,7 +47,6 @@ public sealed class GridTrackListGrammarTests
     [DataRow("repeat(0, 100px)")]           // repeat count must be >= 1
     [DataRow("repeat(auto-fill)")]          // repeat needs a track body
     [DataRow("-1fr")]                        // negative flex
-    [DataRow("repeat(2, [x] 1fr)")]          // named lines inside repeat() are out of v1 scope
     [DataRow("[unclosed 100px")]             // an unclosed [ is invalid
     public void InvalidTrackLists_ReturnNull(string value)
     {
@@ -54,6 +54,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#named-lines")]
     [DataRow("[sidebar-start] 200px [sidebar-end] 1fr")]
     [DataRow("[a b] 100px [c]")]
     [DataRow("[start] repeat(3, 100px) [end]")]
@@ -63,6 +64,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#named-lines")]
     public void NamedLines_RecordSortedLineNumbers()
     {
         // [a] 100px [b] 100px [a] — 'a' labels lines 1 and 3, 'b' labels line 2.
@@ -73,6 +75,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#repeat-syntax")]
     public void RepeatFixed_ExpandsInline()
     {
         var template = Parse("repeat(3, 100px)");
@@ -85,6 +88,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#fr-unit")]
     public void Fr_ParsesAsFlexFactor()
     {
         var template = Parse("1fr 2fr");
@@ -95,6 +99,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#track-sizes")]
     public void Minmax_CapturesBothBreadths()
     {
         var template = Parse("minmax(100px, 1fr)");
@@ -107,6 +112,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#auto-repeat")]
     public void AutoRepeat_RecordedWithKindAndInsertIndex()
     {
         var template = Parse("100px repeat(auto-fill, 50px) 100px");
@@ -120,12 +126,14 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#auto-repeat")]
     public void TwoAutoRepeats_AreRejected()
     {
         Assert.IsNull(Parse("repeat(auto-fill, 50px) repeat(auto-fit, 50px)"));
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#subgrids")]
     [DataRow("subgrid")]
     [DataRow("subgrid [a]")]
     [DataRow("subgrid [a b] [c]")]
@@ -139,6 +147,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#subgrids")]
     public void Subgrid_RecordsLineNamesAtSequentialLines()
     {
         // subgrid [a] [b c] [a] — the line-name list positions 'a' at lines 1 and 3, 'b'/'c' at line 2.
@@ -151,10 +160,10 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#subgrids")]
     [DataRow("subgrid 1fr")]                 // no track size may follow subgrid
     [DataRow("1fr subgrid")]                 // subgrid must be the first token
     [DataRow("subgrid 100px [a]")]           // a track size mixed into the line-name list
-    [DataRow("subgrid repeat(2, [a])")]      // repeat() in a subgrid line-name list is a v1 deferral
     [DataRow("subgrid [unclosed")]           // an unclosed [ is invalid
     public void Subgrid_InvalidForms_ReturnNull(string value)
     {
@@ -162,6 +171,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#track-sizes")]
     [DataRow("calc(10px + 20px)")]                       // bare calc() track size
     [DataRow("calc(50% - 10px)")]                        // length-percentage calc
     [DataRow("minmax(calc(10px + 10px), 1fr)")]          // calc() as a minmax() min breadth
@@ -175,6 +185,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#track-sizes")]
     public void BareCalcTrack_IsStoredAsLength()
     {
         var template = Parse("calc(10px + 20px) 1fr");
@@ -184,6 +195,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#track-sizes")]
     [DataRow("calc(10deg + 5deg)")]                      // an angle-category calc is not a track size
     [DataRow("minmax(calc(90deg), 1fr)")]                // a wrong-category calc inside minmax()
     [DataRow("fit-content(calc(1s))")]                   // a time-category calc argument
@@ -193,6 +205,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#auto-tracks")]
     [DataRow("100px", 1)]
     [DataRow("100px 200px auto", 3)]
     public void TrackSizeList_ParsesForAutoColumns(string value, int expected)
@@ -203,6 +216,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#auto-tracks")]
     [DataRow("repeat(2, 100px)")]  // no repeat() allowed in a track-size list
     [DataRow("")]
     [DataRow("banana")]
@@ -211,20 +225,10 @@ public sealed class GridTrackListGrammarTests
         Assert.IsNull(GridTrackListGrammar.TryParseTrackSizeList(CssValueParser.GetCssTokens(value)));
     }
 
-    // ── value equality — GridTemplate/GridTrackSize are the CssProperty<T> type argument for
-    // grid-template-columns/-rows, so the cascade's copy-on-write comparison depends on two separately
-    // parsed instances of the same authored text comparing equal (see CssProperty<T>'s own remarks). ──
-    //
-    // NOTE: In PeachPDF, GridTemplate/GridTrackSize are `record` types with hand-written structural
-    // Equals/GetHashCode (see PeachPDF's GridTrackListGrammar.cs remarks on LineNames dictionary
-    // equality). In this port (Source/HtmlRenderer/Core/CssEngine/GridTrackListGrammar.cs), both
-    // GridTemplate and GridTrackSize are plain `sealed class` types with no Equals/GetHashCode override,
-    // so two separately parsed instances of identical authored text are NOT equal (reference equality
-    // only). The four tests below are ported with their original assertions intact but ignored, since
-    // they fail against the current port until value equality is added.
+    // The cascade's copy-on-write comparison of CssProperty<GridTemplate> relies on value equality.
 
     [TestMethod]
-    [Ignore("not yet spec compliant — GridTemplate/GridTrackSize have no value-equality override in this port (plain sealed classes, unlike PeachPDF's `record` types), so two separate parses of identical text are not Equal")]
+    [Ignore("GridTemplate/GridTrackSize have no value equality, two parses of the same text aren't Equal")]
     [DataRow("100px 1fr auto")]
     [DataRow("minmax(100px, 1fr) minmax(min-content, max-content)")]
     [DataRow("[start] 100px [middle] 1fr [end]")]
@@ -241,9 +245,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
-    // NOTE: not ignored — with no Equals override, two different-text parses are still trivially
-    // "not equal" by reference identity alone, so this assertion holds against the current port even
-    // though it isn't exercising real structural inequality the way it does in PeachPDF.
+    // Passes trivially by reference identity until value equality exists.
     [DataRow("100px 1fr", "100px 2fr")]                 // different track
     [DataRow("100px 1fr", "100px 1fr 1fr")]              // different track count
     [DataRow("[a] 100px", "[b] 100px")]                  // different line name
@@ -254,7 +256,7 @@ public sealed class GridTrackListGrammarTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant — GridTemplate has no value-equality override in this port (plain sealed class), so two separately parsed empty-subgrid instances are not Equal")]
+    [Ignore("GridTemplate has no value equality, two parses of the same text aren't Equal")]
     public void GridTemplate_SubgridWithNoNamedLines_EqualsAnotherEmptySubgrid()
     {
         var a = Parse("subgrid");

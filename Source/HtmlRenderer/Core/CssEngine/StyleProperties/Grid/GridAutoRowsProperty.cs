@@ -1,6 +1,6 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary>The <c>grid-auto-rows</c> property (CSS Grid §7.6): the size of implicitly-created rows.</summary>
+    /// <summary><c>grid-auto-rows</c>, CSS Grid 2 §7.6.</summary>
     internal sealed class GridAutoRowsProperty : Property
     {
         private static readonly IValueConverter StyleConverter = new GridAutoTracksValueConverter().OrDefault();

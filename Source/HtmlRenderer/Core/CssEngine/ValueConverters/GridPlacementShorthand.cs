@@ -3,13 +3,10 @@ using System.Linq;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary>Shared helpers for the grid placement shorthands (<c>grid-column</c>/<c>grid-row</c>/
-    /// <c>grid-area</c>): splitting a value on <c>/</c> into <c>&lt;grid-line&gt;</c> components, validating
-    /// each, and building the omitted-value copy result (CSS Grid §8.3.1).</summary>
+    /// <summary>Helpers for <c>grid-row</c>, <c>grid-column</c> and <c>grid-area</c>, CSS Grid 2 §8.4.</summary>
     internal static class GridPlacementShorthand
     {
-        /// <summary>A parsed <c>&lt;grid-line&gt;</c> component: its authored tokens and whether it is a bare
-        /// <c>&lt;custom-ident&gt;</c> (the only form the omitted-value copy rule propagates).</summary>
+        /// <summary>A <c>&lt;grid-line&gt;</c>, only a bare <c>&lt;custom-ident&gt;</c> is copied to omitted lines.</summary>
         internal struct Component
         {
             public IReadOnlyList<Token> Tokens { get; set; }
@@ -18,9 +15,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private static readonly Token AutoToken = new Token(TokenType.Ident, Keywords.Auto, TextPosition.Empty);
 
-        /// <summary>Splits the value on top-level <c>/</c> delimiters into <c>&lt;grid-line&gt;</c> components,
-        /// validating each via <see cref="GridLineGrammar"/>. Returns null on any invalid component or an
-        /// out-of-range component count.</summary>
+        /// <summary>Splits on <c>/</c>, null if a component is invalid or there are too many.</summary>
         internal static List<Component> Split(IEnumerable<Token> value, int maxComponents)
         {
             var groups = new List<List<Token>> { new List<Token>() };
@@ -37,9 +32,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 var significant = group.Where(t => t.Type != TokenType.Whitespace).ToArray();
                 var parsed = GridLineGrammar.TryParse(significant);
                 if (parsed is null) return null;
-                // Preserve internal whitespace in the stored tokens (only trim the ends) so a two-token
-                // component like "span 2" round-trips as "span 2", not "span2" (which would re-lex as one
-                // ident). A bare <custom-ident> is a single ident token that parsed to a named (non-Nth) line.
+                // Keep the inner whitespace, "span2" would lex as one ident.
                 components.Add(new Component
                 {
                     Tokens = Trim(group),
@@ -50,13 +43,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return components.Count >= 1 && components.Count <= maxComponents ? components : null;
         }
 
-        /// <summary>The tokens for a longhand: the specified component's tokens, or <c>auto</c> when omitted.</summary>
         internal static IReadOnlyList<Token> Or(Component? component)
         {
             return component.HasValue ? component.Value.Tokens : new[] { AutoToken };
         }
 
-        /// <summary>Drops leading and trailing whitespace tokens, keeping internal whitespace.</summary>
         private static IReadOnlyList<Token> Trim(List<Token> group)
         {
             var start = 0;
@@ -67,8 +58,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
     }
 
-    /// <summary>A shorthand <see cref="IPropertyValue"/> that emits a precomputed token stream for each of
-    /// its longhands (via <see cref="ExtractFor"/>), used by the grid placement shorthands.</summary>
+    /// <summary>A shorthand value with precomputed tokens per longhand.</summary>
     internal sealed class MappedShorthandValue : IPropertyValue
     {
         private readonly IReadOnlyDictionary<string, IReadOnlyList<Token>> _map;

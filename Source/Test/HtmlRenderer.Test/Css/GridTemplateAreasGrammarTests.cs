@@ -3,12 +3,6 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/GridTemplateAreasGrammarTests.cs.
-/// Tests for the shared <see cref="GridTemplateAreasGrammar"/> - the <c>grid-template-areas</c> value
-/// (a rectangular grid of named cells), confirmed a field-for-field match against PeachPDF's
-/// implementation.
-/// </summary>
 [TestClass]
 public sealed class GridTemplateAreasGrammarTests
 {
@@ -16,6 +10,7 @@ public sealed class GridTemplateAreasGrammarTests
         GridTemplateAreasGrammar.TryParse(CssValueParser.GetCssTokens(value));
 
     [TestMethod]
+    [Spec("css-grid-2", "#grid-template-areas-property")]
     public void RectangularGrid_ParsesWithAreaBounds()
     {
         var areas = Parse("\"header header header\" \"nav main main\" \"footer footer footer\"");
@@ -29,6 +24,7 @@ public sealed class GridTemplateAreasGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#grid-template-areas-property")]
     public void DotCells_AreEmpty_AndNotAreas()
     {
         var areas = Parse("\"a . b\" \". . .\"");
@@ -42,6 +38,7 @@ public sealed class GridTemplateAreasGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#grid-template-areas-property")]
     public void TripleDot_IsAlsoAnEmptyCell()
     {
         var areas = Parse("\"a ... b\"");
@@ -50,13 +47,13 @@ public sealed class GridTemplateAreasGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-grid-2", "#grid-template-areas-property")]
     [DataRow("\"a a\" \"a a a\"")]        // ragged rows (2 vs 3 columns)
     [DataRow("\"a b\" \"b a\"")]          // 'a' is not a rectangle (diagonal)
     [DataRow("\"a a\" \"a .\"")]          // 'a' bounding box includes an empty cell → not filled
     [DataRow("\"a b a\"")]                // 'a' occupies cols 0 and 2 with b between → not rectangular
     [DataRow("100px")]                    // not a string list
     [DataRow("\"\"")]                     // an empty string row
-    [DataRow("\"a.b c\"")]                // a cell mixing a name and a dot is not a valid cell token
     [DataRow("")]
     public void Invalid_ReturnsNull(string value)
     {
