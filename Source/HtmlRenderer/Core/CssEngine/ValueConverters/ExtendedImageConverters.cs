@@ -6,11 +6,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     using static Converters;
 
     /// <summary>
-    /// A validated-but-not-rendered image function (<c>image-set()</c>/<c>cross-fade()</c>/<c>element()</c>,
-    /// CSS Images 4 §2/§3). The engine accepts these as syntactically-valid <c>&lt;image&gt;</c> values (so a
-    /// property or <c>@property</c> registration using one is valid, per spec) but paints nothing for them —
-    /// the render path (<c>CssValueParser.ParseImage</c> → <c>CssImagePainter</c>) only handles url()/gradients.
-    /// This value carries the original tokens for serialization only.
+    /// An <c>image-set()</c>, <c>cross-fade()</c> or <c>element()</c> value, CSS Images 4 §2.4, §2.6 and §2.7.
+    /// Only validated and serialized, the painter doesn't handle them.
     /// </summary>
     internal sealed class ImageFunctionValue : IPropertyValue
     {
@@ -26,12 +23,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public TokenValue ExtractFor(string name) => Original;
     }
 
-    /// <summary>The inner <c>&lt;image&gt;</c> of an <c>image-set()</c>/<c>cross-fade()</c> option — a url() or a
-    /// gradient. Nested <c>image-set()</c> isn't modeled (not a real authoring pattern); referencing the two
-    /// base converters directly also avoids a construction cycle with <c>ImageSourceConverter</c>.</summary>
+    /// <summary>
+    /// The <c>&lt;image&gt;</c> inside <c>image-set()</c> and <c>cross-fade()</c>, only a url() or a gradient.
+    /// Using <c>ImageSourceConverter</c> here would be a construction cycle.
+    /// </summary>
     internal static class ExtendedImage
     {
-        // Qualify GradientConverter — the bare name also resolves to the abstract GradientConverter *type*.
+        // Qualified, the bare name is the GradientConverter type
         public static readonly IValueConverter InnerImage = UrlConverter.Or(Converters.GradientConverter);
     }
 
@@ -40,11 +38,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     {
         public IPropertyValue Convert(IEnumerable<Token> value)
         {
-            // ToArray (LINQ) — a bare ToList() on IEnumerable<Token> resolves to the CSS comma-group splitter.
+            // ToList() on tokens is the comma group splitter
             var tokens = value.Where(t => t.Type != TokenType.Whitespace).ToArray();
 
-            // An '#id' selector is a single <hash-token> (CSS Syntax §4). A '#f00'-shaped id lexes as a Color
-            // token, any other id as a Hash token; both are the single '#'-prefixed form.
+            // An id that looks like a hex color, like #f00, is tokenized as a color
             return tokens.Length == 1 && (tokens[0].Type == TokenType.Hash || tokens[0].Type == TokenType.Color)
                 ? new ImageFunctionValue(value)
                 : null;
@@ -72,8 +69,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             if (StringConverter.Convert(items[0]) == null && ExtendedImage.InnerImage.Convert(items[0]) == null)
                 return false;
 
-            // Any remaining items are a <resolution> (incl. the `x` dppx alias, modeled by Resolution.GetUnit)
-            // and/or a type(<string>), in either order.
             for (var i = 1; i < items.Count; i++)
                 if (ResolutionConverter.Convert(items[i]) == null && !IsTypeFunction(items[i]))
                     return false;

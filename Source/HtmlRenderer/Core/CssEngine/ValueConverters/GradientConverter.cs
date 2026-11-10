@@ -20,11 +20,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return properties.Guard<GradientValue>();
         }
 
-        /// <summary>
-        /// The converter used to validate a colour stop's position. Length/percentage for linear and
-        /// radial gradients (the default); overridden by <see cref="ConicGradientConverter"/>, whose
-        /// angular stops are positioned by an &lt;angle&gt; or &lt;percentage&gt; instead.
-        /// </summary>
+        /// <summary>Validates a color stop position, a length or percentage unless overridden.</summary>
         protected virtual IValueConverter StopPositionConverter => LengthOrPercentConverter;
 
         private IPropertyValue[] ToGradientStops(List<List<Token>> values, int offset)
@@ -55,13 +51,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 if (firstPosition != null) items.RemoveAt(items.Count - 1);
             }
 
-            // <color-stop-length> = <length-percentage>{1,2} (CSS Images 4 §3.5.1): a stop may carry two
-            // positions, equivalent to two same-colour stops, one at each position. Parsing right-to-left,
-            // the position taken above is the second (rightmost); a position immediately before it is the
-            // first. Both are kept, in source order, so the value round-trips as authored - the render
-            // layer (CssValueParser.ParseLinearGradient) reads the property's serialized value and already
-            // expands two positions into two stops, so dropping one here collapsed the solid band it draws.
-            // (For conic gradients the same two-position shorthand applies, positioned by <angle>.)
+            // CSS Images 4 §3.5.1: a stop can have two positions. Both are kept, the painter reads the
+            // serialized value.
             if (firstPosition != null && items.Count != 0)
             {
                 var earlier = StopPositionConverter.Convert(items[items.Count - 1]);
@@ -81,8 +72,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 if (color != null) items.RemoveAt(items.Count - 1);
             }
 
-            // The two-position form is only defined for a <color-stop>; a bare <length-percentage> with no
-            // colour is a <linear-color-hint>, which takes exactly one position.
+            // A position without a color is a color hint, which only takes one position
             if (secondPosition != null && color == null) return null;
 
             return items.Count == 0 ? new StopValue(color, firstPosition, secondPosition, value) : null;
@@ -127,9 +117,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             }
         }
 
-        // Factory used by derived classes to return an opaque placeholder IPropertyValue that echoes
-        // its tokens back as CssText - for a group whose grammar is accepted but not further modelled
-        // here (e.g. an "in <colorspace>" modifier, or a conic bare-0 / calc() angular stop position).
+        // A validated value that isn't modeled further, serialized as written
         protected static IPropertyValue CreatePlaceholder(IEnumerable<Token> tokens)
             => new PlaceholderValue(tokens);
 
@@ -193,8 +181,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         protected override IPropertyValue ConvertFirstArgument(IEnumerable<Token> value)
         {
-            // "[ <angle> | to <side-or-corner> ] || <color-interpolation-method>" (CSS Images 4). Validate
-            // any "in <colorspace> [<hue-method>]" prelude, then validate what remains as the direction.
+            // CSS Images 4 §3.1
             if (!ColorInterpolationMethodGrammar.TryExtractInterpolationMethod(value, out var remainder, out var hasIn))
                 return null;
 
@@ -205,32 +192,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
     }
 
-    // Validates conic-gradient() at parse time (mirroring RadialGradientConverter), so a malformed
-    // value is dropped per CSS Cascade §4.1 instead of silently painting nothing at render. The
-    // grammar matches CssValueParser.ParseConicGradient exactly.
+    // CSS Images 4 §3.3.1
     internal sealed class ConicGradientConverter : GradientConverter
     {
         private readonly IValueConverter _prelude;
 
         public ConicGradientConverter()
         {
-            // [ from <angle> ]? [ at <position> ]? — same combinator shape RadialGradientConverter
-            // uses for its own prelude, just with conic's from/at keywords.
             _prelude = WithAny(
                 AngleConverter.StartsWithKeyword(Keywords.From).Option(),
                 PointConverter.StartsWithKeyword(Keywords.At).Option(Point.Center));
         }
 
-        // A conic <angular-color-stop> is positioned by <angle> | <percentage>, with the same bare-0
-        // and calc()-family acceptance the renderer's TryParseConicAngle allows (AngleConverter already
-        // covers calc()-typed angles; a length such as 5px is correctly rejected).
+        // <angle-percentage> | <zero>
         protected override IValueConverter StopPositionConverter { get; } =
             AngleConverter.Or(PercentConverter).Or(new ZeroOrCalcPositionConverter());
 
         protected override IPropertyValue ConvertFirstArgument(IEnumerable<Token> value)
         {
-            // "[ from <angle> ]? [ at <position> ]? || <color-interpolation-method>" — validate any
-            // "in <colorspace> [<hue-method>]" prelude, then validate what remains as from/at.
             if (!ColorInterpolationMethodGrammar.TryExtractInterpolationMethod(value, out var remainder, out var hasIn))
                 return null;
 
@@ -242,8 +221,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private IPropertyValue ConvertPrelude(IEnumerable<Token> value)
         {
-            // If the first non-whitespace token is an ident that is not a prelude keyword, this comma
-            // group is a color stop, not a prelude — return null so it flows to stop validation.
+            // A group starting with any other ident is the first color stop
             Token first = null;
             foreach (var t in value)
             {
@@ -260,9 +238,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return _prelude.Convert(value);
         }
 
-        // Accepts a bare `0` (the universal zero, which <angle> otherwise requires a unit for) or a
-        // single calc()-family function used as an angular stop position — matching the corresponding
-        // branches of CssValueParser.TryParseConicAngle, using the same primitives.
+        // A unitless 0, or any calc()-family function
         private sealed class ZeroOrCalcPositionConverter : IValueConverter
         {
             public IPropertyValue Convert(IEnumerable<Token> value)
@@ -306,8 +282,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         protected override IPropertyValue ConvertFirstArgument(IEnumerable<Token> value)
         {
-            // "[ <ending-shape> || <size> ]? [ at <position> ]? || <color-interpolation-method>" — validate
-            // any "in <colorspace> [<hue-method>]" prelude, then validate what remains as shape/size/position.
+            // CSS Images 4 §3.2.1
             if (!ColorInterpolationMethodGrammar.TryExtractInterpolationMethod(value, out var remainder, out var hasIn))
                 return null;
 
@@ -319,9 +294,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private IPropertyValue ConvertShape(IEnumerable<Token> value)
         {
-            // If the first non-whitespace token is an ident that is not a known gradient
-            // shape/size keyword, it must be a CSS color name (e.g. "red" in "red 0 8px").
-            // In that case, this comma group is a color stop, not a shape/size modifier.
+            // A group starting with any other ident is the first color stop
             Token first = null;
             foreach (var t in value)
             {

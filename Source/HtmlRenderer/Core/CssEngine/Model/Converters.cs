@@ -481,11 +481,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static readonly IValueConverter MultipleShadowConverter = ShadowConverter.FromList().OrNone();
 
-        // The image functions the engine validates but the renderer does not paint (CSS Images 4). Composed into
-        // ImageSourceConverter so every <image> property (background-image, list-style-image, cursor,
-        // content, and @property syntax:"<image>") accepts them syntactically; the render path
-        // (CssValueParser.ParseImage → CssImagePainter) still handles only url()/gradients, so they paint
-        // nothing (an unchanged engine-wide gap). See ExtendedImageConverters.cs.
+        // Accepted wherever an <image> is, but never painted
         public static readonly IValueConverter ImageSetImageConverter =
             Construct(() => new FunctionValueConverter(FunctionNames.ImageSet, new ImageSetConverter()));
         public static readonly IValueConverter CrossFadeImageConverter =

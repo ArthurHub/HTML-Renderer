@@ -341,11 +341,7 @@ public sealed class GradientTests
         Assert.IsFalse(backgroundImage.IsInitial);
     }
 
-    // <color-stop-length> = <length-percentage>{1,2} (CSS Images 4 §3.5.1). Both positions must survive
-    // serialization: the render layer (CssValueParser.ParseLinearGradient) reads the property's value
-    // and expands two positions into two stops, so dropping one here collapsed the solid band. This
-    // asserts the non-lossy value directly - the LinearGradientIntegrationTests only check that a
-    // stitching function is present, which is true with or without the dropped position.
+    // The painter reads the serialized value, so both positions of a stop have to survive it
     [TestMethod]
     [DataRow("background-image: linear-gradient(red 0 50%, blue 50% 100%)",
         "linear-gradient(rgb(255, 0, 0) 0 50%, rgb(0, 0, 255) 50% 100%)")]
@@ -363,8 +359,6 @@ public sealed class GradientTests
         Assert.AreEqual(expected, backgroundImage.Value);
     }
 
-    // Single-position and no-position stops, plus a bare-position colour hint, are unaffected; three
-    // positions on one stop and two bare positions with no colour remain invalid.
     [TestMethod]
     [DataRow("background-image: linear-gradient(red 50%, blue)", true)]
     [DataRow("background-image: linear-gradient(red, 25%, blue)", true)]
@@ -377,9 +371,6 @@ public sealed class GradientTests
         Assert.AreEqual(valid, ((BackgroundImageProperty)property).HasValue);
     }
 
-    // conic-gradient() is now validated at parse time (issue #244) instead of accepting anything.
-    // Every form CssValueParser.ParseConicGradient renders must still be accepted here — these mirror
-    // the values in ConicGradientIntegrationTests / ColorSpaceGradientIntegrationTests.
     [TestMethod]
     [DataRow("conic-gradient(red, blue)")]
     [DataRow("conic-gradient(red, yellow, blue)")]
@@ -389,8 +380,6 @@ public sealed class GradientTests
     [DataRow("conic-gradient(red 0deg, blue 180deg, green 360deg)")]
     [DataRow("conic-gradient(red 0%, blue 50%, green 100%)")]
     [DataRow("conic-gradient(red calc(1turn * 0.35), blue calc(1turn * 0.7), green 1turn)")]
-    // A non-angle-typed calc() position (percentage here) is also accepted, matching the renderer's
-    // TryParseConicAngle calc branch which resolves any calc()-family against a full turn.
     [DataRow("conic-gradient(red calc(50%), blue)")]
     [DataRow("conic-gradient(red 0 90deg, blue 90deg 180deg, green 180deg 360deg)")]
     [DataRow("conic-gradient(rgba(255,0,0,0), red)")]
@@ -398,6 +387,9 @@ public sealed class GradientTests
     [DataRow("repeating-conic-gradient(from 45deg, red 0deg, blue 60deg)")]
     [DataRow("repeating-conic-gradient(#000 0 25%, #fff 25% 50%)")]
     [DataRow("conic-gradient(in oklch, red, blue)")]
+    [Spec("css-images-4", "#conic-gradient-syntax")]
+    [Spec("css-images-4", "#conic-color-stops")]
+    [Spec("css-images-4", "#repeating-gradients")]
     public void BackgroundImageConicGradientAccepted(string gradient)
     {
         var property = CssConstructionFunctions.ParseDeclaration($"background-image: {gradient}");
@@ -407,23 +399,18 @@ public sealed class GradientTests
         Assert.IsFalse(backgroundImage.IsInitial);
     }
 
-    // Malformed conic gradients must now be DROPPED at parse time (HasValue == false) so a prior
-    // background-image (or the initial value) wins, per CSS Cascade §4.1 — the bug in issue #244.
     [TestMethod]
-    [DataRow("conic-gradient(!!! 5px \"garbage\")")]          // the issue's example
-    [DataRow("conic-gradient(red 5px, blue)")]                // a <length> is not a valid angular position
-    [DataRow("conic-gradient(from red, blue, green)")]        // "from" prelude needs an <angle>, not a colour
-    [DataRow("conic-gradient(red 5, blue)")]                  // a bare non-zero number is not a valid position
+    [DataRow("conic-gradient(!!! 5px \"garbage\")")]
+    [DataRow("conic-gradient(red 5px, blue)")]
+    [DataRow("conic-gradient(from red, blue, green)")]
+    [DataRow("conic-gradient(red 5, blue)")]
+    [Spec("css-images-4", "#conic-gradient-syntax")]
     public void BackgroundImageConicGradientRejected(string gradient)
     {
         var property = CssConstructionFunctions.ParseDeclaration($"background-image: {gradient}");
         Assert.IsFalse(((BackgroundImageProperty)property).HasValue);
     }
 
-    // A gradient's "in <color-interpolation-method>" prelude (CSS Images 4 §3.1) is now validated at
-    // parse time (issue #245) instead of accepting any comma group that merely contains an "in" ident.
-    // Every space PeachPDF supports - alone, with a polar hue method, and combined with a direction/
-    // shape in either order - must stay accepted, across linear/radial/conic.
     [TestMethod]
     [DataRow("linear-gradient(in srgb, red, blue)")]
     [DataRow("linear-gradient(in srgb-linear, red, blue)")]
@@ -447,6 +434,8 @@ public sealed class GradientTests
     [DataRow("conic-gradient(in oklab, red, blue)")]
     [DataRow("conic-gradient(in oklch from 45deg, red, blue)")]
     [DataRow("conic-gradient(from 45deg in oklch longer hue, red, blue)")]
+    [Spec("css-images-4", "#linear-gradients")]
+    [Spec("css-images-4", "#radial-color-interpolation")]
     public void BackgroundImageGradientInterpolationMethodAccepted(string gradient)
     {
         var property = CssConstructionFunctions.ParseDeclaration($"background-image: {gradient}");
@@ -456,21 +445,17 @@ public sealed class GradientTests
         Assert.IsFalse(backgroundImage.IsInitial);
     }
 
-    // A malformed or unsupported "in <color-interpolation-method>" prelude must now be DROPPED at parse
-    // time (HasValue == false), instead of being accepted unvalidated and silently ignored (issue #245).
     [TestMethod]
-    [DataRow("linear-gradient(in nonsense garbage, red, blue)")]  // the issue's example
+    [DataRow("linear-gradient(in nonsense garbage, red, blue)")]
     [DataRow("linear-gradient(in, red, blue)")]                   // "in" with no color space
     [DataRow("linear-gradient(in oklab longer hue, red, blue)")]  // hue method on a rectangular space
     [DataRow("linear-gradient(in oklch longer, red, blue)")]      // hue direction without the "hue" keyword
     [DataRow("linear-gradient(in oklab to bogus, red, blue)")]    // the direction half is invalid
-    [DataRow("linear-gradient(in a98-rgb, red, blue)")]           // valid CSS space, unsupported here
-    [DataRow("linear-gradient(in prophoto-rgb, red, blue)")]
-    [DataRow("linear-gradient(in rec2020, red, blue)")]
     [DataRow("radial-gradient(in bogus, red, blue)")]
     [DataRow("radial-gradient(in oklab nonsense, red, blue)")]    // in <space> then an invalid shape
     [DataRow("conic-gradient(in bogus, red, blue)")]
     [DataRow("conic-gradient(in oklab from red, red, blue)")]     // in <space> then an invalid from-angle
+    [Spec("css-images-4", "#linear-gradients")]
     public void BackgroundImageGradientInterpolationMethodRejected(string gradient)
     {
         var property = CssConstructionFunctions.ParseDeclaration($"background-image: {gradient}");

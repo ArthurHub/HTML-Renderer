@@ -18,6 +18,9 @@ public sealed class CssImages3Tests
     [TestMethod]
     [Spec("css-images-3", "#url-notation")]
     [Spec("css-images-3", "#default-sizing")]
+    [Spec("css-images-4", "#image-values")]
+    [Spec("css-images-4", "#url-notation")]
+    [Spec("css-images-4", "#sizing")]
     public void UrlImage_IsDrawnAtItsNaturalSize()
     {
         var (g, _) = Paint($"<div id='b' style='width:100px;height:100px;background-image:{Image};background-repeat:no-repeat'></div>");
@@ -27,6 +30,7 @@ public sealed class CssImages3Tests
 
     [TestMethod]
     [Spec("css-images-3", "#default-sizing")]
+    [Spec("css-images-4", "#sizing")]
     public void ImageWithOnlyAWidth_KeepsItsNaturalAspectRatio()
     {
         var root = TestImages.Layout($"<img id='i' src='{TestImages.Png(40, 30)}' style='width:80px'>");
@@ -55,6 +59,7 @@ public sealed class CssImages3Tests
     [DataRow("linear-gradient(90deg, red, blue)", 0, 25, 100, 25)]
     [DataRow("linear-gradient(0.25turn, red, blue)", 0, 25, 100, 25)]
     [Spec("css-images-3", "#linear-gradient-syntax")]
+    [Spec("css-images-4", "#linear-gradients")]
     public void LinearGradient_DirectionSetsTheGradientLine(string image, double x1, double y1, double x2, double y2)
     {
         var (_, gradient) = Paint($"<div id='b' style='width:100px;height:50px;background-image:{image}'></div>");
@@ -85,14 +90,16 @@ public sealed class CssImages3Tests
     {
         var (_, gradient) = Paint("<div id='b' style='width:200px;height:100px;background-image:linear-gradient(to bottom right, red, blue)'></div>");
 
+        // Perpendicular to the top right to bottom left diagonal: direction (1, 2), length 400 / sqrt 5
         Assert.AreEqual(60, gradient!.P1.X, 0.5);
-        Assert.AreEqual(10, gradient.P1.Y, 0.5);
+        Assert.AreEqual(-30, gradient.P1.Y, 0.5);
         Assert.AreEqual(140, gradient.P2.X, 0.5);
-        Assert.AreEqual(90, gradient.P2.Y, 0.5);
+        Assert.AreEqual(130, gradient.P2.Y, 0.5);
     }
 
     [TestMethod]
-    [Spec("css-images-3", "#radial-gradients")]
+    [Spec("css-images-3", "#radial-gradient-syntax")]
+    [Spec("css-images-4", "#radial-gradients")]
     public void RadialGradient_IsAccepted()
     {
         var (root, _) = PaintHarness.Layout(PaintHarness.Wrap("<div id='b' style='background-image:radial-gradient(circle at top left, red, blue)'></div>"));
@@ -105,6 +112,7 @@ public sealed class CssImages3Tests
     [DataRow("radial-gradient(red, blue)")]
     [DataRow("repeating-radial-gradient(red, blue 10px)")]
     [Spec("css-images-3", "#radial-gradients")]
+    [Spec("css-images-4", "#radial-gradients")]
     public void RadialGradient_IsPainted(string image)
     {
         var (g, _) = Paint($"<div id='b' style='width:100px;height:50px;background-image:{image}'></div>");
@@ -114,6 +122,7 @@ public sealed class CssImages3Tests
 
     [TestMethod]
     [Spec("css-images-3", "#repeating-gradients")]
+    [Spec("css-images-4", "#repeating-gradients")]
     public void RepeatingLinearGradient_RepeatsTheStopsAlongTheLine()
     {
         var (_, gradient) = Paint("<div id='b' style='width:100px;height:50px;background-image:repeating-linear-gradient(to right, red, blue 25px)'></div>");
@@ -124,6 +133,7 @@ public sealed class CssImages3Tests
 
     [TestMethod]
     [Spec("css-images-3", "#color-stop-syntax")]
+    [Spec("css-images-4", "#color-stop-syntax")]
     public void ColorStops_TakeLengthsPercentagesAndTwoPositions()
     {
         var (_, gradient) = Paint("<div id='b' style='width:100px;height:50px;background-image:linear-gradient(to right, red 10px, blue 40% 60%, red)'></div>");
@@ -144,6 +154,7 @@ public sealed class CssImages3Tests
 
     [TestMethod]
     [Spec("css-images-3", "#coloring-gradient-line")]
+    [Spec("css-images-4", "#coloring-gradient-line")]
     public void ColorHint_ShiftsTheMidpointOfTheTransition()
     {
         var (_, gradient) = Paint("<div id='b' style='width:100px;height:50px;background-image:linear-gradient(to right, rgb(0,0,0), 25%, rgb(200,200,200))'></div>");
@@ -156,6 +167,7 @@ public sealed class CssImages3Tests
     [Ignore("Gap, see Spec/css-images-3.yml")]
     [TestMethod]
     [Spec("css-images-3", "#coloring-gradient-line")]
+    [Spec("css-images-4", "#coloring-gradient-line")]
     public void ColorsAreInterpolatedPremultiplied()
     {
         var (_, gradient) = Paint("<div id='b' style='width:100px;height:50px;background-image:linear-gradient(to right, red, 50%, transparent)'></div>");
@@ -167,6 +179,7 @@ public sealed class CssImages3Tests
 
     [TestMethod]
     [Spec("css-images-3", "#color-stop-fixup")]
+    [Spec("css-images-4", "#color-stop-fixup")]
     public void ColorStopFixup_DefaultsTheEndsAndSpacesStopsEvenly()
     {
         var (_, gradient) = Paint("<div id='b' style='width:100px;height:50px;background-image:linear-gradient(to right, red, blue, red 60%, blue, red)'></div>");
@@ -177,6 +190,7 @@ public sealed class CssImages3Tests
     [Ignore("Gap, see Spec/css-images-3.yml")]
     [TestMethod]
     [Spec("css-images-3", "#color-stop-fixup")]
+    [Spec("css-images-4", "#color-stop-fixup")]
     public void ColorStopFixup_ClampsAStopBeforeThePreviousOne()
     {
         var (_, gradient) = Paint("<div id='b' style='width:100px;height:50px;background-image:linear-gradient(to right, red 50%, blue 20%)'></div>");
@@ -191,6 +205,7 @@ public sealed class CssImages3Tests
     [DataRow("none", 30, 35, 40, 30)]
     [DataRow("scale-down", 30, 35, 40, 30)]
     [Spec("css-images-3", "#the-object-fit")]
+    [Spec("css-images-4", "#the-object-fit")]
     public void ObjectFit_SizesTheImageInTheContentBox(string fit, double x, double y, double width, double height)
     {
         var (g, _) = Paint($"<img id='b' src='{TestImages.Png(40, 30)}' style='display:block;width:100px;height:100px;object-fit:{fit}'>");

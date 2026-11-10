@@ -55,6 +55,7 @@ public sealed class CssBorders4ParseTests
     [Ignore("Gap, see Spec/css-borders-4.yml")]
     [TestMethod]
     [Spec("css-borders-4", "#border-color")]
+    [Spec("css-images-4", "#stripes")]
     public void BorderColor_StripesAreAccepted()
     {
         var property = CssConstructionFunctions.ParseDeclaration("border-top-color: stripes(red, blue)");

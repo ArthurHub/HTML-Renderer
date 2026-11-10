@@ -5,148 +5,180 @@ snapshot: https://www.w3.org/TR/2025/WD-css-images-4-20250930/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#values':
-    title: 1.1 Value Definitions
-    status: unknown
+    status: n/a
   '#image-values':
     title: '2 2D Image Values: the <image> type'
-    status: unknown
+    status: partial
+    gaps:
+      - image() isn't supported, image-set(), cross-fade() and element() are parsed but never painted
+      - "Only 'background-image' paints images, see css-images-3 #image-values"
   '#image-file-formats':
     title: 2.1 Image File Formats
-    status: unknown
+    status: partial
+    gaps:
+      - SVG images aren't decoded, they're treated as failed images
   '#url-notation':
     title: '2.2 Image References: the url() notation'
-    status: unknown
+    status: supported
   '#fetching-images':
     title: 2.3 Fetching External Images
-    status: unknown
+    status: n/a
   '#image-set-notation':
     title: '2.4 Resolution/Type Negotiation: the image-set() notation'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - image-set() is never painted, not even its first option
+      - An option with two resolutions or two type() functions is accepted
   '#image-notation':
     title: '2.5 Image Fallbacks and Annotations: the image() notation'
-    status: unknown
+    status: unsupported
+    gaps:
+      - image() isn't parsed, a declaration using it is dropped
   '#image-fallbacks':
     title: 2.5.1 Image Fallbacks
-    status: unknown
+    status: unsupported
   '#image-fragments':
     title: 2.5.2 Image Fragments
-    status: unknown
+    status: unsupported
   '#color-images':
     title: 2.5.3 Solid-color Images
-    status: unknown
+    status: unsupported
   '#bidi-images':
     title: 2.5.4 Bidi-sensitive Images
-    status: unknown
+    status: unsupported
   '#cross-fade-function':
     title: '2.6 Combining images: the cross-fade() notation'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Percentages outside 0% to 100% and more than one percentage per argument are accepted
   '#cross-fade-sizing':
     title: 2.6.1 cross-fade() Sizing
-    status: unknown
+    status: unsupported
   '#cross-fade-painting':
     title: 2.6.2 cross-fade() Painting
-    status: unknown
+    status: unsupported
+    gaps:
+      - cross-fade() is never painted
   '#cross-fade-complex':
     title: 2.6.3 Simplifying Complex cross-fade()
-    status: unknown
+    status: unsupported
   '#element-notation':
     title: '2.7 Using Elements as Images: the element() notation'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - element() is never painted
   '#paint-sources':
     title: 2.7.1 Paint Sources
-    status: unknown
+    status: unsupported
   '#elementsources':
     title: '2.7.2 Using Out-Of-Document Sources: the ElementSources interface'
-    status: unknown
+    status: n/a
   '#element-cycles':
     title: 2.7.3 Cycle Detection
-    status: unknown
+    status: unsupported
   '#gradients':
     title: 3 Gradients
-    status: unknown
+    status: partial
   '#linear-gradients':
     title: '3.1 Linear Gradients: the linear-gradient() notation'
-    status: unknown
+    status: partial
+    gaps:
+      - The interpolation method is ignored, see 3.5.2
+      - "a98-rgb, prophoto-rgb and rec2020 are rejected, see css-color-4 #interpolation-space"
+      - "A corner direction doesn't depend on the box's aspect ratio, see css-images-3 #linear-gradient-syntax"
   '#color-interpolation':
     title: '3.1.1 Effects of color space on interpolation: examples'
-    status: unknown
+    status: n/a
   '#radial-gradients':
     title: '3.2 Radial Gradients: the radial-gradient() notation'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "Radial gradients aren't painted, see css-images-3 #radial-gradients"
   '#radial-color-interpolation':
     title: 3.2.1 Adding <color-interpolation-method>
-    status: unknown
+    status: parsed-only
   '#radial-size':
     title: 3.2.2 Expanding <radial-size>
-    status: unknown
+    status: unsupported
+    gaps:
+      - Two extent keywords and a percentage circle radius are rejected
   '#conic-gradients':
     title: '3.3 Conic Gradients: the conic-gradient() notation'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Conic gradients are parsed but never painted
   '#conic-gradient-syntax':
     title: 3.3.1 conic-gradient() Syntax
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'from 0' is rejected, the zero needs a unit"
   '#conic-color-stops':
     title: 3.3.2 Placing Color Stops
-    status: unknown
+    status: parsed-only
   '#conic-gradient-examples':
     title: 3.3.3 Conic Gradient Examples
-    status: unknown
+    status: n/a
   '#repeating-gradients':
     title: '3.4 Repeating Gradients: the repeating-linear-gradient(), repeating-radial-gradient(), and repeating-conic-gradient() notations'
-    status: unknown
+    status: partial
+    gaps:
+      - repeating-radial-gradient() and repeating-conic-gradient() aren't painted
   '#gradient-colors':
     title: 3.5 Defining Gradient Color
-    status: unknown
+    status: partial
   '#color-stop-syntax':
     title: 3.5.1 Color Stop Lists
-    status: unknown
+    status: partial
+    gaps:
+      - A gradient with a single color stop is accepted but not painted
+      - "em positions are resolved against 16px, see css-images-3 #color-stop-syntax"
   '#coloring-gradient-line':
     title: 3.5.2 Coloring the Gradient Line
-    status: unknown
+    status: partial
+    gaps:
+      - Colors are interpolated in sRGB, not in Oklab or the given color space
+      - "Colors aren't interpolated with premultiplied alpha, see css-images-3 #coloring-gradient-line"
   '#color-stop-fixup':
     title: 3.5.3 Color Stop “Fixup”
-    status: unknown
+    status: partial
+    gaps:
+      - "A stop positioned before a previous stop isn't moved up to it, see css-images-3 #color-stop-fixup"
   '#stripes':
     title: '4 1D Image Values: the <image-1D> type and stripes() notation'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "stripes() isn't parsed, see css-borders-4 #border-color"
   '#sizing':
     title: 5 Sizing Images and Objects in CSS
-    status: unknown
+    status: partial
+    gaps:
+      - "Gradients aren't sized to the background positioning area and nothing is sized with contain or cover, see css-images-3 #sizing"
   '#the-object-fit':
     title: '5.1 Sizing Objects: the object-fit property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'object-fit' is ignored, see css-images-3 #the-object-fit"
+      - "'contain scale-down' and 'scale-down cover' are rejected"
   '#image-processing':
     title: 6 Image Processing
-    status: unknown
+    status: unsupported
   '#the-image-resolution':
     title: '6.1 Overriding Image Resolutions: the image-resolution property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'image-resolution' isn't a known property"
   '#interpolation':
     title: 7 Interpolation
-    status: unknown
-  '#interpolating-images':
-    title: 7.1 Interpolating <image>
-    status: unknown
-  '#interpolating-image-combinations':
-    title: 7.2 Interpolating cross-fade()
-    status: unknown
-  '#interpolating-gradients':
-    title: 7.3 Interpolating <gradient>
-    status: unknown
-  '#interpolating-stripes':
-    title: 7.4 Interpolating stripes()
-    status: unknown
+    status: n/a
   '#serialization':
     title: 8 Serialization
-    status: unknown
+    status: n/a
   '#privacy':
     title: 9 Privacy Considerations
-    status: unknown
+    status: n/a
   '#security':
     title: 10 Security Considerations
-    status: unknown
+    status: n/a
   '#changes':
     title: 11 Changes
-    status: unknown
+    status: n/a

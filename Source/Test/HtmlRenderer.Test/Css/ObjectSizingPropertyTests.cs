@@ -38,6 +38,7 @@ public sealed class ObjectSizingPropertyTests
 
     [TestMethod]
     [Spec("css-images-3", "#the-object-fit")]
+    [Spec("css-images-4", "#the-object-fit")]
     public void ObjectFitScaleDownLegal()
     {
         var property = ParseDeclaration("object-fit : scale-DOWN");
@@ -53,6 +54,7 @@ public sealed class ObjectSizingPropertyTests
 
     [TestMethod]
     [Spec("css-images-3", "#the-object-fit")]
+    [Spec("css-images-4", "#the-object-fit")]
     public void CssObjectFitCoverLegal()
     {
         var property = ParseDeclaration("object-fit : cover");
