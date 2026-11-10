@@ -15,11 +15,8 @@ using TheArtOfDev.HtmlRenderer.Adapters;
 namespace TheArtOfDev.HtmlRenderer.Core
 {
     /// <summary>
-    /// The resolved "device" a CSS <c>@media</c> query is evaluated against: the media type plus the
-    /// viewport geometry and the display characteristics the adapter reports. Built once per render and
-    /// threaded through <see cref="CssData"/>'s rule matching so <c>@media</c> conditions
-    /// (<c>min-width</c>, <c>orientation</c>, <c>prefers-color-scheme</c>, ...) actually gate which rules
-    /// apply. See <see cref="MediaQueryMatcher"/> for the evaluation itself.
+    /// The device an <c>@media</c> query is evaluated against (Media Queries 5 §3.1), see
+    /// <see cref="MediaQueryMatcher"/>.
     /// </summary>
     internal struct MediaQueryContext
     {

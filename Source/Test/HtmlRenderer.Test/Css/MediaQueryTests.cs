@@ -52,6 +52,7 @@ public sealed class MediaQueryTests
     [TestMethod]
     [Spec("css21", "media.html#at-media-rule")]
     [Spec("mediaqueries-4", "#media-types")]
+    [Spec("mediaqueries-5", "#media-types")]
     public void AtMedia_All_NestedRuleAppliesUnderAllMedia()
     {
         var box = LayoutAndFindTag("@media all { p { color: red; } }", "<p>text</p>", "p", "screen");
@@ -77,6 +78,7 @@ public sealed class MediaQueryTests
 
     [TestMethod]
     [Spec("mediaqueries-4", "#mq-not")]
+    [Spec("mediaqueries-5", "#mq-not")]
     public void AtMedia_NotPrint_ExcludesPrintButAppliesElsewhere()
     {
         const string css = "@media not print { p { color: red; } }";
@@ -90,6 +92,7 @@ public sealed class MediaQueryTests
 
     [TestMethod]
     [Spec("mediaqueries-4", "#mq-only")]
+    [Spec("mediaqueries-5", "#mq-only")]
     public void AtMedia_OnlyPrint_AppliesOnlyUnderPrint()
     {
         const string css = "@media only print { p { color: red; } }";
@@ -106,6 +109,7 @@ public sealed class MediaQueryTests
     [TestMethod]
     [Spec("css21", "media.html#at-media-rule")]
     [Spec("mediaqueries-4", "#mq-list")]
+    [Spec("mediaqueries-5", "#mq-list")]
     public void AtMedia_PrintCommaScreen_AppliesUnderBoth()
     {
         const string css = "@media print, screen { p { color: red; } }";

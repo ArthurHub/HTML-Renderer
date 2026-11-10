@@ -1,8 +1,7 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// The <c>prefers-contrast</c> media feature (Media Queries 5). Matched against the renderer's fixed
-    /// <c>no-preference</c> stance in <c>MediaQueryMatcher</c>.
+    /// Media Queries 5 §12.3, matched in <c>MediaQueryMatcher</c>.
     /// </summary>
     internal sealed class PrefersContrastMediaFeature : MediaFeature
     {

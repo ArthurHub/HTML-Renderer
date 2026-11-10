@@ -22,6 +22,10 @@ internal sealed class MockAdapter : RAdapter
 
     public override string DefaultMediaType => MediaType;
 
+    public RColorScheme ColorScheme { get; set; } = RColorScheme.Light;
+
+    public override RColorScheme SystemColorScheme => ColorScheme;
+
     protected override RColor GetColorInt(string colorName)
     {
         var color = Color.FromName(colorName);

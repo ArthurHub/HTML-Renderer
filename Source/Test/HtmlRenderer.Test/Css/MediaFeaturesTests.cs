@@ -6,7 +6,6 @@ namespace HtmlRenderer.Test.Css;
 public sealed class MediaFeaturesTests
 {
     [TestMethod]
-    [Spec("mediaqueries-4", "#mq-features")]
     public void CssMediaFeatureFactory()
     {
         var aspectRatio = MediaFeatureFactory.Instance.Create(FeatureNames.AspectRatio);
