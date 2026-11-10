@@ -18,7 +18,7 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 {
     /// <summary>
-    /// Paints <c>outline</c>, CSS 2.1 §18.4, as a ring of four rectangles just outside the border box.
+    /// Paints <c>outline</c>, CSS 2.1 §18.4 and CSS UI 3 §4, as a ring of four rectangles just outside the border box.
     /// </summary>
     internal static class OutlineDrawHandler
     {

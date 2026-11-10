@@ -8,6 +8,7 @@ public sealed class OutlinePropertyTests
 {
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
+    [Spec("css-ui-3", "#outline-style")]
     public void CssOutlineStyleDottedLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-style   :  dotTED");
@@ -22,6 +23,7 @@ public sealed class OutlinePropertyTests
 
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
+    [Spec("css-ui-3", "#outline-style")]
     public void CssOutlineStyleSolidLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-style   :  solid");
@@ -35,6 +37,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-ui-3", "#outline-style")]
     public void CssOutlineStyleNoIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-style   :  no");
@@ -49,6 +52,7 @@ public sealed class OutlinePropertyTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
+    [Spec("css-ui-3", "#outline-style")]
     public void CssOutlineStyleHiddenIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-style : hidden");
@@ -71,6 +75,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-ui-3", "#outline-color")]
     public void CssOutlineColorHslLegal()
     {
         // hsl(320, 80%, 50%) is equivalent to rgba(229, 26, 161, 1)
@@ -85,6 +90,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-ui-3", "#outline-color")]
     public void CssOutlineColorHexLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-color :  #0000FF ");
@@ -98,6 +104,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-ui-3", "#outline-color")]
     public void CssOutlineColorRedLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-color :  red ");
@@ -111,6 +118,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-ui-3", "#outline-color")]
     public void CssOutlineColorIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-color :  blau ");
@@ -123,6 +131,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-ui-3", "#outline-width")]
     public void CssOutlineWidthThinImportantLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-width :  thin !important");
@@ -136,6 +145,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-ui-3", "#outline-width")]
     public void CssOutlineWidthNumberIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-width :  3");
@@ -148,6 +158,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-ui-3", "#outline-width")]
     public void CssOutlineWidthLengthLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-width :  0.1em");
@@ -190,6 +201,7 @@ public sealed class OutlinePropertyTests
 
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
+    [Spec("css-ui-3", "#outline")]
     public void CssOutlineAllDottedLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline :  dotted 0.3em rgb(255, 255, 255)");
@@ -203,6 +215,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-ui-3", "#outline")]
     public void CssOutlineDoubleColorIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline :  dotted #123456 rgb(255, 255, 255)");
@@ -216,6 +229,7 @@ public sealed class OutlinePropertyTests
 
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
+    [Spec("css-ui-3", "#outline")]
     public void CssOutlineAllSolidLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline :  1px solid #000");
@@ -229,6 +243,7 @@ public sealed class OutlinePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-ui-3", "#outline")]
     public void CssOutlineAllColorNamedLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline :  solid black 1px");
