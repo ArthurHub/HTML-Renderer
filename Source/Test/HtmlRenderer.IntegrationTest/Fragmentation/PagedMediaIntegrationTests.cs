@@ -55,6 +55,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#page-box")]
+    [Spec("css-page-3", "#page-model")]
     public void PageArea_IsTheInitialContainingBlock()
     {
         var (root, _) = Paginate("<div id='d' style='width:50%;height:10px'></div>", margin: 20);
@@ -67,6 +68,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#page-box")]
+    [Spec("css-page-3", "#page-model")]
     public void EachPageArea_StartsBelowItsPageMargin()
     {
         var (root, container) = Paginate(
@@ -83,6 +85,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#outside-page-box")]
+    [Spec("css-page-3", "#content-outside-box")]
     public void FarAwayAbsoluteBox_DoesNotProduceBlankPages()
     {
         var (_, container) = Paginate(
@@ -386,6 +389,7 @@ public sealed class PagedMediaIntegrationTests
     [TestMethod]
     [Spec("css21", "page.html#forced")]
     [Spec("css-break-3", "#forced-breaks")]
+    [Spec("css-page-3", "#page-breaks")]
     public void ForcedBreak_OccursEvenWhereTheContentWouldFit()
     {
         var (root, container) = Paginate(

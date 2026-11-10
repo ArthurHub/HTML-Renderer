@@ -232,10 +232,7 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
             if (tree == null || tree.Fragmentainers.Count == 0)
                 return;
 
-            // Pagination slot -> PDF page index. Not a bare multiply/divide by page height any more:
-            // a content-empty slot is never materialized as a fragmentainer at all (blank-page
-            // skipping), so slot indices are not contiguous across tree.Fragmentainers the way a
-            // fixed-size page grid's would be.
+            // Pagination slot -> PDF page index, a content-empty slot gets no page (css-page-3 §3.2).
             var slotToPage = new Dictionary<int, int>();
             for (var pageIndex = 0; pageIndex < tree.Fragmentainers.Count; pageIndex++)
             {

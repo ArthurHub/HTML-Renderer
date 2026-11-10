@@ -4,7 +4,7 @@ using HtmlRenderer.Test.TestSupport;
 namespace HtmlRenderer.Test.Fragmentation;
 
 /// <summary>
-/// Which page slots get a fragmentainer. css-page-3 §3.2 asks to avoid content-empty pages.
+/// Which page slots get a fragmentainer.
 /// </summary>
 [TestClass]
 public sealed class HtmlContainerIntPaginationTests

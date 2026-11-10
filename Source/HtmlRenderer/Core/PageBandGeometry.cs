@@ -2,8 +2,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
 {
     /// <summary>
     /// The block-axis band and margins of one page, in output units. All pages share the container's
-    /// <see cref="HtmlContainerInt.PageSize"/> and margins, <c>@page</c> rules aren't applied
-    /// (CSS 2.1 §13.2).
+    /// <see cref="HtmlContainerInt.PageSize"/> and margins.
     /// </summary>
     internal readonly struct PageBandGeometry
     {

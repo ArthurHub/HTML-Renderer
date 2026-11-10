@@ -119,6 +119,7 @@ public sealed class CssBreakTests
     [TestMethod]
     [Ignore("Gap, see Spec/css-break-3.yml")]
     [Spec("css-break-3", "#forced-breaks")]
+    [Spec("css-page-3", "#using-named-pages")]
     public void DifferentPageValues_ForceABreak()
     {
         var (root, container) = Paginate(

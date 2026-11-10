@@ -24,6 +24,7 @@ public sealed class PageRuleTests
 
     [TestMethod]
     [Spec("css21", "page.html#page-box")]
+    [Spec("css-page-3", "#page-model")]
     public async Task PageArea_IsThePageMinusTheConfiguredMargins()
     {
         Assert.AreEqual(1, await PageCount($"<html><body style='margin:0'>{Block}</body></html>"));
@@ -33,6 +34,7 @@ public sealed class PageRuleTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#page-margins")]
+    [Spec("css-page-3", "#at-page-rule")]
     [DataRow("@page { margin: 250pt 0 }")]
     [DataRow("@page { margin-top: 30%; margin-bottom: 30% }")]
     public async Task PageMargins_ShrinkThePageArea(string rule)
@@ -43,6 +45,8 @@ public sealed class PageRuleTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#page-selectors")]
+    [Spec("css-page-3", "#first-pseudo")]
+    [Spec("css-page-3", "#spread-pseudos")]
     [DataRow("@page :first { margin-top: 500pt }")]
     [DataRow("@page :right { margin-top: 500pt }")]
     public async Task PageSelector_AppliesToTheFirstPage(string rule)
@@ -53,6 +57,7 @@ public sealed class PageRuleTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#page-cascade")]
+    [Spec("css-page-3", "#cascading-and-page-context")]
     public async Task PageContext_FollowsTheCascade()
     {
         const string rules = "@page :first { margin-top: 500pt } @page { margin-top: 0 }";

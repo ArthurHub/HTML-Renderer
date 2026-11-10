@@ -5,127 +5,146 @@ snapshot: https://www.w3.org/TR/2023/WD-css-page-3-20230914/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#values':
-    title: 1.1 Value Definitions
-    status: unknown
+    status: n/a
   '#page-terms':
     title: 2 Page Terminology
-    status: unknown
+    status: n/a
   '#page-model':
     title: 3 The Page Model
-    status: unknown
+    status: partial
+    gaps:
+      - "Page size and margins come from PdfGenerateConfig, @page rules aren't applied"
   '#painting':
     title: 3.1 Page Backgrounds and Painting Order
-    status: unknown
+    status: partial
+    gaps:
+      - "@page backgrounds aren't painted"
+      - The root background covers only the root box, not the rest of the last page's page area, see CSS 2.1 14.2
   '#content-outside-box':
     title: 3.2 Content outside the page box
-    status: unknown
+    status: supported
   '#progression':
     title: 3.3 Page Progression
-    status: unknown
+    status: unsupported
+    gaps:
+      - Pages aren't classified as left or right pages
   '#page-selector-and-context':
     title: 4 Page Selectors and the Page Context
-    status: unknown
+    status: parsed-only
   '#at-page-rule':
     title: 4.1 The @page Rule
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "@page declarations are parsed but never applied, see CSS 2.1 13.2.1"
   '#page-selectors':
     title: 4.2 Page selectors
-    status: unknown
+    status: parsed-only
   '#spread-pseudos':
     title: '4.2.1 Spread pseudo-classes: :left, :right'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "@page :left and :right rules are parsed but never applied, see CSS 2.1 13.2.2"
   '#first-pseudo':
     title: '4.2.2 First-page pseudo-class: :first'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "@page :first rules are parsed but never applied, see CSS 2.1 13.2.2"
   '#blank-pseudo':
     title: '4.2.3 Blank-page pseudo-class: :blank'
-    status: unknown
+    status: parsed-only
   '#syntax-page-selector':
     title: 4.3 @page rule grammar
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "A selector with more than one pseudo-class, e.g. ':blank:first', drops the rule"
+      - "An unknown pseudo-class, e.g. ':middle', is accepted"
   '#cascading-and-page-context':
     title: 4.4 Cascading in the page context
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "@page declarations aren't cascaded, see CSS 2.1 13.4"
   '#margin-boxes':
     title: 5 Page-Margin Boxes
-    status: unknown
+    status: parsed-only
   '#margin-at-rules':
     title: 5.1 At-rules for page-margin boxes
-    status: unknown
+    status: parsed-only
   '#populating-margin-boxes':
     title: 5.2 Populating page-margin boxes
-    status: unknown
+    status: parsed-only
   '#margin-dimension':
     title: 5.3 Computing Page-margin Box Dimensions
-    status: unknown
+    status: unsupported
   '#margin-box-terms':
     title: 5.3.1 Page-Margin Box Layout Terminology
-    status: unknown
+    status: n/a
   '#variable-sizing':
     title: 5.3.2 Page-Margin Box Variable Dimension Computation Rules
-    status: unknown
+    status: unsupported
   '#variable-auto-margins':
     title: 5.3.2.1 Margins
-    status: unknown
+    status: unsupported
   '#variable-auto-sizing':
     title: 5.3.2.2 Resolving auto widths
-    status: unknown
+    status: unsupported
   '#variable-minmax':
     title: 5.3.2.3 Handling min-width and max-width
-    status: unknown
+    status: unsupported
   '#variable-position':
     title: 5.3.2.4 Positioning
-    status: unknown
+    status: unsupported
   '#variable-mapping':
     title: 5.3.2.5 Boxes on other sides
-    status: unknown
+    status: unsupported
   '#fixed-sizing':
     title: 5.3.3 Page-Margin Box Fixed Dimension Computation Rules
-    status: unknown
+    status: unsupported
   '#margin-box-ex':
     title: 5.4 Page-margin box examples
-    status: unknown
+    status: n/a
   '#page-properties':
     title: 6 Page Properties
-    status: unknown
+    status: parsed-only
   '#page-based-counters':
     title: 6.1 Page-based counters
-    status: unknown
+    status: unsupported
   '#margin-text-alignment':
     title: 6.2 Page-margin boxes and default values
-    status: unknown
+    status: unsupported
   '#page-size':
     title: 7 Page Size
-    status: unknown
+    status: parsed-only
   '#page-size-prop':
     title: '7.1 Page size: the size property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'size' is parsed but never applied, the page size comes from PdfGenerateConfig"
   '#page-size-media-query':
     title: 7.1.1 Media Queries
-    status: unknown
+    status: n/a
   '#page-orientation-prop':
     title: '7.1.2 Rotating The Printed Page: the page-orientation property'
-    status: unknown
+    status: unsupported
   '#marks':
     title: '7.2 Crop and Registration Marks: the marks property'
-    status: unknown
+    status: unsupported
   '#bleed':
     title: '7.3 Bleed Area: the bleed property'
-    status: unknown
+    status: unsupported
   '#renderingpages':
     title: 7.4 Rendering page boxes that do not fit a page sheet
-    status: unknown
+    status: n/a
   '#positioning-page-box':
     title: 7.5 Positioning the page box on the sheet
-    status: unknown
+    status: n/a
   '#page-breaks':
     title: 8 Page Breaks
-    status: unknown
+    status: supported
   '#using-named-pages':
     title: '8.1 Using named pages: page'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'page' is parsed but never applied, a different value neither forces a break nor selects a named page"
   '#image-properties':
     title: 9 Image Properties
-    status: unknown
+    status: n/a
