@@ -152,6 +152,32 @@ public sealed class TokenizationTests
         Assert.AreEqual(TokenType.Delim, delim.Get().Type);
     }
 
+    // CSS Syntax 3 §4.3.7: zero, a surrogate or a code point above U+10FFFF becomes U+FFFD
+    [TestMethod]
+    [DataRow(@"'\0'", "�")]
+    [DataRow(@"'\D800'", "�")]
+    [DataRow(@"'\DABC'", "�")]
+    [DataRow(@"'\DFFF'", "�")]
+    [DataRow(@"'\110000'", "�")]
+    [DataRow(@"'\D7FF\E000'", "퟿")]
+    [DataRow(@"'\10FFFF'", "􏿿")]
+    public void LexerInvalidEscapedCodePointInString(string input, string expected)
+    {
+        var token = new Lexer(new TextSource(input)).Get();
+        Assert.AreEqual(TokenType.String, token.Type);
+        Assert.AreEqual(expected, token.Data);
+    }
+
+    [TestMethod]
+    [DataRow(@"a\D800 b")]
+    [DataRow(@"a\DFFF b")]
+    public void LexerInvalidEscapedCodePointInIdent(string input)
+    {
+        var token = new Lexer(new TextSource(input)).Get();
+        Assert.AreEqual(TokenType.Ident, token.Type);
+        Assert.AreEqual("a�b", token.Data);
+    }
+
     [TestMethod]
     public void LexerOnlyCarriageReturn()
     {
