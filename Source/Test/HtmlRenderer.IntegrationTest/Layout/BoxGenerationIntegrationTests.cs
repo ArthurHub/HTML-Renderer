@@ -129,6 +129,7 @@ public sealed class BoxGenerationIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#inline-boxes")]
+    [Spec("css-display-3", "#legacy-display")]
     public void InlineTable_SitsOnTheSameLine()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -168,6 +169,7 @@ public sealed class BoxGenerationIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#display-prop")]
+    [Spec("css-display-3", "#box-generation")]
     public void DisplayNone_GeneratesNoBoxAndTakesNoSpace()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -187,6 +189,7 @@ public sealed class BoxGenerationIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#display-prop")]
+    [Spec("css-display-3", "#legacy-display")]
     public void InlineBlock_TakesItsWidthAndHeightOnTheLine()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -213,6 +216,7 @@ public sealed class BoxGenerationIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#dis-pos-flo")]
+    [Spec("css-display-3", "#transformations")]
     public void FloatedInline_IsBlockified()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -227,6 +231,7 @@ public sealed class BoxGenerationIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#dis-pos-flo")]
+    [Spec("css-display-3", "#transformations")]
     public void AbsolutelyPositionedInline_IsBlockified()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

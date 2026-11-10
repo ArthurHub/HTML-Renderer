@@ -10,6 +10,7 @@ public sealed class VisibilityPaintIntegrationTests
 {
     [TestMethod]
     [Spec("css21", "visufx.html#visibility")]
+    [Spec("css-display-3", "#visibility")]
     public void Hidden_IsInheritedByDescendants()
     {
         var recording = Paint("<div style='visibility:hidden'><div style='height:10px;background:rgb(255,0,0)'>Child</div></div>");
@@ -20,6 +21,7 @@ public sealed class VisibilityPaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visufx.html#visibility")]
+    [Spec("css-display-3", "#visibility")]
     public void HiddenInline_PaintsNothingButKeepsItsSpace()
     {
         var hidden = Paint("<div>aaa <span style='visibility:hidden'>Hid</span> bbb</div>");
@@ -32,6 +34,7 @@ public sealed class VisibilityPaintIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visufx.html#visibility")]
+    [Spec("css-display-3", "#visibility")]
     public void VisibleDescendantOfAHiddenElement_IsPainted()
     {
         var recording = Paint("<div style='visibility:hidden'><div style='visibility:visible;height:10px;background:rgb(255,0,0)'>Shown</div></div>");
