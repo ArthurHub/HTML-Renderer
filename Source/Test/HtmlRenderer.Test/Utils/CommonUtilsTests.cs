@@ -127,6 +127,24 @@ public sealed class CommonUtilsTests
     }
 
     [TestMethod]
+    [DataRow(-3, CssConstants.LowerRoman)]
+    [DataRow(-3, CssConstants.UpperRoman)]
+    [DataRow(4000, CssConstants.LowerRoman)]
+    [DataRow(10000, CssConstants.UpperRoman)]
+    public void ConvertToAlphaNumber_RomanOutOfRange_ReturnsEmpty(int number, string style)
+    {
+        Assert.AreEqual(string.Empty, CommonUtils.ConvertToAlphaNumber(number, style));
+    }
+
+    [TestMethod]
+    [DataRow(3999, CssConstants.UpperRoman, "MMMCMXCIX")]
+    [DataRow(1, CssConstants.LowerRoman, "i")]
+    public void ConvertToAlphaNumber_RomanRangeBoundaries(int number, string style, string expected)
+    {
+        Assert.AreEqual(expected, CommonUtils.ConvertToAlphaNumber(number, style));
+    }
+
+    [TestMethod]
     public void ConvertToAlphaNumber_LowerGreek_ProducesNonEmptyResult()
     {
         var result = CommonUtils.ConvertToAlphaNumber(1, CssConstants.LowerGreek);

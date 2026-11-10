@@ -516,6 +516,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         /// <returns>the roman number string</returns>
         private static string ConvertToRomanNumbers(int number, bool lowercase)
         {
+            // CSS Counter Styles 3 §6.1: the roman styles have the range 1 to 3999
+            if (number < 1 || number > 3999)
+                return string.Empty;
+
             var sb = string.Empty;
             for (int i = 1000, j = 3; i > 0; i /= 10, j--)
             {

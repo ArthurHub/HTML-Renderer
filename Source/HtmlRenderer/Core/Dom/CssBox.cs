@@ -1296,7 +1296,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     }
                     else
                     {
-                        _listItemBox.Text = CommonUtils.ConvertToAlphaNumber(GetIndexForList(), ListStyleType) + ".";
+                        // CSS Counter Styles 3 §2: a value outside the style's range falls back to decimal
+                        var index = GetIndexForList();
+                        var text = CommonUtils.ConvertToAlphaNumber(index, ListStyleType);
+                        _listItemBox.Text = (text.Length > 0 ? text : index.ToString(CultureInfo.InvariantCulture)) + ".";
                     }
 
                     _listItemBox.ParseToWords();
