@@ -89,6 +89,7 @@ public sealed class CssNamespacesTests
     [Ignore("Gap, see Spec/css-namespaces-3.yml")]
     [Spec("css-namespaces-3", "#css-qnames")]
     [Spec("css-namespaces-3", "#prefixes")]
+    [Spec("html", "infrastructure.html#xml")]
     public void DeclaredPrefix_MatchesItsNamespace()
     {
         Assert.AreEqual(Green, Styled($"@namespace h url({Html}); h|div#x {{ color: green }}").Color);

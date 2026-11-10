@@ -8,46 +8,21 @@ sections:
     status: n/a
   infrastructure.html#infrastructure:
     title: 2 Common infrastructure
-    status: unknown
+    status: partial
   infrastructure.html#terminology:
     title: 2.1 Terminology
-    status: unknown
-  infrastructure.html#parallelism:
-    title: 2.1.1 Parallelism
-    status: unknown
-  infrastructure.html#resources:
-    title: 2.1.2 Resources
-    status: unknown
+    status: n/a
   infrastructure.html#xml:
     title: 2.1.3 XML compatibility
-    status: unknown
-  infrastructure.html#dom-trees:
-    title: 2.1.4 DOM trees
-    status: unknown
-  infrastructure.html#scripting-2:
-    title: 2.1.5 Scripting
-    status: unknown
-  infrastructure.html#plugins:
-    title: 2.1.6 Plugins
-    status: unknown
-  infrastructure.html#encoding-terminology:
-    title: 2.1.7 Character encodings
-    status: unknown
-  infrastructure.html#conformance-classes:
-    title: 2.1.8 Conformance classes
-    status: unknown
-  infrastructure.html#dependencies:
-    title: 2.1.9 Dependencies
-    status: unknown
+    status: partial
+    gaps:
+      - "Elements have no namespace, a prefix declared as the HTML namespace doesn't match them, see css-namespaces-3 #css-qnames"
   infrastructure.html#extensibility-2:
     title: 2.1.10 Extensibility
-    status: unknown
-  infrastructure.html#interactions-with-xpath-and-xslt:
-    title: 2.1.11 Interactions with XPath and XSLT
-    status: unknown
+    status: supported
   infrastructure.html#policy-controlled-features:
     title: 2.2 Policy-controlled features
-    status: unknown
+    status: n/a
   common-microsyntaxes.html#common-microsyntaxes:
     title: 2.3 Common microsyntaxes
     status: partial
@@ -123,112 +98,58 @@ sections:
     status: n/a
   urls-and-fetching.html#urls:
     title: 2.4 URLs
-    status: unknown
+    status: partial
   urls-and-fetching.html#terminology-2:
     title: 2.4.1 Terminology
-    status: unknown
+    status: n/a
   urls-and-fetching.html#resolving-urls:
     title: 2.4.2 Parsing URLs
-    status: unknown
+    status: partial
+    gaps:
+      - Tabs and newlines inside a URL aren't removed, they end up in the requested URL
   urls-and-fetching.html#document-base-urls:
     title: 2.4.3 Document base URLs
-    status: unknown
+    status: partial
+    gaps:
+      - The base element is only partly applied, see 4.2.3
   urls-and-fetching.html#fetching-resources:
     title: 2.5 Fetching resources
-    status: unknown
+    status: partial
   urls-and-fetching.html#terminology-3:
     title: 2.5.1 Terminology
-    status: unknown
+    status: n/a
   urls-and-fetching.html#content-type-sniffing:
     title: 2.5.2 Determining the type of a resource
-    status: unknown
+    status: partial
+    gaps:
+      - A style sheet's Content-Type is matched as a substring, text/cssx counts as text/css
   urls-and-fetching.html#extracting-character-encodings-from-meta-elements:
     title: 2.5.3 Extracting character encodings from meta elements
-    status: unknown
+    status: n/a
   urls-and-fetching.html#cors-settings-attributes:
     title: 2.5.4 CORS settings attributes
-    status: unknown
+    status: n/a
   urls-and-fetching.html#referrer-policy-attributes:
     title: 2.5.5 Referrer policy attributes
-    status: unknown
+    status: n/a
   urls-and-fetching.html#nonce-attributes:
     title: 2.5.6 Nonce attributes
-    status: unknown
+    status: n/a
   urls-and-fetching.html#lazy-loading-attributes:
     title: 2.5.7 Lazy loading attributes
-    status: unknown
+    status: supported
   urls-and-fetching.html#blocking-attributes:
     title: 2.5.8 Blocking attributes
-    status: unknown
+    status: n/a
   urls-and-fetching.html#fetch-priority-attributes:
     title: 2.5.9 Fetch priority attributes
-    status: unknown
+    status: n/a
   common-dom-interfaces.html#common-dom-interfaces:
     title: 2.6 Common DOM interfaces
-    status: unknown
-  common-dom-interfaces.html#reflecting-content-attributes-in-idl-attributes:
-    title: 2.6.1 Reflecting content attributes in IDL attributes
-    status: unknown
-  common-dom-interfaces.html#using-reflect-via-idl-extended-attributes:
-    title: 2.6.2 Using reflect via IDL extended attributes
-    status: unknown
-  common-dom-interfaces.html#using-reflect-in-specifications:
-    title: 2.6.3 Using reflect in specifications
-    status: unknown
-  common-dom-interfaces.html#collections:
-    title: 2.6.4 Collections
-    status: unknown
-  common-dom-interfaces.html#the-htmlallcollection-interface:
-    title: 2.6.4.1 The HTMLAllCollection interface
-    status: unknown
-  common-dom-interfaces.html#HTMLAllCollection-call:
-    title: 2.6.4.1.1 [[Call]] ( thisArgument, argumentsList )
-    status: unknown
-  common-dom-interfaces.html#the-htmlformcontrolscollection-interface:
-    title: 2.6.4.2 The HTMLFormControlsCollection interface
-    status: unknown
-  common-dom-interfaces.html#the-htmloptionscollection-interface:
-    title: 2.6.4.3 The HTMLOptionsCollection interface
-    status: unknown
-  common-dom-interfaces.html#the-domstringlist-interface:
-    title: 2.6.5 The DOMStringList interface
-    status: unknown
+    status: n/a
   structured-data.html#safe-passing-of-structured-data:
     title: 2.7 Safe passing of structured data
-    status: unknown
-  structured-data.html#serializable-objects:
-    title: 2.7.1 Serializable objects
-    status: unknown
-  structured-data.html#transferable-objects:
-    title: 2.7.2 Transferable objects
-    status: unknown
-  structured-data.html#restricting-to-the-same-agent-cluster:
-    title: 2.7.3 Restricting to the same agent cluster
-    status: unknown
-  structured-data.html#structuredserializeinternal:
-    title: 2.7.4 StructuredSerializeInternal ( value, forStorage [ , memory ] )
-    status: unknown
-  structured-data.html#structuredserialize:
-    title: 2.7.5 StructuredSerialize ( value )
-    status: unknown
-  structured-data.html#structuredserializeforstorage:
-    title: 2.7.6 StructuredSerializeForStorage ( value )
-    status: unknown
-  structured-data.html#structureddeserialize:
-    title: 2.7.7 StructuredDeserialize ( serialized, targetRealm [ , memory ] )
-    status: unknown
-  structured-data.html#structuredserializewithtransfer:
-    title: 2.7.8 StructuredSerializeWithTransfer ( value, transferList )
-    status: unknown
-  structured-data.html#structureddeserializewithtransfer:
-    title: 2.7.9 StructuredDeserializeWithTransfer ( serializeWithTransferResult, targetRealm )
-    status: unknown
-  structured-data.html#performing-structured-clones-from-other-specifications:
-    title: 2.7.10 Performing serialization and transferring from other specifications
-    status: unknown
-  structured-data.html#structured-cloning:
-    title: 2.7.11 Structured cloning API
-    status: unknown
+    status: n/a
   dom.html#dom:
     title: 3 Semantics, structure, and APIs of HTML documents
     status: unknown

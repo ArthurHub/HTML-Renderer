@@ -203,10 +203,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
 
             try
             {
-                // Deliberately not pre-filtered with Uri.IsWellFormedUriString: it applies stricter
-                // generic-syntax rules than Uri's own parser and rejects some URIs Uri/RUri parse
-                // correctly (e.g. certain percent-encoded `data:` URIs). new RUri(base, src) resolves an
-                // absolute src as-is, so this handles absolute and relative references uniformly.
+                // HTML §2.4.2. Not pre-filtered with Uri.IsWellFormedUriString, it rejects some URIs Uri
+                // parses fine, e.g. certain percent-encoded data: URIs. An absolute src is kept as is.
                 return baseUri == null ? new RUri(src, UriKind.RelativeOrAbsolute) : new RUri(baseUri, src);
             }
             catch (UriFormatException)

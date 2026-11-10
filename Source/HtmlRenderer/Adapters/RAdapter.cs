@@ -192,11 +192,8 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         /// <returns>the resolved resource, or null if it could not be resolved</returns>
         public Task<RNetworkResponse> GetResourceStream(RUri uri)
         {
-            // BaseUri is normally never null, so every reference resolves to an absolute URI and loaders
-            // only ever see those - RUri.Scheme throws on a relative URI, and neither DataUriNetworkLoader
-            // nor HttpClientNetworkLoader checks. Denying local file access is what makes BaseUri nullable,
-            // so a relative reference can now survive resolution; answer "unresolved" for it here rather
-            // than handing a loader a URI it cannot inspect.
+            // Without local file access BaseUri can be null and a relative reference stays relative.
+            // RUri.Scheme throws on it and the loaders don't check, so it's answered as unresolved here.
             if (!uri.IsAbsoluteUri)
             {
                 return Task.FromResult<RNetworkResponse>(null);

@@ -39,6 +39,7 @@ public sealed class DocumentMetadataTests
 
     [TestMethod]
     [Spec("html", "semantics.html#the-base-element")]
+    [Spec("html", "urls-and-fetching.html#document-base-urls")]
     public void BaseHref_IsTheBaseForRelativeUrls()
     {
         var doc = Load("<base href='https://example.com/img/'>", "<img src=a.png>");
@@ -48,6 +49,7 @@ public sealed class DocumentMetadataTests
 
     [TestMethod]
     [Spec("html", "semantics.html#the-base-element")]
+    [Spec("html", "urls-and-fetching.html#document-base-urls")]
     public void WithoutABase_RelativeUrlsResolveAgainstTheDocumentUrl()
     {
         var doc = Load("<link rel=stylesheet href=a.css>", "<img src=a.png>");
@@ -59,6 +61,7 @@ public sealed class DocumentMetadataTests
     [TestMethod]
     [Ignore("Gap, see Spec/html.yml")]
     [Spec("html", "semantics.html#the-base-element")]
+    [Spec("html", "urls-and-fetching.html#document-base-urls")]
     public void BaseHref_IsTheBaseForStyleSheetLinks()
     {
         var doc = Load("<base href='https://example.com/css/'><link rel=stylesheet href=a.css>", "<p id=x>a</p>");
@@ -69,6 +72,7 @@ public sealed class DocumentMetadataTests
     [TestMethod]
     [Ignore("Gap, see Spec/html.yml")]
     [Spec("html", "semantics.html#the-base-element")]
+    [Spec("html", "urls-and-fetching.html#document-base-urls")]
     public void RelativeBaseHref_IsResolvedAgainstTheDocumentUrl()
     {
         var doc = Load("<base href='img/'>", "<img src=a.png>");
@@ -79,6 +83,7 @@ public sealed class DocumentMetadataTests
     [TestMethod]
     [Ignore("Gap, see Spec/html.yml")]
     [Spec("html", "semantics.html#the-base-element")]
+    [Spec("html", "urls-and-fetching.html#document-base-urls")]
     public void FirstBaseWithAnHref_IsUsed()
     {
         var doc = Load("<base target=_blank><base href='https://example.com/img/'>", "<img src=a.png>");
@@ -142,6 +147,7 @@ public sealed class DocumentMetadataTests
     [TestMethod]
     [Spec("html", "semantics.html#processing-the-type-attribute")]
     [Spec("cssom-1", "#fetching-css-style-sheets")]
+    [Spec("html", "urls-and-fetching.html#content-type-sniffing")]
     public void LinkedResourceOfAnotherContentType_IsNotApplied()
     {
         var doc = Load(
