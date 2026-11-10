@@ -1513,49 +1513,7 @@ sections:
     status: n/a
   worklets.html#worklets:
     title: 11 Worklets
-    status: unknown
-  worklets.html#worklets-intro:
-    title: 11.1 Introduction
-    status: unknown
-  worklets.html#worklets-motivations:
-    title: 11.1.1 Motivations
-    status: unknown
-  worklets.html#worklets-idempotent:
-    title: 11.1.2 Code idempotence
-    status: unknown
-  worklets.html#worklets-speculative:
-    title: 11.1.3 Speculative evaluation
-    status: unknown
-  worklets.html#worklets-examples:
-    title: 11.2 Examples
-    status: unknown
-  worklets.html#worklets-examples-loading:
-    title: 11.2.1 Loading scripts
-    status: unknown
-  worklets.html#worklets-example-registering:
-    title: 11.2.2 Registering a class and invoking its methods
-    status: unknown
-  worklets.html#worklets-infrastructure:
-    title: 11.3 Infrastructure
-    status: unknown
-  worklets.html#worklets-global:
-    title: 11.3.1 The global scope
-    status: unknown
-  worklets.html#worklet-agents-and-event-loops:
-    title: 11.3.1.1 Agents and event loops
-    status: unknown
-  worklets.html#worklets-creation-termination:
-    title: 11.3.1.2 Creation and termination
-    status: unknown
-  worklets.html#script-settings-for-worklets:
-    title: 11.3.1.3 Script settings for worklets
-    status: unknown
-  worklets.html#worklets-worklet:
-    title: 11.3.2 The Worklet class
-    status: unknown
-  worklets.html#worklets-lifetime:
-    title: 11.3.3 The worklet's lifetime
-    status: unknown
+    status: n/a
   webstorage.html#webstorage:
     title: 12 Web storage
     status: unknown
