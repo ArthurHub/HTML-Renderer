@@ -10,10 +10,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         private readonly StylesheetParser _parser;
         private readonly Stack<StylesheetNode> _nodes;
 
-        // The source index (raw, into _lexer.Source) immediately before the most recently read token.
-        // Captured by NextToken so a CSS-Nesting classification look-ahead can rewind to a construct's
-        // exact start without any position arithmetic (which is unreliable across \r\n normalization and
-        // unicode escapes) and can slice the nested prelude's source text.
+        // Raw source index before the token NextToken read last, lets the nested rule look-ahead rewind to
+        // the start of a construct and slice a nested prelude. TextPosition is off across \r\n and escapes.
         private int _markBeforeLastToken;
 
         public StylesheetComposer(Lexer lexer, StylesheetParser parser)
@@ -772,7 +770,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 }
                 else if (TryCreateNestedRule(ref token))
                 {
-                    // CSS Nesting: a nested style rule was parsed and attached to the enclosing rule.
                 }
                 else
                 {
@@ -839,16 +836,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         /// <summary>
-        /// CSS Nesting ([CSS Nesting 1](https://www.w3.org/TR/css-nesting-1/)): if the current construct
-        /// in a declaration block is a nested style rule (a selector prelude followed by a <c>{ }</c>
-        /// block) rather than a declaration, parses it, resolves its selector against the enclosing rule,
-        /// attaches it, and returns true (with <paramref name="token"/> advanced past the block). Returns
-        /// false for an ordinary declaration, having rewound the lexer so the caller re-reads it.
+        /// CSS Nesting 1 §3.1: parses a nested style rule at <paramref name="token"/> and attaches it to the
+        /// enclosing rule. Returns false for a declaration, with the lexer rewound so the caller re-reads it.
         /// </summary>
         private bool TryCreateNestedRule(ref Token token)
         {
-            // Raw source index just before the current (first) token — the construct start, captured by
-            // NextToken. Faithful across \r\n normalization, unlike deriving it from token.Position.
             var preludeStart = _markBeforeLastToken;
 
             if (!IsNestedRuleAhead(ref token, out var braceStart))
@@ -860,15 +852,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         /// <summary>
-        /// Looks ahead (bracket-aware) to classify the construct starting at <paramref name="token"/> as a
-        /// nested style rule vs a declaration: the first top-level <c>{</c> means a nested rule (the stream
-        /// is left just after it and its source index returned via <paramref name="braceStart"/>); a
-        /// top-level <c>;</c>/<c>}</c>/EOF means a declaration, in which case the lexer is rewound to the
-        /// construct start and <paramref name="token"/> re-read so the unchanged declaration path re-lexes
-        /// it in value mode (avoiding the <c>#</c> value-mode tokenization hazard a token buffer would hit).
-        /// Custom properties (<c>--x</c>) are always declarations, even with a <c>{</c> in their value.
-        /// Function tokens (e.g. <c>url(…)</c>) are opaque — the lexer already consumed their parentheses —
-        /// so only bare round/square brackets contribute to depth.
+        /// A top-level <c>{</c> before a <c>;</c> or <c>}</c> makes the construct a nested rule, the stream is
+        /// left after the brace and <paramref name="braceStart"/> is its source index. For a declaration the
+        /// lexer is rewound and <paramref name="token"/> re-read, so the value is lexed in value mode. Custom
+        /// properties are always declarations. A function token already holds its parentheses.
         /// </summary>
         private bool IsNestedRuleAhead(ref Token token, out int braceStart)
         {
@@ -916,11 +903,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         /// <summary>
-        /// Builds a <see cref="StyleRule"/> from a nested prelude (source span
-        /// <c>[preludeStart, bracePosition)</c>) resolved against the enclosing rule's selector, consumes
-        /// its declaration block from the live stream, and attaches it to the parent rule via
-        /// <see cref="StyleRule.AddNestedRule"/>. The resolved selector is absolute (<c>&amp;</c> →
-        /// <c>:is(parent)</c>) so the cascade/matcher need no nesting awareness.
+        /// Parses the block of a nested rule and attaches the rule to its parent with the selector resolved
+        /// against the parent's, so the cascade needs no nesting support.
         /// </summary>
         private void CreateNestedStyleRule(int preludeStart, int braceStart)
         {
@@ -931,8 +915,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 ? null
                 : _parser.ParseSelector(ResolveNestedSelector(preludeText, parent.SelectorText));
 
-            // Always consume the block (via a rule pushed on _nodes so nested-within-nested resolves) to
-            // keep the parser in sync; only attach it when the selector actually resolved.
+            // CSS Nesting 1 §3.1: an invalid nested rule is dropped, its block is still consumed.
             var rule = new StyleRule(_parser);
 
             if (selector != null)
@@ -947,21 +930,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         /// <summary>
-        /// Resolves a nested selector's prelude text against its parent's selector text per CSS Nesting:
-        /// each <c>&amp;</c> becomes <c>:is(parent)</c> (giving <c>&amp;</c> the parent's specificity); a
-        /// prelude with no <c>&amp;</c> is made relative to the parent (<c>:is(parent) &lt;prelude&gt;</c>),
-        /// which correctly yields both the implicit-descendant (<c>.b</c> → <c>:is(parent) .b</c>) and the
-        /// leading-combinator (<c>&gt; .b</c> → <c>:is(parent) &gt; .b</c>) forms.
+        /// CSS Nesting 1 §3.1 and §4: <c>&amp;</c> becomes <c>:is(parent)</c>, a prelude without one is
+        /// prefixed with <c>:is(parent)</c> and a space, which covers both <c>.b</c> and <c>&gt; .b</c>. An
+        /// <c>&amp;</c> in a string is kept.
         /// </summary>
         private static string ResolveNestedSelector(string prelude, string parentText)
         {
             var trimmed = prelude.Trim();
             var parentIs = ":is(" + (string.IsNullOrEmpty(parentText) ? "*" : parentText) + ")";
 
-            // Substitute `&` token-aware: only a `&` that is a real nesting selector is replaced, never a
-            // `&` inside a string/attribute value (e.g. `[data-x="a&b"]`), which must be preserved. This
-            // also decides the "has &" branch correctly, so a prelude whose only `&` is inside a string is
-            // still scoped under the parent (:is(parent) <prelude>) rather than mis-taking the replace path.
             var sb = Pool.NewStringBuilder();
             var hasNestingSelector = false;
             var quote = '\0';

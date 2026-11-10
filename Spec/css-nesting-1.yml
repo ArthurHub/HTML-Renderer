@@ -5,46 +5,45 @@ snapshot: https://www.w3.org/TR/2026/WD-css-nesting-1-20260122/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Values
-    status: unknown
+    status: n/a
   '#explainer':
     title: 2 Explainer
-    status: unknown
+    status: n/a
   '#nesting':
     title: 3 Nesting Style Rules
-    status: unknown
+    status: partial
   '#syntax':
     title: 3.1 Syntax
-    status: unknown
+    status: supported
   '#syntax-examples':
     title: 3.2 Examples
-    status: unknown
+    status: n/a
   '#conditionals':
     title: 3.3 Nesting Other At-Rules
-    status: unknown
+    status: unsupported
   '#nesting-at-scope':
     title: 3.3.1 Nested @scope Rules
-    status: unknown
+    status: unsupported
   '#mixing':
     title: 3.4 Mixing Nesting Rules and Declarations
-    status: unknown
+    status: partial
+    gaps:
+      - Declarations after a nested rule join the parent's declarations instead of coming after the nested rule
   '#nest-selector':
     title: '4 Nesting Selector: the & selector'
-    status: unknown
+    status: partial
+    gaps:
+      - '&div is accepted and matches like div&'
+      - A top-level & is invalid instead of matching like :scope
   '#nested-declarations':
     title: 5 The Nested Declarations Rule
-    status: unknown
+    status: partial
+    gaps:
+      - Declarations in a nested group rule never apply, see 3.3
+      - Declarations after a nested rule don't come after it, see 3.4
   '#cssom':
     title: 6 CSSOM
-    status: unknown
-  '#the-cssnestrule':
-    title: 6.1 The CSSNestedDeclarations Interface
-    status: unknown
+    status: n/a
   '#changes':
     title: 7 Changes
-    status: unknown
+    status: n/a

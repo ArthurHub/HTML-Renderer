@@ -294,11 +294,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
                         }
                     }
 
-                    // CSS Nesting: a nested rule lives in its parent's NestedRules, deliberately not in
-                    // Children, so it is invisible to Stylesheet.Rules and would otherwise never be
-                    // indexed. Its selector was already resolved against the parent at parse time, so it
-                    // indexes like any other rule - under the same media context, and with a document
-                    // order that continues from the parent so it tie-breaks after it.
+                    // CSS Nesting 1 §3.4: nested rules aren't in Stylesheet.Rules. Indexed right after the
+                    // parent in the same media context, so they come after it in order of appearance.
                     if (styleRule.NestedRules.Count > 0)
                     {
                         IndexRules(styleRule.NestedRules, isUserAgent, enclosingMedia, tagIndex, classIndex, idIndex, universal, keys, ref order);

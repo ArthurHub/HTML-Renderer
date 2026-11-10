@@ -6,9 +6,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal sealed class StyleRule : Rule, IStyleRule
     {
-        // CSS Nesting: rules written inside this rule's block, resolved to absolute selectors against
-        // this parent. Kept in a dedicated list (not Children) so Selector/Style lookups and ToCss are
-        // unaffected. Populated by StylesheetComposer.FillDeclarations.
+        // CSS Nesting 1 §3, with selectors already resolved against this rule. Not in Children, so Selector,
+        // Style and ToCss don't see them.
         private readonly List<IStyleRule> _nestedRules = new List<IStyleRule>();
 
         public StyleRule(StylesheetParser parser) : base(RuleType.Style, parser)
