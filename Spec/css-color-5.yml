@@ -5,178 +5,149 @@ snapshot: https://www.w3.org/TR/2026/WD-css-color-5-20261029/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
+    status: n/a
   '#color-syntax':
     title: 2 The <color> syntax
-    status: unknown
+    status: partial
+    gaps:
+      - alpha() isn't supported
   '#color-mix':
     title: '3 Mixing Colors: the color-mix() Function'
-    status: unknown
+    status: partial
+    gaps:
+      - currentcolor in color-mix() isn't resolved, the color is transparent
   '#color-mix-space':
     title: 3.1 Colorspace for mixing
-    status: unknown
+    status: partial
+    gaps:
+      - Without an interpolation method the color is transparent instead of mixed in Oklab
+      - An unknown color space is mixed in sRGB instead of making color-mix() invalid
   '#color-mix-percent-norm':
     title: 3.2 Percentage Normalization
-    status: unknown
+    status: partial
+    gaps:
+      - Percentages below 0% or above 100% aren't rejected
   '#color-mix-result':
     title: 3.3 Calculating the Result of color-mix
-    status: unknown
+    status: partial
+    gaps:
+      - Only exactly two colors are accepted, one or more than two make the color transparent
   '#color-mix-color-space-effect':
     title: 3.4 Effect of Mixing Color Space on color-mix
-    status: unknown
+    status: n/a
   '#color-mix-with-alpha':
     title: 3.5 Effect of Non-Unity Alpha on color-mix
-    status: unknown
+    status: supported
   '#relative-colors':
     title: 4 Relative Colors
-    status: unknown
+    status: unsupported
+    gaps:
+      - Relative color syntax isn't supported, the color is transparent or the declaration dropped
   '#rcs-intro':
     title: 4.1 Processing Model for Relative Colors
-    status: unknown
+    status: unsupported
   '#relative-syntax':
     title: 4.2 Relative Color Syntax
-    status: unknown
+    status: unsupported
   '#relative-RGB':
     title: 4.3 Relative sRGB Colors
-    status: unknown
+    status: unsupported
   '#relative-HSL':
     title: 4.4 Relative HSL Colors
-    status: unknown
+    status: unsupported
   '#relative-HWB':
     title: 4.5 Relative HWB Colors
-    status: unknown
+    status: unsupported
   '#relative-Lab':
     title: 4.6 Relative Lab Colors
-    status: unknown
+    status: unsupported
   '#relative-Oklab':
     title: 4.7 Relative Oklab Colors
-    status: unknown
+    status: unsupported
   '#relative-LCH':
     title: 4.8 Relative LCH Colors
-    status: unknown
+    status: unsupported
   '#relative-OkLCh':
     title: 4.9 Relative OkLCh Colors
-    status: unknown
+    status: unsupported
   '#relative-alpha':
     title: 4.10 Relative Alpha Colors
-    status: unknown
+    status: unsupported
   '#color-function':
     title: '5 Specifying Predefined and Custom Color Spaces: the color() Function'
-    status: unknown
+    status: unsupported
+    gaps:
+      - color() isn't supported, see CSS Color 4 10.1
   '#relative-color-function':
     title: 5.1 Relative Color-Function Colors
-    status: unknown
+    status: unsupported
   '#custom-color':
     title: 5.2 Custom Color Spaces
-    status: unknown
+    status: unsupported
   '#at-profile':
     title: '5.3 Specifying a Color Profile: the @color-profile at-rule'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "@color-profile is ignored"
   '#cal-cmyk':
     title: '5.4 CSS and Print: Using Calibrated CMYK and Other Printed Color Spaces'
-    status: unknown
+    status: unsupported
   '#cmyk-to-lab':
     title: 5.5 Converting CMYK colors to Lab
-    status: unknown
+    status: unsupported
   '#lab-to-cmyk':
     title: 5.6 Converting Lab colors to CMYK
-    status: unknown
+    status: unsupported
   '#device-cmyk':
     title: '6 Uncalibrated CMYK Colors: the device-cmyk() Function'
-    status: unknown
+    status: unsupported
+    gaps:
+      - device-cmyk() isn't supported, the declaration is dropped
   '#cmyk-rgb':
     title: 6.1 Naively Converting Between Uncalibrated CMYK and sRGB-Based Color
-    status: unknown
+    status: unsupported
   '#light-dark':
     title: '7 Reacting to the used color-scheme: the light-dark() Function'
-    status: unknown
+    status: unsupported
+    gaps:
+      - light-dark() isn't supported, the declaration is dropped
   '#contrast-color':
     title: '8 Dynamically specifying a text color with adequate contrast: the contrast-color() Function'
-    status: unknown
+    status: unsupported
+    gaps:
+      - contrast-color() isn't supported, the declaration is dropped
   '#interpolation':
     title: 9 Color Interpolation
-    status: unknown
+    status: partial
   '#interpolation-space':
     title: 9.1 Color Space for Interpolation
-    status: unknown
+    status: partial
+    gaps:
+      - Custom color spaces aren't supported, and neither are display-p3-linear, a98-rgb, prophoto-rgb and rec2020, see CSS Color 4 13.3
   '#resolving-color-values':
     title: 10 Resolving <color> Values
-    status: unknown
-  '#resolving-mix':
-    title: 10.1 Resolving color-mix() Values
-    status: unknown
-  '#resolving-rcs':
-    title: 10.2 Resolving Relative Color Syntax Values
-    status: unknown
-  '#resolving-device-cmyk-values':
-    title: 10.3 Resolving device-cmyk Values
-    status: unknown
+    status: n/a
   '#serial':
     title: 11 Serialization
-    status: unknown
-  '#serial-color-mix':
-    title: 11.1 Serializing color-mix()
-    status: unknown
-  '#serial-origin-color':
-    title: 11.2 Serializing Origin Colors
-    status: unknown
-  '#serial-relative-color':
-    title: 11.3 Serializing Relative Color Functions
-    status: unknown
-  '#serial-custom-color':
-    title: 11.4 Serializing Custom Color Spaces
-    status: unknown
-  '#serializing-device-cmyk-values':
-    title: 11.5 Serializing device-cmyk Values
-    status: unknown
+    status: n/a
   '#apis':
     title: 12 APIs
-    status: unknown
-  '#the-csscolorprofilerule-interface':
-    title: 12.1 The CSSColorProfileRule interface
-    status: unknown
+    status: n/a
   '#sample':
     title: 13 Default Style Rules
-    status: unknown
+    status: n/a
   '#color-conversion-code':
     title: 14 Sample code for Color Conversions
-    status: unknown
+    status: n/a
   '#security':
     title: 15 Security Considerations
-    status: unknown
+    status: n/a
   '#privacy':
     title: 16 Privacy Considerations
-    status: unknown
+    status: n/a
   '#a11y-sec':
     title: 17 Accessibility Considerations
-    status: unknown
+    status: n/a
   '#changes':
     title: 18 Changes
-    status: unknown
-  '#changes-20260113':
-    title: 18.1 Since the Working Draft of 13 January 2026
-    status: unknown
-  '#changes-20250318':
-    title: 18.2 Since the Working Draft of 18 March 2025
-    status: unknown
-  '#changes-20240229':
-    title: 18.3 Since the Working Draft of 29 February 2024
-    status: unknown
-  '#changes-20220628':
-    title: 18.4 Since the Working Draft of 28 June 2022
-    status: unknown
-  '#changes-20220428':
-    title: 18.5 Since the Working Draft of 28 April 2022
-    status: unknown
-  '#changes-20211215':
-    title: 18.6 Since the Working Draft of 15 December 2021
-    status: unknown
-  '#changes-20210601':
-    title: 18.7 Since the Working Draft of 1 June 2021
-    status: unknown
-  '#changes-20200303':
-    title: 18.8 Since the FPWD of 10 June 2020
-    status: unknown
-  '#changes-from-4':
-    title: 18.9 Changes from CSS Color 4
-    status: unknown
+    status: n/a

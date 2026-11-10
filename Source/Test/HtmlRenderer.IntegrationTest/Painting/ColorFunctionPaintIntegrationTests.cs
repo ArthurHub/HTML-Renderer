@@ -19,6 +19,15 @@ public sealed class ColorFunctionPaintIntegrationTests
         AssertPainted(color, RColor.FromArgb(a, r, g, b));
     }
 
+    [TestMethod]
+    [DataRow("color-mix(in srgb, red, blue)", 255, 128, 0, 128)]
+    [DataRow("color-mix(in srgb, red 20%, blue 20%)", 102, 128, 0, 128)]
+    [Spec("css-color-5", "#color-mix")]
+    public void ColorMix_PaintsTextAndBackground(string color, int a, int r, int g, int b)
+    {
+        AssertPainted(color, RColor.FromArgb(a, r, g, b));
+    }
+
     private static void AssertPainted(string color, RColor expected)
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
