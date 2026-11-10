@@ -70,10 +70,9 @@ public sealed class FontFaceTests
     [DataRow("U+4??")]
     [DataRow("U+000041")]
     [DataRow("U+0025-00FF, U+4??")]
+    [Spec("css-syntax-3", "#consume-unicode-range-value")]
     public void FontFaceUnicodeRangeIsRetained(string range)
     {
-        // Data holds the range without its "U+" prefix, so a retained descriptor used to serialize as
-        // "41-5A" - not a valid <urange> and not what was authored.
         var src = "@font-face{font-family:'Open Sans';unicode-range:" + range + "}";
         var sheet = CssConstructionFunctions.ParseStyleSheet(src);
         Assert.AreEqual(1, sheet.Rules.Length);
@@ -83,8 +82,8 @@ public sealed class FontFaceTests
     }
 
     [TestMethod]
-    // The wildcard budget is captured up front; re-evaluating "6 - StringBuffer.Length" while appending
-    // to that same buffer consumed only half the available wildcards, so U+?????? stopped after three.
+    [Spec("css-syntax-3", "#starts-a-unicode-range")]
+    [Spec("css-syntax-3", "#consume-unicode-range-token")]
     [DataRow("U+4??", "400", "4FF")]
     [DataRow("U+??????", "000000", "FFFFFF")]
     [DataRow("U+41", "41", "41")]

@@ -56,6 +56,7 @@ public sealed class GrammarTests
 
     [TestMethod]
     [Spec("css21", "grammar.html#grammar")]
+    [Spec("css-syntax-3", "#consume-declaration")]
     public void Declaration_TakesImportantWithWhitespaceAndComments()
     {
         Assert.AreEqual(Green, Styled("#x { color: green ! /* c */ important } #x { color: red }").Color);
@@ -123,6 +124,7 @@ public sealed class GrammarTests
 
     [TestMethod]
     [Spec("css21", "grammar.html#scanner")]
+    [Spec("css-syntax-3", "#consume-comment")]
     public void UnclosedCommentAtTheEnd_IsIgnored()
     {
         Assert.AreEqual(Green, Styled("#x { color: green } /* #x { color: red }").Color);

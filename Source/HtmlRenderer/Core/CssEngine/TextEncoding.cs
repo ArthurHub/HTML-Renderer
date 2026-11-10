@@ -65,8 +65,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             {
             }
 
-
-            // Catch all since WP8 does throw a different exception than W*.
             return Utf8;
         }
 

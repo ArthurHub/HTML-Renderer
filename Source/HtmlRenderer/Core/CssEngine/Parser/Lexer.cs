@@ -321,7 +321,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var current = GetNext();
 
-            // '#' not followed by a name code point or a valid escape is a plain delimiter (CSS Syntax §4.3.4).
+            // CSS Syntax 3 §4.3.1
             if (!current.IsName() && !IsValidEscape(current))
             {
                 Back();
@@ -330,8 +330,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             Back();
 
-            // CSS Syntax §4.3.4: the hash consumes the whole name. Only an all-hex name ("#f00") is a color
-            // literal, anything else ("#hero") stays an id hash.
+            // In a value an all-hex name ("#f00") becomes a color token, anything else ("#hero") stays a hash.
             var allHex = true;
 
             while (true)
@@ -548,23 +547,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 current = GetNext();
             }
         }
-        //private Token TransformFunctionWhitespace(char current)
-        //{
-        //    while (true)
-        //    {
-        //        current = GetNext();
-        //        if (current == Symbols.RoundBracketOpen)
-        //        {
-        //            Back();
-        //            return NewFunction(FlushBuffer());
-        //        }
-        //        if (!current.IsSpaceCharacter())
-        //        {
-        //            Back(2);
-        //            return NewIdent(FlushBuffer());
-        //        }
-        //    }
-        //}
 
         private Token NumberStart(char current)
         {
@@ -939,7 +921,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 current = GetNext();
             }
 
-            // Wildcards ("U+4??") and a range end ("U+41-5A") exclude each other, the range end is handled below.
+            // CSS Syntax 3 §4.3.14: wildcards ("U+4??") and a range end ("U+41-5A") exclude each other.
             if (StringBuffer.Length != 6 && current == Symbols.QuestionMark)
             {
                 // Captured up front, the loop appends to StringBuffer.

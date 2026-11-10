@@ -27,6 +27,7 @@ public sealed class TokenizationTests
 
     [TestMethod]
     [Spec("css21", "grammar.html#scanner")]
+    [Spec("css-syntax-3", "#consume-url-token")]
     public void CssParserUrlUnquoted()
     {
         var url = "http://someurl";
@@ -59,7 +60,7 @@ public sealed class TokenizationTests
     }
 
     [TestMethod]
-    [Spec("css21", "grammar.html#scanner")]
+    [Spec("css-syntax-3", "#consume-remnants-of-bad-url")]
     public void CssParserUrlBad_UnexpectedQuoteInUnquotedUrl_RecoversAtClosingParen()
     {
         var teststring = "url(bad\"value) next";
@@ -67,6 +68,7 @@ public sealed class TokenizationTests
 
         var urlToken = tokenizer.Get();
         Assert.AreEqual(TokenType.Url, urlToken.Type);
+        Assert.IsTrue(((UrlToken)urlToken).IsValid, "UrlToken.IsValid holds whether the url is bad");
 
         Assert.AreEqual(TokenType.Whitespace, tokenizer.Get().Type);
 
@@ -130,6 +132,7 @@ public sealed class TokenizationTests
 
     [TestMethod]
     [Spec("css21", "grammar.html#scanner")]
+    [Spec("css-syntax-3", "#input-preprocessing")]
     public void LexerOnlyCarriageReturn()
     {
         var teststring = "\r";
@@ -140,6 +143,7 @@ public sealed class TokenizationTests
 
     [TestMethod]
     [Spec("css21", "grammar.html#scanner")]
+    [Spec("css-syntax-3", "#input-preprocessing")]
     public void LexerCarriageReturnLineFeed()
     {
         var teststring = "\r\n";
@@ -150,6 +154,7 @@ public sealed class TokenizationTests
 
     [TestMethod]
     [Spec("css21", "grammar.html#scanner")]
+    [Spec("css-syntax-3", "#input-preprocessing")]
     public void LexerOnlyLineFeed()
     {
         var teststring = "\n";

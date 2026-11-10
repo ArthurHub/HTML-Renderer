@@ -16,8 +16,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             End = end;
         }
 
-        // Data holds the range without its "U+" prefix, so serializing it bare would emit "41-5A" - not a
-        // valid <urange> and not what was authored.
+        // Data is the range without "U+".
         public override string ToValue()
         {
             return string.Concat("U+", Data);

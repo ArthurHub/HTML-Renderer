@@ -113,6 +113,7 @@ public sealed class SyntaxAndDataTypesTests
     [DataRow(@"#x{color:gr\000065en}")]
     [DataRow(@"#x{color:gr\000065 en}")]
     [DataRow("#x{color:gr\\65\r\nen}")]
+    [Spec("css-syntax-3", "#consume-escaped-code-point")]
     public void EscapedIdentifier_IsTheSameIdentifier(string css)
     {
         Assert.AreEqual(Green, Styled(css).Color);
@@ -141,6 +142,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#characters")]
+    [Spec("css-syntax-3", "#consume-escaped-code-point")]
     public void OnlyOneWhitespaceAfterAHexEscape_IsConsumed()
     {
         Assert.AreEqual("&B & B", Before(@"#x::before{content:'\26 B \26  B'}"));
@@ -148,6 +150,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#characters")]
+    [Spec("css-syntax-3", "#consume-escaped-code-point")]
     public void EscapeOutsideTheUnicodeRange_IsTheReplacementCharacter()
     {
         Assert.AreEqual("�", Before(@"#x::before{content:'\110000'}"));
@@ -155,6 +158,8 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#statements")]
+    [Spec("css-syntax-3", "#parse-stylesheet")]
+    [Spec("css-syntax-3", "#at-rules")]
     public void StyleSheet_IsAListOfAtRulesAndRuleSets()
     {
         var sheet = ParseStyleSheet(" @media print { p { color: red } } \n p { color: green } @page { margin: 1cm } ");
@@ -167,6 +172,8 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#at-rules")]
+    [Spec("css-syntax-3", "#consume-at-rule")]
+    [Spec("css-syntax-3", "#css-stylesheets")]
     public void AtRule_EndsAtTheNextSemicolonOrBlock()
     {
         var box = Styled("@foo bar; #x{color:green} @foo { #x{color:red} } #x{background-color:green}");
@@ -186,6 +193,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#block")]
+    [Spec("css-syntax-3", "#consume-simple-block")]
     public void Block_MatchesBracketsAndSkipsBracesInStrings()
     {
         Assert.AreEqual(Green, Styled(@"@foo { causta: ""}"" + ({7} * '\'') } #x { color: green }").Color);
@@ -195,6 +203,7 @@ public sealed class SyntaxAndDataTypesTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "syndata.html#block")]
+    [Spec("css-syntax-3", "#consume-simple-block")]
     public void BlockInADeclarationValue_IsSkippedAsPartOfTheDeclaration()
     {
         Assert.AreEqual(Green, Styled(@"#x { causta: ""}"" + ({7} * '\'') ; color: green }").Color);
@@ -203,6 +212,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#rule-sets")]
+    [Spec("css-syntax-3", "#style-rules")]
     public void InvalidSelector_DropsTheWholeRuleSet()
     {
         var css = "h1, h2 {color: green} h3, h4 # h5 {color: red} h6 {color: black}";
@@ -248,6 +258,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#comments")]
+    [Spec("css-syntax-3", "#consume-comment")]
     public void Comments_DontNest()
     {
         Assert.AreEqual(Green, Styled("#x { color: red; /* /* */ color: green; /* */ }").Color);
@@ -255,6 +266,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#comments")]
+    [Spec("css-syntax-3", "#consume-stylesheet-contents")]
     public void SgmlCommentDelimiters_AreIgnoredAroundStatements()
     {
         var box = Styled("<!-- #x { color: green } --> <!-- #x { background-color: green } -->");
@@ -280,6 +292,7 @@ public sealed class SyntaxAndDataTypesTests
     [DataRow("@media screen { #x { color: green; azimuth: 30deg; } }")]
     [DataRow("@media screen { #x { color: green")]
     [DataRow("#x { color: green; font-family: 'Courier New Times\n color: red; }")]
+    [Spec("css-syntax-3", "#parser-algorithms")]
     public void ParsingError_IsIgnoredAndParsingResumes(string css)
     {
         Assert.AreEqual(Green, Styled(css).Color);
@@ -287,6 +300,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#parsing-errors")]
+    [Spec("css-syntax-3", "#consume-string-token")]
     public void UnexpectedEndOfStyleSheet_ClosesTheOpenString()
     {
         Assert.AreEqual("Hello", Before("@media screen { #x::before { content: 'Hello"));
@@ -583,6 +597,7 @@ public sealed class SyntaxAndDataTypesTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "syndata.html#strings")]
+    [Spec("css-syntax-3", "#consume-string-token")]
     public void StringBrokenOverLines_IsTheSameString()
     {
         var css = "#x[title=\"a not s\\\no very long title\"] { color: green }";
@@ -603,6 +618,7 @@ public sealed class SyntaxAndDataTypesTests
     [DataRow("utf-8")]
     [DataRow("utf-16")]
     [DataRow("utf-16BE")]
+    [Spec("css-syntax-3", "#input-byte-stream")]
     public void ExternalStyleSheet_IsDecodedFromItsByteOrderMark(string name)
     {
         var encoding = Encoding.GetEncoding(name);
@@ -613,6 +629,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#charset")]
+    [Spec("css-syntax-3", "#input-byte-stream")]
     public void ExternalStyleSheet_WithoutBomOrCharset_IsUtf8()
     {
         var (box, _) = StyledWithFile("style.css", Encoding.UTF8.GetBytes("#x::before{content:'κ'}"));
@@ -623,6 +640,7 @@ public sealed class SyntaxAndDataTypesTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "syndata.html#charset")]
+    [Spec("css-syntax-3", "#input-byte-stream")]
     public void ExternalStyleSheet_IsDecodedWithItsCharsetRule()
     {
         var bytes = Encoding.ASCII.GetBytes("@charset \"ISO-8859-1\"; #x::before{content:'L")
@@ -634,6 +652,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#charset")]
+    [Spec("css-syntax-3", "#charset-rule")]
     public void CharsetRuleNotAtTheStart_IsIgnored()
     {
         Assert.AreEqual(Green, Styled("#x{color:red} @charset \"ISO-8859-1\"; #x{color:green}").Color);

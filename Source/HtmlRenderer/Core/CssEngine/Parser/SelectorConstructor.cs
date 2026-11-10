@@ -884,12 +884,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     case TokenType.Whitespace:
                         return false;
                     case TokenType.Delim when token.Data.IsOneOf("+", "-"):
-                        // The An+B offset's sign is a standalone delim token when whitespace separates it
-                        // from B - the "<n-dimension> ['+' | '-'] <signless-integer>" production of
-                        // <a-n-plus-b> (CSS Syntax 3 §6.2); §6.1 gives `3n + 1` as a valid example. The
-                        // compact form `10n+1` instead arrives as a single signed <number>, handled by the
-                        // Number case below. Without this branch a spaced sign fell through to OnBeforeOf
-                        // and invalidated the selector.
+                        // CSS Syntax 3 §6.2: "3n + 1", the compact "3n+1" is a signed number below.
                         _sign = token.Data == "-" ? -1 : 1;
                         _state = ParseState.AfterOffsetSign;
                         return false;
@@ -910,9 +905,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     case TokenType.Whitespace:
                         return false;
                     case TokenType.Number when !token.Data.StartsWith("+", StringComparison.Ordinal) && !token.Data.StartsWith("-", StringComparison.Ordinal):
-                        // The production requires a <signless-integer> here, defined as "a <number-token>
-                        // with its type flag set to integer, and no sign character" (CSS Syntax 3 §6.2), so
-                        // `10n + -1` and `10n + +1` are invalid - §6.1 lists `3n + -6` as an invalid example.
+                        // CSS Syntax 3 §6.2: a <signless-integer>, "3n + -6" is invalid.
                         _valid = _valid && ((NumberToken)token).IsInteger && int.TryParse(token.Data, out _offset);
                         _offset *= _sign;
                         _state = ParseState.BeforeOf;

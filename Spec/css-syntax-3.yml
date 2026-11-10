@@ -5,229 +5,234 @@ snapshot: https://www.w3.org/TR/2026/CRD-css-syntax-3-20261001/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module interactions
-    status: unknown
+    status: n/a
   '#syntax-description':
     title: 2 Description of CSS’s Syntax
-    status: unknown
-  '#escaping':
-    title: 2.1 Escaping
-    status: unknown
-  '#error-handling':
-    title: 2.2 Error Handling
-    status: unknown
+    status: n/a
   '#tokenizing-and-parsing':
     title: 3 Tokenizing and Parsing CSS
-    status: unknown
+    status: partial
   '#parsing-overview':
     title: 3.1 Overview of the Parsing Model
-    status: unknown
+    status: n/a
   '#input-byte-stream':
     title: 3.2 The input byte stream
-    status: unknown
+    status: partial
+    gaps:
+      - The @charset encoding declaration, the HTTP charset and the environment encoding are ignored, see CSS 2.1 4.4
   '#input-preprocessing':
     title: 3.3 Preprocessing the input stream
-    status: unknown
+    status: partial
+    gaps:
+      - U+0000 NULL isn't replaced with U+FFFD
   '#tokenization':
     title: 4 Tokenization
-    status: unknown
+    status: partial
   '#token-diagrams':
     title: 4.1 Token Railroad Diagrams
-    status: unknown
+    status: n/a
   '#tokenizer-definitions':
     title: 4.2 Definitions
-    status: unknown
+    status: partial
+    gaps:
+      - Every non-ASCII code point is an ident code point, not only the listed ranges, e.g. U+00D7 and U+00A0
   '#tokenizer-algorithms':
     title: 4.3 Tokenizer Algorithms
-    status: unknown
+    status: partial
   '#consume-token':
     title: 4.3.1 Consume a token
-    status: unknown
+    status: partial
+    gaps:
+      - An at-sign followed by two hyphens is a delim, not an at-keyword, e.g. @--x
+      - U+ followed by a hex digit or a question mark is a unicode-range everywhere, not only in the unicode-range descriptor, e.g. the selector u+a
   '#consume-comment':
     title: 4.3.2 Consume comments
-    status: unknown
+    status: supported
   '#consume-numeric-token':
     title: 4.3.3 Consume a numeric token
-    status: unknown
+    status: partial
+    gaps:
+      - The unit of a dimension ends at the first code point that isn't a letter or an escape, e.g. 10x2 and 10--x
   '#consume-ident-like-token':
     title: 4.3.4 Consume an ident-like token
-    status: unknown
+    status: partial
+    gaps:
+      - "'url(' followed by a quoted string gives a url token instead of a function token"
   '#consume-string-token':
     title: 4.3.5 Consume a string token
-    status: unknown
+    status: partial
+    gaps:
+      - A backslash followed by a newline is kept as a line break, see CSS 2.1 4.3.7
+      - A backslash at the end of the input makes the string a bad string
+      - A bad string doesn't invalidate the declaration, the string up to the line break is used
   '#consume-url-token':
     title: 4.3.6 Consume a url token
-    status: unknown
+    status: partial
+    gaps:
+      - A bad url doesn't invalidate the declaration, the url up to the error is used
   '#consume-escaped-code-point':
     title: 4.3.7 Consume an escaped code point
-    status: unknown
+    status: supported
   '#starts-with-a-valid-escape':
     title: 4.3.8 Check if two code points are a valid escape
-    status: unknown
+    status: partial
+    gaps:
+      - A backslash at the end of the input isn't a valid escape, it's dropped instead of becoming U+FFFD
   '#would-start-an-identifier':
     title: 4.3.9 Check if three code points would start an ident sequence
-    status: unknown
+    status: supported
   '#starts-with-a-number':
     title: 4.3.10 Check if three code points would start a number
-    status: unknown
+    status: supported
   '#starts-a-unicode-range':
     title: 4.3.11 Check if three code points would start a unicode-range
-    status: unknown
+    status: supported
   '#consume-name':
     title: 4.3.12 Consume an ident sequence
-    status: unknown
+    status: supported
   '#consume-number':
     title: 4.3.13 Consume a number
-    status: unknown
+    status: partial
+    gaps:
+      - An exponent isn't part of the number, 1e3 is the dimension 1e followed by the number 3
   '#consume-unicode-range-token':
     title: 4.3.14 Consume a unicode-range token
-    status: unknown
+    status: supported
   '#consume-remnants-of-bad-url':
     title: 4.3.15 Consume the remnants of a bad url
-    status: unknown
+    status: partial
+    gaps:
+      - A bad url also ends at a semicolon or a closing brace, and an opening parenthesis in it needs its own closing one
   '#parsing':
     title: 5 Parsing
-    status: unknown
+    status: partial
   '#parser-diagrams':
     title: 5.1 Parser Railroad Diagrams
-    status: unknown
+    status: n/a
   '#css-tree':
     title: 5.2 CSS Parsing Results
-    status: unknown
+    status: n/a
   '#parser-definitions':
     title: 5.3 Token Streams
-    status: unknown
+    status: n/a
   '#parser-entry-points':
     title: 5.4 Parser Entry Points
-    status: unknown
+    status: supported
   '#parse-grammar':
     title: 5.4.1 Parse something according to a CSS grammar
-    status: unknown
+    status: n/a
   '#parse-comma-list':
     title: 5.4.2 Parse a comma-separated list according to a CSS grammar
-    status: unknown
+    status: n/a
   '#parse-stylesheet':
     title: 5.4.3 Parse a stylesheet
-    status: unknown
+    status: supported
   '#parse-stylesheet-contents':
     title: 5.4.4 Parse a stylesheet’s contents
-    status: unknown
+    status: n/a
   '#parse-block-contents':
     title: 5.4.5 Parse a block’s contents
-    status: unknown
+    status: supported
   '#parse-rule':
     title: 5.4.6 Parse a rule
-    status: unknown
+    status: n/a
   '#parse-declaration':
     title: 5.4.7 Parse a declaration
-    status: unknown
+    status: supported
   '#parse-component-value':
     title: 5.4.8 Parse a component value
-    status: unknown
+    status: n/a
   '#parse-list-of-component-values':
     title: 5.4.9 Parse a list of component values
-    status: unknown
+    status: n/a
   '#parse-comma-separated-list-of-component-values':
     title: 5.4.10 Parse a comma-separated list of component values
-    status: unknown
+    status: n/a
   '#parser-algorithms':
     title: 5.5 Parser Algorithms
-    status: unknown
+    status: partial
   '#consume-stylesheet-contents':
     title: 5.5.1 Consume a stylesheet’s contents
-    status: unknown
+    status: supported
   '#consume-at-rule':
     title: 5.5.2 Consume an at-rule
-    status: unknown
+    status: partial
+    gaps:
+      - A closing brace in the prelude of a top-level at-rule ends the at-rule instead of becoming part of the prelude
+      - A '{' inside a [] block of the prelude starts the at-rule's block instead of being part of the [] block
   '#consume-qualified-rule':
     title: 5.5.3 Consume a qualified rule
-    status: unknown
+    status: partial
+    gaps:
+      - A closing brace at the start of a top-level qualified rule is dropped on its own instead of becoming part of the prelude
   '#consume-block':
     title: 5.5.4 Consume a block
-    status: unknown
+    status: supported
   '#consume-block-contents':
     title: 5.5.5 Consume a block’s contents
-    status: unknown
+    status: partial
+    gaps:
+      - An unknown at-rule in a style rule isn't dropped, its block applies to the style rule's elements
   '#consume-declaration':
     title: 5.5.6 Consume a declaration
-    status: unknown
+    status: partial
+    gaps:
+      - The important flag is case-sensitive, e.g. !IMPORTANT, see CSS 2.1 4.1.3
   '#consume-list-of-components':
     title: 5.5.7 Consume a list of component values
-    status: unknown
+    status: supported
   '#consume-component-value':
     title: 5.5.8 Consume a component value
-    status: unknown
+    status: supported
   '#consume-simple-block':
     title: 5.5.9 Consume a simple block
-    status: unknown
+    status: partial
+    gaps:
+      - A semicolon inside () or [] in a declaration value ends the declaration
+      - A {}-block inside a declaration value drops the declarations after it, see CSS 2.1 4.1.6
   '#consume-function':
     title: 5.5.10 Consume a function
-    status: unknown
+    status: supported
   '#consume-unicode-range-value':
     title: 5.5.11 Consume a unicode-range value
-    status: unknown
+    status: supported
   '#anb-microsyntax':
     title: 6 The An+B microsyntax
-    status: unknown
+    status: partial
   '#anb-syntax':
     title: 6.1 Informal Syntax Description
-    status: unknown
+    status: n/a
   '#the-anb-type':
     title: 6.2 The <a-n-plus-b> type
-    status: unknown
+    status: partial
+    gaps:
+      - B written as part of the n ident is invalid, e.g. n-1, +n-1 and n- 1
   '#rule-defs':
     title: 7 Defining Grammars for Rules and Other Values
-    status: unknown
-  '#block-contents':
-    title: '7.1 Defining Block Contents: the <block-contents>, <declaration-list>, <qualified-rule-list>, <declaration-rule-list>, and <rule-list> productions'
-    status: unknown
-  '#any-value':
-    title: '7.2 Defining Arbitrary Contents: the <declaration-value> and <any-value> productions'
-    status: unknown
+    status: n/a
   '#css-stylesheets':
     title: 8 CSS stylesheets
-    status: unknown
+    status: partial
   '#style-rules':
     title: 8.1 Style rules
-    status: unknown
+    status: partial
+    gaps:
+      - Unknown at-rules in a style rule aren't ignored, see 5.5.5
   '#at-rules':
     title: 8.2 At-rules
-    status: unknown
+    status: supported
   '#charset-rule':
     title: 8.3 The @charset Rule
-    status: unknown
+    status: supported
   '#serialization':
     title: 9 Serialization
-    status: unknown
-  '#serializing-anb':
-    title: 9.1 Serializing <a-n-plus-b>
-    status: unknown
+    status: n/a
   '#privacy':
     title: 10 Privacy Considerations
-    status: unknown
+    status: n/a
   '#security':
     title: 11 Security Considerations
-    status: unknown
+    status: n/a
   '#changes':
     title: 12 Changes
-    status: unknown
-  '#changes-CR-20211224':
-    title: 12.1 Changes from the 24 December 2021 Candidate Recommendation Draft
-    status: unknown
-  '#changes-CR-20190716':
-    title: 12.2 Changes from the 16 August 2019 Candidate Recommendation
-    status: unknown
-  '#changes-CR-20140220':
-    title: 12.3 Changes from the 20 February 2014 Candidate Recommendation
-    status: unknown
-  '#changes-WD-20131105':
-    title: 12.4 Changes from the 5 November 2013 Last Call Working Draft
-    status: unknown
-  '#changes-WD-20130919':
-    title: 12.5 Changes from the 19 September 2013 Working Draft
-    status: unknown
-  '#changes-css21':
-    title: 12.6 Changes from CSS 2.1 and Selectors Level 3
-    status: unknown
+    status: n/a
