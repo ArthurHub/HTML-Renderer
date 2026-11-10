@@ -14,6 +14,7 @@ public sealed class TextAlignStartEndIntegrationTests
         LayoutHarness.Descendants(box).SelectMany(b => b.Words).First(w => !w.IsSpaces);
 
     [TestMethod]
+    [Spec("css-text-3", "#text-align-property")]
     public void Start_InLtrBlock_PacksTextAgainstTheLeftEdge()
     {
         var html = LayoutHarness.Wrap("<p id='p' style='text-align: start; width: 200px'>hi</p>");
@@ -25,8 +26,10 @@ public sealed class TextAlignStartEndIntegrationTests
         Assert.AreEqual(p.ClientLeft, word.Left, Delta);
     }
 
-    [Ignore("text-align: start is treated as left, regardless of direction")]
+    [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
+    [Spec("css-text-3", "#text-align-property")]
+    [Spec("css-text-3", "#bidi-linebox")]
     public void Start_InRtlBlock_PacksTextAgainstTheRightEdge()
     {
         var html = LayoutHarness.Wrap("<p id='p' dir='rtl' style='text-align: start; width: 200px'>hi</p>");
@@ -38,8 +41,9 @@ public sealed class TextAlignStartEndIntegrationTests
         Assert.AreEqual(p.ClientRight, word.Right, Delta);
     }
 
-    [Ignore("text-align: end is treated as left, regardless of direction")]
+    [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
+    [Spec("css-text-3", "#text-align-property")]
     public void End_InLtrBlock_PacksTextAgainstTheRightEdge()
     {
         var html = LayoutHarness.Wrap("<p id='p' style='text-align: end; width: 200px'>hi</p>");
@@ -52,6 +56,8 @@ public sealed class TextAlignStartEndIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-align-property")]
+    [Spec("css-text-3", "#bidi-linebox")]
     public void End_InRtlBlock_PacksTextAgainstTheLeftEdge()
     {
         var html = LayoutHarness.Wrap("<p id='p' dir='rtl' style='text-align: end; width: 200px'>hi</p>");
@@ -65,6 +71,7 @@ public sealed class TextAlignStartEndIntegrationTests
 
     [TestMethod]
     [Spec("css21", "text.html#alignment-prop")]
+    [Spec("css-text-3", "#text-align-property")]
     public void DefaultsToStart_UnsetTextAlign_BehavesLikeLeftInLtr()
     {
         var html = LayoutHarness.Wrap("<p id='p' style='width: 200px'>hi</p>");

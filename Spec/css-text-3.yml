@@ -5,130 +5,155 @@ snapshot: https://www.w3.org/TR/2026/CRD-css-text-3-20260814/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
-  '#languages':
-    title: 1.3 Languages and Typesetting
-    status: unknown
-  '#characters':
-    title: 1.4 Characters and Letters
-    status: unknown
-  '#text-encoding':
-    title: 1.5 Text Processing
-    status: unknown
+    status: n/a
   '#transforming':
     title: 2 Transforming Text
-    status: unknown
+    status: parsed-only
   '#text-transform-property':
     title: '2.1 Case Transforms: the text-transform property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - text-transform is ignored, see CSS 2.1 16.5
+      - full-size-kana and combinations such as 'uppercase full-width' aren't accepted
   '#text-transform-mapping':
     title: 2.1.1 Mapping Rules
-    status: unknown
+    status: unsupported
   '#text-transform-order':
     title: 2.1.2 Order of Operations
-    status: unknown
+    status: unsupported
   '#white-space-property':
     title: '3 White Space and Wrapping: the white-space property'
-    status: unknown
+    status: partial
+    gaps:
+      - break-spaces isn't accepted
   '#white-space-processing':
     title: 4 White Space Processing & Control Characters
-    status: unknown
+    status: partial
+    gaps:
+      - Control characters such as U+000B are treated as white space instead of being rendered, see CSS 2.1 16.6.3
   '#white-space-rules':
     title: 4.1 The White Space Processing Rules
-    status: unknown
+    status: partial
   '#white-space-phase-1':
     title: '4.1.1 Phase I: Collapsing and Transformation'
-    status: unknown
+    status: partial
+    gaps:
+      - A space following another space isn't removed when an element boundary is between them, see CSS 2.1 16.6.1
+      - U+00A0 is collapsed and breakable like a space, see CSS 2.1 16.6.1
   '#white-space-phase-2':
     title: '4.1.2 Phase II: Trimming and Positioning'
-    status: unknown
+    status: partial
+    gaps:
+      - Preserved tabs are as wide as their glyph instead of reaching the next tab stop
   '#line-break-transform':
     title: 4.1.3 Segment Break Transformation Rules
-    status: unknown
+    status: supported
   '#tab-size-property':
     title: '4.2 Tab Character Size: the tab-size property'
-    status: unknown
+    status: unsupported
   '#line-breaking':
     title: 5 Line Breaking and Word Boundaries
-    status: unknown
+    status: partial
   '#word-break-property':
     title: '5.1 Breaking Rules for Letters: the word-break property'
-    status: unknown
+    status: partial
+    gaps:
+      - keep-all doesn't keep CJK text together
+      - break-word isn't accepted
   '#line-break-property':
     title: '5.2 Line Breaking Strictness: the line-break property'
-    status: unknown
+    status: unsupported
   '#hyphenation':
     title: '5.3 Hyphenation: the hyphens property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Soft hyphens (U+00AD) aren't break opportunities
   '#overflow-wrap-property':
     title: '5.4 Overflow Wrapping: the overflow-wrap (word-wrap) property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - overflow-wrap and word-wrap are ignored, a word that doesn't fit overflows
+      - anywhere isn't accepted
   '#line-break-details':
     title: 5.5 Line Breaking Details
-    status: unknown
+    status: partial
+    gaps:
+      - A line can break at an element boundary or a float without white space in the text, see CSS 2.1 16.6.1
   '#justification':
     title: 6 Alignment and Justification
-    status: unknown
+    status: partial
   '#text-align-property':
     title: '6.1 Text Alignment: the text-align shorthand'
-    status: unknown
+    status: partial
+    gaps:
+      - start, end, match-parent and justify-all aren't accepted, so the alignment doesn't follow the direction
+      - The initial value acts as left also when direction is rtl, see CSS 2.1 16.2
   '#text-align-all-property':
     title: '6.2 Default Text Alignment: the text-align-all property'
-    status: unknown
+    status: unsupported
   '#text-align-last-property':
     title: '6.3 Last Line Alignment: the text-align-last property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - text-align-last is ignored, the last line of justified text is aligned left
+      - match-parent isn't accepted
   '#text-justify-property':
     title: '6.4 Justification Method: the text-justify property'
-    status: unknown
+    status: parsed-only
   '#expanding-text':
     title: 6.4.1 Expanding and Compressing Text
-    status: unknown
+    status: partial
+    gaps:
+      - Preserved spaces in pre and pre-wrap text are stretched too, see CSS 2.1 16.2
   '#justify-symbols':
     title: 6.4.2 Handling Symbols and Punctuation
-    status: unknown
+    status: n/a
   '#justify-limits':
     title: 6.4.3 Unexpandable Text
-    status: unknown
+    status: n/a
   '#justify-cursive':
     title: 6.4.4 Cursive Scripts
-    status: unknown
+    status: n/a
   '#justify-algos':
     title: 6.4.5 Minimum Requirements for auto Justification
-    status: unknown
+    status: supported
   '#spacing':
     title: 7 Spacing
-    status: unknown
+    status: parsed-only
   '#word-spacing-property':
     title: '7.1 Word Spacing: the word-spacing property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - word-spacing has no effect, see CSS 2.1 16.4
   '#letter-spacing-property':
     title: '7.2 Tracking: the letter-spacing property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - letter-spacing is ignored, see CSS 2.1 16.4
   '#cursive-tracking':
     title: 7.2.1 Cursive Scripts
-    status: unknown
+    status: n/a
   '#boundary-shaping':
     title: 7.3 Shaping Across Element Boundaries
-    status: unknown
+    status: unsupported
   '#edge-effects':
     title: 8 Edge Effects
-    status: unknown
+    status: partial
   '#text-indent-property':
     title: '8.1 First Line Indentation: the text-indent property'
-    status: unknown
+    status: partial
+    gaps:
+      - hanging and each-line aren't accepted
+      - "The gaps of CSS 2.1 16.1 apply: percentages, anonymous blocks, rtl and inline-blocks"
   '#hanging':
     title: 8.2 Hanging Glyphs
-    status: unknown
+    status: unsupported
   '#hanging-punctuation-property':
     title: '8.2.1 Hanging Punctuation: the hanging-punctuation property'
-    status: unknown
+    status: unsupported
   '#bidi-linebox':
     title: 8.3 Bidirectionality and Line Boxes
-    status: unknown
+    status: partial
+    gaps:
+      - The line's direction doesn't change which side start and end refer to, see 6.1
+      - In rtl text-indent is applied at the left edge, see CSS 2.1 16.1

@@ -15,6 +15,7 @@ public sealed class WhiteSpacePropertyTests
 
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
+    [Spec("css-text-3", "#white-space-property")]
     [DataRow("normal")]
     [DataRow("pre")]
     [DataRow("nowrap")]
@@ -27,6 +28,7 @@ public sealed class WhiteSpacePropertyTests
 
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
+    [Spec("css-text-3", "#white-space-property")]
     public void WhiteSpaceInvalidKeywordIllegal()
     {
         Assert.IsTrue(string.IsNullOrEmpty(GetWhiteSpace("white-space: wavy")));

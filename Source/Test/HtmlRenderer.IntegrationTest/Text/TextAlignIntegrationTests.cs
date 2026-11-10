@@ -11,6 +11,7 @@ public sealed class TextAlignIntegrationTests
 
     [TestMethod]
     [Spec("css21", "text.html#alignment-prop")]
+    [Spec("css-text-3", "#text-align-property")]
     public void Left_PacksTextAgainstTheLeftEdge()
     {
         var word = Words("<p id='p' style='margin:0;text-align:left;width:200px'>hi</p>").Single();
@@ -20,6 +21,7 @@ public sealed class TextAlignIntegrationTests
 
     [TestMethod]
     [Spec("css21", "text.html#alignment-prop")]
+    [Spec("css-text-3", "#white-space-phase-2")]
     public void Right_PacksTextAgainstTheRightEdge_IgnoringTheTrailingSpace()
     {
         var word = Words("<p id='p' style='margin:0;text-align:right;width:200px'>hi </p>").Single();
@@ -29,6 +31,7 @@ public sealed class TextAlignIntegrationTests
 
     [TestMethod]
     [Spec("css21", "text.html#alignment-prop")]
+    [Spec("css-text-3", "#text-align-property")]
     public void Center_CentersTheTextInTheLineBox()
     {
         var word = Words("<p id='p' style='margin:0;text-align:center;width:200px'>hi</p>").Single();
@@ -38,6 +41,7 @@ public sealed class TextAlignIntegrationTests
 
     [TestMethod]
     [Spec("css21", "text.html#alignment-prop")]
+    [Spec("css-text-3", "#text-align-property")]
     public void Right_AppliesToEveryLine()
     {
         var words = Words("<p id='p' style='margin:0;width:60px;text-align:right'>AAA BBB CCC DDD</p>");
@@ -48,6 +52,7 @@ public sealed class TextAlignIntegrationTests
 
     [TestMethod]
     [Spec("css21", "text.html#alignment-prop")]
+    [Spec("css-text-3", "#text-align-property")]
     public void TextAlign_IsInherited()
     {
         var word = Words("<div style='text-align:right;width:200px'><p id='p' style='margin:0'>hi</p></div>").Single();
@@ -57,6 +62,8 @@ public sealed class TextAlignIntegrationTests
 
     [TestMethod]
     [Spec("css21", "text.html#alignment-prop")]
+    [Spec("css-text-3", "#text-align-property")]
+    [Spec("css-text-3", "#expanding-text")]
     public void Justify_MakesAllButTheLastLineFlushWithBothSides()
     {
         var lines = Words("<p id='p' style='margin:0;text-align:justify;width:100px'>aa bb cc dd ee ff gg hh ii jj</p>")
@@ -72,6 +79,7 @@ public sealed class TextAlignIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "text.html#alignment-prop")]
+    [Spec("css-text-3", "#text-align-property")]
     public void InitialValue_InRtl_ActsAsRight()
     {
         var word = Words("<p id='p' dir='rtl' style='margin:0;width:200px'>hi</p>").Single();
@@ -82,6 +90,7 @@ public sealed class TextAlignIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "text.html#alignment-prop")]
+    [Spec("css-text-3", "#expanding-text")]
     public void Justify_DoesntAlterPreservedWhiteSpace()
     {
         var words = Words("<p id='p' style='margin:0;text-align:justify;white-space:pre;width:300px'>a b\nc d</p>");

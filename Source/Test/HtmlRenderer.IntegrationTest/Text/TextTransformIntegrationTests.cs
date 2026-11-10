@@ -9,6 +9,7 @@ public sealed class TextTransformIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "text.html#caps-prop")]
+    [Spec("css-text-3", "#text-transform-property")]
     [DataRow("uppercase", "abc dEF", "ABC DEF")]
     [DataRow("lowercase", "abc dEF", "abc def")]
     [DataRow("capitalize", "abc dEF", "Abc DEF")]

@@ -4,29 +4,12 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/TextProperty.cs (source class <c>TextPropertyTests</c>).
-/// All word-spacing (incl. "normal" - <see cref="WordSpacingProperty"/>), text-shadow, text-align,
-/// text-decoration* (line/color/style), word-break, text-align-last, text-anchor, text-justify (all 8
-/// keywords incl. kashida/newspaper), and overflow-wrap/word-wrap tests are ported as plain passing
-/// tests.
-/// Gap: TextIndentLegalHanging, TextIndentLegalEachLine, TextIndentLegalHangingEachLine, and
-/// TextIndentLegalReorderedKeywordsPreservesAuthoredOrder are ported under [Ignore] - HTML-Renderer's
-/// <see cref="TextIndentProperty"/> (Source/HtmlRenderer/Core/CssEngine/StyleProperties/Text/
-/// TextIndentProperty.cs:5-6) uses a bare <c>Converters.LengthOrPercentConverter.OrDefault(Length.Zero)</c>,
-/// whereas PeachPDF has a dedicated TextIndentValueConverter supporting the
-/// "&lt;length-percentage&gt; &amp;&amp; hanging? &amp;&amp; each-line?" grammar; no TextIndentValueConverter/
-/// TextIndentGrammar exists anywhere under Source/HtmlRenderer (confirmed via grep), so any indent value
-/// with hanging/each-line is rejected outright (HasValue false).
-/// TextIndentIllegalHangingAloneMissingLength and TextIndentIllegalDuplicateKeyword still port as plain
-/// passing tests (not [Ignore]d): both assert HasValue == false, which the narrower converter also
-/// produces (for the "wrong" reason - it simply doesn't understand "hanging" at all - but the assertion
-/// still holds).
-/// </summary>
+/// <summary>Parsing of the CSS Text and CSS Text Decoration properties.</summary>
 [TestClass]
 public sealed class TextPropertyTests
 {
     [TestMethod]
+    [Spec("css-text-3", "#word-spacing-property")]
     public void WordSpacingZeroLengthLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("word-spacing: 0");
@@ -40,6 +23,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#word-spacing-property")]
     public void WordSpacingLengthFloatRemLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("word-spacing: .3rem ");
@@ -53,6 +37,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#word-spacing-property")]
     public void WordSpacingLengthFloatEmLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("word-spacing: 0.3em ");
@@ -66,6 +51,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#word-spacing-property")]
     public void WordSpacingNormalLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("word-spacing: normal ");
@@ -150,6 +136,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-align-property")]
     public void TextAlignLegalJustify()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-align:justify");
@@ -163,6 +150,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-indent-property")]
     public void TextIndentLegalLength()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-indent:3em");
@@ -176,6 +164,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-indent-property")]
     public void TextIndentLegalZero()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-indent:0");
@@ -189,6 +178,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-indent-property")]
     public void TextIndentLegalPercent()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-indent:10%");
@@ -202,6 +192,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-indent-property")]
     public void TextIndentIllegalNone()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-indent:none");
@@ -212,7 +203,8 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant")]
+    [Ignore("Gap, see Spec/css-text-3.yml")]
+    [Spec("css-text-3", "#text-indent-property")]
     public void TextIndentLegalHanging()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-indent:40pt hanging");
@@ -226,7 +218,8 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant")]
+    [Ignore("Gap, see Spec/css-text-3.yml")]
+    [Spec("css-text-3", "#text-indent-property")]
     public void TextIndentLegalEachLine()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-indent:40pt each-line");
@@ -240,7 +233,8 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant")]
+    [Ignore("Gap, see Spec/css-text-3.yml")]
+    [Spec("css-text-3", "#text-indent-property")]
     public void TextIndentLegalHangingEachLine()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-indent:40pt hanging each-line");
@@ -254,7 +248,8 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant")]
+    [Ignore("Gap, see Spec/css-text-3.yml")]
+    [Spec("css-text-3", "#text-indent-property")]
     public void TextIndentLegalReorderedKeywordsPreservesAuthoredOrder()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-indent:each-line hanging 40pt");
@@ -268,6 +263,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-indent-property")]
     public void TextIndentIllegalHangingAloneMissingLength()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-indent:hanging");
@@ -278,6 +274,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-indent-property")]
     public void TextIndentIllegalDuplicateKeyword()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-indent:40pt hanging hanging");
@@ -421,6 +418,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#word-break-property")]
     public void WordBreakNormalLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("word-break : normal");
@@ -434,6 +432,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#word-break-property")]
     public void WordBreakBreakAllLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("word-break : break-all");
@@ -447,6 +446,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#word-break-property")]
     public void WordBreakKeepAllLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("word-break : keep-all");
@@ -460,6 +460,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#word-break-property")]
     public void WordBreakNoneIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("word-break : none");
@@ -471,6 +472,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-align-last-property")]
     public void TextAlignLastAutoLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-align-last: auto");
@@ -484,6 +486,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-align-last-property")]
     public void TextAlignLastStartLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-align-last: start");
@@ -497,6 +500,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-align-last-property")]
     public void TextAlignLastEndLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-align-last: end");
@@ -510,6 +514,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-align-last-property")]
     public void TextAlignLastRightLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-align-last: right");
@@ -523,6 +528,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-align-last-property")]
     public void TextAlignLastLeftLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-align-last: left");
@@ -536,6 +542,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-align-last-property")]
     public void TextAlignLastCenterLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-align-last: center");
@@ -549,6 +556,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-align-last-property")]
     public void TextAlignLastJustifyLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-align-last: justify");
@@ -562,6 +570,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-align-last-property")]
     public void TextAlignLastNoneIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-align-last: none");
@@ -623,6 +632,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-justify-property")]
     public void TextJustifyAutoLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-justify: auto");
@@ -636,6 +646,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-justify-property")]
     public void TextJustifyDistributeLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-justify: distribute");
@@ -649,6 +660,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-justify-property")]
     public void TextJustifyDistributeAllLinesLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-justify: distribute-all-lines");
@@ -662,6 +674,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-justify-property")]
     public void TextJustifyDistributeCenterLastLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-justify: distribute-center-last");
@@ -701,6 +714,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-justify-property")]
     public void TextJustifyInterWordLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-justify: inter-word");
@@ -740,6 +754,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#text-justify-property")]
     public void TextJustifyNoneIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-justify: none");
@@ -751,6 +766,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#overflow-wrap-property")]
     public void OverflowWrapNormalLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("overflow-wrap: normal");
@@ -764,6 +780,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#overflow-wrap-property")]
     public void OverflowWrapAlternateNameNormalLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("word-wrap: normal");
@@ -777,6 +794,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#overflow-wrap-property")]
     public void OverflowWrapBreakWordLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("overflow-wrap: break-word");
@@ -790,6 +808,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#overflow-wrap-property")]
     public void OverflowWrapAlternateNameBreakWordLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("word-wrap: break-word");
@@ -803,6 +822,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#overflow-wrap-property")]
     public void OverflowWrapNoneIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("overflow-wrap: none");
@@ -814,6 +834,7 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-3", "#overflow-wrap-property")]
     public void OverflowWrapAlternateNameNoneIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("word-wrap: none");
