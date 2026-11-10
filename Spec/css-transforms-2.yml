@@ -5,124 +5,131 @@ snapshot: https://www.w3.org/TR/2021/WD-css-transforms-2-20211109/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#module-interactions':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
+    status: n/a
   '#terminology':
     title: 2 Terminology
-    status: unknown
-  '#serialization-of-the-computed-value':
-    title: 2.1 Serialization of the computed value of <transform-list>
-    status: unknown
+    status: n/a
   '#two-dimensional-subset':
     title: 3 Two Dimensional Subset
-    status: unknown
+    status: unsupported
+    gaps:
+      - 3D transform functions are accepted although nothing is rendered in 3D, so they override a 2D fallback declaration
   '#transform-rendering':
     title: 4 The Transform Rendering Model
-    status: unknown
+    status: unsupported
+    gaps:
+      - "Transforms aren't applied, see css-transforms-1 #transform-rendering"
   '#3d-transform-rendering':
     title: 4.1 3D Transform Rendering
-    status: unknown
+    status: unsupported
+    gaps:
+      - No 3D rendering
   '#perspective':
     title: 4.1.1 Perspective
-    status: unknown
+    status: unsupported
   '#3d-rendering-contexts':
     title: 4.1.2 3D Rendering Contexts
-    status: unknown
+    status: unsupported
   '#transformed-element-hierarchies':
     title: 4.1.3 Transformed element hierarchies
-    status: unknown
+    status: unsupported
   '#accumulated-3d-transformation-matrix-computation':
     title: 4.1.4 Accumulated 3D Transformation Matrix Computation
-    status: unknown
+    status: unsupported
   '#backface-visibility':
     title: 4.1.5 Backface Visibility
-    status: unknown
+    status: unsupported
   '#processing-of-perspective-transformed-boxes':
     title: 4.2 Processing of Perspective-Transformed Boxes
-    status: unknown
+    status: unsupported
   '#individual-transforms':
     title: '5 Individual Transform Properties: the translate, scale, and rotate properties'
-    status: unknown
+    status: unsupported
+    gaps:
+      - translate, rotate and scale aren't parsed
   '#individual-transform-serialization':
     title: 5.1 Serialization
-    status: unknown
+    status: n/a
   '#ctm':
     title: 6 Current Transformation Matrix
-    status: unknown
+    status: unsupported
+    gaps:
+      - "Transforms aren't applied, see css-transforms-1 #transform-rendering"
   '#transform-style-property':
     title: 7 The transform-style Property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'transform-style' is parsed, but preserve-3d establishes neither a 3D rendering context nor a stacking context or containing block"
   '#grouping-property-values':
     title: 7.1 Grouping property values
-    status: unknown
+    status: unsupported
   '#perspective-property':
     title: 8 The perspective Property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'perspective' is parsed, but establishes neither a perspective nor a stacking context or containing block"
+      - Negative lengths are accepted
   '#perspective-origin-property':
     title: 9 The perspective-origin Property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'perspective-origin' is parsed, but perspective isn't applied"
+      - Three- and four-value <position> forms are rejected
   '#backface-visibility-property':
     title: 10 The backface-visibility Property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'backface-visibility' is parsed, but nothing is rendered in 3D"
   '#svg-three-dimensional-functions':
     title: 11 SVG and 3D transform functions
-    status: unknown
+    status: unsupported
+    gaps:
+      - No SVG support
   '#transform-functions':
     title: 12 The Transform Functions
-    status: unknown
+    status: parsed-only
   '#two-d-transform-functions':
     title: 12.1 2D Transform Functions
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Percentages in scale(), scaleX() and scaleY() are rejected
+      - "skew() with one angle and a unitless 0 angle are rejected, see css-transforms-1 #two-d-transform-functions"
   '#three-d-transform-functions':
     title: 12.2 3D Transform Functions
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Percentages in scale3d() and scaleZ() are rejected
+      - A unitless 0 angle is rejected in rotate3d(), rotateX(), rotateY() and rotateZ()
+      - translateZ() and the z of translate3d() accept percentages, translate3d() accepts two arguments
+      - perspective(none) is rejected, a negative length in perspective() is accepted
   '#transform-primitives':
     title: 12.3 Transform function primitives and derivatives
-    status: unknown
+    status: n/a
   '#matrix-interpolation':
     title: 13 Interpolation of Matrices
-    status: unknown
-  '#interpolation-of-3d-matrices':
-    title: 13.1 Interpolation of 3D matrices
-    status: unknown
-  '#decomposing-a-3d-matrix':
-    title: 13.1.1 Decomposing a 3D matrix
-    status: unknown
-  '#interpolation-of-decomposed-3d-matrix-values':
-    title: 13.1.2 Interpolation of decomposed 3D matrix values
-    status: unknown
-  '#recomposing-to-a-3d-matrix':
-    title: 13.1.3 Recomposing to a 3D matrix
-    status: unknown
+    status: n/a
   '#interpolation-of-transform-functions':
     title: 14 Interpolation of primitives and derived transform functions
-    status: unknown
+    status: n/a
   '#combining-transform-lists':
     title: 15 Addition and accumulation of transform lists
-    status: unknown
-  '#neutral-element':
-    title: 15.1 Neutral element for addition
-    status: unknown
+    status: n/a
   '#mathematical-description':
     title: 16 Mathematical Description of Transform Functions
-    status: unknown
+    status: unsupported
+    gaps:
+      - Transform matrices are never applied, see 4
   '#svg-transform':
     title: 17 The SVG transform Attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - No SVG support
   '#svg-animation':
     title: 18 SVG Animation
-    status: unknown
-  '#svg-animate-element':
-    title: 18.1 The animate and set element
-    status: unknown
+    status: n/a
   '#more-issues':
     title: 19 More Issues
-    status: unknown
+    status: n/a
   '#priv-sec':
     title: 20 Security and Privacy Considerations
-    status: unknown
+    status: n/a

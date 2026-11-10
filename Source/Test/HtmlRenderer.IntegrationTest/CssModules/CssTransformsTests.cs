@@ -60,6 +60,32 @@ public sealed class CssTransformsTests
         Assert.AreEqual(Box(root, "t").Location.Y + 10, Box(root, "f").Location.Y, Delta);
     }
 
+    [Ignore("Gap, see Spec/css-transforms-2.yml")]
+    [TestMethod]
+    [Spec("css-transforms-2", "#individual-transforms")]
+    public void TranslateProperty_MovesThePaintedBox()
+    {
+        var rect = RedRect("<div style='translate:30px 20px;width:50px;height:50px;background:rgb(255,0,0)'></div>");
+
+        Assert.AreEqual(30, rect.X, Delta);
+        Assert.AreEqual(20, rect.Y, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css-transforms-2.yml")]
+    [TestMethod]
+    [DataRow("perspective:100px")]
+    [DataRow("transform-style:preserve-3d")]
+    [Spec("css-transforms-2", "#perspective-property")]
+    [Spec("css-transforms-2", "#transform-style-property")]
+    public void Box_IsTheContainingBlockForFixedDescendants(string style)
+    {
+        var root = Layout($"<div style='height:50px'></div><div id='t' style='{style};margin-left:30px;width:100px;height:100px'>"
+                          + "<div id='f' style='position:fixed;top:10px;left:10px;width:10px;height:10px'></div></div>");
+
+        Assert.AreEqual(Box(root, "t").Location.X + 10, Box(root, "f").Location.X, Delta);
+        Assert.AreEqual(Box(root, "t").Location.Y + 10, Box(root, "f").Location.Y, Delta);
+    }
+
     private static RecordingGraphics.DrawRectCall RedRect(string body)
     {
         var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(body), 400, 400);

@@ -4,10 +4,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
     internal sealed class PerspectiveOriginProperty : Property
     {
-        // perspective-origin is a <position> (CSS Transforms 1). As with transform-origin, the two-value
-        // <length-percentage> form is ordered (horizontal then vertical) and only the keyword-only form may
-        // be reordered - so "2px left" / "top 2px" are invalid (a length forces the ordered form and the
-        // other token is a keyword for the wrong axis).
+        // CSS Transforms 2 §9, only the one- and two-value <position> forms. A length forces
+        // horizontal-then-vertical order, only keyword pairs may be swapped.
         private static readonly IValueConverter Horizontal =
             LengthOrPercentConverter
                 .Or(Keywords.Left, Length.Zero)

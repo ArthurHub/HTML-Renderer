@@ -10,6 +10,7 @@ namespace HtmlRenderer.Test.Css;
 public sealed class TransformPropertyTests
 {
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-property")]
     public void CssPerspectiveNoneUppercaseLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective:  NONE ");
@@ -23,6 +24,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-property")]
     public void CssPerspectiveLengthPixelLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective:  20px  ");
@@ -36,6 +38,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-property")]
     public void CssPerspectiveLengthEmLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective:  3.5em  ");
@@ -49,6 +52,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-property")]
     public void CssPerspectiveZeroLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective:  0  ");
@@ -62,6 +66,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-property")]
     public void CssPerspectivePercentIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective:  10%  ");
@@ -74,6 +79,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-origin-property")]
     public void CssPerspectiveOriginZeroLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective-origin:  0  ");
@@ -87,6 +93,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-origin-property")]
     public void CssPerspectiveOriginLengthLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective-origin:  20px  ");
@@ -100,6 +107,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-origin-property")]
     public void CssPerspectiveOriginLeftLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective-origin:  left  ");
@@ -113,6 +121,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-origin-property")]
     public void CssPerspectiveOriginPercentLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective-origin:  15%  ");
@@ -126,6 +135,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-origin-property")]
     public void CssPerspectiveOriginPercentPercentLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective-origin:  15% 25% ");
@@ -139,6 +149,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-origin-property")]
     public void CssPerspectiveOriginLeftCenterLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective-origin:  left center ");
@@ -152,6 +163,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-origin-property")]
     public void CssPerspectiveOriginRightBottomLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective-origin:  right BOTTOM ");
@@ -165,6 +177,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-origin-property")]
     public void CssPerspectiveOriginTopCenterLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective-origin:  top center ");
@@ -178,6 +191,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-origin-property")]
     public void CssPerspectiveOriginVerticalKeywordThenLengthIllegal()
     {
         // A length forces horizontal-then-vertical order, only keyword pairs may be swapped
@@ -189,6 +203,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#perspective-origin-property")]
     public void CssPerspectiveOriginLengthThenWrongAxisKeywordIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("perspective-origin:  2px left ");
@@ -199,6 +214,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#transform-style-property")]
     public void CssTransformStylePreserve3DLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-style:  preserve-3d ");
@@ -213,6 +229,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#transform-style-property")]
     public void CssTransformStyleNoneIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-style:  none ");
@@ -582,6 +599,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#three-d-transform-functions")]
     public void CssTransformMatrix3dLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration(
@@ -595,6 +613,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#three-d-transform-functions")]
     public void CssTransformTranslate3dLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  translate3d(12px, 50%, 3em)");
@@ -607,6 +626,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#three-d-transform-functions")]
     public void CssTransformTranslateZLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  translateZ(2px)");
@@ -619,6 +639,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#three-d-transform-functions")]
     public void CssTransformScale3dLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  scale3d(2.5, 1.2, 0.3)");
@@ -631,6 +652,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#three-d-transform-functions")]
     public void CssTransformScaleZLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  scaleZ(0.3)");
@@ -643,6 +665,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#three-d-transform-functions")]
     public void CssTransformRotate3dLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  rotate3d(1, 2.0, 3.0, 10deg)");
@@ -655,6 +678,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#three-d-transform-functions")]
     public void CssTransformRotateXLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  rotateX(10deg)");
@@ -667,6 +691,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#three-d-transform-functions")]
     public void CssTransformRotateYLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  rotateY(10deg)");
@@ -679,6 +704,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#three-d-transform-functions")]
     public void CssTransformRotateZLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform: rotateZ(10deg)");
@@ -691,6 +717,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-2", "#three-d-transform-functions")]
     public void CssTransformPerspectiveLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform: perspective(17px)");
