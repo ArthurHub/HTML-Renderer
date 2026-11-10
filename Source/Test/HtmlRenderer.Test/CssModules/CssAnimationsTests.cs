@@ -20,7 +20,8 @@ public sealed class CssAnimationsTests
     [Ignore("Gap, see Spec/css-animations-1.yml")]
     [TestMethod]
     [Spec("css-animations-1", "#animations")]
-    [Spec("css-animations-1", "#animation-name")]
+    [Spec("web-animations-1", "#the-effect-value-of-a-keyframe-animation-effect")]
+    [Spec("web-animations-1", "#applying-the-composited-result")]
     public void RunningAnimation_ShowsItsFirstKeyframeAtTimeZero()
     {
         var x = Box("<style>@keyframes k { from, to { color: green } } p { color: red; animation: k 1s }</style><p id=x>a</p>");
@@ -160,6 +161,7 @@ public sealed class CssAnimationsTests
     [TestMethod]
     [Spec("css-animations-1", "#animation-duration")]
     [Spec("css-animations-1", "#animation-fill-mode")]
+    [Spec("web-animations-1", "#calculating-the-overall-progress")]
     public void ZeroDuration_WithForwardsFill_ShowsTheLastKeyframe()
     {
         var x = Box("<style>@keyframes k { to { color: green } } p { color: red; animation: k 0s forwards }</style><p id=x>a</p>");
@@ -190,6 +192,7 @@ public sealed class CssAnimationsTests
     [Ignore("Gap, see Spec/css-animations-1.yml")]
     [TestMethod]
     [Spec("css-animations-1", "#animation-direction")]
+    [Spec("web-animations-1", "#calculating-the-directed-progress")]
     public void ReverseDirection_ShowsTheLastKeyframeAtTimeZero()
     {
         var x = Box("<style>@keyframes k { from { color: red } to { color: green } } p { color: red; animation: k 1s reverse }</style><p id=x>a</p>");
@@ -200,6 +203,7 @@ public sealed class CssAnimationsTests
     [Ignore("Gap, see Spec/css-animations-1.yml")]
     [TestMethod]
     [Spec("css-animations-1", "#animation-delay")]
+    [Spec("web-animations-1", "#calculating-the-active-time")]
     public void NegativeDelay_StartsPartwayThroughTheAnimation()
     {
         var x = Box("<style>@keyframes k { from { margin-left: 0 } to { margin-left: 100px } } p { animation: k 2s linear -1s }</style><p id=x>a</p>");
@@ -211,6 +215,7 @@ public sealed class CssAnimationsTests
     [TestMethod]
     [Spec("css-animations-1", "#animation-fill-mode")]
     [Spec("css-animations-1", "#animation-delay")]
+    [Spec("web-animations-1", "#fill-modes")]
     public void BackwardsFill_AppliesTheFirstKeyframeDuringTheDelay()
     {
         var x = Box("<style>@keyframes k { from { color: green } to { color: red } } p { color: red; animation: k 1s 1s backwards }</style><p id=x>a</p>");

@@ -5,349 +5,179 @@ snapshot: https://www.w3.org/TR/2023/WD-web-animations-1-20230605/
 sections:
   '#introduction':
     title: 1 Introduction
-    status: unknown
-  '#use-cases':
-    title: 1.1 Use cases
-    status: unknown
-  '#relationship-to-other-specifications':
-    title: 1.2 Relationship to other specifications
-    status: unknown
-  '#overview-of-this-specification':
-    title: 1.3 Overview of this specification
-    status: unknown
+    status: n/a
   '#spec-conventions':
     title: 2 Specification conventions
-    status: unknown
+    status: n/a
   '#web-animations-model-overview':
     title: 3 Web Animations model overview
-    status: unknown
+    status: n/a
   '#timing-model':
     title: 4 Timing model
-    status: unknown
+    status: unsupported
+    gaps:
+      - "No animation model, CSS animations are never applied, see css-animations-1 2. Timelines, playback control, promises and events are n/a: the static frame is time zero of the document timeline"
   '#timing-model-overview':
     title: 4.1 Timing model overview
-    status: unknown
-  '#stateless':
-    title: 4.1.1 Stateless
-    status: unknown
-  '#hierarchical':
-    title: 4.1.2 Hierarchical
-    status: unknown
+    status: n/a
   '#time-value-section':
     title: 4.2 Time values
-    status: unknown
+    status: n/a
   '#timelines':
     title: 4.3 Timelines
-    status: unknown
-  '#document-timelines':
-    title: 4.3.1 Document timelines
-    status: unknown
-  '#the-documents-default-timeline':
-    title: 4.3.2 The default document timeline
-    status: unknown
+    status: n/a
   '#animations':
     title: 4.4 Animations
-    status: unknown
-  '#setting-the-timeline':
-    title: 4.4.1 Setting the timeline of an animation
-    status: unknown
-  '#setting-the-associated-effect':
-    title: 4.4.2 Setting the associated effect of an animation
-    status: unknown
-  '#the-current-time-of-an-animation':
-    title: 4.4.3 The current time of an animation
-    status: unknown
-  '#setting-the-current-time-of-an-animation':
-    title: 4.4.4 Setting the current time of an animation
-    status: unknown
-  '#setting-the-start-time-of-an-animation':
-    title: 4.4.5 Setting the start time of an animation
-    status: unknown
-  '#waiting-for-the-associated-effect':
-    title: 4.4.6 Waiting for the associated effect
-    status: unknown
-  '#the-current-ready-promise':
-    title: 4.4.7 The current ready promise
-    status: unknown
-  '#playing-an-animation-section':
-    title: 4.4.8 Playing an animation
-    status: unknown
-  '#pausing-an-animation-section':
-    title: 4.4.9 Pausing an animation
-    status: unknown
-  '#reaching-the-end':
-    title: 4.4.10 Reaching the end
-    status: unknown
-  '#the-current-finished-promise':
-    title: 4.4.11 The current finished promise
-    status: unknown
-  '#updating-the-finished-state':
-    title: 4.4.12 Updating the finished state
-    status: unknown
-  '#finishing-an-animation-section':
-    title: 4.4.13 Finishing an animation
-    status: unknown
-  '#canceling-an-animation-section':
-    title: 4.4.14 Canceling an animation
-    status: unknown
-  '#speed-control':
-    title: 4.4.15 Speed control
-    status: unknown
-  '#setting-the-playback-rate-of-an-animation':
-    title: 4.4.15.1 Setting the playback rate of an animation
-    status: unknown
-  '#seamlessly-updating-the-playback-rate-of-an-animation':
-    title: 4.4.15.2 Seamlessly updating the playback rate of an animation
-    status: unknown
-  '#reversing-an-animation-section':
-    title: 4.4.16 Reversing an animation
-    status: unknown
-  '#play-states':
-    title: 4.4.17 Play states
-    status: unknown
-  '#animation-events-section':
-    title: 4.4.18 Animation events
-    status: unknown
-  '#sorting-animation-events':
-    title: 4.4.18.1 Sorting animation events
-    status: unknown
-  '#animation-playback-events-section':
-    title: 4.4.18.2 Animation playback events
-    status: unknown
-  '#animation-playback-event-types':
-    title: 4.4.18.3 Types of animation playback events
-    status: unknown
+    status: n/a
   '#animation-effects':
     title: 4.5 Animation effects
-    status: unknown
+    status: unsupported
   '#animation-effects-and-animations':
     title: 4.5.1 Relationship between animation effects and animations
-    status: unknown
+    status: unsupported
   '#types-of-animation-effects':
     title: 4.5.2 Types of animation effects
-    status: unknown
+    status: unsupported
   '#the-active-interval':
     title: 4.5.3 The active interval
-    status: unknown
+    status: unsupported
   '#local-time-section':
     title: 4.5.4 Local time
-    status: unknown
+    status: unsupported
   '#animation-effect-phases-and-states':
     title: 4.5.5 Animation effect phases and states
-    status: unknown
+    status: unsupported
   '#relevant-animations-section':
     title: 4.5.6 Relevant animations
-    status: unknown
+    status: n/a
   '#fill-behavior':
     title: 4.6 Fill behavior
-    status: unknown
+    status: unsupported
   '#fill-modes':
     title: 4.6.1 Fill modes
-    status: unknown
+    status: unsupported
   '#repeating':
     title: 4.7 Repeating
-    status: unknown
+    status: unsupported
   '#iteration-intervals':
     title: 4.7.1 Iteration intervals
-    status: unknown
+    status: unsupported
   '#controlling-iteration':
     title: 4.7.2 Controlling iteration
-    status: unknown
+    status: unsupported
   '#iteration-time-space':
     title: 4.7.3 Iteration time space
-    status: unknown
+    status: unsupported
   '#interval-timing':
     title: 4.7.4 Interval timing
-    status: unknown
+    status: unsupported
   '#core-animation-effect-calculations':
     title: 4.8 Core animation effect calculations
-    status: unknown
+    status: unsupported
   '#animation-effect-calculations-overview':
     title: 4.8.1 Overview
-    status: unknown
+    status: n/a
   '#calculating-the-active-duration':
     title: 4.8.2 Calculating the active duration
-    status: unknown
+    status: unsupported
   '#transforming-the-local-time':
     title: 4.8.3 Transforming the local time
-    status: unknown
+    status: unsupported
   '#calculating-the-active-time':
     title: 4.8.3.1 Calculating the active time
-    status: unknown
+    status: unsupported
   '#calculating-the-overall-progress':
     title: 4.8.3.2 Calculating the overall progress
-    status: unknown
+    status: unsupported
   '#calculating-the-simple-iteration-progress':
     title: 4.8.3.3 Calculating the simple iteration progress
-    status: unknown
+    status: unsupported
   '#calculating-the-current-iteration':
     title: 4.8.4 Calculating the current iteration
-    status: unknown
+    status: unsupported
   '#direction-control':
     title: 4.9 Direction control
-    status: unknown
+    status: unsupported
   '#calculating-the-directed-progress':
     title: 4.9.1 Calculating the directed progress
-    status: unknown
+    status: unsupported
   '#time-transformations':
     title: 4.10 Time transformations
-    status: unknown
+    status: unsupported
   '#calculating-the-transformed-progress':
     title: 4.10.1 Calculating the transformed progress
-    status: unknown
+    status: unsupported
   '#the-iteration-progress':
     title: 4.11 The iteration progress
-    status: unknown
+    status: unsupported
   '#animation-model':
     title: 5 Animation model
-    status: unknown
+    status: unsupported
+    gaps:
+      - Keyframe effects are never computed or composited into the cascade, see css-animations-1 2
   '#introduction-to-the-animation-model':
     title: 5.1 Introduction
-    status: unknown
+    status: n/a
   '#animating-properties':
     title: 5.2 Animating properties
-    status: unknown
+    status: unsupported
   '#custom-properties':
     title: 5.2.1 Custom Properties
-    status: unknown
+    status: unsupported
   '#keyframe-effects':
     title: 5.3 Keyframe effects
-    status: unknown
+    status: unsupported
   '#keyframes-section':
     title: 5.3.1 Keyframes
-    status: unknown
+    status: unsupported
   '#computing-property-values':
     title: 5.3.2 Computing property values
-    status: unknown
+    status: unsupported
   '#calculating-computed-keyframes':
     title: 5.3.3 Calculating computed keyframes
-    status: unknown
+    status: unsupported
   '#the-effect-value-of-a-keyframe-animation-effect':
     title: 5.3.4 The effect value of a keyframe effect
-    status: unknown
+    status: unsupported
   '#combining-effects':
     title: 5.4 Combining effects
-    status: unknown
+    status: unsupported
   '#animation-classes':
     title: 5.4.1 Animation classes
-    status: unknown
+    status: unsupported
   '#the-effect-stack':
     title: 5.4.2 The effect stack
-    status: unknown
+    status: unsupported
   '#calculating-the-result-of-an-effect-stack':
     title: 5.4.3 Calculating the result of an effect stack
-    status: unknown
+    status: unsupported
   '#effect-composition':
     title: 5.4.4 Effect composition
-    status: unknown
+    status: unsupported
   '#applying-the-composited-result':
     title: 5.4.5 Applying the composited result
-    status: unknown
+    status: unsupported
   '#replacing-animations':
     title: 5.5 Replacing animations
-    status: unknown
-  '#animation-replace-state':
-    title: 5.5.1 Replace state
-    status: unknown
-  '#removing-replaced-animations':
-    title: 5.5.2 Removing replaced animations
-    status: unknown
+    status: n/a
   '#side-effects-section':
     title: 5.6 Side effects of animation
-    status: unknown
+    status: n/a
   '#programming-interface':
     title: 6 Programming interface
-    status: unknown
-  '#time-values-in-the-programming-interface':
-    title: 6.1 Time values in the programming interface
-    status: unknown
-  '#the-animationtimeline-interface':
-    title: 6.2 The AnimationTimeline interface
-    status: unknown
-  '#the-documenttimeline-interface':
-    title: 6.3 The DocumentTimeline interface
-    status: unknown
-  '#the-animation-interface':
-    title: 6.4 The Animation interface
-    status: unknown
-  '#the-animationplaystate-enumeration':
-    title: 6.4.1 The AnimationPlayState enumeration
-    status: unknown
-  '#the-animationreplacestate-enumeration':
-    title: 6.4.2 The AnimationReplaceState enumeration
-    status: unknown
-  '#the-animationeffect-interface':
-    title: 6.5 The AnimationEffect interface
-    status: unknown
-  '#the-effecttiming-dictionaries':
-    title: 6.5.1 The EffectTiming and OptionalEffectTiming dictionaries
-    status: unknown
-  '#the-fillmode-enumeration':
-    title: 6.5.2 The FillMode enumeration
-    status: unknown
-  '#the-playbackdirection-enumeration':
-    title: 6.5.3 The PlaybackDirection enumeration
-    status: unknown
-  '#updating-animationeffect-timing':
-    title: 6.5.4 Updating the timing of an AnimationEffect
-    status: unknown
-  '#the-computedeffecttiming-dictionary':
-    title: 6.5.5 The ComputedEffectTiming dictionary
-    status: unknown
-  '#the-keyframeeffect-interface':
-    title: 6.6 The KeyframeEffect interface
-    status: unknown
-  '#creating-a-new-keyframeeffect-object':
-    title: 6.6.1 Creating a new KeyframeEffect object
-    status: unknown
-  '#property-name-conversion':
-    title: 6.6.2 Property names and IDL names
-    status: unknown
-  '#processing-a-keyframes-argument':
-    title: 6.6.3 Processing a keyframes argument
-    status: unknown
-  '#the-keyframeeffectoptions-dictionary':
-    title: 6.6.4 The KeyframeEffectOptions dictionary
-    status: unknown
-  '#the-compositeoperation-enumeration':
-    title: 6.7 The CompositeOperation and CompositeOperationOrAuto enumerations
-    status: unknown
-  '#the-animatable-interface-mixin':
-    title: 6.8 The Animatable interface mixin
-    status: unknown
-  '#extensions-to-the-document-interface':
-    title: 6.9 Extensions to the Document interface
-    status: unknown
-  '#extensions-to-the-documentorshadowroot-interface-mixin':
-    title: 6.10 Extensions to the DocumentOrShadowRoot interface mixin
-    status: unknown
-  '#extensions-to-the-element-interface':
-    title: 6.11 Extensions to the Element interface
-    status: unknown
-  '#the-animationplaybackevent-interface':
-    title: 6.12 The AnimationPlaybackEvent interface
-    status: unknown
-  '#model-liveness':
-    title: 6.13 Model liveness
-    status: unknown
+    status: n/a
   '#integration-with-media-fragments':
     title: 7 Integration with Media Fragments
-    status: unknown
+    status: n/a
   '#interaction-with-page-display':
     title: 8 Interaction with page display
-    status: unknown
+    status: n/a
   '#implementation-requirements':
     title: 9 Implementation requirements
-    status: unknown
-  '#precision-of-time-values':
-    title: 9.1 Precision of time values
-    status: unknown
-  '#conformance-criteria':
-    title: 9.2 Conformance criteria
-    status: unknown
+    status: n/a
   '#acknowledgements':
     title: 10 Acknowledgements
-    status: unknown
+    status: n/a
   '#changes-since-last-publication':
     title: 11 Changes since last publication
-    status: unknown
+    status: n/a
