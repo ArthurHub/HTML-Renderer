@@ -5,349 +5,429 @@ snapshot: https://www.w3.org/TR/2026/WD-selectors-4-20260122/
 sections:
   '#context':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
+    status: n/a
   '#overview':
     title: 2 Selectors Overview
-    status: unknown
+    status: n/a
   '#syntax':
     title: 3 Selector Syntax and Structure
-    status: unknown
+    status: partial
   '#structure':
     title: 3.1 Structure and Terminology
-    status: unknown
+    status: supported
   '#data-model':
     title: 3.2 Data Model
-    status: unknown
-  '#featureless-elements':
-    title: 3.2.1 Featureless Elements
-    status: unknown
+    status: n/a
   '#scoping':
     title: 3.3 Scoped Selectors
-    status: unknown
+    status: n/a
   '#relative':
     title: 3.4 Relative Selectors
-    status: unknown
+    status: partial
+    gaps:
+      - "A leading combinator is dropped, ':has(> p)' matches like ':has(p)'"
   '#pseudo-classes':
     title: 3.5 Pseudo-classes
-    status: unknown
+    status: partial
+    gaps:
+      - Pseudo-class names are case-sensitive, see CSS 2.1 5.10
   '#pseudo-elements':
     title: 3.6 Pseudo-elements
-    status: unknown
+    status: partial
   '#pseudo-element-syntax':
     title: 3.6.1 Syntax
-    status: unknown
+    status: partial
+    gaps:
+      - Pseudo-element names are case-sensitive, see CSS 2.1 5.10
   '#pseudo-element-attachment':
     title: 3.6.2 Binding to the Document Tree
-    status: unknown
+    status: partial
+    gaps:
+      - "'::before' without a compound selector in front generates nothing, 'div ::before' and '*::before' work"
   '#pseudo-element-states':
     title: 3.6.3 Pseudo-classing Pseudo-elements
-    status: unknown
+    status: unsupported
+    gaps:
+      - "A user action pseudo-class after a pseudo-element, e.g. '::before:hover', invalidates the selector"
+      - "Other simple selectors after a pseudo-element, e.g. '::before.a', are accepted"
   '#sub-pseudo-elements':
     title: 3.6.4 Sub-pseudo-elements
-    status: unknown
+    status: unsupported
+    gaps:
+      - "Any pseudo-element is accepted after another, e.g. '::before::before', and never matches"
   '#pseudo-element-structure':
     title: 3.6.5 Internal Structure
-    status: unknown
+    status: unsupported
+    gaps:
+      - "A combinator after a pseudo-element, e.g. '::first-letter em', is accepted"
   '#case-sensitive':
     title: 3.7 Characters and case sensitivity
-    status: unknown
+    status: partial
+    gaps:
+      - Pseudo-class and pseudo-element names are case-sensitive, see CSS 2.1 5.10
+      - Attribute values, classes and IDs are matched case-insensitively, see CSS 2.1 5.8.1, 5.8.3 and 5.9
   '#namespaces':
     title: 3.8 Declaring Namespace Prefixes
-    status: unknown
+    status: n/a
   '#invalid':
     title: 3.9 Invalid Selectors and Error Handling
-    status: unknown
+    status: partial
+    gaps:
+      - An undeclared namespace prefix doesn't invalidate the selector
+      - "An empty selector in a list, e.g. 'h1, , p', is skipped instead of invalidating the list"
+      - "'::-webkit-*' pseudo-elements invalidate the selector instead of matching nothing (Appendix B)"
   '#legacy-aliasing':
     title: 3.10 Legacy Aliases
-    status: unknown
+    status: supported
   '#logical-combination':
     title: 4 Logical Combinations
-    status: unknown
+    status: partial
   '#grouping':
     title: 4.1 Selector Lists
-    status: unknown
+    status: supported
   '#matches':
     title: '4.2 The Matches-Any Pseudo-class: :is()'
-    status: unknown
+    status: partial
+    gaps:
+      - The argument isn't forgiving, an invalid selector in it invalidates the whole rule, see 16.1
   '#negation':
     title: '4.3 The Negation (Matches-None) Pseudo-class: :not()'
-    status: unknown
+    status: partial
+    gaps:
+      - ":not() inside :not() invalidates the selector"
   '#zero-matches':
     title: '4.4 The Specificity-adjustment Pseudo-class: :where()'
-    status: unknown
+    status: partial
+    gaps:
+      - The argument isn't forgiving, an invalid selector in it invalidates the whole rule, see 16.1
   '#relational':
     title: '4.5 The Relational Pseudo-class: :has()'
-    status: unknown
+    status: partial
+    gaps:
+      - "Leading combinators are dropped, see 3.4"
+      - ":has() and pseudo-elements inside :has() are accepted"
+      - "'*' inside :has() matches text, 'div:has(*)' matches a div with only text in it"
   '#elemental-selectors':
     title: 5 Elemental selectors
-    status: unknown
+    status: partial
   '#type-selectors':
     title: 5.1 Type (tag name) selector
-    status: unknown
+    status: supported
   '#the-universal-selector':
     title: 5.2 Universal selector
-    status: unknown
+    status: supported
   '#type-nmsp':
     title: 5.3 Namespaces in Elemental Selectors
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'*|p' and 'ns|p' never match, '|p' matches every p"
+      - A default namespace doesn't restrict type selectors
+      - An undeclared prefix doesn't invalidate the selector
   '#the-defined-pseudo':
     title: '5.4 The Defined Pseudo-class: :defined'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":defined invalidates the selector, see HTML 4.16.3"
   '#attribute-selectors':
     title: 6 Attribute selectors
-    status: unknown
+    status: partial
   '#attribute-representation':
     title: 6.1 Attribute presence and value selectors
-    status: unknown
+    status: partial
+    gaps:
+      - Attribute values are matched case-insensitively, see CSS 2.1 5.8.1
   '#attribute-substrings':
     title: 6.2 Substring matching attribute selectors
-    status: unknown
+    status: partial
+    gaps:
+      - "An empty value matches every element with the attribute, e.g. [title^='']"
+      - Values are matched case-insensitively
   '#attribute-case':
     title: 6.3 Case-sensitivity
-    status: unknown
+    status: unsupported
+    gaps:
+      - "The i and s flags, e.g. [title=foo i], invalidate the selector"
   '#attrnmsp':
     title: 6.4 Attribute selectors and namespaces
-    status: unknown
+    status: partial
+    gaps:
+      - "'[*|att]' never matches"
+      - An undeclared prefix doesn't invalidate the selector
   '#def-values':
     title: 6.5 Default attribute values in DTDs
-    status: unknown
+    status: n/a
   '#class-html':
     title: 6.6 Class selectors
-    status: unknown
+    status: partial
+    gaps:
+      - Class names are matched case-insensitively and only split on spaces, see CSS 2.1 5.8.3
   '#id-selectors':
     title: 6.7 ID selectors
-    status: unknown
+    status: partial
+    gaps:
+      - IDs are matched case-insensitively, see CSS 2.1 5.9
   '#linguistic-pseudos':
     title: 7 Linguistic Pseudo-classes
-    status: unknown
+    status: unsupported
   '#the-dir-pseudo':
     title: '7.1 The Directionality Pseudo-class: :dir()'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":dir() never matches, see HTML 4.16.3"
   '#the-lang-pseudo':
     title: '7.2 The Language Pseudo-class: :lang()'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":lang() never matches, see CSS 2.1 5.11.4"
+      - Lists and quoted ranges, e.g. ':lang(fr, de)' or ':lang("*-CH")', invalidate the selector
   '#location':
     title: 8 Location Pseudo-classes
-    status: unknown
+    status: partial
   '#the-any-link-pseudo':
     title: '8.1 The Hyperlink Pseudo-class: :any-link'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":any-link never matches"
   '#link':
     title: '8.2 The Link History Pseudo-classes: :link and :visited'
-    status: unknown
+    status: supported
   '#the-target-pseudo':
     title: '8.3 The Target Pseudo-class: :target'
-    status: unknown
+    status: supported
   '#the-scope-pseudo':
     title: '8.4 The Reference Element Pseudo-class: :scope'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":scope never matches, it should match the root element"
   '#useraction-pseudos':
     title: 9 User Action Pseudo-classes
-    status: unknown
+    status: unsupported
   '#the-hover-pseudo':
     title: '9.1 The Pointer Hover Pseudo-class: :hover'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":hover never applies, see CSS 2.1 5.11.3"
+      - "A rule with :hover in one alternative, e.g. 'p, a:hover', doesn't apply to the other alternatives either"
+      - "A :hover outside the subject, e.g. 'div:hover p', matches as if the element were always hovered, see CSS 2.1 5.11.3"
   '#the-active-pseudo':
     title: '9.2 The Activation Pseudo-class: :active'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":active never matches, see CSS 2.1 5.11.3"
   '#the-focus-pseudo':
     title: '9.3 The Input Focus Pseudo-class: :focus'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":focus never matches, see CSS 2.1 5.11.3"
   '#the-focus-visible-pseudo':
     title: '9.4 The Focus-Indicated Pseudo-class: :focus-visible'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":focus-visible never matches"
   '#the-focus-within-pseudo':
     title: '9.5 The Focus Container Pseudo-class: :focus-within'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":focus-within never matches"
   '#resource-pseudos':
     title: 10 Resource State Pseudo-classes
-    status: unknown
+    status: unsupported
   '#video-state':
     title: '10.1 Media Playback State: the :playing, :paused, and :seeking pseudo-classes'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":playing, :paused and :seeking invalidate the selector, see HTML 4.16.3"
   '#media-loading-state':
     title: '10.2 Media Loading State: the :buffering and :stalled pseudo-classes'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":buffering and :stalled invalidate the selector"
   '#sound-state':
     title: '10.3 Sound State: the :muted and :volume-locked pseudo-classes'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":muted and :volume-locked invalidate the selector, see HTML 4.16.3"
   '#display-state-pseudos':
     title: 11 Element Display State Pseudo-classes
-    status: unknown
+    status: unsupported
   '#open-state':
     title: '11.1 Collapse State: the :open pseudo-class'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":open invalidates the selector, see HTML 4.16.3"
   '#popover-open-state':
     title: '11.2 Popover State: the :popover-open pseudo-class'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":popover-open invalidates the selector"
   '#modal-state':
     title: '11.3 Modal (Exclusive Interaction) State: the :modal pseudo-class'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":modal invalidates the selector"
   '#fullscreen-state':
     title: '11.4 Fullscreen Presentation State: the :fullscreen pseudo-class'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":fullscreen invalidates the selector"
   '#pip-state':
     title: '11.5 Picture-in-Picture Presentation State: the :picture-in-picture pseudo-class'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":picture-in-picture invalidates the selector"
   '#input-pseudos':
     title: 12 The Input Pseudo-classes
-    status: unknown
+    status: unsupported
   '#input-states':
     title: 12.1 Input Control States
-    status: unknown
+    status: unsupported
   '#enableddisabled':
     title: 12.1.1 The :enabled and :disabled Pseudo-classes
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":enabled and :disabled never match, see HTML 4.16.3"
   '#rw-pseudos':
     title: '12.1.2 The Mutability Pseudo-classes: :read-only and :read-write'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":read-only and :read-write never match, see HTML 4.16.3"
   '#placeholder':
     title: '12.1.3 The Placeholder-shown Pseudo-class: :placeholder-shown'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":placeholder-shown never matches, see HTML 4.16.3"
   '#autofill':
     title: '12.1.4 The Automatic Input Pseudo-class: :autofill'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":autofill and :-webkit-autofill invalidate the selector"
   '#the-default-pseudo':
     title: '12.1.5 The Default-option Pseudo-class: :default'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":default never matches, see HTML 4.16.3"
   '#input-value-states':
     title: 12.2 Input Value States
-    status: unknown
+    status: unsupported
   '#checked':
     title: '12.2.1 The Selected-option Pseudo-classes: :checked, :unchecked, and :indeterminate'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":checked, :unchecked and :indeterminate never match, see HTML 4.16.3"
   '#ui-validity':
     title: 12.3 Input Value-checking
-    status: unknown
+    status: unsupported
   '#validity-pseudos':
     title: '12.3.1 The Validity Pseudo-classes: :valid and :invalid'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":valid and :invalid never match, see HTML 4.16.3"
   '#range-pseudos':
     title: '12.3.2 The Range Pseudo-classes: :in-range and :out-of-range'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":in-range and :out-of-range never match, see HTML 4.16.3"
   '#opt-pseudos':
     title: '12.3.3 The Optionality Pseudo-classes: :required and :optional'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":required and :optional never match, see HTML 4.16.3"
   '#user-pseudos':
     title: '12.3.4 The User-interaction Pseudo-classes: :user-valid and :user-invalid'
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":user-valid and :user-invalid invalidate the selector"
   '#structural-pseudos':
     title: 13 Tree-Structural pseudo-classes
-    status: unknown
+    status: partial
   '#the-root-pseudo':
     title: 13.1 :root pseudo-class
-    status: unknown
+    status: supported
   '#the-empty-pseudo':
     title: 13.2 :empty pseudo-class
-    status: unknown
+    status: unsupported
+    gaps:
+      - ":empty never matches"
   '#child-index':
     title: 13.3 Child-indexed Pseudo-classes
-    status: unknown
+    status: partial
+    gaps:
+      - "The root element never matches, e.g. 'html:first-child'"
   '#the-nth-child-pseudo':
     title: 13.3.1 :nth-child() pseudo-class
-    status: unknown
+    status: partial
+    gaps:
+      - "'of S' doesn't add the specificity of S, see 15"
   '#the-nth-last-child-pseudo':
     title: 13.3.2 :nth-last-child() pseudo-class
-    status: unknown
+    status: supported
   '#the-first-child-pseudo':
     title: 13.3.3 :first-child pseudo-class
-    status: unknown
+    status: supported
   '#the-last-child-pseudo':
     title: 13.3.4 :last-child pseudo-class
-    status: unknown
+    status: supported
   '#the-only-child-pseudo':
     title: 13.3.5 :only-child pseudo-class
-    status: unknown
+    status: supported
   '#typed-child-index':
     title: 13.4 Typed Child-indexed Pseudo-classes
-    status: unknown
+    status: partial
+    gaps:
+      - "The root element never matches, e.g. 'html:first-of-type'"
   '#the-nth-of-type-pseudo':
     title: 13.4.1 :nth-of-type() pseudo-class
-    status: unknown
+    status: supported
   '#the-nth-last-of-type-pseudo':
     title: 13.4.2 :nth-last-of-type() pseudo-class
-    status: unknown
+    status: supported
   '#the-first-of-type-pseudo':
     title: 13.4.3 :first-of-type pseudo-class
-    status: unknown
+    status: supported
   '#the-last-of-type-pseudo':
     title: 13.4.4 :last-of-type pseudo-class
-    status: unknown
+    status: supported
   '#the-only-of-type-pseudo':
     title: 13.4.5 :only-of-type pseudo-class
-    status: unknown
+    status: supported
   '#combinators':
     title: 14 Combinators
-    status: unknown
+    status: partial
   '#descendant-combinators':
     title: 14.1 Descendant combinator ( )
-    status: unknown
+    status: partial
+    gaps:
+      - "Combinator chains don't backtrack, see CSS 2.1 5.2"
   '#child-combinators':
     title: 14.2 Child combinator (>)
-    status: unknown
+    status: supported
   '#adjacent-sibling-combinators':
     title: 14.3 Next-sibling combinator (+)
-    status: unknown
+    status: supported
   '#general-sibling-combinators':
     title: 14.4 Subsequent-sibling combinator (~)
-    status: unknown
+    status: supported
   '#specificity-rules':
     title: 15 Calculating a selector’s specificity
-    status: unknown
+    status: partial
+    gaps:
+      - ":nth-child(An+B of S) and :nth-last-child() count as one pseudo-class, without the specificity of S"
   '#grammar':
     title: 16 Grammar
-    status: unknown
+    status: partial
+    gaps:
+      - "Attribute modifiers are rejected, see 6.3"
   '#forgiving-selector':
     title: 16.1 <forgiving-selector-list> and <forgiving-relative-selector-list>
-    status: unknown
+    status: unsupported
+    gaps:
+      - "An invalid argument of :is() or :where() invalidates the whole rule instead of being dropped"
   '#api-hooks':
     title: 17 API Hooks
-    status: unknown
-  '#parse-selector':
-    title: 17.1 Parse A Selector
-    status: unknown
-  '#parse-relative-selector':
-    title: 17.2 Parse A Relative Selector
-    status: unknown
-  '#match-against-element':
-    title: 17.3 Match a Selector Against an Element
-    status: unknown
-  '#match-against-pseudo-element':
-    title: 17.4 Match a Selector Against a Pseudo-element
-    status: unknown
-  '#match-against-tree':
-    title: 17.5 Match a Selector Against a Tree
-    status: unknown
+    status: n/a
   '#changes':
     title: 18 Changes
-    status: unknown
-  '#changes-2022-11':
-    title: 18.1 Changes since the 11 November 2022 Working Draft
-    status: unknown
-  '#changes-2022-05':
-    title: 18.2 Changes since the 7 May 2022 Working Draft
-    status: unknown
-  '#changes-2018-11':
-    title: 18.3 Changes since the 21 November 2018 Working Draft
-    status: unknown
-  '#changes-2018-02':
-    title: 18.4 Changes since the 2 February 2018 Working Draft
-    status: unknown
-  '#changes-2013':
-    title: 18.5 Changes since the 2 May 2013 Working Draft
-    status: unknown
-  '#changes-2012':
-    title: 18.6 Changes since the 23 August 2012 Working Draft
-    status: unknown
-  '#changes-2011':
-    title: 18.7 Changes since the 29 September 2011 Working Draft
-    status: unknown
-  '#changes-level-3':
-    title: 18.8 Changes Since Level 3
-    status: unknown
+    status: n/a
   '#acknowledgements':
     title: 19 Acknowledgements
-    status: unknown
+    status: n/a

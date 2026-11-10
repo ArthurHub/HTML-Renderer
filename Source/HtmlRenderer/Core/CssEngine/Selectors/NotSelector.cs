@@ -3,7 +3,7 @@ using System.IO;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// The negation pseudo-class ":not(S)" - matches an element that does NOT match S.
+    /// :not(), Selectors 4 §4.3.
     /// </summary>
     internal sealed class NotSelector : StylesheetNode, ISelector
     {
@@ -14,8 +14,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public ISelector Inner { get; }
 
-        // Per spec, :not() takes the specificity of its argument (the most specific selector in a
-        // comma-separated argument, via ListSelector's own static-max Specificity).
+        // Selectors 4 §15
         public Priority Specificity => Inner.Specificity;
 
         public string Text => this.ToCss();

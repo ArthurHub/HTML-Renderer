@@ -10,6 +10,7 @@ public sealed class SelectorMatchingTests
     // ── Attribute: starts-with [attr^=value] ─────────────────────────────────
 
     [TestMethod]
+    [Spec("selectors-4", "#attribute-substrings")]
     public void AttrBegins_Matches_WhenValueStartsWith()
     {
         var html = Html("[class^='btn'] { background-color: #ff0000; }", "<span class='btn-primary'>text</span>");
@@ -18,6 +19,7 @@ public sealed class SelectorMatchingTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#attribute-substrings")]
     public void AttrBegins_DoesNotMatch_WhenValueDoesNotStartWith()
     {
         var html = Html("[class^='btn'] { background-color: #ff0000; }", "<span class='input-btn'>text</span>");
@@ -28,6 +30,7 @@ public sealed class SelectorMatchingTests
     // ── Attribute: ends-with [attr$=value] ───────────────────────────────────
 
     [TestMethod]
+    [Spec("selectors-4", "#attribute-substrings")]
     public void AttrEnds_Matches_WhenValueEndsWith()
     {
         var html = Html("[lang$='-US'] { background-color: #ff0000; }", "<span lang='en-US'>text</span>");
@@ -36,6 +39,7 @@ public sealed class SelectorMatchingTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#attribute-substrings")]
     public void AttrEnds_DoesNotMatch_WhenValueDoesNotEndWith()
     {
         var html = Html("[lang$='-US'] { background-color: #ff0000; }", "<span lang='US-en'>text</span>");
@@ -47,6 +51,7 @@ public sealed class SelectorMatchingTests
 
     [TestMethod]
     [Spec("css21", "selector.html#matching-attrs")]
+    [Spec("selectors-4", "#attribute-representation")]
     public void AttrHyphen_Matches_ExactValue()
     {
         var html = Html("[lang|='en'] { background-color: #ff0000; }", "<span lang='en'>text</span>");
@@ -56,6 +61,7 @@ public sealed class SelectorMatchingTests
 
     [TestMethod]
     [Spec("css21", "selector.html#matching-attrs")]
+    [Spec("selectors-4", "#attribute-representation")]
     public void AttrHyphen_Matches_HyphenPrefixed()
     {
         var html = Html("[lang|='en'] { background-color: #ff0000; }", "<span lang='en-US'>text</span>");
@@ -65,6 +71,7 @@ public sealed class SelectorMatchingTests
 
     [TestMethod]
     [Spec("css21", "selector.html#matching-attrs")]
+    [Spec("selectors-4", "#attribute-representation")]
     public void AttrHyphen_DoesNotMatch_SubstringOnly()
     {
         var html = Html("[lang|='en'] { background-color: #ff0000; }", "<span lang='english'>text</span>");
@@ -76,6 +83,7 @@ public sealed class SelectorMatchingTests
 
     [TestMethod]
     [Spec("css21", "selector.html#adjacent-selectors")]
+    [Spec("selectors-4", "#adjacent-sibling-combinators")]
     public void AdjacentSibling_Matches_ImmediatelyFollowingSibling()
     {
         var html = Html("div + p { background-color: #ff0000; }", "<div>d</div><p id='t'>first</p>");
@@ -85,6 +93,7 @@ public sealed class SelectorMatchingTests
 
     [TestMethod]
     [Spec("css21", "selector.html#adjacent-selectors")]
+    [Spec("selectors-4", "#adjacent-sibling-combinators")]
     public void AdjacentSibling_DoesNotMatch_SecondSibling()
     {
         var html = Html("div + p { background-color: #ff0000; }", "<div>d</div><p>first</p><p>second</p>");
@@ -96,6 +105,7 @@ public sealed class SelectorMatchingTests
 
     [TestMethod]
     [Spec("css21", "selector.html#adjacent-selectors")]
+    [Spec("selectors-4", "#adjacent-sibling-combinators")]
     public void AdjacentSibling_DoesNotMatch_PrecedingSibling()
     {
         var html = Html("div + p { background-color: #ff0000; }", "<p>before</p><div>d</div>");
@@ -106,6 +116,7 @@ public sealed class SelectorMatchingTests
     // ── Combinator: general sibling (div ~ p) ────────────────────────────────
 
     [TestMethod]
+    [Spec("selectors-4", "#general-sibling-combinators")]
     public void GeneralSibling_Matches_AllFollowingSiblings()
     {
         var html = Html("div ~ p { background-color: #ff0000; }", "<div>d</div><p>first</p><p>second</p>");
@@ -116,6 +127,7 @@ public sealed class SelectorMatchingTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#general-sibling-combinators")]
     public void GeneralSibling_DoesNotMatch_PrecedingSibling()
     {
         var html = Html("div ~ p { background-color: #ff0000; }", "<p>before</p><div>d</div>");
@@ -127,6 +139,7 @@ public sealed class SelectorMatchingTests
 
     [TestMethod]
     [Spec("css21", "selector.html#child-selectors")]
+    [Spec("selectors-4", "#child-combinators")]
     public void ChildCombinator_StillMatches_DirectChild()
     {
         var html = Html("div > p { background-color: #ff0000; }", "<div><p>direct</p><section><p>nested</p></section></div>");
@@ -138,6 +151,7 @@ public sealed class SelectorMatchingTests
 
     [TestMethod]
     [Spec("css21", "selector.html#descendant-selectors")]
+    [Spec("selectors-4", "#descendant-combinators")]
     public void DescendantCombinator_StillMatches_AnyDescendant()
     {
         var html = Html("div p { background-color: #ff0000; }", "<div><section><p>deep</p></section></div><p>outside</p>");

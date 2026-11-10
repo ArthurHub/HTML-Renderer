@@ -386,24 +386,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             }
         }
 
-        // CssData.DoesSelectorMatch(CompoundSelector, box) is the only place that synthesizes
-        // ::before/::after (and ::marker) child boxes as a match side effect, and it only runs for a
-        // pseudo-element that's the last member of a CompoundSelector. A pseudo-element preceded by a
-        // combinator (e.g. "E :after", with whitespace) would otherwise become a bare, unwrapped _temp
-        // here - which CssData's ComplexSelector subject-match dispatches straight to the plain
-        // DoesSelectorMatch(PseudoElementSelector, box) overload (which only checks whether the flag is
-        // already set, never sets it), so the pseudo-element box would never actually get created.
-        // Wrapping it in a single-member CompoundSelector as soon as it becomes a standalone selector
-        // routes it through the one, already-correct synthesis path instead of needing a second
-        // implementation of the same logic in CssData.
-        //
-        // Deliberately NOT applied in the other "_temp == null" branch above (a pseudo-element with no
-        // combinator at all, i.e. it's the entire selector - "*:before" written as bare ":before"): that
-        // shape has no ancestor restriction, so synthesizing on every match would mean synthesizing on
-        // literally every element in the document. The UA stylesheet's own
-        // ":before, :after { white-space: pre-line }" rule (CssDefaults.cs) is exactly this shape and
-        // relies on the existing non-synthesizing behavior - it exists to style already-synthesized
-        // pseudo-element boxes, not to create one on every element.
+        // CssData creates the ::before/::after box only when matching a CompoundSelector, so a
+        // pseudo-element after a combinator ("div ::before") is wrapped in one. A whole selector of
+        // just "::before" isn't, it creates no box, and the UA rule ":before, :after" relies on that.
         private static ISelector WrapPseudoElement(ISelector selector) =>
             selector is PseudoElementSelector ? new CompoundSelector { selector } : selector;
 

@@ -479,8 +479,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// The specificity of a matched rule for <paramref name="box"/>, CSS 2.1 §6.4.3. A rule's
-        /// selector list counts with the highest matching selector, unlike
+        /// The specificity of a matched rule for <paramref name="box"/>, CSS 2.1 §6.4.3 and Selectors 4
+        /// §15. A rule's selector list counts with the highest matching selector, unlike
         /// <see cref="ListSelector.Specificity"/>, which is the static maximum used inside :is() and :not().
         /// </summary>
         private static Priority GetMatchedSpecificity(ISelector selector, CssBox box)
@@ -557,7 +557,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
             }
 
             // Matching the element creates the ::before/::after box, which then matches on its own
-            // cascade pass. Other pseudo-elements get no box here.
+            // cascade pass. Other pseudo-elements get no box here. This runs before a ComplexSelector
+            // checks the rest of the chain, so the box can be created on an element the rule doesn't
+            // match, and stays empty.
             if (pseudoElementSelector.Name == CssConstants.Before && !box.Boxes.Any(b => b.IsBeforePseudoElement))
             {
                 var beforePseudoBox = new CssBox(box, null);
@@ -738,8 +740,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// The An+B pseudo-classes, including the bare forms like :first-child (CSS 2.1 §5.11.1),
-        /// which PseudoClassSelectorFactory creates with Step 0 and Offset 1.
+        /// The child-indexed pseudo-classes, Selectors 4 §13.3 and §13.4, including the bare forms like
+        /// :first-child, which PseudoClassSelectorFactory creates with Step 0 and Offset 1.
         /// </summary>
         private static bool DoesSelectorMatch(ChildSelector childSelector, CssBox box)
         {
@@ -785,10 +787,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// Matches :nth-column()/:nth-last-column() against the cell's occupied column position(s)
-        /// within its own row. Only accounts for colspan of preceding cells in the SAME row.
-        /// A colspan-N cell occupies N columns; per spec this matches if ANY occupied column position
-        /// satisfies the An+B formula, not just the cell's starting column.
+        /// :nth-column()/:nth-last-column() (Selectors 5 :nth-col()). A cell matches if any column it
+        /// spans does. Only the colspans of the cells in the same row count, rowspans from rows above
+        /// are ignored.
         /// </summary>
         private static bool DoesColumnSelectorMatch(ChildSelector childSelector, CssBox box, bool fromEnd)
         {
@@ -843,9 +844,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// The standard CSS "An+B" existence test: does there exist a non-negative integer n such that
-        /// position == step*n + offset? position is always the 1-based index within whatever sibling
-        /// scope the caller has already resolved.
+        /// Whether the 1-based <paramref name="position"/> is step*n + offset for some n &gt;= 0,
+        /// Selectors 4 §13.3.1.
         /// </summary>
         private static bool MatchesAnPlusB(int position, int step, int offset)
         {
@@ -903,9 +903,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// Recursively searches box's descendants (at any depth) for one matching inner, short-
-        /// circuiting on the first hit. Backs :has()'s default (descendant) relative-selector form;
-        /// leading-combinator forms (":has(&gt; x)"/"+"/"~") aren't supported.
+        /// The descendant form of :has(), Selectors 4 §4.5. Walks all boxes, including anonymous and
+        /// text boxes, which "*" matches.
         /// </summary>
         private static bool HasDescendantMatch(CssBox box, ISelector inner)
         {

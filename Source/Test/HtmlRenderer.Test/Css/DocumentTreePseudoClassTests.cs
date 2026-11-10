@@ -6,67 +6,55 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/DocumentTreePseudoClassTests.cs.
-/// The three pseudo-classes that depend only on the document tree - <c>:empty</c> (Selectors 4 §9.5),
-/// <c>:any-link</c> (§7.1) and <c>:scope</c> (§6.6) - are genuinely implemented in PeachPDF, but
-/// HTML-Renderer's <c>CssData.DoesSelectorMatch(PseudoClassSelector, CssBox)</c> (Core/CssData.cs:739-755)
-/// only recognizes "hover", "root" and "link" - every other pseudo-class name (including these three)
-/// falls through to "never matches". Every test below is therefore ignored: the assertions encode the
-/// PeachPDF-correct behavior this engine doesn't have yet, not today's actual (structurally-registered-but-
-/// unmatchable) behavior. The two SVG-specific PeachPDF tests are omitted entirely - there is no SVG
-/// pipeline (no <c>ICssDomNode</c>/<c>SvgCssBoxDomNode</c> duality) in this engine to exercise. The two
-/// tests that inspected PeachPDF's <c>ICssDomNode</c> facade directly (no HTML-Renderer counterpart) are
-/// adapted to check the equivalent <see cref="CssBox"/> state directly instead.
-/// </summary>
 [TestClass]
 public sealed class DocumentTreePseudoClassTests
 {
     private const string Blue = "rgb(0, 0, 255)";
-    private const string IgnoreReason =
-        "HTML-Renderer's CssData.DoesSelectorMatch(PseudoClassSelector, CssBox) only recognizes " +
-        "\"hover\"/\"root\"/\"link\" - :empty/:any-link/:scope parse but never match. See " +
-        "Source/HtmlRenderer/Core/CssData.cs:739-755.";
+    private const string IgnoreReason = "Gap, see Spec/selectors-4.yml";
 
     // ── :empty ─────────────────────────────────────────────────────────────────────────────────
 
     [TestMethod]
     [Ignore(IgnoreReason)]
-    // "no children at all, other than white space" — including a run of newlines and tabs, which the
-    // parser does hand to the box tree as a text box.
-    [DataRow("<p id='p'></p>", true)]
-    [DataRow("<p id='p'>   </p>", true)]
-    [DataRow("<p id='p'>\n\t\r\n </p>", true)]
-    // A comment is not a child for :empty's purposes (and never reaches the box tree at all).
-    [DataRow("<p id='p'><!-- a comment --></p>", true)]
-    [DataRow("<p id='p'>\n  <!-- a comment -->\n</p>", true)]
-    // Any text that is not white space.
-    [DataRow("<p id='p'>x</p>", false)]
-    [DataRow("<p id='p'> x </p>", false)]
-    // U+00A0 is significant content, not collapsible white space.
-    [DataRow("<p id='p'>&nbsp;</p>", false)]
-    // Any element child, even an empty or void one.
-    [DataRow("<p id='p'><span></span></p>", false)]
-    [DataRow("<p id='p'><br></p>", false)]
-    public void Empty_MatchesOnlyAnElementWithNoNonWhitespaceChildren(string body, bool shouldMatch)
+    // A run of newlines and tabs does reach the box tree as a text box.
+    [DataRow("<p id='p'></p>")]
+    [DataRow("<p id='p'>   </p>")]
+    [DataRow("<p id='p'>\n\t\r\n </p>")]
+    [DataRow("<p id='p'><!-- a comment --></p>")]
+    [DataRow("<p id='p'>\n  <!-- a comment -->\n</p>")]
+    [Spec("selectors-4", "#the-empty-pseudo")]
+    public void Empty_MatchesAnElementWithOnlyWhiteSpaceAndComments(string body)
     {
         var box = Box(Html("p:empty { color: #0000ff; }", body), "p");
-        Assert.AreEqual(shouldMatch, box.Color == Blue);
+        Assert.AreEqual(Blue, box.Color);
+    }
+
+    [TestMethod]
+    [DataRow("<p id='p'>x</p>")]
+    [DataRow("<p id='p'> x </p>")]
+    [DataRow("<p id='p'>&nbsp;</p>")]
+    [DataRow("<p id='p'><span></span></p>")]
+    [DataRow("<p id='p'><br></p>")]
+    [Spec("selectors-4", "#the-empty-pseudo")]
+    public void Empty_DoesNotMatchAnElementWithTextOrElementChildren(string body)
+    {
+        var box = Box(Html("p:empty { color: #0000ff; }", body), "p");
+        Assert.AreNotEqual(Blue, box.Color);
     }
 
     [TestMethod]
     [Ignore(IgnoreReason)]
+    [Spec("selectors-4", "#the-empty-pseudo")]
     public void Empty_IsUnaffectedByGeneratedContent()
     {
-        // ::before/::after synthesize a real child box as a side effect of their own rule matching, in the
-        // same cascade pass :empty is evaluated in. :empty is defined over the source tree, so none of
-        // that may count as a child.
+        // The ::before box is a child in the box tree, not in the document tree.
         var box = Box(Html("p::before { content: 'x'; } p:empty { color: #0000ff; }", "<p id='p'></p>"), "p");
         Assert.AreEqual(Blue, box.Color);
     }
 
     [TestMethod]
     [Ignore(IgnoreReason)]
+    [Spec("selectors-4", "#the-empty-pseudo")]
     public void Empty_IsUnaffectedByASynthesizedMarker()
     {
         // An <li>'s ::marker box is generated too, so an empty list item is still :empty.
@@ -76,6 +64,7 @@ public sealed class DocumentTreePseudoClassTests
 
     [TestMethod]
     [Ignore(IgnoreReason)]
+    [Spec("selectors-4", "#the-empty-pseudo")]
     public void Empty_ComposesWithCombinatorsAndNegation()
     {
         var html = Html(
@@ -88,10 +77,9 @@ public sealed class DocumentTreePseudoClassTests
 
     [TestMethod]
     [Ignore(IgnoreReason)]
+    [Spec("selectors-4", "#the-empty-pseudo")]
     public void Empty_SharingAListWithAMatchableSelector_StillApplies()
     {
-        // :empty was previously registered-but-unmatchable, so the list stayed valid. Making it match
-        // must not change that half of the contract.
         var html = Html("h1, p:empty { color: #0000ff; }", "<h1 id='h'>Title</h1><p id='p'></p>");
         Assert.AreEqual(Blue, Box(html, "h").Color);
         Assert.AreEqual(Blue, Box(html, "p").Color);
@@ -99,12 +87,10 @@ public sealed class DocumentTreePseudoClassTests
 
     [TestMethod]
     [Ignore(IgnoreReason)]
+    [Spec("selectors-4", "#the-empty-pseudo")]
     public void Empty_SeesThroughAnAnonymousBox()
     {
-        // The restructuring passes that run after the cascade wrap element/text children in anonymous
-        // boxes, which are not source children — the test descends into them rather than stopping there.
-        // (PeachPDF's ICssDomNode.IsEmpty/TagName facade has no HTML-Renderer counterpart; checked here
-        // directly against CssBox state instead.)
+        // After the cascade, the mixed content is wrapped in anonymous boxes.
         var root = BuildRoot(Html(
             "p { display: block; }",
             "<div id='mixed'>loose text<p>block</p></div><div id='blank'></div>"));
@@ -118,10 +104,8 @@ public sealed class DocumentTreePseudoClassTests
     }
 
     [TestMethod]
-    [Ignore(IgnoreReason)]
     public void Empty_NeverMatchesANonElementBox()
     {
-        // Anonymous/text boxes have no tag, so they are not elements and can never be :empty.
         var root = BuildRoot(Html("p { display: block; }", "<div id='mixed'>loose text<p>block</p></div>"));
         var anonymous = LayoutHarness.FindById(root, "mixed")!.Boxes.First(b => b.HtmlTag is null);
 
@@ -133,6 +117,7 @@ public sealed class DocumentTreePseudoClassTests
 
     [TestMethod]
     [Ignore(IgnoreReason)]
+    [Spec("selectors-4", "#the-any-link-pseudo")]
     public void AnyLink_MatchesAnAnchorWithAnHref_AndNothingElse()
     {
         var html = Html(
@@ -146,10 +131,10 @@ public sealed class DocumentTreePseudoClassTests
 
     [TestMethod]
     [Ignore(IgnoreReason)]
+    [Spec("selectors-4", "#the-any-link-pseudo")]
     public void AnyLink_AndLink_SelectTheSameElements()
     {
-        // :any-link is the union of :link and :visited; :visited never matches (no browsing history in a
-        // static render), so the two must agree everywhere.
+        // :visited never matches, so :any-link and :link select the same elements.
         var body = "<a id='link' href='#x'>link</a><a id='anchor'>anchor</a>";
         var withAnyLink = Html("a:any-link { color: #0000ff; }", body);
         var withLink = Html("a:link { color: #0000ff; }", body);
@@ -164,6 +149,7 @@ public sealed class DocumentTreePseudoClassTests
 
     [TestMethod]
     [Ignore(IgnoreReason)]
+    [Spec("selectors-4", "#the-any-link-pseudo")]
     public void AnyLink_ComposesWithACompoundSelector()
     {
         var html = Html(
@@ -178,10 +164,9 @@ public sealed class DocumentTreePseudoClassTests
 
     [TestMethod]
     [Ignore(IgnoreReason)]
+    [Spec("selectors-4", "#the-scope-pseudo")]
     public void Scope_MatchesTheRootElement_LikeRoot()
     {
-        // With no scoping root in play, :scope is the document's root element — the same answer :root
-        // gives, on the same element and on no other.
         var root = BuildRoot(Html(":scope { color: #0000ff; }", "<p id='p'>text</p>"));
         var htmlBox = LayoutHarness.Descendants(root).First(b => b.HtmlTag != null && b.HtmlTag.Name == "html");
 
@@ -199,9 +184,9 @@ public sealed class DocumentTreePseudoClassTests
 
     [TestMethod]
     [Ignore(IgnoreReason)]
+    [Spec("selectors-4", "#the-scope-pseudo")]
     public void Scope_WorksAsTheLeftHandSideOfACombinator()
     {
-        // The idiomatic use: `:scope x` / `:scope > x`, which stylesheets write in place of `:root x`.
         var html = Html(
             ":scope p { color: #0000ff; } :scope > body > p.direct { font-weight: bold; }",
             "<p id='deep' class='direct'>text</p>");
@@ -212,19 +197,12 @@ public sealed class DocumentTreePseudoClassTests
     }
 
     [TestMethod]
-    [Ignore(IgnoreReason)]
     public void Scope_AndRoot_ShareTheirDeclarationsInAList()
     {
         var box = Box(Html(":root, :scope { --brand: #0000ff; } p { color: var(--brand); }", "<p id='p'>text</p>"), "p");
         Assert.AreEqual(Blue, box.Color);
     }
 
-    // ── Helpers (mirrors CssDataRuleIndexingTests.cs conventions) ────────────────────────────────
-
-    /// <summary>
-    /// Does <paramref name="selector"/> match <paramref name="box"/>? Asked through the ordinary
-    /// author-rule lookup, so the rule index and the matcher both run exactly as they do in a cascade.
-    /// </summary>
     private static bool Matches(CssBox box, string selector)
     {
         var cssData = new CssParser(new MockAdapter()).ParseStyleSheet($"{selector} {{ color: red; }}", false);

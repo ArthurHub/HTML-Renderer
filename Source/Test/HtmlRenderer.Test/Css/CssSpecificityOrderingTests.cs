@@ -33,7 +33,7 @@ public sealed class CssSpecificityOrderingTests
     public void MediaRuleDeclaredEarlier_LosesToEqualSpecificityPlainRuleDeclaredLater()
     {
         var html = Html(
-            "@media print { div { color: #0000ff; } } div { color: #ff0000; }",
+            "@media screen { div { color: #0000ff; } } div { color: #ff0000; }",
             "<div>text</div>");
         var box = FindBoxByTag(html, "div");
         Assert.AreEqual(RColor.FromArgb(255, 0, 0), box.ActualColor);
@@ -41,6 +41,7 @@ public sealed class CssSpecificityOrderingTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#specificity")]
+    [Spec("selectors-4", "#specificity-rules")]
     public void CommaListRule_UsesOnlyTheMatchedBranchsSpecificity_NotASum()
     {
         // A selector list is equivalent to one rule per selector, so only ".a" counts here.

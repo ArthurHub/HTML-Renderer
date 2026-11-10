@@ -334,6 +334,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
         /// <summary>
         /// True if the subject of the rule's selector, the rightmost compound of a chain, has :hover.
+        /// For a selector list, one alternative with :hover is enough.
         /// </summary>
         private static bool IsHoverRule(IStyleRule rule)
         {
@@ -799,9 +800,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Set the selected text style (selection text color and background color) from any "::selection"
-        /// rule found in the parsed stylesheets. This is a document-level lookup, not a per-box cascade
-        /// one - there is no box for a "::selection" pseudo-element to match against.
+        /// Sets the document-wide selection colors from the color and background-color of every
+        /// ::selection rule, css-pseudo-4 §3. The part of the selector before ::selection is ignored.
         /// </summary>
         /// <param name="htmlContainer"> </param>
         /// <param name="cssData">the style data</param>

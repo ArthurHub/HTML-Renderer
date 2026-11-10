@@ -27,6 +27,7 @@ public sealed class SelectorMatchingTests
     [DataRow("[TITLE]", "<p id=x title=a>a</p>")]
     [DataRow("[type=TEXT]", "<p id=x type=text>a</p>")]
     [DataRow("[align=LEFT]", "<p id=x align=left>a</p>")]
+    [Spec("selectors-4", "#case-sensitive")]
     public void ElementNames_AttributeNames_AndListedAttributeValues_MatchCaseInsensitively(string selector, string body)
     {
         Assert.IsTrue(Matches(selector, body));
@@ -58,6 +59,7 @@ public sealed class SelectorMatchingTests
 
     [TestMethod]
     [Spec("html", "semantics-other.html#pseudo-classes")]
+    [Spec("selectors-4", "#link")]
     public void Link_MatchesAnchorsWithAnHref()
     {
         Assert.IsTrue(Matches(":link", "<a id=x href=#a>a</a>"));

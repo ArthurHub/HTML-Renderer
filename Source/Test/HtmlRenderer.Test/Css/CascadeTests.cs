@@ -306,6 +306,7 @@ public sealed class CascadeTests
     [DataRow("#x34y", 1, 0, 0)]
     [DataRow("[id=p33]", 0, 1, 0)]
     [DataRow("a:link", 0, 1, 1)]
+    [Spec("selectors-4", "#specificity-rules")]
     public void Specificity_MatchesTheSpecExamples(string selector, int ids, int classes, int tags)
     {
         var rule = CssParser.ParseStyleSheetText(selector + " {}").StyleRules.Single();

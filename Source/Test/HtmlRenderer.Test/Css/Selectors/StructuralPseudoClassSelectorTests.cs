@@ -11,6 +11,7 @@ public sealed class StructuralPseudoClassSelectorTests
 
     [TestMethod]
     [Spec("css21", "selector.html#first-child")]
+    [Spec("selectors-4", "#the-first-child-pseudo")]
     public void FirstChild_Matches_FirstElement()
     {
         var html = Html(":first-child { background-color: #ff0000; }", "<div><p>first</p><p>second</p></div>");
@@ -23,6 +24,7 @@ public sealed class StructuralPseudoClassSelectorTests
     // ── :last-child ────────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("selectors-4", "#the-last-child-pseudo")]
     public void LastChild_Matches_LastElement()
     {
         var html = Html(":last-child { background-color: #ff0000; }", "<div><p>first</p><p>second</p></div>");
@@ -35,6 +37,7 @@ public sealed class StructuralPseudoClassSelectorTests
     // ── :only-child ────────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("selectors-4", "#the-only-child-pseudo")]
     public void OnlyChild_Matches_WhenNoSiblings()
     {
         var html = Html(":only-child { background-color: #ff0000; }", "<div><p>alone</p></div>");
@@ -43,6 +46,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-only-child-pseudo")]
     public void OnlyChild_DoesNotMatch_WhenSiblingsPresent()
     {
         var html = Html(":only-child { background-color: #ff0000; }", "<div><p>first</p><p>second</p></div>");
@@ -54,6 +58,7 @@ public sealed class StructuralPseudoClassSelectorTests
     // ── :root ──────────────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("selectors-4", "#the-root-pseudo")]
     public void Root_Matches_HtmlElement()
     {
         var html = Html(":root { background-color: #ff0000; }", "<p>content</p>");
@@ -62,6 +67,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-root-pseudo")]
     public void Root_DoesNotMatch_BodyOrDescendants()
     {
         var html = Html(":root { background-color: #ff0000; }", "<div><p>content</p></div>");
@@ -72,6 +78,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-root-pseudo")]
     public void Root_CompoundWithTypeSelector_StillMatches()
     {
         var html = Html("html:root { background-color: #ff0000; }", "<p>content</p>");
@@ -80,10 +87,10 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-root-pseudo")]
+    [Spec("selectors-4", "#specificity-rules")]
     public void Root_Specificity_OutranksTypeSelector_RegardlessOfSourceOrder()
     {
-        // ":root" is (0,0,1,0), "html" is (0,0,0,1) - :root must win the cascade even though it's
-        // declared after "html", where a naive source-order-only cascade would pick "html"'s blue.
         var html = Html(
             "html { background-color: #0000ff; } :root { background-color: #ff0000; }",
             "<p>content</p>");
@@ -94,6 +101,7 @@ public sealed class StructuralPseudoClassSelectorTests
     // ── :nth-child() — literal, formula, keywords, negative offset ────────────
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-child-pseudo")]
     public void NthChild_Literal_MatchesOnlyThatPosition()
     {
         var html = Html(":nth-child(2) { background-color: #ff0000; }", "<div><p>1</p><p>2</p><p>3</p></div>");
@@ -105,6 +113,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-child-pseudo")]
     public void NthChild_2n_MatchesEvenPositions()
     {
         var html = Html(":nth-child(2n) { background-color: #ff0000; }", "<div><p>1</p><p>2</p><p>3</p><p>4</p></div>");
@@ -116,6 +125,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-child-pseudo")]
     public void NthChild_2nPlus1_MatchesOddPositions()
     {
         var html = Html(":nth-child(2n+1) { background-color: #ff0000; }", "<div><p>1</p><p>2</p><p>3</p><p>4</p></div>");
@@ -127,10 +137,10 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-child-pseudo")]
     public void NthChild_2nPlus1_WhitespaceSeparatedSign_MatchesSameAsCompactForm()
     {
-        // CSS Syntax §5.6: when whitespace separates the sign from B, the '+' arrives as a standalone
-        // delim token (`2n + 1`) rather than a signed number (`2n+1`). Both must select the same elements.
+        // CSS Syntax 3 §6.2, the spaced '+' is a delim token instead of a signed number.
         var html = Html(":nth-child(2n + 1) { background-color: #ff0000; }", "<div><p>1</p><p>2</p><p>3</p><p>4</p></div>");
         var boxes = FindAllBoxesByTag(html, "p");
         Assert.AreNotEqual(RColor.Transparent, boxes[0].ActualBackgroundColor);
@@ -140,10 +150,9 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-of-type-pseudo")]
     public void NthOfType_10nPlus1_WhitespaceSeparatedSign_MatchesFirstOfType()
     {
-        // 10n + 1 over 3 elements matches only position 1; proves the spaced sign is parsed (not silently
-        // invalidating the selector, which would leave every element transparent).
         var html = Html("p:nth-of-type(10n + 1) { background-color: #ff0000; }", "<div><p>1</p><p>2</p><p>3</p></div>");
         var boxes = FindAllBoxesByTag(html, "p");
         Assert.AreNotEqual(RColor.Transparent, boxes[0].ActualBackgroundColor);
@@ -152,6 +161,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-child-pseudo")]
     public void NthChild_2nMinus1_WhitespaceSeparatedNegativeSign_MatchesOddPositions()
     {
         // A spaced negative sign (`2n - 1`) must also parse: 2n-1 selects positions 1 and 3.
@@ -164,6 +174,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-child-pseudo")]
     public void NthChild_Odd_MatchesOddPositions()
     {
         var html = Html(":nth-child(odd) { background-color: #ff0000; }", "<div><p>1</p><p>2</p><p>3</p></div>");
@@ -174,6 +185,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-child-pseudo")]
     public void NthChild_Even_MatchesEvenPositions()
     {
         var html = Html(":nth-child(even) { background-color: #ff0000; }", "<div><p>1</p><p>2</p><p>3</p></div>");
@@ -184,6 +196,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-child-pseudo")]
     public void NthChild_NegativeStep_MatchesFirstNPositions()
     {
         // "-n+3" matches positions 1, 2, 3 and nothing beyond.
@@ -196,6 +209,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-last-child-pseudo")]
     public void NthLastChild_1_MatchesLastElement()
     {
         var html = Html(":nth-last-child(1) { background-color: #ff0000; }", "<div><p>1</p><p>2</p><p>3</p></div>");
@@ -209,6 +223,7 @@ public sealed class StructuralPseudoClassSelectorTests
     // Mixed-tag siblings prove type-filtering isn't just reusing :nth-child's all-elements scope.
 
     [TestMethod]
+    [Spec("selectors-4", "#the-first-of-type-pseudo")]
     public void FirstOfType_Matches_FirstOfItsOwnTagOnly()
     {
         var html = Html("p:first-of-type { background-color: #ff0000; }", "<div><span>s</span><p>1</p><p>2</p></div>");
@@ -219,6 +234,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-last-of-type-pseudo")]
     public void LastOfType_Matches_LastOfItsOwnTagOnly()
     {
         var html = Html("p:last-of-type { background-color: #ff0000; }", "<div><p>1</p><p>2</p><span>s</span></div>");
@@ -229,6 +245,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-only-of-type-pseudo")]
     public void OnlyOfType_Matches_WhenNoOtherSiblingSharesTag()
     {
         var html = Html("p:only-of-type { background-color: #ff0000; }", "<div><span>s</span><p>1</p></div>");
@@ -237,6 +254,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-only-of-type-pseudo")]
     public void OnlyOfType_DoesNotMatch_WhenAnotherSameTagSiblingExists()
     {
         var html = Html("p:only-of-type { background-color: #ff0000; }", "<div><p>1</p><p>2</p></div>");
@@ -245,6 +263,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-of-type-pseudo")]
     public void NthOfType_2_MatchesSecondOfItsOwnTagOnly()
     {
         var html = Html("p:nth-of-type(2) { background-color: #ff0000; }", "<div><span>s</span><p>1</p><span>s2</span><p>2</p><p>3</p></div>");
@@ -256,6 +275,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-last-of-type-pseudo")]
     public void NthLastOfType_1_MatchesLastOfItsOwnTagOnly()
     {
         var html = Html("p:nth-last-of-type(1) { background-color: #ff0000; }", "<div><p>1</p><span>s</span><p>2</p></div>");
@@ -268,6 +288,7 @@ public sealed class StructuralPseudoClassSelectorTests
     // ── Compound forms ─────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-child-pseudo")]
     public void TagPlusNthChild_MatchesOnlyMatchingTagAtThatPosition()
     {
         var html = Html("p:nth-child(2n+1) { background-color: #ff0000; }", "<div><p>1</p><span>2</span><p>3</p></div>");
@@ -279,6 +300,7 @@ public sealed class StructuralPseudoClassSelectorTests
 
     [TestMethod]
     [Spec("css21", "selector.html#first-child")]
+    [Spec("selectors-4", "#the-first-child-pseudo")]
     public void ClassPlusFirstChild_MatchesOnlyWhenBothConditionsHold()
     {
         var html = Html(".item:first-child { background-color: #ff0000; }", "<div><p class='item'>1</p><p class='item'>2</p></div>");
@@ -290,6 +312,7 @@ public sealed class StructuralPseudoClassSelectorTests
 
     [TestMethod]
     [Spec("css21", "selector.html#first-child")]
+    [Spec("selectors-4", "#the-first-child-pseudo")]
     public void ClassPlusFirstChild_DoesNotMatch_WhenFirstChildLacksClass()
     {
         var html = Html(".item:first-child { background-color: #ff0000; }", "<div><p>1</p><p class='item'>2</p></div>");
@@ -331,6 +354,7 @@ public sealed class StructuralPseudoClassSelectorTests
     // ── CSS4 "of <selector>" extension (:nth-child()/:nth-last-child() only) ──
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-child-pseudo")]
     public void NthChildOfSelector_1_MatchesOnlyTheFirstMatchingSibling()
     {
         // Position is counted among the ".foo"-matching subset only, skipping non-".foo" siblings.
@@ -346,6 +370,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-child-pseudo")]
     public void NthChildOfSelector_2nPlus1_AppliesFormulaWithinTheFilteredSubset()
     {
         var html = Html(
@@ -361,6 +386,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-last-child-pseudo")]
     public void NthLastChildOfSelector_1_MatchesTheLastMatchingSibling()
     {
         var html = Html(
@@ -374,6 +400,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-child-pseudo")]
     public void NthChildOfSelector_ElementNotMatchingS_NeverMatchesRegardlessOfPosition()
     {
         // The structurally-first element doesn't itself have class "foo", so it can never satisfy
@@ -388,6 +415,7 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-child-pseudo")]
     public void NthChildOfSelector_CommaSeparatedList_MatchesEitherBranch()
     {
         var html = Html(
@@ -401,21 +429,16 @@ public sealed class StructuralPseudoClassSelectorTests
     }
 
     [TestMethod]
+    [Spec("selectors-4", "#the-nth-of-type-pseudo")]
     public void OfSelector_OnDisallowedFunction_InvalidatesTheWholeRule()
     {
-        // The parser only allows "of S" on nth-child/nth-last-child - CSS spec has no such clause
-        // for nth-of-type/nth-last-of-type/nth-column/nth-last-column. Writing it anyway doesn't
-        // silently drop just the clause: it invalidates the entire enclosing selector (parses to
-        // UnknownSelector), so the whole rule matches nothing. Locking in this existing, correct
-        // parser behavior as a regression guard.
+        // "of S" only exists for :nth-child() and :nth-last-child().
         var html = Html(
             "td:nth-of-type(1 of .foo) { background-color: #ff0000; }",
             "<table><tr><td class='foo'>A</td></tr></table>");
         var box = FindBoxByTag(html, "td");
         Assert.AreEqual(RColor.Transparent, box.ActualBackgroundColor);
     }
-
-    // ── Helpers (mirrors CssSpecificityOrderingTests.cs conventions) ─────────
 
     private static string Html(string css, string body) =>
         $"<!DOCTYPE html><html><head><style>{css}</style></head><body>{body}</body></html>";

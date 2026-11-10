@@ -7,7 +7,6 @@ namespace HtmlRenderer.Test.Css.Selectors;
 public sealed class ClassSelectorTests
 {
     [TestMethod]
-    [Spec("css21", "selector.html#class-html")]
     public void FindAllClassSelectorsThatMatchClassName()
     {
         var css =
