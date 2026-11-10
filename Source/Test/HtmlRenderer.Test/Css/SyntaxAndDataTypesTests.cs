@@ -544,6 +544,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#color-units")]
+    [Spec("css-color-4", "#rgb-functions")]
     [DataRow("maroon", 0x80, 0x00, 0x00)]
     [DataRow("red", 0xff, 0x00, 0x00)]
     [DataRow("orange", 0xff, 0xa5, 0x00)]
@@ -574,6 +575,7 @@ public sealed class SyntaxAndDataTypesTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "syndata.html#color-units")]
+    [Spec("css-color-4", "#rgb-functions")]
     [DataRow("rgb(255,-10,0)")]
     [DataRow("rgb(110%, 0%, 0%)")]
     public void ColorOutsideTheGamut_IsClipped(string value)
@@ -583,6 +585,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#color-units")]
+    [Spec("css-color-4", "#hex-notation")]
     [DataRow("#ff000")]
     [DataRow("#gg0000")]
     [DataRow("ff0000")]
@@ -595,6 +598,7 @@ public sealed class SyntaxAndDataTypesTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "syndata.html#color-units")]
+    [Spec("css-color-4", "#color-syntax-legacy")]
     [DataRow("rgb(255, 0%, 0)")]
     [DataRow("rgb(255, 0)")]
     public void InvalidRgbFunction_IsIgnored(string value)

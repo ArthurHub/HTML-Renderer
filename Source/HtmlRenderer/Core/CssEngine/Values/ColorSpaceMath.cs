@@ -3,11 +3,8 @@ using System;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// The single home for CSS color-space conversion math (CSS Color 4/5): forward/reverse transforms
-    /// between gamma-encoded sRGB and every interpolation space, plus polar-hue interpolation. Kept in
-    /// the CSS-OM (rather than the render layer) so that solid-color resolution (<see cref="Color"/>'s
-    /// <c>oklch()</c>/<c>lab()</c>/<c>color-mix()</c> factories) and any gradient interpolation that
-    /// needs a non-sRGB space share one implementation.
+    /// Conversion between sRGB and the other color spaces (CSS Color 4 §11), and hue interpolation
+    /// (CSS Color 4 §13.6).
     /// </summary>
     internal static class ColorSpaceMath
     {
@@ -340,7 +337,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             }
         }
 
-        // Reverse: color-space coordinates -> gamut-mapped sRGB (0..1)
+        // Reverse: color-space coordinates -> sRGB (0..1), clipped instead of gamut mapped (CSS Color 4 §14.2)
 
         public static (double R, double G, double B) FromSpace(double[] v, Space cs)
         {

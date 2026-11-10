@@ -12,6 +12,7 @@ public sealed class ForegroundColorPaintIntegrationTests
     [DataRow("rgb(10,20,30)")]
     [DataRow("#0a141e")]
     [Spec("css21", "colors.html#colors")]
+    [Spec("css-color-4", "#the-color-property")]
     public void Color_PaintsTheText(string color)
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -24,6 +25,7 @@ public sealed class ForegroundColorPaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "colors.html#colors")]
+    [Spec("css-color-4", "#the-color-property")]
     public void Color_IsInherited()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(

@@ -22,6 +22,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#hex-notation")]
     public void ColorValidFourLetterString()
     {
         var color = "abcd";
@@ -110,6 +111,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#hex-notation")]
     public void ColorMixedEightDigitLongStringTransparent()
     {
         var color = "facc3600";
@@ -118,6 +120,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#hex-notation")]
     public void ColorMixedEightDigitLongStringOpaque()
     {
         var color = "facc36ff";
@@ -192,6 +195,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#hsl-to-rgb")]
     public void ColorHslRedPure()
     {
         var color = Color.FromHsl(0, 1, 0.5f);
@@ -199,6 +203,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#hsl-to-rgb")]
     public void ColorHslGreenPure()
     {
         var color = Color.FromHsl(1f / 3f, 1, 0.5f);
@@ -206,6 +211,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#hsl-to-rgb")]
     public void ColorHslBluePure()
     {
         var color = Color.FromHsl(2f / 3f, 1, 0.5f);
@@ -227,6 +233,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#hsl-to-rgb")]
     public void ColorHslYellowGreenMixed()
     {
         var color = Color.FromHsl(1f / 4f, 0.75f, 0.63f);
@@ -234,6 +241,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#hsl-to-rgb")]
     public void ColorHslGrayBlueMixed()
     {
         var color = Color.FromHsl(210f / 360f, 0.25f, 0.25f);
@@ -318,6 +326,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#hwb-to-rgb")]
     public void ColorFromHwbRed()
     {
         var color = Color.FromHwb(0f, 0.2f, 0.2f);
@@ -325,6 +334,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#hwb-to-rgb")]
     public void ColorFromHwbGreen()
     {
         var color = Color.FromHwb(1f / 3f, 0.2f, 0.6f);
@@ -332,6 +342,7 @@ public sealed class ColorTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#hwb-to-rgb")]
     public void ColorFromHwbMagentaTransparent()
     {
         var color = Color.FromHwba(5f / 6f, 0.4f, 0.2f, 0.5f);

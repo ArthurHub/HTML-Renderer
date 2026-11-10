@@ -9,18 +9,24 @@ namespace HtmlRenderer.IntegrationTest.Painting;
 public sealed class SystemColorPaintIntegrationTests
 {
     [TestMethod]
+    [DataRow("ButtonFace")]
+    [DataRow("ButtonText")]
+    [DataRow("GrayText")]
+    [DataRow("Highlight")]
+    [DataRow("HighlightText")]
+    [Spec("css21", "ui.html#system-colors")]
+    [Spec("css-color-4", "#css-system-colors")]
+    public void SystemColor_IsAValidBackgroundColor(string name) => AssertIsAValidBackgroundColor(name);
+
+    // Deprecated in CSS Color 4, Appendix A
+    [TestMethod]
     [DataRow("ActiveBorder")]
     [DataRow("ActiveCaption")]
     [DataRow("AppWorkspace")]
     [DataRow("Background")]
-    [DataRow("ButtonFace")]
     [DataRow("ButtonHighlight")]
     [DataRow("ButtonShadow")]
-    [DataRow("ButtonText")]
     [DataRow("CaptionText")]
-    [DataRow("GrayText")]
-    [DataRow("Highlight")]
-    [DataRow("HighlightText")]
     [DataRow("InactiveBorder")]
     [DataRow("InactiveCaption")]
     [DataRow("InactiveCaptionText")]
@@ -38,7 +44,24 @@ public sealed class SystemColorPaintIntegrationTests
     [DataRow("WindowFrame")]
     [DataRow("WindowText")]
     [Spec("css21", "ui.html#system-colors")]
-    public void SystemColor_IsAValidBackgroundColor(string name)
+    public void DeprecatedSystemColor_IsAValidBackgroundColor(string name) => AssertIsAValidBackgroundColor(name);
+
+    [TestMethod]
+    [DataRow("buttontext")]
+    [DataRow("BUTTONTEXT")]
+    [Spec("css21", "ui.html#system-colors")]
+    [Spec("css-color-4", "#css-system-colors")]
+    public void SystemColor_IsCaseInsensitive(string name)
+    {
+        var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
+            $"<div id='b' style='color:rgb(1,2,3);color:{name}'>x</div>"));
+
+        var g = PaintHarness.PaintBox(container, PaintHarness.FindById(root, "b")!);
+
+        Assert.AreNotEqual(RColor.FromArgb(1, 2, 3), g.DrawStringCalls.Single().Color);
+    }
+
+    private static void AssertIsAValidBackgroundColor(string name)
     {
         var placeholder = RColor.FromArgb(1, 2, 3);
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -49,19 +72,5 @@ public sealed class SystemColorPaintIntegrationTests
         var fill = g.Log.OfType<RecordingGraphics.DrawRectCall>().Single();
         Assert.AreNotEqual(placeholder, fill.Color);
         Assert.AreEqual(255, fill.Color.A);
-    }
-
-    [TestMethod]
-    [DataRow("windowtext")]
-    [DataRow("WINDOWTEXT")]
-    [Spec("css21", "ui.html#system-colors")]
-    public void SystemColor_IsCaseInsensitive(string name)
-    {
-        var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
-            $"<div id='b' style='color:rgb(1,2,3);color:{name}'>x</div>"));
-
-        var g = PaintHarness.PaintBox(container, PaintHarness.FindById(root, "b")!);
-
-        Assert.AreNotEqual(RColor.FromArgb(1, 2, 3), g.DrawStringCalls.Single().Color);
     }
 }

@@ -268,10 +268,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return FromRgba(red, green, blue, alpha);
         }
 
-        // CSS Color 4/5 spaces (lab/oklab/lch/oklch) and color-mix().
-        // Components are in each space's native units (L: lab/lch 0..100, oklab/oklch 0..1; a/b and C
-        // in native chroma units; H in degrees). The conversion math is shared with gradient
-        // interpolation via ColorSpaceMath so there is a single implementation of the color science.
+        // CSS Color 4 §9. Components are in each space's own units: L 0..100 for lab/lch and 0..1 for
+        // oklab/oklch, H in degrees.
 
         public static Color FromLab(double l, double a, double b, float alpha = 1f)
         {
@@ -300,10 +298,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         /// <summary>
-        /// <see href="https://www.w3.org/TR/css-color-5/#color-mix">CSS Color 5 <c>color-mix()</c></see>:
-        /// premultiplied-alpha interpolation in <paramref name="cs"/> with weight <paramref name="t"/>
-        /// toward <paramref name="c2"/>, the result alpha then scaled by <paramref name="alphaMultiplier"/>
-        /// (below 1 only when the two percentages summed to under 100%).
+        /// Interpolates with premultiplied alpha in <paramref name="cs"/> (CSS Color 4 §13), <paramref name="t"/>
+        /// is the weight of <paramref name="c2"/>. <paramref name="alphaMultiplier"/> is below 1 when the
+        /// color-mix() percentages add up to less than 100% (CSS Color 5 §3.3).
         /// </summary>
         public static Color Mix(Color c1, Color c2, double t, ColorSpaceMath.Space cs, ColorSpaceMath.HueMethod hue, double alphaMultiplier)
         {

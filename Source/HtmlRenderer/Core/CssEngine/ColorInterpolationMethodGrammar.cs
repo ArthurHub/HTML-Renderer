@@ -4,16 +4,9 @@ using System.Collections.Generic;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// The single, shared grammar for a gradient's <c>&lt;color-interpolation-method&gt;</c> prelude
-    /// (<a href="https://drafts.csswg.org/css-images-4/#color-interpolation-method">CSS Images 4 §3.1</a>):
-    /// <code>in [ &lt;rectangular-color-space&gt; | &lt;polar-color-space&gt; &lt;hue-interpolation-method&gt;? ]</code>.
-    /// Both the CSS-OM validator (<see cref="GradientConverter"/>, which drops a malformed prelude at
-    /// parse time) and the render-time parser classify keywords through this one class, so the two
-    /// layers cannot disagree about which preludes are valid.
-    ///
-    /// Only the color spaces the interpolation math actually implements are recognized; the
-    /// wide-gamut RGB spaces <c>a98-rgb</c>/<c>prophoto-rgb</c>/<c>rec2020</c> are valid CSS but are
-    /// deliberately rejected here rather than approximated.
+    /// The <c>&lt;color-interpolation-method&gt;</c> of a gradient (CSS Color 4 §13.3). Only the color
+    /// spaces <see cref="ColorSpaceMath"/> implements are accepted, so a98-rgb, prophoto-rgb, rec2020
+    /// and display-p3-linear are rejected.
     /// </summary>
     internal static class ColorInterpolationMethodGrammar
     {

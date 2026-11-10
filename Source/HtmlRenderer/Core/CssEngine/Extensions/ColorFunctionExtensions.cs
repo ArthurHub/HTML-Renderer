@@ -5,20 +5,14 @@ using System.Linq;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Resolves the CSS color <em>function</em> forms from a tokenized value into a concrete
-    /// <see cref="Color"/>: the legacy/CSS Color 4 <c>rgb()/rgba()/hsl()/hsla()/hwb()/gray()</c> and the
-    /// CSS Color 4/5 <c>lab()/oklab()/lch()/oklch()/color-mix()</c>. Tokenization is the CSS-OM's job, so
-    /// this consumes the already-parsed <see cref="FunctionToken"/> stream (nested functions arrive as a
-    /// single token) rather than re-scanning the source text.
+    /// Resolves the color functions to an sRGB <see cref="Color"/>: rgb(), rgba(), hsl(), hsla(), hwb(),
+    /// lab(), lch(), oklab() and oklch() (CSS Color 4), color-mix() (CSS Color 5) and gray().
     /// </summary>
     internal static class ColorFunctionExtensions
     {
         /// <summary>
-        /// Fully resolves a tokenized color value to a concrete <see cref="Color"/> - named colors and
-        /// hex via <see cref="ValueExtensions.ToColor"/>, plus every color <em>function</em>
-        /// (rgb/hsl/hwb/gray/lab/oklab/lch/oklch/color-mix). Unlike <c>ToColor</c> (which the CSS-OM
-        /// cascade uses and which deliberately preserves a function's specified form for serialization),
-        /// this is the render-layer resolver: it always computes the sRGB value.
+        /// Resolves a named, hex or function color to sRGB. Unlike <see cref="ValueExtensions.ToColor"/>,
+        /// which keeps a function as specified, this always computes the color.
         /// </summary>
         public static Color? ToResolvedColor(this IEnumerable<Token> value)
         {
@@ -27,8 +21,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             var element = value.OnlyOrDefault();
 
-            // A hex color nested inside a function (e.g. a color-mix() operand) tokenizes as a Hash
-            // keyword token rather than a ColorToken, so ToColor misses it - resolve it here.
+            // Inside a function, e.g. as a color-mix() operand, a hex color is a hash token
             if (element != null && element.Type == TokenType.Hash) return Color.FromHex(element.Data);
 
             var function = element as FunctionToken;
@@ -168,8 +161,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             if (!ParseMixOperand(segments[1], out c1, out p1)) return null;
             if (!ParseMixOperand(segments[2], out c2, out p2)) return null;
 
-            // CSS Color 5 §3 normalization: a missing percentage is 100% minus the other; percentages
-            // scale to sum 1, and a pre-normalization sum below 100% scales the result alpha down.
+            // CSS Color 5 §3.2
             if (p1 == null && p2 == null) { p1 = 0.5; p2 = 0.5; }
             else if (p1 == null) p1 = Math.Max(0, 1.0 - p2.Value);
             else if (p2 == null) p2 = Math.Max(0, 1.0 - p1.Value);
@@ -194,8 +186,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             }
             if (tokens.Count == 0) return false;
 
-            // The optional percentage may appear before or after the color (CSS Color 5 §3.1), e.g.
-            // both `red 30%` and `30% red` are valid.
+            // The percentage may come before or after the color (CSS Color 5 §3)
             if (tokens[tokens.Count - 1].Type == TokenType.Percentage)
             {
                 var value = AsTokens(tokens[tokens.Count - 1]).ToPercent();
@@ -209,8 +200,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 tokens.RemoveAt(0);
             }
 
-            // A color-mix operand may itself be any color form (named/hex/rgb/oklch/...), so resolve it
-            // through the full render-layer resolver rather than the named/hex-only ToColor.
             var resolved = tokens.ToResolvedColor();
             if (resolved == null) return false;
             color = resolved.Value;
@@ -219,9 +208,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         // Token helpers
 
-        // Partitions a function's argument tokens into `count` component tokens and an optional alpha
-        // token. Whitespace and commas separate; a "/" delimiter (CSS Color 4) marks the alpha that
-        // follows. Without a slash, a trailing extra value (legacy rgba/hsla comma alpha) is the alpha.
+        // Splits the arguments into `count` components and an optional alpha (CSS Color 4 §4.1). Commas
+        // and whitespace both separate, the alpha follows a "/" or is the extra last value.
         private static bool Extract(IEnumerable<Token> args, int count, out List<Token> components, out Token alpha)
         {
             components = new List<Token>();
@@ -358,8 +346,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         /// </summary>
         internal static Color MixPaletteColors(Color c1, Color c2, string spaceName, string hueName, double? p1, double? p2)
         {
-            // CSS keywords are case-insensitive; MapSpace/MapHueName match lowercase literals, so fold first
-            // (a mixed-case space would otherwise silently fall through to the sRGB/Shorter default).
             var space = MapSpace(spaceName.ToLowerInvariant());
             var hue = MapHueName(hueName.ToLowerInvariant());
 

@@ -6,14 +6,8 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/ColorInterpolationMethodGrammarTests.cs.
-/// Tests for the shared <see cref="ColorInterpolationMethodGrammar"/> (the single home of the gradient
-/// <c>in &lt;color-interpolation-method&gt;</c> grammar consumed by both the CSS-OM validator and the
-/// render-time parser).
-///
-/// The grammar validates only the <c>in …</c> slice and returns the rest of the group as the remainder;
-/// whether that remainder is a valid gradient direction/shape is the caller's job. So e.g. a hue method
-/// on a rectangular space parses here (remainder <c>"longer hue"</c>) and is rejected downstream.
+/// <see cref="ColorInterpolationMethodGrammar"/> only takes the <c>in …</c> part out of a gradient's
+/// arguments, the remainder is validated by the gradient, e.g. a hue method after a rectangular space.
 /// </summary>
 [TestClass]
 public sealed class ColorInterpolationMethodGrammarTests
@@ -37,6 +31,7 @@ public sealed class ColorInterpolationMethodGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#interpolation-space")]
     [DataRow("in srgb")]
     [DataRow("in srgb-linear")]
     [DataRow("in display-p3")]

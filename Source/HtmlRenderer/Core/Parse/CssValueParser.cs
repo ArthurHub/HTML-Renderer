@@ -615,12 +615,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Parses an rgba()/hsla()-style alpha component, per CSS syntax a fractional number in [0,1]
-        /// (e.g. "0.5") or a percentage (e.g. "50%") - unlike R/G/B, never a bare 0-255 integer. This is
-        /// also the canonical form the vendored CSS engine's Color.ToString() emits for any color with
-        /// partial transparency (hex-alpha, hsl()/hsla(), hwb(), modern space-separated rgb() syntax -
-        /// all normalized to "rgba(r, g, b, alpha)" at CSS-OM parse time), so this is the path that
-        /// makes those all resolve correctly here, not just literal author-written rgba().
+        /// Parses an alpha, a number from 0 to 1 or a percentage (CSS Color 4 §4.2). A hex color with
+        /// alpha arrives here too, the CSS engine turns it into rgba().
         /// </summary>
         /// <returns>alpha as a 0-255 byte value, or -1 if invalid</returns>
         private static int ParseAlphaAtIndex(string str, ref int startIdx)
@@ -661,15 +657,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Get color by parsing given HSL/HSLA value color string (hsl(210, 100%, 50%), hsla(210, 100%, 50%, 0.5)).<br/>
-        /// Unlike hex and rgb()/rgba(), the vendored CSS-OM's HslColorConverter/HslaColorConverter only
-        /// validate hsl() syntax at parse time (hue is a valid angle, saturation/lightness are
-        /// percentages) - they never actually convert it to an RGB Color the way rgb()/rgba()/hex do
-        /// (see Core/CssEngine/Model/Converters.cs's HslColorConverter/HslaColorConverter, and compare
-        /// to Color.ToString() which only ever emits rgb()/rgba()). So unlike those, the raw string this
-        /// engine sees for an hsl()-declared color is still the literal hsl() text (with hue normalized
-        /// to a "Ndeg" suffix), not a canonical rgba() - this method does the actual hue/sat/light -> RGB
-        /// conversion, reusing the vendored Color.FromHsla for the math.
+        /// Get color by parsing given HSL/HSLA value color string (hsl(210, 100%, 50%), hsla(210, 100%, 50%, 0.5)).
+        /// Only the legacy comma syntax (CSS Color 4 §4.1.2), the CSS engine keeps hsl() as specified.
         /// </summary>
         /// <returns>true - valid color, false - otherwise</returns>
         private static bool GetColorByHsl(string str, int idx, int length, bool hasAlpha, out RColor color)
@@ -721,8 +710,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Parses an hsl() hue component - a bare number (treated as degrees, per CSS) or a number with
-        /// an explicit angle unit (deg/rad/grad/turn).
+        /// Parses a hue, degrees or an angle (CSS Color 4 §4.3).
         /// </summary>
         private static bool TryParseAngleDegrees(string value, out double degrees)
         {
@@ -757,13 +745,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// understands.
         /// </summary>
         /// <remarks>
-        /// The adapter's palette is tried first because a bare name is by far the common case and a
-        /// dictionary lookup is cheaper than tokenizing. Anything it doesn't recognize - a CSS Color 4/5
-        /// function such as <c>lab()</c>/<c>oklch()</c>/<c>color-mix()</c>, or a fully transparent color,
-        /// which the palette reports with a zero alpha and is indistinguishable from "unknown" here - is
-        /// then resolved through the engine, which is the same code path the cascade validated the value
-        /// with. Hex/rgb()/rgba()/hsl()/hsla() never reach this method; they keep their own fast paths in
-        /// <see cref="TryGetColor"/>.
+        /// The adapter's palette comes first, it reports an unknown name and a transparent color alike
+        /// with a zero alpha, both then go through the CSS engine. Hex, rgb(), rgba(), hsl() and hsla()
+        /// don't get here, see <see cref="TryGetColor"/>.
         /// </remarks>
         /// <returns>true - valid color, false - otherwise</returns>
         private bool GetColorByName(string str, int idx, int length, out RColor color)
@@ -773,9 +757,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             color = _adapter.GetColor(text);
             if (color.A > 0) return true;
 
-            // Value mode, so a hex colour lexes as a single colour token. Outside it, a digit-leading
-            // hex such as #0000ff splits into a "#" delimiter plus a dimension ("0000" + unit "ff"),
-            // which then fails to resolve as an operand inside color-mix().
+            // In value mode a hex color is one token, otherwise #0000ff is a delimiter and a dimension
             var resolved = GetCssTokens(text, true).ToResolvedColor();
             if (resolved != null)
             {
