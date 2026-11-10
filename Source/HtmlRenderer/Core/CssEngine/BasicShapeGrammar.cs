@@ -4,14 +4,8 @@ using System.Linq;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Shared, layer-agnostic grammar for the CSS <c>&lt;basic-shape&gt;</c> function values used by
-    /// <c>clip-path</c> (CSS Masking Level 1 / CSS Shapes Level 1): <c>polygon()</c>, <c>inset()</c>,
-    /// <c>circle()</c> and <c>ellipse()</c>. Like <see cref="BackgroundPositionGrammar"/> /
-    /// <see cref="BackgroundSizeGrammar"/>, it validates the grammar and captures the value's structure
-    /// as <b>raw component strings / enums</b> (never resolved numbers), so both Layer A (the CSS-OM
-    /// converter, which only needs to accept/reject and preserve the authored text) and Layer B (the
-    /// render-time resolver in <c>TheArtOfDev.HtmlRenderer.Core</c>, which resolves each component against the
-    /// element's reference box) share a single parser rather than re-implementing the grammar twice.
+    /// The &lt;basic-shape&gt; functions <c>polygon()</c>, <c>inset()</c>, <c>circle()</c> and <c>ellipse()</c>
+    /// (CSS Shapes 1 §3), parsed into unresolved component strings and enums.
     /// </summary>
     internal static class BasicShapeGrammar
     {
@@ -120,10 +114,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         /// <summary>
-        /// Parses a <c>clip-path</c> value's tokens into a <see cref="ParsedBasicShape"/>, or returns
-        /// null when the value is not a valid basic shape - <b>including the literal <c>none</c></b>,
-        /// which callers treat as "no clip". (Layer A therefore accepts <c>none</c> separately, since a
-        /// null result here can't distinguish <c>none</c> from an invalid value.)
+        /// Null for anything that isn't a basic shape, <c>none</c> included.
         /// </summary>
         internal static ParsedBasicShape TryParse(IReadOnlyList<Token> tokens)
         {
@@ -387,10 +378,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         private static bool IsLengthPercentage(Token token)
         {
             if (token.Type == TokenType.Dimension || token.Type == TokenType.Percentage) return true;
-            // A calc()-family function computes to a <length-percentage> at used-value time. The render-time
-            // resolver (CssClipPathResolver → CssValueParser.ParseLength) evaluates it, and the token's
-            // ToValue() reconstructs the full "calc(…)" text, so accept it here rather than invalidating the
-            // whole shape (this is what lets a Charts.css area/line polygon vertex be a calc() expression).
+            // calc() stays unevaluated, ToValue() keeps its text
             var function = token as FunctionToken;
             if (function != null && CalcParser.IsCalcFamily(function.Data)) return true;
             // Unitless zero is a valid length.

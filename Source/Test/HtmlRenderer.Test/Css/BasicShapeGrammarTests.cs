@@ -6,10 +6,7 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/BasicShapeGrammarTests.cs.
-/// Tests for the shared <see cref="BasicShapeGrammar"/> (Layer-agnostic parse of the
-/// <c>polygon()/inset()/circle()/ellipse()</c> basic-shape grammar) and the <c>clip-path</c>
-/// Layer-A converter (<see cref="ClipPathValueConverter"/>) that accepts/rejects and preserves it.
+/// The &lt;basic-shape&gt; grammar of <see cref="BasicShapeGrammar"/> and the clip-path values built on it.
 /// </summary>
 [TestClass]
 public sealed class BasicShapeGrammarTests
@@ -267,7 +264,7 @@ public sealed class BasicShapeGrammarTests
         Assert.IsNull(Parse(value));
     }
 
-    // ─── Layer A: converter accept/reject via the parser ────────────────────
+    // ─── clip-path ──────────────────────────────────────────────────────────
 
     [TestMethod]
     [DataRow("none")]
@@ -275,6 +272,7 @@ public sealed class BasicShapeGrammarTests
     [DataRow("inset(10px 20px round 4px)")]
     [DataRow("circle(50px at center)")]
     [DataRow("ellipse(closest-side farthest-side)")]
+    [Spec("css-masking-1", "#the-clip-path")]
     public void ClipPath_ValidValue_SurvivesParsing(string value)
     {
         var property = CssConstructionFunctions.ParseDeclaration($"clip-path: {value}");
@@ -282,7 +280,6 @@ public sealed class BasicShapeGrammarTests
         Assert.IsInstanceOfType<ClipPathProperty>(property);
         var concrete = (ClipPathProperty)property;
         Assert.IsTrue(concrete.HasValue);
-        // Authored text is preserved verbatim for the render layer to re-parse.
         Assert.AreEqual(value, concrete.Value);
     }
 
@@ -290,6 +287,7 @@ public sealed class BasicShapeGrammarTests
     [DataRow("banana")]
     [DataRow("polygon(0)")]
     [DataRow("circle(10px 20px)")]
+    [Spec("css-masking-1", "#the-clip-path")]
     public void ClipPath_InvalidValue_IsDropped(string value)
     {
         var property = CssConstructionFunctions.ParseDeclaration($"clip-path: {value}");
@@ -299,6 +297,7 @@ public sealed class BasicShapeGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-masking-1", "#the-clip-path")]
     public void ClipPath_InStyleSheet_ValidSurvives_InvalidDropped()
     {
         var valid = CssConstructionFunctions.ParseStyleSheet("div{clip-path:polygon(0 0, 100% 0, 50% 100%)}");
