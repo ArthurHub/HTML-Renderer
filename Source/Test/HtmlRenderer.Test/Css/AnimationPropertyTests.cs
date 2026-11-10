@@ -604,4 +604,49 @@ public sealed class AnimationPropertyTests
         Assert.IsTrue(concrete.HasValue);
         Assert.AreEqual("0s ease 10 my-animation, linear 5 other-animation, 0s step-start 1s 10 yet-another", concrete.Value);
     }
+
+    [TestMethod]
+    public void AnimationShorthandSetsEveryLonghand()
+    {
+        var style = CssConstructionFunctions.ParseDeclarations("animation: slide 1s ease-in 2s infinite alternate both paused");
+
+        Assert.AreEqual("slide", style.GetPropertyValue("animation-name"));
+        Assert.AreEqual("1s", style.GetPropertyValue("animation-duration"));
+        Assert.AreEqual("ease-in", style.GetPropertyValue("animation-timing-function"));
+        Assert.AreEqual("2s", style.GetPropertyValue("animation-delay"));
+        Assert.AreEqual("infinite", style.GetPropertyValue("animation-iteration-count"));
+        Assert.AreEqual("alternate", style.GetPropertyValue("animation-direction"));
+        Assert.AreEqual("both", style.GetPropertyValue("animation-fill-mode"));
+        Assert.AreEqual("paused", style.GetPropertyValue("animation-play-state"));
+    }
+
+    [TestMethod]
+    public void AnimationShorthandWithOneTimeSetsOnlyTheDuration()
+    {
+        var style = CssConstructionFunctions.ParseDeclarations("animation: slide 1s");
+
+        Assert.AreEqual("slide", style.GetPropertyValue("animation-name"));
+        Assert.AreEqual("1s", style.GetPropertyValue("animation-duration"));
+        Assert.AreEqual("initial", style.GetPropertyValue("animation-delay"));
+    }
+
+    [TestMethod]
+    public void AnimationShorthandGivesKeywordsToTheOtherLonghandsFirst()
+    {
+        var style = CssConstructionFunctions.ParseDeclarations("animation: 3s none backwards");
+
+        Assert.AreEqual("3s", style.GetPropertyValue("animation-duration"));
+        Assert.AreEqual("none", style.GetPropertyValue("animation-fill-mode"));
+        Assert.AreEqual("backwards", style.GetPropertyValue("animation-name"));
+    }
+
+    [TestMethod]
+    public void AnimationShorthandListSetsTheLonghandsPerItem()
+    {
+        var style = CssConstructionFunctions.ParseDeclarations("animation: a 1s 2s, b 3s 4s");
+
+        Assert.AreEqual("a, b", style.GetPropertyValue("animation-name"));
+        Assert.AreEqual("1s, 3s", style.GetPropertyValue("animation-duration"));
+        Assert.AreEqual("2s, 4s", style.GetPropertyValue("animation-delay"));
+    }
 }

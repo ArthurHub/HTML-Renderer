@@ -362,4 +362,39 @@ public sealed class TransitionPropertyTests
         Assert.IsTrue(concrete.HasValue);
         Assert.AreEqual("all 1s ease, height 50ms step-start, width, cubic-bezier(0.2, 0.5, 1, 1)", concrete.Value);
     }
+
+    [TestMethod]
+    public void CssTransitionShorthandWithOneTimeSetsOnlyTheDuration()
+    {
+        var style = CssConstructionFunctions.ParseDeclarations("transition: color 1s");
+
+        Assert.AreEqual("color", style.GetPropertyValue("transition-property"));
+        Assert.AreEqual("1s", style.GetPropertyValue("transition-duration"));
+        Assert.AreEqual("initial", style.GetPropertyValue("transition-delay"));
+    }
+
+    [TestMethod]
+    public void CssTransitionShorthandAssignsTheSecondTimeToTheDelay()
+    {
+        var style = CssConstructionFunctions.ParseDeclarations("transition: 1s 2s");
+
+        Assert.AreEqual("1s", style.GetPropertyValue("transition-duration"));
+        Assert.AreEqual("2s", style.GetPropertyValue("transition-delay"));
+    }
+
+    [TestMethod]
+    public void CssTransitionShorthandNoneSetsThePropertyToNone()
+    {
+        var style = CssConstructionFunctions.ParseDeclarations("transition: none");
+
+        Assert.AreEqual("none", style.GetPropertyValue("transition-property"));
+    }
+
+    [TestMethod]
+    public void CssTransitionShorthandWithNoneInAListIsInvalid()
+    {
+        var style = CssConstructionFunctions.ParseDeclarations("transition: none, color 1s");
+
+        Assert.AreEqual(string.Empty, style.GetPropertyValue("transition"));
+    }
 }
