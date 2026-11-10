@@ -354,6 +354,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             get { return _htmltag; }
         }
 
+        protected override bool IsRootElement
+        {
+            get { return _htmltag != null && _htmltag.Name.Equals("html", StringComparison.OrdinalIgnoreCase); }
+        }
+
         /// <summary>
         /// Gets if this box represents an image
         /// </summary>

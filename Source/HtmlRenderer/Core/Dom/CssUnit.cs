@@ -28,6 +28,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         Centimeters,
         Milimeters,
         Points,
-        Picas
+        Picas,
+        Rems
     }
 }

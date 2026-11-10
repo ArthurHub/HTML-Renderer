@@ -46,7 +46,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// <summary>
         /// Extracts CSS lengths; e.g. 9px 3pt .89em
         /// </summary>
-        public const string CssLength = @"([0-9]+|[0-9]*\.[0-9]+)(em|ex|px|in|cm|mm|pt|pc)";
+        public const string CssLength = @"([0-9]+|[0-9]*\.[0-9]+)(rem|em|ex|px|in|cm|mm|pt|pc)";
 
         /// <summary>
         /// Extracts line-height values (normal, numbers, lengths, percentages)

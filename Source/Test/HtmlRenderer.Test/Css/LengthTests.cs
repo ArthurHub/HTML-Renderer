@@ -1,3 +1,4 @@
+using HtmlRenderer.Test.TestSupport;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 
 namespace HtmlRenderer.Test.Css;
@@ -14,9 +15,9 @@ namespace HtmlRenderer.Test.Css;
 /// <c>IFormattable</c>, and predefined constants (Zero/Half/Full/Thin/Medium/Thick).
 ///
 /// HTML-Renderer's internal <see cref="CssLength"/> is much smaller: it has only a single
-/// string-parsing constructor (<c>new CssLength("10px")</c>), a 9-member <see cref="CssUnit"/> enum
-/// (None, Ems, Pixels, Ex, Inches, Centimeters, Milimeters, Points, Picas - i.e. only em/ex/px/mm/cm/
-/// in/pt/pc, no rem/%/ch/viewport/container-query units at all; percentage is tracked separately via
+/// string-parsing constructor (<c>new CssLength("10px")</c>), a 10-member <see cref="CssUnit"/> enum
+/// (None, Ems, Pixels, Ex, Inches, Centimeters, Milimeters, Points, Picas, Rems - i.e. only em/ex/px/mm/cm/
+/// in/pt/pc/rem, no %/ch/viewport/container-query units at all; percentage is tracked separately via
 /// <c>IsPercentage</c>/<c>Number</c> rather than being a <see cref="CssUnit"/> value), <c>Number</c>,
 /// <c>HasError</c>, <c>IsPercentage</c>, <c>IsRelative</c> (no <c>IsAbsolute</c>), <c>Length</c> (the
 /// original string), <c>ConvertEmToPoints(emSize)</c>/<c>ConvertEmToPixels(pixelFactor)</c> (Ems-only,
@@ -28,7 +29,7 @@ namespace HtmlRenderer.Test.Css;
 /// Tests below that exercise only the 8 units/members this fork actually supports are ported as plain
 /// passing tests against the real constructor/members (a few reusing <c>ConvertEmToPoints</c>/
 /// <c>ConvertEmToPixels</c> as the closest real analog to PeachPDF's richer pixel-conversion API).
-/// Tests that need an unsupported unit (rem, %-as-a-unit, ch, any viewport or container-query variant)
+/// Tests that need an unsupported unit (%-as-a-unit, ch, any viewport or container-query variant)
 /// or an API member this fork's <see cref="CssLength"/> doesn't have (TryParse, To, ToPixel(s),
 /// comparison/equality operators, IFormattable, predefined constants, IsAbsolute, UnitString, GetUnit)
 /// are ported under <c>[Ignore]</c>, adapted as closely as possible to compile against the real API
@@ -36,7 +37,7 @@ namespace HtmlRenderer.Test.Css;
 /// The container-query-unit theory (ToPixels_ContainerRelativeUnit_*, 4 methods), the viewport-unit
 /// theories (ToPixels_ViewportUnit_*, 2 methods), ToPixels_Rem_UsesRemFactor, and
 /// ToPixels_Ch_ApproximatesHalfEm were dropped entirely: their units (cqw/cqh/cqi/cqb/cqmin/cqmax, vw/
-/// vh/vmin/vmax and the sv*/lv*/dv* variants, rem, ch) have no representation whatsoever in
+/// vh/vmin/vmax and the sv*/lv*/dv* variants, ch) have no representation whatsoever in
 /// <see cref="CssUnit"/>, so there is no plausible compileable adaptation - constructing a
 /// <see cref="CssLength"/> with any of those suffixes just falls into the "unrecognized unit"
 /// <c>HasError</c> branch and asserts nothing meaningful.
@@ -66,6 +67,7 @@ public sealed class LengthTests
     [DataRow("in", "Inches")]
     [DataRow("pt", "Points")]
     [DataRow("pc", "Picas")]
+    [DataRow("rem", "Rems")]
     [DataRow("bogus", "None")]
     public void Constructor_ParsesKnownUnitSuffixes(string suffix, string expectedUnitName)
     {
@@ -412,6 +414,44 @@ public sealed class LengthTests
         Assert.AreEqual(1d, thin.Number);
         Assert.AreEqual(3d, medium.Number);
         Assert.AreEqual(5d, thick.Number);
+    }
+
+    [TestMethod]
+    public void Rem_ResolvesAgainstTheRootFontSize()
+    {
+        var x = LayoutRem("html{font-size:10px} #x{font-size:20px;margin-left:2rem;padding-left:calc(1rem);text-indent:3rem;height:4rem;border-left:0.5rem solid}");
+
+        Assert.AreEqual(20, x.ActualMarginLeft, 0.01);
+        Assert.AreEqual(10, x.ActualPaddingLeft, 0.01);
+        Assert.AreEqual(30, x.ActualTextIndent, 0.01);
+        Assert.AreEqual(40, x.Size.Height, 0.01);
+        Assert.AreEqual(5, x.ActualBorderLeftWidth, 0.01);
+    }
+
+    [TestMethod]
+    public void Rem_InFontSize_ResolvesAgainstTheRootFontSize()
+    {
+        var x = LayoutRem("html{font-size:10px} body{font-size:30px} #x{font-size:1.5rem}");
+
+        Assert.AreEqual(15, x.GetEmHeight(), 0.01);
+    }
+
+    [TestMethod]
+    public void Rem_InTheRootFontSize_IsTheInitialFontSize()
+    {
+        var x = LayoutRem("html{font-size:2rem} #x{margin-left:1rem}");
+        var initial = 11d * 96d / 72d;
+
+        Assert.AreEqual(2 * initial, x.GetEmHeight(), 0.01);
+        Assert.AreEqual(2 * initial, x.ActualMarginLeft, 0.01);
+    }
+
+    private static CssBox LayoutRem(string css)
+    {
+        var (root, _) = LayoutHarness.Layout($"<html><head><style>{css}</style></head><body><div id=x>a</div></body></html>");
+        var x = LayoutHarness.FindById(root, "x");
+        Assert.IsNotNull(x);
+        return x!;
     }
 
     private static string ExpectedUnitString(string unitName) => unitName switch
