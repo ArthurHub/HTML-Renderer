@@ -36,6 +36,7 @@ public sealed class ContainingBlockIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#containing-block-details")]
+    [Spec("css-position-3", "#def-cb")]
     public void AbsoluteBox_IsPlacedInTheNearestPositionedAncestor()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -50,6 +51,7 @@ public sealed class ContainingBlockIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#containing-block-details")]
+    [Spec("css-position-3", "#abspos-layout")]
     public void AbsoluteBox_PercentageWidth_ResolvesAgainstTheNearestPositionedAncestor()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -75,6 +77,7 @@ public sealed class ContainingBlockIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#containing-block-details")]
+    [Spec("css-position-3", "#def-cb")]
     public void AbsoluteBox_IsContainedByThePaddingEdgeOfThePositionedAncestor()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

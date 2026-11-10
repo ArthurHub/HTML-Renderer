@@ -211,6 +211,7 @@ public sealed class WidthIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#abs-non-replaced-width")]
+    [Spec("css-position-3", "#abs-non-replaced-width")]
     public void Absolute_WithLeftAndWidth_IsPlacedAtLeft()
     {
         var root = Layout("<div style='position:relative;width:200px;height:100px'><div id='a' style='position:absolute;left:10px;top:0;width:50px;height:10px'></div></div>");
@@ -222,6 +223,7 @@ public sealed class WidthIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#abs-non-replaced-width")]
+    [Spec("css-position-3", "#abs-non-replaced-width")]
     public void Absolute_WithRightAndWidth_IsPlacedAtRight()
     {
         var root = Layout("<div style='position:relative;width:200px;height:100px'><div id='a' style='position:absolute;right:10px;top:0;width:50px;height:10px'></div></div>");
@@ -232,6 +234,8 @@ public sealed class WidthIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#abs-non-replaced-width")]
+    [Spec("css-position-3", "#abs-non-replaced-width")]
+    [Spec("css-position-3", "#abspos-auto-size")]
     public void Absolute_WithLeftAndRight_StretchesTheAutoWidth()
     {
         var root = Layout("<div style='position:relative;width:200px;height:100px'><div id='a' style='position:absolute;left:10px;right:30px;top:0;height:10px'></div></div>");
@@ -244,6 +248,8 @@ public sealed class WidthIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#abs-non-replaced-width")]
+    [Spec("css-position-3", "#abs-non-replaced-width")]
+    [Spec("css-position-3", "#abspos-auto-size")]
     public void Absolute_WithAutoWidth_ShrinksToFitItsContent()
     {
         var root = Layout("<div style='position:relative;width:400px;height:100px'><div id='a' style='position:absolute;left:0;top:0'>xx yy</div></div>");
@@ -256,6 +262,8 @@ public sealed class WidthIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#abs-non-replaced-width")]
+    [Spec("css-position-3", "#abs-non-replaced-width")]
+    [Spec("css-position-3", "#abspos-margins")]
     public void Absolute_WithLeftRightAndWidth_IsCenteredByAutoMargins()
     {
         var root = Layout("<div style='position:relative;width:200px;height:100px'><div id='a' style='position:absolute;left:0;right:0;width:100px;margin:0 auto;top:0;height:10px'></div></div>");
@@ -265,6 +273,7 @@ public sealed class WidthIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#abs-replaced-width")]
+    [Spec("css-position-3", "#abs-replaced-width")]
     public void AbsoluteImage_KeepsItsIntrinsicWidth()
     {
         var root = TestImages.Layout($"<div style='position:relative;width:200px;height:100px'><img id='i' style='position:absolute;left:0;top:0' src='{Image}'></div>");

@@ -167,6 +167,7 @@ public sealed class HeightIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#abs-non-replaced-height")]
+    [Spec("css-position-3", "#abs-non-replaced-height")]
     public void Absolute_WithTopAndHeight_IsPlacedAtTop()
     {
         var root = Layout("<div style='position:relative;width:200px;height:100px'><div id='a' style='position:absolute;left:0;top:10px;width:10px;height:30px'></div></div>");
@@ -178,6 +179,7 @@ public sealed class HeightIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#abs-non-replaced-height")]
+    [Spec("css-position-3", "#abs-non-replaced-height")]
     public void Absolute_WithBottomAndHeight_IsPlacedAtBottom()
     {
         var root = Layout("<div style='position:relative;width:200px;height:100px'><div id='a' style='position:absolute;left:0;bottom:10px;width:10px;height:30px'></div></div>");
@@ -187,6 +189,7 @@ public sealed class HeightIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#abs-non-replaced-height")]
+    [Spec("css-position-3", "#abs-non-replaced-height")]
     public void Absolute_WithAutoHeight_IsAsTallAsItsContent()
     {
         var root = Layout("<div style='position:relative;width:200px;height:100px'><div id='a' style='position:absolute;left:0;top:0;width:100px'>x</div></div>");
@@ -197,6 +200,8 @@ public sealed class HeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#abs-non-replaced-height")]
+    [Spec("css-position-3", "#abs-non-replaced-height")]
+    [Spec("css-position-3", "#abspos-auto-size")]
     public void Absolute_WithTopAndBottom_StretchesTheAutoHeight()
     {
         var root = Layout("<div style='position:relative;width:200px;height:100px'><div id='a' style='position:absolute;left:0;top:10px;bottom:30px;width:10px'></div></div>");
@@ -206,6 +211,7 @@ public sealed class HeightIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#abs-replaced-height")]
+    [Spec("css-position-3", "#abs-replaced-height")]
     public void AbsoluteImage_KeepsItsIntrinsicHeight()
     {
         var root = TestImages.Layout($"<div style='position:relative;width:200px;height:100px'><img id='i' style='position:absolute;left:0;top:0' src='{Image}'></div>");

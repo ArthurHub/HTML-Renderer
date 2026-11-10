@@ -11,6 +11,7 @@ public sealed class RelativePositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#choose-position")]
+    [Spec("css-position-3", "#position-property")]
     public void PositionStatic_IgnoresTheBoxOffsets()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -24,6 +25,7 @@ public sealed class RelativePositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#relative-positioning")]
+    [Spec("css-position-3", "#relpos-insets")]
     public void LeftAndTop_MoveTheBoxRightAndDown()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -37,6 +39,7 @@ public sealed class RelativePositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#relative-positioning")]
+    [Spec("css-position-3", "#relpos-insets")]
     public void RightAlone_MovesTheBoxLeft()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -47,6 +50,7 @@ public sealed class RelativePositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#relative-positioning")]
+    [Spec("css-position-3", "#relpos-insets")]
     public void LeftAndRight_LeftWinsInLtr()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -58,6 +62,7 @@ public sealed class RelativePositioningIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#relative-positioning")]
+    [Spec("css-position-3", "#relpos-insets")]
     public void LeftAndRight_RightWinsInRtl()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -68,6 +73,7 @@ public sealed class RelativePositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#relative-positioning")]
+    [Spec("css-position-3", "#relpos-insets")]
     public void TopAndBottom_TopWins()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -78,6 +84,7 @@ public sealed class RelativePositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#relative-positioning")]
+    [Spec("css-position-3", "#relpos-insets")]
     public void RelativeOffset_KeepsTheBoxSize()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -88,6 +95,7 @@ public sealed class RelativePositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#position-props")]
+    [Spec("css-position-3", "#insets")]
     public void NegativeOffsets_AreAllowed()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -102,6 +110,7 @@ public sealed class RelativePositioningIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#position-props")]
+    [Spec("css-position-3", "#insets")]
     public void PercentageLeft_RefersToTheContainingBlockWidth()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -113,6 +122,7 @@ public sealed class RelativePositioningIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#position-props")]
+    [Spec("css-position-3", "#insets")]
     public void PercentageTop_RefersToTheContainingBlockHeight()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -124,6 +134,7 @@ public sealed class RelativePositioningIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#relative-positioning")]
+    [Spec("css-position-3", "#relpos-insets")]
     public void RelativeInline_MovesItsText()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

@@ -5,97 +5,116 @@ snapshot: https://www.w3.org/TR/2025/WD-css-position-3-20251007/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
+    status: n/a
   '#position-property':
     title: '2 Choosing A Positioning Scheme: position property'
-    status: unknown
+    status: partial
+    gaps:
+      - "Absolutely positioned boxes aren't blockified and 'float' isn't computed to none, see CSS 2.1 9.7"
   '#def-cb':
     title: 2.1 Containing Blocks of Positioned Boxes
-    status: unknown
+    status: partial
+    gaps:
+      - An absolutely positioned box is placed against the content edge of its containing block instead of the padding edge
   '#original-cb':
     title: 2.1.1 Further Adjustments to the Containing Block
-    status: unknown
+    status: unsupported
   '#stacking':
     title: 2.2 Painting Order and Stacking Contexts
-    status: unknown
+    status: partial
+    gaps:
+      - "'z-index' is ignored and positioned boxes form no stacking contexts, see CSS 2.1 9.9.1"
+      - Relatively positioned boxes paint with the normal flow, see CSS 2.1 E.2
   '#coords':
     title: 3 Positioning Coordinates
-    status: unknown
+    status: partial
   '#insets':
     title: '3.1 Box Insets: the top, right, bottom, left, inset-block-start, inset-inline-start, inset-block-end, and inset-inline-end properties'
-    status: unknown
+    status: partial
+    gaps:
+      - Percentage insets of a relatively positioned box resolve against its own size, see CSS 2.1 9.3.2
+      - "'right' and 'bottom' of a fixed box are ignored, see CSS 2.1 9.6.1"
+      - inset-inline-start and inset-inline-end always map to left and right, also in rtl
+      - The flow-relative longhands are declared as the physical property they map to, looking one up by its own name gives nothing
   '#inset-shorthands':
     title: '3.2 Box Insets Shorthands: the inset-block, inset-inline, and inset properties'
-    status: unknown
+    status: supported
   '#relpos-insets':
     title: 3.3 Relative Positioning
-    status: unknown
+    status: partial
+    gaps:
+      - Relative positioning of inline boxes is ignored, see CSS 2.1 9.4.3
+      - When 'left' and 'right' are both set, 'left' wins even if the containing block is rtl
+      - A relatively positioned table row doesn't shift its cells
   '#stickypos-insets':
     title: 3.4 Sticky positioning
-    status: unknown
+    status: unsupported
+    gaps:
+      - A sticky box stays at its in-flow position, its insets are ignored
   '#stickypos-scroll':
     title: 3.4.1 Scroll Position of Sticky-Positioned Boxes
-    status: unknown
+    status: n/a
   '#abspos-insets':
     title: 3.5 Absolute (and Fixed) Positioning
-    status: unknown
+    status: partial
   '#resolving-insets':
     title: 3.5.1 Resolvings Insets for the “Inset-Modified Containing Block”
-    status: unknown
+    status: partial
+    gaps:
+      - With both insets in an axis auto, the box goes to the containing block's edge instead of its static position, see 3.5.2
   '#staticpos-rect':
     title: 3.5.2 Calculating the Static Position and the “Static-Position Rectangle”
-    status: unknown
+    status: unsupported
+    gaps:
+      - No static position, auto insets resolve to the containing block's content edge
   '#abspos-breaking':
     title: 3.5.3 Fragmenting Absolutely-positioned Elements
-    status: unknown
+    status: partial
+    gaps:
+      - An absolutely positioned box in a table cell loses one of its lines in paged output
   '#abspos-layout':
     title: 4 Absolute Positioning Layout Model
-    status: unknown
+    status: partial
+    gaps:
+      - Percentages resolve against the parent instead of the containing block, see CSS 2.1 10.1
   '#abspos-auto-size':
     title: 4.1 Automatic Sizes of Absolutely-Positioned Boxes
-    status: unknown
+    status: partial
+    gaps:
+      - With both insets set, an auto size is its content size instead of the stretch-fit size
+      - The fit-content width is computed before the content is measured, see CSS 2.1 10.3.7
   '#abspos-margins':
     title: 4.2 Auto Margins of Absolutely-Positioned Boxes
-    status: unknown
+    status: partial
+    gaps:
+      - Auto margins compute to 0 even with both insets set, the box is never centered
   '#abspos-alignment':
     title: 5 Self-Alignment of Absolutely Positioned Boxes
-    status: unknown
+    status: partial
+    gaps:
+      - "'justify-self' and 'align-self' are ignored"
   '#abspos-old':
     title: 6 Old Absolute Positioning Layout Model
-    status: unknown
+    status: partial
   '#abs-non-replaced-width':
     title: 6.1 The Width of Absolutely-Positioned, Non-Replaced Elements
-    status: unknown
+    status: partial
+    gaps:
+      - Auto widths and auto margins don't follow the constraint equation, see CSS 2.1 10.3.7
   '#abs-replaced-width':
     title: 6.2 The width of absolute or fixed positioned, replaced elements
-    status: unknown
+    status: supported
   '#abs-non-replaced-height':
     title: 6.3 The Height Of Absolutely Positioned, Non-Replaced Elements
-    status: unknown
+    status: partial
+    gaps:
+      - With 'top' and 'bottom' set, an auto height is the content height, see CSS 2.1 10.6.4
   '#abs-replaced-height':
     title: 6.4 The Height Of Absolutely Positioned, Replaced Elements
-    status: unknown
+    status: supported
   '#comparison':
     title: 7 Informative Comparison of Normal Flow, Floats, and Positioning
-    status: unknown
-  '#comp-normal-flow':
-    title: 7.1 Normal Flow Example
-    status: unknown
-  '#comp-relpos':
-    title: 7.2 Relative Positioning Example
-    status: unknown
-  '#comp-floating':
-    title: 7.3 Floating Example
-    status: unknown
-  '#comp-abspos':
-    title: 7.4 Absolute Positioning Example
-    status: unknown
+    status: n/a
   '#ack':
     title: 8 Acknowledgments
-    status: unknown
+    status: n/a

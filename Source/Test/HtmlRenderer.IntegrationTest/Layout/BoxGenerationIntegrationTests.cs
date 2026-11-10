@@ -232,6 +232,7 @@ public sealed class BoxGenerationIntegrationTests
     [TestMethod]
     [Spec("css21", "visuren.html#dis-pos-flo")]
     [Spec("css-display-3", "#transformations")]
+    [Spec("css-position-3", "#position-property")]
     public void AbsolutelyPositionedInline_IsBlockified()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -246,6 +247,7 @@ public sealed class BoxGenerationIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#dis-pos-flo")]
+    [Spec("css-position-3", "#position-property")]
     public void AbsolutePosition_ComputesFloatToNone()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

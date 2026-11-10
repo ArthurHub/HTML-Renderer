@@ -10,6 +10,7 @@ public sealed class AbsolutePositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#relative-positioning")]
+    [Spec("css-position-3", "#relpos-insets")]
     public void PositionRelative_BottomOffset_MovesBoxOppositeDirection()
     {
         var html = LayoutHarness.Wrap("<div id='t' style='position:relative; bottom:10px; width:10px; height:10px;'></div>");
@@ -21,6 +22,7 @@ public sealed class AbsolutePositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#relative-positioning")]
+    [Spec("css-position-3", "#relpos-insets")]
     public void PositionRelative_Offset_DoesNotAffectParentHeightOrFollowingSibling()
     {
         var html = LayoutHarness.Wrap(
@@ -72,6 +74,7 @@ public sealed class AbsolutePositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#position-props")]
+    [Spec("css-position-3", "#insets")]
     public void PositionAbsolute_BottomOffset_PositionsRelativeToContainingBlockBottomEdge()
     {
         var html = LayoutHarness.Wrap(
@@ -86,6 +89,7 @@ public sealed class AbsolutePositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#position-props")]
+    [Spec("css-position-3", "#insets")]
     public void PositionAbsolute_WithMarginAndBorderedContainingBlock_AppliesBothCorrectly()
     {
         var html = LayoutHarness.Wrap(
@@ -101,6 +105,7 @@ public sealed class AbsolutePositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#fixed-positioning")]
+    [Spec("css-position-3", "#position-property")]
     public void PositionFixed_WithMargin_AppliesMarginOnTopOfOffset()
     {
         var html = LayoutHarness.Wrap(
@@ -113,12 +118,9 @@ public sealed class AbsolutePositioningIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css-position-3", "#abspos-auto-size")]
     public void PositionAbsoluteAutoWidth_ShrinksToWidestChild_NotSumOfSiblingBorders()
     {
-        // Three siblings under an absolutely-positioned, auto-width parent: #text (real content, ~short),
-        // #border1 (80px combined border, no content), #border2 (60px combined border, no content) - the
-        // correct shrink-to-fit width is #border1's own ~80px (the widest single line), not #border1 +
-        // #border2's borders summed together (~140px).
         var html = LayoutHarness.Wrap(
             "<div id='container' style='position:relative; width:400px;'>"
             + "<div id='target' style='position:absolute;'>"
@@ -131,12 +133,12 @@ public sealed class AbsolutePositioningIntegrationTests
 
         var targetWidth = target.ActualRight - target.Location.X;
 
-        // Allow a little headroom above 80 for #text's own (much smaller) content contribution.
         Assert.IsTrue(targetWidth is >= 79 and <= 100,
             $"expected shrink-to-fit width near 80px (the widest single sibling), was {targetWidth}");
     }
 
     [TestMethod]
+    [Spec("css-position-3", "#abspos-auto-size")]
     public void PositionAbsoluteAutoWidth_MultipleExplicitWidthSiblings_TakesWidestNotSum()
     {
         var html = LayoutHarness.Wrap(
@@ -150,17 +152,15 @@ public sealed class AbsolutePositioningIntegrationTests
 
         var targetWidth = target.ActualRight - target.Location.X;
 
-        // The widest single sibling (100px) should win - the buggy summed-across-siblings result would be
-        // at least 100+90=190px.
         Assert.IsTrue(targetWidth is >= 99 and <= 105,
             $"expected shrink-to-fit width near 100px (the widest single sibling), was {targetWidth}");
     }
 
     [TestMethod]
+    [Spec("css-position-3", "#abspos-auto-size")]
     public void PositionAbsoluteAutoWidth_NonReplacedInlineChildsExplicitWidth_HasNoEffect()
     {
-        // Per CSS2.1 10.3.3, `width` has no effect on a non-replaced inline-level box - its explicit width
-        // must not be folded into an ancestor's shrink-to-fit computation.
+        // 'width' doesn't apply to non-replaced inline boxes (CSS 2.1 §10.3.1)
         var html = LayoutHarness.Wrap(
             "<div id='container' style='position:relative; width:400px;'>"
             + "<div id='target' style='position:absolute;'>"

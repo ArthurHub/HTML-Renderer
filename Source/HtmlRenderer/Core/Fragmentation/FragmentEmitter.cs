@@ -49,7 +49,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             var lastSlot = _container.PageIndexOf(Math.Max(0, root.ActualBottom - Epsilon));
             var fragmentainers = new List<FragmentainerFragment>();
 
-            // A fixed box repeats on every page (css-position-3). Its Location is already page-relative,
+            // A fixed box repeats on every page (CSS Position 3 §2.1). Its Location is already page-relative,
             // so it's built against a band starting at 0 on every page.
             var fixedRoots = new List<CssBox>();
             CollectFixedRoots(root, fixedRoots);
@@ -86,10 +86,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         }
 
         /// <summary>
-        /// Finds every <c>position:fixed</c> box in the tree, at any nesting depth - each one gets its
-        /// own independent repeat-per-page treatment in <see cref="Finish"/>, regardless of whether it's
-        /// nested inside another fixed box (rare, but each still resolves its own page-relative position
-        /// independently per css-position-3, so neither should be folded into the other's subtree).
+        /// Finds every <c>position:fixed</c> box in the tree, at any depth. A fixed box nested in another one
+        /// is repeated on its own, as it resolves its page-relative position independently.
         /// </summary>
         private static void CollectFixedRoots(CssBox box, List<CssBox> into)
         {

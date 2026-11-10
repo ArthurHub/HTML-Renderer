@@ -25,7 +25,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         internal static void ApplyLineBreaking(CssBox blockBox)
         {
             var container = blockBox.HtmlContainer;
-            // A fixed box repeats on every page in page coordinates and isn't paginated (css-position-3).
+            // A fixed box repeats on every page and isn't paginated (CSS Position 3 §3.5.3)
             if (container == null || !container.HasRealPageGrid || blockBox.IsFixed)
                 return;
 

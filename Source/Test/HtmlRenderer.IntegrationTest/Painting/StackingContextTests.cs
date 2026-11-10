@@ -35,6 +35,7 @@ public sealed class StackingContextTests
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
     [Spec("css21", "visuren.html#z-index")]
+    [Spec("css-position-3", "#stacking")]
     public void AbsoluteBox_PaintsAfterLaterInFlowSiblings()
     {
         var g = Paint("<div style='position:relative'>"
@@ -47,6 +48,7 @@ public sealed class StackingContextTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#z-index")]
+    [Spec("css-position-3", "#stacking")]
     public void HigherZIndex_PaintsInFrontRegardlessOfDocumentOrder()
     {
         var g = Paint("<div style='position:absolute;z-index:2;top:0;left:0;width:50px;height:50px;background:rgb(255,0,0)'></div>"
@@ -83,6 +85,7 @@ public sealed class StackingContextTests
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
     [Spec("css21", "visuren.html#z-index")]
+    [Spec("css-position-3", "#stacking")]
     public void RelativeBox_PaintsAfterLaterInFlowSiblings()
     {
         var g = Paint("<div style='position:relative;height:20px;background:rgb(255,0,0)'></div>"

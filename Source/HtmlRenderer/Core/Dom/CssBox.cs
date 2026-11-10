@@ -933,7 +933,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                             var leftIsAuto = string.IsNullOrEmpty(Left) || Left == CssConstants.Auto;
                             var rightIsAuto = string.IsNullOrEmpty(Right) || Right == CssConstants.Auto;
 
-                            // Offsets are from the containing block's padding edge (CSS 2.1 §10.1). 'bottom'
+                            // CSS Position 3 §2.1 wants the padding edge, this uses the content edge. An auto
+                            // inset falls back to that edge too, not to the static position (§3.5.2). 'bottom'
                             // needs the height and is applied after ApplyHeight.
                             var absLeft = !leftIsAuto
                                 ? nearestPositionedAncestor.ClientLeft + ActualMarginLeft

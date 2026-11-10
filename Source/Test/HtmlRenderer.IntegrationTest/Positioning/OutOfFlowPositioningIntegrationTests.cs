@@ -11,6 +11,7 @@ public sealed class OutOfFlowPositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#absolute-positioning")]
+    [Spec("css-position-3", "#position-property")]
     public void PositionAbsolute_HasNoImpactOnLaterSiblings()
     {
         var html = LayoutHarness.Wrap(
@@ -42,6 +43,7 @@ public sealed class OutOfFlowPositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#absolute-positioning")]
+    [Spec("css-position-3", "#def-cb")]
     public void PositionAbsolute_EstablishesTheContainingBlockForAbsoluteDescendants()
     {
         var html = LayoutHarness.Wrap(
@@ -55,7 +57,8 @@ public sealed class OutOfFlowPositioningIntegrationTests
     }
 
     [TestMethod]
-    [Spec("css21", "visuren.html#absolute-positioning")]
+    [Spec("css21", "visudet.html#containing-block-details")]
+    [Spec("css-position-3", "#def-cb")]
     public void PositionAbsolute_WithoutPositionedAncestor_UsesTheInitialContainingBlock()
     {
         var html = "<html><head></head><body style='margin:30px'><div style='margin:40px'>"
@@ -83,6 +86,7 @@ public sealed class OutOfFlowPositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#position-props")]
+    [Spec("css-position-3", "#insets")]
     public void PositionAbsolute_RightOffset_PositionsRelativeToContainingBlockRightEdge()
     {
         var html = LayoutHarness.Wrap(
@@ -97,6 +101,7 @@ public sealed class OutOfFlowPositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#position-props")]
+    [Spec("css-position-3", "#insets")]
     public void PositionAbsolute_PercentageOffsets_ReferToTheContainingBlock()
     {
         var html = LayoutHarness.Wrap(
@@ -112,6 +117,7 @@ public sealed class OutOfFlowPositioningIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#fixed-positioning")]
+    [Spec("css-position-3", "#def-cb")]
     public void PositionFixed_IgnoresPositionedAncestors()
     {
         var html = LayoutHarness.Wrap(
@@ -127,6 +133,7 @@ public sealed class OutOfFlowPositioningIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#fixed-positioning")]
+    [Spec("css-position-3", "#insets")]
     public void PositionFixed_RightAndBottom_AnchorToTheViewport()
     {
         var html = LayoutHarness.Wrap("<div id='t' style='position:fixed;right:10px;bottom:20px;width:30px;height:40px'></div>");

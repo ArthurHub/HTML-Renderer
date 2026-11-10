@@ -31,6 +31,8 @@ public sealed class FixedPositionRepeatsPerPageTest
 
     [TestMethod]
     [Spec("css21", "visuren.html#fixed-positioning")]
+    [Spec("css-position-3", "#def-cb")]
+    [Spec("css-position-3", "#abspos-breaking")]
     public async Task TopLeftFixedElement_RepeatsIdenticallyOnEveryPage()
     {
         using var wrapper = new HtmlContainer();
