@@ -50,7 +50,9 @@ public sealed class GeneratedContentModuleTests
     [TestMethod]
     [Ignore("Gap, see Spec/css-content-3.yml")]
     [Spec("css-content-3", "#string-set")]
+    [Spec("css-gcpm-3", "#setting-named-strings-the-string-set-pro")]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void StringFunction_InsertsTheNamedString()
     {
         var html = "<h1 style='string-set: title \"Loomings\"'>a</h1><p id=x>b</p><style>#x::before { content: '[' string(title) ']' }</style>";
@@ -61,6 +63,7 @@ public sealed class GeneratedContentModuleTests
     [TestMethod]
     [Ignore("Gap, see Spec/css-content-3.yml")]
     [Spec("css-content-3", "#content-function")]
+    [Spec("css-gcpm-3", "#content-function-header")]
     public void ContentFunction_InsertsTheElementText()
     {
         Assert.AreEqual("[abc]", Before("<p id=x>abc</p><style>#x::before { content: '[' content(text) ']' }</style>").Text);

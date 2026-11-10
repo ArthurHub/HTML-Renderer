@@ -11,6 +11,7 @@ public sealed class StringSetPropertyTests
 {
     [TestMethod]
     [Spec("css-content-3", "#string-set")]
+    [Spec("css-gcpm-3", "#setting-named-strings-the-string-set-pro")]
     public void StringSetNoneLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: none");
@@ -25,6 +26,7 @@ public sealed class StringSetPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-set")]
+    [Spec("css-gcpm-3", "#setting-named-strings-the-string-set-pro")]
     public void StringSetSimpleTextLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: chapter content(text)");
@@ -39,6 +41,7 @@ public sealed class StringSetPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-set")]
+    [Spec("css-gcpm-3", "#setting-named-strings-the-string-set-pro")]
     public void StringSetWithStringLiteral()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: header \"Page \" counter(page)");
@@ -53,6 +56,7 @@ public sealed class StringSetPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-set")]
+    [Spec("css-gcpm-3", "#setting-named-strings-the-string-set-pro")]
     public void StringSetWithAttrFunction()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: title attr(title)");
@@ -67,6 +71,7 @@ public sealed class StringSetPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-set")]
+    [Spec("css-gcpm-3", "#setting-named-strings-the-string-set-pro")]
     public void StringSetContentBefore()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: heading content(before) \":\" content(text)");
@@ -81,6 +86,7 @@ public sealed class StringSetPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-set")]
+    [Spec("css-gcpm-3", "#setting-named-strings-the-string-set-pro")]
     public void StringSetContentAfter()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: heading content(after)");
@@ -95,20 +101,22 @@ public sealed class StringSetPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-set")]
+    [Spec("css-gcpm-3", "#setting-named-strings-the-string-set-pro")]
     public void StringSetContentFirstLetter()
     {
-        var property = CssConstructionFunctions.ParseDeclaration("string-set: initial content(first-letter)");
+        var property = CssConstructionFunctions.ParseDeclaration("string-set: heading content(first-letter)");
         Assert.AreEqual("string-set", property.Name);
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<StringSetProperty>(property);
         var concrete = (StringSetProperty)property;
         Assert.IsFalse(concrete.IsInherited);
         Assert.IsTrue(concrete.HasValue);
-        Assert.AreEqual("initial content(first-letter)", concrete.Value);
+        Assert.AreEqual("heading content(first-letter)", concrete.Value);
     }
 
     [TestMethod]
     [Spec("css-content-3", "#string-set")]
+    [Spec("css-gcpm-3", "#setting-named-strings-the-string-set-pro")]
     public void StringSetMultiplePairs()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: header content(text), footer counter(page)");
@@ -123,6 +131,7 @@ public sealed class StringSetPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-set")]
+    [Spec("css-gcpm-3", "#setting-named-strings-the-string-set-pro")]
     public void StringSetInvalidNoContentListIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: header");
@@ -136,6 +145,7 @@ public sealed class StringSetPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-set")]
+    [Spec("css-gcpm-3", "#setting-named-strings-the-string-set-pro")]
     public void StringSetInvalidNumberIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: 123 content(text)");
@@ -144,6 +154,20 @@ public sealed class StringSetPropertyTests
         Assert.IsInstanceOfType<StringSetProperty>(property);
         var concrete = (StringSetProperty)property;
         Assert.IsFalse(concrete.IsInherited);
+        Assert.IsFalse(concrete.HasValue);
+    }
+
+    // A CSS-wide keyword isn't a <custom-ident>.
+    [TestMethod]
+    [Ignore("Gap, see Spec/css-content-3.yml")]
+    [Spec("css-content-3", "#string-set")]
+    [Spec("css-gcpm-3", "#setting-named-strings-the-string-set-pro")]
+    public void StringSetCssWideKeywordNameIllegal()
+    {
+        var property = CssConstructionFunctions.ParseDeclaration("string-set: initial content(text)");
+        Assert.AreEqual("string-set", property.Name);
+        Assert.IsInstanceOfType<StringSetProperty>(property);
+        var concrete = (StringSetProperty)property;
         Assert.IsFalse(concrete.HasValue);
     }
 }

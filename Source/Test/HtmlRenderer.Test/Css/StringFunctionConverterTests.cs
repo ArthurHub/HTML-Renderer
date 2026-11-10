@@ -11,7 +11,7 @@ namespace HtmlRenderer.Test.Css;
 public sealed class StringFunctionConverterTests
 {
     [TestMethod]
-    [Spec("css-content-3", "#string-function")]
+    [Spec("css-syntax-3", "#consume-function")]
     public void StringFunction_WithNameOnly_ParsesCorrectly()
     {
         const string input = "string(chapter)";
@@ -32,7 +32,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
-    [Spec("css-content-3", "#string-function")]
+    [Spec("css-syntax-3", "#consume-function")]
     public void StringFunction_WithFirstKeyword_ParsesCorrectly()
     {
         const string input = "string(chapter, first)";
@@ -55,7 +55,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
-    [Spec("css-content-3", "#string-function")]
+    [Spec("css-syntax-3", "#consume-function")]
     public void StringFunction_WithLastKeyword_ParsesCorrectly()
     {
         const string input = "string(chapter, last)";
@@ -72,7 +72,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
-    [Spec("css-content-3", "#string-function")]
+    [Spec("css-syntax-3", "#consume-function")]
     public void StringFunction_WithStartKeyword_ParsesCorrectly()
     {
         const string input = "string(chapter, start)";
@@ -89,7 +89,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
-    [Spec("css-content-3", "#string-function")]
+    [Spec("css-syntax-3", "#consume-function")]
     public void StringFunction_WithFirstExceptKeyword_ParsesCorrectly()
     {
         const string input = "string(chapter, first-except)";
@@ -106,7 +106,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
-    [Spec("css-content-3", "#string-function")]
+    [Spec("css-syntax-3", "#consume-function")]
     public void StringFunction_WithHyphenatedName_ParsesCorrectly()
     {
         const string input = "string(my-chapter-title)";
@@ -122,7 +122,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
-    [Spec("css-content-3", "#string-function")]
+    [Spec("css-syntax-3", "#consume-function")]
     public void StringFunction_WithUnderscoreName_ParsesCorrectly()
     {
         const string input = "string(chapter_title)";
@@ -139,6 +139,7 @@ public sealed class StringFunctionConverterTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void StringFunction_InContentProperty_ParsesCorrectly()
     {
         const string input = "content: string(chapter)";
@@ -152,6 +153,7 @@ public sealed class StringFunctionConverterTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void StringFunction_CombinedWithStringLiteral_ParsesCorrectly()
     {
         const string input = "content: \"Chapter: \" string(chapter)";
@@ -165,6 +167,7 @@ public sealed class StringFunctionConverterTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void StringFunction_CombinedWithCounter_ParsesCorrectly()
     {
         const string input = "content: string(chapter) \" - Page \" counter(page)";
@@ -178,6 +181,7 @@ public sealed class StringFunctionConverterTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void StringFunction_MultipleInContent_ParsesCorrectly()
     {
         const string input = "content: string(chapter) \" / \" string(section)";
@@ -190,7 +194,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
-    [Spec("css-content-3", "#string-function")]
+    [Spec("css-syntax-3", "#consume-function")]
     public void StringFunction_WithWhitespaceAroundComma_ParsesCorrectly()
     {
         const string input = "string(chapter , last)";
@@ -207,7 +211,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
-    [Spec("css-content-3", "#string-function")]
+    [Spec("css-syntax-3", "#consume-function")]
     public void StringFunction_CaseInsensitiveKeyword_ParsesCorrectly()
     {
         const string input = "string(chapter, LAST)";

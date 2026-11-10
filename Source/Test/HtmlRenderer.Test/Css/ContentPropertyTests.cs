@@ -53,6 +53,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#content-function")]
+    [Spec("css-gcpm-3", "#content-function-header")]
     public void CssContentParseContentFunctionText()
     {
         var source = "a::before{content:content(text)}";
@@ -62,6 +63,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#content-function")]
+    [Spec("css-gcpm-3", "#content-function-header")]
     public void CssContentParseContentFunctionBefore()
     {
         var source = "a::before{content:content(before)}";
@@ -71,6 +73,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#content-function")]
+    [Spec("css-gcpm-3", "#content-function-header")]
     public void CssContentParseContentFunctionAfter()
     {
         var source = "a::before{content:content(after)}";
@@ -80,6 +83,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#content-function")]
+    [Spec("css-gcpm-3", "#content-function-header")]
     public void CssContentParseContentFunctionFirstLetter()
     {
         var source = "a::before{content:content(first-letter)}";
@@ -89,6 +93,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#content-function")]
+    [Spec("css-gcpm-3", "#content-function-header")]
     public void CssContentParseContentFunctionWithString()
     {
         var source = "a::before{content:\"Chapter \" content(text)}";
@@ -98,6 +103,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#content-function")]
+    [Spec("css-gcpm-3", "#content-function-header")]
     public void CssContentParseContentFunctionWithCounter()
     {
         var source = "a::before{content:content(before) \" - \" counter(page)}";
@@ -107,6 +113,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void CssContentParseStringFunction()
     {
         var source = "a::before{content:string(chapter)}";
@@ -116,6 +123,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void CssContentParseStringFunctionWithFirstKeyword()
     {
         var source = "a::before{content:string(chapter, first)}";
@@ -125,6 +133,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void CssContentParseStringFunctionWithLastKeyword()
     {
         var source = "a::before{content:string(chapter, last)}";
@@ -134,6 +143,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void CssContentParseStringFunctionWithStartKeyword()
     {
         var source = "a::before{content:string(chapter, start)}";
@@ -143,6 +153,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void CssContentParseStringFunctionWithFirstExceptKeyword()
     {
         var source = "a::before{content:string(chapter, first-except)}";
@@ -152,6 +163,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void CssContentParseStringFunctionWithStringLiteral()
     {
         var source = "a::before{content:\"Chapter: \" string(chapter)}";
@@ -161,6 +173,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void CssContentParseStringFunctionWithCounter()
     {
         var source = "a::before{content:string(chapter) \" - Page \" counter(page)}";
@@ -170,6 +183,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void CssContentParseMultipleStringFunctions()
     {
         var source = "a::before{content:string(chapter) \" / \" string(section)}";
@@ -179,6 +193,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void CssContentParseStringFunctionWithContentFunction()
     {
         var source = "a::before{content:string(chapter) \": \" content(text)}";
@@ -188,6 +203,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void CssContentParseStringFunctionWithAttr()
     {
         var source = "a::before{content:string(chapter) \" - \" attr(title)}";
@@ -197,6 +213,7 @@ public sealed class ContentPropertyTests
 
     [TestMethod]
     [Spec("css-content-3", "#string-function")]
+    [Spec("css-gcpm-3", "#using-named-strings")]
     public void CssContentParseComplexCombination()
     {
         var source = "a::before{content:\"Part \" string(part, first) \" - Chapter \" string(chapter) \" (Page \" counter(page) \")\"}";

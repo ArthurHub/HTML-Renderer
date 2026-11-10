@@ -5,85 +5,108 @@ snapshot: https://www.w3.org/TR/2024/WD-css-gcpm-3-20240125/
 sections:
   '#running-headers-and-footers':
     title: 1 Running headers and footers
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Page-margin boxes aren't rendered, so nothing can show a running header or footer, see css-page-3 5
   '#named-strings':
     title: 1.1 Named strings
-    status: unknown
+    status: parsed-only
   '#setting-named-strings-the-string-set-pro':
     title: 1.1.1 The string-set property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - string-set never assigns a named string, see css-content-3 2.7.1
+      - A CSS-wide keyword is accepted as the name, see css-content-3 2.7.1
   '#content-function-header':
     title: 1.1.1.1 The content() function
-    status: unknown
+    status: parsed-only
+    gaps:
+      - content() inserts nothing, see css-content-3 2.7.3
   '#using-named-strings':
     title: 1.1.2 The string() function
-    status: unknown
+    status: parsed-only
+    gaps:
+      - string() inserts nothing, see css-content-3 2.7.2
   '#running-elements':
     title: 1.2 Running elements
-    status: unknown
+    status: unsupported
   '#running-syntax':
     title: 1.2.1 The running() value
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'position: running()' is rejected, the element stays in the flow"
   '#element-syntax':
     title: 1.2.2 The element() value
-    status: unknown
+    status: unsupported
+    gaps:
+      - "element() is rejected by 'content'"
   '#footnotes':
     title: 2 Footnotes
-    status: unknown
+    status: unsupported
   '#footnote-terms':
     title: 2.1 Terminology
-    status: unknown
+    status: n/a
   '#creating-footnotes':
     title: 2.2 Creating footnotes
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'float: footnote' is rejected, the element stays in the flow"
   '#footnote-types':
     title: 2.3 Types of footnotes
-    status: unknown
+    status: unsupported
   '#footnote-area':
     title: 2.4 The footnote area
-    status: unknown
+    status: unsupported
+    gaps:
+      - "No footnote area is created, an @footnote rule is kept like a page-margin box and never rendered"
   '#footnote-area-position':
     title: 2.4.1 Positioning of the footnote area
-    status: unknown
+    status: unsupported
   '#footnote-area-size':
     title: 2.4.2 Size of the footnote area
-    status: unknown
+    status: unsupported
   '#footnote-counters':
     title: 2.5 The Footnote Counter
-    status: unknown
+    status: unsupported
   '#footnote-counter-values':
     title: 2.5.1 Values of the footnote counter
-    status: unknown
+    status: unsupported
   '#resetting-footnote-counter':
     title: 2.5.2 Resetting the footnote counter
-    status: unknown
+    status: unsupported
   '#footnote-call':
     title: 2.6 The footnote-call pseudo-element
-    status: unknown
+    status: unsupported
+    gaps:
+      - "::footnote-call invalidates the selector"
   '#footnote-marker':
     title: 2.7 The footnote-marker pseudo-element
-    status: unknown
+    status: unsupported
+    gaps:
+      - "::footnote-marker invalidates the selector"
   '#footnote-policy':
     title: 2.8 Rendering footnotes and footnote policy
-    status: unknown
+    status: unsupported
   '#future':
     title: 2.9 Future directions
-    status: unknown
+    status: n/a
   '#the-first-page-pseudo-element':
     title: 3 Selecting Pages
-    status: unknown
+    status: unsupported
   '#document-page-selectors':
     title: 3.1 Page Selectors
-    status: unknown
+    status: unsupported
+    gaps:
+      - "An @page rule with :nth() is dropped"
   '#document-sequence-selectors':
     title: 3.2 Page groups
-    status: unknown
+    status: unsupported
   '#leaders':
     title: 4 Leaders (moved)
-    status: unknown
+    status: n/a
   '#cross-references':
     title: 5 Cross-references (moved)
-    status: unknown
+    status: n/a
   '#bookmarks':
     title: 6 Bookmarks (moved)
-    status: unknown
+    status: n/a
