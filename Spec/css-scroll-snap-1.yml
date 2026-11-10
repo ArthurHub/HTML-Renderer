@@ -5,91 +5,77 @@ snapshot: https://www.w3.org/TR/2021/CR-css-scroll-snap-1-20210311/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
+    status: n/a
   '#examples':
     title: 2 Motivating Examples
-    status: unknown
+    status: n/a
   '#overview':
     title: 3 Scroll Snap Model
-    status: unknown
+    status: unsupported
   '#properties-on-the-scroll-container':
     title: '4 Capturing Scroll Snap Areas: Properties on the scroll container'
-    status: unknown
+    status: unsupported
   '#scroll-snap-type':
     title: '4.1 Scroll Snapping Rules: the scroll-snap-type property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'scroll-snap-type' isn't parsed, the viewport of the panel controls never snaps"
   '#snap-axis':
     title: '4.1.1 Scroll Snap Axis: the x, y, block, inline, and both values'
-    status: unknown
+    status: unsupported
   '#snap-strictness':
     title: '4.1.2 Scroll Snap Strictness: the none, proximity, and mandatory values'
-    status: unknown
+    status: unsupported
   '#re-snap':
     title: 4.1.3 Re-snapping After Layout Changes
-    status: unknown
+    status: unsupported
   '#scroll-padding':
     title: '4.2 Scroll Snapport: the scroll-padding property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'scroll-padding' isn't parsed, fragment navigation and ScrollToElement put the target at the top edge of the viewport"
   '#properties-on-the-elements':
     title: '5 Aligning Scroll Snap Areas: Properties on the elements'
-    status: unknown
+    status: unsupported
   '#scroll-margin':
     title: '5.1 Scroll Snapping Area: the scroll-margin property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'scroll-margin' isn't parsed, fragment navigation and ScrollToElement scroll to the border box"
   '#scroll-snap-align':
     title: '5.2 Scroll Snapping Alignment: the scroll-snap-align property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'scroll-snap-align' isn't parsed"
   '#snap-scope':
     title: 5.2.1 Scoping Valid Snap Positions to Visible Boxes
-    status: unknown
+    status: unsupported
   '#snap-overflow':
     title: 5.2.2 Snapping Boxes that Overflow the Scrollport
-    status: unknown
+    status: unsupported
   '#unreachable':
     title: 5.2.3 Unreachable Snap Positions
-    status: unknown
+    status: unsupported
   '#scroll-snap-stop':
     title: '5.3 Scroll Snap Limits: the scroll-snap-stop property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'scroll-snap-stop' isn't parsed"
   '#snap-concepts':
     title: 6 Snapping Mechanics
-    status: unknown
+    status: unsupported
   '#scroll-types':
     title: 6.1 Types of Scrolling Methods
-    status: unknown
+    status: n/a
   '#choosing':
     title: 6.2 Choosing Snap Positions
-    status: unknown
+    status: unsupported
   '#priv-sec':
     title: 7 Privacy and Security Considerations
-    status: unknown
+    status: n/a
   '#acknowledgements':
     title: 8 Acknowledgements
-    status: unknown
+    status: n/a
   '#changes':
     title: 9 Changes
-    status: unknown
-  '#changes-20190319':
-    title: 9.1 Changes Since 19 March 2019 CR
-    status: unknown
-  '#changes-20190131':
-    title: 9.2 Changes Since 31 January 2019 CR
-    status: unknown
-  '#changes-20180814':
-    title: 9.3 Changes Since 14 August 2018 CR
-    status: unknown
-  '#changes-20171214':
-    title: 9.4 Changes Since 14 December 2017 CR
-    status: unknown
-  '#changes-20170824':
-    title: 9.5 Changes Since 24 August 2017 CR
-    status: unknown
-  '#changes-20161020':
-    title: 9.6 Changes Since 20 October 2016 CR
-    status: unknown
+    status: n/a
