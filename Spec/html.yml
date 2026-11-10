@@ -3309,28 +3309,30 @@ sections:
       - listing, plaintext and xmp aren't rendered like pre, see 15.3.3
   iana.html#iana:
     title: 17 IANA considerations
-    status: unknown
+    status: partial
   iana.html#text/html:
     title: 17.1 text/html
-    status: unknown
+    status: partial
+    gaps:
+      - A fragment matches ids case-insensitively and doesn't fall back to the name of an a element, see 4.6.5
   iana.html#multipart/x-mixed-replace:
     title: 17.2 multipart/x-mixed-replace
-    status: unknown
+    status: n/a
   iana.html#application/xhtml+xml:
     title: 17.3 application/xhtml+xml
-    status: unknown
+    status: n/a
   iana.html#text/ping:
     title: 17.4 text/ping
-    status: unknown
+    status: n/a
   iana.html#application/microdata+json:
     title: 17.5 application/microdata+json
-    status: unknown
+    status: n/a
   iana.html#application/speculationrules+json:
     title: 17.6 application/speculationrules+json
-    status: unknown
+    status: n/a
   iana.html#text/event-stream:
     title: 17.7 text/event-stream
-    status: unknown
+    status: n/a
   iana.html#web+-scheme-prefix:
     title: 17.8 web+ scheme prefix
-    status: unknown
+    status: n/a
