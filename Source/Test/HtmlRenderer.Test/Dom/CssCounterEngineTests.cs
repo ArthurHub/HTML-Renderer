@@ -42,6 +42,9 @@ public sealed class CssCounterEngineTests
     [DataRow(0, "upper-roman", "0")]
     [DataRow(-5, "lower-alpha", "-5")]
     [DataRow(0, "lower-greek", "0")]
+    [DataRow(-3, "lower-roman", "-3")]
+    [DataRow(-3, "upper-roman", "-3")]
+    [DataRow(4000, "lower-roman", "4000")]
     public void FormatCounterValue_AlphabeticStyleOutOfRange_FallsBackToDecimal(int number, string style, string expected)
     {
         // Alphabetic/symbolic styles can't represent 0 or negatives; CSS Counter Styles L3 §2 says such
