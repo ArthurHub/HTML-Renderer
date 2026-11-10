@@ -2969,19 +2969,26 @@ sections:
     status: supported
   xhtml.html#the-xhtml-syntax:
     title: 14 The XML syntax
-    status: unknown
+    status: unsupported
+    gaps:
+      - There's no XML parser, every document goes through the HTML parser
   xhtml.html#writing-xhtml-documents:
     title: 14.1 Writing documents in the XML syntax
-    status: unknown
+    status: n/a
   xhtml.html#parsing-xhtml-documents:
     title: 14.2 Parsing XML documents
-    status: unknown
+    status: unsupported
+    gaps:
+      - A document can't be marked as XML, XHTML is parsed as HTML
+      - CDATA sections are parsed as comments, their text isn't shown
+      - Prefixed elements aren't resolved through their namespace declaration
+      - Well-formedness errors aren't fatal
   xhtml.html#serialising-xhtml-fragments:
     title: 14.3 Serializing XML fragments
-    status: unknown
+    status: n/a
   xhtml.html#parsing-xhtml-fragments:
     title: 14.4 Parsing XML fragments
-    status: unknown
+    status: n/a
   rendering.html#rendering:
     title: 15 Rendering
     status: partial
