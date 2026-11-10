@@ -25,6 +25,7 @@ public sealed class ListItemCounterIntegrationTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#text-markers")]
     public void ListStyleTypeSquare_UsesAFilledSquare()
     {
         var html = LayoutHarness.Wrap("<ul style='list-style-type:square'><li id='a'>x</li></ul>");

@@ -103,6 +103,7 @@ public sealed class GeneratedContentTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-lists-3", "#counter-functions")]
     public void CountersFunction_JoinsAllCountersInScope()
     {
         var html = "<div style='counter-reset:c 1'><div style='counter-reset:c 2'><p id=x>a</p></div></div>"
@@ -162,6 +163,7 @@ public sealed class GeneratedContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
+    [Spec("css-lists-3", "#auto-numbering")]
     public void CounterResetAndIncrement_OnTheSameElement_ResetFirst()
     {
         Assert.AreEqual("6", Before("<p id=x style='counter-reset:c 5;counter-increment:c'>a</p><style>#x::before { content: counter(c) }</style>").Text);
@@ -169,6 +171,8 @@ public sealed class GeneratedContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
+    [Spec("css-lists-3", "#counter-reset")]
+    [Spec("css-lists-3", "#increment-set")]
     public void RepeatedCounterName_IsProcessedInOrder()
     {
         Assert.AreEqual("0", Before("<p id=x style='counter-reset:c 2 c'>a</p><style>#x::before { content: counter(c) }</style>").Text);
@@ -177,6 +181,7 @@ public sealed class GeneratedContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
+    [Spec("css-lists-3", "#increment-set")]
     public void ZeroAndNegativeIncrements_AreAllowed()
     {
         Assert.AreEqual("5", Before("<p id=x style='counter-reset:c 5;counter-increment:c 0'>a</p><style>#x::before { content: counter(c) }</style>").Text);
@@ -185,6 +190,7 @@ public sealed class GeneratedContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
+    [Spec("css-lists-3", "#counter-reset")]
     public void CounterReset_FollowsTheCascade()
     {
         var html = "<p id=x>a</p><style>#x { counter-reset: a 5 } #x { counter-reset: b 2 } #x::before { content: counter(a) counter(b) }</style>";
@@ -195,6 +201,7 @@ public sealed class GeneratedContentTests
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
     [Spec("css21", "generate.html#scope")]
+    [Spec("css-lists-3", "#increment-set")]
     public void ChaptersAndSections_AreNumbered()
     {
         var html = "<div style='counter-reset:chapter'>"
@@ -214,6 +221,7 @@ public sealed class GeneratedContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#scope")]
+    [Spec("css-lists-3", "#nested-counters")]
     public void NestedLists_GetANewCounterInstancePerList()
     {
         var html = "<ol><li id=a>i</li><li id=b>i"
@@ -232,6 +240,8 @@ public sealed class GeneratedContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#scope")]
+    [Spec("css-lists-3", "#increment-set")]
+    [Spec("css-lists-3", "#instantiating-counters")]
     public void CounterIncrement_OutOfScope_ResetsTheCounterOnThatElement()
     {
         var html = "<div><p style='counter-increment:c'>a</p><p id=x>b</p></div><style>#x::before { content: counter(c) }</style>";
@@ -248,6 +258,7 @@ public sealed class GeneratedContentTests
     [DataRow("armenian", "Գ")]
     [DataRow("georgian", "გ")]
     [DataRow("decimal-leading-zero", "03")]
+    [Spec("css-lists-3", "#counter-functions")]
     public void Counter_IsFormattedInTheGivenStyle(string style, string expected)
     {
         Assert.AreEqual(expected, Before($"<p id=x style='counter-reset:c 3'>a</p><style>#x::before {{ content: counter(c, {style}) }}</style>").Text);
@@ -256,6 +267,7 @@ public sealed class GeneratedContentTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "generate.html#counter-styles")]
+    [Spec("css-lists-3", "#counter-functions")]
     public void Counter_WithGlyphOrNoneStyle_UsesTheGlyphOrNothing()
     {
         Assert.AreEqual("[]", Before("<p id=x style='counter-reset:c 3'>a</p><style>#x::before { content: '[' counter(c, none) ']' }</style>").Text);
@@ -265,6 +277,7 @@ public sealed class GeneratedContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#undisplayed-counters")]
+    [Spec("css-lists-3", "#counters-without-boxes")]
     public void HiddenElement_StillIncrements()
     {
         var html = "<div><p style='counter-reset:c'>a</p><p style='counter-increment:c;visibility:hidden'>b</p><p id=x>c</p></div>"
@@ -276,6 +289,7 @@ public sealed class GeneratedContentTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "generate.html#undisplayed-counters")]
+    [Spec("css-lists-3", "#counters-without-boxes")]
     public void PseudoElementThatIsNotGenerated_DoesNotIncrement()
     {
         var html = "<div style='counter-reset:c'><p id=a>a</p><p id=x>b</p></div>"

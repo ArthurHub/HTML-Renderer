@@ -18,7 +18,7 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Dom
 {
     /// <summary>
-    /// Counters (CSS 2.1 §12.4), resolved into a per-box snapshot that <c>content: counter()</c> reads.
+    /// Counters (CSS 2.1 §12.4, CSS Lists 3 §4), resolved into a per-box snapshot that <c>content: counter()</c> reads.
     /// </summary>
     internal static class CssCounterEngine
     {
@@ -32,8 +32,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Each counter name maps to a stack of instances, one per nested scope (CSS 2.1 §12.4.1).
-        /// A reset's instance is popped again once all its siblings are done.
+        /// Each counter name maps to a stack of instances, one per nested scope (CSS Lists 3 §4.3).
+        /// A reset's instance is popped again once all its siblings are done. Values carry over in tree
+        /// order because every box writes into the same instance (CSS Lists 3 §4.4.1).
         /// </summary>
         private static void ResolveSiblings(IEnumerable<CssBox> boxes, Dictionary<string, List<int>> counters)
         {
@@ -74,6 +75,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
         private static void ApplyCounterIncrement(CssBox box, Dictionary<string, List<int>> counters, HashSet<string> created)
         {
+            // CSS Lists 3 §4.6
             if (box.Display == CssConstants.ListItem && !CounterNameAppears(box.CounterIncrement, CssConstants.ListItem))
             {
                 Increment(counters, created, CssConstants.ListItem, 1);
@@ -86,7 +88,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
         private static void Reset(Dictionary<string, List<int>> counters, HashSet<string> created, string name, int value)
         {
-            // A second reset among the same siblings replaces that instance instead of nesting a new one.
+            // A second reset among the same siblings replaces that instance instead of nesting a new one
+            // (CSS Lists 3 §4.4.2).
             if (created.Add(name))
             {
                 if (!counters.TryGetValue(name, out var instances))
@@ -102,7 +105,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
         private static void Increment(Dictionary<string, List<int>> counters, HashSet<string> created, string name, int value)
         {
-            // Not in scope, reset it to 0 on this box (CSS 2.1 §12.4.1)
+            // Not in scope, instantiate it with 0 on this box (CSS Lists 3 §4.2)
             if (!counters.TryGetValue(name, out var instances))
             {
                 Reset(counters, created, name, 0);

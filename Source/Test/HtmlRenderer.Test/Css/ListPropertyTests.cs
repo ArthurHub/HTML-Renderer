@@ -9,6 +9,7 @@ public sealed class ListPropertyTests
 {
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#list-style-position-property")]
     public void CssListStylePositionOutsideLegal()
     {
         var property = ParseDeclaration("list-style-position: outside ");
@@ -23,6 +24,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#list-style-position-property")]
     public void CssListStylePositionOutsideIllegal()
     {
         var property = ParseDeclaration("list-style-position: out-side ");
@@ -36,6 +38,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#list-style-position-property")]
     public void CssListStylePositionNoneIllegal()
     {
         var property = ParseDeclaration("list-style-position: none ");
@@ -49,6 +52,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#list-style-position-property")]
     public void CssListStylePositionInsideLegal()
     {
         var property = ParseDeclaration("list-style-position: insiDe ");
@@ -63,6 +67,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#image-markers")]
     public void CssListStyleImageNoneLegal()
     {
         var property = ParseDeclaration("list-style-image: none ");
@@ -77,6 +82,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#image-markers")]
     public void CssListStyleImageUrlLegal()
     {
         var property = ParseDeclaration("list-style-image: url(http://www.example.com/images/list.png)");
@@ -91,6 +97,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#text-markers")]
     public void CssListStyleTypeDiscLegal()
     {
         var property = ParseDeclaration("list-style-type: disc ");
@@ -105,6 +112,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#text-markers")]
     public void CssListStyleTypeLowerAlphaLegal()
     {
         var property = ParseDeclaration("list-style-type: lower-ALPHA ");
@@ -114,14 +122,13 @@ public sealed class ListPropertyTests
         var concrete = (ListStyleTypeProperty)property;
         Assert.IsFalse(concrete.IsInherited);
         Assert.IsTrue(concrete.HasValue);
-        // Map.ListStyles resolves lower-alpha to the ListStyle.LowerLatin enum member, but the converter's
-        // serialized text is the keyword that was actually written (lower-alpha), not a canonicalized
-        // "lower-latin" - see Source/HtmlRenderer/Core/CssEngine/Model/Map.cs.
+        // Serialized as written, not as the lower-latin it maps to
         Assert.AreEqual("lower-alpha", concrete.Value);
     }
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#text-markers")]
     public void CssListStyleTypeGeorgianLegal()
     {
         var property = ParseDeclaration("list-style-type: georgian ");
@@ -136,6 +143,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#text-markers")]
     public void CssListStyleTypeDecimalLeadingZeroLegal()
     {
         var property = ParseDeclaration("list-style-type: decimal-leading-zerO ");
@@ -149,9 +157,10 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-lists-3", "#text-markers")]
     public void CssListStyleTypeHebrewLegal()
     {
-        // CSS 2.0 keyword, dropped from CSS 2.1, still defined in Map.ListStyles
+        // Dropped from CSS 2.1, predefined again in CSS Counter Styles 3
         var property = ParseDeclaration("list-style-type: HEbrew ");
         Assert.AreEqual("list-style-type", property.Name);
         Assert.IsFalse(property.IsImportant);
@@ -163,15 +172,9 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
-    [Ignore("Gap: CSS Counter Styles Level 3's extended predefined counter-style keyword set (hiragana, " +
-        "katakana, arabic-indic, cjk-decimal, devanagari, and friends, the lower-armenian/upper-armenian " +
-        "split, disclosure-open/-closed, etc.) is not implemented - the ListStyle enum " +
-        "(Source/HtmlRenderer/Core/CssEngine/Enumerations/ListStyle.cs) and Map.ListStyles " +
-        "(Source/HtmlRenderer/Core/CssEngine/Model/Map.cs:166-185) only define " +
-        "none/disc/circle/square/decimal/decimal-leading-zero/lower-roman/upper-roman/lower-greek/" +
-        "lower-latin/upper-latin/armenian/georgian/hebrew/lower-alpha/upper-alpha, so any of these extra " +
-        "keywords fails to parse (HasValue false) rather than resolving as PeachPDF's port claims.")]
-    public void CssListStyleTypeExtendedKeywordSetUnsupported()
+    [Ignore("Gap, see Spec/css-lists-3.yml")]
+    [Spec("css-lists-3", "#text-markers")]
+    public void CssListStyleTypeExtendedKeywordSetLegal()
     {
         var property = ParseDeclaration("list-style-type: hiragana ");
         var concrete = (ListStyleTypeProperty)property;
@@ -180,14 +183,8 @@ public sealed class ListPropertyTests
     }
 
     [TestMethod]
-    [Ignore("Gap: list-style-type does not accept a CSS string literal as a custom counter-style glyph " +
-        "(CSS Counter Styles Level 3 / CSS Lists 3 'symbols()'-adjacent shorthand form). " +
-        "ListStyleTypeProperty's converter (Source/HtmlRenderer/Core/CssEngine/StyleProperties/List/" +
-        "ListStyleTypeProperty.cs) is Converters.ListStyleConverter = Map.ListStyles.ToConverter() - a pure " +
-        "keyword/identifier dictionary converter (Source/HtmlRenderer/Core/CssEngine/Extensions/" +
-        "ValueConverterExtensions.cs:77 DictionaryValueConverter) with no string-literal branch, so a quoted " +
-        "value like \"-> \" fails to convert entirely (DeclaredValue stays null - HasValue false, " +
-        "IsInherited reads true only because IsInitial does, not because 'inherit' was written).")]
+    [Ignore("Gap, see Spec/css-lists-3.yml")]
+    [Spec("css-lists-3", "#text-markers")]
     public void CssListStyleTypeStringLegal()
     {
         var property = ParseDeclaration("list-style-type: \"-> \" ");
@@ -215,6 +212,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#list-style-property")]
     public void CssListStyleCircleLegal()
     {
         var property = ParseDeclaration("list-style: circle ");
@@ -229,6 +227,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#list-style-property")]
     public void CssListStyleNone()
     {
         var property = ParseDeclaration("list-style: none");
@@ -243,6 +242,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#list-style-property")]
     public void CssListStyleSquareInsideLegal()
     {
         var property = ParseDeclaration("list-style: square inside ");
@@ -257,6 +257,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#list-style-property")]
     public void CssListStyleSquareImageInsideLegal()
     {
         var property = ParseDeclaration("list-style: square url('image.png') inside ");
@@ -271,6 +272,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
+    [Spec("css-lists-3", "#counter-reset")]
     public void CssCounterResetLegal()
     {
         var property = ParseDeclaration("counter-reset: chapter section 1 page;");
@@ -285,6 +287,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
+    [Spec("css-lists-3", "#counter-reset")]
     public void CssCounterResetSingleLegal()
     {
         var property = ParseDeclaration("counter-reset: counter-name");
@@ -299,6 +302,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
+    [Spec("css-lists-3", "#counter-reset")]
     public void CssCounterResetNoneLegal()
     {
         var property = ParseDeclaration("counter-reset: none");
@@ -313,6 +317,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
+    [Spec("css-lists-3", "#counter-reset")]
     public void CssCounterResetNumberIllegal()
     {
         var property = ParseDeclaration("counter-reset: 3");
@@ -326,6 +331,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
+    [Spec("css-lists-3", "#counter-reset")]
     public void CssCounterResetNegativeLegal()
     {
         var property = ParseDeclaration("counter-reset  :  counter-name   -1");
@@ -340,6 +346,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
+    [Spec("css-lists-3", "#counter-reset")]
     public void CssCounterResetTwoCountersExplicitLegal()
     {
         var property = ParseDeclaration("counter-reset  :  counter1   1   counter2   4  ");
@@ -354,6 +361,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
+    [Spec("css-lists-3", "#increment-set")]
     public void CssCounterIncrementNoneLegal()
     {
         var property = ParseDeclaration("counter-increment: none");
@@ -368,6 +376,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
+    [Spec("css-lists-3", "#increment-set")]
     public void CssCounterIncrementLegal()
     {
         var property = ParseDeclaration("counter-increment: chapter section 2 page");
@@ -382,6 +391,7 @@ public sealed class ListPropertyTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#list-style-property")]
     public void CssListStyleNoneSquareLegal()
     {
         var property = ParseDeclaration("list-style: none square");

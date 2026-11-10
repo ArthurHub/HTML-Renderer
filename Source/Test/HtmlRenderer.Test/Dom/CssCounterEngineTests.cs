@@ -17,6 +17,7 @@ public sealed class CssCounterEngineTests
     [DataRow(4, "upper-roman", "IV")]
     [DataRow(1, "lower-alpha", "a")]
     [DataRow(3, "upper-alpha", "C")]
+    [Spec("css-lists-3", "#counter-functions")]
     public void FormatCounterValue_KnownStyles_FormatAsExpected(int number, string style, string expected)
     {
         Assert.AreEqual(expected, CssCounterEngine.FormatCounterValue(number, style));

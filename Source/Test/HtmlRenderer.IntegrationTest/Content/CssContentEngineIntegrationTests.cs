@@ -58,6 +58,7 @@ public sealed class CssContentEngineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counter-styles")]
+    [Spec("css-lists-3", "#counter-functions")]
     public void ApplyContent_WithCounterNoStyle_UsesDecimal()
     {
         var html = LayoutHarness.Wrap(
@@ -122,6 +123,7 @@ public sealed class CssContentEngineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "generate.html#counters")]
+    [Spec("css-lists-3", "#increment-set")]
     public void CounterIncrement_ThreadsSequentiallyAcrossSiblings()
     {
         var html = LayoutHarness.Wrap(
@@ -144,6 +146,7 @@ public sealed class CssContentEngineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "generate.html#scope")]
+    [Spec("css-lists-3", "#inheriting-counters")]
     public void CounterReset_OnNestedAncestor_IsVisibleToDescendant()
     {
         var html = LayoutHarness.Wrap(
@@ -157,6 +160,7 @@ public sealed class CssContentEngineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "generate.html#scope")]
+    [Spec("css-lists-3", "#nested-counters")]
     public void CounterReset_InANestedList_DoesNotLeakIntoTheOuterList()
     {
         var html = LayoutHarness.Wrap(
@@ -179,6 +183,7 @@ public sealed class CssContentEngineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "generate.html#undisplayed-counters")]
+    [Spec("css-lists-3", "#counters-without-boxes")]
     public void CounterIncrement_OnADisplayNoneElement_IsIgnored()
     {
         var html = LayoutHarness.Wrap(
@@ -196,6 +201,7 @@ public sealed class CssContentEngineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "generate.html#scope")]
+    [Spec("css-lists-3", "#counter-functions")]
     public void Counter_NotInScope_ReadsAsZero()
     {
         Assert.AreEqual("0", ResolveBeforeContent("counter(nothing)").Text);

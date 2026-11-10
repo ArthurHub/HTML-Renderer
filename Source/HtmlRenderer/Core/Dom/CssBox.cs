@@ -1130,9 +1130,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Gets the index of the box to be used on a (ordered) list
+        /// The ordinal of this list item, counted over the parent's list items from its start and
+        /// reversed attributes (HTML §4.4.5). The list-item counter isn't involved.
         /// </summary>
-        /// <returns></returns>
         private int GetIndexForList()
         {
             bool reversed = !string.IsNullOrEmpty(ParentBox.GetAttribute("reversed"));
@@ -1174,9 +1174,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Creates the <see cref="_listItemBox"/>
+        /// Creates the marker box (CSS Lists 3 §3) from list-style-type and places it 5px left of the
+        /// list item's border box.
         /// </summary>
-        /// <param name="g"></param>
         private void CreateListItemBox(RGraphics g)
         {
             if (Display == CssConstants.ListItem && ListStyleType != CssConstants.None)
@@ -1222,7 +1222,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     _listItemBox.Size = new RSize(_listItemBox.Words[0].Width, _listItemBox.Words[0].Height);
                 }
                 _listItemBox.Words[0].Left = Location.X - _listItemBox.Size.Width - 5;
-                _listItemBox.Words[0].Top = Location.Y + ActualPaddingTop; // +FontAscent;
+                _listItemBox.Words[0].Top = Location.Y + ActualPaddingTop;
             }
         }
 

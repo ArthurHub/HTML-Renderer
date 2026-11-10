@@ -5,67 +5,92 @@ snapshot: https://www.w3.org/TR/2020/WD-css-lists-3-20201117/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#values':
-    title: 1.1 Value Definitions
-    status: unknown
+    status: n/a
   '#declaring-a-list-item':
     title: 2 Declaring a List Item
-    status: unknown
+    status: supported
   '#markers':
     title: 3 Markers
-    status: unknown
+    status: partial
   '#marker-pseudo':
     title: 3.1 The ::marker Pseudo-Element
-    status: unknown
+    status: partial
+    gaps:
+      - "::marker rules are ignored, the marker always takes the list item's style"
   '#marker-properties':
     title: 3.1.1 Properties Applying to ::marker
-    status: unknown
+    status: unsupported
   '#content-property':
     title: 3.2 Generating Marker Contents
-    status: unknown
+    status: partial
+    gaps:
+      - "'content' on ::marker is ignored, see 3.1"
+      - A list-style-image marker isn't generated, see 3.3
   '#image-markers':
     title: '3.3 Image Markers: the list-style-image property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'list-style-image' is ignored, see CSS 2.1 12.5.1"
   '#text-markers':
     title: '3.4 Text-based Markers: the list-style-type property'
-    status: unknown
+    status: partial
+    gaps:
+      - A <string> value is rejected
+      - Only the CSS 2.1 counter styles and hebrew are accepted, other names and symbols() are rejected instead of falling back to decimal
+      - The marker counts the list's items instead of using the list-item counter, see 4.6
   '#list-style-position-property':
     title: '3.5 Positioning Markers: The list-style-position property'
-    status: unknown
+    status: partial
+    gaps:
+      - inside is ignored, the marker is always outside, see CSS 2.1 12.5.1
+      - "The marker is on the left with 'direction: rtl', see CSS 2.1 12.5.1"
   '#list-style-property':
     title: '3.6 Styling Markers: the list-style shorthand property'
-    status: unknown
+    status: supported
   '#marker-side':
     title: 3.7 The marker-side property
-    status: unknown
+    status: unsupported
   '#auto-numbering':
     title: 4 Automatic Numbering With Counters
-    status: unknown
+    status: partial
+    gaps:
+      - none is accepted as a counter name
+      - Counter values wrap around at the 32-bit limits instead of being clamped
   '#counter-reset':
     title: '4.1 Creating Counters: the counter-reset property'
-    status: unknown
+    status: supported
   '#increment-set':
     title: '4.2 Manipulating Counter Values: the counter-increment and counter-set properties'
-    status: unknown
+    status: partial
+    gaps:
+      - "'counter-set' isn't supported, the declaration is dropped"
   '#nested-counters':
     title: 4.3 Nested Counters and Scope
-    status: unknown
+    status: supported
   '#creating-counters':
     title: 4.4 Creating and Inheriting Counters
-    status: unknown
+    status: supported
   '#inheriting-counters':
     title: 4.4.1 Inheriting Counters
-    status: unknown
+    status: supported
   '#instantiating-counters':
     title: 4.4.2 Instantiating Counters
-    status: unknown
+    status: supported
   '#counters-without-boxes':
     title: 4.5 Counters in elements that do not generate boxes
-    status: unknown
+    status: partial
+    gaps:
+      - "A ::before or ::after with 'content: none' or 'normal' still resets and increments counters, see CSS 2.1 12.4.3"
   '#list-item-counter':
     title: 4.6 The Implicit list-item Counter
-    status: unknown
+    status: partial
+    gaps:
+      - The marker number ignores the list-item counter, so counter-reset, counter-increment and counter-set of list-item don't change it
+      - ol and ul don't reset list-item, a nested list continues the outer list's count
+      - start, value and reversed only change the marker, not the list-item counter
   '#counter-functions':
     title: '4.7 Outputting Counters: the counter() and counters() functions'
-    status: unknown
+    status: partial
+    gaps:
+      - counters() inserts nothing, see CSS 2.1 12.2
+      - disc, circle, square and none format the counter as a decimal number, see CSS 2.1 12.4.2

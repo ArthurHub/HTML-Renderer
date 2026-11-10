@@ -7,6 +7,8 @@ public sealed class ListStyleTests
 {
     [TestMethod]
     [Spec("css21", "generate.html#lists")]
+    [Spec("css-lists-3", "#declaring-a-list-item")]
+    [Spec("css-lists-3", "#marker-pseudo")]
     public void ListItem_GetsAMarkerBox()
     {
         var x = Box("<div id=x style='display:list-item'>a</div>");
@@ -28,6 +30,7 @@ public sealed class ListStyleTests
     [DataRow("upper-alpha", "C.")]
     [DataRow("armenian", "Գ.")]
     [DataRow("georgian", "გ.")]
+    [Spec("css-lists-3", "#text-markers")]
     public void NumberedListStyleType_NumbersTheItem(string type, string expected)
     {
         Assert.AreEqual(expected, Marker($"<ol style='list-style-type:{type}'><li>a</li><li>b</li><li id=x>c</li></ol>"));
@@ -35,6 +38,7 @@ public sealed class ListStyleTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#text-markers")]
     public void GlyphListStyleTypes_AreDistinct()
     {
         var disc = Marker("<ul style='list-style-type:disc'><li id=x>a</li></ul>");
@@ -46,6 +50,7 @@ public sealed class ListStyleTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#text-markers")]
     public void ListStyleTypeNone_HasNoMarker()
     {
         Assert.IsNull(Box("<ul style='list-style-type:none'><li id=x>a</li></ul>").ListItemBox);
@@ -53,6 +58,7 @@ public sealed class ListStyleTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#list-style-property")]
     public void ListStyleShorthand_SetsTheType()
     {
         Assert.AreEqual("square", Box("<ul style='list-style:square inside'><li id=x>a</li></ul>").ListStyleType);
@@ -61,6 +67,7 @@ public sealed class ListStyleTests
 
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#list-style-position-property")]
     public void OutsideMarker_IsLeftOfTheContent()
     {
         var x = Box("<ul><li id=x>a</li></ul>");
@@ -71,6 +78,7 @@ public sealed class ListStyleTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#list-style-position-property")]
     public void InsideMarker_IsInsideThePrincipalBox()
     {
         var x = Box("<ul style='list-style-position:inside'><li id=x>a</li></ul>");
@@ -81,6 +89,7 @@ public sealed class ListStyleTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#list-style-position-property")]
     public void RtlMarker_IsRightOfTheContent()
     {
         var x = Box("<ul style='direction:rtl'><li id=x>a</li></ul>");
@@ -91,6 +100,7 @@ public sealed class ListStyleTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-lists-3", "#image-markers")]
     public void ListStyleImage_ReplacesTheMarker()
     {
         var x = Box("<ul style='list-style-image:url(data:image/png;base64,iVBORw0KGgo=)'><li id=x>a</li></ul>");
