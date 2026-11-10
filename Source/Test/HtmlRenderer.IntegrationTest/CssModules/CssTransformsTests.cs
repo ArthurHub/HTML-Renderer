@@ -79,6 +79,19 @@ public sealed class CssTransformsTests
     [Spec("css-transforms-2", "#transform-style-property")]
     public void Box_IsTheContainingBlockForFixedDescendants(string style)
     {
+        AssertContainingBlockForFixedDescendants(style);
+    }
+
+    [Ignore("Gap, see Spec/motion-1.yml")]
+    [TestMethod]
+    [Spec("motion-1", "#offset-path-property")]
+    public void OffsetPath_IsTheContainingBlockForFixedDescendants()
+    {
+        AssertContainingBlockForFixedDescendants("offset-path:ray(0deg)");
+    }
+
+    private static void AssertContainingBlockForFixedDescendants(string style)
+    {
         var root = Layout($"<div style='height:50px'></div><div id='t' style='{style};margin-left:30px;width:100px;height:100px'>"
                           + "<div id='f' style='position:fixed;top:10px;left:10px;width:10px;height:10px'></div></div>");
 

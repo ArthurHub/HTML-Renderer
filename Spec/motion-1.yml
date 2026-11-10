@@ -5,55 +5,53 @@ snapshot: https://www.w3.org/TR/2024/WD-motion-1-20241105/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module interactions
-    status: unknown
-  '#values':
-    title: 1.2 Values
-    status: unknown
+    status: n/a
   '#motion-paths-overview':
     title: 2 Motion Paths
-    status: unknown
+    status: unsupported
+    gaps:
+      - No offset property is parsed
   '#offset-path-property':
     title: '2.1 Defining A Path: the offset-path property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "Also doesn't establish a stacking context or containing block, see css-transforms-1 #transform-rendering"
   '#ray-function':
     title: 2.1.1 The ray() Function
-    status: unknown
+    status: unsupported
   '#example-shape':
     title: 2.1.2 Examples Of <basic-shape> Positioning
-    status: unknown
+    status: n/a
   '#example-coord':
     title: 2.1.3 Examples of <coord-box> Positioning
-    status: unknown
+    status: n/a
   '#offset-distance-property':
     title: '2.2 Position On The Path: the offset-distance property'
-    status: unknown
+    status: unsupported
   '#path-distance':
     title: 2.2.1 Calculating the computed distance along a path
-    status: unknown
+    status: unsupported
   '#offset-position-property':
     title: '2.3 Starting Point Of The Path: the offset-position property'
-    status: unknown
+    status: unsupported
   '#offset-anchor-property':
     title: '2.4 The Element’s Anchor Point: the offset-anchor property'
-    status: unknown
+    status: unsupported
   '#offset-rotate-property':
     title: '2.5 Rotating To Match The Path: the offset-rotate property'
-    status: unknown
+    status: unsupported
   '#offset-shorthand':
     title: 2.6 The offset Shorthand
-    status: unknown
+    status: unsupported
   '#transform':
     title: 2.7 Calculating The Offset Transform
-    status: unknown
+    status: unsupported
   '#paths':
     title: 3 Equivalent Paths For <basic-shape>
-    status: unknown
+    status: unsupported
   '#privacy':
     title: 4 Privacy Considerations
-    status: unknown
+    status: n/a
   '#security':
     title: 5 Security Considerations
-    status: unknown
+    status: n/a
