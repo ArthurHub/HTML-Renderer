@@ -56,6 +56,7 @@ public sealed class MonolithicContentTests
     [TestMethod]
     [DataRow("html")]
     [DataRow("body")]
+    [Spec("css-overflow-3", "#overflow-propagation")]
     public void ViewportPropagationSource_IsNotAScrollContainer(string tag)
     {
         var box = BoxOfTag($"{tag} {{ overflow: hidden }}", tag);
@@ -69,6 +70,7 @@ public sealed class MonolithicContentTests
     // value propagates only while the root's own is `visible`. Once the root has declared one it took
     // the propagation, and the body is a scroll container in its own right.
     [TestMethod]
+    [Spec("css-overflow-3", "#overflow-propagation")]
     public void Body_UnderARootThatAlreadyDeclaredOverflow_IsAScrollContainer()
     {
         var box = BoxOfTag("html { overflow: hidden } body { overflow: auto }", "body");
@@ -79,6 +81,7 @@ public sealed class MonolithicContentTests
 
     // ...and the companion direction, so the test above is not passing merely because `auto` is set.
     [TestMethod]
+    [Spec("css-overflow-3", "#overflow-propagation")]
     public void Body_UnderAVisibleRoot_PropagatesAndIsNotAScrollContainer()
     {
         var box = BoxOfTag("html { overflow: visible } body { overflow: auto }", "body");

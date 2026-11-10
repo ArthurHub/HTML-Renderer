@@ -33,7 +33,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
 
         /// <summary>
         /// Pushes a clip to the containing block's content box if any ancestor block has 'overflow: hidden'
-        /// (CSS 2.1 §11.1.1).
+        /// (CSS Overflow 3 §3.1). The spec clips to the padding box of the box with 'hidden' itself, and only
+        /// 'hidden' clips here, not 'scroll' or 'auto'.
         /// </summary>
         /// <param name="g">the graphics to clip</param>
         /// <param name="box">the box that is about to be painted</param>

@@ -112,6 +112,7 @@ public sealed class OverflowClipIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visufx.html#overflow")]
+    [Spec("css-overflow-3", "#overflow-control")]
     public void OverflowHidden_WithPadding_PaintClipReachesThePaddingBoxEdge()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -131,6 +132,7 @@ public sealed class OverflowClipIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visufx.html#overflow")]
+    [Spec("css-overflow-3", "#overflow-control")]
     public void OverflowVisible_DoesNotClipOverflowingContent()
     {
         var clip = ClipOfRedBox(
@@ -142,6 +144,7 @@ public sealed class OverflowClipIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visufx.html#overflow")]
+    [Spec("css-overflow-3", "#overflow-control")]
     public void OverflowHidden_ClipsOverflowingChildToTheBox()
     {
         var clip = ClipOfRedBox(
@@ -154,6 +157,7 @@ public sealed class OverflowClipIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visufx.html#overflow")]
+    [Spec("css-overflow-3", "#overflow-control")]
     public void OverflowHidden_ClipsOverflowingText()
     {
         var (_, container) = PaintHarness.Layout(Doc(
@@ -167,6 +171,7 @@ public sealed class OverflowClipIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visufx.html#overflow")]
+    [Spec("css-overflow-3", "#overflow-control")]
     public void OverflowHidden_ClipsAbsoluteDescendantWhoseContainingBlockIsTheBox()
     {
         var clip = ClipOfRedBox(
@@ -179,6 +184,7 @@ public sealed class OverflowClipIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visufx.html#overflow")]
+    [Spec("css-overflow-3", "#overflow-control")]
     public void OverflowHidden_OnAnInlineElement_DoesNotClip()
     {
         var clip = ClipOfRedBox(
@@ -192,6 +198,7 @@ public sealed class OverflowClipIntegrationTests
     [Spec("css21", "visufx.html#overflow")]
     [DataRow("scroll")]
     [DataRow("auto")]
+    [Spec("css-overflow-3", "#overflow-control")]
     public void ScrollAndAuto_ClipOverflowingContent(string overflow)
     {
         var clip = ClipOfRedBox(
@@ -204,6 +211,7 @@ public sealed class OverflowClipIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visufx.html#overflow")]
+    [Spec("css-overflow-3", "#overflow-control")]
     public void OverflowHidden_DoesNotClipAtAnIntermediateNonClippingBox()
     {
         var clip = ClipOfRedBox(
@@ -217,6 +225,7 @@ public sealed class OverflowClipIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visufx.html#overflow")]
+    [Spec("css-overflow-3", "#overflow-control")]
     public void OverflowHidden_DoesNotClipAbsoluteDescendantWhoseContainingBlockIsAnAncestor()
     {
         var clip = ClipOfRedBox(
@@ -230,6 +239,7 @@ public sealed class OverflowClipIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visufx.html#overflow")]
+    [Spec("css-overflow-3", "#overflow-control")]
     public void OverflowHidden_DoesNotClipFixedDescendant()
     {
         var clip = ClipOfRedBox(
@@ -243,6 +253,7 @@ public sealed class OverflowClipIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visufx.html#overflow")]
+    [Spec("css-overflow-3", "#overflow-propagation")]
     public void OverflowOnBody_IsAppliedToTheViewport()
     {
         var (_, container) = PaintHarness.Layout(

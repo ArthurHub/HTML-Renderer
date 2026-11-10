@@ -5,61 +5,59 @@ snapshot: https://www.w3.org/TR/2025/WD-css-overflow-3-20251007/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#values':
-    title: 1.1 Value Definitions
-    status: unknown
-  '#placement':
-    title: 1.2 Module Interactions
-    status: unknown
+    status: n/a
   '#overflow-concepts':
     title: 2 Overflow Concepts and Terminology
-    status: unknown
+    status: supported
   '#ink':
     title: 2.1 Ink Overflow
-    status: unknown
+    status: supported
   '#scrollable':
     title: 2.2 Scrollable Overflow
-    status: unknown
+    status: supported
   '#scrolling':
     title: 2.3 Scrolling Overflow
-    status: unknown
+    status: n/a
   '#overflow-properties':
     title: 3 Scrolling and Clipping Overflow
-    status: unknown
+    status: partial
   '#overflow-control':
     title: '3.1 Managing Overflow: the overflow-x, overflow-y, and overflow properties'
-    status: unknown
+    status: partial
+    gaps:
+      - "'hidden' clips at the content edge (widened by 2px on the left) instead of the padding edge, see CSS 2.1 11.1.1"
+      - "'scroll' and 'auto' don't clip, they behave like 'visible'"
+      - "'clip' is rejected"
+      - "'overflow-x' and 'overflow-y' are ignored and 'overflow' only takes a single value"
+      - Content overflowing a non-clipping box inside a clipping one is clipped at the content edge of the non-clipping box
+      - Absolutely positioned and fixed descendants are clipped even when their containing block is outside the clipping box
+      - A box with 'overflow' other than visible doesn't establish an independent formatting context, its floats stick out
   '#scroll-visibility':
     title: 3.1.1 Interaction of visibility and overflow
-    status: unknown
+    status: n/a
   '#corner-clipping':
     title: 3.1.2 Interaction of border-radius and overflow
-    status: unknown
+    status: unsupported
   '#static-media':
     title: 3.1.3 Overflow in Print and Other Static Media
-    status: unknown
+    status: n/a
   '#overflow-clip-margin':
     title: '3.2 Expanding Clipping Bounds: the overflow-clip-margin property'
-    status: unknown
+    status: unsupported
   '#overflow-propagation':
     title: 3.3 Overflow Viewport Propagation
-    status: unknown
+    status: partial
+    gaps:
+      - "'overflow' on the root or body clips that box instead of being applied to the viewport, only pagination treats it as propagated"
   '#smooth-scrolling':
     title: '3.4 Smooth Scrolling: the scroll-behavior Property'
-    status: unknown
+    status: n/a
   '#scrollbar-layout':
     title: 4 Scrollbars and Layout
-    status: unknown
-  '#scrollbar-sizing':
-    title: 4.1 Scrollbar Contributions to Sizing
-    status: unknown
-  '#scrollbar-gutter-property':
-    title: '4.2 Reserving space for the scrollbar: the scrollbar-gutter property'
-    status: unknown
+    status: n/a
   '#auto-ellipsis':
     title: 5 Automatic Ellipses
-    status: unknown
+    status: unsupported
   '#text-overflow':
     title: '5.1 Overflow Ellipsis: the text-overflow property'
-    status: unknown
+    status: unsupported
