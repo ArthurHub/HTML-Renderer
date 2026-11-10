@@ -14,6 +14,7 @@ public sealed class CssDisplayTests
 
     [TestMethod]
     [Spec("css-display-3", "#outer-role")]
+    [Spec("css-display-4", "#outer-role")]
     public void BlockAndInlineOuterRoles_StackOrShareTheLine()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -27,7 +28,9 @@ public sealed class CssDisplayTests
     [Ignore("Gap, see Spec/css-display-3.yml")]
     [TestMethod]
     [Spec("css-display-3", "#outer-role")]
+    [Spec("css-display-4", "#outer-role")]
     [Spec("css-display-3", "#run-in-layout")]
+    [Spec("css-display-4", "#run-in-layout")]
     public void RunIn_IsInsertedAtTheStartOfTheFollowingBlock()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -46,6 +49,7 @@ public sealed class CssDisplayTests
     [DataRow("inline table", "inline-table")]
     [DataRow("flow", "block")]
     [Spec("css-display-3", "#the-display-properties")]
+    [Spec("css-display-4", "#the-display-properties")]
     public void TwoValueSyntax_ComputesToTheEquivalentShortValue(string value, string expected)
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -56,6 +60,7 @@ public sealed class CssDisplayTests
 
     [TestMethod]
     [Spec("css-display-3", "#inner-model")]
+    [Spec("css-display-4", "#inner-model")]
     public void FlowInnerDisplay_LaysTheChildrenOutInNormalFlow()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -71,6 +76,7 @@ public sealed class CssDisplayTests
     [Ignore("Gap, see Spec/css-display-3.yml")]
     [TestMethod]
     [Spec("css-display-3", "#inner-model")]
+    [Spec("css-display-4", "#inner-model")]
     public void FlowRoot_IsBlockLevelAndContainsItsFloats()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -85,7 +91,9 @@ public sealed class CssDisplayTests
     [Ignore("Gap, see Spec/css-display-3.yml")]
     [TestMethod]
     [Spec("css-display-3", "#inner-model")]
+    [Spec("css-display-4", "#inner-model")]
     [Spec("css-display-3", "#layout-specific-display")]
+    [Spec("css-display-4", "#layout-specific-display")]
     public void Ruby_KeepsTheAnnotationOffTheBaseLine()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -96,6 +104,7 @@ public sealed class CssDisplayTests
 
     [TestMethod]
     [Spec("css-display-3", "#list-items")]
+    [Spec("css-display-4", "#list-items")]
     public void ListItem_GeneratesAMarker()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -109,6 +118,7 @@ public sealed class CssDisplayTests
     [Ignore("Gap, see Spec/css-display-3.yml")]
     [TestMethod]
     [Spec("css-display-3", "#list-items")]
+    [Spec("css-display-4", "#list-items")]
     public void InlineListItem_IsInlineAndGeneratesAMarker()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -122,6 +132,7 @@ public sealed class CssDisplayTests
 
     [TestMethod]
     [Spec("css-display-3", "#layout-specific-display")]
+    [Spec("css-display-4", "#layout-specific-display")]
     public void TableInternalDisplayTypes_BuildATable()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -138,6 +149,7 @@ public sealed class CssDisplayTests
 
     [TestMethod]
     [Spec("css-display-3", "#box-generation")]
+    [Spec("css-display-4", "#box-generation")]
     public void DisplayNone_PaintsNothingOfTheSubtree()
     {
         var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -152,6 +164,7 @@ public sealed class CssDisplayTests
     [Ignore("Gap, see Spec/css-display-3.yml")]
     [TestMethod]
     [Spec("css-display-3", "#box-generation")]
+    [Spec("css-display-4", "#box-generation")]
     public void DisplayContents_ReplacesTheElementByItsChildren()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -164,6 +177,7 @@ public sealed class CssDisplayTests
     [Ignore("Gap, see Spec/css-display-3.yml")]
     [TestMethod]
     [Spec("css-display-3", "#box-generation")]
+    [Spec("css-display-4", "#box-generation")]
     public void DisplayContents_PaintsNoBoxOfItsOwn()
     {
         var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -177,6 +191,7 @@ public sealed class CssDisplayTests
     [Ignore("Gap, see Spec/css-display-3.yml")]
     [TestMethod]
     [Spec("css-display-3", "#legacy-display")]
+    [Spec("css-display-4", "#legacy-display")]
     public void InlineBlockWithBlockChildren_StaysOnTheLine()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -193,8 +208,10 @@ public sealed class CssDisplayTests
     [DataRow("inline-flex")]
     [DataRow("inline-grid")]
     [Spec("css-display-3", "#inner-model")]
+    [Spec("css-display-4", "#inner-model")]
     [Spec("css-display-3", "#legacy-display")]
     [Spec("css-flexbox-1", "#flex-containers")]
+    [Spec("css-display-4", "#legacy-display")]
     public void FlexAndGridContainers_PaintTheirContent(string display)
     {
         var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -208,6 +225,7 @@ public sealed class CssDisplayTests
     [Ignore("Gap, see Spec/css-display-3.yml")]
     [TestMethod]
     [Spec("css-display-3", "#transformations")]
+    [Spec("css-display-4", "#transformations")]
     public void FloatedInlineBlock_BlockifiesToBlock()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -220,6 +238,7 @@ public sealed class CssDisplayTests
     [DataRow("")]
     [DataRow("display:inline")]
     [Spec("css-display-3", "#root")]
+    [Spec("css-display-4", "#root")]
     public void RootElement_IsBlockLevelAndFillsTheViewport(string style)
     {
         var (root, _) = LayoutHarness.Layout($"<!DOCTYPE html><html id='h' style='{style}'><body style='margin:0'><div style='height:20px'></div></body></html>", maxWidth: 400);
@@ -235,6 +254,7 @@ public sealed class CssDisplayTests
     [DataRow("inline-block")]
     [DataRow("table-cell")]
     [Spec("css-display-3", "#root")]
+    [Spec("css-display-4", "#root")]
     public void RootElement_IsBlockified(string display)
     {
         var (root, _) = LayoutHarness.Layout($"<!DOCTYPE html><html id='h' style='display:{display}'><body style='margin:0'><div style='height:20px'></div></body></html>", maxWidth: 400);
@@ -247,6 +267,7 @@ public sealed class CssDisplayTests
 
     [TestMethod]
     [Spec("css-display-3", "#visibility")]
+    [Spec("css-display-4", "#visibility")]
     public void VisibilityCollapse_OutsideTables_HidesLikeHidden()
     {
         var (_, collapsed) = PaintHarness.Layout(PaintHarness.Wrap(

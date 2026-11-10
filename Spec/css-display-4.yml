@@ -5,58 +5,72 @@ snapshot: https://www.w3.org/TR/2025/WD-css-display-4-20251106/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
+    status: n/a
   '#the-display-properties':
     title: '2 Box Layout Modes: the display property'
-    status: unknown
+    status: partial
+    gaps:
+      - The two-value syntax is rejected, see css-display-3 2
   '#outer-role':
     title: '2.1 Outer Display Roles for Flow Layout: the block, inline, and run-in keywords'
-    status: unknown
+    status: partial
+    gaps:
+      - "'run-in' is rejected"
   '#inner-model':
     title: '2.2 Inner Display Layout Models: the flow, flow-root, table, flex, grid, and ruby keywords'
-    status: unknown
+    status: partial
+    gaps:
+      - "'flow-root' and 'ruby' are rejected, flex and grid containers lose their content, see css-display-3 2.2"
   '#list-items':
     title: '2.3 Generating Marker Boxes: the list-item keyword'
-    status: unknown
+    status: partial
+    gaps:
+      - "'list-item' combined with an outer or inner display type is rejected"
   '#layout-specific-display':
     title: '2.4 Layout-Internal Display Types: the table-* and ruby-* keywords'
-    status: unknown
+    status: partial
+    gaps:
+      - The ruby-* keywords are rejected
   '#box-generation':
     title: '2.5 Box Generation: the none and contents keywords'
-    status: unknown
+    status: partial
+    gaps:
+      - "'contents' is rejected, the element keeps its own box"
   '#legacy-display':
     title: 2.6 Precomposed Inline-level Display Values
-    status: unknown
+    status: partial
+    gaps:
+      - "'inline-table', inline-blocks with block-level content, 'inline-flex' and 'inline-grid' are laid out wrong, see css-display-3 2.6"
   '#transformations':
     title: 2.7 Automatic Box Type Transformations
-    status: unknown
+    status: unsupported
+    gaps:
+      - Floated and absolutely positioned boxes keep their inline-level display type
   '#root':
     title: 2.8 The Root Element’s Principal Box
-    status: unknown
+    status: partial
+    gaps:
+      - An inline-level root other than 'inline', e.g. 'inline-block', or a layout-internal root isn't blockified
   '#display-animation':
     title: 2.9 Animating and Interpolating display
-    status: unknown
+    status: n/a
   '#order-property':
     title: '3 Display Order: the order property'
-    status: unknown
+    status: parsed-only
   '#order-accessibility':
     title: 3.1 Reordering and Accessibility
-    status: unknown
+    status: n/a
   '#reading-flow':
     title: '4 Reading Order: the reading-flow property'
-    status: unknown
-  '#reading-order':
-    title: '4.1 Overriding Reading Flow: the reading-order property'
-    status: unknown
+    status: n/a
+    gaps:
+      - Only affects speech and sequential navigation, which the library doesn't have, not the rendering
   '#visibility':
     title: '5 Invisibility: the visibility property'
-    status: unknown
+    status: partial
+    gaps:
+      - "Descendants with 'visibility: visible' of a hidden element are not painted, see CSS 2.1 11.2"
+      - "'force-hidden' is rejected"
   '#run-in-layout':
     title: 6 Run-In Layout
-    status: unknown
+    status: unsupported
