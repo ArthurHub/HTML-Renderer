@@ -1,0 +1,116 @@
+spec: css-fonts-5
+title: CSS Fonts Module Level 5
+url: https://www.w3.org/TR/css-fonts-5/
+snapshot: https://www.w3.org/TR/2026/WD-css-fonts-5-20261104/
+sections:
+  '#introduction':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#text-scale-meta':
+    title: 2 Text-Scale meta element
+    status: unknown
+  '#text-scale-meta-keywords':
+    title: 2.1 Keywords
+    status: unknown
+  '#legacy-keyword':
+    title: 2.2 The legacy keyword
+    status: unknown
+  '#scale-keyword':
+    title: 2.3 The scale keyword
+    status: unknown
+  '#basic-font-props':
+    title: 3 Basic Font Properties
+    status: unknown
+  '#font-family-prop':
+    title: '3.1 Font family: the font-family property'
+    status: unknown
+  '#generic-font-families':
+    title: 3.1.1 Generic font families
+    status: unknown
+  '#font-weight-prop':
+    title: '3.2 Font weight: the font-weight property'
+    status: unknown
+  '#font-style-prop':
+    title: '3.3 Font style: the font-style property'
+    status: unknown
+  '#font-size-adjust-prop':
+    title: '3.4 Relative sizing: the font-size-adjust property'
+    status: unknown
+  '#font-resources':
+    title: 4 Font Resources
+    status: unknown
+  '#font-face-rule':
+    title: 4.1 The @font-face rule
+    status: unknown
+  '#src-desc':
+    title: '4.2 Font reference: the src descriptor'
+    status: unknown
+  '#font-face-src-parsing':
+    title: 4.2.1 Parsing the src descriptor
+    status: unknown
+  '#font-size-desc':
+    title: '4.3 Font property descriptors: the font-size'
+    status: unknown
+  '#size-adjust-desc':
+    title: '4.4 Glyph Size Multiplier: the size-adjust descriptor'
+    status: unknown
+  '#font-metrics-override-desc':
+    title: '4.5 Line Height Font Metrics Overrides: the ascent-override, descent-override, and line-gap-override descriptors'
+    status: unknown
+  '#font-sup-sub-override-desc':
+    title: '4.6 Superscript and subscript metrics overrides: the superscript-position-override, subscript-position-override,superscript-size-override and subscript-size-override descriptors'
+    status: unknown
+  '#font-rend-props':
+    title: 5 Font Feature Properties
+    status: unknown
+  '#font-language-override-prop':
+    title: '5.1 Font language override: the font-language-override property'
+    status: unknown
+  '#font-feature-variation-resolution':
+    title: 6 Font Feature and Variation Resolution
+    status: unknown
+  '#font-variation-props':
+    title: 7 Font Variation Properties
+    status: unknown
+  '#font-optical-sizing-def':
+    title: '7.1 Optical sizing control: the font-optical-sizing property'
+    status: unknown
+  '#font-technologies-formats':
+    title: 8 Font Technologies and Formats
+    status: unknown
+  '#font-tech-definitions':
+    title: 8.1 Font tech
+    status: unknown
+  '#object-model':
+    title: 9 Object Model
+    status: unknown
+  '#om-fontface':
+    title: 9.1 The CSSFontFaceRule interface
+    status: unknown
+  '#security':
+    title: 10 Security Considerations
+    status: unknown
+  '#privacy':
+    title: 11 Privacy Considerations
+    status: unknown
+  '#acknowledgments':
+    title: 12 Acknowledgments
+    status: unknown
+  '#changes':
+    title: 13 Changes
+    status: unknown
+  '#changes-20260206':
+    title: 13.1 Changes since the WD of 6 February 2024
+    status: unknown
+  '#changes-20211221':
+    title: 13.2 Changes since the WD of 21 December 2021
+    status: unknown
+  '#changes-20210729':
+    title: 13.3 Changes since the WD of 2021-07-29
+    status: unknown
+  '#changes-20210629':
+    title: 13.4 Changes since the FPWD of 2021-06-29
+    status: unknown

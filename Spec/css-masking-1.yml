@@ -1,0 +1,116 @@
+spec: css-masking-1
+title: CSS Masking Module Level 1
+url: https://www.w3.org/TR/css-masking-1/
+snapshot: https://www.w3.org/TR/2021/CRD-css-masking-1-20210805/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#clipping':
+    title: 1.1 Clipping
+    status: unknown
+  '#masking':
+    title: 1.2 Masking
+    status: unknown
+  '#placement':
+    title: 2 Module interactions
+    status: unknown
+  '#values':
+    title: 3 Values
+    status: unknown
+  '#terminology':
+    title: 4 Terminology
+    status: unknown
+  '#clipping-paths':
+    title: 5 Clipping Paths
+    status: unknown
+  '#the-clip-path':
+    title: '5.1 Clipping Shape: the clip-path property'
+    status: unknown
+  '#svg-clipping-paths':
+    title: 6 SVG Clipping Path Sources
+    status: unknown
+  '#ClipPathElement':
+    title: 6.1 The clipPath element
+    status: unknown
+  '#the-clip-rule':
+    title: '6.2 Winding Rules: the clip-rule property'
+    status: unknown
+  '#positioned-masks':
+    title: 7 Positioned Masks
+    status: unknown
+  '#the-mask-image':
+    title: '7.1 Mask Image Source: the mask-image property'
+    status: unknown
+  '#the-mask-mode':
+    title: '7.2 Mask Image Interpretation: the mask-mode property'
+    status: unknown
+  '#the-mask-repeat':
+    title: '7.3 Tiling Mask Images: the mask-repeat property'
+    status: unknown
+  '#the-mask-position':
+    title: '7.4 Positioning Mask Images: the mask-position property'
+    status: unknown
+  '#the-mask-clip':
+    title: '7.5 Masking Area: the mask-clip property'
+    status: unknown
+  '#the-mask-origin':
+    title: '7.6 Positioning Area: the mask-origin property'
+    status: unknown
+  '#the-mask-size':
+    title: '7.7 Sizing Mask Images: the mask-size property'
+    status: unknown
+  '#the-mask-composite':
+    title: '7.8 Compositing mask layers: the mask-composite property'
+    status: unknown
+  '#the-mask':
+    title: '7.9 Mask Shorthand: the mask property'
+    status: unknown
+  '#the-mask-image-rendering-model':
+    title: 7.10 The Mask Image Rendering Model
+    status: unknown
+  '#MaskValues':
+    title: 7.10.1 Mask processing
+    status: unknown
+  '#layering':
+    title: 7.10.2 Layering Multiple Mask Images
+    status: unknown
+  '#mask-borders':
+    title: 8 Border-Box Mask
+    status: unknown
+  '#the-mask-border-source':
+    title: '8.1 Mask Border Image Source: the mask-border-source property'
+    status: unknown
+  '#the-mask-border-mode':
+    title: '8.2 Mask Border Image Interpretation: the mask-border-mode property'
+    status: unknown
+  '#the-mask-border-slice':
+    title: '8.3 Mask Border Image Slicing: the mask-border-slice property'
+    status: unknown
+  '#the-mask-border-width':
+    title: '8.4 Masking Areas: the mask-border-width property'
+    status: unknown
+  '#the-mask-border-outset':
+    title: '8.5 Edge Overhang: the mask-border-outset property'
+    status: unknown
+  '#the-mask-border-repeat':
+    title: '8.6 Mask Border Image Tiling: the mask-border-repeat property'
+    status: unknown
+  '#the-mask-border':
+    title: '8.7 Mask Border Image Shorthand: the mask-border property'
+    status: unknown
+  '#masking-with-the-mask-border-image':
+    title: 8.8 Masking with the mask border image
+    status: unknown
+  '#svg-masks':
+    title: 9 SVG Mask Sources
+    status: unknown
+  '#MaskElement':
+    title: 9.1 The mask element
+    status: unknown
+  '#the-mask-type':
+    title: '9.2 Mask Source Interpretation: the mask-type property'
+    status: unknown
+  '#priv-sec':
+    title: 10 Privacy and Security Considerations
+    status: unknown

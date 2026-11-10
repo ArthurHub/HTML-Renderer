@@ -1,0 +1,41 @@
+spec: css-easing-1
+title: CSS Easing Functions Level 1
+url: https://www.w3.org/TR/css-easing-1/
+snapshot: https://www.w3.org/TR/2023/CRD-css-easing-1-20230213/
+sections:
+  '#introduction':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#easing-functions':
+    title: 2 Easing functions
+    status: unknown
+  '#the-linear-easing-function':
+    title: '2.1 The linear easing function: linear'
+    status: unknown
+  '#cubic-bezier-easing-functions':
+    title: '2.2 Cubic Bézier easing functions: ease, ease-in, ease-out, ease-in-out, cubic-bezier()'
+    status: unknown
+  '#cubic-bezier-algo':
+    title: 2.2.1 Output of a cubic bézier easing function
+    status: unknown
+  '#step-easing-functions':
+    title: '2.3 Step easing functions: step-start, step-end, steps()'
+    status: unknown
+  '#step-easing-algo':
+    title: 2.3.1 Output of a step easing function
+    status: unknown
+  '#serialization':
+    title: 2.4 Serialization
+    status: unknown
+  '#priv-sec':
+    title: 3 Privacy and Security Considerations
+    status: unknown
+  '#changes':
+    title: 4 Changes
+    status: unknown
+  '#acknowledgements':
+    title: 5 Acknowledgements
+    status: unknown

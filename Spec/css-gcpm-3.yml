@@ -1,0 +1,89 @@
+spec: css-gcpm-3
+title: CSS Generated Content for Paged Media Module
+url: https://www.w3.org/TR/css-gcpm-3/
+snapshot: https://www.w3.org/TR/2024/WD-css-gcpm-3-20240125/
+sections:
+  '#running-headers-and-footers':
+    title: 1 Running headers and footers
+    status: unknown
+  '#named-strings':
+    title: 1.1 Named strings
+    status: unknown
+  '#setting-named-strings-the-string-set-pro':
+    title: 1.1.1 The string-set property
+    status: unknown
+  '#content-function-header':
+    title: 1.1.1.1 The content() function
+    status: unknown
+  '#using-named-strings':
+    title: 1.1.2 The string() function
+    status: unknown
+  '#running-elements':
+    title: 1.2 Running elements
+    status: unknown
+  '#running-syntax':
+    title: 1.2.1 The running() value
+    status: unknown
+  '#element-syntax':
+    title: 1.2.2 The element() value
+    status: unknown
+  '#footnotes':
+    title: 2 Footnotes
+    status: unknown
+  '#footnote-terms':
+    title: 2.1 Terminology
+    status: unknown
+  '#creating-footnotes':
+    title: 2.2 Creating footnotes
+    status: unknown
+  '#footnote-types':
+    title: 2.3 Types of footnotes
+    status: unknown
+  '#footnote-area':
+    title: 2.4 The footnote area
+    status: unknown
+  '#footnote-area-position':
+    title: 2.4.1 Positioning of the footnote area
+    status: unknown
+  '#footnote-area-size':
+    title: 2.4.2 Size of the footnote area
+    status: unknown
+  '#footnote-counters':
+    title: 2.5 The Footnote Counter
+    status: unknown
+  '#footnote-counter-values':
+    title: 2.5.1 Values of the footnote counter
+    status: unknown
+  '#resetting-footnote-counter':
+    title: 2.5.2 Resetting the footnote counter
+    status: unknown
+  '#footnote-call':
+    title: 2.6 The footnote-call pseudo-element
+    status: unknown
+  '#footnote-marker':
+    title: 2.7 The footnote-marker pseudo-element
+    status: unknown
+  '#footnote-policy':
+    title: 2.8 Rendering footnotes and footnote policy
+    status: unknown
+  '#future':
+    title: 2.9 Future directions
+    status: unknown
+  '#the-first-page-pseudo-element':
+    title: 3 Selecting Pages
+    status: unknown
+  '#document-page-selectors':
+    title: 3.1 Page Selectors
+    status: unknown
+  '#document-sequence-selectors':
+    title: 3.2 Page groups
+    status: unknown
+  '#leaders':
+    title: 4 Leaders (moved)
+    status: unknown
+  '#cross-references':
+    title: 5 Cross-references (moved)
+    status: unknown
+  '#bookmarks':
+    title: 6 Bookmarks (moved)
+    status: unknown

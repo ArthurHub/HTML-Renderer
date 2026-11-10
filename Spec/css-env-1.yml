@@ -1,0 +1,35 @@
+spec: css-env-1
+title: CSS Environment Variables Module Level 1
+url: https://www.w3.org/TR/css-env-1/
+snapshot: https://www.w3.org/TR/2025/WD-css-env-1-20250923/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#environment':
+    title: 2 Environment Variables
+    status: unknown
+  '#safe-area-insets':
+    title: 2.1 Safe area inset variables
+    status: unknown
+  '#safe-area-max-insets':
+    title: 2.2 Safe area maximum inset variables
+    status: unknown
+  '#viewport-segments':
+    title: 2.3 Viewport segment variables
+    status: unknown
+  '#text-zoom':
+    title: 2.4 Preferred Text Zoom
+    status: unknown
+  '#env-function':
+    title: '3 Using Environment Variables: the env() notation'
+    status: unknown
+  '#env-in-shorthands':
+    title: 3.1 Environment Variables in Shorthand Properties
+    status: unknown
+  '#priv':
+    title: 4 Privacy Considerations
+    status: unknown
+  '#sec':
+    title: 5 Security Considerations
+    status: unknown

@@ -1,0 +1,281 @@
+spec: css-grid-2
+title: CSS Grid Layout Module Level 2
+url: https://www.w3.org/TR/css-grid-2/
+snapshot: https://www.w3.org/TR/2025/CRD-css-grid-2-20250326/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#background':
+    title: 1.1 Background and Motivation
+    status: unknown
+  '#adapting-to-available-space':
+    title: 1.1.1 Adapting Layouts to Available Space
+    status: unknown
+  '#source-independence':
+    title: 1.1.2 Source-Order Independence
+    status: unknown
+  '#values':
+    title: 1.2 Value Definitions
+    status: unknown
+  '#overview':
+    title: 2 Overview
+    status: unknown
+  '#overview-grid':
+    title: 2.1 Declaring the Grid
+    status: unknown
+  '#overview-placement':
+    title: 2.2 Placing Items
+    status: unknown
+  '#overview-sizing':
+    title: 2.3 Sizing the Grid
+    status: unknown
+  '#grid-concepts':
+    title: 3 Grid Layout Concepts and Terminology
+    status: unknown
+  '#grid-line-concept':
+    title: 3.1 Grid Lines
+    status: unknown
+  '#grid-track-concept':
+    title: 3.2 Grid Tracks and Cells
+    status: unknown
+  '#grid-area-concept':
+    title: 3.3 Grid Areas
+    status: unknown
+  '#subgrid-items':
+    title: 3.4 Nested vs. Subgridded Items
+    status: unknown
+  '#order-accessibility':
+    title: 4 Reordering and Accessibility
+    status: unknown
+  '#grid-model':
+    title: 5 Grid Containers
+    status: unknown
+  '#grid-containers':
+    title: '5.1 Establishing Grid Containers: the grid and inline-grid display values'
+    status: unknown
+  '#intrinsic-sizes':
+    title: 5.2 Sizing Grid Containers
+    status: unknown
+  '#overflow':
+    title: 5.3 Scrollable Grid Overflow
+    status: unknown
+  '#overlarge-grids':
+    title: 5.4 Limiting Large Grids
+    status: unknown
+  '#grid-items':
+    title: 6 Grid Items
+    status: unknown
+  '#grid-item-display':
+    title: 6.1 Grid Item Display
+    status: unknown
+  '#grid-item-sizing':
+    title: 6.2 Grid Item Sizing
+    status: unknown
+  '#order-property':
+    title: '6.3 Reordered Grid Items: the order property'
+    status: unknown
+  '#item-margins':
+    title: 6.4 Grid Item Margins and Paddings
+    status: unknown
+  '#z-order':
+    title: '6.5 Z-axis Ordering: the z-index property'
+    status: unknown
+  '#min-size-auto':
+    title: 6.6 Automatic Minimum Size of Grid Items
+    status: unknown
+  '#grid-definition':
+    title: 7 Defining the Grid
+    status: unknown
+  '#explicit-grids':
+    title: 7.1 The Explicit Grid
+    status: unknown
+  '#track-sizing':
+    title: '7.2 Explicit Track Sizing: the grid-template-rows and grid-template-columns properties'
+    status: unknown
+  '#track-sizes':
+    title: 7.2.1 Track Sizes
+    status: unknown
+  '#named-lines':
+    title: '7.2.2 Naming Grid Lines: the [<custom-ident>*] syntax'
+    status: unknown
+  '#repeat-notation':
+    title: '7.2.3 Repeating Rows and Columns: the repeat() notation'
+    status: unknown
+  '#repeat-syntax':
+    title: 7.2.3.1 Syntax of repeat()
+    status: unknown
+  '#auto-repeat':
+    title: '7.2.3.2 Repeat-to-fill: auto-fill and auto-fit repetitions'
+    status: unknown
+  '#repeat-interpolation':
+    title: 7.2.3.3 Interpolation/Combination of repeat()
+    status: unknown
+  '#fr-unit':
+    title: '7.2.4 Flexible Lengths: the fr unit'
+    status: unknown
+  '#computed-tracks':
+    title: 7.2.5 Computed Value of a Track Listing
+    status: unknown
+  '#resolved-track-list':
+    title: 7.2.6 Resolved Value of a Track Listing
+    status: unknown
+  '#resolved-track-list-standalone':
+    title: 7.2.6.1 Resolved Value of a Standalone Track Listing
+    status: unknown
+  '#resolved-track-list-subgrid':
+    title: 7.2.6.2 Resolved Value of a Subgridded Track Listing
+    status: unknown
+  '#grid-template-areas-property':
+    title: '7.3 Named Areas: the grid-template-areas property'
+    status: unknown
+  '#serialize-template':
+    title: 7.3.1 Serialization Of Template Strings
+    status: unknown
+  '#implicit-named-lines':
+    title: 7.3.2 Implicitly-Assigned Line Names
+    status: unknown
+  '#implicit-named-areas':
+    title: 7.3.3 Implicitly-Named Areas
+    status: unknown
+  '#explicit-grid-shorthand':
+    title: '7.4 Explicit Grid Shorthand: the grid-template property'
+    status: unknown
+  '#implicit-grids':
+    title: 7.5 The Implicit Grid
+    status: unknown
+  '#auto-tracks':
+    title: '7.6 Implicit Track Sizing: the grid-auto-rows and grid-auto-columns properties'
+    status: unknown
+  '#grid-auto-flow-property':
+    title: '7.7 Automatic Placement: the grid-auto-flow property'
+    status: unknown
+  '#grid-shorthand':
+    title: '7.8 Grid Definition Shorthand: the grid property'
+    status: unknown
+  '#placement':
+    title: 8 Placing Grid Items
+    status: unknown
+  '#common-uses':
+    title: 8.1 Common Patterns for Grid Placement
+    status: unknown
+  '#common-uses-named-areas':
+    title: 8.1.1 Named Areas
+    status: unknown
+  '#common-uses-numeric':
+    title: 8.1.2 Numeric Indexes and Spans
+    status: unknown
+  '#common-uses-named-lines':
+    title: 8.1.3 Named Lines and Spans
+    status: unknown
+  '#common-uses-auto-placement':
+    title: 8.1.4 Auto Placement
+    status: unknown
+  '#placement-a11y':
+    title: 8.2 Grid Item Placement vs. Source Order
+    status: unknown
+  '#line-placement':
+    title: '8.3 Line-based Placement: the grid-row-start, grid-column-start, grid-row-end, and grid-column-end properties'
+    status: unknown
+  '#grid-placement-errors':
+    title: 8.3.1 Grid Placement Conflict Handling
+    status: unknown
+  '#placement-shorthands':
+    title: '8.4 Placement Shorthands: the grid-column, grid-row, and grid-area properties'
+    status: unknown
+  '#auto-placement-algo':
+    title: 8.5 Grid Item Placement Algorithm
+    status: unknown
+  '#subgrids':
+    title: 9 Subgrids
+    status: unknown
+  '#abspos':
+    title: 10 Absolute Positioning
+    status: unknown
+  '#abspos-items':
+    title: 10.1 With a Grid Container as Containing Block
+    status: unknown
+  '#static-position':
+    title: 10.2 With a Grid Container as Parent
+    status: unknown
+  '#alignment':
+    title: 11 Alignment and Spacing
+    status: unknown
+  '#gutters':
+    title: '11.1 Gutters: the row-gap, column-gap, and gap properties'
+    status: unknown
+  '#auto-margins':
+    title: 11.2 Aligning with auto margins
+    status: unknown
+  '#row-align':
+    title: '11.3 Inline-axis Alignment: the justify-self and justify-items properties'
+    status: unknown
+  '#column-align':
+    title: '11.4 Block-axis Alignment: the align-self and align-items properties'
+    status: unknown
+  '#grid-align':
+    title: '11.5 Aligning the Grid: the justify-content and align-content properties'
+    status: unknown
+  '#grid-baselines':
+    title: 11.6 Grid Container Baselines
+    status: unknown
+  '#layout-algorithm':
+    title: 12 Grid Layout Algorithm
+    status: unknown
+  '#algo-grid-sizing':
+    title: 12.1 Grid Sizing Algorithm
+    status: unknown
+  '#algo-terms':
+    title: 12.2 Track Sizing Terminology
+    status: unknown
+  '#algo-track-sizing':
+    title: 12.3 Track Sizing Algorithm
+    status: unknown
+  '#algo-init':
+    title: 12.4 Initialize Track Sizes
+    status: unknown
+  '#algo-content':
+    title: 12.5 Resolve Intrinsic Track Sizes
+    status: unknown
+  '#extra-space':
+    title: 12.5.1 Distributing Extra Space Across Spanned Tracks
+    status: unknown
+  '#algo-grow-tracks':
+    title: 12.6 Maximize Tracks
+    status: unknown
+  '#algo-flex-tracks':
+    title: 12.7 Expand Flexible Tracks
+    status: unknown
+  '#algo-find-fr-size':
+    title: 12.7.1 Find the Size of an fr
+    status: unknown
+  '#algo-stretch':
+    title: 12.8 Stretch auto Tracks
+    status: unknown
+  '#pagination':
+    title: 13 Fragmenting Grid Layout
+    status: unknown
+  '#fragmentation-alg':
+    title: 13.1 Sample Fragmentation Algorithm
+    status: unknown
+  '#privacy':
+    title: 14 Privacy Considerations
+    status: unknown
+  '#security':
+    title: 15 Security Considerations
+    status: unknown
+  '#changes':
+    title: 16 Changes
+    status: unknown
+  '#changes-202012':
+    title: 16.1 Changes since the 18 December 2020 CR
+    status: unknown
+  '#changes-202008':
+    title: 16.2 Changes since the August 2020 CR
+    status: unknown
+  '#changes-2':
+    title: 16.3 Additions Since Level 1
+    status: unknown
+  '#acknowledgements':
+    title: 17 Acknowledgements
+    status: unknown

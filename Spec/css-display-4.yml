@@ -1,0 +1,62 @@
+spec: css-display-4
+title: CSS Display Module Level 4
+url: https://www.w3.org/TR/css-display-4/
+snapshot: https://www.w3.org/TR/2025/WD-css-display-4-20251106/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module interactions
+    status: unknown
+  '#values':
+    title: 1.2 Value Definitions
+    status: unknown
+  '#the-display-properties':
+    title: '2 Box Layout Modes: the display property'
+    status: unknown
+  '#outer-role':
+    title: '2.1 Outer Display Roles for Flow Layout: the block, inline, and run-in keywords'
+    status: unknown
+  '#inner-model':
+    title: '2.2 Inner Display Layout Models: the flow, flow-root, table, flex, grid, and ruby keywords'
+    status: unknown
+  '#list-items':
+    title: '2.3 Generating Marker Boxes: the list-item keyword'
+    status: unknown
+  '#layout-specific-display':
+    title: '2.4 Layout-Internal Display Types: the table-* and ruby-* keywords'
+    status: unknown
+  '#box-generation':
+    title: '2.5 Box Generation: the none and contents keywords'
+    status: unknown
+  '#legacy-display':
+    title: 2.6 Precomposed Inline-level Display Values
+    status: unknown
+  '#transformations':
+    title: 2.7 Automatic Box Type Transformations
+    status: unknown
+  '#root':
+    title: 2.8 The Root Element’s Principal Box
+    status: unknown
+  '#display-animation':
+    title: 2.9 Animating and Interpolating display
+    status: unknown
+  '#order-property':
+    title: '3 Display Order: the order property'
+    status: unknown
+  '#order-accessibility':
+    title: 3.1 Reordering and Accessibility
+    status: unknown
+  '#reading-flow':
+    title: '4 Reading Order: the reading-flow property'
+    status: unknown
+  '#reading-order':
+    title: '4.1 Overriding Reading Flow: the reading-order property'
+    status: unknown
+  '#visibility':
+    title: '5 Invisibility: the visibility property'
+    status: unknown
+  '#run-in-layout':
+    title: 6 Run-In Layout
+    status: unknown

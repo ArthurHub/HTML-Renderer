@@ -1,0 +1,68 @@
+spec: css-logical-1
+title: CSS Logical Properties and Values Module Level 1
+url: https://www.w3.org/TR/css-logical-1/
+snapshot: https://www.w3.org/TR/2025/WD-css-logical-1-20251204/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#directional-keywords':
+    title: '2 Flow-Relative Values: block-start, block-end, inline-start, inline-end'
+    status: unknown
+  '#caption-side':
+    title: 2.1 Logical Values for the caption-side Property
+    status: unknown
+  '#float-clear':
+    title: 2.2 Flow-Relative Values for the float and clear Properties
+    status: unknown
+  '#text-align':
+    title: 2.3 Flow-Relative Values for the text-align Property
+    status: unknown
+  '#page':
+    title: 3 Flow-Relative Page Classifications
+    status: unknown
+  '#box':
+    title: 4 Flow-Relative Box Model Properties
+    status: unknown
+  '#dimension-properties':
+    title: '4.1 Logical Height and Logical Width: the block-size/inline-size, min-block-size/min-inline-size, and max-block-size/max-inline-size properties'
+    status: unknown
+  '#margin-properties':
+    title: '4.2 Flow-Relative Margins: the margin-block-start, margin-block-end, margin-inline-start, margin-inline-end properties and margin-block and margin-inline shorthands'
+    status: unknown
+  '#position-properties':
+    title: '4.3 Flow-Relative Offsets: the inset-block-start, inset-block-end, inset-inline-start, inset-inline-end properties and inset-block, inset-inline, and inset shorthands'
+    status: unknown
+  '#padding-properties':
+    title: '4.4 Flow-Relative Padding: the padding-block-start, padding-block-end, padding-inline-start, padding-inline-end properties and padding-block and padding-inline shorthands'
+    status: unknown
+  '#border-properties':
+    title: 4.5 Flow-Relative Borders
+    status: unknown
+  '#border-width':
+    title: '4.5.1 Flow-Relative Border Widths: the border-block-start-width, border-block-end-width, border-inline-start-width, border-inline-end-width properties and border-block-width and border-inline-width shorthands'
+    status: unknown
+  '#border-style':
+    title: '4.5.2 Flow-Relative Border Styles: the border-block-start-style, border-block-end-style, border-inline-start-style, border-inline-end-style properties and border-block-style and border-inline-style shorthands'
+    status: unknown
+  '#border-color':
+    title: '4.5.3 Flow-Relative Border Colors: the border-block-start-color, border-block-end-color, border-inline-start-color, border-inline-end-color properties and border-block-color and border-inline-color shorthands'
+    status: unknown
+  '#border-shorthands':
+    title: '4.5.4 Flow-Relative Border Shorthands: the border-block-start, border-block-end, border-inline-start, border-inline-end properties and border-block and border-inline shorthands'
+    status: unknown
+  '#border-radius-properties':
+    title: '4.6 Flow-Relative Corner Rounding: the border-start-start-radius, border-start-end-radius, border-end-start-radius, border-end-end-radius properties'
+    status: unknown
+  '#logical-shorthand-keyword':
+    title: '4.7 Four-Directional Shorthand Properties: the margin, padding, border-width, border-style, and border-color shorthands'
+    status: unknown
+  '#acknowledgements':
+    title: 5 Acknowledgements
+    status: unknown
+  '#changes':
+    title: 6 Changes
+    status: unknown

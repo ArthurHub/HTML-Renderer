@@ -1,0 +1,131 @@
+spec: css-animations-1
+title: CSS Animations Level 1
+url: https://www.w3.org/TR/css-animations-1/
+snapshot: https://www.w3.org/TR/2023/WD-css-animations-1-20230302/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#animations':
+    title: 2 Animations
+    status: unknown
+  '#keyframes':
+    title: 3 Keyframes
+    status: unknown
+  '#timing-functions':
+    title: 3.1 Timing functions for keyframes
+    status: unknown
+  '#animation-name':
+    title: 3.2 The animation-name property
+    status: unknown
+  '#animation-duration':
+    title: 3.3 The animation-duration property
+    status: unknown
+  '#animation-timing-function':
+    title: 3.4 The animation-timing-function property
+    status: unknown
+  '#animation-iteration-count':
+    title: 3.5 The animation-iteration-count property
+    status: unknown
+  '#animation-direction':
+    title: 3.6 The animation-direction property
+    status: unknown
+  '#animation-play-state':
+    title: 3.7 The animation-play-state property
+    status: unknown
+  '#animation-delay':
+    title: 3.8 The animation-delay property
+    status: unknown
+  '#animation-fill-mode':
+    title: 3.9 The animation-fill-mode property
+    status: unknown
+  '#animation':
+    title: 3.10 The animation shorthand property
+    status: unknown
+  '#events':
+    title: 4 Animation Events
+    status: unknown
+  '#interface-animationevent':
+    title: 4.1 The AnimationEvent Interface
+    status: unknown
+  '#interface-animationevent-idl':
+    title: 4.1.1 IDL Definition
+    status: unknown
+  '#interface-animationevent-attributes':
+    title: 4.1.2 Attributes
+    status: unknown
+  '#event-animationevent':
+    title: 4.2 Types of AnimationEvent
+    status: unknown
+  '#event-handlers-on-elements-document-objects-and-window-objects':
+    title: 4.3 Event handlers on elements, Document objects, and Window objects
+    status: unknown
+  '#interface-dom':
+    title: 5 DOM Interfaces
+    status: unknown
+  '#interface-cssrule':
+    title: 5.1 The CSSRule Interface
+    status: unknown
+  '#interface-cssrule-idl':
+    title: 5.1.1 IDL Definition
+    status: unknown
+  '#interface-csskeyframerule':
+    title: 5.2 The CSSKeyframeRule Interface
+    status: unknown
+  '#interface-csskeyframerule-idl':
+    title: 5.2.1 IDL Definition
+    status: unknown
+  '#interface-csskeyframerule-attributes':
+    title: 5.2.2 Attributes
+    status: unknown
+  '#interface-csskeyframesrule':
+    title: 5.3 The CSSKeyframesRule Interface
+    status: unknown
+  '#interface-csskeyframesrule-idl':
+    title: 5.3.1 IDL Definition
+    status: unknown
+  '#interface-csskeyframesrule-attributes':
+    title: 5.3.2 Attributes
+    status: unknown
+  '#interface-csskeyframesrule-indexed-property-getter':
+    title: 5.3.3 The indexed property getter
+    status: unknown
+  '#interface-csskeyframesrule-appendrule':
+    title: 5.3.4 The appendRule method
+    status: unknown
+  '#interface-csskeyframesrule-deleterule':
+    title: 5.3.5 The deleteRule method
+    status: unknown
+  '#interface-csskeyframesrule-findrule':
+    title: 5.3.6 The findRule method
+    status: unknown
+  '#interface-globaleventhandlers':
+    title: 5.4 Extensions to the GlobalEventHandlers Interface Mixin
+    status: unknown
+  '#interface-globaleventhandlers-idl':
+    title: 5.4.1 IDL Definition
+    status: unknown
+  '#priv':
+    title: 6 Privacy Considerations
+    status: unknown
+  '#sec':
+    title: 7 Security Considerations
+    status: unknown
+  '#changes':
+    title: 8 Changes
+    status: unknown
+  '#changes-20181011':
+    title: 8.1 Changes since the Working Draft of 11 October 2018
+    status: unknown
+  '#acknowledgements':
+    title: 9 Acknowledgements
+    status: unknown
+  '#other-open-issues':
+    title: 10 Other open issues
+    status: unknown
+  '#wg-resolutions-pending':
+    title: 11 Working Group Resolutions that are pending editing
+    status: unknown

@@ -1,0 +1,62 @@
+spec: css-color-adjust-1
+title: CSS Color Adjustment Module Level 1
+url: https://www.w3.org/TR/css-color-adjust-1/
+snapshot: https://www.w3.org/TR/2025/CR-css-color-adjust-1-20251216/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#preferred':
+    title: 2 Preferred Color Schemes
+    status: unknown
+  '#color-scheme-prop':
+    title: '2.1 Opting Into a Preferred Color Scheme: the color-scheme property'
+    status: unknown
+  '#color-scheme-effect':
+    title: 2.2 Effects of the Used Color Scheme
+    status: unknown
+  '#color-scheme-override':
+    title: 2.3 Overriding the Color Scheme
+    status: unknown
+  '#forced':
+    title: 3 Forced Color Palettes
+    status: unknown
+  '#forced-colors-properties':
+    title: 3.1 Properties Affected by Forced Colors Mode
+    status: unknown
+  '#forced-color-adjust-prop':
+    title: '3.2 Opting Out of a Forced Color Palette: the forced-color-adjust property'
+    status: unknown
+  '#perf':
+    title: 4 Performance-based Color Adjustments
+    status: unknown
+  '#print-color-adjust':
+    title: '4.1 Ink Economy: the print-color-adjust property'
+    status: unknown
+  '#color-adjust':
+    title: 4.2 The color-adjust Shorthand
+    status: unknown
+  '#color-adjust-emulation':
+    title: 5 Emulation
+    status: unknown
+  '#emulate-forced-colors-mode':
+    title: 5.1 Emulate Forced Colors Mode
+    status: unknown
+  '#forced-color-palettes':
+    title: 5.2 Forced Colors Mode Color Palettes
+    status: unknown
+  '#privacy':
+    title: 6 Privacy Considerations
+    status: unknown
+  '#security':
+    title: 7 Security Considerations
+    status: unknown
+  '#acknowledgements':
+    title: 8 Acknowledgements
+    status: unknown
+  '#changes':
+    title: 9 Changes
+    status: unknown

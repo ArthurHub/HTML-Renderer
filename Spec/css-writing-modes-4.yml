@@ -1,0 +1,176 @@
+spec: css-writing-modes-4
+title: CSS Writing Modes Level 4
+url: https://www.w3.org/TR/css-writing-modes-4/
+snapshot: https://www.w3.org/TR/2019/CR-css-writing-modes-4-20190730/
+sections:
+  '#text-flow':
+    title: 1 Introduction to Writing Modes
+    status: unknown
+  '#placement':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#values':
+    title: 1.2 Value Types and Terminology
+    status: unknown
+  '#text-direction':
+    title: 2 Inline Direction and Bidirectionality
+    status: unknown
+  '#direction':
+    title: '2.1 Specifying Directionality: the direction property'
+    status: unknown
+  '#unicode-bidi':
+    title: '2.2 Embeddings and Overrides: the unicode-bidi property'
+    status: unknown
+  '#bidi-example':
+    title: 2.3 Example of Bidirectional Text
+    status: unknown
+  '#bidi-algo':
+    title: 2.4 Applying the Bidirectional Reordering Algorithm
+    status: unknown
+  '#bidi-para-direction':
+    title: 2.4.1 Bidi Paragraph Embedding Levels
+    status: unknown
+  '#bidi-control-codes':
+    title: 2.4.2 CSS–Unicode Bidi Control Translation, Text Reordering
+    status: unknown
+  '#bidi-atomic-inlines':
+    title: 2.4.3 Bidi Treatment of Atomic Inlines
+    status: unknown
+  '#bidi-embedding-breaks':
+    title: 2.4.4 Paragraph Breaks Within Embeddings and Isolates
+    status: unknown
+  '#bidi-box-model':
+    title: 2.4.5 Reordering-induced Box Fragmentation
+    status: unknown
+  '#bidi-fragmentation':
+    title: 2.4.5.1 Conditions of Reordering-induced Box Fragmentation
+    status: unknown
+  '#bidi-fragment-boxes':
+    title: 2.4.5.2 Box Model of Reordering-induced Box Fragments
+    status: unknown
+  '#vertical-modes':
+    title: 3 Vertical Writing Modes
+    status: unknown
+  '#vertical-intro':
+    title: 3.1 Introduction to Vertical Writing
+    status: unknown
+  '#block-flow':
+    title: '3.2 Block Flow Direction: the writing-mode property'
+    status: unknown
+  '#svg-writing-mode':
+    title: 3.2.1 Obsolete SVG1.1 writing-mode Values
+    status: unknown
+  '#svg-writing-mode-css':
+    title: 3.2.1.1 Supporting SVG1.1 writing-mode values in CSS syntax
+    status: unknown
+  '#svg-writing-mode-markup':
+    title: 3.2.1.2 Supporting SVG1.1 writing-mode values in presentational attributes
+    status: unknown
+  '#inline-alignment':
+    title: 4 Inline-level Alignment
+    status: unknown
+  '#intro-baselines':
+    title: 4.1 Introduction to Baselines
+    status: unknown
+  '#text-baselines':
+    title: 4.2 Text Baselines
+    status: unknown
+  '#replaced-baselines':
+    title: 4.3 Atomic Inline Baselines
+    status: unknown
+  '#baseline-alignment':
+    title: 4.4 Baseline Alignment
+    status: unknown
+  '#intro-text-layout':
+    title: 5 Introduction to Vertical Text Layout
+    status: unknown
+  '#text-orientation':
+    title: '5.1 Orienting Text: the text-orientation property'
+    status: unknown
+  '#vertical-font-features':
+    title: 5.1.1 Vertical Typesetting and Font Features
+    status: unknown
+  '#vertical-orientations':
+    title: 5.1.2 Mixed Vertical Orientations
+    status: unknown
+  '#glyph-orientation':
+    title: '5.1.3 Obsolete: the SVG1.1 glyph-orientation-vertical property'
+    status: unknown
+  '#abstract-box':
+    title: 6 Abstract Box Terminology
+    status: unknown
+  '#abstract-axes':
+    title: 6.1 Abstract Dimensions
+    status: unknown
+  '#logical-directions':
+    title: 6.2 Flow-relative Directions
+    status: unknown
+  '#line-directions':
+    title: 6.3 Line-relative Directions
+    status: unknown
+  '#logical-to-physical':
+    title: 6.4 Abstract-to-Physical Mappings
+    status: unknown
+  '#abstract-layout':
+    title: 7 Abstract Box Layout
+    status: unknown
+  '#vertical-layout':
+    title: 7.1 Principles of Layout in Vertical Writing Modes
+    status: unknown
+  '#dimension-mapping':
+    title: 7.2 Dimensional Mapping
+    status: unknown
+  '#orthogonal-flows':
+    title: 7.3 Orthogonal Flows
+    status: unknown
+  '#orthogonal-auto':
+    title: 7.3.1 Available Space in Orthogonal Flows
+    status: unknown
+  '#auto-multicol':
+    title: 7.3.2 Auto-sizing Block Containers in Orthogonal Flows
+    status: unknown
+  '#orthogonal-layout':
+    title: 7.3.3 Auto-sizing Other Orthogonal Flow Roots
+    status: unknown
+  '#orthogonal-pagination':
+    title: 7.3.4 Fragmenting Orthogonal Flows
+    status: unknown
+  '#logical-direction-layout':
+    title: 7.4 Flow-Relative Mappings
+    status: unknown
+  '#line-mappings':
+    title: 7.5 Line-Relative Mappings
+    status: unknown
+  '#physical-only':
+    title: 7.6 Purely Physical Mappings
+    status: unknown
+  '#principal-flow':
+    title: 8 The Principal Writing Mode
+    status: unknown
+  '#icb':
+    title: 8.1 Propagation to the Initial Containing Block
+    status: unknown
+  '#page-direction':
+    title: '8.2 Page Flow: the page progression direction'
+    status: unknown
+  '#text-combine':
+    title: 9 Glyph Composition
+    status: unknown
+  '#text-combine-upright':
+    title: '9.1 Horizontal-in-Vertical Composition: the text-combine-upright property'
+    status: unknown
+  '#text-combine-runs':
+    title: 9.1.1 Text Run Rules
+    status: unknown
+  '#text-combine-layout':
+    title: 9.1.2 Layout Rules
+    status: unknown
+  '#text-combine-compression':
+    title: 9.1.3 Compression Rules
+    status: unknown
+  '#text-combine-fullwidth':
+    title: 9.1.3.1 Full-width Characters
+    status: unknown
+  '#priv-sec':
+    title: 10 Privacy and Security Considerations
+    status: unknown

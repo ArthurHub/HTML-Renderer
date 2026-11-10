@@ -1,0 +1,92 @@
+spec: css-transitions-1
+title: CSS Transitions Module Level 1
+url: https://www.w3.org/TR/css-transitions-1/
+snapshot: https://www.w3.org/TR/2026/WD-css-transitions-1-20260108/
+sections:
+  '#introduction':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#transitions':
+    title: 2 Transitions
+    status: unknown
+  '#transition-property-property':
+    title: 2.1 The transition-property Property
+    status: unknown
+  '#transition-duration-property':
+    title: 2.2 The transition-duration Property
+    status: unknown
+  '#transition-timing-function-property':
+    title: 2.3 The transition-timing-function Property
+    status: unknown
+  '#transition-delay-property':
+    title: 2.4 The transition-delay Property
+    status: unknown
+  '#transition-shorthand-property':
+    title: 2.5 The transition Shorthand Property
+    status: unknown
+  '#starting':
+    title: 3 Starting of transitions
+    status: unknown
+  '#reversing':
+    title: 3.1 Faster reversing of interrupted transitions
+    status: unknown
+  '#application':
+    title: 4 Application of transitions
+    status: unknown
+  '#complete':
+    title: 5 Completion of transitions
+    status: unknown
+  '#transition-events':
+    title: 6 Transition Events
+    status: unknown
+  '#interface-transitionevent':
+    title: 6.1 Interface TransitionEvent
+    status: unknown
+  '#interface-transitionevent-idl':
+    title: 6.1.1 IDL Definition
+    status: unknown
+  '#interface-transitionevent-attributes':
+    title: 6.1.2 Attributes
+    status: unknown
+  '#event-transitionevent':
+    title: 6.2 Types of TransitionEvent
+    status: unknown
+  '#event-handlers-on-elements-document-objects-and-window-objects':
+    title: 6.3 Event handlers on elements, Document objects, and Window objects
+    status: unknown
+  '#interface-dom':
+    title: 7 DOM Interfaces
+    status: unknown
+  '#interface-globaleventhandlers-idl':
+    title: 7.1 IDL Definition
+    status: unknown
+  '#security':
+    title: 8 Security Considerations
+    status: unknown
+  '#privacy':
+    title: 9 Privacy Considerations
+    status: unknown
+  '#accessibility':
+    title: 10 Accessibility Considerations
+    status: unknown
+  '#accessibility-motion':
+    title: 10.1 Motion
+    status: unknown
+  '#accessibility-cascade':
+    title: 10.2 Cascade
+    status: unknown
+  '#changes':
+    title: 11 Changes
+    status: unknown
+  '#changes-2018':
+    title: 11.1 Changes since Working Draft of 11 October 2018
+    status: unknown
+  '#changes-earlier':
+    title: 11.2 Earlier changes
+    status: unknown
+  '#acknowledgments':
+    title: 12 Acknowledgments
+    status: unknown

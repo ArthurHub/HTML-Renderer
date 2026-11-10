@@ -1,0 +1,125 @@
+spec: css-ui-4
+title: CSS Basic User Interface Module Level 4
+url: https://www.w3.org/TR/css-ui-4/
+snapshot: https://www.w3.org/TR/2026/WD-css-ui-4-20260120/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#purpose':
+    title: 1.1 Purpose
+    status: unknown
+  '#interaction':
+    title: 2 Module Interactions
+    status: unknown
+  '#values':
+    title: 2.1 Value Definitions
+    status: unknown
+  '#outline-props':
+    title: 3 Outline properties
+    status: unknown
+  '#outline':
+    title: '3.1 Outlines Shorthand: the outline property'
+    status: unknown
+  '#outline-width':
+    title: '3.2 Outline Thickness: the outline-width property'
+    status: unknown
+  '#outline-style':
+    title: '3.3 Outline Patterns: the outline-style property'
+    status: unknown
+  '#outline-color':
+    title: '3.4 Outline Colors: the outline-color property'
+    status: unknown
+  '#outline-offset':
+    title: '3.5 Offsetting the Outline: the outline-offset property'
+    status: unknown
+  '#resizing':
+    title: 4 Resizing
+    status: unknown
+  '#resize':
+    title: '4.1 Resizing Boxes: the resize property'
+    status: unknown
+  '#pointing-keyboard':
+    title: 5 Pointing Devices and Keyboards
+    status: unknown
+  '#pointer-interaction':
+    title: 5.1 Pointer interaction
+    status: unknown
+  '#cursor':
+    title: '5.1.1 Styling the Cursor: the cursor property'
+    status: unknown
+  '#predefined-cursors':
+    title: 5.1.1.1 Predefined Cursors
+    status: unknown
+  '#canvas_cursor':
+    title: 5.1.1.2 Cursor of the canvas
+    status: unknown
+  '#the-insertion-caret':
+    title: 5.2 Insertion caret
+    status: unknown
+  '#caret-color':
+    title: '5.2.1 Coloring the Insertion Caret: the caret-color property'
+    status: unknown
+  '#caret-animation':
+    title: '5.2.2 Animation of the insertion caret: caret-animation'
+    status: unknown
+  '#caret-shape':
+    title: '5.2.3 Shape of the insertion caret: caret-shape'
+    status: unknown
+  '#caret':
+    title: '5.2.4 Insertion caret shorthand: caret'
+    status: unknown
+  '#keyboard':
+    title: 5.3 Keyboard control
+    status: unknown
+  '#nav-dir':
+    title: '5.3.1 Directional Focus Navigation: the nav-up, nav-right, nav-down, nav-left properties'
+    status: unknown
+  '#example-positioned-buttons':
+    title: '5.3.1.1 Example: positioned buttons'
+    status: unknown
+  '#example-moving-focus-to-inside-a-frame':
+    title: '5.3.1.2 Example: moving focus to inside a frame'
+    status: unknown
+  '#input-method-editor':
+    title: '5.3.2 Obsolete: the ime-mode property'
+    status: unknown
+  '#user-interaction':
+    title: 6 User Interaction
+    status: unknown
+  '#content-selection':
+    title: 6.1 Controlling content selection
+    status: unknown
+  '#pointer-events-control':
+    title: '6.2 Exclusion from Hit-testing: the pointer-events property'
+    status: unknown
+  '#inertness':
+    title: '6.3 Preventing All Interaction: the interactivity property'
+    status: unknown
+  '#interest':
+    title: '6.4 User Interest Delay: the interest-delay-* properties'
+    status: unknown
+  '#styling-widgets':
+    title: 7 Styling Widgets
+    status: unknown
+  '#widget-accent':
+    title: '7.1 Widget Accent Colors: the accent-color property'
+    status: unknown
+  '#appearance-switching':
+    title: '7.2 Switching appearance: the appearance property'
+    status: unknown
+  '#appearance-disabling-properties':
+    title: 7.2.1 Properties Disabling Native Appearance
+    status: unknown
+  '#appearance-decorative':
+    title: 7.2.2 Effects of appearance on Decorative Aspects of Elements
+    status: unknown
+  '#appearance-semantics':
+    title: 7.2.3 Effects of appearance on Semantic Aspects of Elements
+    status: unknown
+  '#control-specific-rules':
+    title: 7.3 Control-Specific Rules
+    status: unknown
+  '#input-rules':
+    title: 7.3.1 Single-Line Text Input Controls
+    status: unknown

@@ -1,0 +1,116 @@
+spec: css-counter-styles-3
+title: CSS Counter Styles Level 3
+url: https://www.w3.org/TR/css-counter-styles-3/
+snapshot: https://www.w3.org/TR/2021/CR-css-counter-styles-3-20210727/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#counter-styles':
+    title: 2 Counter Styles
+    status: unknown
+  '#the-counter-style-rule':
+    title: '3 Defining Custom Counter Styles: the @counter-style rule'
+    status: unknown
+  '#counter-style-system':
+    title: '3.1 Counter algorithms: the system descriptor'
+    status: unknown
+  '#cyclic-system':
+    title: '3.1.1 Cycling Symbols: the cyclic system'
+    status: unknown
+  '#fixed-system':
+    title: '3.1.2 Exhaustible Symbols: the fixed system'
+    status: unknown
+  '#symbolic-system':
+    title: '3.1.3 Repeating Symbols: the symbolic system'
+    status: unknown
+  '#alphabetic-system':
+    title: '3.1.4 Bijective Numerals: the alphabetic system'
+    status: unknown
+  '#numeric-system':
+    title: '3.1.5 Positional Numerals: the numeric system'
+    status: unknown
+  '#additive-system':
+    title: '3.1.6 Accumulating Numerals: the additive system'
+    status: unknown
+  '#extends-system':
+    title: '3.1.7 Building from Existing Counter Styles: the extends system'
+    status: unknown
+  '#counter-style-negative':
+    title: '3.2 Formatting negative values: the negative descriptor'
+    status: unknown
+  '#counter-style-prefix':
+    title: '3.3 Symbols before the marker: the prefix descriptor'
+    status: unknown
+  '#counter-style-suffix':
+    title: '3.4 Symbols after the marker: the suffix descriptor'
+    status: unknown
+  '#counter-style-range':
+    title: '3.5 Limiting the counter scope: the range descriptor'
+    status: unknown
+  '#counter-style-pad':
+    title: '3.6 Zero-Padding and Constant-Width Representations: the pad descriptor'
+    status: unknown
+  '#counter-style-fallback':
+    title: '3.7 Defining fallback: the fallback descriptor'
+    status: unknown
+  '#counter-style-symbols':
+    title: '3.8 Marker characters: the symbols and additive-symbols descriptors'
+    status: unknown
+  '#counter-style-speak-as':
+    title: '3.9 Speech Synthesis: the speak-as descriptor'
+    status: unknown
+  '#symbols-function':
+    title: '4 Defining Anonymous Counter Styles: the symbols() function'
+    status: unknown
+  '#extending-css2':
+    title: 5 Extending list-style-type, counter(), and counters()
+    status: unknown
+  '#predefined-counters':
+    title: 6 Simple Predefined Counter Styles
+    status: unknown
+  '#simple-numeric':
+    title: '6.1 Numeric: decimal, decimal-leading-zero, arabic-indic, armenian, upper-armenian, lower-armenian, bengali, cambodian, khmer, cjk-decimal, devanagari, georgian, gujarati, gurmukhi, hebrew, kannada, lao, malayalam, mongolian, myanmar, oriya, persian, lower-roman, upper-roman, tamil, telugu, thai, tibetan'
+    status: unknown
+  '#simple-alphabetic':
+    title: '6.2 Alphabetic: lower-alpha, lower-latin, upper-alpha, upper-latin, lower-greek, hiragana, hiragana-iroha, katakana, katakana-iroha'
+    status: unknown
+  '#simple-symbolic':
+    title: '6.3 Symbolic: disc, circle, square, disclosure-open, disclosure-closed'
+    status: unknown
+  '#simple-fixed':
+    title: '6.4 Fixed: cjk-earthly-branch, cjk-heavenly-stem'
+    status: unknown
+  '#complex-predefined-counters':
+    title: 7 Complex Predefined Counter Styles
+    status: unknown
+  '#complex-cjk':
+    title: 7.1 Longhand East Asian Counter Styles
+    status: unknown
+  '#limited-japanese':
+    title: '7.1.1 Japanese: japanese-informal and japanese-formal'
+    status: unknown
+  '#limited-korean':
+    title: '7.1.2 Korean: korean-hangul-formal, korean-hanja-informal, and korean-hanja-formal'
+    status: unknown
+  '#limited-chinese':
+    title: '7.1.3 Chinese: simp-chinese-informal, simp-chinese-formal, trad-chinese-informal, and trad-chinese-formal'
+    status: unknown
+  '#ethiopic-numeric-counter-style':
+    title: '7.2 Ethiopic Numeric Counter Style: ethiopic-numeric'
+    status: unknown
+  '#additional-predefined':
+    title: 8 Additional “Ready-made” Counter Styles
+    status: unknown
+  '#apis':
+    title: 9 APIs
+    status: unknown
+  '#extensions-to-cssrule-interface':
+    title: 9.1 Extensions to the CSSRule interface
+    status: unknown
+  '#the-csscounterstylerule-interface':
+    title: 9.2 The CSSCounterStyleRule interface
+    status: unknown
+  '#ua-stylesheet':
+    title: 10 Sample style sheet for HTML
+    status: unknown

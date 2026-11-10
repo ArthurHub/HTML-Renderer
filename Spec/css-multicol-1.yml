@@ -1,0 +1,77 @@
+spec: css-multicol-1
+title: CSS Multi-column Layout Module Level 1
+url: https://www.w3.org/TR/css-multicol-1/
+snapshot: https://www.w3.org/TR/2024/CR-css-multicol-1-20240516/
+sections:
+  '#introduction':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#the-multi-column-model':
+    title: 2 The Multi-Column Model
+    status: unknown
+  '#the-number-and-width-of-columns':
+    title: 3 The Number and Width of Columns
+    status: unknown
+  '#cw':
+    title: '3.1 The Inline Size of Columns: the column-width property'
+    status: unknown
+  '#cc':
+    title: '3.2 The Number of Columns: the column-count property'
+    status: unknown
+  '#columns':
+    title: '3.3 The column-width and column-count Shorthand: The columns Property'
+    status: unknown
+  '#pseudo-algorithm':
+    title: 3.4 The Pseudo-algorithm
+    status: unknown
+  '#stacking-context':
+    title: 3.5 Stacking Context
+    status: unknown
+  '#column-gaps-and-rules':
+    title: 4 Column Gaps and Rules
+    status: unknown
+  '#cg':
+    title: '4.1 Gutters Between Columns: the column-gap property'
+    status: unknown
+  '#crc':
+    title: '4.2 The Color of Column Rules: the column-rule-color property'
+    status: unknown
+  '#crs':
+    title: '4.3 The Style Of Column Rules: the column-rule-style property'
+    status: unknown
+  '#crw':
+    title: '4.4 The Width Of Column Rules: the column-rule-width property'
+    status: unknown
+  '#cr':
+    title: '4.5 Column Rule Shorthand: the column-rule property'
+    status: unknown
+  '#column-breaks':
+    title: 5 Column Breaks
+    status: unknown
+  '#break-before-break-after-break-inside':
+    title: '5.1 Controlling Fragmentation: the break-before, break-after, break-inside properties'
+    status: unknown
+  '#spanning-columns':
+    title: 6 Spanning Columns
+    status: unknown
+  '#column-span':
+    title: '6.1 Spanning An Element Across Columns: the column-span property'
+    status: unknown
+  '#filling-columns':
+    title: 7 Filling Columns
+    status: unknown
+  '#cf':
+    title: '7.1 Column Balancing: the column-fill property'
+    status: unknown
+  '#overflow':
+    title: 8 Overflow
+    status: unknown
+  '#overflow-inside-multicol-elements':
+    title: 8.1 Overflow Inside Multicol Containers
+    status: unknown
+  '#pagination-and-overflow-outside-multicol':
+    title: 8.2 Pagination and Overflow Outside Multicol Containers
+    status: unknown

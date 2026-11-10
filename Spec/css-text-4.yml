@@ -1,0 +1,227 @@
+spec: css-text-4
+title: CSS Text Module Level 4
+url: https://www.w3.org/TR/css-text-4/
+snapshot: https://www.w3.org/TR/2026/WD-css-text-4-20260814/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#values':
+    title: 1.2 Value Definitions
+    status: unknown
+  '#languages':
+    title: 1.3 Languages and Typesetting
+    status: unknown
+  '#characters':
+    title: 1.4 Characters and Letters
+    status: unknown
+  '#text-encoding':
+    title: 1.5 Text Processing
+    status: unknown
+  '#transforming':
+    title: 2 Transforming Text
+    status: unknown
+  '#text-transform-property':
+    title: '2.1 Case Transforms: the text-transform property'
+    status: unknown
+  '#text-transform-mapping':
+    title: 2.1.1 Mapping Rules
+    status: unknown
+  '#word-space-transform':
+    title: '2.2 Expanding Between Words: the word-space-transform property'
+    status: unknown
+  '#text-transform-order':
+    title: 2.3 Order of Operations
+    status: unknown
+  '#white-space-property':
+    title: '3 White Space and Wrapping: the white-space property'
+    status: unknown
+  '#white-space-processing':
+    title: 4 White Space Processing & Control Characters
+    status: unknown
+  '#white-space-collapsing':
+    title: '4.1 White Space Collapsing: the white-space-collapse property'
+    status: unknown
+  '#white-space-trim':
+    title: '4.2 White Space Trimming: the white-space-trim property'
+    status: unknown
+  '#white-space-rules':
+    title: 4.3 The White Space Processing Rules
+    status: unknown
+  '#white-space-phase-1':
+    title: '4.3.1 Phase I: Collapsing and Transformation'
+    status: unknown
+  '#white-space-phase-2':
+    title: '4.3.2 Phase II: Trimming and Positioning'
+    status: unknown
+  '#line-break-transform':
+    title: 4.3.3 Segment Break Transformation Rules
+    status: unknown
+  '#tab-size-property':
+    title: '4.4 Tab Character Size: the tab-size property'
+    status: unknown
+  '#text-wrapping':
+    title: 5 Text Wrapping
+    status: unknown
+  '#text-wrap-mode':
+    title: '5.1 Deciding Whether to Wrap: the text-wrap-mode property'
+    status: unknown
+  '#wrap-inside':
+    title: '5.2 Controlling Breaks Within Boxes: the wrap-inside property'
+    status: unknown
+  '#example-avoid':
+    title: "5.2.1 Example of using 'wrap-inside: avoid' in presenting a footer"
+    status: unknown
+  '#wrap-before':
+    title: '5.3 Controlling Breaks Between Boxes: the wrap-before/wrap-after properties'
+    status: unknown
+  '#text-wrap-style':
+    title: '5.4 Selecting How to Wrap: the text-wrap-style property'
+    status: unknown
+  '#text-wrap-shorthand':
+    title: '5.5 Joint Wrapping Control: the text-wrap shorthand property'
+    status: unknown
+  '#line-breaking':
+    title: 6 Line Breaking and Word Boundaries
+    status: unknown
+  '#word-break-property':
+    title: '6.1 Breaking Rules for Letters: the word-break property'
+    status: unknown
+  '#analytical-word-breaking':
+    title: 6.1.1 Analytical Word Breaking
+    status: unknown
+  '#lexical-breaking':
+    title: 6.1.1.1 Lexical Word Breaking
+    status: unknown
+  '#orthographic-breaking':
+    title: 6.1.1.2 Orthographic Breaking
+    status: unknown
+  '#fallback-breaking':
+    title: 6.1.1.3 Fallback Breaking
+    status: unknown
+  '#phrase-pref':
+    title: 6.1.2 Expressing User Preferences for Phrase-based Line Breaking
+    status: unknown
+  '#line-break-property':
+    title: '6.2 Line Breaking Strictness: the line-break property'
+    status: unknown
+  '#hyphenation':
+    title: '6.3 Hyphenation: Morphological Breaking Within Words'
+    status: unknown
+  '#hyphens-property':
+    title: '6.3.1 Hyphenation Control: the hyphens property'
+    status: unknown
+  '#hyphenate-character':
+    title: '6.3.2 Hyphens: the hyphenate-character property'
+    status: unknown
+  '#hyphenate-size-limits':
+    title: '6.3.3 Hyphenation Size Limit: the hyphenate-limit-zone property'
+    status: unknown
+  '#hyphenate-char-limits':
+    title: '6.3.4 Hyphenation Character Limits: the hyphenate-limit-chars property'
+    status: unknown
+  '#hyphenate-line-limits':
+    title: '6.3.5 Hyphenation Line Limits: the hyphenate-limit-lines and hyphenate-limit-last properties'
+    status: unknown
+  '#overflow-wrap-property':
+    title: '6.4 Overflow Wrapping: the overflow-wrap (word-wrap) property'
+    status: unknown
+  '#line-break-details':
+    title: 6.5 Line Breaking Details
+    status: unknown
+  '#justification':
+    title: 7 Alignment and Justification
+    status: unknown
+  '#text-align-property':
+    title: '7.1 Text Alignment: the text-align shorthand'
+    status: unknown
+  '#character-alignment':
+    title: 7.2 Character-based Alignment in a Table Column
+    status: unknown
+  '#text-align-all-property':
+    title: '7.3 Default Text Alignment: the text-align-all property'
+    status: unknown
+  '#text-align-last-property':
+    title: '7.4 Last Line Alignment: the text-align-last property'
+    status: unknown
+  '#text-justify-property':
+    title: '7.5 Justification Method: the text-justify property'
+    status: unknown
+  '#expanding-text':
+    title: 7.5.1 Expanding and Compressing Text
+    status: unknown
+  '#justify-symbols':
+    title: 7.5.2 Handling Symbols and Punctuation
+    status: unknown
+  '#justify-limits':
+    title: 7.5.3 Unexpandable Text
+    status: unknown
+  '#justify-cursive':
+    title: 7.5.4 Cursive Scripts
+    status: unknown
+  '#justify-algos':
+    title: 7.5.5 Minimum Requirements for auto Justification
+    status: unknown
+  '#text-group-align-property':
+    title: '7.6 Aligning a block of text within its container: the text-group-align property'
+    status: unknown
+  '#spacing':
+    title: 8 Spacing
+    status: unknown
+  '#word-spacing-property':
+    title: '8.1 Word Spacing: the word-spacing property'
+    status: unknown
+  '#letter-spacing-property':
+    title: '8.2 Tracking: the letter-spacing property'
+    status: unknown
+  '#cursive-tracking':
+    title: 8.2.1 Cursive Scripts
+    status: unknown
+  '#line-padding-property':
+    title: '8.3 Line Start/End Padding: the line-padding property'
+    status: unknown
+  '#text-autospace-property':
+    title: '8.4 Automatic Contextual Spacing: the text-autospace property'
+    status: unknown
+  '#inter-script-spacing':
+    title: 8.4.1 Inter-script Spacing
+    status: unknown
+  '#autospace-bidi':
+    title: 8.4.2 Interaction with Bidirectional Text
+    status: unknown
+  '#text-spacing-trim-property':
+    title: '8.5 CJK Punctuation Spacing: the text-spacing-trim property'
+    status: unknown
+  '#fullwidth-collapsing':
+    title: 8.5.1 Fullwidth Punctuation Collapsing
+    status: unknown
+  '#text-spacing-classes':
+    title: 8.5.2 Text Spacing Trim Character Classes
+    status: unknown
+  '#japanese-start-edges':
+    title: 8.5.3 Japanese Paragraph-start Conventions in CSS
+    status: unknown
+  '#text-spacing-property':
+    title: '8.6 Character Class Spacing Shorthand: the text-spacing property'
+    status: unknown
+  '#boundary-shaping':
+    title: 8.7 Shaping Across Element Boundaries
+    status: unknown
+  '#edge-effects':
+    title: 9 Edge Effects
+    status: unknown
+  '#text-indent-property':
+    title: '9.1 First Line Indentation: the text-indent property'
+    status: unknown
+  '#hanging':
+    title: 9.2 Hanging Glyphs
+    status: unknown
+  '#hanging-punctuation-property':
+    title: '9.2.1 Hanging Punctuation: the hanging-punctuation property'
+    status: unknown
+  '#bidi-linebox':
+    title: 9.3 Bidirectionality and Line Boxes
+    status: unknown

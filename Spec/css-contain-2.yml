@@ -1,0 +1,71 @@
+spec: css-contain-2
+title: CSS Containment Module Level 2
+url: https://www.w3.org/TR/css-contain-2/
+snapshot: https://www.w3.org/TR/2022/WD-css-contain-2-20220917/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#interaction':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#values':
+    title: 1.2 Value Definitions
+    status: unknown
+  '#contain-property':
+    title: '2 Strong Containment: the contain property'
+    status: unknown
+  '#containment-types':
+    title: 3 Types of Containment
+    status: unknown
+  '#containment-size':
+    title: 3.1 Size Containment
+    status: unknown
+  '#containment-size-opt':
+    title: 3.1.1 Possible Size-Containment Optimizations
+    status: unknown
+  '#containment-layout':
+    title: 3.2 Layout Containment
+    status: unknown
+  '#containment-layout-opt':
+    title: 3.2.1 Possible Layout-Containment Optimizations
+    status: unknown
+  '#containment-style':
+    title: 3.3 Style Containment
+    status: unknown
+  '#containment-style-opt':
+    title: 3.3.1 Possible Style-Containment Optimizations
+    status: unknown
+  '#containment-paint':
+    title: 3.4 Paint Containment
+    status: unknown
+  '#containment-paint-opt':
+    title: 3.4.1 Possible Paint-Containment Optimizations
+    status: unknown
+  '#content-visibility':
+    title: '4 Suppressing An Element’s Contents Entirely: the content-visibility property'
+    status: unknown
+  '#using-cv-hidden':
+    title: '4.1 Using content-visibility: hidden'
+    status: unknown
+  '#using-cv-auto':
+    title: '4.2 Using content-visibility: auto'
+    status: unknown
+  '#content-visibility-auto-state-changed':
+    title: '4.3 Detecting content-visibility: auto state changes: the contentvisibilityautostatechanged event'
+    status: unknown
+  '#cv-notes':
+    title: 4.4 Restrictions and Clarifications
+    status: unknown
+  '#cv-a11y':
+    title: 4.5 Accessibility Implications
+    status: unknown
+  '#cv-examples':
+    title: 4.6 Examples
+    status: unknown
+  '#privacy':
+    title: 5 Privacy Considerations
+    status: unknown
+  '#security':
+    title: 6 Security Considerations
+    status: unknown

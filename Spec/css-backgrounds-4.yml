@@ -1,0 +1,83 @@
+spec: css-backgrounds-4
+title: CSS Backgrounds Module Level 4
+url: https://www.w3.org/TR/css-backgrounds-4/
+snapshot: https://www.w3.org/TR/2025/WD-css-backgrounds-4-20251125/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#values':
+    title: 1.2 Value Definitions
+    status: unknown
+  '#backgrounds':
+    title: 2 Defining Backgrounds
+    status: unknown
+  '#background-color':
+    title: '2.1 Base Color: the background-color property'
+    status: unknown
+  '#background-image':
+    title: '2.2 Image Sources: the background-image property'
+    status: unknown
+  '#background-repeat-longhands':
+    title: '2.3 Tiling Images: the background-repeat-x, background-repeat-y, background-repeat-block, and background-repeat-inline properties'
+    status: unknown
+  '#background-repeat':
+    title: '2.4 Tiling Images Shorthand: the background-repeat property'
+    status: unknown
+  '#background-attachment':
+    title: '2.5 Affixing Images: the background-attachment property'
+    status: unknown
+  '#background-position-longhands':
+    title: '2.6 Background Positioning: the background-position-x, background-position-y, background-position-inline, and background-position-block properties'
+    status: unknown
+  '#background-position':
+    title: '2.7 Background Positioning Shorthand: the background-position shorthand property'
+    status: unknown
+  '#bg-position-serialization':
+    title: 2.7.1 Serialization of background-position values
+    status: unknown
+  '#background-clip':
+    title: '2.8 Painting Area: the background-clip property'
+    status: unknown
+  '#background-origin':
+    title: '2.9 Positioning Area: the background-origin property'
+    status: unknown
+  '#background-size':
+    title: '2.10 Sizing Images: the background-size property'
+    status: unknown
+  '#bg-size-serialization':
+    title: 2.10.1 Serialization of background-size values
+    status: unknown
+  '#background-layers':
+    title: '2.11 Background Image Layers: the background-tbd shorthand property'
+    status: unknown
+  '#background':
+    title: '2.12 Backgrounds Shorthand: the background property'
+    status: unknown
+  '#layering':
+    title: 3 Layering Multiple Background Images
+    status: unknown
+  '#special-backgrounds':
+    title: 4 Backgrounds of Special Elements
+    status: unknown
+  '#root-background':
+    title: 4.1 The Canvas Background and the Root Element
+    status: unknown
+  '#body-background':
+    title: 4.2 The Canvas Background and the HTML <body> Element
+    status: unknown
+  '#first-line-background':
+    title: 4.3 The ::first-line Pseudo-element‘s Background
+    status: unknown
+  '#changes':
+    title: 5 Changes
+    status: unknown
+  '#level-changes':
+    title: 5.1 Additions since [CSS3BG]
+    status: unknown
+  '#acknowledgments':
+    title: 6 Acknowledgments
+    status: unknown

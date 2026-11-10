@@ -1,0 +1,221 @@
+spec: filter-effects-1
+title: Filter Effects Module Level 1
+url: https://www.w3.org/TR/filter-effects-1/
+snapshot: https://www.w3.org/TR/2018/WD-filter-effects-1-20181218/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 2 Module interactions
+    status: unknown
+  '#values':
+    title: 3 Values
+    status: unknown
+  '#definitions':
+    title: 4 Terminology
+    status: unknown
+  '#FilterProperty':
+    title: '5 Graphic filters: the filter property'
+    status: unknown
+  '#filter-functions':
+    title: 6 Filter Functions
+    status: unknown
+  '#supported-filter-functions':
+    title: 6.1 Supported Filter Functions
+    status: unknown
+  '#computed-values-of-filter-functions':
+    title: 6.2 Computed Values of Filter Functions
+    status: unknown
+  '#serialization-of-filter-functions':
+    title: 6.3 Serialization of Filter Functions
+    status: unknown
+  '#interpolation-of-filter-functions':
+    title: 6.4 Interpolation of Filter Functions
+    status: unknown
+  '#FilterElement':
+    title: '7 SVG Filter Sources: the filter element'
+    status: unknown
+  '#FilterEffectsRegion':
+    title: 8 Filter Region
+    status: unknown
+  '#FilterPrimitivesOverview':
+    title: 9 Filter primitives
+    status: unknown
+  '#FilterPrimitivesOverviewIntro':
+    title: 9.1 Overview
+    status: unknown
+  '#CommonAttributes':
+    title: 9.2 Common filter primitive attributes
+    status: unknown
+  '#FilterPrimitiveTree':
+    title: 9.3 Filter primitive tree
+    status: unknown
+  '#FilterPrimitiveSubRegion':
+    title: 9.4 Filter primitive subregion
+    status: unknown
+  '#feBlendElement':
+    title: 9.5 Filter primitive feBlend
+    status: unknown
+  '#feColorMatrixElement':
+    title: 9.6 Filter primitive feColorMatrix
+    status: unknown
+  '#feComponentTransferElement':
+    title: 9.7 Filter primitive feComponentTransfer
+    status: unknown
+  '#feFuncRElement':
+    title: 9.7.1 Transfer function feFuncR
+    status: unknown
+  '#feFuncGElement':
+    title: 9.7.2 Transfer function feFuncG
+    status: unknown
+  '#feFuncBElement':
+    title: 9.7.3 Transfer function feFuncB
+    status: unknown
+  '#feFuncAElement':
+    title: 9.7.4 Transfer function feFuncA
+    status: unknown
+  '#feCompositeElement':
+    title: 9.8 Filter primitive feComposite
+    status: unknown
+  '#feConvolveMatrixElement':
+    title: 9.9 Filter primitive feConvolveMatrix
+    status: unknown
+  '#feDiffuseLightingElement':
+    title: 9.10 Filter primitive feDiffuseLighting
+    status: unknown
+  '#feDisplacementMapElement':
+    title: 9.11 Filter primitive feDisplacementMap
+    status: unknown
+  '#feDropShadowElement':
+    title: 9.12 Filter primitive feDropShadow
+    status: unknown
+  '#feFloodElement':
+    title: 9.13 Filter primitive feFlood
+    status: unknown
+  '#FloodColorProperty':
+    title: 9.13.1 The flood-color property
+    status: unknown
+  '#FloodOpacityProperty':
+    title: 9.13.2 The flood-opacity property
+    status: unknown
+  '#feGaussianBlurElement':
+    title: 9.14 Filter primitive feGaussianBlur
+    status: unknown
+  '#feImageElement':
+    title: 9.15 Filter primitive feImage
+    status: unknown
+  '#feMergeElement':
+    title: 9.16 Filter primitive feMerge
+    status: unknown
+  '#feMergeNodeElement':
+    title: 9.16.1 Merge node feMergeNode
+    status: unknown
+  '#feMorphologyElement':
+    title: 9.17 Filter primitive feMorphology
+    status: unknown
+  '#feOffsetElement':
+    title: 9.18 Filter primitive feOffset
+    status: unknown
+  '#feSpecularLightingElement':
+    title: 9.19 Filter primitive feSpecularLighting
+    status: unknown
+  '#feTileElement':
+    title: 9.20 Filter primitive feTile
+    status: unknown
+  '#feTurbulenceElement':
+    title: 9.21 Filter primitive feTurbulence
+    status: unknown
+  '#ColorInterpolationFiltersProperty':
+    title: 10 The color-interpolation-filters property
+    status: unknown
+  '#LightSourceDefinitions':
+    title: 11 Light source elements and properties
+    status: unknown
+  '#LightSourceIntro':
+    title: 11.1 Introduction
+    status: unknown
+  '#feDistantLightElement':
+    title: 11.2 Light source feDistantLight
+    status: unknown
+  '#fePointLightElement':
+    title: 11.3 Light source fePointLight
+    status: unknown
+  '#feSpotLightElement':
+    title: 11.4 Light source feSpotLight
+    status: unknown
+  '#LightingColorProperty':
+    title: 11.5 The lighting-color property
+    status: unknown
+  '#FilterCSSImageValue':
+    title: 12 Filter CSS <image> values
+    status: unknown
+  '#interpolating-filter-image':
+    title: 12.1 Interpolating filter()
+    status: unknown
+  '#ShorthandEquivalents':
+    title: 13 Shorthands defined in terms of the filter element
+    status: unknown
+  '#FilterPrimitiveRepresentation':
+    title: 13.1 Filter primitive representation
+    status: unknown
+  '#grayscaleEquivalent':
+    title: 13.1.1 grayscale
+    status: unknown
+  '#sepiaEquivalent':
+    title: 13.1.2 sepia
+    status: unknown
+  '#saturateEquivalent':
+    title: 13.1.3 saturate
+    status: unknown
+  '#huerotateEquivalent':
+    title: 13.1.4 hue-rotate
+    status: unknown
+  '#invertEquivalent':
+    title: 13.1.5 invert
+    status: unknown
+  '#opacityEquivalent':
+    title: 13.1.6 opacity
+    status: unknown
+  '#brightnessEquivalent':
+    title: 13.1.7 brightness
+    status: unknown
+  '#contrastEquivalent':
+    title: 13.1.8 contrast
+    status: unknown
+  '#blurEquivalent':
+    title: 13.1.9 blur
+    status: unknown
+  '#dropshadowEquivalent':
+    title: 13.1.10 drop-shadow
+    status: unknown
+  '#filter-region-for-shorthands':
+    title: 13.2 Filter region for shorthands
+    status: unknown
+  '#animation-of-filters':
+    title: 14 Animation of Filters
+    status: unknown
+  '#interpolation-of-filters':
+    title: 14.1 Interpolation of Filter Function Lists
+    status: unknown
+  '#addition':
+    title: 14.2 Addition
+    status: unknown
+  '#accumulation':
+    title: 14.3 Accumulation
+    status: unknown
+  '#priv-sec':
+    title: 15 Privacy and Security Considerations
+    status: unknown
+  '#tainted-filter-primitives':
+    title: 15.1 Tainted Filter Primitives
+    status: unknown
+  '#fedisplacemnentmap-restrictions':
+    title: 15.2 feDisplacementMap Restrictions
+    status: unknown
+  '#origin-restrictions':
+    title: 15.3 Origin Restrictions
+    status: unknown
+  '#timing-attack':
+    title: 15.4 Timing Attacks
+    status: unknown

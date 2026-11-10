@@ -1,0 +1,107 @@
+spec: css-transforms-1
+title: CSS Transforms Module Level 1
+url: https://www.w3.org/TR/css-transforms-1/
+snapshot: https://www.w3.org/TR/2019/CR-css-transforms-1-20190214/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#module-interactions':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#css-values':
+    title: 1.2 CSS Values
+    status: unknown
+  '#terminology':
+    title: 2 Terminology
+    status: unknown
+  '#transform-rendering':
+    title: 3 The Transform Rendering Model
+    status: unknown
+  '#transform-property':
+    title: 4 The transform Property
+    status: unknown
+  '#serialization-of-transform-functions':
+    title: 4.1 Serialization of <transform-function>s
+    status: unknown
+  '#serialization-of-the-computed-value':
+    title: 4.2 Serialization of the computed value of <transform-list>
+    status: unknown
+  '#transform-origin-property':
+    title: 5 The transform-origin Property
+    status: unknown
+  '#transform-box':
+    title: '6 Transform reference box: the transform-box property'
+    status: unknown
+  '#svg-transform':
+    title: 7 The SVG transform Attribute
+    status: unknown
+  '#transform-attribute-specificity':
+    title: 7.1 SVG presentation attributes
+    status: unknown
+  '#svg-syntax':
+    title: 7.2 Syntax of the SVG transform attribute
+    status: unknown
+  '#svg-transform-functions':
+    title: 7.3 SVG transform functions
+    status: unknown
+  '#svg-user-coordinate-space':
+    title: 7.4 User coordinate space
+    status: unknown
+  '#transform-attribute-dom':
+    title: 7.5 SVG DOM interface for the transform attribute
+    status: unknown
+  '#svg-animation':
+    title: 8 SVG Animation
+    status: unknown
+  '#svg-animate-element':
+    title: 8.1 The animate and set element
+    status: unknown
+  '#neutral-element':
+    title: 8.2 Neutral element for addition
+    status: unknown
+  '#svg-attribute-name':
+    title: 8.3 The SVG 1.1 'attributeName' attribute
+    status: unknown
+  '#transform-functions':
+    title: 9 The Transform Functions
+    status: unknown
+  '#two-d-transform-functions':
+    title: 9.1 2D Transform Functions
+    status: unknown
+  '#transform-primitives':
+    title: 9.2 Transform function primitives and derivatives
+    status: unknown
+  '#transform-function-lists':
+    title: 10 The Transform Function Lists
+    status: unknown
+  '#interpolation-of-transforms':
+    title: 11 Interpolation of Transforms
+    status: unknown
+  '#interpolation-of-transform-functions':
+    title: 12 Interpolation of primitives and derived transform functions
+    status: unknown
+  '#matrix-interpolation':
+    title: 13 Interpolation of Matrices
+    status: unknown
+  '#supporting-functions':
+    title: 13.1 Supporting functions
+    status: unknown
+  '#interpolation-of-2d-matrices':
+    title: 13.2 Interpolation of 2D matrices
+    status: unknown
+  '#decomposing-a-2d-matrix':
+    title: 13.2.1 Decomposing a 2D matrix
+    status: unknown
+  '#interpolation-of-decomposed-2d-matrix-values':
+    title: 13.2.2 Interpolation of decomposed 2D matrix values
+    status: unknown
+  '#recomposing-to-a-2d-matrix':
+    title: 13.2.3 Recomposing to a 2D matrix
+    status: unknown
+  '#mathematical-description':
+    title: 14 Mathematical Description of Transform Functions
+    status: unknown
+  '#priv-sec':
+    title: 15 Privacy and Security Considerations
+    status: unknown

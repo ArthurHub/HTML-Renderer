@@ -1,0 +1,107 @@
+spec: cssom-view-1
+title: CSSOM View Module
+url: https://www.w3.org/TR/cssom-view-1/
+snapshot: https://www.w3.org/TR/2025/WD-cssom-view-1-20250916/
+sections:
+  '#background':
+    title: 1 Background
+    status: unknown
+  '#terminology':
+    title: 2 Terminology
+    status: unknown
+  '#css-pixels':
+    title: 2.1 CSS pixels
+    status: unknown
+  '#zooming':
+    title: 2.2 Zooming
+    status: unknown
+  '#web-exposed-screen-information':
+    title: 2.3 Web-exposed screen information
+    status: unknown
+  '#common-infrastructure':
+    title: 3 Common Infrastructure
+    status: unknown
+  '#scrolling':
+    title: 3.1 Scrolling
+    status: unknown
+  '#webidl-values':
+    title: 3.2 WebIDL values
+    status: unknown
+  '#extensions-to-the-window-interface':
+    title: 4 Extensions to the Window Interface
+    status: unknown
+  '#the-features-argument-to-the-open()-method':
+    title: 4.1 The features argument to the open() method
+    status: unknown
+  '#the-mediaquerylist-interface':
+    title: 4.2 The MediaQueryList Interface
+    status: unknown
+  '#mediaquerylist-event-summary':
+    title: 4.2.1 Event summary
+    status: unknown
+  '#the-screen-interface':
+    title: 4.3 The Screen Interface
+    status: unknown
+  '#extensions-to-the-document-interface':
+    title: 5 Extensions to the Document Interface
+    status: unknown
+  '#the-caretposition-interface':
+    title: 5.1 The CaretPosition Interface
+    status: unknown
+  '#extension-to-the-element-interface':
+    title: 6 Extensions to the Element Interface
+    status: unknown
+  '#element-scrolling-members':
+    title: 6.1 Element Scrolling Members
+    status: unknown
+  '#extensions-to-the-htmlelement-interface':
+    title: 7 Extensions to the HTMLElement Interface
+    status: unknown
+  '#extensions-to-the-htmlimageelement-interface':
+    title: 8 Extensions to the HTMLImageElement Interface
+    status: unknown
+  '#extensions-to-the-range-interface':
+    title: 9 Extensions to the Range Interface
+    status: unknown
+  '#extensions-to-the-mouseevent-interface':
+    title: 10 Extensions to the MouseEvent Interface
+    status: unknown
+  '#geometry':
+    title: 11 Geometry
+    status: unknown
+  '#the-geometryutils-interface':
+    title: 11.1 The GeometryUtils Interface
+    status: unknown
+  '#visualViewport':
+    title: 12 VisualViewport
+    status: unknown
+  '#the-visualviewport-interface':
+    title: 12.1 The VisualViewport Interface
+    status: unknown
+  '#events':
+    title: 13 Events
+    status: unknown
+  '#resizing-viewports':
+    title: 13.1 Resizing viewports
+    status: unknown
+  '#scrolling-events':
+    title: 13.2 Scrolling
+    status: unknown
+  '#event-summary':
+    title: 13.3 Event summary
+    status: unknown
+  '#post-layout-snapshot':
+    title: 14 Post-Layout State Snapshotting
+    status: unknown
+  '#privacy':
+    title: 15 Privacy Considerations
+    status: unknown
+  '#security':
+    title: 16 Security Considerations
+    status: unknown
+  '#changes':
+    title: 17 Changes
+    status: unknown
+  '#acks':
+    title: 18 Acknowledgements
+    status: unknown

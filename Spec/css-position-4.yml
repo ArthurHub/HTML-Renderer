@@ -1,0 +1,32 @@
+spec: css-position-4
+title: CSS Positioned Layout Module Level 4
+url: https://www.w3.org/TR/css-position-4/
+snapshot: https://www.w3.org/TR/2025/WD-css-position-4-20251007/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#scrollable-cb':
+    title: 2 Scrollable Containing Block
+    status: unknown
+  '#top-layer':
+    title: 3 Top Layer
+    status: unknown
+  '#top-styling':
+    title: 3.1 Top Layer Styling
+    status: unknown
+  '#backdrop':
+    title: 3.2 The ::backdrop Pseudo-Element
+    status: unknown
+  '#top-manip':
+    title: 3.3 Top Layer Manipulation
+    status: unknown
+  '#overlay':
+    title: '3.4 Controlling the Top Layer: the overlay property'
+    status: unknown
+  '#painting-order':
+    title: 4 Painting Order and Stacking Contexts
+    status: unknown
+  '#changes':
+    title: 5 Changes
+    status: unknown

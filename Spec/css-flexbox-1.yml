@@ -1,0 +1,152 @@
+spec: css-flexbox-1
+title: CSS Flexible Box Layout Module Level 1
+url: https://www.w3.org/TR/css-flexbox-1/
+snapshot: https://www.w3.org/TR/2025/CRD-css-flexbox-1-20251014/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#overview':
+    title: 1.1 Overview
+    status: unknown
+  '#placement':
+    title: 1.2 Module interactions
+    status: unknown
+  '#values':
+    title: 1.3 Value Definitions
+    status: unknown
+  '#box-model':
+    title: 2 Flex Layout Box Model and Terminology
+    status: unknown
+  '#flex-containers':
+    title: '3 Flex Containers: the flex and inline-flex display values'
+    status: unknown
+  '#flex-items':
+    title: 4 Flex Items
+    status: unknown
+  '#abspos-items':
+    title: 4.1 Absolutely-Positioned Flex Children
+    status: unknown
+  '#item-margins':
+    title: 4.2 Flex Item Margins and Paddings
+    status: unknown
+  '#painting':
+    title: 4.3 Flex Item Z-Ordering
+    status: unknown
+  '#visibility-collapse':
+    title: 4.4 Collapsed Items
+    status: unknown
+  '#min-size-auto':
+    title: 4.5 Automatic Minimum Size of Flex Items
+    status: unknown
+  '#flow-order':
+    title: 5 Ordering and Orientation
+    status: unknown
+  '#flex-direction-property':
+    title: '5.1 Flex Flow Direction: the flex-direction property'
+    status: unknown
+  '#flex-wrap-property':
+    title: '5.2 Flex Line Wrapping: the flex-wrap property'
+    status: unknown
+  '#flex-flow-property':
+    title: '5.3 Flex Direction and Wrap: the flex-flow shorthand'
+    status: unknown
+  '#order-property':
+    title: '5.4 Reordering and Accessibility: the order property'
+    status: unknown
+  '#flex-lines':
+    title: 6 Flex Lines
+    status: unknown
+  '#flexibility':
+    title: 7 Flexibility
+    status: unknown
+  '#flex-property':
+    title: 7.1 The flex Shorthand
+    status: unknown
+  '#flex-common':
+    title: 7.1.1 Basic Values of flex
+    status: unknown
+  '#flex-components':
+    title: 7.2 Components of Flexibility
+    status: unknown
+  '#flex-grow-property':
+    title: 7.2.1 The flex-grow property
+    status: unknown
+  '#flex-shrink-property':
+    title: 7.2.2 The flex-shrink property
+    status: unknown
+  '#flex-basis-property':
+    title: 7.2.3 The flex-basis property
+    status: unknown
+  '#alignment':
+    title: 8 Alignment
+    status: unknown
+  '#auto-margins':
+    title: 8.1 Aligning with auto margins
+    status: unknown
+  '#justify-content-property':
+    title: '8.2 Axis Alignment: the justify-content property'
+    status: unknown
+  '#align-items-property':
+    title: '8.3 Cross-axis Alignment: the align-items and align-self properties'
+    status: unknown
+  '#align-content-property':
+    title: '8.4 Packing Flex Lines: the align-content property'
+    status: unknown
+  '#flex-baselines':
+    title: 8.5 Flex Container Baselines
+    status: unknown
+  '#layout-algorithm':
+    title: 9 Flex Layout Algorithm
+    status: unknown
+  '#box-manip':
+    title: 9.1 Initial Setup
+    status: unknown
+  '#line-sizing':
+    title: 9.2 Line Length Determination
+    status: unknown
+  '#main-sizing':
+    title: 9.3 Main Size Determination
+    status: unknown
+  '#cross-sizing':
+    title: 9.4 Cross Size Determination
+    status: unknown
+  '#main-alignment':
+    title: 9.5 Main-Axis Alignment
+    status: unknown
+  '#cross-alignment':
+    title: 9.6 Cross-Axis Alignment
+    status: unknown
+  '#resolve-flexible-lengths':
+    title: 9.7 Resolving Flexible Lengths
+    status: unknown
+  '#definite-sizes':
+    title: 9.8 Definite and Indefinite Sizes
+    status: unknown
+  '#intrinsic-sizes':
+    title: 9.9 Intrinsic Sizes
+    status: unknown
+  '#intrinsic-main-sizes':
+    title: 9.9.1 Flex Container Intrinsic Main Sizes
+    status: unknown
+  '#intrinsic-main-sizes-ideal':
+    title: 9.9.1.1 Ideal Algorithm
+    status: unknown
+  '#intrinsic-main-sizes-compat':
+    title: 9.9.1.2 Web-compatible Intrinsic Sizing Algorithm
+    status: unknown
+  '#intrinsic-main-sizes-multiline':
+    title: 9.9.1.3 Multi-line Min-content Algorithm
+    status: unknown
+  '#intrinsic-cross-sizes':
+    title: 9.9.2 Flex Container Intrinsic Cross Sizes
+    status: unknown
+  '#intrinsic-item-contributions':
+    title: 9.9.3 Flex Item Intrinsic Size Contributions
+    status: unknown
+  '#pagination':
+    title: 10 Fragmenting Flex Layout
+    status: unknown
+  '#pagination-algo':
+    title: 10.1 Sample Flex Fragmentation Algorithm
+    status: unknown

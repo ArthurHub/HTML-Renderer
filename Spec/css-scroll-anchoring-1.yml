@@ -1,0 +1,32 @@
+spec: css-scroll-anchoring-1
+title: CSS Scroll Anchoring Module Level 1
+url: https://www.w3.org/TR/css-scroll-anchoring-1/
+snapshot: https://www.w3.org/TR/2020/WD-css-scroll-anchoring-1-20201111/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#description':
+    title: 2 Description
+    status: unknown
+  '#anchor-node-selection':
+    title: 2.1 Anchor Node Selection
+    status: unknown
+  '#scroll-adjustment':
+    title: 2.2 Scroll Adjustment
+    status: unknown
+  '#suppression-windows':
+    title: 2.2.1 Suppression Window
+    status: unknown
+  '#suppression-triggers':
+    title: 2.2.2 Suppression Triggers
+    status: unknown
+  '#exclusion-api':
+    title: 3 Exclusion API
+    status: unknown
+  '#priv-sec':
+    title: 4 Privacy and Security Considerations
+    status: unknown

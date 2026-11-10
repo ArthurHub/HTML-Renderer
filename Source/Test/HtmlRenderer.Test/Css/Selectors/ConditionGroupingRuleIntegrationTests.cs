@@ -94,7 +94,8 @@ public sealed class ConditionGroupingRuleIntegrationTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant - the cascade never applies @container's inner rules")]
+    [Ignore("Gap, see Spec/css-conditional-5.yml")]
+    [Spec("css-conditional-5", "#container-rule")]
     public void Container_InnerRules_Apply_WhenAnEligibleAncestorContainerMatches()
     {
         var html = Html(

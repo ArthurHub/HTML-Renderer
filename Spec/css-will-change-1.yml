@@ -1,0 +1,29 @@
+spec: css-will-change-1
+title: CSS Will Change Module Level 1
+url: https://www.w3.org/TR/css-will-change/
+snapshot: https://www.w3.org/TR/2022/CRD-css-will-change-1-20220505/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#using':
+    title: 1.2 Using will-change Well
+    status: unknown
+  '#will-change':
+    title: '2 Hinting at Future Behavior: the will-change property'
+    status: unknown
+  '#security':
+    title: 3 Security Considerations
+    status: unknown
+  '#privacy':
+    title: 4 Privacy Considerations
+    status: unknown
+  '#acks':
+    title: 5 Acknowledgements
+    status: unknown
+  '#changes':
+    title: 6 Changes
+    status: unknown

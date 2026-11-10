@@ -1,0 +1,245 @@
+spec: mediaqueries-5
+title: Media Queries Level 5
+url: https://www.w3.org/TR/mediaqueries-5/
+snapshot: https://www.w3.org/TR/2026/WD-mediaqueries-5-20260219/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module interactions
+    status: unknown
+  '#values':
+    title: 1.2 Values
+    status: unknown
+  '#units':
+    title: 1.3 Units
+    status: unknown
+  '#media':
+    title: 2 Media Queries
+    status: unknown
+  '#mq-list':
+    title: 2.1 Combining Media Queries
+    status: unknown
+  '#mq-prefix':
+    title: 2.2 Media Query Modifiers
+    status: unknown
+  '#mq-not':
+    title: '2.2.1 Negating a Media Query: the not keyword'
+    status: unknown
+  '#mq-only':
+    title: '2.2.2 Hiding a Media Query From Legacy user agents: the only keyword'
+    status: unknown
+  '#media-types':
+    title: 2.3 Media Types
+    status: unknown
+  '#mq-features':
+    title: 2.4 Media Features
+    status: unknown
+  '#mq-ranges':
+    title: '2.4.1 Media Feature Types: “range” and “discrete”'
+    status: unknown
+  '#mq-boolean-context':
+    title: 2.4.2 Evaluating Media Features in a Boolean Context
+    status: unknown
+  '#mq-range-context':
+    title: 2.4.3 Evaluating Media Features in a Range Context
+    status: unknown
+  '#mq-min-max':
+    title: 2.4.4 Using “min-” and “max-” Prefixes On Range Features
+    status: unknown
+  '#media-conditions':
+    title: 2.5 Combining Media Features
+    status: unknown
+  '#mq-syntax':
+    title: 3 Syntax
+    status: unknown
+  '#evaluating':
+    title: 3.1 Evaluating Media Queries
+    status: unknown
+  '#error-handling':
+    title: 3.2 Error Handling
+    status: unknown
+  '#mf-viewport-characteristics':
+    title: 4 Viewport/Page Characteristics Media Features
+    status: unknown
+  '#width':
+    title: '4.1 Width: the width feature'
+    status: unknown
+  '#height':
+    title: '4.2 Height: the height feature'
+    status: unknown
+  '#aspect-ratio':
+    title: '4.3 Aspect-Ratio: the aspect-ratio feature'
+    status: unknown
+  '#orientation':
+    title: '4.4 Orientation: the orientation feature'
+    status: unknown
+  '#mf-overflow-block':
+    title: '4.5 Block-Axis Overflow: the overflow-block feature'
+    status: unknown
+  '#mf-overflow-inline':
+    title: '4.6 Inline-Axis Overflow: the overflow-inline feature'
+    status: unknown
+  '#mf-horizontal-viewport-segments':
+    title: '4.7 Horizontal Viewport Segments: the horizontal-viewport-segments feature'
+    status: unknown
+  '#mf-vertical-viewport-segments':
+    title: '4.8 Vertical Viewport Segments: the vertical-viewport-segments feature'
+    status: unknown
+  '#display-modes':
+    title: '4.9 Display Modes: the display-mode media feature'
+    status: unknown
+  '#mf-display-quality':
+    title: 5 Display Quality Media Features
+    status: unknown
+  '#resolution':
+    title: '5.1 Display Resolution: the resolution feature'
+    status: unknown
+  '#scan':
+    title: '5.2 Display Type: the scan feature'
+    status: unknown
+  '#grid':
+    title: '5.3 Detecting Console Displays: the grid feature'
+    status: unknown
+  '#update':
+    title: '5.4 Display Update Frequency: the update feature'
+    status: unknown
+  '#environment-blending':
+    title: '5.5 Detecting the display technology: the environment-blending feature'
+    status: unknown
+  '#mf-colors':
+    title: 6 Color Media Features
+    status: unknown
+  '#color':
+    title: '6.1 Color Depth: the color feature'
+    status: unknown
+  '#color-index':
+    title: '6.2 Paletted Color Screens: the color-index feature'
+    status: unknown
+  '#monochrome':
+    title: '6.3 Monochrome Screens: the monochrome feature'
+    status: unknown
+  '#color-gamut':
+    title: '6.4 Color Display Quality: the color-gamut feature'
+    status: unknown
+  '#dynamic-range':
+    title: '6.5 Dynamic Range: the dynamic-range feature'
+    status: unknown
+  '#contrast-brightness-of-display':
+    title: 6.5.1 Determining contrast and brightness of display
+    status: unknown
+  '#inverted':
+    title: '6.6 Detecting inverted colors on the display: the inverted-colors feature'
+    status: unknown
+  '#mf-interaction':
+    title: 7 Interaction Media Features
+    status: unknown
+  '#pointer':
+    title: '7.1 Pointing Device Quality: the pointer feature'
+    status: unknown
+  '#hover':
+    title: '7.2 Hover Capability: the hover feature'
+    status: unknown
+  '#any-input':
+    title: '7.3 All Available Interaction Capabilities: the any-pointer and any-hover features'
+    status: unknown
+  '#nav-controls':
+    title: '7.4 Detecting UA-supplied navigation controls: the nav-controls feature'
+    status: unknown
+  '#video-prefixed-features':
+    title: 8 Video Prefixed Features
+    status: unknown
+  '#video-color-gamut':
+    title: '8.1 Video Color Display Quality: the video-color-gamut feature'
+    status: unknown
+  '#video-dynamic-range':
+    title: '8.2 Video Dynamic Range: the video-dynamic-range feature'
+    status: unknown
+  '#mf-scripting':
+    title: 9 Scripting Media Features
+    status: unknown
+  '#scripting':
+    title: '9.1 Scripting Support: the scripting feature'
+    status: unknown
+  '#custom-mq':
+    title: 10 Custom Media Queries
+    status: unknown
+  '#script-custom-mq':
+    title: 10.1 Script-based Custom Media Queries
+    status: unknown
+  '#custom-mq-cssom':
+    title: 11 CSSOM
+    status: unknown
+  '#mf-user-preferences':
+    title: 12 User Preference Media Features
+    status: unknown
+  '#prefers-reduced-motion':
+    title: '12.1 Detecting the desire for less motion on the page: the prefers-reduced-motion feature'
+    status: unknown
+  '#prefers-reduced-transparency':
+    title: '12.2 Detecting the desire for reduced transparency on the page: the prefers-reduced-transparency feature'
+    status: unknown
+  '#prefers-contrast':
+    title: '12.3 Detecting the desire for increased or decreased color contrast from elements on the page: the prefers-contrast feature'
+    status: unknown
+  '#forced-colors':
+    title: '12.4 Detecting Forced Colors Mode: the forced-colors feature'
+    status: unknown
+  '#prefers-color-scheme':
+    title: '12.5 Detecting the desire for light or dark color schemes: the prefers-color-scheme feature'
+    status: unknown
+  '#prefers-reduced-data':
+    title: '12.6 Detecting the desire for reduced data usage when loading a page: the prefers-reduced-data feature'
+    status: unknown
+  '#auto-pref':
+    title: 12.7 Automatic handling of User Preferences
+    status: unknown
+  '#script-control-user-prefs':
+    title: 13 Script Control of User Preferences
+    status: unknown
+  '#navigator-interface':
+    title: 13.1 Extensions to the Navigator interface
+    status: unknown
+  '#preferences-attribute':
+    title: 13.1.1 preferences attribute
+    status: unknown
+  '#preference-manager':
+    title: 13.1.2 PreferenceManager interface
+    status: unknown
+  '#color-scheme-attribute':
+    title: 13.1.3 colorScheme attribute
+    status: unknown
+  '#contrast-attribute':
+    title: 13.1.4 contrast attribute
+    status: unknown
+  '#reduced-motion-attribute':
+    title: 13.1.5 reducedMotion attribute
+    status: unknown
+  '#reduced-transparency-attribute':
+    title: 13.1.6 reducedTransparency attribute
+    status: unknown
+  '#reduced-data-attribute':
+    title: 13.1.7 reducedData attribute
+    status: unknown
+  '#preference-object-interface':
+    title: 13.1.8 PreferenceObject interface
+    status: unknown
+  '#override-attribute':
+    title: 13.1.8.1 override attribute
+    status: unknown
+  '#preference-value-attribute':
+    title: 13.1.8.2 value attribute
+    status: unknown
+  '#valid-values-attribute':
+    title: 13.1.8.3 validValues attribute
+    status: unknown
+  '#onchange-attribute':
+    title: 13.1.8.4 onchange event handler attribute
+    status: unknown
+  '#request-override-method':
+    title: 13.1.8.5 requestOverride() method
+    status: unknown
+  '#clear-override-method':
+    title: 13.1.8.6 clearOverride() method
+    status: unknown

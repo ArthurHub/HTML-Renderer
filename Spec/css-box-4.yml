@@ -1,0 +1,74 @@
+spec: css-box-4
+title: CSS Box Model Module Level 4
+url: https://www.w3.org/TR/css-box-4/
+snapshot: https://www.w3.org/TR/2024/WD-css-box-4-20240804/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#values':
+    title: 1.1 Value Definitions
+    status: unknown
+  '#placement':
+    title: 1.2 Module Interactions
+    status: unknown
+  '#box-model':
+    title: 2 The CSS Box Model
+    status: unknown
+  '#box-edges':
+    title: 2.1 Boxes and Edges
+    status: unknown
+  '#fragmentation':
+    title: 2.2 Fragmentation
+    status: unknown
+  '#keywords':
+    title: 2.3 Box-edge Keywords
+    status: unknown
+  '#margins':
+    title: 3 Margins
+    status: unknown
+  '#margin-physical':
+    title: '3.1 Page-relative (Physical) Margin Properties: the margin-top, margin-right, margin-bottom, and margin-left properties'
+    status: unknown
+  '#margin-shorthand':
+    title: '3.2 Margin Shorthand: the margin property'
+    status: unknown
+  '#margin-trim':
+    title: '3.3 Margins at Container Edges: the margin-trim property'
+    status: unknown
+  '#margin-trim-block':
+    title: 3.3.1 Trimming Block Container Content
+    status: unknown
+  '#margin-trim-flex':
+    title: 3.3.2 Trimming Flex Container Content
+    status: unknown
+  '#margin-trim-grid':
+    title: 3.3.3 Trimming Grid Container Content
+    status: unknown
+  '#paddings':
+    title: 4 Padding
+    status: unknown
+  '#padding-physical':
+    title: '4.1 Page-relative (Physical) Padding Properties: the padding-top, padding-right, padding-bottom, and padding-left properties'
+    status: unknown
+  '#padding-shorthand':
+    title: '4.2 Padding Shorthand: the padding property'
+    status: unknown
+  '#borders':
+    title: 5 Borders
+    status: unknown
+  '#changes':
+    title: 6 Recent Changes
+    status: unknown
+  '#changes-since-3':
+    title: 7 Changes Since CSS Level 3
+    status: unknown
+  '#changes-since-2':
+    title: 8 Changes Since CSS Level 2
+    status: unknown
+  '#priv':
+    title: 9 Privacy Considerations
+    status: unknown
+  '#sec':
+    title: 10 Security Considerations
+    status: unknown

@@ -1,0 +1,128 @@
+spec: css-transforms-2
+title: CSS Transforms Module Level 2
+url: https://www.w3.org/TR/css-transforms-2/
+snapshot: https://www.w3.org/TR/2021/WD-css-transforms-2-20211109/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#module-interactions':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#values':
+    title: 1.2 Value Definitions
+    status: unknown
+  '#terminology':
+    title: 2 Terminology
+    status: unknown
+  '#serialization-of-the-computed-value':
+    title: 2.1 Serialization of the computed value of <transform-list>
+    status: unknown
+  '#two-dimensional-subset':
+    title: 3 Two Dimensional Subset
+    status: unknown
+  '#transform-rendering':
+    title: 4 The Transform Rendering Model
+    status: unknown
+  '#3d-transform-rendering':
+    title: 4.1 3D Transform Rendering
+    status: unknown
+  '#perspective':
+    title: 4.1.1 Perspective
+    status: unknown
+  '#3d-rendering-contexts':
+    title: 4.1.2 3D Rendering Contexts
+    status: unknown
+  '#transformed-element-hierarchies':
+    title: 4.1.3 Transformed element hierarchies
+    status: unknown
+  '#accumulated-3d-transformation-matrix-computation':
+    title: 4.1.4 Accumulated 3D Transformation Matrix Computation
+    status: unknown
+  '#backface-visibility':
+    title: 4.1.5 Backface Visibility
+    status: unknown
+  '#processing-of-perspective-transformed-boxes':
+    title: 4.2 Processing of Perspective-Transformed Boxes
+    status: unknown
+  '#individual-transforms':
+    title: '5 Individual Transform Properties: the translate, scale, and rotate properties'
+    status: unknown
+  '#individual-transform-serialization':
+    title: 5.1 Serialization
+    status: unknown
+  '#ctm':
+    title: 6 Current Transformation Matrix
+    status: unknown
+  '#transform-style-property':
+    title: 7 The transform-style Property
+    status: unknown
+  '#grouping-property-values':
+    title: 7.1 Grouping property values
+    status: unknown
+  '#perspective-property':
+    title: 8 The perspective Property
+    status: unknown
+  '#perspective-origin-property':
+    title: 9 The perspective-origin Property
+    status: unknown
+  '#backface-visibility-property':
+    title: 10 The backface-visibility Property
+    status: unknown
+  '#svg-three-dimensional-functions':
+    title: 11 SVG and 3D transform functions
+    status: unknown
+  '#transform-functions':
+    title: 12 The Transform Functions
+    status: unknown
+  '#two-d-transform-functions':
+    title: 12.1 2D Transform Functions
+    status: unknown
+  '#three-d-transform-functions':
+    title: 12.2 3D Transform Functions
+    status: unknown
+  '#transform-primitives':
+    title: 12.3 Transform function primitives and derivatives
+    status: unknown
+  '#matrix-interpolation':
+    title: 13 Interpolation of Matrices
+    status: unknown
+  '#interpolation-of-3d-matrices':
+    title: 13.1 Interpolation of 3D matrices
+    status: unknown
+  '#decomposing-a-3d-matrix':
+    title: 13.1.1 Decomposing a 3D matrix
+    status: unknown
+  '#interpolation-of-decomposed-3d-matrix-values':
+    title: 13.1.2 Interpolation of decomposed 3D matrix values
+    status: unknown
+  '#recomposing-to-a-3d-matrix':
+    title: 13.1.3 Recomposing to a 3D matrix
+    status: unknown
+  '#interpolation-of-transform-functions':
+    title: 14 Interpolation of primitives and derived transform functions
+    status: unknown
+  '#combining-transform-lists':
+    title: 15 Addition and accumulation of transform lists
+    status: unknown
+  '#neutral-element':
+    title: 15.1 Neutral element for addition
+    status: unknown
+  '#mathematical-description':
+    title: 16 Mathematical Description of Transform Functions
+    status: unknown
+  '#svg-transform':
+    title: 17 The SVG transform Attribute
+    status: unknown
+  '#svg-animation':
+    title: 18 SVG Animation
+    status: unknown
+  '#svg-animate-element':
+    title: 18.1 The animate and set element
+    status: unknown
+  '#more-issues':
+    title: 19 More Issues
+    status: unknown
+  '#priv-sec':
+    title: 20 Security and Privacy Considerations
+    status: unknown

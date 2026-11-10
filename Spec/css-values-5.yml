@@ -1,0 +1,149 @@
+spec: css-values-5
+title: CSS Values and Units Module Level 5
+url: https://www.w3.org/TR/css-values-5/
+snapshot: https://www.w3.org/TR/2024/WD-css-values-5-20241111/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#textual-values':
+    title: 2 Textual Data Types
+    status: unknown
+  '#value-defs':
+    title: 3 Value Definition Syntax
+    status: unknown
+  '#component-functions':
+    title: 3.1 Functional Notation Definitions
+    status: unknown
+  '#component-function-commas':
+    title: 3.1.1 Commas in Function Arguments
+    status: unknown
+  '#boolean':
+    title: 3.2 Boolean Expression Multiplier <boolean-expr[]>
+    status: unknown
+  '#css-syntax':
+    title: '3.3 Specifying CSS Syntax in CSS: the <syntax> type'
+    status: unknown
+  '#parse-syntax':
+    title: 3.3.1 Parsing as <syntax>
+    status: unknown
+  '#level-4-extensions':
+    title: 4 Extensions to Level 4 Value Types
+    status: unknown
+  '#urls':
+    title: '4.1 Resource Locators: the <url> type'
+    status: unknown
+  '#request-url-modifiers':
+    title: 4.1.1 Request URL Modifiers
+    status: unknown
+  '#position':
+    title: '4.2 2D Positioning: the <position> type'
+    status: unknown
+  '#position-parsing':
+    title: 4.2.1 Parsing <position>
+    status: unknown
+  '#position-serialization':
+    title: 4.2.2 Serializing <position>
+    status: unknown
+  '#combine-positions':
+    title: 4.2.3 Combination of <position>
+    status: unknown
+  '#progress':
+    title: 5 Interpolation Progress Functional Notations
+    status: unknown
+  '#progress-func':
+    title: '5.1 Calculated Progress Values: the progress() notation'
+    status: unknown
+  '#media-progress-func':
+    title: '5.2 Media Query Progress Values: the media-progress() notation'
+    status: unknown
+  '#container-progress-func':
+    title: '5.3 Container Query Progress Values: the container-progress() notation'
+    status: unknown
+  '#mixing':
+    title: '6 Mixing and Interpolation Notations: the *-mix() family'
+    status: unknown
+  '#progress-type':
+    title: '6.1 Representing Interpolation Progress: the <progress> type'
+    status: unknown
+  '#calc-mix':
+    title: '6.2 Interpolated Numeric and Dimensional Values: the calc-mix() notation'
+    status: unknown
+  '#color-mix':
+    title: '6.3 Interpolated Color Values: the color-mix() notation'
+    status: unknown
+  '#cross-fade':
+    title: '6.4 Interpolated Image Values: the cross-fade() notation'
+    status: unknown
+  '#transform-mix':
+    title: '6.5 Interpolated Transform Values: the transform-mix() notation'
+    status: unknown
+  '#mix':
+    title: '6.6 Interpolated Property Values: the mix() notation'
+    status: unknown
+  '#value-insert':
+    title: 7 Miscellaneous Value Substituting Functions
+    status: unknown
+  '#whole-value':
+    title: '7.1 Representing An Entire Property Value: the <whole-value> type'
+    status: unknown
+  '#first-valid':
+    title: '7.2 Selecting the First Supported Value: the first-valid() notation'
+    status: unknown
+  '#if-notation':
+    title: '7.3 Conditional Value Selection: the if() notation'
+    status: unknown
+  '#toggle-notation':
+    title: '7.4 Toggling Between Values: the toggle() notation'
+    status: unknown
+  '#var-notation':
+    title: '7.5 Custom Property References: the var() notation'
+    status: unknown
+  '#inherit-notation':
+    title: '7.6 Inherited Value References: the inherit() notation'
+    status: unknown
+  '#attr-notation':
+    title: '7.7 Attribute References: the attr() notation'
+    status: unknown
+  '#attr-substitution':
+    title: '7.7.1 Attribute Value Substitution: the attr() notation'
+    status: unknown
+  '#attr-security':
+    title: 7.7.2 Security
+    status: unknown
+  '#randomness':
+    title: 8 Generating Random Values
+    status: unknown
+  '#random':
+    title: '8.1 Generating a Random Numeric Value: the random() function'
+    status: unknown
+  '#random-infinities':
+    title: 8.1.1 Argument Ranges
+    status: unknown
+  '#random-item':
+    title: '8.2 Picking a Random Item From a List: the random-item() function'
+    status: unknown
+  '#random-caching':
+    title: '8.3 Generating/Caching Random Values: the <random-caching-options> value'
+    status: unknown
+  '#tree-counting':
+    title: '9 Tree Counting Functions: the sibling-count() and sibling-index() notations'
+    status: unknown
+  '#calc-size':
+    title: '10 Calculating With Intrinsic Sizes: the calc-size() function'
+    status: unknown
+  '#simplifying-calc-size':
+    title: 10.1 Simplifying calc-size()
+    status: unknown
+  '#resolving-calc-size':
+    title: 10.2 Resolving calc-size()
+    status: unknown
+  '#interp-calc-size':
+    title: 10.3 Interpolating calc-size()
+    status: unknown
+  '#interpolate-size':
+    title: '10.4 Interpolating sizing keywords: the interpolate-size property'
+    status: unknown

@@ -1,0 +1,191 @@
+spec: css-inline-3
+title: CSS Inline Layout Module Level 3
+url: https://www.w3.org/TR/css-inline-3/
+snapshot: https://www.w3.org/TR/2024/WD-css-inline-3-20241218/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#values':
+    title: 1.2 Value Definitions
+    status: unknown
+  '#model':
+    title: 2 Inline Layout Model
+    status: unknown
+  '#line-boxes':
+    title: 2.1 Layout of Line Boxes
+    status: unknown
+  '#line-layout':
+    title: 2.2 Layout Within Line Boxes
+    status: unknown
+  '#invisible-line-boxes':
+    title: 2.3 Phantom Line Boxes
+    status: unknown
+  '#paint-order':
+    title: 2.4 Painting Order
+    status: unknown
+  '#css-metrics':
+    title: 3 Baselines and Alignment Metrics
+    status: unknown
+  '#baseline-intro':
+    title: 3.1 Introduction to Baselines
+    status: unknown
+  '#baseline-types':
+    title: 3.2 Baselines and Metrics
+    status: unknown
+  '#ascent-descent':
+    title: 3.2.1 Ascent and Descent Metrics
+    status: unknown
+  '#font-line-gap':
+    title: 3.2.2 Line Gap Metrics
+    status: unknown
+  '#baseline-tables':
+    title: 3.3 Baselines of Glyphs and Boxes
+    status: unknown
+  '#alignment':
+    title: 4 Baseline Alignment
+    status: unknown
+  '#dominant-baseline-property':
+    title: '4.1 Dominant Baselines: the dominant-baseline property'
+    status: unknown
+  '#transverse-alignment':
+    title: '4.2 Transverse Box Alignment: the vertical-align property'
+    status: unknown
+  '#baseline-source':
+    title: '4.2.1 Alignment Baseline Source: the baseline-source longhand'
+    status: unknown
+  '#alignment-baseline-property':
+    title: '4.2.2 Alignment Baseline Type: the alignment-baseline longhand'
+    status: unknown
+  '#alignment-baseline-svg-legacy':
+    title: 4.2.2.1 Legacy Values for SVG
+    status: unknown
+  '#baseline-shift-property':
+    title: '4.2.3 Post-Alignment Shift: the baseline-shift longhand'
+    status: unknown
+  '#baseline-shift-svg-legacy':
+    title: 4.2.3.1 Legacy Values for SVG
+    status: unknown
+  '#line-height':
+    title: 5 Logical Heights and Inter-line Spacing
+    status: unknown
+  '#line-height-property':
+    title: '5.1 Line Spacing: the line-height property'
+    status: unknown
+  '#text-edges':
+    title: '5.2 Text Edge Metrics: the line-fit-edge property'
+    status: unknown
+  '#inline-height':
+    title: 5.3 Calculating the Logical Height Contributions (“Layout Bounds”) of Inline Boxes
+    status: unknown
+  '#leading-trim':
+    title: 6 Trimming Leading Over/Under Text
+    status: unknown
+  '#text-box-shorthand':
+    title: '6.1 Shorthand for Text Box Trimming: the text-box property'
+    status: unknown
+  '#text-box-trim':
+    title: '6.2 Trimming Over/Under Text: the text-box-trim property'
+    status: unknown
+  '#text-box-edge':
+    title: '6.3 Text Trimming Metrics: the text-box-edge property'
+    status: unknown
+  '#line-fill':
+    title: '6.4 Inline Box Drawing Height: the inline-sizing property'
+    status: unknown
+  '#initial-letter-styling':
+    title: 7 Initial Letters
+    status: unknown
+  '#initial-letter-intro':
+    title: 7.1 An Introduction to Initial Letters
+    status: unknown
+  '#drop-initial':
+    title: 7.1.1 Drop Initial
+    status: unknown
+  '#sunk-initial':
+    title: 7.1.2 Sunken Initial Letters
+    status: unknown
+  '#raise-initial':
+    title: 7.1.3 Raised Initial Letters
+    status: unknown
+  '#selecting-drop-initials':
+    title: 7.2 Selecting Initial Letters
+    status: unknown
+  '#sizing-drop-initials':
+    title: '7.3 Creating Initial Letters: the initial-letter property'
+    status: unknown
+  '#first-most-inline-level':
+    title: 7.3.1 Applicability
+    status: unknown
+  '#aligning-initial-letter':
+    title: '7.4 Alignment of Initial Letters: the initial-letter-align property'
+    status: unknown
+  '#initial-letter-align-defaults':
+    title: 7.4.1 UA Default Stylesheet for initial-letter-align
+    status: unknown
+  '#initial-letter-layout':
+    title: 7.5 Initial Letter Layout
+    status: unknown
+  '#initial-letter-properties':
+    title: 7.5.1 Properties Applying to Initial Letters
+    status: unknown
+  '#initial-letter-box':
+    title: 7.5.2 Margins, Borders, and Padding
+    status: unknown
+  '#sizing-initial-letter':
+    title: 7.5.3 Font Sizing of Initial Letters
+    status: unknown
+  '#initial-letter-shaping':
+    title: 7.5.4 Shaping and Glyph Selection
+    status: unknown
+  '#initial-letter-box-size':
+    title: 7.5.5 Sizing the Initial Letter Box
+    status: unknown
+  '#initial-letter-content-align':
+    title: 7.5.6 Alignment Within an Initial Letter Box
+    status: unknown
+  '#initial-letter-position':
+    title: 7.6 Initial Letter Positioning and Spacing
+    status: unknown
+  '#initial-letter-block-position':
+    title: 7.6.1 Block-axis Positioning
+    status: unknown
+  '#initial-letter-inline-position':
+    title: 7.6.2 Inline Kerning
+    status: unknown
+  '#initial-letter-wrapping':
+    title: '7.7 Initial Letter Wrapping: the initial-letter-wrap property'
+    status: unknown
+  '#initial-letter-line-layout':
+    title: 7.8 Line Layout
+    status: unknown
+  '#initial-letter-inline-flow':
+    title: '7.8.1 Inline Flow Layout: Alignment, Justification, and White Space'
+    status: unknown
+  '#initial-letter-indentation':
+    title: '7.8.2 Edge Effects: Indentation and Hanging Punctuation'
+    status: unknown
+  '#initial-letter-ancestors':
+    title: 7.8.3 Ancestor Inlines
+    status: unknown
+  '#initial-letter-multi-line':
+    title: 7.8.4 Multi-line Initial Letters
+    status: unknown
+  '#initial-letter-paragraphs':
+    title: 7.9 Clearing Initial Letters
+    status: unknown
+  '#raised-sunken-caps':
+    title: 7.9.1 Raised and sunken caps
+    status: unknown
+  '#short-para-initial-letter':
+    title: 7.9.2 Short paragraphs with initial letters
+    status: unknown
+  '#initial-letter-floats':
+    title: 7.9.3 Interaction with floats
+    status: unknown
+  '#initial-letter-breaking':
+    title: 7.9.4 Interaction with Fragmentation (Pagination)
+    status: unknown

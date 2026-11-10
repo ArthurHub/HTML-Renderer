@@ -35,14 +35,10 @@ public sealed class FixedPositionPaginationIntegrationTests
         Assert.AreEqual(normalRect0.Y + 500, normalRect1.Y, 0.5);
     }
 
-    [Ignore("This fork has no page-break-before/page-break-after support at all - confirmed by direct source " +
-            "read: no PageBreakBefore/PageBreakAfter property exists anywhere in CssBoxProperties (only " +
-            "PageBreakInside), and the default stylesheet's own page-break-before/after rules (Core/CssDefaults.cs " +
-            "~102-105) are inert since nothing consumes them. 'page-break-before: always' is silently dropped, so " +
-            "there is no way to materialize distinct 'pages' the way PeachPDF's real PDF pagination does - " +
-            "content just flows continuously down one tall canvas and every paragraph below stacks directly " +
-            "under its predecessor instead of jumping to a new page band.")]
     [TestMethod]
+    [Spec("css21", "page.html#page-break-props")]
+    [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     public void PageBreakBefore_PushesFollowingContentToTheNextSimulatedPage()
     {
         var (root, _) = PaintHarness.Layout(PaintHarness.Wrap(

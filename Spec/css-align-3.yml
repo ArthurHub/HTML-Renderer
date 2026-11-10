@@ -1,0 +1,161 @@
+spec: css-align-3
+title: CSS Box Alignment Module Level 3
+url: https://www.w3.org/TR/css-align-3/
+snapshot: https://www.w3.org/TR/2026/WD-css-align-3-20261008/
+sections:
+  '#intro':
+    title: 1 Introduction
+    status: unknown
+  '#placement':
+    title: 1.1 Module Interactions
+    status: unknown
+  '#values':
+    title: 1.2 Value Definitions
+    status: unknown
+  '#partial':
+    title: 1.3 Partial Implementations
+    status: unknown
+  '#overview':
+    title: 2 Overview of Alignment Properties
+    status: unknown
+  '#terms':
+    title: 3 Alignment Terminology
+    status: unknown
+  '#alignment-values':
+    title: 4 Alignment Keywords
+    status: unknown
+  '#positional-values':
+    title: '4.1 Positional Alignment: the center, start, end, self-start, self-end, flex-start, flex-end, left, and right keywords'
+    status: unknown
+  '#baseline-values':
+    title: '4.2 Baseline Alignment: the baseline keyword and first/last modifiers'
+    status: unknown
+  '#distribution-values':
+    title: '4.3 Distributed Alignment: the stretch, space-between, space-around, and space-evenly keywords'
+    status: unknown
+  '#overflow-values':
+    title: '4.4 Overflow Alignment: the safe and unsafe keywords and scroll safety limits'
+    status: unknown
+  '#auto-safety':
+    title: 4.4.1 Automatic Overflow Alignment Safety
+    status: unknown
+  '#auto-safety-scroll':
+    title: 4.4.1.1 Content Distribution for Scroll Containers
+    status: unknown
+  '#auto-safety-position':
+    title: 4.4.1.2 Self-Alignment for Absolutely Positioned Boxes
+    status: unknown
+  '#auto-safety-default':
+    title: 4.4.1.3 All Other Alignment
+    status: unknown
+  '#content-distribution':
+    title: '5 Content Distribution: Aligning a Box’s Contents Within Itself'
+    status: unknown
+  '#align-justify-content':
+    title: 5.1 The justify-content and align-content Properties
+    status: unknown
+  '#distribution-block':
+    title: 5.1.1 Block Containers (Including Table Cells)
+    status: unknown
+  '#distribution-multicol':
+    title: 5.1.2 Multicol Containers
+    status: unknown
+  '#distribution-flex':
+    title: 5.1.3 Flex Containers
+    status: unknown
+  '#distribution-grid':
+    title: 5.1.4 Grid Containers
+    status: unknown
+  '#place-content':
+    title: '5.2 Content-Distribution Shorthand: the place-content property'
+    status: unknown
+  '#overflow-scroll-position':
+    title: 5.3 Alignment Overflow and Scroll Containers
+    status: unknown
+  '#baseline-align-content':
+    title: 5.4 Baseline Content-Alignment
+    status: unknown
+  '#self-alignment':
+    title: '6 Self-Alignment: Aligning the Box Within Its Parent'
+    status: unknown
+  '#justify-self-property':
+    title: '6.1 Inline-Axis (or Main-Axis) Self-Alignment: the justify-self property'
+    status: unknown
+  '#justify-block':
+    title: 6.1.1 Block-Level Boxes
+    status: unknown
+  '#justify-abspos':
+    title: 6.1.2 Absolutely-Positioned Boxes
+    status: unknown
+  '#justify-cell':
+    title: 6.1.3 Table Cells
+    status: unknown
+  '#justify-flex':
+    title: 6.1.4 Flex Items
+    status: unknown
+  '#justify-grid':
+    title: 6.1.5 Grid Items
+    status: unknown
+  '#align-self-property':
+    title: '6.2 Block-Axis (or Cross-Axis) Self-Alignment: the align-self property'
+    status: unknown
+  '#align-block':
+    title: 6.2.1 Block-Level Boxes
+    status: unknown
+  '#align-abspos':
+    title: 6.2.2 Absolutely-Positioned Boxes
+    status: unknown
+  '#align-cell':
+    title: 6.2.3 Table Cells
+    status: unknown
+  '#align-flex':
+    title: 6.2.4 Flex Items
+    status: unknown
+  '#align-grid':
+    title: 6.2.5 Grid Items
+    status: unknown
+  '#place-self-property':
+    title: '6.3 Self-Alignment Shorthand: the place-self property'
+    status: unknown
+  '#baseline-align-self':
+    title: 6.4 Baseline Self-Alignment
+    status: unknown
+  '#abspos-sizing':
+    title: 6.5 Effects on Sizing of Absolutely Positioned Boxes with Static-Position Insets
+    status: unknown
+  '#default-alignment':
+    title: 7 Default Alignment
+    status: unknown
+  '#justify-items-property':
+    title: '7.1 Inline-Axis (or Main-Axis) Default Alignment: the justify-items property'
+    status: unknown
+  '#align-items-property':
+    title: '7.2 Block-Axis (or Cross-Axis) Default Alignment: the align-items property'
+    status: unknown
+  '#place-items-property':
+    title: '7.3 Default Alignment Shorthand: the place-items property'
+    status: unknown
+  '#gaps':
+    title: 8 Gaps Between Boxes
+    status: unknown
+  '#baseline-rules':
+    title: 9 Baseline Alignment Details
+    status: unknown
+  '#baseline-export':
+    title: 9.1 Determining the Baselines of a Box
+    status: unknown
+  '#baseline-terms':
+    title: 9.2 Baseline Alignment Grouping
+    status: unknown
+  '#align-by-baseline':
+    title: 9.3 Aligning Boxes by Baseline
+    status: unknown
+  '#changes':
+    title: 10 Changes
+    status: unknown
+  '#privacy':
+    title: 11 Privacy Considerations
+    status: unknown
+  '#security':
+    title: 12 Security Considerations
+    status: unknown
