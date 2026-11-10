@@ -1,5 +1,9 @@
 using HtmlRenderer.Test.CssEngineSupport;
+using HtmlRenderer.Test.TestSupport;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.CssEngine;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Parse;
 
 namespace HtmlRenderer.Test.Css;
 
@@ -444,5 +448,31 @@ public sealed class GradientTests
     {
         var property = CssConstructionFunctions.ParseDeclaration($"background-image: {gradient}");
         Assert.IsFalse(((BackgroundImageProperty)property).HasValue);
+    }
+
+    [TestMethod]
+    [DataRow("linear-gradient(in srgb, red, blue)", Math.PI)]
+    [DataRow("linear-gradient(in oklab to right, red, blue)", Math.PI / 2)]
+    [DataRow("linear-gradient(to right in oklab, red, blue)", Math.PI / 2)]
+    [DataRow("linear-gradient(in hsl longer hue 90deg, red, blue)", Math.PI / 2)]
+    [DataRow("linear-gradient(90deg in oklch increasing hue, red, blue)", Math.PI / 2)]
+    [DataRow("repeating-linear-gradient(in srgb, red, blue)", Math.PI)]
+    public void ParseImageSkipsTheInterpolationMethod(string gradient, double angleRad)
+    {
+        var image = new CssValueParser(new MockAdapter()).ParseImage(gradient);
+
+        var parsed = ((CssImage.LinearGradient)image).Gradient;
+        Assert.AreEqual(angleRad, parsed.AngleRad, 1e-6);
+        CollectionAssert.AreEqual(
+            new RColor?[] { RColor.FromArgb(255, 0, 0), RColor.FromArgb(0, 0, 255) },
+            parsed.Stops.Select(s => s.Color).ToArray());
+    }
+
+    [TestMethod]
+    [DataRow("linear-gradient(in bogus, red, blue)")]
+    [DataRow("linear-gradient(in oklab longer hue, red, blue)")]
+    public void ParseImageRejectsAnInvalidInterpolationMethod(string gradient)
+    {
+        Assert.IsNull(new CssValueParser(new MockAdapter()).ParseImage(gradient));
     }
 }

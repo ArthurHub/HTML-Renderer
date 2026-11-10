@@ -916,7 +916,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             double angleRad = Math.PI; // default: 180deg = top to bottom
             int stopOffset = 0;
 
-            var firstGroup = args[0];
+            // CSS Images 4 §3.1: the interpolation method is validated but not applied, stops interpolate in sRGB
+            if (!ColorInterpolationMethodGrammar.TryExtractInterpolationMethod(args[0], out var firstGroup, out var hasInterpolationMethod))
+                return null;
+
             var firstIdents = firstGroup.Where(t => t.Type == TokenType.Ident).Select(t => t.Data.ToLowerInvariant()).ToList();
 
             if (firstIdents.Count > 0 && firstIdents[0] == "to")
@@ -934,6 +937,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                     stopOffset = 1;
                 }
                 // else no angle token, stopOffset stays 0 - first group is already the first color stop
+            }
+
+            if (hasInterpolationMethod)
+            {
+                // Whatever is left next to the method has to be a direction
+                if (stopOffset == 0 && firstGroup.Count > 0)
+                    return null;
+
+                stopOffset = 1;
             }
 
             var stopGroups = args.Skip(stopOffset).ToList();
