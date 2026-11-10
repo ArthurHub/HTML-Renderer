@@ -10,6 +10,7 @@ public sealed class BorderIntegrationTests
     [TestMethod]
     [Spec("css21", "box.html#border-width-properties")]
     [Spec("css-backgrounds-3", "#border-width")]
+    [Spec("css-borders-4", "#border-width")]
     public void WidthKeywords_GrowFromThinOverMediumToThick()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -62,6 +63,7 @@ public sealed class BorderIntegrationTests
     [TestMethod]
     [Spec("css21", "box.html#border-color-properties")]
     [Spec("css-backgrounds-3", "#border-color")]
+    [Spec("css-borders-4", "#border-color")]
     public void TransparentColor_PaintsNothingVisible()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='b' style='border:2px solid transparent'></div>"));
@@ -83,6 +85,7 @@ public sealed class BorderIntegrationTests
     [TestMethod]
     [Spec("css21", "box.html#border-shorthand-properties")]
     [Spec("css-backgrounds-3", "#border-shorthands")]
+    [Spec("css-borders-4", "#border-shorthands")]
     public void BorderShorthand_SetsAllFourSides()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='b' style='border:3px dashed red'></div>"));

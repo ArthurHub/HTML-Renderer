@@ -5,157 +5,196 @@ snapshot: https://www.w3.org/TR/2025/WD-css-borders-4-20251216/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
+    status: n/a
   '#borders':
     title: 2 Borders
-    status: unknown
+    status: partial
   '#border-color':
     title: '2.1 Line Colors: the border-color properties'
-    status: unknown
+    status: partial
+    gaps:
+      - "The initial color is black instead of currentcolor, see css-backgrounds-3 #border-color"
+      - "<image-1D> values like stripes() are rejected"
+      - Flow-relative properties always map as in horizontal-tb ltr, direction and writing-mode are ignored
   '#border-style':
     title: '2.2 Line Patterns: the border-style properties'
-    status: unknown
+    status: partial
+    gaps:
+      - "double, groove and ridge are painted as solid, see css-backgrounds-3 #border-style"
+      - Flow-relative properties always map as in horizontal-tb ltr, direction and writing-mode are ignored
   '#border-width':
     title: '2.3 Line Thickness: the border-width properties'
-    status: unknown
+    status: partial
+    gaps:
+      - "'border-style: hidden' keeps the width, see css-backgrounds-3 #border-width"
+      - Flow-relative properties always map as in horizontal-tb ltr, direction and writing-mode are ignored
   '#border-shorthands':
     title: 2.4 Border Shorthand Properties
-    status: unknown
+    status: partial
+    gaps:
+      - "'border' doesn't reset 'border-image'"
+      - Flow-relative properties always map as in horizontal-tb ltr, direction and writing-mode are ignored
   '#corners':
     title: 3 Corners
-    status: unknown
+    status: partial
+    gaps:
+      - "A rounded border isn't painted between the outer and inner border curves, see css-backgrounds-3 #corner-shaping"
   '#corner-clipping':
     title: 3.1 Corner Clipping
-    status: unknown
+    status: partial
+    gaps:
+      - "Background images and overflowing content aren't clipped to the rounded corners, see css-backgrounds-3 #corner-clipping"
   '#corner-transitions':
     title: 3.2 Color and Style Transitions
-    status: unknown
+    status: partial
+    gaps:
+      - "Adjoining borders overlap at the corners and a rounded corner takes one border's color, see css-backgrounds-3 #corner-transitions"
   '#corner-overlap':
     title: 3.3 Overlapping Curves
-    status: unknown
+    status: partial
+    gaps:
+      - "The radii are scaled by separate factors per axis, see css-backgrounds-3 #corner-overlap"
   '#border-radius-tables':
     title: 3.4 Effect on Tables
-    status: unknown
+    status: partial
+    gaps:
+      - "'border-radius' also rounds a table with collapsing borders, see css-backgrounds-3 #border-radius-tables"
   '#border-radius':
     title: '3.5 Corner Sizing: the border-*-*-radius properties'
-    status: unknown
+    status: partial
+    gaps:
+      - Negative radii are accepted instead of being rejected
+      - "The slash syntax on a longhand, like '10px / 20px', is rejected"
+      - The flow-relative border-start-start-radius etc. aren't known properties
   '#corner-sizing':
     title: '3.6 Corner Sizing Shorthands: the border-radius and border-*-radius shorthand properties'
-    status: unknown
+    status: partial
   '#corner-sizing-side-shorthands':
     title: '3.6.1 Sizing The Corners Of One Side: The border-top-radius, border-right-radius, border-bottom-radius, border-left-radius, border-block-start-radius, border-block-end-radius, border-inline-start-radius, border-inline-end-radius shorthands'
-    status: unknown
+    status: unsupported
+    gaps:
+      - border-top-radius and the other side shorthands aren't known properties
   '#corner-sizing-shorthand':
     title: '3.6.2 Sizing All Corners At Once: The border-radius shorthand'
-    status: unknown
+    status: partial
+    gaps:
+      - Negative radii are accepted instead of being rejected
   '#corner-shaping':
     title: '3.7 Corner Shaping: the corner-*-shape properties'
-    status: unknown
+    status: unsupported
+    gaps:
+      - corner-*-shape properties aren't known properties, every corner is round
   '#corner-shaping-shorthands':
     title: '3.8 Corner Shaping Shorthands: the corner-shape and corner-*-shape shorthand properties'
-    status: unknown
+    status: unsupported
   '#corner-shaping-side-shorthands':
     title: '3.8.1 Shaping The Corners Of One Side: The corner-*-shape shorthands:'
-    status: unknown
+    status: unsupported
   '#corner-shaping-shorthand':
     title: '3.8.2 Shaping All Corners At Once: The corner-shape shorthand'
-    status: unknown
+    status: unsupported
   '#corner-shorthands':
     title: '3.9 Corner Sizing & Shaping Shorthands: the corner and corner-* shorthand properties'
-    status: unknown
+    status: unsupported
   '#single-corner-shorthands':
     title: '3.9.1 Sizing & shaping a corner: The corner-top-left, corner-top-right, corner-bottom-right, corner-bottom-left, corner-start-start, corner-start-end, corner-end-start, corner-end-end shorthands'
-    status: unknown
+    status: unsupported
   '#corner-side-shorthands':
     title: '3.9.2 Sizing & shaping rhe Corners Of One Side: The corner-top, corner-right, corner-bottom, corner-left, corner-block-start, corner-block-end, corner-inline-start, corner-inline-end shorthands'
-    status: unknown
+    status: unsupported
   '#corner-shorthand':
     title: '3.9.3 Sizing & Shaping All Corners At Once: The corner shorthand'
-    status: unknown
+    status: unsupported
   '#corner-shape-rendering':
     title: 3.9.4 Rendering corner-shape
-    status: unknown
+    status: unsupported
   '#corner-shape-constrain-radii':
     title: 3.9.5 Constraining opposite radii
-    status: unknown
+    status: unsupported
   '#corner-shape-interpolation':
     title: 3.9.6 Interpolating corner shapes
-    status: unknown
+    status: n/a
   '#border-images':
     title: 4 Border Images
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'border-image' and its longhands are parsed but never painted, see css-backgrounds-3 #border-images"
   '#border-image-source':
     title: '4.1 Image Source: the border-image-source property'
-    status: unknown
+    status: parsed-only
   '#border-image-slice':
     title: '4.2 Image Slicing: the border-image-slice property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'fill' on its own and 'fill' between the numbers are accepted, see css-backgrounds-3 #border-image-slice"
   '#border-image-width':
     title: '4.3 Drawing Areas: the border-image-width property'
-    status: unknown
+    status: parsed-only
   '#border-image-outset':
     title: '4.4 Edge Overhang: the border-image-outset property'
-    status: unknown
+    status: parsed-only
   '#border-image-repeat':
     title: '4.5 Image Tiling: the border-image-repeat property'
-    status: unknown
+    status: parsed-only
   '#border-image-process':
     title: 4.6 Drawing the Border Image
-    status: unknown
+    status: unsupported
   '#border-image':
     title: '4.7 Border Image Shorthand: the border-image property'
-    status: unknown
+    status: parsed-only
   '#border-image-tables':
     title: 4.8 Effect on Tables
-    status: unknown
+    status: unsupported
   '#partial-borders':
     title: 5 Partial borders
-    status: unknown
+    status: unsupported
+    gaps:
+      - Not implemented, the section is marked not ready for implementation
   '#border-limit':
     title: '5.1 Partial Borders: the border-limit property'
-    status: unknown
+    status: unsupported
   '#border-clip':
     title: 5.2 The border-clip properties
-    status: unknown
+    status: unsupported
   '#drop-shadows':
     title: 6 Drop Shadows
-    status: unknown
+    status: parsed-only
   '#box-shadow-color':
     title: '6.1 Coloring shadows: the box-shadow-color property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - The box-shadow-* longhands aren't known properties
   '#box-shadow-offset':
     title: '6.2 Offsetting shadows: the box-shadow-offset property'
-    status: unknown
+    status: unsupported
   '#box-shadow-blur':
     title: '6.3 Blurring shadows: the box-shadow-blur property'
-    status: unknown
+    status: unsupported
   '#box-shadow-spread':
     title: '6.4 Spreading shadows: the box-shadow-spread property'
-    status: unknown
+    status: unsupported
   '#box-shadow-position':
     title: '6.5 Spreading shadows: the box-shadow-position property'
-    status: unknown
+    status: unsupported
   '#box-shadow':
     title: '6.6 Drop Shadows Shorthand: the box-shadow property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'box-shadow' is parsed but never painted, see css-backgrounds-3 #box-shadow"
   '#shadow-shape':
     title: 6.6.1 Shadow Shape, Spread, and Knockout
-    status: unknown
+    status: unsupported
   '#shadow-blur':
     title: 6.6.2 Blurring Shadow Edges
-    status: unknown
+    status: unsupported
   '#shadow-layers':
     title: 6.7 Layering, Layout, and Other Details
-    status: unknown
+    status: unsupported
   '#border-shape':
     title: 7 Border Shaping
-    status: unknown
+    status: unsupported
   '#border-shape-func':
     title: 7.1 The border-shape property
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'border-shape' isn't a known property"

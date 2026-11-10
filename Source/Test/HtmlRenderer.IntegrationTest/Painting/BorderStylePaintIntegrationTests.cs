@@ -32,6 +32,7 @@ public sealed class BorderStylePaintIntegrationTests
     [DataRow("outset", 100, 50)]
     [Spec("css21", "box.html#border-style-properties")]
     [Spec("css-backgrounds-3", "#border-style")]
+    [Spec("css-borders-4", "#border-style")]
     public void InsetAndOutset_DarkenOppositeSides(string style, int topLeft, int bottomRight)
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(

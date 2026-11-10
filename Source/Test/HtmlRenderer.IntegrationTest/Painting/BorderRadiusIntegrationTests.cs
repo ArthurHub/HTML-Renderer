@@ -43,6 +43,7 @@ public sealed class BorderRadiusIntegrationTests
 
     [TestMethod]
     [Spec("css-backgrounds-3", "#border-radius")]
+    [Spec("css-borders-4", "#corner-sizing-shorthand")]
     public void BorderRadius_FourValues_SetsAllCornersIndividually()
     {
         var box = FindDivBox("border-radius:5px 10px 15px 20px");
@@ -96,6 +97,7 @@ public sealed class BorderRadiusIntegrationTests
 
     [TestMethod]
     [Spec("css-backgrounds-3", "#border-radius")]
+    [Spec("css-borders-4", "#border-radius")]
     public void BorderTopLeftRadius_Longhand_EllipticalValues()
     {
         // border-top-left-radius: 15px 25px -> X=15, Y=25
@@ -123,6 +125,7 @@ public sealed class BorderRadiusIntegrationTests
 
     [TestMethod]
     [Spec("css-backgrounds-3", "#corner-overlap")]
+    [Spec("css-borders-4", "#corner-overlap")]
     public void BorderRadius_OverlappingRadii_AreReducedProportionally()
     {
         // 100x100 box; border-radius: 60px - adjacent radii sum to 120 > 100, so all must scale by

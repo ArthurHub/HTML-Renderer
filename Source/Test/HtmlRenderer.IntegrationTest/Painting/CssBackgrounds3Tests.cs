@@ -210,6 +210,7 @@ public sealed class CssBackgrounds3Tests
 
     [TestMethod]
     [Spec("css-backgrounds-3", "#corner-shaping")]
+    [Spec("css-borders-4", "#corners")]
     public void RoundedBackground_FollowsTheOuterBorderEdgeCurve()
     {
         var g = PaintShapes("width:100px;height:100px;border:4px solid black;background-color:rgb(10,20,30);border-radius:10px 20px");
@@ -234,6 +235,7 @@ public sealed class CssBackgrounds3Tests
 
     [TestMethod]
     [Spec("css-backgrounds-3", "#corner-clipping")]
+    [Spec("css-borders-4", "#corner-clipping")]
     public void RoundedCorners_ClipTheBackgroundColor()
     {
         var g = PaintShapes("width:100px;height:100px;background-color:rgb(10,20,30);border-radius:10px");
@@ -271,6 +273,7 @@ public sealed class CssBackgrounds3Tests
 
     [TestMethod]
     [Spec("css-backgrounds-3", "#corner-transitions")]
+    [Spec("css-borders-4", "#corner-transitions")]
     public void AdjoiningInsetBorders_MeetAtTheDiagonal()
     {
         var g = PaintShapes("width:20px;height:20px;border-style:inset;border-width:10px;border-color:red blue");
@@ -318,6 +321,7 @@ public sealed class CssBackgrounds3Tests
 
     [TestMethod]
     [Spec("css-backgrounds-3", "#border-radius-tables")]
+    [Spec("css-borders-4", "#border-radius-tables")]
     public void BorderRadius_RoundsASeparatedBordersTable()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -346,6 +350,7 @@ public sealed class CssBackgrounds3Tests
     [Ignore("Gap, see Spec/css-backgrounds-3.yml")]
     [TestMethod]
     [Spec("css-backgrounds-3", "#border-images")]
+    [Spec("css-borders-4", "#border-images")]
     public void BorderImage_ReplacesTheBorderStyle()
     {
         var g = Paint($"width:100px;height:100px;border:10px solid red;border-image:{Image} 10");
@@ -357,6 +362,7 @@ public sealed class CssBackgrounds3Tests
     [Ignore("Gap, see Spec/css-backgrounds-3.yml")]
     [TestMethod]
     [Spec("css-backgrounds-3", "#box-shadow")]
+    [Spec("css-borders-4", "#box-shadow")]
     public void BoxShadow_PaintsAShadowBeneathTheBackground()
     {
         var g = Paint("width:100px;height:50px;background-color:rgb(10,20,30);box-shadow:5px 5px blue");

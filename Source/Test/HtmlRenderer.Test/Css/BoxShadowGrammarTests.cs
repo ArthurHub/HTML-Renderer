@@ -49,6 +49,7 @@ public sealed class BoxShadowGrammarTests
 
     [TestMethod]
     [Spec("css-backgrounds-3", "#box-shadow")]
+    [Spec("css-borders-4", "#box-shadow")]
     public void FourLengths_HasBlurAndSpread()
     {
         var layers = Parse("1px 1px 2px 3px");
