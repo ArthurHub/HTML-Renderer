@@ -4,17 +4,11 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/FlexPropertyTests.cs (source class <c>FlexPropertyTests</c>).
-/// Pure CSSOM parse tests exercising the flex/align/justify shorthand and longhand
-/// <c>StyleDeclaration</c> accessors. Distinct from <see cref="FlexboxTests"/>, which was ported from
-/// PeachPDF.Tests/CSS/Flexbox.cs and covers legal-value matrices for these same properties in depth -
-/// these two tests were verified not to duplicate anything already asserted there.
-/// </summary>
 [TestClass]
 public sealed class FlexPropertyTests
 {
     [TestMethod]
+    [Spec("css-flexbox-1", "#alignment")]
     public void JustifyAlign_Parses()
     {
         const string css = """
@@ -36,6 +30,7 @@ public sealed class FlexPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-flexbox-1", "#flex-property")]
     public void FlexAuto_Parses()
     {
         const string css = """

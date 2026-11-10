@@ -194,6 +194,7 @@ public sealed class CssDisplayTests
     [DataRow("inline-grid")]
     [Spec("css-display-3", "#inner-model")]
     [Spec("css-display-3", "#legacy-display")]
+    [Spec("css-flexbox-1", "#flex-containers")]
     public void FlexAndGridContainers_PaintTheirContent(string display)
     {
         var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(

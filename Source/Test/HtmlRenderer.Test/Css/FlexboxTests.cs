@@ -6,72 +6,84 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>Ported from PeachPDF.Tests/CSS/Flexbox.cs. Pure CSSOM parse tests - no layout involved.</summary>
 [TestClass]
 public sealed class FlexboxTests
 {
     [TestMethod]
     [DynamicData(nameof(FlexDirectionTestDataValues))]
+    [Spec("css-flexbox-1", "#flex-direction-property")]
     public void FlexDirectionLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<FlexDirectionProperty>(PropertyNames.FlexDirection, value);
 
     [TestMethod]
     [DynamicData(nameof(FlexWrapTestDataValues))]
+    [Spec("css-flexbox-1", "#flex-wrap-property")]
     public void FlexWrapLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<FlexWrapProperty>(PropertyNames.FlexWrap, value);
 
     [TestMethod]
     [DynamicData(nameof(OrderTestDataValues))]
+    [Spec("css-flexbox-1", "#order-property")]
     public void OrderLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<OrderProperty>(PropertyNames.Order, value);
 
     [TestMethod]
     [DynamicData(nameof(FlexBasisTestDataValues))]
+    [Spec("css-flexbox-1", "#flex-basis-property")]
     public void FlexBasisLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<FlexBasisProperty>(PropertyNames.FlexBasis, value);
 
     [TestMethod]
     [DynamicData(nameof(FlexGrowShrinkTestDataValues))]
+    [Spec("css-flexbox-1", "#flex-grow-property")]
     public void FlexGrowLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<FlexGrowProperty>(PropertyNames.FlexGrow, value);
 
     [TestMethod]
     [DynamicData(nameof(FlexGrowShrinkTestDataValues))]
+    [Spec("css-flexbox-1", "#flex-shrink-property")]
     public void FlexShrinkLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<FlexShrinkProperty>(PropertyNames.FlexShrink, value);
 
     [TestMethod]
     [DynamicData(nameof(AlignContentTestDataValues))]
+    [Spec("css-flexbox-1", "#align-content-property")]
     public void AlignContentLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<AlignContentProperty>(PropertyNames.AlignContent, value);
 
     [TestMethod]
     [DynamicData(nameof(AlignItemsTestDataValues))]
+    [Spec("css-flexbox-1", "#align-items-property")]
     public void AlignItemsLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<AlignItemsProperty>(PropertyNames.AlignItems, value);
 
     [TestMethod]
     [DynamicData(nameof(AlignSelfTestDataValues))]
+    [Spec("css-flexbox-1", "#align-items-property")]
     public void AlignSelfLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<AlignSelfProperty>(PropertyNames.AlignSelf, value);
 
     [TestMethod]
     [DynamicData(nameof(JustifyContentTestDataValues))]
+    [Spec("css-flexbox-1", "#justify-content-property")]
     public void JustifyContentLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<JustifyContentProperty>(PropertyNames.JustifyContent, value);
 
     [TestMethod]
     [DynamicData(nameof(FlexFlowTestDataValues))]
+    [Spec("css-flexbox-1", "#flex-flow-property")]
     public void FlexFlowLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<FlexFlowProperty>(PropertyNames.FlexFlow, value);
 
     [TestMethod]
     [DynamicData(nameof(FlexTestDataValues))]
+    [Spec("css-flexbox-1", "#flex-property")]
     public void FlexLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<FlexProperty>(PropertyNames.Flex, value);
 
     [TestMethod]
     [DynamicData(nameof(AlignContentInvalidPrefixTestDataValues))]
+    [Spec("css-flexbox-1", "#align-content-property")]
     public void AlignContentIllegalPrefixValues(string value)
     {
         var snippet = $"align-content: {value}";
@@ -82,6 +94,7 @@ public sealed class FlexboxTests
 
     [TestMethod]
     [DynamicData(nameof(AlignItemsInvalidPrefixTestDataValues))]
+    [Spec("css-flexbox-1", "#align-items-property")]
     public void AlignItemsIllegalPrefixValues(string value)
     {
         var snippet = $"align-items: {value}";
@@ -92,11 +105,12 @@ public sealed class FlexboxTests
 
     [TestMethod]
     [DynamicData(nameof(JustifyContentInvalidPrefixTestDataValues))]
+    [Spec("css-flexbox-1", "#justify-content-property")]
     public void JustifyContentIllegalPrefixValues(string value)
     {
-        var snippet = $"align-items: {value}";
+        var snippet = $"justify-content: {value}";
         var property = CssConstructionFunctions.ParseDeclaration(snippet);
-        Assert.AreEqual("align-items", property.Name);
+        Assert.AreEqual("justify-content", property.Name);
         Assert.IsFalse(property.HasValue);
     }
 
@@ -126,6 +140,7 @@ public sealed class FlexboxTests
 
     [TestMethod]
     [DynamicData(nameof(FlexFlowExpandedTestValues))]
+    [Spec("css-flexbox-1", "#flex-flow-property")]
     public void FlexFlowShorthandValueExpanded(string propertyValue, string expectedDirection, string expectedWrap)
     {
         var source = $".test {{ flex-flow: {propertyValue}; }}";
@@ -139,6 +154,7 @@ public sealed class FlexboxTests
     [TestMethod]
     [DataRow("1")]
     [DataRow("2")]
+    [Spec("css-flexbox-1", "#flex-property")]
     public void FlexShorthandOneValueExpanded(string propertyValue)
     {
         var source = $".test {{ flex: {propertyValue}; }}";
@@ -153,6 +169,7 @@ public sealed class FlexboxTests
     [TestMethod]
     [DataRow("1 30px", "1", "1", "30px")]
     [DataRow("2 2", "2", "2", "0")]
+    [Spec("css-flexbox-1", "#flex-property")]
     public void FlexShorthandTwoValuesExpanded(string propertyValue,
         string expectedFlexGrow,
         string expectedFlexShrink,
@@ -171,6 +188,7 @@ public sealed class FlexboxTests
     [DataRow("2 2 10%", "2", "2", "10%")]
     [DataRow("1 2 20em", "1", "2", "20em")]
     [DataRow("2 1 min-content", "2", "1", "min-content")]
+    [Spec("css-flexbox-1", "#flex-property")]
     public void FlexShorthandThreeValuesExpanded(string propertyValue,
         string expectedFlexGrow,
         string expectedFlexShrink,
@@ -224,8 +242,7 @@ public sealed class FlexboxTests
             new object[] { "row nowrap", "row", "nowrap" },
             new object[] { "column wrap", "column", "wrap" },
             new object[] { "column-reverse wrap-reverse", "column-reverse", "wrap-reverse" },
-            // flex-flow is "<'flex-direction'> || <'flex-wrap'>" (CSS Flexbox 1 §5.1), so the two
-            // values are equally valid in the reverse order.
+            // CSS Flexbox 1 §5.3, either order
             new object[] { "nowrap row", "row", "nowrap" },
             new object[] { "wrap column", "column", "wrap" },
             new object[] { "wrap-reverse column-reverse", "column-reverse", "wrap-reverse" },
@@ -325,15 +342,8 @@ public sealed class FlexboxTests
     public static IEnumerable<object[]> AlignContentInvalidPrefixTestDataValues =>
         new[]
         {
-            new object[] { $"{Keywords.Safe} {Keywords.Start}" },
-            new object[] { $"{Keywords.Safe} {Keywords.End}" },
-            new object[] { $"{Keywords.Safe} {Keywords.FlexStart}" },
-            new object[] { $"{Keywords.Safe} {Keywords.FlexEnd}" },
-
-            new object[] { $"{Keywords.Unsafe} {Keywords.Start}" },
-            new object[] { $"{Keywords.Unsafe} {Keywords.End}" },
-            new object[] { $"{Keywords.Unsafe} {Keywords.FlexStart}" },
-            new object[] { $"{Keywords.Unsafe} {Keywords.FlexEnd}" },
+            new object[] { $"{Keywords.Safe} {Keywords.Baseline}" },
+            new object[] { $"{Keywords.Unsafe} {Keywords.SpaceBetween}" },
 
             new object[] { $"{Keywords.First} {Keywords.Start}" },
             new object[] { $"{Keywords.First} {Keywords.End}" },
@@ -349,19 +359,8 @@ public sealed class FlexboxTests
     public static IEnumerable<object[]> AlignItemsInvalidPrefixTestDataValues =>
         new[]
         {
-            new object[] { $"{Keywords.Safe} {Keywords.Start}" },
-            new object[] { $"{Keywords.Safe} {Keywords.End}" },
-            new object[] { $"{Keywords.Safe} {Keywords.FlexStart}" },
-            new object[] { $"{Keywords.Safe} {Keywords.FlexEnd}" },
-            new object[] { $"{Keywords.Safe} {Keywords.SelfStart}" },
-            new object[] { $"{Keywords.Safe} {Keywords.SelfEnd}" },
-
-            new object[] { $"{Keywords.Unsafe} {Keywords.Start}" },
-            new object[] { $"{Keywords.Unsafe} {Keywords.End}" },
-            new object[] { $"{Keywords.Unsafe} {Keywords.FlexStart}" },
-            new object[] { $"{Keywords.Unsafe} {Keywords.FlexEnd}" },
-            new object[] { $"{Keywords.Unsafe} {Keywords.SelfStart}" },
-            new object[] { $"{Keywords.Unsafe} {Keywords.SelfEnd}" },
+            new object[] { $"{Keywords.Safe} {Keywords.Stretch}" },
+            new object[] { $"{Keywords.Unsafe} {Keywords.Normal}" },
 
             new object[] { $"{Keywords.First} {Keywords.Start}" },
             new object[] { $"{Keywords.First} {Keywords.End}" },
@@ -381,19 +380,10 @@ public sealed class FlexboxTests
     public static IEnumerable<object[]> JustifyContentInvalidPrefixTestDataValues =>
         new[]
         {
-            new object[] { $"{Keywords.Safe} {Keywords.Start}" },
-            new object[] { $"{Keywords.Safe} {Keywords.End}" },
-            new object[] { $"{Keywords.Safe} {Keywords.FlexStart}" },
-            new object[] { $"{Keywords.Safe} {Keywords.FlexEnd}" },
-            new object[] { $"{Keywords.Safe} {Keywords.SelfStart}" },
-            new object[] { $"{Keywords.Safe} {Keywords.SelfEnd}" },
-
-            new object[] { $"{Keywords.Unsafe} {Keywords.Start}" },
-            new object[] { $"{Keywords.Unsafe} {Keywords.End}" },
-            new object[] { $"{Keywords.Unsafe} {Keywords.FlexStart}" },
-            new object[] { $"{Keywords.Unsafe} {Keywords.FlexEnd}" },
-            new object[] { $"{Keywords.Unsafe} {Keywords.SelfStart}" },
-            new object[] { $"{Keywords.Unsafe} {Keywords.SelfEnd}" },
+            new object[] { $"{Keywords.Safe} {Keywords.SpaceAround}" },
+            new object[] { $"{Keywords.Safe} {Keywords.Stretch}" },
+            new object[] { $"{Keywords.Unsafe} {Keywords.Normal}" },
+            new object[] { $"{Keywords.Unsafe} {Keywords.SpaceEvenly}" },
         };
 
     public static IEnumerable<object[]> FlexGrowShrinkTestDataValues =>

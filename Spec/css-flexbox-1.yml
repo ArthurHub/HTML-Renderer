@@ -5,148 +5,159 @@ snapshot: https://www.w3.org/TR/2025/CRD-css-flexbox-1-20251014/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#overview':
-    title: 1.1 Overview
-    status: unknown
-  '#placement':
-    title: 1.2 Module interactions
-    status: unknown
-  '#values':
-    title: 1.3 Value Definitions
-    status: unknown
+    status: n/a
   '#box-model':
     title: 2 Flex Layout Box Model and Terminology
-    status: unknown
+    status: n/a
   '#flex-containers':
     title: '3 Flex Containers: the flex and inline-flex display values'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'display: flex' and 'inline-flex' are accepted, but the container lays out and paints none of its content, see css-display-3 #inner-model"
   '#flex-items':
     title: 4 Flex Items
-    status: unknown
+    status: unsupported
+    gaps:
+      - No flex items, children aren't blockified and text runs aren't wrapped in anonymous flex items
   '#abspos-items':
     title: 4.1 Absolutely-Positioned Flex Children
-    status: unknown
+    status: unsupported
   '#item-margins':
     title: 4.2 Flex Item Margins and Paddings
-    status: unknown
+    status: unsupported
   '#painting':
     title: 4.3 Flex Item Z-Ordering
-    status: unknown
+    status: unsupported
   '#visibility-collapse':
     title: 4.4 Collapsed Items
-    status: unknown
+    status: unsupported
   '#min-size-auto':
     title: 4.5 Automatic Minimum Size of Flex Items
-    status: unknown
+    status: unsupported
   '#flow-order':
     title: 5 Ordering and Orientation
-    status: unknown
+    status: parsed-only
   '#flex-direction-property':
     title: '5.1 Flex Flow Direction: the flex-direction property'
-    status: unknown
+    status: parsed-only
   '#flex-wrap-property':
     title: '5.2 Flex Line Wrapping: the flex-wrap property'
-    status: unknown
+    status: parsed-only
   '#flex-flow-property':
     title: '5.3 Flex Direction and Wrap: the flex-flow shorthand'
-    status: unknown
+    status: parsed-only
   '#order-property':
     title: '5.4 Reordering and Accessibility: the order property'
-    status: unknown
+    status: parsed-only
   '#flex-lines':
     title: 6 Flex Lines
-    status: unknown
+    status: unsupported
   '#flexibility':
     title: 7 Flexibility
-    status: unknown
+    status: unsupported
   '#flex-property':
     title: 7.1 The flex Shorthand
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'flex: none' sets the longhands to their initial values (0 1 auto) instead of 0 0 auto"
+      - "The basis before the factors, e.g. 'flex: 30px 2', is rejected"
+      - "Negative factors and CSS-wide keywords mixed with values, e.g. 'flex: initial 1', are accepted"
   '#flex-common':
     title: 7.1.1 Basic Values of flex
-    status: unknown
+    status: n/a
   '#flex-components':
     title: 7.2 Components of Flexibility
-    status: unknown
+    status: parsed-only
   '#flex-grow-property':
     title: 7.2.1 The flex-grow property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Negative values are accepted
   '#flex-shrink-property':
     title: 7.2.2 The flex-shrink property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Negative values are accepted
   '#flex-basis-property':
     title: 7.2.3 The flex-basis property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Negative lengths are accepted
   '#alignment':
     title: 8 Alignment
-    status: unknown
+    status: parsed-only
   '#auto-margins':
     title: 8.1 Aligning with auto margins
-    status: unknown
+    status: unsupported
   '#justify-content-property':
     title: '8.2 Axis Alignment: the justify-content property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - 'Grammar gaps of the alignment keywords, see css-align-3 #alignment-values'
   '#align-items-property':
     title: '8.3 Cross-axis Alignment: the align-items and align-self properties'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - 'Grammar gaps of the alignment keywords, see css-align-3 #alignment-values'
   '#align-content-property':
     title: '8.4 Packing Flex Lines: the align-content property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - 'Grammar gaps of the alignment keywords, see css-align-3 #alignment-values'
   '#flex-baselines':
     title: 8.5 Flex Container Baselines
-    status: unknown
+    status: unsupported
   '#layout-algorithm':
     title: 9 Flex Layout Algorithm
-    status: unknown
+    status: unsupported
   '#box-manip':
     title: 9.1 Initial Setup
-    status: unknown
+    status: unsupported
   '#line-sizing':
     title: 9.2 Line Length Determination
-    status: unknown
+    status: unsupported
   '#main-sizing':
     title: 9.3 Main Size Determination
-    status: unknown
+    status: unsupported
   '#cross-sizing':
     title: 9.4 Cross Size Determination
-    status: unknown
+    status: unsupported
   '#main-alignment':
     title: 9.5 Main-Axis Alignment
-    status: unknown
+    status: unsupported
   '#cross-alignment':
     title: 9.6 Cross-Axis Alignment
-    status: unknown
+    status: unsupported
   '#resolve-flexible-lengths':
     title: 9.7 Resolving Flexible Lengths
-    status: unknown
+    status: unsupported
   '#definite-sizes':
     title: 9.8 Definite and Indefinite Sizes
-    status: unknown
+    status: unsupported
   '#intrinsic-sizes':
     title: 9.9 Intrinsic Sizes
-    status: unknown
+    status: unsupported
   '#intrinsic-main-sizes':
     title: 9.9.1 Flex Container Intrinsic Main Sizes
-    status: unknown
+    status: unsupported
   '#intrinsic-main-sizes-ideal':
     title: 9.9.1.1 Ideal Algorithm
-    status: unknown
+    status: unsupported
   '#intrinsic-main-sizes-compat':
     title: 9.9.1.2 Web-compatible Intrinsic Sizing Algorithm
-    status: unknown
+    status: unsupported
   '#intrinsic-main-sizes-multiline':
     title: 9.9.1.3 Multi-line Min-content Algorithm
-    status: unknown
+    status: unsupported
   '#intrinsic-cross-sizes':
     title: 9.9.2 Flex Container Intrinsic Cross Sizes
-    status: unknown
+    status: unsupported
   '#intrinsic-item-contributions':
     title: 9.9.3 Flex Item Intrinsic Size Contributions
-    status: unknown
+    status: unsupported
   '#pagination':
     title: 10 Fragmenting Flex Layout
-    status: unknown
+    status: unsupported
   '#pagination-algo':
     title: 10.1 Sample Flex Fragmentation Algorithm
-    status: unknown
+    status: n/a
