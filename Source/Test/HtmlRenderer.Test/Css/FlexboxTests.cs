@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HtmlRenderer.Test.CssEngineSupport;
+using HtmlRenderer.Test.TestSupport;
 using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
@@ -97,6 +98,30 @@ public sealed class FlexboxTests
         var property = CssConstructionFunctions.ParseDeclaration(snippet);
         Assert.AreEqual("align-items", property.Name);
         Assert.IsFalse(property.HasValue);
+    }
+
+    [TestMethod]
+    [DataRow("align-items: safe")]
+    [DataRow("align-self: unsafe")]
+    [DataRow("align-content: first")]
+    [DataRow("align-items: last")]
+    [DataRow("justify-content: first baseline")]
+    public void AlignmentPrefixWithoutKeywordIsRejected(string declaration)
+    {
+        var property = CssConstructionFunctions.ParseDeclaration(declaration);
+        Assert.IsFalse(property.HasValue);
+    }
+
+    [TestMethod]
+    [DataRow("align-items: safe")]
+    [DataRow("justify-self: safe right")]
+    [DataRow("place-self: center left")]
+    [DataRow("place-content: baseline")]
+    [DataRow("place-items: start legacy")]
+    public void AlignmentValueDoesntBreakTheDocument(string declaration)
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap($"<div id='x' style='{declaration}'>text</div>"));
+        Assert.IsNotNull(LayoutHarness.FindById(root, "x"));
     }
 
     [TestMethod]
