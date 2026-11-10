@@ -1547,9 +1547,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Computes overlap-reduced corner radii for the given rendering rectangle, per CSS Backgrounds
-        /// §4. Horizontal and vertical axes are reduced independently so that, e.g., two large radii on
-        /// the same edge never sum to more than that edge's length.
+        /// The corner radii for <paramref name="rect"/> after the overlap reduction, CSS Backgrounds 3 §4.5.
+        /// The horizontal and vertical radii are scaled separately.
         /// </summary>
         public BorderRadii ComputeRadii(RRect rect)
         {

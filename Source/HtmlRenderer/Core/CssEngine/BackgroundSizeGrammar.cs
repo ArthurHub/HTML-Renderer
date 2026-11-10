@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Grammar of a <c>background-size</c> value: <c>auto</c>, <c>cover</c>, <c>contain</c> or
+    /// Grammar of a <c>background-size</c> value, CSS Backgrounds 3 §2.9: <c>auto</c>, <c>cover</c>, <c>contain</c> or
     /// 1 to 2 length, percentage or auto tokens. Used by <see cref="Converters.BackgroundSizeConverter"/>
     /// to validate and serialize the value.
     /// </summary>

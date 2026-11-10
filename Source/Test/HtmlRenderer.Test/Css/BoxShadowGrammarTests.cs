@@ -6,12 +6,6 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/BoxShadowGrammarTests.cs.
-/// Tests for the shared <see cref="BoxShadowGrammar"/> (the <c>box-shadow</c> value grammar
-/// <c>none | [ inset? &amp;&amp; &lt;length&gt;{2,4} &amp;&amp; &lt;color&gt;? ]#</c>) and its
-/// Layer-A accept/reject via the full parser.
-/// </summary>
 [TestClass]
 public sealed class BoxShadowGrammarTests
 {
@@ -19,6 +13,7 @@ public sealed class BoxShadowGrammarTests
         BoxShadowGrammar.TryParse(CssValueParser.GetCssTokens(value));
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#box-shadow")]
     public void None_ReturnsEmptyList()
     {
         var layers = Parse("none");
@@ -27,6 +22,7 @@ public sealed class BoxShadowGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#box-shadow")]
     public void TwoLengths_OffsetsOnly()
     {
         var layers = Parse("2px 3px");
@@ -41,6 +37,7 @@ public sealed class BoxShadowGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#box-shadow")]
     public void ThreeLengths_HasBlur()
     {
         var layers = Parse("2px 2px 5px");
@@ -51,6 +48,7 @@ public sealed class BoxShadowGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#box-shadow")]
     public void FourLengths_HasBlurAndSpread()
     {
         var layers = Parse("1px 1px 2px 3px");
@@ -61,6 +59,7 @@ public sealed class BoxShadowGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#box-shadow")]
     public void Inset_WithColor()
     {
         var layers = Parse("inset 0 0 5px red");
@@ -74,6 +73,7 @@ public sealed class BoxShadowGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#box-shadow")]
     [DataRow("2px 2px red", "red")]
     [DataRow("2px 2px #fff", "#fff")]        // letter-leading hex (Hash token)
     [DataRow("2px 2px #08f", "#08f")]        // digit-leading short hex (Delim + dimension)
@@ -89,6 +89,7 @@ public sealed class BoxShadowGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#box-shadow")]
     public void ColorBeforeLengths_IsAccepted()
     {
         // The && grammar allows the color in any position, including before the lengths.
@@ -100,6 +101,7 @@ public sealed class BoxShadowGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#box-shadow")]
     public void EmValidLengthsAreKeptAsAuthoredStrings()
     {
         var layers = Parse("0.5em 0.5em 1em");
@@ -110,6 +112,7 @@ public sealed class BoxShadowGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#box-shadow")]
     public void NegativeOffsetsAndSpread_AreValid()
     {
         var layers = Parse("-2px -3px 4px -1px");
@@ -121,6 +124,7 @@ public sealed class BoxShadowGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#box-shadow")]
     public void MultipleLayers_ParseInOrder()
     {
         var layers = Parse("1px 1px 2px 3px rgba(0,0,0,.5), inset 0 0 0 1px blue");
@@ -132,6 +136,7 @@ public sealed class BoxShadowGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#box-shadow")]
     [DataRow("")]
     [DataRow("banana")]              // no lengths
     [DataRow("2px")]                 // only one length
@@ -151,6 +156,7 @@ public sealed class BoxShadowGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#box-shadow")]
     [DataRow("box-shadow: none", true)]
     [DataRow("box-shadow: 2px 2px", true)]
     [DataRow("box-shadow: inset 0 0 5px red", true)]

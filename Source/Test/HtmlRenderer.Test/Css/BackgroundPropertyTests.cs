@@ -7,6 +7,7 @@ namespace HtmlRenderer.Test.Css;
 public sealed class BackgroundPropertyTests
 {
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-attachment")]
     public void BackgroundAttachmentScrollLegal()
     {
         var snippet = "background-attachment : scroll";
@@ -35,6 +36,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-attachment")]
     public void BackgroundAttachmentFixedUppercaseLegal()
     {
         var snippet = "background-attachment : Fixed ";
@@ -49,6 +51,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-attachment")]
     public void BackgroundAttachmentFixedLocalLegal()
     {
         var snippet = "background-attachment : fixed  ,  local ";
@@ -63,6 +66,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-attachment")]
     public void BackgroundAttachmentFixedLocalScrollScrollLegal()
     {
         var snippet = "background-attachment : fixed  ,  local,scroll,scroll ";
@@ -77,6 +81,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-attachment")]
     public void BackgroundAttachmentNoneIllegal()
     {
         var snippet = "background-attachment : none ";
@@ -90,6 +95,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-clip")]
     public void BackgroundClipPaddingBoxUppercaseLegal()
     {
         var snippet = "background-clip : Padding-Box ";
@@ -104,6 +110,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-clip")]
     public void BackgroundClipPaddingBoxBorderBoxLegal()
     {
         var snippet = "background-clip : Padding-Box, border-box ";
@@ -118,6 +125,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-clip")]
     public void BackgroundClipContentBoxLegal()
     {
         var snippet = "background-clip : content-box";
@@ -227,8 +235,7 @@ public sealed class BackgroundPropertyTests
     [DataRow("background-image: element(#hero)")]
     public void BackgroundImageExtendedFunctionLegal(string snippet)
     {
-        // image-set()/cross-fade()/element() are valid <image> values (CSS Images 4) and now parse via the
-        // shared ImageSourceConverter, even though PeachPDF renders nothing for them (issue #229 gap 3).
+        // Valid <image> values (CSS Images 4), parsed even though nothing is rendered for them.
         var property = CssConstructionFunctions.ParseDeclaration(snippet);
         Assert.AreEqual("background-image", property.Name);
         Assert.IsInstanceOfType<BackgroundImageProperty>(property);
@@ -290,6 +297,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-origin")]
     public void BackgroundOriginContentBoxLegal()
     {
         var snippet = "background-origin: CONTENT-BOX";
@@ -304,6 +312,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-origin")]
     public void BackgroundOriginContentBoxPaddingBoxLegal()
     {
         var snippet = "background-origin: CONTENT-BOX, Padding-Box";
@@ -318,6 +327,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-origin")]
     public void BackgroundOriginBorderBoxLegal()
     {
         var snippet = "background-origin: border-box";
@@ -332,6 +342,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-position")]
     public void BackgroundPositionTopLegal()
     {
         var snippet = "background-position: top";
@@ -346,6 +357,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-position")]
     public void BackgroundPositionPercentPercentLegal()
     {
         var snippet = "background-position: 25% 75%";
@@ -360,6 +372,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-position")]
     public void BackgroundPositionCenterPercentLegal()
     {
         var snippet = "background-position: center 75%";
@@ -374,6 +387,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-position")]
     public void BackgroundPositionRightLengthBottomLengthLegal()
     {
         var snippet = "background-position: right 20px bottom 20px";
@@ -388,6 +402,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-position")]
     public void BackgroundPositionLengthLengthCenterMultipleLegal()
     {
         var snippet = "background-position: 10px 20px, center";
@@ -402,6 +417,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-position")]
     public void BackgroundPositionZeroMultipleLegal()
     {
         var snippet = "background-position: 0 0, 0 0";
@@ -416,6 +432,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-repeat")]
     public void BackgroundRepeatRepeatXLegal()
     {
         var snippet = "background-repeat: repeat-x";
@@ -430,6 +447,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-repeat")]
     public void BackgroundRepeatRepeatYLegal()
     {
         var snippet = "background-repeat: repeat-y";
@@ -444,6 +462,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-repeat")]
     public void BackgroundRepeatRepeatLegal()
     {
         var snippet = "background-repeat: REPEAT";
@@ -458,6 +477,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-repeat")]
     public void BackgroundRepeatRoundLegal()
     {
         var snippet = "background-repeat: rounD";
@@ -472,6 +492,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-repeat")]
     public void BackgroundRepeatRepeatSpaceLegal()
     {
         var snippet = "background-repeat: repeat space";
@@ -486,6 +507,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-repeat")]
     public void BackgroundRepeatRepeatXSpaceIllegal()
     {
         var snippet = "background-repeat: repeat-x space";
@@ -499,6 +521,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-repeat")]
     public void BackgroundRepeatRepeatXRepeatYMultipleLegal()
     {
         var snippet = "background-repeat: repeat-X, repeat-Y";
@@ -513,6 +536,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-repeat")]
     public void BackgroundRepeatSpaceRoundLegal()
     {
         var snippet = "background-repeat: space round";
@@ -527,6 +551,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-repeat")]
     public void BackgroundRepeatNoRepeatRepeatXIllegal()
     {
         var snippet = "background-repeat: no-repeat repeat-x";
@@ -540,6 +565,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-repeat")]
     public void BackgroundRepeatRepeatRepeatNoRepeatRepeatLegal()
     {
         var snippet = "background-repeat: repeat repeat, no-repeat repeat";
@@ -554,6 +580,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-size")]
     public void BackgroundSizeLengthLegal()
     {
         var snippet = "background-size: 2em";
@@ -568,6 +595,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-size")]
     public void BackgroundSizePercentLegal()
     {
         var snippet = "background-size: 20%";
@@ -582,6 +610,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-size")]
     public void BackgroundSizeAutoAutoLegal()
     {
         var snippet = "background-size: auto auto";
@@ -596,6 +625,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-size")]
     public void BackgroundSizeAutoLengthLegal()
     {
         var snippet = "background-size: auto 50px";
@@ -610,6 +640,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-size")]
     public void BackgroundSizeLengthLengthLegal()
     {
         var snippet = "background-size: 25px 50px";
@@ -624,6 +655,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-size")]
     public void BackgroundSizePercentPercentLegal()
     {
         var snippet = "background-size: 50% 50%";
@@ -638,6 +670,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-size")]
     public void BackgroundSizeAutoUppercaseLegal()
     {
         var snippet = "background-size: AUTO";
@@ -652,6 +685,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-size")]
     public void BackgroundSizeCoverLegal()
     {
         var snippet = "background-size: cover";
@@ -666,6 +700,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-size")]
     public void BackgroundSizeContainCoverMultipleLegal()
     {
         var snippet = "background-size: contain,cover";
@@ -680,6 +715,7 @@ public sealed class BackgroundPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-size")]
     public void BackgroundSizeContainLengthAutoPercentLegal()
     {
         var snippet = "background-size: contain,100px,auto,20%";
@@ -961,10 +997,7 @@ public sealed class BackgroundPropertyTests
     [TestMethod]
     public void BackgroundShorthand_MultipleLayers_OriginClipCommaJoined()
     {
-        // Each layer explicitly gives both box-model keywords (origin then clip) to avoid a
-        // separate, pre-existing ambiguity in this shorthand: a single box-model keyword is
-        // always assigned to background-origin (never background-clip) here, rather than
-        // setting both per spec - unrelated to the comma-vs-whitespace joining this test targets.
+        // Both box keywords per layer, a single one only sets background-origin (see Spec/css-backgrounds-3.yml)
         var style = CssConstructionFunctions.ParseDeclarations(
             "background: url(\"a.png\") padding-box content-box, url(\"b.png\") border-box padding-box");
 

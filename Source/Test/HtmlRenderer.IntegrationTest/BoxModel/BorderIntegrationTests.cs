@@ -9,6 +9,7 @@ public sealed class BorderIntegrationTests
 {
     [TestMethod]
     [Spec("css21", "box.html#border-width-properties")]
+    [Spec("css-backgrounds-3", "#border-width")]
     public void WidthKeywords_GrowFromThinOverMediumToThick()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -25,6 +26,7 @@ public sealed class BorderIntegrationTests
 
     [TestMethod]
     [Spec("css21", "box.html#border-width-properties")]
+    [Spec("css-backgrounds-3", "#border-width")]
     public void StyleNone_ComputesTheWidthToZero()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='b' style='border-width:5px;border-style:none'></div>"));
@@ -37,6 +39,7 @@ public sealed class BorderIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "box.html#border-width-properties")]
+    [Spec("css-backgrounds-3", "#border-width")]
     public void StyleHidden_ComputesTheWidthToZero()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='b' style='border-width:5px;border-style:hidden'></div>"));
@@ -47,6 +50,7 @@ public sealed class BorderIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "box.html#border-width-properties")]
+    [Spec("css-backgrounds-3", "#border-width")]
     public void InitialWidth_IsMedium()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -57,6 +61,7 @@ public sealed class BorderIntegrationTests
 
     [TestMethod]
     [Spec("css21", "box.html#border-color-properties")]
+    [Spec("css-backgrounds-3", "#border-color")]
     public void TransparentColor_PaintsNothingVisible()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='b' style='border:2px solid transparent'></div>"));
@@ -67,6 +72,7 @@ public sealed class BorderIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "box.html#border-color-properties")]
+    [Spec("css-backgrounds-3", "#border-color")]
     public void InitialColor_IsTheElementsColor()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='b' style='color:rgb(10,20,30);border:2px solid'></div>"));
@@ -76,6 +82,7 @@ public sealed class BorderIntegrationTests
 
     [TestMethod]
     [Spec("css21", "box.html#border-shorthand-properties")]
+    [Spec("css-backgrounds-3", "#border-shorthands")]
     public void BorderShorthand_SetsAllFourSides()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='b' style='border:3px dashed red'></div>"));
@@ -112,6 +119,7 @@ public sealed class BorderIntegrationTests
 
     [TestMethod]
     [Spec("css21", "box.html#border-shorthand-properties")]
+    [Spec("css-backgrounds-3", "#border-shorthands")]
     public void SideShorthand_OnlySetsThatSide()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='b' style='border-top:4px solid blue'></div>"));

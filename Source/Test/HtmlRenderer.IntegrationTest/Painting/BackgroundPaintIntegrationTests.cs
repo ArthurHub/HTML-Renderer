@@ -19,6 +19,7 @@ public sealed class BackgroundPaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-backgrounds-3", "#background-color")]
     public void BackgroundColor_PaintsASolidFillRect()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -36,6 +37,7 @@ public sealed class BackgroundPaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-backgrounds-3", "#background-color")]
     public void BackgroundColorTransparent_PaintsNothing()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -113,6 +115,7 @@ public sealed class BackgroundPaintIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "colors.html#background")]
+    [Spec("css-backgrounds-3", "#root-background")]
     public void RootBackground_CoversTheWholeCanvas()
     {
         var (_, container) = PaintHarness.Layout(
@@ -128,6 +131,7 @@ public sealed class BackgroundPaintIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "colors.html#background")]
+    [Spec("css-backgrounds-3", "#body-background")]
     public void BodyBackground_PropagatesToTheCanvas()
     {
         var (_, container) = PaintHarness.Layout(
@@ -144,6 +148,7 @@ public sealed class BackgroundPaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-backgrounds-3", "#background-image")]
     public void BackgroundImage_PaintsOnTopOfTheBackgroundColor()
     {
         var g = PaintBackground($"width:100px;height:50px;background-color:rgb(10,20,30);background-image:{Image};background-repeat:no-repeat");
@@ -157,6 +162,7 @@ public sealed class BackgroundPaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-backgrounds-3", "#background-image")]
     public void BackgroundImageNone_PaintsNoImage()
     {
         var g = PaintBackground("width:100px;height:50px;background-image:none;background-repeat:no-repeat");
@@ -166,6 +172,7 @@ public sealed class BackgroundPaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-backgrounds-3", "#background-repeat")]
     public void BackgroundRepeatNoRepeat_DrawsOneCopyAtTheTopLeft()
     {
         var g = PaintBackground($"width:100px;height:50px;background-image:{Image};background-repeat:no-repeat");
@@ -179,6 +186,7 @@ public sealed class BackgroundPaintIntegrationTests
     [DataRow("repeat-x", 0, 0, 100, ImageHeight)]
     [DataRow("repeat-y", 0, 0, ImageWidth, 50)]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-backgrounds-3", "#background-repeat")]
     public void BackgroundRepeat_TilesAlongTheGivenAxes(string repeat, double x, double y, double width, double height)
     {
         var g = PaintBackground($"width:100px;height:50px;background-image:{Image};background-repeat:{repeat}");
@@ -194,6 +202,7 @@ public sealed class BackgroundPaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-backgrounds-3", "#background-repeat")]
     public void BackgroundRepeat_TilingCoversTheBorderArea()
     {
         var g = PaintBackground($"width:100px;height:50px;border:5px solid black;background-image:{Image}");
@@ -212,6 +221,7 @@ public sealed class BackgroundPaintIntegrationTests
     [DataRow("0% 0%", 0, 0)]
     [Spec("css21", "colors.html#background-properties")]
     [Spec("css-values-4", "#position-parsing")]
+    [Spec("css-backgrounds-3", "#background-position")]
     public void BackgroundPosition_Keywords(string position, double x, double y)
     {
         var g = PaintBackground($"width:100px;height:100px;background-image:{Image};background-repeat:no-repeat;background-position:{position}");
@@ -228,7 +238,8 @@ public sealed class BackgroundPaintIntegrationTests
     [DataRow("25% 50%", 15, 35)]
     [DataRow("10% 90%", 6, 63)]
     [Spec("css21", "colors.html#background-properties")]
-    [Spec("css-values-4", "#position-parsing")]
+    [Spec("css-values-4", "#position")]
+    [Spec("css-backgrounds-3", "#background-position")]
     public void BackgroundPosition_Percentages(string position, double x, double y)
     {
         var g = PaintBackground($"width:100px;height:100px;background-image:{Image};background-repeat:no-repeat;background-position:{position}");
@@ -244,7 +255,8 @@ public sealed class BackgroundPaintIntegrationTests
     [DataRow("-5px 7px", -5, 7)]
     [DataRow("right 15px", 60, 15)]
     [Spec("css21", "colors.html#background-properties")]
-    [Spec("css-values-4", "#position-parsing")]
+    [Spec("css-values-4", "#position")]
+    [Spec("css-backgrounds-3", "#background-position")]
     public void BackgroundPosition_Lengths(string position, double x, double y)
     {
         var g = PaintBackground($"width:100px;height:100px;background-image:{Image};background-repeat:no-repeat;background-position:{position}");
@@ -257,6 +269,7 @@ public sealed class BackgroundPaintIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-backgrounds-3", "#background-origin")]
     public void BackgroundPosition_IsRelativeToThePaddingBox()
     {
         var g = PaintBackground($"width:100px;height:100px;border:5px solid black;background-image:{Image};background-repeat:no-repeat");
@@ -269,6 +282,7 @@ public sealed class BackgroundPaintIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-backgrounds-3", "#background-attachment")]
     public void BackgroundAttachmentFixed_PositionsTheImageAgainstTheViewport()
     {
         var g = PaintBackground($"margin-top:100px;width:100px;height:100px;background-image:{Image};background-repeat:no-repeat;background-attachment:fixed");
@@ -279,6 +293,7 @@ public sealed class BackgroundPaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-backgrounds-3", "#background")]
     public void BackgroundShorthand_SetsAllGivenLonghands()
     {
         var g = PaintBackground($"width:100px;height:100px;background:rgb(10,20,30) {Image} no-repeat right bottom");
@@ -291,6 +306,7 @@ public sealed class BackgroundPaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-backgrounds-3", "#background")]
     public void BackgroundShorthand_ResetsOmittedLonghandsToTheirInitialValues()
     {
         var g = PaintBackground($"width:100px;height:100px;background-image:{Image};background-repeat:no-repeat;background:rgb(10,20,30)");

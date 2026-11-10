@@ -31,6 +31,7 @@ public sealed class BorderStylePaintIntegrationTests
     [DataRow("inset", 50, 100)]
     [DataRow("outset", 100, 50)]
     [Spec("css21", "box.html#border-style-properties")]
+    [Spec("css-backgrounds-3", "#border-style")]
     public void InsetAndOutset_DarkenOppositeSides(string style, int topLeft, int bottomRight)
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -46,6 +47,7 @@ public sealed class BorderStylePaintIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "box.html#border-style-properties")]
+    [Spec("css-backgrounds-3", "#border-style")]
     public void BorderStyleDouble_DrawsTwoEqualWidthStripesWithGap()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -62,6 +64,7 @@ public sealed class BorderStylePaintIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "box.html#border-style-properties")]
+    [Spec("css-backgrounds-3", "#border-style")]
     public void BorderStyleGroove_OuterStripeIsDarker_InnerStripeIsBaseColor()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -79,6 +82,7 @@ public sealed class BorderStylePaintIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "box.html#border-style-properties")]
+    [Spec("css-backgrounds-3", "#border-style")]
     public void BorderRightStyleDouble_DrawsTwoEqualWidthVerticalStripesWithGap()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -96,6 +100,7 @@ public sealed class BorderStylePaintIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "box.html#border-style-properties")]
+    [Spec("css-backgrounds-3", "#border-style")]
     public void BorderLeftStyleGroove_OuterStripeIsDarker_InnerStripeIsBaseColor()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -112,6 +117,7 @@ public sealed class BorderStylePaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "box.html#border-color-properties")]
+    [Spec("css-backgrounds-3", "#border-color")]
     public void BorderColorPerSide_ResolvesDistinctColorPerEdge()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -157,6 +163,7 @@ public sealed class BorderStylePaintIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "box.html#border-style-properties")]
+    [Spec("css-backgrounds-3", "#border-style")]
     public void BorderStyleRidge_IsMirrorImageOfGroove()
     {
         var (grooveRoot, grooveContainer) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -196,6 +203,7 @@ public sealed class BorderStylePaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "box.html#border-style-properties")]
+    [Spec("css-backgrounds-3", "#border-style")]
     public void BorderStyleTwoValueShorthand_OnlyPaintsTheSolidSides()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -217,6 +225,7 @@ public sealed class BorderStylePaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "box.html#border-color-properties")]
+    [Spec("css-backgrounds-3", "#border-color")]
     public void BorderColorFourValueShorthand_ResolvesTopRightBottomLeftPerSide()
     {
         var (root, _) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -231,6 +240,7 @@ public sealed class BorderStylePaintIntegrationTests
 
     [TestMethod]
     [Spec("css21", "box.html#border-width-properties")]
+    [Spec("css-backgrounds-3", "#border-width")]
     public void BorderWidthTwoValueShorthand_ThenLaterOneValue_OverridesAllSidesPerSpecificity()
     {
         var (root, _) = PaintHarness.Layout(

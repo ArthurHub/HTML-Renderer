@@ -5,23 +5,14 @@ using System.Linq;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Shared, layer-agnostic grammar for the CSS <c>box-shadow</c> value (CSS Backgrounds &amp; Borders
-    /// Level 3 §5): a comma-separated list of shadow layers, each
-    /// <c>[ inset? &amp;&amp; &lt;length&gt;{2,4} &amp;&amp; &lt;color&gt;? ]</c>. Like
-    /// <see cref="BasicShapeGrammar"/> / <see cref="AspectRatioGrammar"/>, it validates the grammar and
-    /// captures each layer's structure as <b>raw component strings</b> (never resolved numbers), so both
-    /// Layer A (the CSS-OM converter, which only needs to accept/reject and preserve the authored text)
-    /// and Layer B (the paint-time resolver in <c>TheArtOfDev.HtmlRenderer.Core</c>, which resolves each length
-    /// against the box's own font/size) share a single parser rather than re-implementing the grammar.
+    /// Grammar of a <c>box-shadow</c> value, CSS Backgrounds 3 §6.1. Keeps the components as authored
+    /// strings, em/rem lengths can only be resolved against the box.
     /// </summary>
     internal static class BoxShadowGrammar
     {
         /// <summary>
-        /// A single parsed shadow layer. Lengths and the color are kept as the authored component strings -
-        /// box-shadow lengths may be font-relative (<c>em</c>/<c>rem</c>), so only Layer B can resolve them.
-        /// <see cref="Blur"/> defaults to <c>"0"</c> and <see cref="Spread"/> to <c>"0"</c> when the author
-        /// omitted them; <see cref="Color"/> is null when omitted, meaning "use the element's own color"
-        /// (currentColor) at paint time.
+        /// One shadow layer. <see cref="Blur"/> and <see cref="Spread"/> default to <c>"0"</c>, a null
+        /// <see cref="Color"/> means currentcolor.
         /// </summary>
         internal sealed class ShadowLayer
         {
@@ -33,15 +24,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             public string Color { get; set; }
         }
 
-        // The one color grammar (named/hex/rgb()/rgba()/hsl()/currentColor/transparent), reused so box-shadow
-        // never re-implements color parsing - matches the CLAUDE.md "one grammar per value" rule.
         private static readonly IValueConverter ColorValidator = Converters.ColorConverter.WithCurrentColor();
 
         /// <summary>
-        /// Parses a <c>box-shadow</c> value's tokens into an ordered list of <see cref="ShadowLayer"/>s
-        /// (first-declared first), or returns null when the value is not a valid box-shadow. The literal
-        /// keyword <c>none</c> returns an <b>empty list</b> (no shadows), distinct from a null (invalid)
-        /// result.
+        /// The layers in declaration order, an empty list for <c>none</c>, or null if the value is invalid.
         /// </summary>
         internal static List<ShadowLayer> TryParse(IReadOnlyList<Token> tokens)
         {
@@ -120,12 +106,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         /// <summary>
-        /// Validates the color component. The full color grammar (named/rgb()/rgba()/hsl()/currentColor)
-        /// is checked via the shared <see cref="ColorValidator"/>, but a hex color is special-cased: the
-        /// raw <c>CssValueParser.GetCssTokens</c> tokenizer Layer B feeds this grammar produces a bare
-        /// <see cref="TokenType.Hash"/> token for <c>#fff</c> (only the in-declaration-value tokenizer path
-        /// yields a <see cref="ColorToken"/> the converter understands), so accept a well-formed hex token
-        /// directly - otherwise a hex shadow color accepted by Layer A would be dropped at paint time.
+        /// Outside of a declaration value the tokenizer gives a hex color as a bare <see cref="TokenType.Hash"/>
+        /// token instead of a <see cref="ColorToken"/>, which <see cref="ColorValidator"/> doesn't accept.
         /// </summary>
         private static bool IsValidColor(IReadOnlyList<Token> colorTokens)
         {
@@ -142,14 +124,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         /// <summary>
-        /// Merges a <c>#</c> delimiter followed by a number/dimension back into one hex-color token. The
-        /// <c>CssValueParser.GetCssTokens</c> tokenizer Layer B feeds this grammar is not in "value" mode,
-        /// so a <b>digit-leading</b> hex color (<c>#08f</c>, <c>#000</c>) is split into a bare
-        /// <see cref="TokenType.Delim"/> <c>#</c> plus a <see cref="TokenType.Number"/>/<see cref="TokenType.Dimension"/>
-        /// (e.g. <c>08f</c> becomes a dimension "08" + unit "f"), whereas a letter-leading hex (<c>#c00</c>)
-        /// becomes a single <see cref="TokenType.Hash"/> token. Without this, a digit-leading hex shadow color
-        /// accepted by Layer A (whose value-mode tokenizer yields a proper color token) would fail to re-parse
-        /// at paint time and the shadow would silently vanish.
+        /// Outside of a declaration value the tokenizer splits a hex color starting with a digit (<c>#08f</c>)
+        /// into a <c>#</c> delimiter and a number or dimension, this merges them back into one hash token.
         /// </summary>
         private static List<Token> NormalizeHexColorTokens(IReadOnlyList<Token> tokens)
         {

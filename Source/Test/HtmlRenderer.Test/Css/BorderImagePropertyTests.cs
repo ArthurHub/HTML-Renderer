@@ -3,11 +3,11 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>Ported from PeachPDF.Tests/CSS/PropertyTests/BorderImageProperty.cs. Pure CSSOM parse tests - no layout involved.</summary>
 [TestClass]
 public sealed class BorderImagePropertyTests
 {
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-source")]
     public void BorderImageSourceNoneLegal()
     {
         var snippet = "border-image-source: none    ";
@@ -22,6 +22,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-source")]
     public void BorderImageSourceUrlLegal()
     {
         var snippet = "border-image-source: url(image.jpg)";
@@ -36,6 +37,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-source")]
     public void BorderImageSourceLinearGradientLegal()
     {
         var snippet = "border-image-source: linear-gradient(to top, red, yellow)";
@@ -50,6 +52,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-outset")]
     public void BorderImageOutsetZeroLegal()
     {
         var snippet = "border-image-outset: 0";
@@ -64,6 +67,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-outset")]
     public void BorderImageOutsetLengthPercentLegal()
     {
         var snippet = "border-image-outset: 10px   25%";
@@ -78,6 +82,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-outset")]
     public void BorderImageOutsetLengthPercentZeroLegal()
     {
         var snippet = "border-image-outset: 10px   25% 0";
@@ -92,6 +97,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-outset")]
     public void BorderImageOutsetLengthPercentZeroPercentLegal()
     {
         var snippet = "border-image-outset: 10px   25% 0 10%";
@@ -106,6 +112,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-outset")]
     public void BorderImageOutsetZerosIllegal()
     {
         var snippet = "border-image-outset: 0 0 0 0 0";
@@ -119,6 +126,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-width")]
     public void BorderImageWidthZeroLegal()
     {
         var snippet = "border-image-width: 0";
@@ -133,6 +141,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-width")]
     public void BorderImageWidthAutoLegal()
     {
         var snippet = "border-image-width: auto";
@@ -147,6 +156,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-width")]
     public void BorderImageWidthMultipleLegal()
     {
         var snippet = "border-image-width: 5";
@@ -161,6 +171,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-width")]
     public void BorderImageWidthLengthPercentLegal()
     {
         var snippet = "border-image-width: 10px   25%";
@@ -175,6 +186,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-width")]
     public void BorderImageWidthLengthPercentZeroLegal()
     {
         var snippet = "border-image-width: 10px   25% 0";
@@ -189,6 +201,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-width")]
     public void BorderImageWidthLengthPercentAutoPercentLegal()
     {
         var snippet = "border-image-width: 10px   25% auto 10%";
@@ -203,6 +216,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-width")]
     public void BorderImageWidthZerosIllegal()
     {
         var snippet = "border-image-width: 0 0 0 0 0";
@@ -216,6 +230,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-repeat")]
     public void BorderImageRepeatStretchUppercaseLegal()
     {
         var snippet = "border-image-repeat:   StRETCH";
@@ -230,6 +245,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-repeat")]
     public void BorderImageRepeatRepeatLegal()
     {
         var snippet = "border-image-repeat:   repeat";
@@ -244,6 +260,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-repeat")]
     public void BorderImageRepeatRoundLegal()
     {
         var snippet = "border-image-repeat:   round";
@@ -258,6 +275,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-repeat")]
     public void BorderImageRepeatStretchRoundLegal()
     {
         var snippet = "border-image-repeat: stretch round";
@@ -272,6 +290,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-repeat")]
     public void BorderImageRepeatNoRepeatIllegal()
     {
         var snippet = "border-image-repeat: no-repeat";
@@ -285,6 +304,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-slice")]
     public void BorderImageSlicePixelsLegal()
     {
         var snippet = "border-image-slice: 3";
@@ -299,6 +319,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-slice")]
     public void BorderImageSlicePercentLegal()
     {
         var snippet = "border-image-slice: 10%";
@@ -313,6 +334,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-slice")]
     public void BorderImageSliceFillLegal()
     {
         var snippet = "border-image-slice: fill";
@@ -331,6 +353,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-slice")]
     public void BorderImageSlicePercentFillLegal()
     {
         var snippet = "border-image-slice: 10% fill";
@@ -345,6 +368,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-slice")]
     public void BorderImageSlicePercentPixelsFillLegal()
     {
         var snippet = "border-image-slice: 10% 30 fill";
@@ -359,7 +383,9 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
-    public void BorderImageSlicePercentPixelsFillZerosLegal()
+    [Ignore("Gap, see Spec/css-backgrounds-3.yml")]
+    [Spec("css-backgrounds-3", "#border-image-slice")]
+    public void BorderImageSliceFillBetweenNumbersIllegal()
     {
         var snippet = "border-image-slice: 10% 30 fill 0 0";
         var property = CssConstructionFunctions.ParseDeclaration(snippet);
@@ -373,6 +399,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-slice")]
     public void BorderImageSlicePercentPixelsFillZerosIllegal()
     {
         var snippet = "border-image-slice: 10% 30 fill 0 0 0";
@@ -386,6 +413,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image-slice")]
     public void BorderImageSlicePercentPixelsZerosFillIllegal()
     {
         var snippet = "border-image-slice: 10% 30  0 0 0 fill";
@@ -399,6 +427,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image")]
     public void BorderImageNoneLegal()
     {
         var snippet = "border-image: none    ";
@@ -413,6 +442,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image")]
     public void BorderImageUrlOffsetLegal()
     {
         var snippet = "border-image: url(image.png) 50 50";
@@ -427,6 +457,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image")]
     public void BorderImageUrlOffsetRepeatLegal()
     {
         var snippet = "border-image: url(image.png) 30 30 repeat";
@@ -441,6 +472,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image")]
     public void BorderImageUrlStretchUppercaseLegal()
     {
         var snippet = "border-image: url(image.png) STRETCH";
@@ -455,6 +487,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image")]
     public void BorderImageUrlOffsetWidthTwoLegal()
     {
         var snippet = "border-image: url(image.png) 30 30 / 15px 15px";
@@ -469,6 +502,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image")]
     public void BorderImageUrlOffsetWidthFourLegal()
     {
         var snippet = "border-image: url(image.png) 30 30 0 10 / 15px 0 15px 2em";
@@ -483,6 +517,7 @@ public sealed class BorderImagePropertyTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#border-image")]
     public void BorderImageUrlOffsetWidthOutsetLegal()
     {
         var snippet = "border-image: url(image.png) 30 30 / 15px 15px / 5% 2% 0 10%";

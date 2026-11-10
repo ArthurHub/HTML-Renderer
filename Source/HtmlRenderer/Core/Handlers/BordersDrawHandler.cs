@@ -19,7 +19,7 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 {
     /// <summary>
-    /// Contains all the complex paint code to paint different style borders.
+    /// Paints the borders, CSS Backgrounds 3 §3 and the rounded corners of §4.
     /// </summary>
     internal static class BordersDrawHandler
     {
@@ -72,7 +72,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <param name="box">Box which the border corresponds</param>
         /// <param name="brush">the brush to use</param>
         /// <param name="rectangle">the bounding rectangle to draw in</param>
-        /// <returns>Beveled border path, null if there is no rounded corners</returns>
         public static void DrawBorder(Border border, RGraphics g, CssBox box, RBrush brush, RRect rectangle)
         {
             SetInOutsetRectanglePoints(border, box, rectangle, true, true);
@@ -150,7 +149,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <param name="r">the rectangle the border is enclosing</param>
         /// <param name="isLineStart">Specifies if the border is for a starting line (no bevel on left)</param>
         /// <param name="isLineEnd">Specifies if the border is for an ending line (no bevel on right)</param>
-        /// <returns>Beveled border path, null if there is no rounded corners</returns>
         private static void SetInOutsetRectanglePoints(Border border, CssBox b, RRect r, bool isLineStart, bool isLineEnd)
         {
             switch (border)
@@ -191,9 +189,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// Makes a border path for rounded borders.<br/>
-        /// To support rounded dotted/dashed borders we need to use arc in the border path.<br/>
-        /// Return null if the border is not rounded.<br/>
+        /// The path of a rounded border, stroked along the middle of the border so dotted and dashed
+        /// styles follow the curve. Null if the border has no rounded corner. The top and bottom borders
+        /// take the whole corner arcs, the left and right ones only where there's no top or bottom border.
         /// </summary>
         /// <param name="g">the device to draw into</param>
         /// <param name="border">Desired border</param>

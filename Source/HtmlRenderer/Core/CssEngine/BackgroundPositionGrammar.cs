@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Grammar of a <c>background-position</c> value: the 1 to 4 token forms, including edge offsets
+    /// Grammar of a <c>background-position</c> value, CSS Backgrounds 3 §2.6: the 1 to 4 token forms, including edge offsets
     /// like "right 20px bottom 10px". Used by <see cref="Converters.PointConverter"/> and
     /// <see cref="BasicShapeGrammar"/> to validate and serialize the value.
     /// </summary>

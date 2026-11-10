@@ -23,7 +23,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
     internal static class BackgroundImageDrawHandler
     {
         /// <summary>
-        /// Draw the background image of the given box in the given rectangle, CSS 2.1 §14.2.1.
+        /// Draw the background image of the given box in the given rectangle, CSS Backgrounds 3 §2.3 to §2.6.
         /// The image is positioned and tiled within <paramref name="rectangle"/>, the border box.
         /// </summary>
         /// <param name="g">the device to draw into</param>
