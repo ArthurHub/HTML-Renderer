@@ -1,4 +1,5 @@
 using HtmlRenderer.Test.CssEngineSupport;
+using HtmlRenderer.Test.TestSupport;
 using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
@@ -821,5 +822,15 @@ public sealed class TextPropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<OverflowWrapProperty>(property);
         Assert.IsFalse(property.HasValue);
+    }
+
+    [TestMethod]
+    [DataRow("text-indent")]
+    [DataRow("word-spacing")]
+    public void RemLengthDoesNotFailTheDocument(string property)
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap($"<p id=x style='{property}: 2rem'>a b</p>"));
+
+        Assert.IsNotNull(LayoutHarness.FindById(root, "x"));
     }
 }

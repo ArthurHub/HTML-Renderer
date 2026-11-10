@@ -1901,7 +1901,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         protected string NoEms(string length)
         {
             var len = new CssLength(length);
-            if (len.Unit == CssUnit.Ems)
+            // CssLength reads rem as em with a parse error
+            if (len.Unit == CssUnit.Ems && !len.HasError)
             {
                 length = len.ConvertEmToPixels(GetEmHeight()).ToString();
             }
