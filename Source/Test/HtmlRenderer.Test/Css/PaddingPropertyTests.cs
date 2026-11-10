@@ -15,6 +15,7 @@ public sealed class PaddingPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#padding-shorthand")]
+    [Spec("css-box-4", "#padding-shorthand")]
     public void CssPaddingAllZeroLegal()
     {
         const string declaration = "padding: 0";
@@ -27,6 +28,7 @@ public sealed class PaddingPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#padding-shorthand")]
+    [Spec("css-box-4", "#padding-shorthand")]
     public void CssPaddingAllPercentLegal()
     {
         const string declaration = "padding: 25%";
@@ -39,6 +41,7 @@ public sealed class PaddingPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#padding-shorthand")]
+    [Spec("css-box-4", "#padding-shorthand")]
     public void CssPaddingSidesLengthLegal()
     {
         const string declaration = "padding: 10px 3em";
@@ -51,6 +54,7 @@ public sealed class PaddingPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#padding-shorthand")]
+    [Spec("css-box-4", "#padding-shorthand")]
     public void CssPaddingAutoIllegal()
     {
         const string declaration = "padding: auto";
@@ -63,6 +67,7 @@ public sealed class PaddingPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#padding-shorthand")]
+    [Spec("css-box-4", "#padding-shorthand")]
     public void CssPaddingThreeValuesLegal()
     {
         const string declaration = "padding: 10px 3em 5px";
@@ -75,6 +80,7 @@ public sealed class PaddingPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#padding-shorthand")]
+    [Spec("css-box-4", "#padding-shorthand")]
     public void CssPaddingAllValuesWithPercentLegal()
     {
         const string declaration = "padding: 10px 5% 8px 2%";
@@ -87,6 +93,7 @@ public sealed class PaddingPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#padding-shorthand")]
+    [Spec("css-box-4", "#padding-shorthand")]
     public void CssPaddingTooManyValuesIllegal()
     {
         const string declaration = "padding: 10px 5% 8px 2% 3px";

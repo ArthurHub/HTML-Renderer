@@ -11,6 +11,7 @@ public sealed class PaddingIntegrationTests
     [TestMethod]
     [Spec("css21", "box.html#padding-properties")]
     [Spec("css-box-3", "#padding-physical")]
+    [Spec("css-box-4", "#padding-physical")]
     public void PercentagePadding_ResolvesAgainstTheContainingBlockWidth()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -26,6 +27,7 @@ public sealed class PaddingIntegrationTests
     [TestMethod]
     [Spec("css21", "box.html#padding-properties")]
     [Spec("css-box-3", "#padding-physical")]
+    [Spec("css-box-4", "#padding-physical")]
     public void NegativePadding_IsIgnored()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='b' style='padding-left:-10px'></div>"));

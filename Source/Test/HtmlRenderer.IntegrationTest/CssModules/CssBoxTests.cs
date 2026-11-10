@@ -11,6 +11,7 @@ public sealed class CssBoxTests
 
     [TestMethod]
     [Spec("css-box-3", "#margin-physical")]
+    [Spec("css-box-4", "#margin-physical")]
     public void MarginLonghands_SetTheirOwnSideOnly()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -26,6 +27,7 @@ public sealed class CssBoxTests
 
     [TestMethod]
     [Spec("css-box-3", "#margin-physical")]
+    [Spec("css-box-4", "#margin-physical")]
     public void Margin_DoesNotApplyToTableCells()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -38,6 +40,7 @@ public sealed class CssBoxTests
 
     [TestMethod]
     [Spec("css-box-3", "#padding-physical")]
+    [Spec("css-box-4", "#padding-physical")]
     public void PaddingLonghands_SetTheirOwnSideOnly()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -53,6 +56,7 @@ public sealed class CssBoxTests
 
     [TestMethod]
     [Spec("css-box-3", "#padding-physical")]
+    [Spec("css-box-4", "#padding-physical")]
     public void Padding_AppliesToTableCells()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

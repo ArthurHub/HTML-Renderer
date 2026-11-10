@@ -15,6 +15,7 @@ public sealed class MarginPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#margin-shorthand")]
+    [Spec("css-box-4", "#margin-shorthand")]
     public void MarginAllZeroLegal()
     {
         const string declaration = "margin: 0";
@@ -27,6 +28,7 @@ public sealed class MarginPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#margin-shorthand")]
+    [Spec("css-box-4", "#margin-shorthand")]
     public void MarginAllPercentLegal()
     {
         const string declaration = "margin: 25%";
@@ -39,6 +41,7 @@ public sealed class MarginPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#margin-shorthand")]
+    [Spec("css-box-4", "#margin-shorthand")]
     public void MarginAutoLegal()
     {
         const string declaration = "margin: auto";
@@ -51,6 +54,7 @@ public sealed class MarginPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#margin-shorthand")]
+    [Spec("css-box-4", "#margin-shorthand")]
     public void MarginSidesLengthLegal()
     {
         const string declaration = "margin: 10px 3em";
@@ -63,6 +67,7 @@ public sealed class MarginPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#margin-shorthand")]
+    [Spec("css-box-4", "#margin-shorthand")]
     public void MarginSidesLengthAndAutoLegal()
     {
         const string declaration = "margin: 10px auto";
@@ -75,6 +80,7 @@ public sealed class MarginPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#margin-shorthand")]
+    [Spec("css-box-4", "#margin-shorthand")]
     public void MarginThreeValuesLegal()
     {
         const string declaration = "margin: 10px 3em 5px";
@@ -87,6 +93,7 @@ public sealed class MarginPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#margin-shorthand")]
+    [Spec("css-box-4", "#margin-shorthand")]
     public void MarginAllValuesWithPercentAndAutoLegal()
     {
         const string declaration = "margin: 10px 5% auto 2%";
@@ -99,6 +106,7 @@ public sealed class MarginPropertyTests
 
     [TestMethod]
     [Spec("css-box-3", "#margin-shorthand")]
+    [Spec("css-box-4", "#margin-shorthand")]
     public void MarginTooManyValuesIllegal()
     {
         const string declaration = "margin: 10px 5% 8px 2% 3px auto";

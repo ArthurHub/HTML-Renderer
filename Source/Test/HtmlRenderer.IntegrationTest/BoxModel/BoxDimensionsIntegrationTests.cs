@@ -11,7 +11,9 @@ public sealed class BoxDimensionsIntegrationTests
     [TestMethod]
     [Spec("css21", "box.html#box-dimensions")]
     [Spec("css-box-3", "#box-edges")]
+    [Spec("css-box-4", "#box-edges")]
     [Spec("css-box-3", "#borders")]
+    [Spec("css-box-4", "#borders")]
     public void BorderBox_IsContentPlusPaddingPlusBorder_AndTheMarginSurroundsIt()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(Box));
@@ -26,6 +28,7 @@ public sealed class BoxDimensionsIntegrationTests
     [TestMethod]
     [Spec("css21", "box.html#box-dimensions")]
     [Spec("css-box-3", "#box-model")]
+    [Spec("css-box-4", "#box-model")]
     public void Background_CoversThePaddingAndBorderArea()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(Box));
