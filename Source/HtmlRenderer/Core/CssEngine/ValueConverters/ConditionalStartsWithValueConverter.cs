@@ -20,12 +20,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var enumerator = value.GetEnumerator();
 
-            while (enumerator.MoveNext() && enumerator.Current.Type == TokenType.Whitespace)
+            bool hasToken;
+
+            while ((hasToken = enumerator.MoveNext()) && enumerator.Current.Type == TokenType.Whitespace)
             {
                 //Empty on purpose.
             }
 
-            if (enumerator.Current.Type != TokenType.Ident || !_prefixKeywords.Contains(enumerator.Current.Data))
+            if (!hasToken || enumerator.Current.Type != TokenType.Ident || !_prefixKeywords.Contains(enumerator.Current.Data))
                 return null;
 
             var consumedPrefix = enumerator.Current.Data;
@@ -42,7 +44,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             var result = _converter.Convert(remainingTokens);
 
-            if (result != null && result.CssText != _when)
+            if (result == null || result.CssText != _when)
                 return null;
 
             return new ConditionalStartValue(consumedPrefix, result, value);
