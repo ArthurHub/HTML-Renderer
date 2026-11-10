@@ -101,6 +101,7 @@ public sealed class ListStyleTests
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "generate.html#list-style")]
     [Spec("css-lists-3", "#image-markers")]
+    [Spec("css-images-3", "#image-values")]
     public void ListStyleImage_ReplacesTheMarker()
     {
         var x = Box("<ul style='list-style-image:url(data:image/png;base64,iVBORw0KGgo=)'><li id=x>a</li></ul>");

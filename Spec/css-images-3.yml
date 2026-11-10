@@ -5,106 +5,126 @@ snapshot: https://www.w3.org/TR/2023/CRD-css-images-3-20231218/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
+    status: n/a
   '#image-values':
     title: '2 Image Values: the <image> type'
-    status: unknown
+    status: partial
+    gaps:
+      - Only 'background-image' paints images, 'list-style-image' is ignored, see CSS 2.1 12.5.1
   '#url-notation':
     title: '2.1 Image References: the url() notation'
-    status: unknown
+    status: supported
   '#ambiguous-urls':
     title: 2.1.1 Ambiguous Reference-or-Image URLs
-    status: unknown
+    status: n/a
   '#url-metadata':
     title: 2.1.2 Image Metadata
-    status: unknown
+    status: n/a
   '#gradients':
     title: 3 Gradients
-    status: unknown
+    status: partial
   '#linear-gradients':
     title: '3.1 Linear Gradients: the linear-gradient() notation'
-    status: unknown
+    status: partial
   '#linear-gradient-syntax':
     title: 3.1.1 linear-gradient() syntax
-    status: unknown
+    status: partial
+    gaps:
+      - A corner direction like 'to bottom right' is a fixed multiple of 45deg instead of depending on the box's aspect ratio
   '#linear-gradient-examples':
     title: 3.1.2 Linear Gradient Examples
-    status: unknown
+    status: n/a
   '#radial-gradients':
     title: '3.2 Radial Gradients: the radial-gradient() notation'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Radial gradients are accepted but not painted, the background stays empty
   '#radial-gradient-syntax':
     title: 3.2.1 radial-gradient() Syntax
-    status: unknown
+    status: parsed-only
   '#radial-color-stops':
     title: 3.2.2 Placing Color Stops
-    status: unknown
+    status: unsupported
   '#degenerate-radials':
     title: 3.2.3 Degenerate Radial Gradients
-    status: unknown
+    status: unsupported
   '#radial-gradient-examples':
     title: 3.2.4 Radial Gradient Examples
-    status: unknown
+    status: n/a
   '#repeating-gradients':
     title: '3.3 Repeating Gradients: the repeating-linear-gradient() and repeating-radial-gradient() notations'
-    status: unknown
+    status: partial
+    gaps:
+      - repeating-radial-gradient() isn't painted, see 3.2
   '#gradient-colors':
     title: 3.4 Defining Gradient Color
-    status: unknown
+    status: partial
   '#color-stop-syntax':
     title: 3.4.1 Color Stop Lists
-    status: unknown
+    status: partial
+    gaps:
+      - em positions are resolved against 16px instead of the element's font size
   '#coloring-gradient-line':
     title: 3.4.2 Coloring the Gradient Line
-    status: unknown
+    status: partial
+    gaps:
+      - Colors are interpolated without premultiplied alpha, a fade to transparent darkens
   '#color-stop-fixup':
     title: 3.4.3 Color Stop “Fixup”
-    status: unknown
+    status: partial
+    gaps:
+      - A stop positioned before a previous stop isn't moved up to it
   '#sizing':
     title: 4 Sizing Images and Objects in CSS
-    status: unknown
+    status: partial
   '#sizing-terms':
     title: 4.1 Object-Sizing Terminology
-    status: unknown
+    status: n/a
   '#object-negotiation':
     title: 4.2 CSS⇋Object Negotiation
-    status: unknown
+    status: n/a
   '#concrete-size-resolution':
     title: 4.3 Concrete Object Size Resolution
-    status: unknown
+    status: partial
   '#default-sizing':
     title: 4.3.1 Default Sizing Algorithm
-    status: unknown
+    status: partial
+    gaps:
+      - A gradient background is sized to the border box instead of the background positioning area
   '#cover-contain':
     title: 4.3.2 Cover and Contain Constraint Sizing
-    status: unknown
+    status: unsupported
+    gaps:
+      - Nothing is sized with contain or cover, 'background-size' and 'object-fit' are ignored
   '#object-sizing-examples':
     title: 4.4 Examples of CSS Object Sizing
-    status: unknown
+    status: n/a
   '#the-object-fit':
     title: '4.5 Sizing Objects: the object-fit property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'object-fit' is ignored, the image is always stretched to the content box"
   '#the-object-position':
     title: '4.6 Positioning Objects: the object-position property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'object-position' is ignored"
   '#image-processing':
     title: 5 Image Processing
-    status: unknown
+    status: unsupported
   '#the-image-orientation':
     title: '5.1 Orienting an Image on the Page: the image-orientation property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'image-orientation' isn't parsed"
   '#the-image-rendering':
     title: '5.2 Determining How To Scale an Image: the image-rendering property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'image-rendering' isn't parsed, the platform decides how images are scaled"
   '#interpolation':
     title: 6 Interpolation
-    status: unknown
+    status: n/a
   '#serialization':
     title: 7 Serialization
-    status: unknown
+    status: n/a

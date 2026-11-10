@@ -839,12 +839,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         #region Background image / gradient parsing
 
         /// <summary>
-        /// Parses a single <c>background-image</c> value: either a <c>url()</c> reference or a
-        /// <c>linear-gradient()</c>/<c>repeating-linear-gradient()</c> function. Returns null for "none",
-        /// an empty value, or anything else this engine doesn't recognize (matching this engine's existing
-        /// silent-failure behavior for unsupported values).<br/>
-        /// Trimmed to the single-value,
-        /// linear-gradient-only case this engine supports (no layered background-image, no radial/conic).
+        /// Parses a <c>background-image</c> into its first <c>url()</c> or (repeating) linear gradient,
+        /// CSS Images 3 §2. Null for <c>none</c> and every other image.
         /// </summary>
         public CssImage ParseImage(string value)
         {
@@ -872,13 +868,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Parses a <c>linear-gradient()</c>/<c>repeating-linear-gradient()</c> function value: an
-        /// optional angle or "to &lt;side&gt;" direction (default 180deg, top to bottom), followed by 2+
-        /// comma-separated color stops (each optionally followed by 1-2 length/percent positions), and
-        /// bare-position color hints between stops. Returns null if the value isn't a recognized gradient
-        /// function or doesn't have at least 2 real color stops.<br/>
-        /// Linear-gradient parsing, minus CSS Color 4
-        /// interpolation-color-space ("in oklab" etc.) support - see ParsedLinearGradient.
+        /// Parses a <c>linear-gradient()</c> or <c>repeating-linear-gradient()</c>, CSS Images 3 §3.1.1.
+        /// Null if it has fewer than two color stops.
         /// </summary>
         private ParsedLinearGradient ParseLinearGradient(string value)
         {
@@ -1000,7 +991,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
         /// <summary>
         /// Converts "to &lt;side&gt; [&lt;side&gt;]" direction keywords (e.g. "right", "bottom left") to
-        /// the equivalent gradient-line angle in radians, per the CSS Images spec's side/corner table.
+        /// the gradient-line angle in radians. A corner is always a multiple of 45deg, it doesn't depend on
+        /// the box's aspect ratio.
         /// </summary>
         private static double SideKeywordsToAngleRad(List<string> sides)
         {

@@ -21,14 +21,12 @@ using TheArtOfDev.HtmlRenderer.Core.Entities;
 namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 {
     /// <summary>
-    /// Turns a parsed <c>linear-gradient()</c> value into a brush ready to paint. Derived from
-    /// Html/Core/Handlers/CssImagePainter.cs, trimmed to the linear-gradient-only, single (non-layered)
-    /// background-image case this engine supports - see <see cref="ParsedLinearGradient"/>.
+    /// Turns a parsed <c>linear-gradient()</c> into a brush, CSS Images 3 §3.1.
     /// </summary>
     internal static class CssImagePainter
     {
         /// <summary>
-        /// Builds the brush for a <c>linear-gradient()</c> background, filling the given rectangle.
+        /// The brush for a <c>linear-gradient()</c> with <paramref name="rect"/> as its gradient box.
         /// </summary>
         public static RBrush GetLinearGradientBrush(RGraphics g, RRect rect, ParsedLinearGradient gradient)
         {
@@ -42,9 +40,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// Computes the CSS gradient line endpoints for the given box rect and angle (standard CSS
-        /// "corner-to-corner projection" algorithm - the line is centered on the box and long enough that
-        /// the box's bounding rectangle is fully spanned along the gradient direction).
+        /// The end points of the gradient line, CSS Images 3 §3.1.1.
         /// </summary>
         private static (RPoint p1, RPoint p2) ComputeGradientLine(RRect rect, double angleRad)
         {
@@ -82,10 +78,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// Resolves each stop's position to a [0,1] fraction of the gradient line (per CSS Images §3.5.5:
-        /// the first/last stop default to 0%/100%, middle stops without an explicit position are spaced
-        /// evenly between their neighbors, and bare-position "hints" between two color stops bias the
-        /// interpolation curve rather than being a stop themselves).
+        /// Resolves each stop's position to a fraction of the gradient line, CSS Images 3 §3.4.3. The
+        /// adapters only interpolate linearly, so a color hint (§3.4.2) is approximated by extra stops
+        /// along its curve. em positions assume a 16px font.
         /// </summary>
         private static (RColor Color, double Position)[] NormalizeGradientStops(
             (RColor? Color, Length? Position, bool IsHint)[] stops,
@@ -179,8 +174,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// Flattens a repeating gradient's stop tile into a single non-repeating stop list spanning the
-        /// full [0,1] gradient line, by replicating the tile as many times as needed in both directions.
+        /// Repeats the stops of a repeating gradient (CSS Images 3 §3.3) over the whole gradient line,
+        /// the adapters have no repeating brush.
         /// </summary>
         private static (RColor Color, double Position)[] ExpandRepeatingStops((RColor Color, double Position)[] stops)
         {

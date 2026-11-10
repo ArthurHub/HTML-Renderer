@@ -4,17 +4,11 @@ using static HtmlRenderer.Test.CssEngineSupport.CssConstructionFunctions;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/ObjectSizing.cs. Exercises <c>object-fit</c>
-/// (<see cref="ObjectFitProperty"/>, Source/HtmlRenderer/Core/CssEngine/StyleProperties/Sizing/ObjectFitProperty.cs)
-/// and <c>object-position</c> (<see cref="ObjectPositionProperty"/>, same directory) through the CSS engine's
-/// declaration parser, mirroring PeachPDF's <c>ParseDeclaration</c> helper via
-/// <see cref="ParseDeclaration"/>.
-/// </summary>
 [TestClass]
 public sealed class ObjectSizingPropertyTests
 {
     [TestMethod]
+    [Spec("css-images-3", "#the-object-fit")]
     public void CssObjectFitNoneLegal()
     {
         var property = ParseDeclaration("object-fit : none");
@@ -29,6 +23,7 @@ public sealed class ObjectSizingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-images-3", "#the-object-fit")]
     public void ObjectFitScaledownIllegal()
     {
         var property = ParseDeclaration("object-fit : scaledown");
@@ -42,6 +37,7 @@ public sealed class ObjectSizingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-images-3", "#the-object-fit")]
     public void ObjectFitScaleDownLegal()
     {
         var property = ParseDeclaration("object-fit : scale-DOWN");
@@ -56,6 +52,7 @@ public sealed class ObjectSizingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-images-3", "#the-object-fit")]
     public void CssObjectFitCoverLegal()
     {
         var property = ParseDeclaration("object-fit : cover");
@@ -70,6 +67,7 @@ public sealed class ObjectSizingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-images-3", "#the-object-fit")]
     public void CssObjectFitContainLegal()
     {
         var property = ParseDeclaration("object-fit : contain");
@@ -84,6 +82,7 @@ public sealed class ObjectSizingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-images-3", "#the-object-position")]
     public void CssObjectPositionCenterLegal()
     {
         var property = ParseDeclaration("object-position : center");
@@ -98,6 +97,7 @@ public sealed class ObjectSizingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-images-3", "#the-object-position")]
     public void ObjectPositionTopLeftIllegal()
     {
         var property = ParseDeclaration("object-position : top-left");
@@ -111,6 +111,7 @@ public sealed class ObjectSizingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-images-3", "#the-object-position")]
     public void ObjectPositionTopLeftLegal()
     {
         var property = ParseDeclaration("object-position : top left");
@@ -125,6 +126,7 @@ public sealed class ObjectSizingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-images-3", "#the-object-position")]
     public void CssObjectPosition5050Legal()
     {
         var property = ParseDeclaration("object-position : 50%   50% ");
@@ -139,6 +141,7 @@ public sealed class ObjectSizingPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-images-3", "#the-object-position")]
     public void CssObjectPositionLeft30Legal()
     {
         var property = ParseDeclaration("object-position : left  30px");
