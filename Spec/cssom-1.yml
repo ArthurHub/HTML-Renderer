@@ -5,178 +5,98 @@ snapshot: https://www.w3.org/TR/2021/WD-cssom-1-20210826/
 sections:
   '#introduction':
     title: 1 Introduction
-    status: unknown
+    status: n/a
   '#terminology':
     title: 2 Terminology
-    status: unknown
-  '#common-serializing-idioms':
-    title: 2.1 Common Serializing Idioms
-    status: unknown
+    status: n/a
   '#cssomstring-type':
     title: 3 CSSOMString
-    status: unknown
+    status: n/a
   '#media-queries':
     title: 4 Media Queries
-    status: unknown
-  '#parsing-media-queries':
-    title: 4.1 Parsing Media Queries
-    status: unknown
-  '#serializing-media-queries':
-    title: 4.2 Serializing Media Queries
-    status: unknown
-  '#serializing-media-feature-values':
-    title: 4.2.1 Serializing Media Feature Values
-    status: unknown
-  '#comparing-media-queries':
-    title: 4.3 Comparing Media Queries
-    status: unknown
-  '#the-medialist-interface':
-    title: 4.4 The MediaList Interface
-    status: unknown
+    status: n/a
   '#selectors':
     title: 5 Selectors
-    status: unknown
-  '#parsing-selectors':
-    title: 5.1 Parsing Selectors
-    status: unknown
-  '#serializing-selectors':
-    title: 5.2 Serializing Selectors
-    status: unknown
+    status: n/a
   '#css-object-model':
     title: 6 CSS
-    status: unknown
+    status: partial
   '#css-style-sheets':
     title: 6.1 CSS Style Sheets
-    status: unknown
+    status: partial
+    gaps:
+      - The media of a style sheet is ignored, a style sheet for other media still applies, see HTML 4.2.4.1
   '#the-stylesheet-interface':
     title: 6.1.1 The StyleSheet Interface
-    status: unknown
+    status: n/a
   '#the-cssstylesheet-interface':
     title: 6.1.2 The CSSStyleSheet Interface
-    status: unknown
-  '#legacy-css-style-sheet-members':
-    title: 6.1.2.1 Deprecated CSSStyleSheet members
-    status: unknown
+    status: n/a
   '#css-style-sheet-collections':
     title: 6.2 CSS Style Sheet Collections
-    status: unknown
+    status: partial
+    gaps:
+      - A title doesn't form a style sheet set, sheets with another title than the preferred one still apply
+      - The default-style pragma doesn't change the preferred style sheet set name, see HTML 4.2.5.3
   '#the-http-default-style-header':
     title: 6.2.1 The HTTP Default-Style Header
-    status: unknown
+    status: n/a
   '#the-stylesheetlist-interface':
     title: 6.2.2 The StyleSheetList Interface
-    status: unknown
+    status: n/a
   '#extensions-to-the-document-or-shadow-root-interface':
     title: 6.2.3 Extensions to the DocumentOrShadowRoot Interface Mixin
-    status: unknown
+    status: n/a
   '#style-sheet-association':
     title: 6.3 Style Sheet Association
-    status: unknown
+    status: partial
   '#fetching-css-style-sheets':
     title: 6.3.1 Fetching CSS style sheets
-    status: unknown
+    status: partial
+    gaps:
+      - In a quirks mode document a same-origin style sheet of another content type isn't applied
   '#the-linkstyle-interface':
     title: 6.3.2 The LinkStyle Interface
-    status: unknown
+    status: n/a
   '#requirements-on-specifications':
     title: 6.3.3 Requirements on specifications
-    status: unknown
+    status: n/a
   '#requirements-on-user-agents-implementing-the-xml-stylesheet-processing-instruction':
     title: 6.3.4 Requirements on user agents Implementing the xml-stylesheet processing instruction
-    status: unknown
+    status: n/a
   '#requirements-on-user-agents-implementing-the-http-link-header':
     title: 6.3.5 Requirements on user agents Implementing the HTTP Link Header
-    status: unknown
+    status: n/a
   '#css-rules':
     title: 6.4 CSS Rules
-    status: unknown
-  '#the-cssrulelist-interface':
-    title: 6.4.1 The CSSRuleList Interface
-    status: unknown
-  '#the-cssrule-interface':
-    title: 6.4.2 The CSSRule Interface
-    status: unknown
-  '#the-cssstylerule-interface':
-    title: 6.4.3 The CSSStyleRule Interface
-    status: unknown
-  '#the-cssimportrule-interface':
-    title: 6.4.4 The CSSImportRule Interface
-    status: unknown
-  '#the-cssgroupingrule-interface':
-    title: 6.4.5 The CSSGroupingRule Interface
-    status: unknown
-  '#the-cssmediarule-interface':
-    title: 6.4.6 The CSSMediaRule Interface
-    status: unknown
-  '#the-csspagerule-interface':
-    title: 6.4.7 The CSSPageRule Interface
-    status: unknown
-  '#the-cssmarginrule-interface':
-    title: 6.4.8 The CSSMarginRule Interface
-    status: unknown
-  '#the-cssnamespacerule-interface':
-    title: 6.4.9 The CSSNamespaceRule Interface
-    status: unknown
+    status: n/a
   '#css-declarations':
     title: 6.5 CSS Declarations
-    status: unknown
+    status: n/a
   '#css-declaration-blocks':
     title: 6.6 CSS Declaration Blocks
-    status: unknown
-  '#the-cssstyledeclaration-interface':
-    title: 6.6.1 The CSSStyleDeclaration Interface
-    status: unknown
+    status: n/a
   '#css-values':
     title: 6.7 CSS Values
-    status: unknown
-  '#parsing-css-values':
-    title: 6.7.1 Parsing CSS Values
-    status: unknown
-  '#serializing-css-values':
-    title: 6.7.2 Serializing CSS Values
-    status: unknown
-  '#serializing-css-values-examples':
-    title: 6.7.2.1 Examples
-    status: unknown
+    status: n/a
   '#dom-access-to-css-declaration-blocks':
     title: 7 DOM Access to CSS Declaration Blocks
-    status: unknown
-  '#the-elementcssinlinestyle-mixin':
-    title: 7.1 The ElementCSSInlineStyle Mixin
-    status: unknown
-  '#extensions-to-the-window-interface':
-    title: 7.2 Extensions to the Window Interface
-    status: unknown
+    status: n/a
   '#utility-apis':
     title: 8 Utility APIs
-    status: unknown
-  '#the-css.escape()-method':
-    title: 8.1 The CSS.escape() Method
-    status: unknown
+    status: n/a
   '#resolved-values':
     title: 9 Resolved Values
-    status: unknown
+    status: n/a
   '#iana-considerations':
     title: 10 IANA Considerations
-    status: unknown
-  '#default-style':
-    title: 10.1 Default-Style
-    status: unknown
+    status: n/a
   '#change-history':
     title: 11 Change History
-    status: unknown
-  '#changes-from-17-march-2016':
-    title: 11.1 Changes From 17 March 2016
-    status: unknown
-  '#changes-from-5-december-2013':
-    title: 11.2 Changes From 5 December 2013
-    status: unknown
-  '#changes-from-12-july-2011-to-5-december-2013':
-    title: 11.3 Changes From 12 July 2011 To 5 December 2013
-    status: unknown
+    status: n/a
   '#security-and-privacy-considerations':
     title: 12 Security and Privacy Considerations
-    status: unknown
+    status: n/a
   '#acknowledgments':
     title: 13 Acknowledgments
-    status: unknown
+    status: n/a

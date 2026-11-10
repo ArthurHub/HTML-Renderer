@@ -126,6 +126,7 @@ public sealed class DocumentMetadataTests
     [Ignore("Gap, see Spec/html.yml")]
     [Spec("html", "semantics.html#the-link-element")]
     [Spec("html", "semantics.html#the-style-element")]
+    [Spec("cssom-1", "#css-style-sheet-collections")]
     [DataRow("<link rel=stylesheet title=a href=a.css><link rel=stylesheet title=b href=b.css>")]
     [DataRow("<style title=a>p { color: green }</style><style title=b>p { color: red }</style>")]
     public void StyleSheetWithAnotherTitle_ThanThePreferredSet_IsDisabled(string head)
@@ -140,6 +141,7 @@ public sealed class DocumentMetadataTests
 
     [TestMethod]
     [Spec("html", "semantics.html#processing-the-type-attribute")]
+    [Spec("cssom-1", "#fetching-css-style-sheets")]
     public void LinkedResourceOfAnotherContentType_IsNotApplied()
     {
         var doc = Load(

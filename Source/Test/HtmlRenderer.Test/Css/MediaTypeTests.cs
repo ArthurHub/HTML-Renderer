@@ -26,6 +26,7 @@ public sealed class MediaTypeTests
 
     [TestMethod]
     [Spec("css21", "media.html#media-sheets")]
+    [Spec("cssom-1", "#css-style-sheets")]
     public void LinkWithMatchingMedia_Applies()
     {
         Assert.AreEqual(Green, ColorOf($"<link rel=stylesheet media=screen href='{DataCss("p { color: green }")}'>"));
@@ -35,6 +36,7 @@ public sealed class MediaTypeTests
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "media.html#media-sheets")]
     [Spec("html", "semantics.html#processing-the-media-attribute")]
+    [Spec("cssom-1", "#css-style-sheets")]
     public void LinkWithOtherMedia_IsIgnored()
     {
         Assert.AreNotEqual(Green, ColorOf($"<link rel=stylesheet media='print, handheld' href='{DataCss("p { color: green }")}'>"));
@@ -44,6 +46,7 @@ public sealed class MediaTypeTests
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "media.html#media-sheets")]
     [Spec("html", "semantics.html#the-style-element")]
+    [Spec("cssom-1", "#css-style-sheets")]
     public void StyleWithOtherMedia_IsIgnored()
     {
         Assert.AreNotEqual(Green, ColorOf("<style media=print>p { color: green }</style>"));

@@ -119,6 +119,7 @@ public sealed class LinksTests
 
     [TestMethod]
     [Spec("html", "links.html#rel-alternate")]
+    [Spec("cssom-1", "#css-style-sheet-collections")]
     public void AlternateStylesheet_IsNotApplied()
     {
         Assert.AreEqual("black", ColorWithStylesheet("<link rel='alternate stylesheet' title=Red href=a.css>"));
