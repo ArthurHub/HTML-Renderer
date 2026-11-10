@@ -42,6 +42,7 @@ public sealed class LinksTests
 
     [TestMethod]
     [Spec("html", "links.html#following-hyperlinks")]
+    [Spec("html", "interaction.html#activation")]
     public void Click_RaisesLinkClickedWithTheHref()
     {
         var (root, container) = LayoutHarness.Layout(LayoutHarness.Wrap("<a id=x href=https://example.com/>a</a>"));

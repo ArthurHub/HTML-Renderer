@@ -1230,187 +1230,201 @@ sections:
     status: n/a
   interaction.html#editing:
     title: 6 User interaction
-    status: unknown
+    status: partial
   interaction.html#the-hidden-attribute:
     title: 6.1 The hidden attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - The hidden attribute is ignored, see 15.3.1
+      - hidden=until-found doesn't skip the element's content
   interaction.html#page-visibility:
     title: 6.2 Page visibility
-    status: unknown
-  interaction.html#the-visibilitystateentry-interface:
-    title: 6.2.1 The VisibilityStateEntry interface
-    status: unknown
+    status: n/a
   interaction.html#inert-subtrees:
     title: 6.3 Inert subtrees
-    status: unknown
+    status: unsupported
+    gaps:
+      - Nothing is ever inert, see 6.3.2
   interaction.html#modal-dialogs-and-inert-subtrees:
     title: 6.3.1 Modal dialogs and inert subtrees
-    status: unknown
+    status: n/a
+    gaps:
+      - Only showModal() makes a dialog modal, which needs script
   interaction.html#the-inert-attribute:
     title: 6.3.2 The inert attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - inert is ignored, links in it can be clicked and its text gets selected
   interaction.html#tracking-user-activation:
     title: 6.4 Tracking user activation
-    status: unknown
-  interaction.html#user-activation-data-model:
-    title: 6.4.1 Data model
-    status: unknown
-  interaction.html#user-activation-processing-model:
-    title: 6.4.2 Processing model
-    status: unknown
-  interaction.html#user-activation-gated-apis:
-    title: 6.4.3 APIs gated by user activation
-    status: unknown
-  interaction.html#the-useractivation-interface:
-    title: 6.4.4 The UserActivation interface
-    status: unknown
-  interaction.html#user-activation-user-agent-automation:
-    title: 6.4.5 User agent automation
-    status: unknown
+    status: n/a
   interaction.html#activation:
     title: 6.5 Activation behavior of elements
-    status: unknown
+    status: partial
+    gaps:
+      - Only links can be activated, a click on a summary, label or button does nothing
+      - Only by mouse click, there's no keyboard activation, see 6.6
   interaction.html#the-toggleevent-interface:
     title: 6.5.1 The ToggleEvent interface
-    status: unknown
+    status: n/a
   interaction.html#the-commandevent-interface:
     title: 6.5.2 The CommandEvent interface
-    status: unknown
+    status: n/a
   interaction.html#focus:
     title: 6.6 Focus
-    status: unknown
+    status: unsupported
+    gaps:
+      - Nothing can be focused, :focus and :focus-visible never match
   interaction.html#introduction-8:
     title: 6.6.1 Introduction
-    status: unknown
+    status: n/a
   interaction.html#data-model:
     title: 6.6.2 Data model
-    status: unknown
+    status: unsupported
   interaction.html#the-tabindex-attribute:
     title: 6.6.3 The tabindex attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - tabindex is ignored
   interaction.html#focus-processing-model:
     title: 6.6.4 Processing model
-    status: unknown
+    status: unsupported
   interaction.html#sequential-focus-navigation:
     title: 6.6.5 Sequential focus navigation
-    status: unknown
+    status: unsupported
+    gaps:
+      - Tab doesn't move through the links
   interaction.html#focus-management-apis:
     title: 6.6.6 Focus management APIs
-    status: unknown
+    status: n/a
   interaction.html#the-autofocus-attribute:
     title: 6.6.7 The autofocus attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - autofocus doesn't focus the element
   interaction.html#assigning-keyboard-shortcuts:
     title: 6.7 Assigning keyboard shortcuts
-    status: unknown
+    status: unsupported
   interaction.html#introduction-9:
     title: 6.7.1 Introduction
-    status: unknown
+    status: n/a
   interaction.html#the-accesskey-attribute:
     title: 6.7.2 The accesskey attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - accesskey is ignored
   interaction.html#keyboard-shortcuts-processing-model:
     title: 6.7.3 Processing model
-    status: unknown
+    status: unsupported
   interaction.html#editing-2:
     title: 6.8 Editing
-    status: unknown
+    status: unsupported
   interaction.html#contenteditable:
     title: '6.8.1 Making document regions editable: The contenteditable content attribute'
-    status: unknown
+    status: unsupported
+    gaps:
+      - contenteditable is ignored, the content can't be edited and :read-write doesn't match it
   interaction.html#making-entire-documents-editable:-the-designmode-idl-attribute:
     title: '6.8.2 Making entire documents editable: the designMode getter and setter'
-    status: unknown
+    status: n/a
   interaction.html#best-practices-for-in-page-editors:
     title: 6.8.3 Best practices for in-page editors
-    status: unknown
+    status: n/a
   interaction.html#editing-apis:
     title: 6.8.4 Editing APIs
-    status: unknown
+    status: n/a
   interaction.html#spelling-and-grammar-checking:
     title: 6.8.5 Spelling and grammar checking
-    status: unknown
+    status: n/a
+    gaps:
+      - Only applies to editable text, see 6.8.1
   interaction.html#writing-suggestions:
     title: 6.8.6 Writing suggestions
-    status: unknown
+    status: n/a
+    gaps:
+      - Only applies to editable text, see 6.8.1
   interaction.html#autocapitalization:
     title: 6.8.7 Autocapitalization
-    status: unknown
+    status: n/a
+    gaps:
+      - Only applies to editable text, see 6.8.1
   interaction.html#autocorrection:
     title: 6.8.8 Autocorrection
-    status: unknown
+    status: n/a
+    gaps:
+      - Only applies to editable text, see 6.8.1
   interaction.html#input-modalities:-the-inputmode-attribute:
     title: '6.8.9 Input modalities: the inputmode attribute'
-    status: unknown
+    status: n/a
+    gaps:
+      - Only applies to editable text, see 6.8.1
   interaction.html#input-modalities:-the-enterkeyhint-attribute:
     title: '6.8.10 Input modalities: the enterkeyhint attribute'
-    status: unknown
+    status: n/a
+    gaps:
+      - Only applies to editable text, see 6.8.1
   interaction.html#find-in-page:
     title: 6.9 Find-in-page
-    status: unknown
+    status: unsupported
+    gaps:
+      - There's no find-in-page
   interaction.html#introduction-10:
     title: 6.9.1 Introduction
-    status: unknown
+    status: n/a
   interaction.html#interaction-with-details-and-hidden=until-found:
     title: 6.9.2 Interaction with details and hidden=until-found
-    status: unknown
+    status: unsupported
   interaction.html#interaction-with-selection:
     title: 6.9.3 Interaction with selection
-    status: unknown
+    status: unsupported
   interaction.html#close-requests-and-close-watchers:
     title: 6.10 Close requests and close watchers
-    status: unknown
-  interaction.html#close-requests:
-    title: 6.10.1 Close requests
-    status: unknown
-  interaction.html#close-watcher-infrastructure:
-    title: 6.10.2 Close watcher infrastructure
-    status: unknown
-  interaction.html#the-closewatcher-interface:
-    title: 6.10.3 The CloseWatcher interface
-    status: unknown
+    status: n/a
   dnd.html#dnd:
     title: 6.11 Drag and drop
-    status: unknown
+    status: partial
   dnd.html#event-drag:
     title: 6.11.1 Introduction
-    status: unknown
+    status: n/a
   dnd.html#the-drag-data-store:
     title: 6.11.2 The drag data store
-    status: unknown
+    status: n/a
   dnd.html#the-datatransfer-interface:
     title: 6.11.3 The DataTransfer interface
-    status: unknown
-  dnd.html#the-datatransferitemlist-interface:
-    title: 6.11.3.1 The DataTransferItemList interface
-    status: unknown
-  dnd.html#the-datatransferitem-interface:
-    title: 6.11.3.2 The DataTransferItem interface
-    status: unknown
+    status: n/a
   dnd.html#the-dragevent-interface:
     title: 6.11.4 The DragEvent interface
-    status: unknown
+    status: n/a
   dnd.html#drag-and-drop-processing-model:
     title: 6.11.5 Processing model
-    status: unknown
+    status: partial
+    gaps:
+      - Only a selection can be dragged, links and images can't
+      - Nothing can be dropped onto the document
   dnd.html#dndevents:
     title: 6.11.6 Events summary
-    status: unknown
+    status: n/a
   dnd.html#the-draggable-attribute:
     title: 6.11.7 The draggable attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - draggable is ignored
   dnd.html#security-risks-in-the-drag-and-drop-model:
     title: 6.11.8 Security risks in the drag-and-drop model
-    status: unknown
+    status: n/a
   popover.html#the-popover-attribute:
     title: 6.12 The popover attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - A popover is displayed before it's shown, see 15.3.3
   popover.html#the-popover-target-attributes:
     title: 6.12.1 The popover target attributes
-    status: unknown
+    status: unsupported
+    gaps:
+      - popovertarget on a button doesn't toggle the popover
   popover.html#popover-light-dismiss:
     title: 6.12.2 Popover light dismiss
-    status: unknown
+    status: n/a
   browsers.html#browsers:
     title: 7 Loading web pages
     status: unknown

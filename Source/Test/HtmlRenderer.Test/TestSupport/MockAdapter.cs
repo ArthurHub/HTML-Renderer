@@ -44,6 +44,8 @@ internal sealed class MockAdapter : RAdapter
     protected override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style) => new MockFont(size);
 
     protected override RFontFamily LoadFontFaceFontInt(byte[] fontBytes, string filePath) => new MockFontFamily(filePath);
+
+    protected override object GetClipboardDataObjectInt(string html, string plainText) => (html, plainText);
 }
 
 /// <summary>A pen that remembers the color it was created with.</summary>

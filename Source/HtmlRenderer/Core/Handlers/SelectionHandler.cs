@@ -246,7 +246,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             {
                 if (_mouseDownOnSelectedWord)
                 {
-                    // make sure not to start drag-drop on click but when it actually moves as it fucks mouse-up
+                    // A drag right after the mouse down would swallow the mouse up of a plain click
                     if ((DateTime.Now - _lastMouseDown).TotalMilliseconds > 200)
                         StartDragDrop(parent);
                 }
@@ -510,7 +510,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// Start drag & drop operation on the currently selected html segment.
+        /// Drags the selection as HTML and plain text, HTML §6.11.5.
         /// </summary>
         /// <param name="control">the control to start the drag & drop on</param>
         private void StartDragDrop(RControl control)
