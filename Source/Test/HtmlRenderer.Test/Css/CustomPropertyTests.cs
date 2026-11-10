@@ -7,14 +7,14 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/CustomPropertyTests.cs. Verifies that the CSS module
-/// correctly parses custom properties (--foo) and tolerates the var() function inside any property's
-/// value. The inheritance tests at the end run the cascade, the rest are pure CSSOM parse tests.
+/// Parsing of custom properties and var(), and how custom properties inherit. The rest of the
+/// cascade-level behavior is in CssVariablesTests.
 /// </summary>
 [TestClass]
 public sealed class CustomPropertyTests
 {
     [TestMethod]
+    [Spec("css-variables-1", "#defining-variables")]
     public void CustomProperty_SimpleValue_ParsesAndRoundTrips()
     {
         var property = CssConstructionFunctions.ParseDeclaration("--main-color: red");
@@ -25,6 +25,7 @@ public sealed class CustomPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-variables-1", "#syntax")]
     public void CustomProperty_ArbitraryTokenSoup_NeverFailsToParse()
     {
         var property = CssConstructionFunctions.ParseDeclaration("--x: 1px solid   red , foo(bar)");
@@ -36,6 +37,7 @@ public sealed class CustomPropertyTests
     [TestMethod]
     [DataRow("--x: #hero", "#hero")] // an id-shaped hash-token value (CSS Syntax accepts it)
     [DataRow("--x: #f00", "#f00")] // a hex color hash
+    [Spec("css-variables-1", "#syntax")]
     public void CustomProperty_HashValue_ParsesAndRoundTrips(string snippet, string expected)
     {
         var property = CssConstructionFunctions.ParseDeclaration(snippet);
@@ -46,6 +48,7 @@ public sealed class CustomPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-variables-1", "#syntax")]
     public void CustomProperty_WithVarReference_RoundTripsLiterally()
     {
         var property = CssConstructionFunctions.ParseDeclaration("--b: var(--a, blue)");
@@ -55,6 +58,7 @@ public sealed class CustomPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-variables-1", "#defining-variables")]
     public void CustomProperty_NameIsCaseSensitive()
     {
         var lower = CssConstructionFunctions.ParseDeclaration("--foo: 1px");
@@ -64,6 +68,7 @@ public sealed class CustomPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-variables-1", "#defining-variables")]
     public void CustomProperty_MultiHyphenatedName_ParsesAsSingleIdentifier()
     {
         var property = CssConstructionFunctions.ParseDeclaration("--foo-bar-baz: 1px");
@@ -71,6 +76,7 @@ public sealed class CustomPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-variables-1", "#using-variables")]
     public void ColorProperty_WithVarFunction_DoesNotFailToParse()
     {
         var property = CssConstructionFunctions.ParseDeclaration("color: var(--main-color, red)");
@@ -80,6 +86,7 @@ public sealed class CustomPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-variables-1", "#using-variables")]
     public void MarginProperty_WithMultipleVarFunctions_DoesNotFailToParse()
     {
         var property = CssConstructionFunctions.ParseDeclaration("margin: var(--a) var(--b)");
@@ -88,11 +95,9 @@ public sealed class CustomPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-variables-1", "#variables-in-shorthands")]
     public void MarginShorthandInStyleSheet_WithVar_KeepsShorthandWholeUntilCascadeTime()
     {
-        // Shorthand-to-longhand expansion happens at parse time (StyleDeclaration.SetShorthand);
-        // a var() reference can't be split into per-longhand slices until it's resolved per-element,
-        // so the shorthand must survive intact for CssUtils.SetPropertyValue to expand post-substitution.
         var sheet = CssConstructionFunctions.ParseStyleSheet("* { margin: var(--a) var(--b); }");
         var rule = sheet.StyleRules.Single();
         var names = rule.Style.Select(p => p.Name).ToArray();
@@ -100,6 +105,7 @@ public sealed class CustomPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-variables-1", "#using-variables")]
     public void Property_WithNestedVarInsideOtherFunction_DoesNotFailToParse()
     {
         var property = CssConstructionFunctions.ParseDeclaration("background-image: linear-gradient(var(--c1), var(--c2))");
@@ -107,7 +113,7 @@ public sealed class CustomPropertyTests
         Assert.IsTrue(property.HasValue);
     }
 
-    // ── Lexer regression coverage for the -- identifier-start fix ──────────
+    // ── Tokenizing -- as an identifier start ─────────────────────────────
 
     [TestMethod]
     public void HtmlCommentClose_StillTokenizesAsCdc_NotAffectedByDashFix()

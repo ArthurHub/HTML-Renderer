@@ -5,58 +5,51 @@ snapshot: https://www.w3.org/TR/2022/CR-css-variables-1-20220616/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#values':
-    title: 1.1 Value Definitions
-    status: unknown
+    status: n/a
   '#defining-variables':
     title: '2 Defining Custom Properties: the --* family of properties'
-    status: unknown
+    status: partial
   '#syntax':
     title: 2.1 Custom Property Value Syntax
-    status: unknown
+    status: supported
   '#guaranteed-invalid':
     title: 2.2 Guaranteed-Invalid Values
-    status: unknown
+    status: partial
+    gaps:
+      - 'An empty custom property, e.g. --foo: ;, is dropped instead of having a valid empty value'
   '#cycles':
     title: 2.3 Resolving Dependency Cycles
-    status: unknown
+    status: supported
   '#using-variables':
     title: '3 Using Cascading Variables: the var() notation'
-    status: unknown
+    status: partial
+    gaps:
+      - var() is substituted as text instead of tokens, so var(--gap)px forms a length
+      - An empty fallback, var(--a,), counts as no fallback
+      - A CSS-wide keyword substituted by var() is applied as a literal value instead of as the keyword
   '#invalid-variables':
     title: 3.1 Invalid Variables
-    status: unknown
+    status: partial
+    gaps:
+      - A value that doesn't parse after substitution is dropped, so the earlier cascaded value stays instead of the property acting as unset
   '#variables-in-shorthands':
     title: 3.2 Variables in Shorthand Properties
-    status: unknown
+    status: supported
   '#long-variables':
     title: 3.3 Safely Handling Overly-Long Variables
-    status: unknown
+    status: unsupported
   '#apis':
     title: 4 APIs
-    status: unknown
-  '#serializing-custom-props':
-    title: 4.1 Serializing Custom Properties
-    status: unknown
+    status: n/a
   '#changes':
     title: 5 Changes
-    status: unknown
-  '#changes-20211111':
-    title: 5.1 Changes Since the 11 November 2021 CR Draft
-    status: unknown
-  '#changes-20151203':
-    title: 5.2 Changes Since the 03 December 2015 CR
-    status: unknown
-  '#changes-20140506':
-    title: 5.3 Changes since the May 6 2014 Last Call Working Draft
-    status: unknown
+    status: n/a
   '#acks':
     title: 6 Acknowledgments
-    status: unknown
+    status: n/a
   '#privacy':
     title: 7 Privacy Considerations
-    status: unknown
+    status: n/a
   '#security':
     title: 8 Security Considerations
-    status: unknown
+    status: n/a

@@ -454,12 +454,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Assigns a single custom property (--foo) declaration to the box's custom-property store.
-        /// Unlike regular properties, custom properties are always inherited, their names are
-        /// case-sensitive, and their global keywords resolve against the custom-property dictionary
-        /// rather than the fixed, known-property switch used by <see cref="AssignCssBlock"/>. The stored
-        /// value is left unresolved (it may itself contain var(...)) - resolution happens once, later, in
-        /// <see cref="ResolveDeferredVarProperties"/>.
+        /// CSS Variables 1 §2. Stores the value with its var() functions unresolved, they're only
+        /// substituted where a regular property uses it (<see cref="ResolveDeferredVarProperties"/>),
+        /// so a child inherits the unresolved value.
         /// </summary>
         private static void AssignCustomPropertyDeclaration(
             CssBox box,
@@ -477,7 +474,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             }
             else if (prop.Value == CssConstants.Initial)
             {
-                rawValue = null; // guaranteed-invalid value => property becomes absent
+                // CSS Variables 1 §2.2, the guaranteed-invalid value is stored as absence
+                rawValue = null;
             }
             else if (prop.Value == CssConstants.Revert || prop.Value == CssConstants.RevertLayer)
             {
@@ -501,9 +499,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Result of attempting to resolve every var() reference in a declaration's value. Success is
-        /// false only when a reference is "guaranteed-invalid" (no matching custom property, no
-        /// fallback, or a cyclic reference) - per spec this invalidates the whole value.
+        /// A value with its var() functions substituted, or no success when one of them made it invalid
+        /// at computed-value time (CSS Variables 1 §3.1).
         /// </summary>
         private struct VarResolution
         {
@@ -543,11 +540,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Resolves every regular property deferred during the cascade's phases (see
-        /// <see cref="AssignCssBlock"/>) now that this box's custom properties reflect their FINAL
-        /// cascaded (though not yet var()-resolved) values. Resolution is graph-based and memoized per
-        /// box, so multi-hop cyclic references are detected correctly regardless of which pending
-        /// property triggers the lookup first.
+        /// CSS Variables 1 §3, substitutes the var() functions of the properties deferred by
+        /// <see cref="AssignCssBlock"/> once the box's custom properties have their cascaded values.
         /// </summary>
         private static void ResolveDeferredVarProperties(CssBox box, Dictionary<string, string> pendingVarProperties)
         {
@@ -570,11 +564,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Applies a fully var()-resolved property value to the box. Shorthand properties are re-parsed
-        /// through the real CSS-OM shorthand converter and expanded into longhands here, because
-        /// var()-containing shorthands deliberately skip longhand expansion at parse time (their value
-        /// can't be split into per-longhand slices until their var() references are resolved, which has
-        /// only just happened here).
+        /// Parses the substituted value and applies it, a shorthand is only expanded into its longhands
+        /// here (CSS Variables 1 §3.2). A value that doesn't parse is dropped.
         /// </summary>
         private static void ApplyResolvedPropertyValue(CssBox box, string name, string value)
         {
@@ -600,9 +591,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Resolves every var(...) occurrence in <paramref name="value"/> to plain text. Quote-aware (so
-        /// `content: "var(--x)"` is left untouched) and paren-depth-aware (so a fallback containing
-        /// nested commas splits correctly).
+        /// Substitutes every var() in <paramref name="value"/> as text, skipping quoted strings.
         /// </summary>
         private static VarResolution SubstituteVarReferences(CssBox box, string value, Dictionary<string, string> resolvedCache, HashSet<string> resolving, HashSet<string> cyclic)
         {
@@ -654,12 +643,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Recursive + memoized: resolves box.CustomProperties[name]'s own var() references first (so a
-        /// custom property may reference another custom property, in any declaration order), using
-        /// `resolving` as a visited-set for cycle detection. `cyclic` permanently marks a property found
-        /// to (directly or transitively) reference itself - distinct from plain "not found", since per
-        /// spec a self-referencing property is guaranteed-invalid regardless of any fallback written
-        /// inside its own definition.
+        /// The value of a custom property with its own var() functions substituted, false when it's
+        /// missing or invalid. <paramref name="resolving"/> detects cycles, a property in one is
+        /// invalid (CSS Variables 1 §2.3) and stays in <paramref name="cyclic"/>.
         /// </summary>
         private static bool TryResolveCustomProperty(CssBox box, string name, Dictionary<string, string> resolvedCache, HashSet<string> resolving, HashSet<string> cyclic, out string value)
         {
@@ -680,7 +666,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
             if (!resolving.Add(name))
             {
-                cyclic.Add(name); // name is referenced while already being resolved - a cycle
+                cyclic.Add(name);
                 value = null;
                 return false;
             }
@@ -743,9 +729,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Splits a var() argument list at the first top-level (paren-depth 0, outside quotes) comma.
-        /// The text before it is the custom property name (trimmed); everything after - commas and all -
-        /// is the fallback, per spec.
+        /// Splits var() arguments at the first top-level comma into the name and the fallback (CSS
+        /// Variables 1 §3). An empty fallback is returned as none.
         /// </summary>
         private static void SplitFirstTopLevelComma(string value, int start, int end, out string name, out string fallback)
         {
@@ -804,8 +789,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// The value a property falls back to when a var() reference in it is guaranteed-invalid -
-        /// reuses the same expression as the "unset" keyword arm in <see cref="AssignCssBlock"/>.
+        /// CSS Variables 1 §3.1, a property that's invalid at computed-value time acts as unset.
         /// </summary>
         private static string GetGuaranteedInvalidFallback(CssBox box, string propName)
         {
