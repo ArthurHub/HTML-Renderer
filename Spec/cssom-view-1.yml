@@ -5,103 +5,79 @@ snapshot: https://www.w3.org/TR/2025/WD-cssom-view-1-20250916/
 sections:
   '#background':
     title: 1 Background
-    status: unknown
+    status: n/a
   '#terminology':
     title: 2 Terminology
-    status: unknown
+    status: partial
+    gaps:
+      - The scrolling area of the viewport ends at the bottom border edge of the boxes instead of their margin edge
   '#css-pixels':
     title: 2.1 CSS pixels
-    status: unknown
+    status: n/a
   '#zooming':
     title: 2.2 Zooming
-    status: unknown
+    status: n/a
   '#web-exposed-screen-information':
     title: 2.3 Web-exposed screen information
-    status: unknown
+    status: n/a
   '#common-infrastructure':
     title: 3 Common Infrastructure
-    status: unknown
+    status: partial
   '#scrolling':
     title: 3.1 Scrolling
-    status: unknown
+    status: partial
+    gaps:
+      - "Following a link to #top doesn't scroll to the beginning of the document"
   '#webidl-values':
     title: 3.2 WebIDL values
-    status: unknown
+    status: n/a
   '#extensions-to-the-window-interface':
     title: 4 Extensions to the Window Interface
-    status: unknown
-  '#the-features-argument-to-the-open()-method':
-    title: 4.1 The features argument to the open() method
-    status: unknown
-  '#the-mediaquerylist-interface':
-    title: 4.2 The MediaQueryList Interface
-    status: unknown
-  '#mediaquerylist-event-summary':
-    title: 4.2.1 Event summary
-    status: unknown
-  '#the-screen-interface':
-    title: 4.3 The Screen Interface
-    status: unknown
+    status: n/a
   '#extensions-to-the-document-interface':
     title: 5 Extensions to the Document Interface
-    status: unknown
-  '#the-caretposition-interface':
-    title: 5.1 The CaretPosition Interface
-    status: unknown
+    status: n/a
   '#extension-to-the-element-interface':
     title: 6 Extensions to the Element Interface
-    status: unknown
+    status: partial
   '#element-scrolling-members':
     title: 6.1 Element Scrolling Members
-    status: unknown
+    status: partial
+    gaps:
+      - Scrolling a fragment target into view also scrolls the inline axis to its left edge instead of only as far as needed
   '#extensions-to-the-htmlelement-interface':
     title: 7 Extensions to the HTMLElement Interface
-    status: unknown
+    status: n/a
   '#extensions-to-the-htmlimageelement-interface':
     title: 8 Extensions to the HTMLImageElement Interface
-    status: unknown
+    status: n/a
   '#extensions-to-the-range-interface':
     title: 9 Extensions to the Range Interface
-    status: unknown
+    status: n/a
   '#extensions-to-the-mouseevent-interface':
     title: 10 Extensions to the MouseEvent Interface
-    status: unknown
+    status: n/a
   '#geometry':
     title: 11 Geometry
-    status: unknown
-  '#the-geometryutils-interface':
-    title: 11.1 The GeometryUtils Interface
-    status: unknown
+    status: n/a
   '#visualViewport':
     title: 12 VisualViewport
-    status: unknown
-  '#the-visualviewport-interface':
-    title: 12.1 The VisualViewport Interface
-    status: unknown
+    status: n/a
   '#events':
     title: 13 Events
-    status: unknown
-  '#resizing-viewports':
-    title: 13.1 Resizing viewports
-    status: unknown
-  '#scrolling-events':
-    title: 13.2 Scrolling
-    status: unknown
-  '#event-summary':
-    title: 13.3 Event summary
-    status: unknown
+    status: n/a
   '#post-layout-snapshot':
     title: 14 Post-Layout State Snapshotting
-    status: unknown
+    status: n/a
   '#privacy':
     title: 15 Privacy Considerations
-    status: unknown
+    status: n/a
   '#security':
     title: 16 Security Considerations
-    status: unknown
+    status: n/a
   '#changes':
     title: 17 Changes
-    status: unknown
+    status: n/a
   '#acks':
     title: 18 Acknowledgements
-    status: unknown
+    status: n/a
