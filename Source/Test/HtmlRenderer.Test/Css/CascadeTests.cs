@@ -17,6 +17,8 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#specified-value")]
+    [Spec("css-cascade-5", "#cascaded")]
+    [Spec("css-cascade-5", "#specified")]
     public void CascadedValue_WinsOverTheInheritedValue()
     {
         var x = Box("<div style='color:red'><p id=x style='color:green'>a</p></div>");
@@ -26,6 +28,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#specified-value")]
+    [Spec("css-cascade-5", "#inheriting")]
     public void InheritedProperty_WithoutCascadedValue_TakesTheParentsValue()
     {
         var x = Box("<div style='font-style:italic;white-space:pre'><p id=x>a</p></div>");
@@ -36,6 +39,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#specified-value")]
+    [Spec("css-cascade-5", "#initial-values")]
     public void NonInheritedProperty_WithoutCascadedValue_TakesTheInitialValue()
     {
         var x = Box("<div style='margin-top:30px;padding-left:5px;background-color:red'><div id=x>a</div></div>");
@@ -47,6 +51,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#computed-value")]
+    [Spec("css-cascade-5", "#computed")]
     public void EmLength_IsComputedAgainstTheElementsFontSize()
     {
         var x = Box("<div id=x style='font-size:20px;text-indent:2em'>a</div>");
@@ -57,6 +62,7 @@ public sealed class CascadeTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "cascade.html#computed-value")]
+    [Spec("css-cascade-5", "#computed")]
     public void EmLength_DeclaredBeforeTheFontSize_IsComputedAgainstTheElementsFontSize()
     {
         var x = Box("<div id=x style='text-indent:2em;font-size:20px'>a</div>");
@@ -66,6 +72,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#used-value")]
+    [Spec("css-cascade-5", "#used")]
     public void PercentageWidth_IsResolvedAgainstTheContainingBlock()
     {
         var x = Box("<div style='width:200px'><div id=x style='width:50%'>a</div></div>");
@@ -79,6 +86,7 @@ public sealed class CascadeTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "cascade.html#inheritance")]
+    [Spec("css-cascade-5", "#inheriting")]
     public void PercentageFontSize_IsInheritedAsTheComputedSize()
     {
         var (root, _) = LayoutHarness.Layout(
@@ -93,6 +101,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#inheritance")]
+    [Spec("css-cascade-5", "#inheriting")]
     public void EmLength_IsInheritedAsTheComputedLength()
     {
         var x = Box("<div style='font-size:20px;text-indent:2em'><div id=x style='font-size:10px'>a</div></div>");
@@ -102,6 +111,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#inheritance")]
+    [Spec("css-cascade-5", "#inheriting")]
     public void Inheritance_FollowsTheDocumentTree_NotAnonymousBoxes()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -115,6 +125,7 @@ public sealed class CascadeTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "cascade.html#inheritance")]
+    [Spec("css-cascade-5", "#inheriting")]
     public void WordSpacing_IsInherited()
     {
         var x = Box("<div style='word-spacing:10px'><p id=x>a b</p></div>");
@@ -126,6 +137,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#value-def-inherit")]
+    [Spec("css-cascade-5", "#inherit")]
     public void Inherit_OnANonInheritedProperty_TakesTheParentsValue()
     {
         var x = Box("<div style='border-top:3px solid red'><div id=x style='border-top-style:inherit;background-color:inherit'>a</div></div>");
@@ -137,6 +149,7 @@ public sealed class CascadeTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "cascade.html#value-def-inherit")]
+    [Spec("css-cascade-5", "#inherit")]
     public void Inherit_OnTheRootElement_TakesTheInitialValue()
     {
         var (root, _) = LayoutHarness.Layout("<html id=x style='display:inherit'><body>a</body></html>");
@@ -148,6 +161,7 @@ public sealed class CascadeTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "cascade.html#value-def-inherit")]
+    [Spec("css-cascade-5", "#inherit")]
     public void Inherit_TakesTheParentsComputedEmLength()
     {
         var x = Box("<div style='font-size:20px;margin-left:2em'><div id=x style='font-size:10px;margin-left:inherit'>a</div></div>");
@@ -157,6 +171,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#value-def-inherit")]
+    [Spec("css-cascade-5", "#inherit")]
     public void InheritImportant_EnforcesTheParentsValue()
     {
         var x = Box(
@@ -171,6 +186,7 @@ public sealed class CascadeTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "cascade.html#at-import")]
+    [Spec("css-cascade-5", "#at-import")]
     public void Import_AppliesTheImportedStyleSheet_BeforeTheImportingOne()
     {
         var x = BoxWithStylesheets(
@@ -184,6 +200,7 @@ public sealed class CascadeTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "cascade.html#at-import")]
+    [Spec("css-cascade-5", "#conditional-import")]
     public void Import_WithANonMatchingMediaList_IsIgnored()
     {
         var x = BoxWithStylesheets(
@@ -198,6 +215,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#cascading-order")]
+    [Spec("css-cascade-5", "#cascading-origins")]
     public void AuthorRule_BeatsTheDefaultStyleSheet_RegardlessOfSpecificity()
     {
         var x = Box("<style>* { font-weight: normal }</style><b id=x>a</b>");
@@ -207,6 +225,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#cascading-order")]
+    [Spec("css-cascade-5", "#filtering")]
     public void RuleInANonMatchingMediaBlock_DoesNotApply()
     {
         var x = Box("<style>p { color: green } @media print { p { color: red } }</style><p id=x>a</p>");
@@ -217,6 +236,7 @@ public sealed class CascadeTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "cascade.html#cascading-order")]
+    [Spec("css-cascade-5", "#filtering")]
     public void StyleSheet_WithANonMatchingMediaAttribute_DoesNotApply()
     {
         var x = BoxWithStylesheets(
@@ -229,6 +249,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#cascading-order")]
+    [Spec("css-cascade-5", "#cascade-sort")]
     public void LaterStyleSheet_WinsAtEqualSpecificity()
     {
         var x = BoxWithStylesheets(
@@ -240,6 +261,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#important-rules")]
+    [Spec("css-cascade-5", "#importance")]
     public void ImportantDeclaration_BeatsAMoreSpecificNormalOne()
     {
         var x = Box("<style>div { color: green !important } #x { color: red }</style><div id=x>a</div>");
@@ -249,6 +271,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#important-rules")]
+    [Spec("css-cascade-5", "#shorthand")]
     public void ImportantShorthand_MakesEverySubPropertyImportant()
     {
         var x = Box("<style>div { margin: 5px !important } #x { margin-left: 20px }</style><div id=x>a</div>");
@@ -259,6 +282,7 @@ public sealed class CascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#important-rules")]
+    [Spec("css-cascade-5", "#importance")]
     public void ImportantDeclaration_WinsWithinTheAuthorStyleSheet()
     {
         var x = Box(
@@ -292,6 +316,7 @@ public sealed class CascadeTests
     [TestMethod]
     [Spec("css21", "cascade.html#specificity")]
     [Spec("css-style-attr", "#interpret")]
+    [Spec("css-cascade-5", "#cascade-sort")]
     public void StyleAttribute_BeatsAnIdSelector()
     {
         var x = Box("<style>#x { color: red }</style><p id=x style='color: green'>a</p>");
@@ -320,6 +345,7 @@ public sealed class CascadeTests
     [TestMethod]
     [Spec("css21", "cascade.html#preshint")]
     [Spec("html", "rendering.html#the-css-user-agent-style-sheet-and-presentational-hints")]
+    [Spec("css-cascade-5", "#preshint")]
     public void PresentationalHint_BeatsTheDefaultStyleSheet()
     {
         var x = Box("<table><tr><th id=x align=left>a</th></tr></table>");
@@ -330,6 +356,7 @@ public sealed class CascadeTests
     [TestMethod]
     [Spec("css21", "cascade.html#preshint")]
     [Spec("html", "rendering.html#the-css-user-agent-style-sheet-and-presentational-hints")]
+    [Spec("css-cascade-5", "#preshint")]
     public void StyleAttribute_BeatsAPresentationalHint()
     {
         var x = Box("<font id=x color=red style='color:green'>a</font>");
@@ -341,6 +368,7 @@ public sealed class CascadeTests
     [TestMethod]
     [Spec("css21", "cascade.html#preshint")]
     [Spec("html", "rendering.html#the-css-user-agent-style-sheet-and-presentational-hints")]
+    [Spec("css-cascade-5", "#preshint")]
     public void PresentationalHint_LosesToAnAuthorRule()
     {
         Assert.AreEqual(Green, Box("<style>* { color: green }</style><font id=x color=red>a</font>").ActualColor);

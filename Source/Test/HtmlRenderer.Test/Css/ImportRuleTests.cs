@@ -45,6 +45,7 @@ public sealed class ImportRuleTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#at-import")]
+    [Spec("css-cascade-5", "#at-import")]
     public void CssImportWithDoubleQuotedStringAsUrl()
     {
         var source = "@import \"button.css\";";

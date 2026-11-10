@@ -202,8 +202,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
 
         /// <summary>
-        /// Applies the cascade (CSS 2.1 §6.4) to every box in the tree. Declarations are applied from
-        /// lowest to highest precedence, so the last write wins: UA normal, author normal, style
+        /// Applies the cascade (CSS Cascade 5 §6.1) to every box in the tree. Declarations are applied
+        /// from lowest to highest precedence, so the last write wins: UA normal, author normal, style
         /// attribute normal, author !important, style attribute !important, UA !important.
         /// </summary>
         /// <param name="box">the box to apply the style to</param>
@@ -425,6 +425,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 }
                 else if (prop.Value == CssConstants.Revert || prop.Value == CssConstants.RevertLayer)
                 {
+                    // CSS Cascade 5 §7.3.4, layers aren't tracked so revert-layer reverts like revert
                     string rv;
                     value = revertTarget != null && revertTarget.TryGetValue(prop.Name, out rv)
                         ? rv

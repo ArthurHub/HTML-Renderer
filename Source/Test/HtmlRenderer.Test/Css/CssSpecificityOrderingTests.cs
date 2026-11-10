@@ -9,6 +9,7 @@ public sealed class CssSpecificityOrderingTests
 {
     [TestMethod]
     [Spec("css21", "cascade.html#specificity")]
+    [Spec("css-cascade-5", "#cascade-sort")]
     public void HigherSpecificityRule_WinsEvenWhenDeclaredEarlier()
     {
         var html = Html("#el { color: #0000ff; } div { color: #ff0000; }", "<div id='el'>text</div>");
@@ -18,6 +19,7 @@ public sealed class CssSpecificityOrderingTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#cascading-order")]
+    [Spec("css-cascade-5", "#cascade-sort")]
     public void EqualSpecificity_SameOrigin_StillResolvesByLastDeclared()
     {
         var html = Html("div { color: #ff0000; } div { color: #0000ff; }", "<div>text</div>");

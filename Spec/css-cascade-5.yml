@@ -5,169 +5,167 @@ snapshot: https://www.w3.org/TR/2022/CR-css-cascade-5-20220113/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
+    status: n/a
   '#at-import':
     title: '2 Importing Style Sheets: the @import rule'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - The imported style sheet is never loaded, see CSS 2.1 6.3
+      - layer() and supports() in the prelude are read as part of the media list
   '#conditional-import':
     title: 2.1 Conditional @import Rules
-    status: unknown
+    status: parsed-only
+    gaps:
+      - The import conditions are never evaluated, see CSS 2.1 6.3
   '#import-processing':
     title: 2.2 Processing Stylesheet Imports
-    status: unknown
+    status: unsupported
   '#content-type':
     title: 2.3 Content-Type of CSS Style Sheets
-    status: unknown
+    status: unsupported
   '#shorthand':
     title: 3 Shorthand Properties
-    status: unknown
+    status: supported
   '#aliasing':
     title: 3.1 Property Aliasing
-    status: unknown
+    status: n/a
   '#all-shorthand':
     title: '3.2 Resetting All Properties: the all property'
-    status: unknown
+    status: unsupported
   '#value-stages':
     title: 4 Value Processing
-    status: unknown
+    status: partial
   '#declared':
     title: 4.1 Declared Values
-    status: unknown
+    status: supported
   '#value-aliasing':
     title: 4.1.1 Value Aliasing
-    status: unknown
+    status: n/a
   '#cascaded':
     title: 4.2 Cascaded Values
-    status: unknown
+    status: supported
   '#specified':
     title: 4.3 Specified Values
-    status: unknown
+    status: supported
   '#computed':
     title: 4.4 Computed Values
-    status: unknown
+    status: partial
+    gaps:
+      - An em length declared before the element's own 'font-size' is computed against the parent's font size, see CSS 2.1 6.1.2
   '#used':
     title: 4.5 Used Values
-    status: unknown
+    status: supported
   '#applies-to':
     title: 4.5.1 Applicable Properties
-    status: unknown
+    status: supported
   '#actual':
     title: 4.6 Actual Values
-    status: unknown
+    status: n/a
   '#stages-examples':
     title: 4.7 Examples
-    status: unknown
+    status: n/a
   '#fragments':
     title: 4.8 Per-Fragment Value Processing
-    status: unknown
+    status: unsupported
   '#filtering':
     title: 5 Filtering
-    status: unknown
+    status: partial
+    gaps:
+      - The media attribute of link and style elements is ignored, see CSS 2.1 6.4.1
   '#cascading':
     title: 6 Cascading
-    status: unknown
+    status: partial
   '#cascade-sort':
     title: 6.1 Cascade Sorting Order
-    status: unknown
+    status: partial
+    gaps:
+      - Cascade layers don't take part in the sort, see 6.4
   '#cascading-origins':
     title: 6.2 Cascading Origins
-    status: unknown
+    status: supported
   '#importance':
     title: '6.3 Important Declarations: the !important annotation'
-    status: unknown
+    status: supported
   '#layering':
     title: 6.4 Cascade Layers
-    status: unknown
+    status: partial
+    gaps:
+      - Rules of different layers, and layered against unlayered rules, are sorted by specificity and order of appearance instead of layer order
+      - '!important doesn''t reverse the layer order'
   '#layer-declaration':
     title: 6.4.1 Declaring Cascade Layers
-    status: unknown
+    status: parsed-only
+    gaps:
+      - '@import with layer or layer() is never loaded, see 2'
   '#layer-names':
     title: 6.4.2 Layer Naming and Nesting
-    status: unknown
+    status: parsed-only
+    gaps:
+      - A CSS-wide keyword as a layer name doesn't invalidate the rule
   '#unnamed-layers':
     title: 6.4.2.1 Anonymous Layers
-    status: unknown
+    status: parsed-only
   '#layer-ordering':
     title: 6.4.3 Layer Ordering
-    status: unknown
+    status: unsupported
   '#at-layer':
     title: '6.4.4 Declaring Layers Inline: the @layer rule'
-    status: unknown
+    status: partial
   '#layer-block':
     title: '6.4.4.1 Assigning Styles Inline: the @layer block at-rule'
-    status: unknown
+    status: partial
+    gaps:
+      - Its rules apply as unlayered rules, see 6.4
   '#layer-empty':
     title: '6.4.4.2 Declaring Without Styles: the @layer statement at-rule'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - The statement doesn't establish a layer order
   '#preshint':
     title: 6.5 Precedence of Non-CSS Presentational Hints
-    status: unknown
+    status: partial
+    gaps:
+      - Presentational attributes are applied after the author style sheets and override them, see CSS 2.1 6.4.4
   '#defaulting':
     title: 7 Defaulting
-    status: unknown
+    status: partial
   '#initial-values':
     title: 7.1 Initial Values
-    status: unknown
+    status: supported
   '#inheriting':
     title: 7.2 Inheritance
-    status: unknown
+    status: partial
+    gaps:
+      - A percentage 'font-size' is inherited as the percentage, see CSS 2.1 6.2
+      - '''word-spacing'' isn''t inherited, see CSS 2.1 6.2'
   '#defaulting-keywords':
     title: 7.3 Explicit Defaulting
-    status: unknown
+    status: partial
   '#initial':
     title: '7.3.1 Resetting a Property: the initial keyword'
-    status: unknown
+    status: supported
   '#inherit':
     title: '7.3.2 Explicit Inheritance: the inherit keyword'
-    status: unknown
+    status: partial
+    gaps:
+      - '''inherit'' takes the parent''s specified value, and on the root element the value of the anonymous box around it, see CSS 2.1 6.2.1'
   '#inherit-initial':
     title: '7.3.3 Erasing All Declarations: the unset keyword'
-    status: unknown
+    status: supported
   '#default':
     title: '7.3.4 Rolling Back Cascade Origins: the revert keyword'
-    status: unknown
+    status: partial
+    gaps:
+      - revert in a style attribute rolls back to the author style sheets instead of the UA style sheet
+      - revert in an !important author declaration rolls back to the normal author declarations instead of the UA style sheet
   '#revert-layer':
     title: '7.3.5 Rolling Back Cascade Layers: the revert-layer keyword'
-    status: unknown
+    status: partial
+    gaps:
+      - Behaves like revert, it rolls back past all author layers instead of to the layer below
   '#layer-apis':
     title: 8 Layer APIs
-    status: unknown
-  '#extensions-to-cssimportrule-interface':
-    title: 8.1 Extensions to the CSSImportRule interface
-    status: unknown
-  '#the-csslayerblockrule-interface':
-    title: 8.2 The CSSLayerBlockRule interface
-    status: unknown
-  '#the-csslayerstatementrule-interface':
-    title: 8.3 The CSSLayerStatementRule interface
-    status: unknown
+    status: n/a
   '#changes':
     title: 9 Changes
-    status: unknown
-  '#changes-2021-10':
-    title: 9.1 Changes since the 15 Oct 2021 Working Draft
-    status: unknown
-  '#changes-2021-08':
-    title: 9.2 Changes since the 29 August 2021 Working Draft
-    status: unknown
-  '#changes-2021-06':
-    title: 9.3 Changes since the 8 June 2021 Working Draft
-    status: unknown
-  '#changes-2021-03':
-    title: 9.4 Changes since the 19 March 2021 Working Draft
-    status: unknown
-  '#changes-2021-01':
-    title: 9.5 Changes since the 19 January 2021 Working Draft
-    status: unknown
-  '#additions-l4':
-    title: 9.6 Additions Since Level 4
-    status: unknown
-  '#additions-l3':
-    title: 9.7 Additions Since Level 3
-    status: unknown
-  '#changes-2':
-    title: 9.8 Additions Since Level 2
-    status: unknown
+    status: n/a

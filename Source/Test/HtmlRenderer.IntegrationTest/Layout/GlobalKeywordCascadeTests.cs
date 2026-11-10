@@ -10,6 +10,7 @@ public sealed class GlobalKeywordCascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#value-def-inherit")]
+    [Spec("css-cascade-5", "#inherit")]
     public void Inherit_ColorFromParent_ChildGetsParentColor()
     {
         var html = LayoutHarness.Wrap(
@@ -22,6 +23,7 @@ public sealed class GlobalKeywordCascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#value-def-inherit")]
+    [Spec("css-cascade-5", "#inherit")]
     public void Inherit_NonInheritedProperty_ChildGetsParentValue()
     {
         var html = LayoutHarness.Wrap(
@@ -34,6 +36,7 @@ public sealed class GlobalKeywordCascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#value-def-inherit")]
+    [Spec("css-cascade-5", "#inherit")]
     public void Inherit_ColorWithoutExplicitParent_UsesInitialBlack()
     {
         var html = LayoutHarness.Wrap("<div id='el' style='color: inherit'>text</div>");
@@ -46,6 +49,7 @@ public sealed class GlobalKeywordCascadeTests
     // ── initial ───────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css-cascade-5", "#initial")]
     public void Initial_Color_ResetsToBlackIgnoringParent()
     {
         var html = LayoutHarness.Wrap(
@@ -57,6 +61,7 @@ public sealed class GlobalKeywordCascadeTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#initial")]
     public void Initial_FontSize_ResetsToMedium()
     {
         var html = LayoutHarness.Wrap("<h1 id='el' style='font-size: initial'>heading</h1>");
@@ -67,6 +72,7 @@ public sealed class GlobalKeywordCascadeTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#initial")]
     public void Initial_MarginTop_ResetsToZero()
     {
         var html = LayoutHarness.Wrap(
@@ -80,6 +86,7 @@ public sealed class GlobalKeywordCascadeTests
     // ── unset ─────────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css-cascade-5", "#inherit-initial")]
     public void Unset_InheritedProperty_BehavesLikeInherit()
     {
         var html = LayoutHarness.Wrap(
@@ -91,6 +98,7 @@ public sealed class GlobalKeywordCascadeTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#inherit-initial")]
     public void Unset_NonInheritedProperty_BehavesLikeInitial()
     {
         var html = LayoutHarness.Wrap(
@@ -102,6 +110,7 @@ public sealed class GlobalKeywordCascadeTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#inherit-initial")]
     public void Unset_InheritedPropertyWithNoParentValue_UsesInitial()
     {
         var html = LayoutHarness.Wrap("<div id='el' style='color: unset'>text</div>");
@@ -115,6 +124,7 @@ public sealed class GlobalKeywordCascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#inheritance")]
+    [Spec("css-cascade-5", "#inheriting")]
     public void Regression_ColorInheritsFromParentWithoutKeyword()
     {
         var html = LayoutHarness.Wrap(
@@ -127,6 +137,7 @@ public sealed class GlobalKeywordCascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#specificity")]
+    [Spec("css-cascade-5", "#cascade-sort")]
     public void Regression_InlineStyleOverridesAuthorRule()
     {
         var html = LayoutHarness.Wrap(
@@ -139,6 +150,7 @@ public sealed class GlobalKeywordCascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#cascading-order")]
+    [Spec("css-cascade-5", "#cascading-origins")]
     public void Regression_AuthorRuleOverridesUaDefault()
     {
         var html = LayoutHarness.Wrap("<style>h1 { font-size: 10px; }</style><h1 id='el'>heading</h1>");
@@ -150,6 +162,7 @@ public sealed class GlobalKeywordCascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#important-rules")]
+    [Spec("css-cascade-5", "#importance")]
     public void Regression_ImportantAuthorRuleBeatsInlineStyle()
     {
         var html = LayoutHarness.Wrap(
@@ -162,6 +175,7 @@ public sealed class GlobalKeywordCascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#important-rules")]
+    [Spec("css-cascade-5", "#cascade-sort")]
     public void InlineImportant_BeatsAuthorImportantRule()
     {
         var html = LayoutHarness.Wrap(
@@ -174,6 +188,7 @@ public sealed class GlobalKeywordCascadeTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#cascading-order")]
+    [Spec("css-cascade-5", "#cascade-sort")]
     public void Regression_LaterAuthorRuleOverridesEarlierSameSpecificity()
     {
         var html = LayoutHarness.Wrap("<style>div { color: red; } div { color: blue; }</style><div id='el'>text</div>");

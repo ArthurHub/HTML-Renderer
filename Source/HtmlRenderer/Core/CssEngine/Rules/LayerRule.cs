@@ -3,9 +3,8 @@ using System.IO;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// The block form of <c>@layer</c> (<c>@layer name { rules }</c> or anonymous <c>@layer { rules }</c>).
-    /// A grouping rule holding the style rules assigned to a cascade layer; cascade precedence between
-    /// layers is resolved when the rules are indexed (see <c>CssData</c>), not here.
+    /// The block form of <c>@layer</c>, CSS Cascade 5 §6.4.4.1. <c>CssData</c> indexes its rules as
+    /// if they were unlayered.
     /// </summary>
     internal sealed class LayerRule : GroupingRule, ILayerRule
     {

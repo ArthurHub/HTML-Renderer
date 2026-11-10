@@ -174,15 +174,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// Every rule in a rule list, in document order, descending into <c>@layer</c>, <c>@media</c>,
-        /// <c>@container</c>, and (when its condition evaluates true) <c>@supports</c> blocks - matching
-        /// PeachPDF's own <c>CssData.FlattenRules</c> exactly (full descent, not the narrower
-        /// style-rule-only/no-@supports-or-@container predecessor this replaces). Callers that only want
-        /// style rules (the common case - e.g. scanning for a rule by selector rather than matching
-        /// against a box, since <see cref="Stylesheet.StyleRules"/> only sees the top level) filter with
-        /// <c>.OfType&lt;IStyleRule&gt;()</c>, matching PeachPDF's own call-site pattern of filtering the
-        /// general enumerator per use rather than a dedicated pre-filtered helper. CSS-Nesting child rules
-        /// are reached because <see cref="IStyleRule"/> is itself yielded before recursing.
+        /// Every rule in a rule list, in document order, descending into nested style rules,
+        /// <c>@layer</c>, <c>@media</c>, <c>@container</c> and, when its condition is true,
+        /// <c>@supports</c>. <c>@media</c> conditions aren't evaluated here.
         /// </summary>
         internal static IEnumerable<IRule> FlattenRules(IEnumerable<IRule> rules)
         {
@@ -310,11 +304,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 }
                 else if (rule is ILayerRule layerRule)
                 {
-                    // @layer's contents are indexed as ordinary, unlayered rules: they apply, ordered by
-                    // source position and specificity. Layer precedence, !important layer reversal and
-                    // revert-layer are deliberately not implemented - that needs a layer-banded cascade,
-                    // which is separate work. Without this branch the block would fall through and every
-                    // rule inside a layer would silently stop applying.
+                    // CSS Cascade 5 §6.4: layer order isn't tracked, the rules cascade as if unlayered
                     IndexRules(layerRule.Rules, isUserAgent, enclosingMedia, tagIndex, classIndex, idIndex, universal, keys, ref order);
                 }
                 else if (rule is ISupportsRule supportsRule)

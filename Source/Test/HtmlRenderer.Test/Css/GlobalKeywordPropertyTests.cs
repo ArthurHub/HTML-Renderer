@@ -12,6 +12,7 @@ public sealed class GlobalKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#value-def-inherit")]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void Color_Inherit_IsMarkedAsInherited()
     {
         var property = CssConstructionFunctions.ParseDeclaration("color: inherit");
@@ -22,6 +23,7 @@ public sealed class GlobalKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#value-def-inherit")]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void MarginTop_Inherit_IsMarkedAsInherited()
     {
         var property = CssConstructionFunctions.ParseDeclaration("margin-top: inherit");
@@ -32,6 +34,7 @@ public sealed class GlobalKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#value-def-inherit")]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void FontSize_Inherit_IsMarkedAsInherited()
     {
         var property = CssConstructionFunctions.ParseDeclaration("font-size: inherit");
@@ -42,6 +45,7 @@ public sealed class GlobalKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#value-def-inherit")]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void Display_Inherit_IsMarkedAsInherited()
     {
         var property = CssConstructionFunctions.ParseDeclaration("display: inherit");
@@ -53,6 +57,7 @@ public sealed class GlobalKeywordPropertyTests
     // -- initial -----------------------------------------------------------
 
     [TestMethod]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void Color_Initial_IsMarkedAsInitial()
     {
         var property = CssConstructionFunctions.ParseDeclaration("color: initial");
@@ -62,6 +67,7 @@ public sealed class GlobalKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void MarginTop_Initial_IsMarkedAsInitial()
     {
         var property = CssConstructionFunctions.ParseDeclaration("margin-top: initial");
@@ -71,6 +77,7 @@ public sealed class GlobalKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void FontSize_Initial_IsMarkedAsInitial()
     {
         var property = CssConstructionFunctions.ParseDeclaration("font-size: initial");
@@ -82,6 +89,7 @@ public sealed class GlobalKeywordPropertyTests
     // -- unset ---------------------------------------------------------------
 
     [TestMethod]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void Color_Unset_HasUnsetValue()
     {
         var property = CssConstructionFunctions.ParseDeclaration("color: unset");
@@ -91,6 +99,7 @@ public sealed class GlobalKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void MarginTop_Unset_HasUnsetValue()
     {
         var property = CssConstructionFunctions.ParseDeclaration("margin-top: unset");
@@ -100,6 +109,7 @@ public sealed class GlobalKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void FontFamily_Unset_HasUnsetValue()
     {
         var property = CssConstructionFunctions.ParseDeclaration("font-family: unset");
@@ -111,6 +121,7 @@ public sealed class GlobalKeywordPropertyTests
     // -- revert ----------------------------------------------------------------
 
     [TestMethod]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void Color_Revert_HasRevertValue()
     {
         var property = CssConstructionFunctions.ParseDeclaration("color: revert");
@@ -120,6 +131,7 @@ public sealed class GlobalKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void FontSize_Revert_HasRevertValue()
     {
         var property = CssConstructionFunctions.ParseDeclaration("font-size: revert");
@@ -129,6 +141,7 @@ public sealed class GlobalKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void MarginTop_Revert_HasRevertValue()
     {
         var property = CssConstructionFunctions.ParseDeclaration("margin-top: revert");
@@ -140,6 +153,7 @@ public sealed class GlobalKeywordPropertyTests
     // -- revert-layer ------------------------------------------------------------
 
     [TestMethod]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void Color_RevertLayer_HasRevertLayerValue()
     {
         var property = CssConstructionFunctions.ParseDeclaration("color: revert-layer");
@@ -149,6 +163,7 @@ public sealed class GlobalKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void MarginTop_RevertLayer_HasRevertLayerValue()
     {
         var property = CssConstructionFunctions.ParseDeclaration("margin-top: revert-layer");
@@ -158,6 +173,7 @@ public sealed class GlobalKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#defaulting-keywords")]
     public void Display_RevertLayer_HasRevertLayerValue()
     {
         var property = CssConstructionFunctions.ParseDeclaration("display: revert-layer");
@@ -170,6 +186,7 @@ public sealed class GlobalKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#value-def-inherit")]
+    [Spec("css-cascade-5", "#importance")]
     public void Color_InheritImportant_IsImportantAndInherited()
     {
         var property = CssConstructionFunctions.ParseDeclaration("color: inherit !important");
@@ -179,6 +196,7 @@ public sealed class GlobalKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#importance")]
     public void MarginTop_UnsetImportant_IsImportantWithUnsetValue()
     {
         var property = CssConstructionFunctions.ParseDeclaration("margin-top: unset !important");
@@ -188,6 +206,7 @@ public sealed class GlobalKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-cascade-5", "#importance")]
     public void FontSize_RevertImportant_IsImportantWithRevertValue()
     {
         var property = CssConstructionFunctions.ParseDeclaration("font-size: revert !important");

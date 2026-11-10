@@ -236,7 +236,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 }
                 else if (!(rule is LayerStatementRule))
                 {
-                    // CSS Cascade 5 §6.4.1 allows `@layer a, b;` before @import.
+                    // CSS Cascade 5 §6.4.4.2 allows `@layer a, b;` before @import.
                     hasReachedNonImportRules = true;
                 }
             }
