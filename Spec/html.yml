@@ -56,7 +56,7 @@ sections:
     title: 2.3.6 Legacy colors
     status: partial
     gaps:
-      - Values other than named colors, #rgb and #rrggbb are parsed as CSS colors instead of as hex digits, e.g. ff0000 and chucknorris aren't colors and rgb(255,0,0) is red
+      - "Values other than named colors, #rgb and #rrggbb are parsed as CSS colors instead of as hex digits, e.g. ff0000 and chucknorris aren't colors and rgb(255,0,0) is red"
   common-microsyntaxes.html#space-separated-tokens:
     title: 2.3.7 Space-separated tokens
     status: partial
