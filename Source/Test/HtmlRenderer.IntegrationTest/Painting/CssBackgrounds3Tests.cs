@@ -19,6 +19,7 @@ public sealed class CssBackgrounds3Tests
     [Ignore("Gap, see Spec/css-backgrounds-3.yml")]
     [TestMethod]
     [Spec("css-backgrounds-3", "#layering")]
+    [Spec("css-backgrounds-4", "#layering")]
     public void MultipleLayers_PaintEveryImage()
     {
         var g = Paint($"width:100px;height:100px;background-image:{Image}, {Image};background-repeat:no-repeat;background-position:left top, right bottom");
@@ -105,6 +106,7 @@ public sealed class CssBackgrounds3Tests
 
     [TestMethod]
     [Spec("css-backgrounds-3", "#background-attachment")]
+    [Spec("css-backgrounds-4", "#background-attachment")]
     public void BackgroundAttachmentScroll_FixesTheImageToTheBox()
     {
         var g = Paint($"margin-top:100px;width:100px;height:100px;background-image:{Image};background-repeat:no-repeat;background-attachment:scroll");
@@ -133,6 +135,7 @@ public sealed class CssBackgrounds3Tests
     [DataRow("padding-box", 5, 5, 100, 50)]
     [DataRow("content-box", 15, 15, 80, 30)]
     [Spec("css-backgrounds-3", "#background-clip")]
+    [Spec("css-backgrounds-4", "#background-clip")]
     public void BackgroundClip_ClipsTheBackgroundToTheGivenBox(string clip, double x, double y, double width, double height)
     {
         var g = Paint($"width:80px;height:30px;padding:10px;border:5px solid black;background-color:rgb(10,20,30);background-clip:{clip}");
@@ -183,6 +186,7 @@ public sealed class CssBackgrounds3Tests
 
     [TestMethod]
     [Spec("css-backgrounds-3", "#root-background")]
+    [Spec("css-backgrounds-4", "#root-background")]
     public void RootBackground_IsPainted()
     {
         var (_, container) = PaintHarness.Layout(

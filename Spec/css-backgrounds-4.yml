@@ -5,79 +5,107 @@ snapshot: https://www.w3.org/TR/2025/WD-css-backgrounds-4-20251125/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
+    status: n/a
   '#backgrounds':
     title: 2 Defining Backgrounds
-    status: unknown
+    status: partial
   '#background-color':
     title: '2.1 Base Color: the background-color property'
-    status: unknown
+    status: partial
+    gaps:
+      - 'The color isn''t painted beneath a gradient, see css-backgrounds-3 #background-color'
   '#background-image':
     title: '2.2 Image Sources: the background-image property'
-    status: unknown
+    status: partial
+    gaps:
+      - 'Only url() images and linear gradients are painted, see css-backgrounds-3 #background-image'
   '#background-repeat-longhands':
     title: '2.3 Tiling Images: the background-repeat-x, background-repeat-y, background-repeat-block, and background-repeat-inline properties'
-    status: unknown
+    status: unsupported
+    gaps:
+      - The longhands aren't known properties and are dropped
   '#background-repeat':
     title: '2.4 Tiling Images Shorthand: the background-repeat property'
-    status: unknown
+    status: partial
+    gaps:
+      - "'repeat-block' and 'repeat-inline' are rejected"
+      - 'The two-value syntax, ''space'' and ''round'' aren''t painted, see css-backgrounds-3 #background-repeat'
   '#background-attachment':
     title: '2.5 Affixing Images: the background-attachment property'
-    status: unknown
+    status: partial
+    gaps:
+      - "'fixed' is ignored, see css-backgrounds-3 #background-attachment"
   '#background-position-longhands':
     title: '2.6 Background Positioning: the background-position-x, background-position-y, background-position-inline, and background-position-block properties'
-    status: unknown
+    status: unsupported
+    gaps:
+      - The longhands aren't known properties and are dropped
   '#background-position':
     title: '2.7 Background Positioning Shorthand: the background-position shorthand property'
-    status: unknown
+    status: partial
+    gaps:
+      - 'Only keywords are painted, see css-backgrounds-3 #background-position'
+      - Three and four value forms that start with 'top' or 'bottom' are rejected
+      - "'center' followed by an offset, like 'left center 10px', is accepted"
   '#bg-position-serialization':
     title: 2.7.1 Serialization of background-position values
-    status: unknown
+    status: n/a
   '#background-clip':
     title: '2.8 Painting Area: the background-clip property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'background-clip' is ignored, see css-backgrounds-3 #background-clip"
+      - "'text' and 'border-area' are rejected"
   '#background-origin':
     title: '2.9 Positioning Area: the background-origin property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'background-origin' is ignored, see css-backgrounds-3 #background-origin"
   '#background-size':
     title: '2.10 Sizing Images: the background-size property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'background-size' is ignored, see css-backgrounds-3 #background-size"
   '#bg-size-serialization':
     title: 2.10.1 Serialization of background-size values
-    status: unknown
+    status: n/a
   '#background-layers':
     title: '2.11 Background Image Layers: the background-tbd shorthand property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - Not implemented, the section is marked not ready for implementation
   '#background':
     title: '2.12 Backgrounds Shorthand: the background property'
-    status: unknown
+    status: partial
+    gaps:
+      - 'A single box value only sets ''background-origin'', see css-backgrounds-3 #background'
+      - "The clip-only values 'text' and 'border-area' are rejected"
   '#layering':
     title: 3 Layering Multiple Background Images
-    status: unknown
+    status: unsupported
+    gaps:
+      - 'Only the first layer is painted, see css-backgrounds-3 #layering'
   '#special-backgrounds':
     title: 4 Backgrounds of Special Elements
-    status: unknown
+    status: partial
   '#root-background':
     title: 4.1 The Canvas Background and the Root Element
-    status: unknown
+    status: partial
+    gaps:
+      - 'The root''s background only covers the root box, see css-backgrounds-3 #root-background'
   '#body-background':
     title: 4.2 The Canvas Background and the HTML <body> Element
-    status: unknown
+    status: unsupported
+    gaps:
+      - 'The body''s background isn''t propagated to the canvas, see css-backgrounds-3 #body-background'
   '#first-line-background':
     title: 4.3 The ::first-line Pseudo-element‘s Background
-    status: unknown
+    status: unsupported
+    gaps:
+      - "::first-line declarations never apply, see css-backgrounds-3 #first-line-background"
   '#changes':
     title: 5 Changes
-    status: unknown
-  '#level-changes':
-    title: 5.1 Additions since [CSS3BG]
-    status: unknown
+    status: n/a
   '#acknowledgments':
     title: 6 Acknowledgments
-    status: unknown
+    status: n/a
