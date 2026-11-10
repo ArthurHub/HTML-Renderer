@@ -5,73 +5,7 @@ snapshot: 7a1d2b8107ef368c4951f15f091d82fb62e59dde
 sections:
   introduction.html#introduction:
     title: 1 Introduction
-    status: unknown
-  introduction.html#abstract:
-    title: 1.1 Where does this specification fit?
-    status: unknown
-  introduction.html#is-this-html5?:
-    title: 1.2 Is this HTML5?
-    status: unknown
-  introduction.html#background:
-    title: 1.3 Background
-    status: unknown
-  introduction.html#audience:
-    title: 1.4 Audience
-    status: unknown
-  introduction.html#scope:
-    title: 1.5 Scope
-    status: unknown
-  introduction.html#history-2:
-    title: 1.6 History
-    status: unknown
-  introduction.html#design-notes:
-    title: 1.7 Design notes
-    status: unknown
-  introduction.html#serialisability-of-script-execution:
-    title: 1.7.1 Serializability of script execution
-    status: unknown
-  introduction.html#extensibility:
-    title: 1.7.2 Extensibility
-    status: unknown
-  introduction.html#html-vs-xhtml:
-    title: 1.8 HTML vs XML syntax
-    status: unknown
-  introduction.html#structure-of-this-specification:
-    title: 1.9 Structure of this specification
-    status: unknown
-  introduction.html#how-to-read-this-specification:
-    title: 1.9.1 How to read this specification
-    status: unknown
-  introduction.html#typographic-conventions:
-    title: 1.9.2 Typographic conventions
-    status: unknown
-  introduction.html#a-quick-introduction-to-html:
-    title: 1.10 A quick introduction to HTML
-    status: unknown
-  introduction.html#writing-secure-applications-with-html:
-    title: 1.10.1 Writing secure applications with HTML
-    status: unknown
-  introduction.html#common-pitfalls-to-avoid-when-using-the-scripting-apis:
-    title: 1.10.2 Common pitfalls to avoid when using the scripting APIs
-    status: unknown
-  introduction.html#how-to-catch-mistakes-when-writing-html:-validators-and-conformance-checkers:
-    title: '1.10.3 How to catch mistakes when writing HTML: validators and conformance checkers'
-    status: unknown
-  introduction.html#conformance-requirements-for-authors:
-    title: 1.11 Conformance requirements for authors
-    status: unknown
-  introduction.html#presentational-markup:
-    title: 1.11.1 Presentational markup
-    status: unknown
-  introduction.html#syntax-errors:
-    title: 1.11.2 Syntax errors
-    status: unknown
-  introduction.html#restrictions-on-content-models-and-on-attribute-values:
-    title: 1.11.3 Restrictions on content models and on attribute values
-    status: unknown
-  introduction.html#suggested-reading:
-    title: 1.12 Suggested reading
-    status: unknown
+    status: n/a
   infrastructure.html#infrastructure:
     title: 2 Common infrastructure
     status: unknown
