@@ -5,103 +5,116 @@ snapshot: https://www.w3.org/TR/2025/WD-css-conditional-5-20251030/
 sections:
   '#introduction':
     title: 1 Introduction
-    status: unknown
+    status: n/a
   '#at-supports-ext':
     title: 2 Extensions to the @supports rule
-    status: unknown
+    status: unsupported
+    gaps:
+      - selector(), font-tech(), font-format() and at-rule() make the @supports rule invalid
   '#support-definition-ext':
     title: 2.1 Extensions to the definition of support
-    status: unknown
+    status: unsupported
   '#support-definition-ext-fonts':
     title: 2.1.1 Font techs and formats
-    status: unknown
+    status: unsupported
   '#support-definition-at-rules':
     title: 2.1.2 At-rules
-    status: unknown
+    status: unsupported
   '#support-definition-supports-condition-name':
     title: 2.1.3 Named conditions
-    status: unknown
+    status: unsupported
+    gaps:
+      - An unknown named condition, (--foo), is true instead of false
   '#when-rule':
     title: '3 Generalized Conditional Rules: the @when rule'
-    status: unknown
+    status: unsupported
+    gaps:
+      - '@when is dropped'
   '#else-rule':
     title: '4 Chained Conditionals: the @else rule'
-    status: unknown
+    status: unsupported
+    gaps:
+      - '@else is dropped'
   '#container-queries':
     title: 5 Container Queries
-    status: unknown
+    status: unsupported
   '#container-type':
     title: '5.1 Creating Query Containers: the container-type property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - size and inline-size don't apply size containment
+      - scroll-state isn't supported, the declaration is dropped
   '#container-name':
     title: '5.2 Naming Query Containers: the container-name property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - Only a quoted string is accepted, a <custom-ident> name drops the declaration
   '#container-shorthand':
     title: '5.3 Creating Named Containers: the container shorthand'
-    status: unknown
+    status: unsupported
+    gaps:
+      - The container shorthand isn't a property, it doesn't serialize container-name and container-type
   '#container-rule':
     title: '5.4 Container Queries: the @container rule'
-    status: unknown
+    status: unsupported
+    gaps:
+      - The rules inside @container never apply, whatever the condition
   '#animated-containers':
     title: 5.5 Animated Containers
-    status: unknown
+    status: n/a
   '#container-features':
     title: 6 Container Features
-    status: unknown
+    status: unsupported
   '#size-container':
     title: 6.1 Size Container Features
-    status: unknown
+    status: unsupported
   '#width':
     title: '6.1.1 Width: the width feature'
-    status: unknown
+    status: unsupported
   '#height':
     title: '6.1.2 Height: the height feature'
-    status: unknown
+    status: unsupported
   '#inline-size':
     title: '6.1.3 Inline-size: the inline-size feature'
-    status: unknown
+    status: unsupported
   '#block-size':
     title: '6.1.4 Block-size: the block-size feature'
-    status: unknown
+    status: unsupported
   '#aspect-ratio':
     title: '6.1.5 Aspect-ratio: the aspect-ratio feature'
-    status: unknown
+    status: unsupported
   '#orientation':
     title: '6.1.6 Orientation: the orientation feature'
-    status: unknown
+    status: unsupported
   '#style-container':
     title: 6.2 Style Container Features
-    status: unknown
+    status: unsupported
   '#scroll-state-container':
     title: 6.3 Scroll State Container Features
-    status: unknown
+    status: unsupported
   '#updating-scroll-state':
     title: 6.3.1 Updating Scroll State
-    status: unknown
+    status: n/a
   '#stuck':
     title: '6.3.2 Sticky positioning: the stuck feature'
-    status: unknown
+    status: unsupported
   '#snapped':
     title: '6.3.3 Scroll snapping: the snapped feature'
-    status: unknown
+    status: unsupported
   '#scrollable':
     title: '6.3.4 Scrollable: the scrollable feature'
-    status: unknown
+    status: unsupported
   '#scrolled':
     title: '6.3.5 Scrolled: the scrolled feature'
-    status: unknown
+    status: unsupported
   '#container-lengths':
     title: '7 Container Relative Lengths: the cqw, cqh, cqi, cqb, cqmin, cqmax units'
-    status: unknown
+    status: unsupported
+    gaps:
+      - The cq* units aren't supported, the declaration is dropped
   '#supports-condition-rule':
     title: '8 Defining Custom Support Queries: the @supports-condition rule'
-    status: unknown
+    status: unsupported
   '#apis':
     title: 9 APIs
-    status: unknown
-  '#the-csscontainerrule-interface':
-    title: 9.1 The CSSContainerRule interface
-    status: unknown
-  '#the-csssupportscondition-interface':
-    title: 9.2 The CSSSupportsConditionRule interface
-    status: unknown
+    status: n/a
