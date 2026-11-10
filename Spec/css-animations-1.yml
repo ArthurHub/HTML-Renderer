@@ -5,127 +5,82 @@ snapshot: https://www.w3.org/TR/2023/WD-css-animations-1-20230302/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#values':
-    title: 1.1 Value Definitions
-    status: unknown
+    status: n/a
   '#animations':
     title: 2 Animations
-    status: unknown
+    status: unsupported
+    gaps:
+      - "Animations are never applied. The static frame is time zero, which shows a running animation's first keyframe, a backwards fill during a positive delay and a forwards fill of a 0s animation"
+      - Ignoring animations is allowed only for non-interactive media like print, the controls render as screen
   '#keyframes':
     title: 3 Keyframes
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'@keyframes' is parsed and doesn't affect other rules, its keyframes are never applied, see 2"
+      - "A string name, e.g. '@keyframes \"foo\"', invalidates the rule"
+      - "The names 'none' and CSS-wide keywords are accepted"
+      - Keyframe selectors below 0% or above 100% are accepted
+      - "'!important' declarations in a keyframe are kept"
   '#timing-functions':
     title: 3.1 Timing functions for keyframes
-    status: unknown
+    status: parsed-only
   '#animation-name':
     title: 3.2 The animation-name property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "A string name isn't accepted"
+      - "A CSS-wide keyword in a list, e.g. 'foo, initial', is accepted"
   '#animation-duration':
     title: 3.3 The animation-duration property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Negative times are accepted
   '#animation-timing-function':
     title: 3.4 The animation-timing-function property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Only the easing functions css-easing-1 lists as supported are accepted
   '#animation-iteration-count':
     title: 3.5 The animation-iteration-count property
-    status: unknown
+    status: parsed-only
   '#animation-direction':
     title: 3.6 The animation-direction property
-    status: unknown
+    status: parsed-only
   '#animation-play-state':
     title: 3.7 The animation-play-state property
-    status: unknown
+    status: parsed-only
   '#animation-delay':
     title: 3.8 The animation-delay property
-    status: unknown
+    status: parsed-only
   '#animation-fill-mode':
     title: 3.9 The animation-fill-mode property
-    status: unknown
+    status: parsed-only
   '#animation':
     title: 3.10 The animation shorthand property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "A list item that leaves out a time other items have makes that longhand invalid, e.g. 'animation: a 1s 2s, b 3s' drops animation-delay"
   '#events':
     title: 4 Animation Events
-    status: unknown
-  '#interface-animationevent':
-    title: 4.1 The AnimationEvent Interface
-    status: unknown
-  '#interface-animationevent-idl':
-    title: 4.1.1 IDL Definition
-    status: unknown
-  '#interface-animationevent-attributes':
-    title: 4.1.2 Attributes
-    status: unknown
-  '#event-animationevent':
-    title: 4.2 Types of AnimationEvent
-    status: unknown
-  '#event-handlers-on-elements-document-objects-and-window-objects':
-    title: 4.3 Event handlers on elements, Document objects, and Window objects
-    status: unknown
+    status: n/a
   '#interface-dom':
     title: 5 DOM Interfaces
-    status: unknown
-  '#interface-cssrule':
-    title: 5.1 The CSSRule Interface
-    status: unknown
-  '#interface-cssrule-idl':
-    title: 5.1.1 IDL Definition
-    status: unknown
-  '#interface-csskeyframerule':
-    title: 5.2 The CSSKeyframeRule Interface
-    status: unknown
-  '#interface-csskeyframerule-idl':
-    title: 5.2.1 IDL Definition
-    status: unknown
-  '#interface-csskeyframerule-attributes':
-    title: 5.2.2 Attributes
-    status: unknown
-  '#interface-csskeyframesrule':
-    title: 5.3 The CSSKeyframesRule Interface
-    status: unknown
-  '#interface-csskeyframesrule-idl':
-    title: 5.3.1 IDL Definition
-    status: unknown
-  '#interface-csskeyframesrule-attributes':
-    title: 5.3.2 Attributes
-    status: unknown
-  '#interface-csskeyframesrule-indexed-property-getter':
-    title: 5.3.3 The indexed property getter
-    status: unknown
-  '#interface-csskeyframesrule-appendrule':
-    title: 5.3.4 The appendRule method
-    status: unknown
-  '#interface-csskeyframesrule-deleterule':
-    title: 5.3.5 The deleteRule method
-    status: unknown
-  '#interface-csskeyframesrule-findrule':
-    title: 5.3.6 The findRule method
-    status: unknown
-  '#interface-globaleventhandlers':
-    title: 5.4 Extensions to the GlobalEventHandlers Interface Mixin
-    status: unknown
-  '#interface-globaleventhandlers-idl':
-    title: 5.4.1 IDL Definition
-    status: unknown
+    status: n/a
   '#priv':
     title: 6 Privacy Considerations
-    status: unknown
+    status: n/a
   '#sec':
     title: 7 Security Considerations
-    status: unknown
+    status: n/a
   '#changes':
     title: 8 Changes
-    status: unknown
-  '#changes-20181011':
-    title: 8.1 Changes since the Working Draft of 11 October 2018
-    status: unknown
+    status: n/a
   '#acknowledgements':
     title: 9 Acknowledgements
-    status: unknown
+    status: n/a
   '#other-open-issues':
     title: 10 Other open issues
-    status: unknown
+    status: n/a
   '#wg-resolutions-pending':
     title: 11 Working Group Resolutions that are pending editing
-    status: unknown
+    status: n/a

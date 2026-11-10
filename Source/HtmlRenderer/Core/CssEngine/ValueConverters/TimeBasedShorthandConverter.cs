@@ -4,9 +4,8 @@ using System.Linq;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Specialized converter for CSS properties with time-based disambiguation rules.
-    /// Handles animation and transition shorthands where two time values must be
-    /// interpreted as duration (first) and delay (second) per CSS spec.
+    /// The 'animation' and 'transition' shorthands, where the first time is the duration and the second the
+    /// delay (CSS Animations 1 §3.10, CSS Transitions 1 §2.5).
     /// </summary>
     internal sealed class TimeBasedShorthandConverter : IValueConverter
     {
@@ -32,15 +31,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             var options = new IPropertyValue[_converters.Length];
             var timeValuesFound = 0;
 
-            // Track which converters have been matched
             var matched = new bool[_converters.Length];
 
-            // Parse tokens, applying special logic for time values
             while (list.Count > 0)
             {
                 var foundMatch = false;
 
-                // Try each unmatched converter
                 for (var i = 0; i < _converters.Length; i++)
                 {
                     if (matched[i])
@@ -48,17 +44,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                         continue;
                     }
 
-                    // Special handling for time converters
                     var isTimeConverter = i == _durationIndex || i == _delayIndex;
 
                     if (isTimeConverter)
                     {
-                        // Try to match a time value (without consuming)
                         var testList = new List<Token>(list);
                         if (TryMatchTime(testList, out var timeValue))
                         {
-                            // We found a time value
-                            // Assign to duration if it's the first time value, delay if it's the second
                             var targetIndex = timeValuesFound == 0 ? _durationIndex : _delayIndex;
 
                             if (targetIndex == i)
@@ -71,20 +63,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                                 foundMatch = true;
                                 break;
                             }
-                            // else: This time value belongs to a different slot, skip this converter for now
                         }
-                        // else: Not a time value at all, continue to try other converters
                     }
                     else
                     {
-                        // Non-time converter: try normal matching
                         var beforeCount = list.Count;
                         var testList = new List<Token>(list);
                         var result = _converters[i].VaryStart(testList);
 
                         if (result != null)
                         {
-                            // Check if it actually consumed tokens (not just a default value)
+                            // A match that consumed nothing is only the converter's default
                             var consumed = beforeCount - testList.Count;
                             if (consumed > 0)
                             {
@@ -100,12 +89,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
                 if (!foundMatch)
                 {
-                    // No converter matched the current position
                     break;
                 }
             }
 
-            // Fill in defaults for unmatched optional converters
             for (var i = 0; i < _converters.Length; i++)
             {
                 if (options[i] == null)
@@ -114,7 +101,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 }
             }
 
-            // Success if all tokens were consumed
             if (list.Count == 0)
             {
                 return new OptionsValue(options, value);
@@ -124,16 +110,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
         private bool TryMatchTime(List<Token> list, out IPropertyValue timeValue)
         {
-            // Use the TimeConverter to try to match a time value
             var testList = new List<Token>(list);
             var beforeCount = testList.Count;
             var result = Converters.TimeConverter.VaryStart(testList);
 
             if (result != null && testList.Count < beforeCount)
             {
-                // Successfully matched and consumed tokens
                 timeValue = result;
-                // Update the original list
                 list.Clear();
                 list.AddRange(testList);
                 return true;
@@ -179,7 +162,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             {
                 get
                 {
-                    // Output in canonical converter order
                     return string.Join(" ",
                      options.Where(m => !string.IsNullOrEmpty(m == null ? null : m.CssText)).Select(m => m.CssText));
                 }

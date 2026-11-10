@@ -3,11 +3,11 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>Ported from PeachPDF.Tests/CSS/PropertyTests/AnimationPropertyTests.cs. Pure CSSOM parse tests - no layout involved.</summary>
 [TestClass]
 public sealed class AnimationPropertyTests
 {
     [TestMethod]
+    [Spec("css-animations-1", "#animation-duration")]
     public void AnimationDurationMillisecondsLegal()
     {
         var snippet = "animation-duration : 60ms";
@@ -22,6 +22,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-duration")]
     public void AnimationDurationMultipleSecondsLegal()
     {
         var snippet = "animation-duration : 1s  , 2s  , 3s  , 4s";
@@ -36,6 +37,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-delay")]
     public void AnimationDelayMillisecondsLegal()
     {
         var snippet = "animation-delay : 0ms";
@@ -50,6 +52,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-delay")]
     public void AnimationDelayZeroIllegal()
     {
         var snippet = "animation-delay : 0";
@@ -63,6 +66,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-delay")]
     public void AnimationDelayZeroZeroSecondMillisecondsLegal()
     {
         var snippet = "animation-delay : 0s  , 0s  , 1s  , 20ms";
@@ -77,6 +81,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-name")]
     public void AnimationNameDashSpecificLegal()
     {
         var snippet = "animation-name : -specific";
@@ -91,6 +96,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-name")]
     public void AnimationNameSlidingVerticallyLegal()
     {
         var snippet = "animation-name : sliding-vertically";
@@ -105,6 +111,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-name")]
     public void AnimationNameTest05Legal()
     {
         var snippet = "animation-name : test_05";
@@ -119,6 +126,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-name")]
     public void AnimationNameNumberIllegal()
     {
         var snippet = "animation-name : 42";
@@ -132,6 +140,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-name")]
     public void AnimationNameShouldKeepLetterCasing()
     {
         var snippet = "animation-name : MyAnimation";
@@ -146,6 +155,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-name")]
     public void AnimationNameMyAnimationOtherAnimationLegal()
     {
         var snippet = "animation-name : my-animation, other-animation";
@@ -160,6 +170,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-iteration-count")]
     public void AnimationIterationCountZeroLegal()
     {
         var snippet = "animation-iteration-count : 0";
@@ -174,6 +185,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-iteration-count")]
     public void AnimationIterationCountInfiniteLegal()
     {
         var snippet = "animation-iteration-count : infinite";
@@ -188,6 +200,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-iteration-count")]
     public void AnimationIterationCountInfiniteUppercaseLegal()
     {
         var snippet = "animation-iteration-count : INFINITE";
@@ -202,6 +215,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-iteration-count")]
     public void AnimationIterationCountFloatLegal()
     {
         var snippet = "animation-iteration-count : 2.3";
@@ -216,6 +230,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-iteration-count")]
     public void AnimationIterationCountTwoZeroInfiniteLegal()
     {
         var snippet = "animation-iteration-count : 2, 0, infinite";
@@ -230,6 +245,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-iteration-count")]
     public void AnimationIterationCountNegativeIllegal()
     {
         var snippet = "animation-iteration-count : -1";
@@ -243,6 +259,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-timing-function")]
     public void AnimationTimingFunctionEaseUppercaseLegal()
     {
         var snippet = "animation-timing-function : EASE";
@@ -257,6 +274,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-timing-function")]
     public void AnimationTimingFunctionNoneIllegal()
     {
         var snippet = "animation-timing-function : none";
@@ -270,6 +288,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-timing-function")]
     public void AnimationTimingFunctionEaseInOutLegal()
     {
         var snippet = "animation-timing-function : ease-IN-out";
@@ -284,6 +303,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-timing-function")]
     public void AnimationTimingFunctionStepEndLegal()
     {
         var snippet = "animation-timing-function : step-END";
@@ -298,6 +318,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-timing-function")]
     public void AnimationTimingFunctionStepStartLinearLegal()
     {
         var snippet = "animation-timing-function : step-start  , LINeAr";
@@ -312,6 +333,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-timing-function")]
     public void AnimationTimingFunctionStepStartCubicBezierLegal()
     {
         var snippet = "animation-timing-function : step-start  , cubic-bezier(0,1,1,1)";
@@ -326,6 +348,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-play-state")]
     public void AnimationPlayStateRunningLegal()
     {
         var snippet = "animation-play-state: running";
@@ -340,6 +363,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-play-state")]
     public void AnimationPlayStatePausedUppercaseLegal()
     {
         var snippet = "animation-play-state: PAUSED";
@@ -354,6 +378,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-play-state")]
     public void AnimationPlayStatePausedRunningPausedLegal()
     {
         var snippet = "animation-play-state: paused, Running, paused";
@@ -368,6 +393,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-fill-mode")]
     public void AnimationFillModeNoneLegal()
     {
         var snippet = "animation-fill-mode: none";
@@ -382,6 +408,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-fill-mode")]
     public void AnimationFillModeZeroIllegal()
     {
         var snippet = "animation-fill-mode: 0";
@@ -395,6 +422,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-fill-mode")]
     public void AnimationFillModeBackwardsLegal()
     {
         var snippet = "animation-fill-mode: backwards !important";
@@ -409,6 +437,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-fill-mode")]
     public void AnimationFillModeForwardsUppercaseLegal()
     {
         var snippet = "animation-fill-mode: FORWARDS";
@@ -423,6 +452,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-fill-mode")]
     public void AnimationFillModeBothBackwardsForwardsNoneLegal()
     {
         var snippet = "animation-fill-mode: both , backwards ,  forwards  ,NONE";
@@ -437,6 +467,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-direction")]
     public void AnimationDirectionNormalLegal()
     {
         var snippet = "animation-direction: normal";
@@ -451,6 +482,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-direction")]
     public void AnimationDirectionReverseLegal()
     {
         var snippet = "animation-direction  : reverse";
@@ -465,6 +497,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-direction")]
     public void AnimationDirectionNoneIllegal()
     {
         var snippet = "animation-direction  : none";
@@ -478,6 +511,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-direction")]
     public void AnimationDirectionAlternateReverseUppercaseLegal()
     {
         var snippet = "animation-direction : alternate-REVERSE";
@@ -492,6 +526,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation-direction")]
     public void AnimationDirectionNormalAlternateReverseAlternateReverseLegal()
     {
         var snippet = "animation-direction: normal,alternate  , reverse   ,ALTERNATE-reverse !important";
@@ -506,6 +541,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation")]
     public void AnimationIterationCountLegal()
     {
         var snippet = "animation : 5";
@@ -520,6 +556,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation")]
     public void AnimationNameLegal()
     {
         var snippet = "animation : my-animation";
@@ -534,6 +571,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation")]
     public void AnimationNameDurationDelayLegal()
     {
         var snippet = "animation : my-animation 2s 0.5s";
@@ -548,6 +586,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation")]
     public void AnimationNameDurationDelayEaseLegal()
     {
         var snippet = "animation : my-animation  200ms 0.5s    ease";
@@ -562,6 +601,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation")]
     public void AnimationCountDoubleIllegal()
     {
         var snippet = "animation : 10 20";
@@ -578,6 +618,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation")]
     public void AnimationNameDurationCountEaseInOutLegal()
     {
         var snippet = "animation : my-animation  200ms 2.5   ease-in-out";
@@ -592,6 +633,7 @@ public sealed class AnimationPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#animation")]
     public void AnimationMultipleLegal()
     {
         var snippet = "animation : my-animation 0s 10 ease,   other-animation  5 linear,yet-another 0s 1s  10 step-start !important";

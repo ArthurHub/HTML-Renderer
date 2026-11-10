@@ -3,11 +3,11 @@ using HtmlRenderer.Test.CssEngineSupport;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>Ported from PeachPDF.Tests/CSS/KeyframeRule.cs.</summary>
 [TestClass]
 public sealed class CssKeyframeRuleTests
 {
     [TestMethod]
+    [Spec("css-animations-1", "#keyframes")]
     public void KeyframeRuleWithFromAndMarginLeft()
     {
         var rule = CssConstructionFunctions.ParseKeyframeRule(@"  from {
@@ -21,6 +21,7 @@ public sealed class CssKeyframeRuleTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#keyframes")]
     public void KeyframeRuleWith50PercentAndMarginLeftOpacity()
     {
         var rule = CssConstructionFunctions.ParseKeyframeRule(@"  50% {
@@ -36,6 +37,7 @@ public sealed class CssKeyframeRuleTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#keyframes")]
     public void KeyframeRuleWithToAndMarginLeft()
     {
         var rule = CssConstructionFunctions.ParseKeyframeRule(@"  to {
@@ -49,6 +51,7 @@ public sealed class CssKeyframeRuleTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#keyframes")]
     public void KeyframeRuleWithFromTo255075PercentAndPaddingTopPaddingLeftColor()
     {
         var rule = CssConstructionFunctions.ParseKeyframeRule(@"  from,to, 25%, 50%,75%{
@@ -66,6 +69,7 @@ public sealed class CssKeyframeRuleTests
     }
 
     [TestMethod]
+    [Spec("css-animations-1", "#keyframes")]
     public void KeyframeRuleWith0AndNoDeclarations()
     {
         var rule = CssConstructionFunctions.ParseKeyframeRule(@"  0% { }");
