@@ -63,9 +63,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             /// each an authored length-percentage component string.</summary>
             public IReadOnlyList<string> InsetEdges { get; private set; }
 
-            /// <summary>Whether an <c>inset(... round &lt;border-radius&gt;)</c> corner radius was present.
-            /// The radius itself is captured in <see cref="InsetRoundRadius"/> but not rendered - inset is
-            /// drawn as a rectangle (see the resolver / docs).</summary>
+            /// <summary>Whether an <c>inset(... round &lt;border-radius&gt;)</c> corner radius was present.</summary>
             public bool InsetHasRound { get; private set; }
             public IReadOnlyList<Token> InsetRoundRadius { get; private set; }
 
@@ -357,8 +355,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             if (IsLengthPercentage(token))
             {
-                // A <shape-radius> is a non-negative <length-percentage> (CSS Shapes 1 §3.2); a negative
-                // radius makes the whole clip-path value invalid.
+                // <length-percentage [0,∞]>, CSS Shapes 1 §3.1
                 var unitToken = token as UnitToken;
                 var numberToken = token as NumberToken;
                 if ((unitToken != null && unitToken.Value < 0f) || (numberToken != null && numberToken.Value < 0f))

@@ -7,6 +7,7 @@ namespace HtmlRenderer.Test.Css;
 
 /// <summary>
 /// The &lt;basic-shape&gt; grammar of <see cref="BasicShapeGrammar"/> and the clip-path values built on it.
+/// The <see cref="BasicShapeGrammar"/> and the <c>clip-path</c> values it validates.
 /// </summary>
 [TestClass]
 public sealed class BasicShapeGrammarTests
@@ -17,6 +18,7 @@ public sealed class BasicShapeGrammarTests
     // ─── polygon() ─────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css-shapes-1", "#supported-basic-shapes")]
     public void Polygon_ThreePoints_ParsesWithDefaultNonzeroFill()
     {
         var shape = Parse("polygon(0 0, 100% 0, 50% 100%)");
@@ -100,6 +102,7 @@ public sealed class BasicShapeGrammarTests
     [DataRow("inset(10px 20px)", "10px", "20px", "10px", "20px")]
     [DataRow("inset(10px 20px 30px)", "10px", "20px", "30px", "20px")]
     [DataRow("inset(1px 2px 3px 4px)", "1px", "2px", "3px", "4px")]
+    [Spec("css-shapes-1", "#supported-basic-shapes")]
     public void Inset_ShorthandFill_ExpandsToTopRightBottomLeft(string value, string top, string right, string bottom, string left)
     {
         var shape = Parse(value);
@@ -202,6 +205,7 @@ public sealed class BasicShapeGrammarTests
     [DataRow("circle(-5px)")]        // negative <shape-radius> is invalid
     [DataRow("circle(-10% at center)")]
     [DataRow("ellipse(-5px 10px)")]  // a negative axis radius invalidates the whole shape
+    [Spec("css-shapes-1", "#supported-basic-shapes")]
     public void Circle_Malformed_ReturnsNull(string value)
     {
         Assert.IsNull(Parse(value));
@@ -221,6 +225,7 @@ public sealed class BasicShapeGrammarTests
     }
 
     [TestMethod]
+    [Spec("css-shapes-1", "#supported-basic-shapes")]
     public void Ellipse_TwoRadii_AndPosition()
     {
         var shape = Parse("ellipse(40px 20% at 25% 75%)");
@@ -245,20 +250,47 @@ public sealed class BasicShapeGrammarTests
     }
 
     [TestMethod]
-    [DataRow("ellipse(40px)")]           // exactly one radius is invalid
-    [DataRow("ellipse(40px 20px 10px)")] // three radii
+    [DataRow("ellipse(40px 20px 10px)")]
+    [Spec("css-shapes-1", "#supported-basic-shapes")]
     public void Ellipse_Malformed_ReturnsNull(string value)
     {
         Assert.IsNull(Parse(value));
     }
 
-    // ─── top-level rejection ────────────────────────────────────────────────
+    [Ignore("Gap, see Spec/css-shapes-1.yml")]
+    [TestMethod]
+    [DataRow("ellipse(40px)")]
+    [DataRow("ellipse(closest-side)")]
+    [Spec("css-shapes-1", "#supported-basic-shapes")]
+    public void Ellipse_OneRadiusIsValid(string value)
+    {
+        Assert.IsNotNull(Parse(value));
+    }
+
+    [Ignore("Gap, see Spec/css-shapes-1.yml")]
+    [TestMethod]
+    [DataRow("rect(0 auto 10px 5%)")]
+    [DataRow("xywh(10px 10px 50% 20px round 4px)")]
+    [DataRow("polygon(round 5px, 0 0, 100% 0, 50% 100%)")]
+    [DataRow("path(\"M 0 0 L 10 0 L 0 10 Z\")")]
+    [Spec("css-shapes-1", "#supported-basic-shapes")]
+    public void RectXywhPathAndRoundedPolygon_AreBasicShapes(string value)
+    {
+        Assert.IsNotNull(Parse(value));
+    }
+
+    [Ignore("Gap, see Spec/css-shapes-1.yml")]
+    [TestMethod]
+    [Spec("css-shapes-1", "#shape-function")]
+    public void ShapeFunction_IsABasicShape()
+    {
+        Assert.IsNotNull(Parse("shape(from 0 0, line to 100% 0, line to 50% 100%, close)"));
+    }
 
     [TestMethod]
     [DataRow("none")]
     [DataRow("banana")]
     [DataRow("url(#clip)")]
-    [DataRow("rect(0 0 0 0)")]
     public void NonBasicShape_ReturnsNull(string value)
     {
         Assert.IsNull(Parse(value));
