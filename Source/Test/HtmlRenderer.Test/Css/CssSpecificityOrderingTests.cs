@@ -29,6 +29,7 @@ public sealed class CssSpecificityOrderingTests
 
     [TestMethod]
     [Spec("css21", "cascade.html#cascading-order")]
+    [Spec("css-conditional-3", "#processing")]
     public void MediaRuleDeclaredEarlier_LosesToEqualSpecificityPlainRuleDeclaredLater()
     {
         var html = Html(

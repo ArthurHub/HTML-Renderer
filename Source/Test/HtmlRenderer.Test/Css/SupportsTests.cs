@@ -3,20 +3,11 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/Supports.cs.
-/// HTML-Renderer's <see cref="DeclarationCondition"/> still uses the old grammar-only oracle
-/// (<c>Property.TrySetValue</c>) rather than PeachPDF's newer <c>CssPropertyRegistry</c>-based split
-/// between "parses in the CSS-OM" and "genuinely dispatched/rendered by Layer B" - see
-/// Source/HtmlRenderer/Core/CssEngine/Conditions/DeclarationCondition.cs:16-20. That oracle still agrees
-/// with the spec-correct expectation for most cases here; the handful where it diverges (a false positive
-/// or false negative relative to what the layout engine actually does with the value) are marked
-/// <c>[Ignore]</c> below with the same citation.
-/// </summary>
 [TestClass]
 public sealed class SupportsTests
 {
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsEmptyRule()
     {
         var source = @"@supports () { }";
@@ -25,10 +16,10 @@ public sealed class SupportsTests
         Assert.IsInstanceOfType<SupportsRule>(sheet.Rules[0]);
         var supports = (SupportsRule)sheet.Rules[0];
         Assert.AreEqual(string.Empty, supports.ConditionText);
-        Assert.IsTrue(supports.Condition.Check());
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsBackgroundColorRedRule()
     {
         var source = @"@supports (background-color: red) { }";
@@ -41,6 +32,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsBackgroundColorRedAndColorBlueRule()
     {
         var source = @"@supports ((background-color: red) and (color: blue)) { }";
@@ -53,6 +45,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsBreakAfterPageRule()
     {
         var source = @"@supports (break-after: page) { }";
@@ -64,6 +57,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsBreakAfterInvalidValueRule()
     {
         var source = @"@supports (break-after: not-a-real-value) { }";
@@ -75,6 +69,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsNotUnsupportedDeclarationRule()
     {
         var source = @"@supports (not (background-transparency: half)) { }";
@@ -87,6 +82,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsUnsupportedDeclarationRule()
     {
         var source = @"@supports ((background-transparency: zero)) { }";
@@ -99,6 +95,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsBackgroundRedWithImportantRule()
     {
         var source = @"@supports (background: red !important) { }";
@@ -111,6 +108,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsBackgroundInheritRule()
     {
         var source = @"@supports (background: inherit) { }";
@@ -120,11 +118,8 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
-    [Ignore("HTML-Renderer's DeclarationCondition.Check() still uses the old grammar-only oracle " +
-            "(Property.TrySetValue), which parses 'animation-name' fine in the CSS-OM even though it is " +
-            "never dispatched by the layout engine - a false positive relative to PeachPDF's newer " +
-            "CssPropertyRegistry-based distinction. See " +
-            "Source/HtmlRenderer/Core/CssEngine/Conditions/DeclarationCondition.cs:16-20.")]
+    [Ignore("Gap, see Spec/css-conditional-3.yml")]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsAnimationNameRule_NoLongerFalsePositive()
     {
         var source = @"@supports (animation-name: spin) { }";
@@ -134,12 +129,14 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
-    public void SupportsSvgFillRule_NoLongerFalseNegative()
+    [Ignore("Gap, see Spec/css-conditional-3.yml")]
+    [Spec("css-conditional-3", "#support-definition")]
+    public void SupportsSvgFillRule_NotGenuinelyRendered()
     {
         var source = @"@supports (fill: red) { }";
         var sheet = CssConstructionFunctions.ParseStyleSheet(source);
         var supports = (SupportsRule)sheet.Rules[0];
-        Assert.IsTrue(supports.Condition.Check());
+        Assert.IsFalse(supports.Condition.Check());
     }
 
     [TestMethod]
@@ -148,6 +145,7 @@ public sealed class SupportsTests
     [DataRow("unset")]
     [DataRow("revert")]
     [DataRow("revert-layer")]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsCssWideKeywordRule_AlwaysSupportedForARecognizedProperty(string keyword)
     {
         var source = $@"@supports (color: {keyword}) {{ }}";
@@ -157,6 +155,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsCssWideKeywordRule_StillFailsForAnUnrecognizedProperty()
     {
         var source = @"@supports (background-transparency: inherit) { }";
@@ -166,19 +165,19 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
-    public void SupportsTransformRotateRule()
+    [Ignore("Gap, see Spec/css-conditional-3.yml")]
+    [Spec("css-conditional-3", "#support-definition")]
+    public void SupportsTransformRotateRule_NotGenuinelyRendered()
     {
         var source = @"@supports (transform: rotate(10deg)) { }";
         var sheet = CssConstructionFunctions.ParseStyleSheet(source);
         var supports = (SupportsRule)sheet.Rules[0];
-        Assert.IsTrue(supports.Condition.Check());
+        Assert.IsFalse(supports.Condition.Check());
     }
 
     [TestMethod]
-    [Ignore("HTML-Renderer's DeclarationCondition.Check() still uses the old grammar-only oracle, which " +
-            "parses perspective() as a valid transform function even though it is not genuinely rendered - " +
-            "a false positive relative to PeachPDF's CssPropertyRegistry-based split. See " +
-            "Source/HtmlRenderer/Core/CssEngine/Conditions/DeclarationCondition.cs:16-20.")]
+    [Ignore("Gap, see Spec/css-conditional-3.yml")]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsTransformPerspectiveRule_NotGenuinelyRendered()
     {
         var source = @"@supports (transform: perspective(300px)) { }";
@@ -188,6 +187,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsBreakBeforeRegionRule_NotGenuinelyEnforced()
     {
         var source = @"@supports (break-before: region) { }";
@@ -197,6 +197,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsBreakBeforePageRule()
     {
         var source = @"@supports (break-before: page) { }";
@@ -206,15 +207,18 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
-    public void SupportsColumnSpanAllRule()
+    [Ignore("Gap, see Spec/css-conditional-3.yml")]
+    [Spec("css-conditional-3", "#support-definition")]
+    public void SupportsColumnSpanAllRule_NotGenuinelyEnforced()
     {
         var source = @"@supports (column-span: all) { }";
         var sheet = CssConstructionFunctions.ParseStyleSheet(source);
         var supports = (SupportsRule)sheet.Rules[0];
-        Assert.IsTrue(supports.Condition.Check());
+        Assert.IsFalse(supports.Condition.Check());
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsColumnSpanNoneRule()
     {
         var source = @"@supports (column-span: none) { }";
@@ -224,10 +228,8 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
-    [Ignore("HTML-Renderer's DeclarationCondition.Check() still uses the old grammar-only oracle, which " +
-            "parses 'keep-all' as a valid word-break value even though the line-breaking logic only " +
-            "special-cases break-all - a false positive relative to PeachPDF's CssPropertyRegistry-based " +
-            "split. See Source/HtmlRenderer/Core/CssEngine/Conditions/DeclarationCondition.cs:16-20.")]
+    [Ignore("Gap, see Spec/css-conditional-3.yml")]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsWordBreakKeepAllRule_NotGenuinelyEnforced()
     {
         var source = @"@supports (word-break: keep-all) { }";
@@ -237,15 +239,18 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
-    public void SupportsTextTransformFullWidthRule()
+    [Ignore("Gap, see Spec/css-conditional-3.yml")]
+    [Spec("css-conditional-3", "#support-definition")]
+    public void SupportsTextTransformFullWidthRule_NotGenuinelyEnforced()
     {
         var source = @"@supports (text-transform: full-width) { }";
         var sheet = CssConstructionFunctions.ParseStyleSheet(source);
         var supports = (SupportsRule)sheet.Rules[0];
-        Assert.IsTrue(supports.Condition.Check());
+        Assert.IsFalse(supports.Condition.Check());
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsWordBreakAllRule()
     {
         var source = @"@supports (word-break: break-all) { }";
@@ -255,6 +260,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsDirectionRule()
     {
         var source = @"@supports (direction: rtl) { }";
@@ -264,6 +270,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsDirectionGarbageValueRule_NoLongerAlwaysTrue()
     {
         var source = @"@supports (direction: sideways) { }";
@@ -273,6 +280,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsDisplayContentsRule_NotImplemented()
     {
         var source = @"@supports (display: contents) { }";
@@ -282,6 +290,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsPaddingTopOrPaddingLeftRule()
     {
         var source = @"@supports ((padding-TOP :  0) or (padding-left : 0)) { }";
@@ -294,6 +303,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsPaddingTopOrPaddingLeftAndPaddingBottomOrPaddingRightRule()
     {
         var source = @"@supports (((padding-top: 0)  or  (padding-left: 0))  and  ((padding-bottom:  0)  or  (padding-right: 0))) { }";
@@ -306,6 +316,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsDisplayFlexWithImportantRule()
     {
         var source = @"@supports (display: flex !important) { }";
@@ -318,6 +329,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsBareDisplayFlexRule()
     {
         var source = @"@supports display: flex { }";
@@ -326,6 +338,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsDisplayFlexMultipleBracketsRule()
     {
         var source = @"@supports ((display: flex)) { }";
@@ -338,11 +351,8 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
-    [Ignore("HTML-Renderer's DeclarationCondition.Check() still uses the old grammar-only oracle, which " +
-            "parses transition-property/animation-name fine in the CSS-OM even though neither is genuinely " +
-            "dispatched by the layout engine - a false positive relative to PeachPDF's " +
-            "CssPropertyRegistry-based split. See " +
-            "Source/HtmlRenderer/Core/CssEngine/Conditions/DeclarationCondition.cs:16-20.")]
+    [Ignore("Gap, see Spec/css-conditional-3.yml")]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsTransitionOrAnimationNameAndTransformFrontBracketRule()
     {
         var source = @"@supports ((transition-property: color) or
@@ -357,11 +367,8 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
-    [Ignore("HTML-Renderer's DeclarationCondition.Check() still uses the old grammar-only oracle, which " +
-            "parses transition-property/animation-name fine in the CSS-OM even though neither is genuinely " +
-            "dispatched by the layout engine - a false positive relative to PeachPDF's " +
-            "CssPropertyRegistry-based split. See " +
-            "Source/HtmlRenderer/Core/CssEngine/Conditions/DeclarationCondition.cs:16-20.")]
+    [Ignore("Gap, see Spec/css-conditional-3.yml")]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsTransitionOrAnimationNameAndTransformBackBracketRule()
     {
         var source = @"@supports (transition-property: color) or
@@ -376,6 +383,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsShadowVendorPrefixesRule()
     {
         var source = @"@supports ( box-shadow: 0 0 2px black ) or
@@ -391,6 +399,7 @@ public sealed class SupportsTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsNegatedDisplayFlexRuleWithDeclarations()
     {
         var source = @"@supports not ( display: flex ) {

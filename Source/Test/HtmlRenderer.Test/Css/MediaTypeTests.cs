@@ -61,6 +61,7 @@ public sealed class MediaTypeTests
     [Spec("css21", "media.html#at-media-rule")]
     [DataRow("print", "10pt")]
     [DataRow("screen", "13px")]
+    [Spec("css-conditional-3", "#at-media")]
     public void AtMedia_SelectsTheRulesForTheMediaType(string mediaType, string fontSize)
     {
         var box = Box("""
@@ -77,13 +78,15 @@ public sealed class MediaTypeTests
 
     [TestMethod]
     [Spec("css21", "media.html#at-media-rule")]
+    [Spec("css-conditional-3", "#processing")]
     public void RulesOutsideAtMedia_ApplyToAllMediaTypes()
     {
-        Assert.AreEqual(Green, ColorOf("<style>p { color: green } @media screen { div { color: red } }</style>", "print"));
+        Assert.AreEqual(Green, ColorOf("<style>p { color: green } @media screen { p { color: red } }</style>", "print"));
     }
 
     [TestMethod]
     [Spec("css21", "media.html#at-media-rule")]
+    [Spec("css-conditional-3", "#contents-of")]
     public void InvalidStatementInsideAtMedia_IsIgnored()
     {
         Assert.AreEqual(Green, ColorOf("<style>@media screen { p..x { color: red } p { color: green } }</style>"));

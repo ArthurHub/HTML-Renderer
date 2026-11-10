@@ -24,6 +24,7 @@ public sealed class MediaQueryTests
 
     [TestMethod]
     [Spec("css21", "media.html#at-media-rule")]
+    [Spec("css-conditional-3", "#at-media")]
     public void AtMedia_Print_NestedRuleAppliesUnderPrintMedia()
     {
         var box = LayoutAndFindTag("@media print { p { color: red; } }", "<p>text</p>", "p", "print");
@@ -32,6 +33,7 @@ public sealed class MediaQueryTests
 
     [TestMethod]
     [Spec("css21", "media.html#at-media-rule")]
+    [Spec("css-conditional-3", "#processing")]
     public void AtMedia_Print_DoesNotApplyUnderScreenMedia()
     {
         // the rule is scoped to the "print" media only - it must not leak into "screen".
@@ -57,6 +59,7 @@ public sealed class MediaQueryTests
 
     [TestMethod]
     [Spec("css21", "media.html#at-media-rule")]
+    [Spec("css-conditional-3", "#at-media")]
     public void AtMedia_Print_MultipleNestedRulesAreParsed()
     {
         const string css = "@media print { p { color: red; } div { font-size: 12pt; } }";

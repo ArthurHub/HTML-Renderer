@@ -5,49 +5,34 @@ snapshot: https://www.w3.org/TR/2024/CRD-css-conditional-3-20240815/
 sections:
   '#introduction':
     title: 1 Introduction
-    status: unknown
-  '#context':
-    title: 1.1 Background
-    status: unknown
-  '#placement':
-    title: 1.2 Module Interactions
-    status: unknown
+    status: n/a
   '#processing':
     title: 2 Processing of conditional group rules
-    status: unknown
+    status: supported
   '#contents-of':
     title: 3 Contents of conditional group rules
-    status: unknown
+    status: supported
   '#use':
     title: 4 Placement of conditional group rules
-    status: unknown
+    status: supported
   '#at-media':
     title: '5 Media-specific style sheets: the @media rule'
-    status: unknown
+    status: partial
+    gaps:
+      - An empty media query list doesn't match, it should be true
   '#at-supports':
     title: '6 Feature queries: the @supports rule'
-    status: unknown
+    status: partial
+    gaps:
+      - '<general-enclosed> makes the rule invalid, or for an empty () true, instead of evaluating to false'
   '#support-definition':
     title: 6.1 Definition of support
-    status: unknown
+    status: partial
+    gaps:
+      - 'Every value the parser accepts counts as supported, also where layout ignores it, e.g. animation-name, transform: perspective(), word-break: keep-all'
   '#apis':
     title: 7 APIs
-    status: unknown
-  '#extensions-to-cssrule-interface':
-    title: 7.1 Extensions to the CSSRule interface
-    status: unknown
-  '#the-cssconditionrule-interface':
-    title: 7.2 The CSSConditionRule interface
-    status: unknown
-  '#the-cssmediarule-interface':
-    title: 7.3 The CSSMediaRule interface
-    status: unknown
-  '#the-csssupportsrule-interface':
-    title: 7.4 The CSSSupportsRule interface
-    status: unknown
-  '#the-css-namespace':
-    title: 7.5 The CSS namespace, and the supports() function
-    status: unknown
+    status: n/a
   '#changes':
     title: 8 Changes
-    status: unknown
+    status: n/a

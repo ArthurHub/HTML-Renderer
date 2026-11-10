@@ -4,17 +4,13 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 
 namespace HtmlRenderer.Test.Css.Selectors;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/ConditionGroupingRuleIntegrationTests.cs.
-/// <c>Supports_SvgOnlyProperty_AppliesToAnInlineSvgElement</c> is not ported, HTML-Renderer has no SVG
-/// rendering pipeline. The cascade doesn't apply <c>@container</c>'s inner rules yet.
-/// </summary>
 [TestClass]
 public sealed class ConditionGroupingRuleIntegrationTests
 {
     private static readonly RColor Blue = RColor.FromArgb(0, 0, 255);
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void Supports_InnerRules_Apply_WhenConditionIsSupported()
     {
         var html = Html(
@@ -25,6 +21,7 @@ public sealed class ConditionGroupingRuleIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsNot_Applies_WhenDeclarationIsInvalid()
     {
         var html = Html(
@@ -35,8 +32,8 @@ public sealed class ConditionGroupingRuleIntegrationTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant - DeclarationCondition.Check() reports animation-name as supported, " +
-            "see SupportsTests.SupportsAnimationNameRule_NoLongerFalsePositive")]
+    [Ignore("Gap, see Spec/css-conditional-3.yml")]
+    [Spec("css-conditional-3", "#support-definition")]
     public void SupportsNot_Fallback_Applies_WhenFeatureIsUnsupported()
     {
         var html = Html(
@@ -46,10 +43,8 @@ public sealed class ConditionGroupingRuleIntegrationTests
         Assert.AreEqual(Blue, box.ActualColor);
     }
 
-    // The exact scenario the pre-evaluation stopgap PeachPDF#283 was written to avoid: an enhanced
-    // block and its not-guarded fallback wrapping the same declaration, both present in one
-    // stylesheet. Real evaluation must let exactly one of them win, never both and never neither.
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void SupportsEnhancedBlockAndNotGuardedFallback_ExactlyOneApplies()
     {
         var html = Html(
@@ -62,6 +57,7 @@ public sealed class ConditionGroupingRuleIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void Supports_InnerRules_DoNotApply_WhenConditionIsNotSupported()
     {
         var html = Html(
@@ -72,6 +68,7 @@ public sealed class ConditionGroupingRuleIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void Supports_NestedWithMedia_AppliesOnlyWhenAllConditionsHold()
     {
         var html = Html(
@@ -85,6 +82,7 @@ public sealed class ConditionGroupingRuleIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css-conditional-3", "#at-supports")]
     public void Supports_InsideLayer_AppliesOnlyWhenConditionIsSupported()
     {
         var html = Html(

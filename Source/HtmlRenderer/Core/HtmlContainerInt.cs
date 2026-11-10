@@ -617,11 +617,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
-        /// Re-runs the cascade if the viewport has changed in a way that changes which <c>@media</c>
-        /// rules apply - a resize crossing a <c>min-width</c> breakpoint, say. Nothing happens for a
-        /// document whose stylesheets have no viewport-dependent <c>@media</c> (the common case), or for
-        /// a resize that stays within the same breakpoint, so this costs one cheap condition test per
-        /// layout rather than a re-parse.
+        /// Re-runs the cascade when a viewport change flips the outcome of an <c>@media</c> condition
+        /// (CSS Conditional 3 §2), by parsing the document again.
         /// </summary>
         private void RefreshMediaDependentCascade()
         {
@@ -630,11 +627,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             var media = MediaQueryContext.FromAdapter(_adapter, _maxSize.Width, _maxSize.Height);
             if (!_cssData.MediaOutcomeChanged(_cascadeMedia, media)) return;
 
-            // Bridges into the async SetHtml from this synchronous layout-time caller - PerformLayout
-            // itself stays synchronous (confirmed: nothing in the layout/paint call graph touches
-            // RAdapter.GetResourceStream synchronously - image loads are fire-and-forget-then-relayout,
-            // not awaited inline - so there's no reason for PerformLayout to become async), so this is a
-            // deliberate, permanent blocking call, not a temporary stopgap.
+            // PerformLayout is synchronous, so this blocks on the async SetHtml
             SetHtml(_htmlSource, _baseCssData).GetAwaiter().GetResult();
         }
 
