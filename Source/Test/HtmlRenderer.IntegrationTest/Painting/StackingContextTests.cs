@@ -16,6 +16,7 @@ public sealed class StackingContextTests
 
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
+    [Spec("css-position-4", "#painting-order")]
     public void BlockBackgrounds_PaintInTreeOrder()
     {
         var g = Paint("<div style='height:40px;background:rgb(255,0,0)'><div style='height:20px;background:rgb(0,0,255)'></div></div>");
@@ -25,6 +26,7 @@ public sealed class StackingContextTests
 
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
+    [Spec("css-position-4", "#painting-order")]
     public void Background_PaintsBeforeText()
     {
         var g = Paint("<div style='background:rgb(0,0,255)'>Text</div>");
@@ -34,6 +36,7 @@ public sealed class StackingContextTests
 
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
+    [Spec("css-position-4", "#painting-order")]
     [Spec("css21", "visuren.html#z-index")]
     [Spec("css-position-3", "#stacking")]
     public void AbsoluteBox_PaintsAfterLaterInFlowSiblings()
@@ -60,6 +63,7 @@ public sealed class StackingContextTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
+    [Spec("css-position-4", "#painting-order")]
     [Spec("css21", "visuren.html#z-index")]
     public void PositionedZIndex_PaintsOverFixedPositionedContent()
     {
@@ -72,6 +76,7 @@ public sealed class StackingContextTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
+    [Spec("css-position-4", "#painting-order")]
     [Spec("css21", "visuren.html#z-index")]
     public void NegativeZIndex_PaintsBelowInFlowBlocks()
     {
@@ -84,6 +89,7 @@ public sealed class StackingContextTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
+    [Spec("css-position-4", "#painting-order")]
     [Spec("css21", "visuren.html#z-index")]
     [Spec("css-position-3", "#stacking")]
     public void RelativeBox_PaintsAfterLaterInFlowSiblings()
@@ -97,6 +103,7 @@ public sealed class StackingContextTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
+    [Spec("css-position-4", "#painting-order")]
     public void AbsoluteBox_PaintsAfterInFlowContentOutsideItsParent()
     {
         var g = Paint("<div style='position:relative'><div style='position:absolute;width:20px;height:20px;background:rgb(255,0,0)'></div></div>"
@@ -108,6 +115,7 @@ public sealed class StackingContextTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
+    [Spec("css-position-4", "#painting-order")]
     public void Float_PaintsAfterLaterBlockBackgrounds()
     {
         var g = Paint("<div style='float:left;width:50px;height:50px;background:rgb(255,0,0)'></div>"
@@ -119,6 +127,7 @@ public sealed class StackingContextTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
+    [Spec("css-position-4", "#painting-order")]
     public void BlockBackgrounds_PaintBeforeInlineContent()
     {
         var g = Paint("<div style='height:20px'>Text</div>"
@@ -130,6 +139,7 @@ public sealed class StackingContextTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
+    [Spec("css-position-4", "#painting-order")]
     public void UnderlineAndOverline_PaintBeforeTheText_LineThroughAfter()
     {
         var g = Paint("<div><span style='text-decoration:underline overline line-through'>Deco</span></div>");
@@ -151,6 +161,7 @@ public sealed class StackingContextTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
+    [Spec("css-position-4", "#painting-order")]
     public void RootBackground_CoversTheWholeCanvas()
     {
         var (_, container) = PaintHarness.Layout(

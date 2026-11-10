@@ -114,6 +114,7 @@ public sealed class FragmentPaintIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "zindex.html#painting-order")]
+    [Spec("css-position-4", "#painting-order")]
     public void StackingOrder_IsPreservedWhenPaintingFromFragments()
     {
         var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(
