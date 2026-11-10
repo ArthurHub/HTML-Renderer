@@ -12,8 +12,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Network;
@@ -142,36 +144,120 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
             while (idx >= 0 && idx < stylesheet.Length)
             {
                 idx = stylesheet.IndexOf("url(", idx, StringComparison.OrdinalIgnoreCase);
-                if (idx >= 0)
+                if (idx < 0)
+                    break;
+
+                if (TryReadUrl(stylesheet, idx + 4, out var urlStr, out var endIdx) &&
+                    Uri.TryCreate(urlStr, UriKind.Relative, out var url))
                 {
-                    int endIdx = stylesheet.IndexOf(')', idx);
-                    if (endIdx > idx + 4)
-                    {
-                        var offset1 = 4 + (stylesheet[idx + 4] == '\'' ? 1 : 0);
-                        var offset2 = (stylesheet[endIdx - 1] == '\'' ? 1 : 0);
-                        var urlStr = stylesheet.Substring(idx + offset1, endIdx - idx - offset1 - offset2);
-                        Uri url;
-                        if (Uri.TryCreate(urlStr, UriKind.Relative, out url))
-                        {
-                            url = new Uri(baseUri, url);
-                            stylesheet = stylesheet.Remove(idx + 4, endIdx - idx - 4);
-                            stylesheet = stylesheet.Insert(idx + 4, url.AbsoluteUri);
-                            idx += url.AbsoluteUri.Length + 4;
-                        }
-                        else
-                        {
-                            idx = endIdx + 1;
-                        }
-                    }
-                    else
-                    {
-                        idx += 4;
-                    }
+                    // Written back quoted, unquoted it couldn't hold the ' ( ) an absolute URI may contain
+                    var replacement = "\"" + new Uri(baseUri, url).AbsoluteUri + "\"";
+                    stylesheet = stylesheet.Remove(idx + 4, endIdx - idx - 4).Insert(idx + 4, replacement);
+                    idx += 4 + replacement.Length + 1;
+                }
+                else
+                {
+                    idx += 4;
                 }
             }
 
             return stylesheet;
         }
+
+        /// <summary>
+        /// Read the URL of a url() without its quotes and with its escapes resolved.
+        /// </summary>
+        /// <param name="stylesheet">the stylesheet to read from</param>
+        /// <param name="start">the index right after "url("</param>
+        /// <param name="url">the URL</param>
+        /// <param name="endIdx">the index of the closing ')'</param>
+        /// <returns>false if it isn't a well-formed url()</returns>
+        private static bool TryReadUrl(string stylesheet, int start, out string url, out int endIdx)
+        {
+            // CSS 2.1 4.3.4: optional whitespace and a pair of matching ' or " quotes around the URL
+            url = null;
+            endIdx = -1;
+
+            int i = SkipWhitespace(stylesheet, start);
+            char quote = i < stylesheet.Length && (stylesheet[i] == '"' || stylesheet[i] == '\'') ? stylesheet[i++] : '\0';
+
+            var sb = new StringBuilder();
+            while (true)
+            {
+                if (i >= stylesheet.Length)
+                    return false;
+
+                char c = stylesheet[i];
+                if (quote != '\0' ? c == quote : c == ')' || IsWhitespace(c))
+                    break;
+                if (quote != '\0' ? c == '\n' || c == '\r' || c == '\f' : c == '"' || c == '\'' || c == '(')
+                    return false;
+
+                if (c == '\\')
+                {
+                    i = Unescape(stylesheet, i + 1, sb);
+                }
+                else
+                {
+                    sb.Append(c);
+                    i++;
+                }
+            }
+
+            if (quote != '\0')
+                i++;
+
+            i = SkipWhitespace(stylesheet, i);
+            if (i >= stylesheet.Length || stylesheet[i] != ')' || sb.Length == 0)
+                return false;
+
+            url = sb.ToString();
+            endIdx = i;
+            return true;
+        }
+
+        /// <summary>
+        /// Append what the escape after a backslash stands for (CSS 2.1 4.1.3).
+        /// </summary>
+        /// <param name="stylesheet">the stylesheet to read from</param>
+        /// <param name="i">the index right after the backslash</param>
+        /// <param name="sb">the builder to append to</param>
+        /// <returns>the index after the escape</returns>
+        private static int Unescape(string stylesheet, int i, StringBuilder sb)
+        {
+            if (i >= stylesheet.Length)
+                return i;
+
+            int hexEnd = i;
+            while (hexEnd < stylesheet.Length && hexEnd - i < 6 && Uri.IsHexDigit(stylesheet[hexEnd]))
+                hexEnd++;
+
+            if (hexEnd == i)
+            {
+                // A backslash before a newline in a string continues the line
+                if (stylesheet[i] == '\r' && i + 1 < stylesheet.Length && stylesheet[i + 1] == '\n')
+                    return i + 2;
+                if (stylesheet[i] != '\n' && stylesheet[i] != '\r' && stylesheet[i] != '\f')
+                    sb.Append(stylesheet[i]);
+                return i + 1;
+            }
+
+            int codePoint = int.Parse(stylesheet.Substring(i, hexEnd - i), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            sb.Append(codePoint == 0 || codePoint > 0x10FFFF || (codePoint >= 0xD800 && codePoint <= 0xDFFF) ? "�" : char.ConvertFromUtf32(codePoint));
+
+            if (hexEnd + 1 < stylesheet.Length && stylesheet[hexEnd] == '\r' && stylesheet[hexEnd + 1] == '\n')
+                return hexEnd + 2;
+            return hexEnd < stylesheet.Length && IsWhitespace(stylesheet[hexEnd]) ? hexEnd + 1 : hexEnd;
+        }
+
+        private static int SkipWhitespace(string stylesheet, int i)
+        {
+            while (i < stylesheet.Length && IsWhitespace(stylesheet[i]))
+                i++;
+            return i;
+        }
+
+        private static bool IsWhitespace(char c) => c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f';
 
         #endregion
     }
