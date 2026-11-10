@@ -90,6 +90,14 @@ public sealed class CssTransformsTests
         AssertContainingBlockForFixedDescendants("offset-path:ray(0deg)");
     }
 
+    [Ignore("Gap, see Spec/css-will-change-1.yml")]
+    [TestMethod]
+    [Spec("css-will-change-1", "#will-change")]
+    public void WillChangeTransform_IsTheContainingBlockForFixedDescendants()
+    {
+        AssertContainingBlockForFixedDescendants("will-change:transform");
+    }
+
     private static void AssertContainingBlockForFixedDescendants(string style)
     {
         var root = Layout($"<div style='height:50px'></div><div id='t' style='{style};margin-left:30px;width:100px;height:100px'>"
