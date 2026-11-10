@@ -150,8 +150,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Formats a counter value for <c>content: counter()</c> (CSS 2.1 §12.4.2). Unknown styles and
-        /// values a style can't represent fall back to decimal (CSS Counter Styles 3 §2).
+        /// Formats a counter value for <c>content: counter()</c> (CSS 2.1 §12.4.2), an unknown style as
+        /// decimal (CSS Counter Styles 3 §5).
         /// </summary>
         public static string FormatCounterValue(int number, string style)
         {

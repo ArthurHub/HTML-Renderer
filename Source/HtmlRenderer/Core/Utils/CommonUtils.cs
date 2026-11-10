@@ -392,11 +392,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Convert number to alpha numeric system by the requested style (UpperAlpha, LowerRoman, Hebrew, etc.).
+        /// Formats a number in one of the predefined counter styles (CSS Counter Styles 3 §6), an unknown
+        /// style as upper-alpha. Empty for 0.
         /// </summary>
-        /// <param name="number">the number to convert</param>
-        /// <param name="style">the css style to convert by</param>
-        /// <returns>converted string</returns>
         public static string ConvertToAlphaNumber(int number, string style = CssConstants.UpperAlpha)
         {
             if (number == 0)
@@ -442,11 +440,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Convert the given integer into alphabetic numeric format (D, AU, etc.)
+        /// lower-alpha and upper-alpha (CSS Counter Styles 3 §6.2).
         /// </summary>
-        /// <param name="number">the number to convert</param>
-        /// <param name="lowercase">is to use lowercase</param>
-        /// <returns>the roman number string</returns>
         private static string ConvertToEnglishNumber(int number, bool lowercase)
         {
             var sb = string.Empty;
@@ -470,10 +465,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Convert the given integer into alphabetic numeric format (alpha, AU, etc.)
+        /// lower-greek (CSS Counter Styles 3 §6.2), the final sigma is skipped.
         /// </summary>
-        /// <param name="number">the number to convert</param>
-        /// <returns>the roman number string</returns>
         private static string ConvertToGreekNumber(int number)
         {
             var sb = string.Empty;
@@ -498,11 +491,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Convert the given integer into roman numeric format (II, VI, IX, etc.)
+        /// lower-roman and upper-roman (CSS Counter Styles 3 §6.1).
         /// </summary>
-        /// <param name="number">the number to convert</param>
-        /// <param name="lowercase">if to use lowercase letters for roman digits</param>
-        /// <returns>the roman number string</returns>
         private static string ConvertToRomanNumbers(int number, bool lowercase)
         {
             // CSS Counter Styles 3 §6.1: the roman styles have the range 1 to 3999
@@ -538,11 +528,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Convert the given integer into given alphabet numeric system.
+        /// Additive numbering from a table of units, tens, hundreds and thousands.
         /// </summary>
-        /// <param name="number">the number to convert</param>
-        /// <param name="alphabet">the alphabet system to use</param>
-        /// <returns>the number string</returns>
         private static string ConvertToSpecificNumbers(int number, string[,] alphabet)
         {
             int level = 0;
@@ -559,11 +546,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         }
 
         /// <summary>
-        /// Convert the given integer into given alphabet numeric system.
+        /// Hiragana and katakana numbering.
         /// </summary>
-        /// <param name="number">the number to convert</param>
-        /// <param name="alphabet">the alphabet system to use</param>
-        /// <returns>the number string</returns>
         private static string ConvertToSpecificNumbers2(int number, string[] alphabet)
         {
             for (int i = 20; i > 0; i--)

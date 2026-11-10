@@ -31,6 +31,9 @@ public sealed class ListStyleTests
     [DataRow("armenian", "Գ.")]
     [DataRow("georgian", "გ.")]
     [Spec("css-lists-3", "#text-markers")]
+    [Spec("css-counter-styles-3", "#extending-css2")]
+    [Spec("css-counter-styles-3", "#simple-numeric")]
+    [Spec("css-counter-styles-3", "#simple-alphabetic")]
     public void NumberedListStyleType_NumbersTheItem(string type, string expected)
     {
         Assert.AreEqual(expected, Marker($"<ol style='list-style-type:{type}'><li>a</li><li>b</li><li id=x>c</li></ol>"));
@@ -39,6 +42,7 @@ public sealed class ListStyleTests
     [TestMethod]
     [Spec("css21", "generate.html#list-style")]
     [Spec("css-lists-3", "#text-markers")]
+    [Spec("css-counter-styles-3", "#simple-symbolic")]
     public void GlyphListStyleTypes_AreDistinct()
     {
         var disc = Marker("<ul style='list-style-type:disc'><li id=x>a</li></ul>");
@@ -112,6 +116,7 @@ public sealed class ListStyleTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "generate.html#list-style")]
+    [Spec("css-counter-styles-3", "#simple-numeric")]
     public void Georgian_Twenty_IsKan()
     {
         Assert.AreEqual("კ.", Marker("<ol style='list-style-type:georgian' start=20><li id=x>a</li></ol>"));

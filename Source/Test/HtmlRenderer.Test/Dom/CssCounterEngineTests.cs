@@ -18,6 +18,8 @@ public sealed class CssCounterEngineTests
     [DataRow(1, "lower-alpha", "a")]
     [DataRow(3, "upper-alpha", "C")]
     [Spec("css-lists-3", "#counter-functions")]
+    [Spec("css-counter-styles-3", "#simple-numeric")]
+    [Spec("css-counter-styles-3", "#simple-alphabetic")]
     public void FormatCounterValue_KnownStyles_FormatAsExpected(int number, string style, string expected)
     {
         Assert.AreEqual(expected, CssCounterEngine.FormatCounterValue(number, style));
@@ -27,9 +29,9 @@ public sealed class CssCounterEngineTests
     [DataRow(1)]
     [DataRow(7)]
     [DataRow(42)]
+    [Spec("css-counter-styles-3", "#extending-css2")]
     public void FormatCounterValue_UnknownStyle_FallsBackToDecimal(int number)
     {
-        // CSS Counter Styles 3 §2
         Assert.AreEqual(number.ToString(System.Globalization.CultureInfo.InvariantCulture),
             CssCounterEngine.FormatCounterValue(number, "not-a-real-style"));
     }
@@ -41,9 +43,9 @@ public sealed class CssCounterEngineTests
     [DataRow(-3, "lower-roman", "-3")]
     [DataRow(-3, "upper-roman", "-3")]
     [DataRow(4000, "lower-roman", "4000")]
+    [Spec("css-counter-styles-3", "#counter-styles")]
     public void FormatCounterValue_AlphabeticStyleOutOfRange_FallsBackToDecimal(int number, string style, string expected)
     {
-        // CSS Counter Styles 3 §2, values out of the style's range use the fallback style
         Assert.AreEqual(expected, CssCounterEngine.FormatCounterValue(number, style));
     }
 

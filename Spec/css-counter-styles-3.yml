@@ -5,112 +5,127 @@ snapshot: https://www.w3.org/TR/2021/CR-css-counter-styles-3-20210727/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
+    status: n/a
   '#counter-styles':
     title: 2 Counter Styles
-    status: unknown
+    status: partial
+    gaps:
+      - A value outside the style's range isn't formatted with the fallback, e.g. hebrew 11000 is א׳
   '#the-counter-style-rule':
     title: '3 Defining Custom Counter Styles: the @counter-style rule'
-    status: unknown
+    status: unsupported
+    gaps:
+      - '@counter-style is dropped, list-style-type rejects its name'
   '#counter-style-system':
     title: '3.1 Counter algorithms: the system descriptor'
-    status: unknown
+    status: unsupported
   '#cyclic-system':
     title: '3.1.1 Cycling Symbols: the cyclic system'
-    status: unknown
+    status: unsupported
   '#fixed-system':
     title: '3.1.2 Exhaustible Symbols: the fixed system'
-    status: unknown
+    status: unsupported
   '#symbolic-system':
     title: '3.1.3 Repeating Symbols: the symbolic system'
-    status: unknown
+    status: unsupported
   '#alphabetic-system':
     title: '3.1.4 Bijective Numerals: the alphabetic system'
-    status: unknown
+    status: unsupported
   '#numeric-system':
     title: '3.1.5 Positional Numerals: the numeric system'
-    status: unknown
+    status: unsupported
   '#additive-system':
     title: '3.1.6 Accumulating Numerals: the additive system'
-    status: unknown
+    status: unsupported
   '#extends-system':
     title: '3.1.7 Building from Existing Counter Styles: the extends system'
-    status: unknown
+    status: unsupported
   '#counter-style-negative':
     title: '3.2 Formatting negative values: the negative descriptor'
-    status: unknown
+    status: unsupported
   '#counter-style-prefix':
     title: '3.3 Symbols before the marker: the prefix descriptor'
-    status: unknown
+    status: unsupported
   '#counter-style-suffix':
     title: '3.4 Symbols after the marker: the suffix descriptor'
-    status: unknown
+    status: unsupported
   '#counter-style-range':
     title: '3.5 Limiting the counter scope: the range descriptor'
-    status: unknown
+    status: unsupported
   '#counter-style-pad':
     title: '3.6 Zero-Padding and Constant-Width Representations: the pad descriptor'
-    status: unknown
+    status: unsupported
   '#counter-style-fallback':
     title: '3.7 Defining fallback: the fallback descriptor'
-    status: unknown
+    status: unsupported
   '#counter-style-symbols':
     title: '3.8 Marker characters: the symbols and additive-symbols descriptors'
-    status: unknown
+    status: unsupported
   '#counter-style-speak-as':
     title: '3.9 Speech Synthesis: the speak-as descriptor'
-    status: unknown
+    status: n/a
   '#symbols-function':
     title: '4 Defining Anonymous Counter Styles: the symbols() function'
-    status: unknown
+    status: unsupported
+    gaps:
+      - 'symbols() is rejected, see css-lists-3 #text-markers'
   '#extending-css2':
     title: 5 Extending list-style-type, counter(), and counters()
-    status: unknown
+    status: partial
+    gaps:
+      - Only the predefined styles of 6.1 to 6.3 that CSS 2.1 has, plus hebrew, are accepted
+      - 'counters() inserts nothing, see css-lists-3 #counter-functions'
   '#predefined-counters':
     title: 6 Simple Predefined Counter Styles
-    status: unknown
+    status: partial
   '#simple-numeric':
     title: '6.1 Numeric: decimal, decimal-leading-zero, arabic-indic, armenian, upper-armenian, lower-armenian, bengali, cambodian, khmer, cjk-decimal, devanagari, georgian, gujarati, gurmukhi, hebrew, kannada, lao, malayalam, mongolian, myanmar, oriya, persian, lower-roman, upper-roman, tamil, telugu, thai, tibetan'
-    status: unknown
+    status: partial
+    gaps:
+      - Only decimal, decimal-leading-zero, armenian, georgian, hebrew, lower-roman and upper-roman are supported, the others are rejected
+      - decimal-leading-zero pads negative values, -1 is -01 instead of -1
+      - 'Georgian tens are wrong, 20 is პ instead of კ, see CSS 2.1 12.5.1'
   '#simple-alphabetic':
     title: '6.2 Alphabetic: lower-alpha, lower-latin, upper-alpha, upper-latin, lower-greek, hiragana, hiragana-iroha, katakana, katakana-iroha'
-    status: unknown
+    status: partial
+    gaps:
+      - hiragana, hiragana-iroha, katakana and katakana-iroha are rejected
+      - hiragana-iroha and katakana-iroha count in the dictionary order of hiragana and katakana instead of the iroha order
   '#simple-symbolic':
     title: '6.3 Symbolic: disc, circle, square, disclosure-open, disclosure-closed'
-    status: unknown
+    status: partial
+    gaps:
+      - disclosure-open and disclosure-closed are rejected
+      - 'disc, circle and square format counter() as decimal, see css-lists-3 #counter-functions'
   '#simple-fixed':
     title: '6.4 Fixed: cjk-earthly-branch, cjk-heavenly-stem'
-    status: unknown
+    status: unsupported
   '#complex-predefined-counters':
     title: 7 Complex Predefined Counter Styles
-    status: unknown
+    status: unsupported
   '#complex-cjk':
     title: 7.1 Longhand East Asian Counter Styles
-    status: unknown
+    status: unsupported
   '#limited-japanese':
     title: '7.1.1 Japanese: japanese-informal and japanese-formal'
-    status: unknown
+    status: unsupported
   '#limited-korean':
     title: '7.1.2 Korean: korean-hangul-formal, korean-hanja-informal, and korean-hanja-formal'
-    status: unknown
+    status: unsupported
   '#limited-chinese':
     title: '7.1.3 Chinese: simp-chinese-informal, simp-chinese-formal, trad-chinese-informal, and trad-chinese-formal'
-    status: unknown
+    status: unsupported
   '#ethiopic-numeric-counter-style':
     title: '7.2 Ethiopic Numeric Counter Style: ethiopic-numeric'
-    status: unknown
+    status: unsupported
   '#additional-predefined':
     title: 8 Additional “Ready-made” Counter Styles
-    status: unknown
+    status: n/a
   '#apis':
     title: 9 APIs
-    status: unknown
-  '#extensions-to-cssrule-interface':
-    title: 9.1 Extensions to the CSSRule interface
-    status: unknown
-  '#the-csscounterstylerule-interface':
-    title: 9.2 The CSSCounterStyleRule interface
-    status: unknown
+    status: n/a
   '#ua-stylesheet':
     title: 10 Sample style sheet for HTML
-    status: unknown
+    status: unsupported
+    gaps:
+      - 'summary has no disclosure marker, see html rendering.html#the-details-and-summary-elements'
