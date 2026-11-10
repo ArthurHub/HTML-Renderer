@@ -1,5 +1,9 @@
+using System.Text;
 using HtmlRenderer.Test.CssEngineSupport;
+using HtmlRenderer.Test.TestSupport;
+using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.CssEngine;
+using TheArtOfDev.HtmlRenderer.Core.Network;
 
 namespace HtmlRenderer.Test.Css;
 
@@ -96,5 +100,48 @@ public sealed class FontFaceTests
         Assert.AreEqual(start, rangeToken.Start);
         Assert.AreEqual(end, rangeToken.End);
         Assert.AreEqual(TokenType.EndOfFile, lexer.Get().Type);
+    }
+
+    [TestMethod]
+    [DataRow("url(f.ttf)", "f.ttf")]
+    [DataRow("url('f.ttf')", "f.ttf")]
+    [DataRow("url(\"f.ttf\")", "f.ttf")]
+    [DataRow("url( \"f.ttf\" )", "f.ttf")]
+    [DataRow(@"url(""f\"")g.ttf"")", "f%22)g.ttf")]
+    [DataRow(@"url('f\'g.ttf')", "f'g.ttf")]
+    [DataRow(@"url(f\(g\).ttf)", "f(g).ttf")]
+    [DataRow(@"url(""f\67 .ttf"")", "fg.ttf")]
+    public void FontFaceInALinkedStyleSheet_ResolvesAgainstTheStyleSheetUrl(string src, string expected)
+    {
+        CollectionAssert.Contains(FontFaceRequests(src), "https://example.com/doc/css/" + expected);
+    }
+
+    private static List<string> FontFaceRequests(string src)
+    {
+        var loader = new StyleSheetLoader("@font-face { font-family: F; src: " + src + " }");
+        var container = new HtmlContainerInt(new MockAdapter { NetworkLoader = loader }) { AvoidAsyncImagesLoading = true };
+
+        container.SetHtml("<html><head><link rel=stylesheet href=css/fonts.css></head><body>a</body></html>").GetAwaiter().GetResult();
+
+        return loader.Requests;
+    }
+
+    private sealed class StyleSheetLoader(string styleSheet) : RNetworkLoader
+    {
+        public List<string> Requests { get; } = [];
+
+        public override RUri? BaseUri => new("https://example.com/doc/index.html");
+
+        public override Task<string> GetPrimaryContents() => Task.FromResult(string.Empty);
+
+        public override Task<RNetworkResponse?> GetResourceStream(RUri uri)
+        {
+            Requests.Add(uri.AbsoluteUri);
+            if (uri.AbsoluteUri != "https://example.com/doc/css/fonts.css")
+                return Task.FromResult<RNetworkResponse?>(null);
+
+            var headers = new Dictionary<string, string[]> { ["Content-Type"] = ["text/css"] };
+            return Task.FromResult<RNetworkResponse?>(new RNetworkResponse(new MemoryStream(Encoding.UTF8.GetBytes(styleSheet)), headers));
+        }
     }
 }
