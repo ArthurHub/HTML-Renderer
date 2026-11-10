@@ -5,88 +5,60 @@ snapshot: https://www.w3.org/TR/2026/WD-css-transitions-1-20260108/
 sections:
   '#introduction':
     title: 1 Introduction
-    status: unknown
-  '#values':
-    title: 1.1 Value Definitions
-    status: unknown
+    status: n/a
   '#transitions':
     title: 2 Transitions
-    status: unknown
+    status: parsed-only
   '#transition-property-property':
     title: 2.1 The transition-property Property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Only known property names are accepted, unknown names and custom properties invalidate the declaration
   '#transition-duration-property':
     title: 2.2 The transition-duration Property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Negative times are accepted
   '#transition-timing-function-property':
     title: 2.3 The transition-timing-function Property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Only the easing functions css-easing-1 lists as supported are accepted
   '#transition-delay-property':
     title: 2.4 The transition-delay Property
-    status: unknown
+    status: parsed-only
   '#transition-shorthand-property':
     title: 2.5 The transition Shorthand Property
-    status: unknown
+    status: parsed-only
   '#starting':
     title: 3 Starting of transitions
-    status: unknown
-  '#reversing':
-    title: 3.1 Faster reversing of interrupted transitions
-    status: unknown
+    status: n/a
+    gaps:
+      - "A static render has no style change event: the first style computation never starts transitions, and a re-cascade after a viewport change renders a new frame of the changed style"
   '#application':
     title: 4 Application of transitions
-    status: unknown
+    status: n/a
   '#complete':
     title: 5 Completion of transitions
-    status: unknown
+    status: n/a
   '#transition-events':
     title: 6 Transition Events
-    status: unknown
-  '#interface-transitionevent':
-    title: 6.1 Interface TransitionEvent
-    status: unknown
-  '#interface-transitionevent-idl':
-    title: 6.1.1 IDL Definition
-    status: unknown
-  '#interface-transitionevent-attributes':
-    title: 6.1.2 Attributes
-    status: unknown
-  '#event-transitionevent':
-    title: 6.2 Types of TransitionEvent
-    status: unknown
-  '#event-handlers-on-elements-document-objects-and-window-objects':
-    title: 6.3 Event handlers on elements, Document objects, and Window objects
-    status: unknown
+    status: n/a
   '#interface-dom':
     title: 7 DOM Interfaces
-    status: unknown
-  '#interface-globaleventhandlers-idl':
-    title: 7.1 IDL Definition
-    status: unknown
+    status: n/a
   '#security':
     title: 8 Security Considerations
-    status: unknown
+    status: n/a
   '#privacy':
     title: 9 Privacy Considerations
-    status: unknown
+    status: n/a
   '#accessibility':
     title: 10 Accessibility Considerations
-    status: unknown
-  '#accessibility-motion':
-    title: 10.1 Motion
-    status: unknown
-  '#accessibility-cascade':
-    title: 10.2 Cascade
-    status: unknown
+    status: n/a
   '#changes':
     title: 11 Changes
-    status: unknown
-  '#changes-2018':
-    title: 11.1 Changes since Working Draft of 11 October 2018
-    status: unknown
-  '#changes-earlier':
-    title: 11.2 Earlier changes
-    status: unknown
+    status: n/a
   '#acknowledgments':
     title: 12 Acknowledgments
-    status: unknown
+    status: n/a

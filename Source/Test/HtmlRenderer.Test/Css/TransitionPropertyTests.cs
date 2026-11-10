@@ -3,18 +3,11 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/TransitionProperty.cs (source class
-/// <c>CssTransitionPropertyTests</c>).
-/// <see cref="TransitionPropertyProperty"/> (via a restricted known-property-name list matching the
-/// "-specific"/"sliding-vertically"/"test_05"-illegal cases), <see cref="TransitionTimingFunctionProperty"/>,
-/// <see cref="TransitionDurationProperty"/>, <see cref="TransitionDelayProperty"/>, and the
-/// <see cref="TransitionProperty"/> shorthand all exist and match PeachPDF's grammar.
-/// </summary>
 [TestClass]
 public sealed class TransitionPropertyTests
 {
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-property-property")]
     public void CssTransitionPropertyNoneLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-property : none");
@@ -28,6 +21,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-property-property")]
     public void CssTransitionPropertyAllLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-property : ALL");
@@ -41,6 +35,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-property-property")]
     public void CssTransitionPropertyWidthHeightLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-property : width   , height");
@@ -53,8 +48,10 @@ public sealed class TransitionPropertyTests
         Assert.AreEqual("width, height", concrete.Value);
     }
 
+    [Ignore("Gap, see Spec/css-transitions-1.yml")]
     [TestMethod]
-    public void CssTransitionPropertyDashSpecificIllegal()
+    [Spec("css-transitions-1", "#transition-property-property")]
+    public void CssTransitionPropertyDashSpecificLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-property : -specific");
         Assert.AreEqual("transition-property", property.Name);
@@ -62,11 +59,14 @@ public sealed class TransitionPropertyTests
         Assert.IsInstanceOfType<TransitionPropertyProperty>(property);
         var concrete = (TransitionPropertyProperty)property;
         Assert.IsFalse(concrete.IsInherited);
-        Assert.IsFalse(concrete.HasValue);
+        Assert.IsTrue(concrete.HasValue);
+        Assert.AreEqual("-specific", concrete.Value);
     }
 
+    [Ignore("Gap, see Spec/css-transitions-1.yml")]
     [TestMethod]
-    public void CssTransitionPropertySlidingVerticallyIllegal()
+    [Spec("css-transitions-1", "#transition-property-property")]
+    public void CssTransitionPropertySlidingVerticallyLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-property : sliding-vertically");
         Assert.AreEqual("transition-property", property.Name);
@@ -74,11 +74,14 @@ public sealed class TransitionPropertyTests
         Assert.IsInstanceOfType<TransitionPropertyProperty>(property);
         var concrete = (TransitionPropertyProperty)property;
         Assert.IsFalse(concrete.IsInherited);
-        Assert.IsFalse(concrete.HasValue);
+        Assert.IsTrue(concrete.HasValue);
+        Assert.AreEqual("sliding-vertically", concrete.Value);
     }
 
+    [Ignore("Gap, see Spec/css-transitions-1.yml")]
     [TestMethod]
-    public void CssTransitionPropertyTest05Illegal()
+    [Spec("css-transitions-1", "#transition-property-property")]
+    public void CssTransitionPropertyTest05Legal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-property : test_05");
         Assert.AreEqual("transition-property", property.Name);
@@ -86,10 +89,12 @@ public sealed class TransitionPropertyTests
         Assert.IsInstanceOfType<TransitionPropertyProperty>(property);
         var concrete = (TransitionPropertyProperty)property;
         Assert.IsFalse(concrete.IsInherited);
-        Assert.IsFalse(concrete.HasValue);
+        Assert.IsTrue(concrete.HasValue);
+        Assert.AreEqual("test_05", concrete.Value);
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-timing-function-property")]
     public void CssTransitionTimingFunctionEaseLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-timing-function : ease");
@@ -103,6 +108,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-timing-function-property")]
     public void CssTransitionTimingFunctionEaseInLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-timing-function : ease-IN");
@@ -116,6 +122,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-timing-function-property")]
     public void CssTransitionTimingFunctionStepStartLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-timing-function : step-start");
@@ -129,6 +136,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-timing-function-property")]
     public void CssTransitionTimingFunctionStepStartStepEndLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-timing-function : step-start  , step-end");
@@ -142,6 +150,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-timing-function-property")]
     public void CssTransitionTimingFunctionStepStartStepEndLinearEaseInOutLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-timing-function : step-start  , step-end,linear,ease-IN-OUT");
@@ -155,6 +164,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-timing-function-property")]
     public void CssTransitionTimingFunctionCubicBezierLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-timing-function : cubic-bezier(0, 1, 0.5, 1)");
@@ -168,6 +178,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-timing-function-property")]
     public void CssTransitionTimingFunctionStepsStartLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-timing-function : steps(10, start)");
@@ -181,6 +192,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-timing-function-property")]
     public void CssTransitionTimingFunctionStepsEndLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-timing-function : steps(25, end)");
@@ -194,6 +206,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-timing-function-property")]
     public void CssTransitionTimingFunctionStepsLinearCubicBezierLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-timing-function : steps(25), linear, cubic-bezier(0.25, 1, 0.5, 1)");
@@ -207,6 +220,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-duration-property")]
     public void CssTransitionDurationSecondsLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-duration : 6s");
@@ -220,6 +234,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-duration-property")]
     public void CssTransitionDurationMillisecondsLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-duration : 60ms");
@@ -233,6 +248,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-duration-property")]
     public void CssTransitionDurationMillisecondsSecondsSecondsLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-duration : 60ms, 1s, 2s");
@@ -246,6 +262,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-delay-property")]
     public void CssTransitionDelayMillisecondsLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-delay : 60ms");
@@ -259,6 +276,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-delay-property")]
     public void CssTransitionDelayMillisecondsSecondsSecondsLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition-delay : 60ms, 1s, 2s");
@@ -272,6 +290,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-shorthand-property")]
     public void CssTransitionMillisecondsSecondsSecondsLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition : 60ms, 1s, 2s");
@@ -285,6 +304,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-shorthand-property")]
     public void CssTransitionStepsLinearCubicBezierLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition : steps(25), linear, cubic-bezier(0.25, 1, 0.5, 1)");
@@ -298,6 +318,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-shorthand-property")]
     public void CssTransitionWidthHeightLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition : width   , height");
@@ -311,6 +332,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-shorthand-property")]
     public void CssTransitionEaseLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition : ease");
@@ -324,6 +346,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-shorthand-property")]
     public void CssTransitionSecondsEaseAllLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition : all 1s ease");
@@ -337,6 +360,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-shorthand-property")]
     public void CssTransitionSecondsEaseAllHeightMsStepsLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transition : all 1s ease, height steps(5) 50ms");
@@ -350,6 +374,7 @@ public sealed class TransitionPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transitions-1", "#transition-shorthand-property")]
     public void CssTransitionSecondsEaseAllHeightMsStepsWidthCubicBezierLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration(
