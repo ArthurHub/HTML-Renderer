@@ -14,6 +14,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#small-caps")]
+    [Spec("css-fonts-4", "#font-variant-prop")]
     public void CssFontVariantNormalUppercaseLegal()
     {
         var property = ParseDeclaration("font-variant : NORMAL");
@@ -28,6 +29,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#small-caps")]
+    [Spec("css-fonts-4", "#font-variant-prop")]
     public void CssFontVariantSmallCapsLegal()
     {
         var property = ParseDeclaration("font-variant : small-caps ");
@@ -42,6 +44,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#small-caps")]
+    [Spec("css-fonts-4", "#font-variant-prop")]
     public void CssFontVariantSmallCapsIllegal()
     {
         var property = ParseDeclaration("font-variant : smallCaps ");
@@ -57,6 +60,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-styling")]
+    [Spec("css-fonts-4", "#font-style-prop")]
     public void CssFontStyleItalicLegal()
     {
         var property = ParseDeclaration("font-style : italic");
@@ -71,6 +75,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-styling")]
+    [Spec("css-fonts-4", "#font-style-prop")]
     public void CssFontStyleObliqueLegal()
     {
         var property = ParseDeclaration("font-style : oblique ");
@@ -84,9 +89,9 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-fonts-4", "#font-style-prop")]
     public void CssFontStyleObliqueWithAngleLegal()
     {
-        // CSS Fonts 4 "oblique <angle>"
         var property = ParseDeclaration("font-style : oblique 10deg");
         Assert.AreEqual("font-style", property.Name);
         Assert.IsFalse(property.IsImportant);
@@ -98,6 +103,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-fonts-4", "#font-style-prop")]
     public void CssFontStyleObliqueWithNegativeAngleLegal()
     {
         var property = ParseDeclaration("font-style : oblique -10deg");
@@ -112,6 +118,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-styling")]
+    [Spec("css-fonts-4", "#font-style-prop")]
     public void CssFontStyleNormalImportantLegal()
     {
         var property = ParseDeclaration("font-style : normal !important");
@@ -128,6 +135,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void CssFontSizeAbsoluteImportantXxSmallLegal()
     {
         var property = ParseDeclaration("font-size : xx-small !important");
@@ -142,6 +150,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void CssFontSizeAbsoluteMediumUppercaseLegal()
     {
         var property = ParseDeclaration("font-size : medium");
@@ -156,6 +165,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void CssFontSizeAbsoluteLargeImportantLegal()
     {
         var property = ParseDeclaration("font-size : large !important");
@@ -170,6 +180,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void CssFontSizeRelativeLargerLegal()
     {
         var property = ParseDeclaration("font-size : larger ");
@@ -184,6 +195,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void CssFontSizeRelativeLargestIllegal()
     {
         var property = ParseDeclaration("font-size : largest ");
@@ -197,6 +209,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void CssFontSizePercentLegal()
     {
         var property = ParseDeclaration("font-size : 120% ");
@@ -211,6 +224,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void CssFontSizeZeroLegal()
     {
         var property = ParseDeclaration("font-size : 0 ");
@@ -225,6 +239,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void CssFontSizeLengthLegal()
     {
         var property = ParseDeclaration("font-size : 3.5em ");
@@ -239,6 +254,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void CssFontSizeNumberIllegal()
     {
         var property = ParseDeclaration("font-size : 120.3 ");
@@ -254,6 +270,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-boldness")]
+    [Spec("css-fonts-4", "#font-weight-prop")]
     public void CssFontWeightPercentllegal()
     {
         var property = ParseDeclaration("font-weight : 100% ");
@@ -267,6 +284,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-boldness")]
+    [Spec("css-fonts-4", "#font-weight-prop")]
     public void CssFontWeightBolderLegalImportant()
     {
         var property = ParseDeclaration("font-weight : bolder !important");
@@ -281,6 +299,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-boldness")]
+    [Spec("css-fonts-4", "#font-weight-prop")]
     public void CssFontWeightBoldLegal()
     {
         var property = ParseDeclaration("font-weight : bold");
@@ -295,6 +314,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-boldness")]
+    [Spec("css-fonts-4", "#font-weight-prop")]
     public void CssFontWeight400Legal()
     {
         var property = ParseDeclaration("font-weight : 400 ");
@@ -308,7 +328,8 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
-    [Ignore("CSS Fonts 4 <number [1,1000]> weights aren't parsed, only the CSS 2.1 multiples of 100")]
+    [Ignore("Gap, see Spec/css-fonts-4.yml")]
+    [Spec("css-fonts-4", "#font-weight-prop")]
     public void CssFontWeight550Legal()
     {
         var property = ParseDeclaration("font-weight : 550 ");
@@ -335,6 +356,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-boldness")]
+    [Spec("css-fonts-4", "#font-weight-prop")]
     public void CssFontWeightOutOfRangeIllegal()
     {
         var property = ParseDeclaration("font-weight : 1001 ");
@@ -348,6 +370,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-boldness")]
+    [Spec("css-fonts-4", "#font-weight-prop")]
     public void CssFontWeightZeroIllegal()
     {
         var property = ParseDeclaration("font-weight : 0 ");
@@ -362,6 +385,7 @@ public sealed class FontKeywordPropertyTests
     // ── font-stretch ──────────────────────────────────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css-fonts-4", "#font-stretch-prop")]
     public void CssFontStretchNormalUppercaseImportantLegal()
     {
         var property = ParseDeclaration("font-stretch : NORMAL !important");
@@ -375,6 +399,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-fonts-4", "#font-stretch-prop")]
     public void CssFontStretchExtraCondensedLegal()
     {
         var property = ParseDeclaration("font-stretch : extra-condensed ");
@@ -388,6 +413,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-fonts-4", "#font-stretch-prop")]
     public void CssFontStretchSemiExpandedSpaceBetweenIllegal()
     {
         var property = ParseDeclaration("font-stretch : semi expanded ");
@@ -456,6 +482,7 @@ public sealed class FontKeywordPropertyTests
     // ── font-size-adjust ──────────────────────────────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css-fonts-4", "#font-size-adjust-prop")]
     public void CssFontSizeAdjustNoneLegal()
     {
         var property = ParseDeclaration("font-size-adjust : NONE");
@@ -469,6 +496,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-fonts-4", "#font-size-adjust-prop")]
     public void CssFontSizeAdjustNumberLegal()
     {
         var property = ParseDeclaration("font-size-adjust : 0.5");
@@ -482,6 +510,7 @@ public sealed class FontKeywordPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-fonts-4", "#font-size-adjust-prop")]
     public void CssFontSizeAdjustLengthIllegal()
     {
         var property = ParseDeclaration("font-size-adjust : 1.1em ");

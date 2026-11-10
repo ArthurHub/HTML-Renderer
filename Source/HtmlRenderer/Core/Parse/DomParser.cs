@@ -147,14 +147,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Walks every parsed stylesheet's <c>@font-face</c> rules (including ones nested inside
-        /// <c>@media</c>/<c>@supports</c>/<c>@layer</c>/<c>@container</c> - see <see cref="CssData.FlattenRules"/>)
-        /// and registers each one's <c>src</c> candidates with <see cref="Adapters.RAdapter.AddFontFace"/>/
-        /// <see cref="Adapters.RAdapter.AddFontFaceFromLocalFamily"/>, in source order, stopping at the
-        /// first candidate that loads successfully - matching the CSS spec's own "try each src in turn"
-        /// behavior. Called once per <see cref="GenerateCssTree"/>, after stylesheets are collected and
-        /// before the cascade applies, so every box's <see cref="Dom.CssBoxProperties.ActualFont"/> can
-        /// already see the registered faces.
+        /// Registers the <c>@font-face</c> rules of all stylesheets, also the ones nested in conditional
+        /// group rules, before the cascade. The <c>src</c> items are tried in order until one loads
+        /// (CSS Fonts 4 §4.3.2), <c>format()</c> and <c>tech()</c> aren't looked at.
         /// </summary>
         private static async Task RegisterFontFaces(CssData cssData, HtmlContainerInt htmlContainer)
         {

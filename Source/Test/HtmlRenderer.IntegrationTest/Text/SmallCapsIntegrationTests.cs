@@ -22,6 +22,7 @@ public sealed class SmallCapsIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#small-caps")]
+    [Spec("css-fonts-4", "#font-variant-prop")]
     public void FontVariant_SmallCaps_StandaloneProperty_ParsesAndStores()
     {
         var (root, _) = LayoutHarness.Layout(
@@ -33,6 +34,7 @@ public sealed class SmallCapsIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void FontVariant_SmallCaps_ViaFontShorthand_ParsesAndStores()
     {
         var (root, _) = LayoutHarness.Layout(
@@ -45,6 +47,7 @@ public sealed class SmallCapsIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "fonts.html#small-caps")]
+    [Spec("css-fonts-4", "#font-variant-prop")]
     public void SmallCaps_SplitsWordIntoCaseRuns()
     {
         var (root, _) = LayoutHarness.Layout(

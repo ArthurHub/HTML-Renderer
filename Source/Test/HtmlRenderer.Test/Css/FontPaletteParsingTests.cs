@@ -4,12 +4,7 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/FontPaletteParsingTests.cs.
-/// Tests for <see cref="FontPaletteValueConverter"/> (the <c>font-palette</c> property) and
-/// <see cref="FontPaletteValuesRule"/> (the <c>@font-palette-values</c> at-rule), confirmed an exact
-/// match against PeachPDF's implementation.
-/// </summary>
+/// <summary>Parsing of the <c>font-palette</c> property and the <c>@font-palette-values</c> rule.</summary>
 [TestClass]
 public sealed class FontPaletteParsingTests
 {
@@ -27,6 +22,7 @@ public sealed class FontPaletteParsingTests
     [DataRow("--my-palette")]
     [DataRow("palette-mix(in oklab, --a, --b)")]
     [DataRow("palette-mix(in lch longer hue, normal 30%, --b 70%)")]
+    [Spec("css-fonts-4", "#font-palette-prop")]
     public void FontPalette_AcceptsValidValues(string value)
     {
         Assert.AreEqual(value, FontPalette(value));
@@ -39,12 +35,14 @@ public sealed class FontPaletteParsingTests
     [DataRow("palette-mix(in oklab, --a)")]              // needs two operands
     [DataRow("palette-mix(in bogusspace, --a, --b)")]   // unknown color space
     [DataRow("palette-mix(--a, --b)")]                  // missing color-interpolation-method
+    [Spec("css-fonts-4", "#font-palette-prop")]
     public void FontPalette_DropsInvalidValues(string value)
     {
         Assert.AreEqual(string.Empty, FontPalette(value));
     }
 
     [TestMethod]
+    [Spec("css-fonts-4", "#font-palette-values")]
     public void FontPaletteValues_ParsesNameAndDescriptors()
     {
         var src = "@font-palette-values --brand { font-family: \"Nabla\"; base-palette: 2; override-colors: 0 #ff0000, 1 rgb(0, 255, 0); }";
@@ -60,6 +58,7 @@ public sealed class FontPaletteParsingTests
     }
 
     [TestMethod]
+    [Spec("css-fonts-4", "#base-palette-desc")]
     public void FontPaletteValues_LightDarkBasePalette()
     {
         var sheet = CssConstructionFunctions.ParseStyleSheet("@font-palette-values --d { font-family: Nabla; base-palette: dark; }");

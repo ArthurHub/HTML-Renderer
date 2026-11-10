@@ -9,6 +9,7 @@ public sealed class FontShorthandPropertyTests
 {
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void CssFontShorthandWithFractionLegal()
     {
         var property = ParseDeclaration("font : 12px/14px sans-serif ");
@@ -23,6 +24,7 @@ public sealed class FontShorthandPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void CssFontShorthandPercentLegal()
     {
         var property = ParseDeclaration("font : 80% sans-serif ");
@@ -37,6 +39,7 @@ public sealed class FontShorthandPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void CssFontShorthandBoldItalicLargeLegal()
     {
         // Serialized in canonical order: style, variant, weight, stretch.
@@ -52,6 +55,7 @@ public sealed class FontShorthandPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void CssFontShorthandPredefinedLegal()
     {
         var property = ParseDeclaration("font : status-bar ");
@@ -66,6 +70,7 @@ public sealed class FontShorthandPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void CssFontShorthandSizeAndFontListLegal()
     {
         var property = ParseDeclaration("font : 15px arial,sans-serif ");
@@ -80,6 +85,7 @@ public sealed class FontShorthandPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void CssFontShorthandStyleWeightSizeLineHeightAndFontListLegal()
     {
         var property = ParseDeclaration("font : italic bold 12px/30px Georgia, serif");
@@ -94,6 +100,7 @@ public sealed class FontShorthandPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void CssFontSizeHeightFamilyLegal()
     {
         var property = ParseDeclaration("font: 12pt/14pt sans-serif ");
@@ -108,6 +115,7 @@ public sealed class FontShorthandPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void CssFontSizeHeightMultipleFamiliesLegal()
     {
         var property = ParseDeclaration("font: x-large/110% 'New Century Schoolbook', serif ");
@@ -122,6 +130,7 @@ public sealed class FontShorthandPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void CssFontWeightVariantSizeFamiliesLegal()
     {
         var property = ParseDeclaration("font: bold italic large Palatino, serif ");
@@ -136,6 +145,7 @@ public sealed class FontShorthandPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void CssFontStyleVariantSizeHeightFamilyLegal()
     {
         var property = ParseDeclaration("font: normal small-caps 120%/120% Fantasy ");
@@ -177,6 +187,7 @@ public sealed class FontShorthandPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void CssFontInheritAll()
     {
         var property = ParseDeclaration("font: inherit ");

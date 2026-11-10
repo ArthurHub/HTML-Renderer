@@ -146,9 +146,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Resolves an <c>@font-face</c> rule's <c>font-family</c> descriptor value to the plain family
-        /// name: a single quoted string token unwraps to its literal text, anything else (an unquoted
-        /// identifier, or a value this tokenizer doesn't recognize as exactly one string) is returned as-is.
+        /// The family name of an <c>@font-face</c> <c>font-family</c> descriptor, without quotes.
         /// </summary>
         internal static string GetFontFaceFamilyName(string propValue)
         {
@@ -163,11 +161,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Parses an <c>@font-face</c> <c>src</c> descriptor into its comma-separated candidates, each with
-        /// whatever <c>url()</c>/<c>local()</c>/<c>format()</c>/<c>tech()</c> pieces it declared - order
-        /// matters here: the top-level commas are split first, then each candidate segment is inspected on
-        /// its own, so a value with multiple <c>url()</c> alternatives (<c>src: url(a.woff2) format("woff2"),
-        /// url(a.woff) format("woff")</c>) doesn't have its tokens cross-matched between candidates.
+        /// Splits an <c>@font-face</c> <c>src</c> descriptor into its items (CSS Fonts 4 §4.3.1).
         /// </summary>
         internal static List<CssFontFace> GetFontFacePropertyValue(string propValue)
         {
@@ -193,9 +187,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Builds one <see cref="CssFontFace"/> candidate from a comma-delimited segment of an <c>src</c>
-        /// descriptor's tokens and appends it to <paramref name="result"/>, or does nothing for an empty
-        /// segment (a trailing/doubled comma).
+        /// Appends the item of one comma-separated segment, an empty segment adds nothing.
         /// </summary>
         private static void AppendFontFaceCandidate(List<CssFontFace> result, List<Token> segment)
         {

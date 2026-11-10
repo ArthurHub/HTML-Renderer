@@ -50,13 +50,10 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
         /// </summary>
         private static readonly WinFormsAdapter _instance = new WinFormsAdapter();
 
-        // Adapter-level PrivateFontCollection for @font-face-loaded faces - one collection shared for the
-        // adapter's (process) lifetime, growing by one family per LoadFontFaceFontInt call.
+        // The @font-face faces, kept for the lifetime of the process.
         private readonly PrivateFontCollection _fontFaceCollection = new PrivateFontCollection();
 
-        // Backs LoadFontFaceFontInt's temp-file registration (see its own doc comment for why a temp file
-        // is used instead of PrivateFontCollection.AddMemoryFont) - one directory per process, cleaned up
-        // by the OS's normal temp-file housekeeping, not by this process.
+        // The font files of the @font-face faces, see LoadFontFaceFontInt. Left to the OS to clean up.
         private static readonly string _fontFaceTempDirectory = CreateFontFaceTempDirectory();
 
         private static string CreateFontFaceTempDirectory()
@@ -211,37 +208,13 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Adapters
         }
 
         /// <summary>
-        /// Loads one <c>@font-face</c> face's bytes into the adapter's <see cref="PrivateFontCollection"/>
-        /// via <see cref="PrivateFontCollection.AddFontFile"/> - through a temp file, matching this
-        /// adapter's own pre-existing <c>DemoForm.LoadCustomFonts</c> pattern (that path is untouched,
-        /// this is a new, separate mechanism specific to <c>@font-face</c>).
+        /// Adds the font to the <see cref="PrivateFontCollection"/> and returns its family, found by the
+        /// family name in the font file. <see cref="PrivateFontCollection.Families"/> groups the faces of
+        /// a family and isn't in insertion order.
         /// </summary>
         /// <remarks>
-        /// Deliberately NOT <see cref="PrivateFontCollection.AddMemoryFont"/>, despite it needing no temp
-        /// file: empirically (a throwaway repro project registering a dozen distinct families into one
-        /// <see cref="PrivateFontCollection"/>), <c>AddMemoryFont</c> is unreliable on this target
-        /// framework - <see cref="PrivateFontCollection.Families"/> permanently fails to reflect several of
-        /// the added families (not a timing race: polling for up to 300ms after the call never finds them
-        /// either), while the identical sequence of files through <c>AddFontFile</c> succeeds 100% of the
-        /// time across repeated runs. This is a known-flaky area of GDI+'s <c>AddMemoryFont</c> P/Invoke
-        /// path, not a bug in this port. The temp file is deliberately never deleted: GDI+ keeps it
-        /// memory-mapped for as long as this process-lifetime singleton's <see cref="PrivateFontCollection"/>
-        /// references it, and the OS's own temp-directory housekeeping reclaims it afterward - the same
-        /// "small, bounded, process-lifetime" rationale the removed <c>AddMemoryFont</c>/<c>AllocHGlobal</c>
-        /// approach relied on.
-        /// <para>
-        /// The returned <see cref="FontFamilyAdapter"/> is found by sniffing the font's own internal
-        /// family name via <see cref="TtfFontDescription"/> and matching it against
-        /// <see cref="PrivateFontCollection.Families"/> - not by comparing <c>Families.Length</c> before
-        /// and after, nor by taking the array's last entry. Two bugs made that approach unreliable: (1)
-        /// <c>Families</c> groups every face by family name (the whole point of
-        /// <see cref="PrivateFontCollection"/> - it lets <see cref="Font"/> pick the right face via
-        /// <see cref="FontStyle"/> automatically), so registering a second face of an *already-registered*
-        /// family (e.g. this face set's own Bold after its Regular) never changes the count at all; and
-        /// (2) even when the count does change, <c>Families</c> is returned in a GDI-defined (effectively
-        /// alphabetical) order, not insertion order, so "the last entry" is often a completely unrelated,
-        /// alphabetically-later family, not the one just added.
-        /// </para>
+        /// Goes through a temp file, <see cref="PrivateFontCollection.AddMemoryFont"/> doesn't reliably
+        /// list the added families. The file can't be deleted while the collection uses it.
         /// </remarks>
         protected override RFontFamily LoadFontFaceFontInt(byte[] fontBytes, string filePath)
         {

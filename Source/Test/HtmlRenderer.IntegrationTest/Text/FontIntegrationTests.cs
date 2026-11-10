@@ -16,6 +16,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#algorithm")]
+    [Spec("css-fonts-4", "#font-matching-algorithm")]
     public void FirstInstalledFamily_IsUsed()
     {
         var font = FontOf("<span id='s' style='font-family:NoSuchFontAtAll, Georgia, serif'>x</span>");
@@ -25,6 +26,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#algorithm")]
+    [Spec("css-fonts-4", "#font-matching-algorithm")]
     public void NoInstalledFamily_FallsBackToTheDefaultFont()
     {
         var font = FontOf("<span id='s' style='font-family:NoSuchFontAtAll, AnotherMissingFont'>x</span>");
@@ -34,6 +36,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#algorithm")]
+    [Spec("css-fonts-4", "#font-matching-algorithm")]
     public void FontSize_IsMatchedExactly()
     {
         var font = FontOf("<span id='s' style='font-family:Arial;font-size:17px'>x</span>");
@@ -44,6 +47,9 @@ public sealed class FontIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "fonts.html#algorithm")]
+    [Spec("css-fonts-4", "#font-family-prop")]
+    [Spec("css-fonts-4", "#font-matching-algorithm")]
+    [Spec("css-fonts-4", "#cluster-matching")]
     public void FamilyWithoutTheGlyph_FallsBackToTheNextFamily()
     {
         var font = FontOf("<span id='s' style=\"font-family:Arial, 'Segoe UI Emoji'\">\U0001F600</span>");
@@ -53,6 +59,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-name-syntax")]
     public void QuotedFamilyName_IsMatched()
     {
         var font = FontOf("<span id='s' style=\"font-family:'Times New Roman', Arial\">x</span>");
@@ -62,6 +69,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-name-syntax")]
     public void UnquotedIdentifierSequence_IsJoinedIntoOneName()
     {
         var font = FontOf("<span id='s' style='font-family:Times New Roman, Arial'>x</span>");
@@ -71,6 +79,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-prop")]
     public void FontFamily_IsInherited()
     {
         var font = FontOf("<div style='font-family:Georgia'><span id='s'>x</span></div>");
@@ -80,6 +89,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-name-syntax")]
     public void InvalidFamilyList_IsIgnored()
     {
         var font = FontOf("<div style='font-family:Georgia'><span id='s' style='font-family:Red/Black, Arial'>x</span></div>");
@@ -90,6 +100,7 @@ public sealed class FontIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-name-syntax")]
     public void QuotedGenericName_IsAFamilyNameNotTheKeyword()
     {
         var font = FontOf("<span id='s' style='font-family:\"monospace\"'>x</span>");
@@ -99,6 +110,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#sans-serif-def")]
+    [Spec("css-fonts-4", "#generic-font-families")]
     public void SansSerif_MapsToASansSerifFont()
     {
         var font = FontOf("<span id='s' style='font-family:sans-serif'>x</span>");
@@ -108,6 +120,8 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#monospace-def")]
+    [Spec("css-fonts-4", "#generic-font-families")]
+    [Spec("css-fonts-4", "#generic-family-name-syntax")]
     public void Monospace_MapsToAMonospaceFont()
     {
         var font = FontOf("<span id='s' style='font-family:monospace'>x</span>");
@@ -118,6 +132,7 @@ public sealed class FontIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "fonts.html#serif-def")]
+    [Spec("css-fonts-4", "#generic-font-families")]
     public void Serif_MapsToASerifFont()
     {
         var font = FontOf("<span id='s' style='font-family:serif'>x</span>");
@@ -128,6 +143,7 @@ public sealed class FontIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "fonts.html#cursive-def")]
+    [Spec("css-fonts-4", "#generic-font-families")]
     public void Cursive_MapsToACursiveFont()
     {
         var font = FontOf("<span id='s' style='font-family:cursive'>x</span>");
@@ -138,6 +154,7 @@ public sealed class FontIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "fonts.html#fantasy-def")]
+    [Spec("css-fonts-4", "#generic-font-families")]
     public void Fantasy_MapsToAFantasyFont()
     {
         var font = FontOf("<span id='s' style='font-family:fantasy'>x</span>");
@@ -147,6 +164,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#generic-font-families")]
+    [Spec("css-fonts-4", "#generic-font-families")]
     public void GenericFamily_IsUsedAsTheLastAlternative()
     {
         var font = FontOf("<span id='s' style='font-family:NoSuchFontAtAll, monospace'>x</span>");
@@ -156,6 +174,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-styling")]
+    [Spec("css-fonts-4", "#font-style-prop")]
     [DataRow("italic")]
     [DataRow("oblique")]
     public void ItalicAndOblique_SelectASlantedFace(string style)
@@ -167,6 +186,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-styling")]
+    [Spec("css-fonts-4", "#font-style-prop")]
     public void Normal_InsideItalic_SelectsTheUprightFace()
     {
         var font = FontOf("<div style='font-family:Arial;font-style:italic'><span id='s' style='font-style:normal'>x</span></div>");
@@ -176,6 +196,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-styling")]
+    [Spec("css-fonts-4", "#font-style-prop")]
     public void FontStyle_IsInherited()
     {
         var font = FontOf("<div style='font-family:Arial;font-style:italic'><span id='s'>x</span></div>");
@@ -186,6 +207,7 @@ public sealed class FontIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "fonts.html#small-caps")]
+    [Spec("css-fonts-4", "#font-variant-prop")]
     public void SmallCaps_RendersLowercaseLettersAsCapitals()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -198,6 +220,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-boldness")]
+    [Spec("css-fonts-4", "#missing-weights")]
     [DataRow("100", false)]
     [DataRow("300", false)]
     [DataRow("normal", false)]
@@ -216,6 +239,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-boldness")]
+    [Spec("css-fonts-4", "#relative-weights")]
     public void Bolder_OnANormalParent_IsBold()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -228,6 +252,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-boldness")]
+    [Spec("css-fonts-4", "#relative-weights")]
     public void Lighter_OnABoldParent_IsNormal()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -241,6 +266,7 @@ public sealed class FontIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "fonts.html#font-boldness")]
+    [Spec("css-fonts-4", "#relative-weights")]
     [DataRow(100, 400, 100)]
     [DataRow(200, 400, 100)]
     [DataRow(300, 400, 100)]
@@ -261,6 +287,7 @@ public sealed class FontIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "fonts.html#font-boldness")]
+    [Spec("css-fonts-4", "#relative-weights")]
     public void Bolder_IsInheritedAsTheComputedWeight()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -271,6 +298,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-boldness")]
+    [Spec("css-fonts-4", "#font-weight-prop")]
     public void FontWeight_IsInherited()
     {
         var font = FontOf("<div style='font-family:Arial;font-weight:bold'><span id='s'>x</span></div>");
@@ -280,6 +308,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#absolute-size-mapping")]
     public void AbsoluteSizeKeywords_GrowFromXxSmallToXxLarge()
     {
         string[] keywords = ["xx-small", "x-small", "small", "medium", "large", "x-large", "xx-large"];
@@ -295,6 +324,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void Medium_IsTheInitialSize()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -305,6 +335,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void LargerAndSmaller_OnAMediumParent_StepOneKeyword()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -318,6 +349,7 @@ public sealed class FontIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void Larger_IsInheritedAsTheComputedSize()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -328,6 +360,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void Percentage_RefersToTheParentSize()
     {
         var font = FontOf("<div style='font-size:20px'><span id='s' style='font-size:150%'>x</span></div>");
@@ -337,6 +370,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void Em_RefersToTheParentSize()
     {
         var font = FontOf("<div style='font-size:20px'><span id='s' style='font-size:1.5em'>x</span></div>");
@@ -346,6 +380,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void Length_IsUsedAsIs()
     {
         var font = FontOf("<span id='s' style='font-size:12pt'>x</span>");
@@ -355,6 +390,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void FontSize_IsInherited()
     {
         var font = FontOf("<div style='font-size:16px'><span id='s'>x</span></div>");
@@ -365,6 +401,7 @@ public sealed class FontIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void NegativeSize_IsIgnored()
     {
         var font = FontOf("<div style='font-size:16px'><span id='s' style='font-size:-10px'>x</span></div>");
@@ -375,6 +412,7 @@ public sealed class FontIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "fonts.html#font-size-props")]
+    [Spec("css-fonts-4", "#font-size-prop")]
     public void TinySize_IsKept()
     {
         var font = FontOf("<span id='s' style='font-size:1px'>x</span>");
@@ -384,6 +422,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void Shorthand_SetsStyleWeightSizeAndFamily()
     {
         var font = FontOf("<span id='s' style='font:bold italic 16px Georgia, serif'>x</span>");
@@ -396,6 +435,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void Shorthand_SetsTheLineHeight()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -407,6 +447,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void Shorthand_ResetsOmittedPropertiesToTheirInitialValues()
     {
         var font = FontOf("<div style='font-weight:bold;font-style:italic'><span id='s' style='font:16px Arial'>x</span></div>");
@@ -417,6 +458,7 @@ public sealed class FontIntegrationTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void Shorthand_PercentageSizeRefersToTheParentSize()
     {
         var font = FontOf("<div style='font-size:20px'><span id='s' style='font:150% Arial'>x</span></div>");
@@ -427,6 +469,7 @@ public sealed class FontIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "fonts.html#font-shorthand")]
+    [Spec("css-fonts-4", "#font-prop")]
     public void SystemFont_SetsTheFontOfTheSystem()
     {
         var font = FontOf("<div style='font:32px Georgia'><span id='s' style='font:menu'>x</span></div>");

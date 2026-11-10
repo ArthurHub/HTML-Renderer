@@ -9,6 +9,7 @@ public sealed class FontFamilyPropertyTests
 {
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-prop")]
     public void CssFontFamilyMultipleWithIdentifiersLegal()
     {
         var property = ParseDeclaration("font-family: Gill Sans Extrabold, sans-serif ");
@@ -36,6 +37,7 @@ public sealed class FontFamilyPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-prop")]
     public void CssFontFamilyMultipleDiverseLegal()
     {
         var property = ParseDeclaration("font-family: Courier, \"Lucida Console\", monospace ");
@@ -50,6 +52,7 @@ public sealed class FontFamilyPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-prop")]
     public void CssFontFamilyMultipleStringLegal()
     {
         var property = ParseDeclaration("font-family: \"Goudy Bookletter 1911\", sans-serif ");
@@ -64,6 +67,7 @@ public sealed class FontFamilyPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-name-syntax")]
     public void CssFontFamilyMultipleNumberIllegal()
     {
         // "1911" is a number, an unquoted family name may only contain identifiers.
@@ -78,6 +82,7 @@ public sealed class FontFamilyPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-name-syntax")]
     public void CssFontFamilyMultipleFractionIllegal()
     {
         var property = ParseDeclaration("font-family: Red/Black, sans-serif  ");
@@ -91,6 +96,7 @@ public sealed class FontFamilyPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-name-syntax")]
     public void CssFontFamilyMultipleStringMixedWithIdentifierIllegal()
     {
         var property = ParseDeclaration("font-family: \"Lucida\" Grande, sans-serif ");
@@ -104,6 +110,7 @@ public sealed class FontFamilyPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-name-syntax")]
     public void CssFontFamilyMultipleExclamationMarkIllegal()
     {
         var property = ParseDeclaration("font-family: Ahem!, sans-serif ");
@@ -117,6 +124,7 @@ public sealed class FontFamilyPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-name-syntax")]
     public void CssFontFamilyMultipleAtIllegal()
     {
         var property = ParseDeclaration("font-family: test@foo, sans-serif ");
@@ -130,6 +138,7 @@ public sealed class FontFamilyPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-name-syntax")]
     public void CssFontFamilyHashIllegal()
     {
         var property = ParseDeclaration("font-family: #POUND ");
@@ -143,6 +152,7 @@ public sealed class FontFamilyPropertyTests
 
     [TestMethod]
     [Spec("css21", "fonts.html#font-family-prop")]
+    [Spec("css-fonts-4", "#font-family-name-syntax")]
     public void CssFontFamilyDashIllegal()
     {
         var property = ParseDeclaration("font-family: Hawaii 5-0 ");

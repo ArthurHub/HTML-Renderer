@@ -322,18 +322,14 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         }
 
         /// <summary>
-        /// Check if the given font exists in the system by font family name. Consulted by
-        /// <see cref="Core.Parse.CssParser.ParseFontFamily"/> to decide whether a <c>font-family</c>
-        /// candidate should be kept as-is or the next fallback (ultimately <see cref="Core.Utils.CssConstants.DefaultFont"/>)
-        /// tried instead - so this must recognize a family the moment it's usable, including one
-        /// registered via <see cref="AddFontFace"/>, not just <see cref="AddFontFamily"/>/system fonts.
+        /// Check if the given font exists in the system by font family name, including the families
+        /// registered by <see cref="AddFontFace"/>. <see cref="Core.Parse.CssParser.ParseFontFamily"/> uses
+        /// it to pick the first available family of a <c>font-family</c> list.
         /// </summary>
         /// <param name="font">the font name to check</param>
         /// <returns>true - font exists by given family name, false - otherwise</returns>
         /// <remarks>
-        /// Virtual so the PdfSharp backend can override it - its <c>@font-face</c> registrations live
-        /// entirely in its own <c>FontResolver</c> (see <see cref="AddFontFace"/>'s doc comment for why),
-        /// invisible to the shared <c>FontsHandler</c> this base implementation checks.
+        /// Virtual for the PdfSharp backend, which keeps its <c>@font-face</c> faces in its own font resolver.
         /// </remarks>
         public virtual bool IsFontExists(string font)
         {
@@ -362,26 +358,19 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         }
 
         /// <summary>
-        /// Loads one <c>@font-face</c> <c>src: url(...)</c> candidate and registers it as a face of
-        /// <paramref name="familyName"/> for CSS Fonts Level 4 matching. Resolves the resource through
-        /// <see cref="GetResourceStream"/> - the same funnel used for images/stylesheets, so this supports
-        /// <c>file:</c>/<c>data:</c>/<c>http(s):</c> uniformly - loads the platform-specific face via
-        /// <see cref="LoadFontFaceFontInt"/>, and registers it with <see cref="FontsHandler.AddFontFace"/>.
+        /// Loads one <c>url()</c> item of an <c>@font-face</c> <c>src</c> (CSS Fonts 4 §4.3.2) through
+        /// <see cref="GetResourceStream"/> and registers it as a face of <paramref name="familyName"/>.
         /// </summary>
-        /// <param name="familyName">the CSS family name declared by the <c>@font-face</c> rule</param>
-        /// <param name="uri">the resolved, absolute <c>src</c> URI to fetch (already resolved against the document base/a stylesheet's own location by the caller)</param>
-        /// <param name="weight">CSS Fonts Level 4 numeric weight (1-1000) this face matches for</param>
-        /// <param name="isItalic">whether this face matches an italic/oblique request</param>
-        /// <param name="stretch">CSS Fonts Level 3 stretch (1-9) this face matches for</param>
-        /// <param name="ranges">the face's <c>unicode-range</c> restriction, or null for "covers whatever is asked of it"</param>
-        /// <returns>true if the face was loaded and registered, false if the resource could not be resolved/loaded (the caller tries the next <c>src</c> candidate)</returns>
+        /// <param name="familyName">the family name of the <c>@font-face</c> rule</param>
+        /// <param name="uri">the absolute URI of the item</param>
+        /// <param name="weight">numeric weight (1-1000)</param>
+        /// <param name="isItalic">whether the face is italic or oblique</param>
+        /// <param name="stretch">width on the 1-9 scale of <see cref="Core.Utils.FontStretchResolver"/></param>
+        /// <param name="ranges">the <c>unicode-range</c>, or null for any character</param>
+        /// <returns>false if the resource couldn't be loaded, the caller then tries the next item</returns>
         /// <remarks>
-        /// Virtual so the PdfSharp backend can override it to bypass <see cref="FontsHandler"/>'s shared
-        /// registry entirely and register directly with its own <c>FontResolver</c> instead - PDFsharp
-        /// needs raw font bytes at PDF-generation time for embedding (via its own richer
-        /// <c>IFontResolver</c>-based CSS-Fonts-L4 matching), unlike WinForms/WPF, which just need an
-        /// opaque platform font-family handle. See the base implementation's own doc comment for the
-        /// shared-registry path this overrides.
+        /// Virtual for the PdfSharp backend, which needs the font bytes for embedding and keeps the faces
+        /// in its own font resolver.
         /// </remarks>
         public virtual async Task<bool> AddFontFace(string familyName, RUri uri, int weight, bool isItalic, int stretch, IReadOnlyList<CodepointRange> ranges)
         {
@@ -426,14 +415,12 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         }
 
         /// <summary>
-        /// Satisfies an <c>@font-face</c> <c>src: local(...)</c> candidate: rather than fetching a resource
-        /// at all, this looks for a family already registered under <paramref name="localFamilyName"/> (a
-        /// system font, or an earlier <see cref="AddFontFamily"/>/<see cref="AddFontFace"/> registration)
-        /// and, if found, registers *that same* <see cref="RFontFamily"/> as a face of
-        /// <paramref name="familyName"/> too.
+        /// Registers the family named by a <c>local()</c> item of an <c>@font-face</c> <c>src</c>
+        /// (CSS Fonts 4 §4.3.3.1) as a face of <paramref name="familyName"/>. The name is matched against
+        /// the registered families, not against full font names.
         /// </summary>
-        /// <returns>true if a local family by that name was found and registered, false otherwise (the caller tries the next <c>src</c> candidate)</returns>
-        /// <remarks>Virtual for the same reason as <see cref="AddFontFace"/> - see its doc comment.</remarks>
+        /// <returns>false if there's no such family, the caller then tries the next item</returns>
+        /// <remarks>Virtual for the PdfSharp backend, see <see cref="AddFontFace"/>.</remarks>
         public virtual bool AddFontFaceFromLocalFamily(string familyName, string localFamilyName, int weight, bool isItalic, int stretch, IReadOnlyList<CodepointRange> ranges)
         {
             var localFamily = _fontsHandler.TryGetExistingFamily(localFamilyName);
@@ -667,16 +654,12 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         protected abstract RFont CreateFontInt(RFontFamily family, double size, RFontStyle style);
 
         /// <summary>
-        /// Registers <paramref name="fontBytes"/> (a loaded <c>@font-face</c> <c>src</c> candidate's raw
-        /// font file bytes) with the platform text engine and returns an opaque <see cref="RFontFamily"/>
-        /// handle for it - one file's bytes in, one face's family handle out (a WinForms/WPF
-        /// implementation registers with the OS/GDI text engine and returns a handle to that one face;
-        /// this is not called for backends - like PdfSharp - that override <see cref="AddFontFace"/> to
-        /// bypass this entirely).
+        /// Registers the bytes of an <c>@font-face</c> font file with the platform text engine and returns
+        /// the family of the loaded face. Not called when <see cref="AddFontFace"/> is overridden.
         /// </summary>
-        /// <param name="fontBytes">the font file's raw bytes (TTF/OTF)</param>
-        /// <param name="filePath">the resolved source this was loaded from, for diagnostics/error messages only</param>
-        /// <returns>the registered face's family handle, or null if the bytes could not be loaded as a font (the caller tries the next <c>src</c> candidate)</returns>
+        /// <param name="fontBytes">the font file (TTF/OTF)</param>
+        /// <param name="filePath">where the bytes came from, for diagnostics</param>
+        /// <returns>the family of the face, or null if the bytes aren't a font</returns>
         protected abstract RFontFamily LoadFontFaceFontInt(byte[] fontBytes, string filePath);
 
         /// <summary>

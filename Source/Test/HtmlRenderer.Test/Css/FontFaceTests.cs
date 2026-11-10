@@ -7,11 +7,13 @@ using TheArtOfDev.HtmlRenderer.Core.Network;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>Ported from PeachPDF.Tests/CSS/FontFace.cs.</summary>
 [TestClass]
 public sealed class FontFaceTests
 {
     [TestMethod]
+    [Spec("css-fonts-4", "#font-face-rule")]
+    [Spec("css-fonts-4", "#src-desc")]
+    [Spec("css-fonts-4", "#font-face-src-parsing")]
     public void FontFaceOpenSansWithSource()
     {
         var src = "@font-face{font-family:'Open Sans';src:url(fonts/OpenSans-Light.eot);src:local('Open Sans Light'),local('OpenSans-Light'),url(fonts/OpenSans-Light.ttf) format('truetype'),url(fonts/OpenSans-Light.woff) format('woff');font-style:normal}";
@@ -31,6 +33,8 @@ public sealed class FontFaceTests
     }
 
     [TestMethod]
+    [Spec("css-fonts-4", "#src-desc")]
+    [Spec("css-fonts-4", "#font-face-src-parsing")]
     public void FontFaceWithWoff2Source()
     {
         var src = "@font-face{font-family:'Inter';src:url(fonts/Inter-Medium.woff2) format('woff2');font-weight:500}";
@@ -65,6 +69,7 @@ public sealed class FontFaceTests
     }
 
     [TestMethod]
+    [Spec("css-fonts-4", "#unicode-range-desc")]
     [DataRow("U+41-5A")]
     [DataRow("U+0-7F")]
     [DataRow("U+4??")]
@@ -84,6 +89,7 @@ public sealed class FontFaceTests
     [TestMethod]
     [Spec("css-syntax-3", "#starts-a-unicode-range")]
     [Spec("css-syntax-3", "#consume-unicode-range-token")]
+    [Spec("css-fonts-4", "#unicode-range-desc")]
     [DataRow("U+4??", "400", "4FF")]
     [DataRow("U+??????", "000000", "FFFFFF")]
     [DataRow("U+41", "41", "41")]

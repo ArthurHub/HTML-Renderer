@@ -21,11 +21,8 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 {
     /// <summary>
-    /// One registered <c>@font-face</c> face of a <see cref="FontFamilyModel"/>: its CSS Fonts Level 4
-    /// matching axes (numeric weight, italic, stretch), the codepoint <see cref="CodepointRange"/>s it is
-    /// restricted to (an explicit <c>unicode-range</c> descriptor) or null when it has none (covers
-    /// whatever a box asks for), and the <see cref="RFontFamily"/> wrapper backends use to actually create
-    /// an <see cref="RFont"/> from it.
+    /// One <c>@font-face</c> face of a family with its matching descriptors (CSS Fonts 4 §4.4). Without a
+    /// <c>unicode-range</c> the ranges are null and the face is used for any character.
     /// </summary>
     internal sealed class FontFaceEntry
     {
@@ -170,17 +167,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// Registers one <c>@font-face</c> face under <paramref name="familyName"/>. Re-registering the
-        /// exact same axes+ranges combo (the orchestrator re-runs on every <c>SetHtml</c>) replaces the
-        /// prior entry rather than duplicating it, so repeated loads of the same document don't grow the
-        /// family's face list unbounded.
+        /// Registers one <c>@font-face</c> face under <paramref name="familyName"/>. A face with the same
+        /// descriptors replaces the earlier one, the rules are registered again on every <c>SetHtml</c>.
         /// </summary>
-        /// <param name="familyName">the CSS family name declared by the <c>@font-face</c> rule</param>
-        /// <param name="fontFamily">the loaded face, already registered with the platform text engine</param>
-        /// <param name="weight">CSS Fonts Level 4 numeric weight (1-1000) this face matches for</param>
-        /// <param name="isItalic">whether this face matches an italic/oblique request</param>
-        /// <param name="stretch">CSS Fonts Level 3 stretch (1-9, matching OS/2 <c>usWidthClass</c>) this face matches for</param>
-        /// <param name="ranges">the face's <c>unicode-range</c> restriction, or null for "covers whatever is asked of it"</param>
+        /// <param name="familyName">the family name of the <c>@font-face</c> rule</param>
+        /// <param name="fontFamily">the loaded face</param>
+        /// <param name="weight">numeric weight (1-1000)</param>
+        /// <param name="isItalic">whether the face is italic or oblique</param>
+        /// <param name="stretch">width on the 1-9 scale of <see cref="FontStretchResolver"/></param>
+        /// <param name="ranges">the <c>unicode-range</c>, or null for any character</param>
         public void AddFontFace(string familyName, RFontFamily fontFamily, int weight, bool isItalic, int stretch, IReadOnlyList<CodepointRange> ranges)
         {
             ArgChecker.AssertArgNotNullOrEmpty(familyName, "familyName");
@@ -244,16 +239,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 
         /// <summary>
         /// Get cached font instance for the given font properties, matching against the <c>@font-face</c>
-        /// faces registered for <paramref name="family"/> (CSS Fonts 4 §5, <see cref="TryFindNearestFace"/>).
-        /// A family without such faces goes through <see cref="GetCachedFont(string,double,RFontStyle)"/>,
-        /// where the platform picks the face from the <see cref="RFontStyle"/> (CSS 2.1 §15.2).
+        /// faces of <paramref name="family"/> (CSS Fonts 4 §5.2). A family without such faces goes through
+        /// <see cref="GetCachedFont(string,double,RFontStyle)"/>, where the platform picks the face.
         /// </summary>
         /// <param name="family">the css font-family name</param>
         /// <param name="size">the font size</param>
-        /// <param name="style">the box's cascaded style (its Italic/Underline/Strikeout bits are honored regardless of which face is chosen; its Bold bit is superseded by <paramref name="weight"/>)</param>
-        /// <param name="weight">CSS Fonts Level 4 numeric weight (1-1000) resolved from <c>font-weight</c></param>
-        /// <param name="stretch">CSS Fonts Level 3 stretch (1-9) resolved from <c>font-stretch</c></param>
-        /// <param name="codepoint">the box's first non-whitespace character's codepoint, for <c>unicode-range</c> face disambiguation, or null to skip it</param>
+        /// <param name="style">the box's style, its Bold bit is replaced by <paramref name="weight"/></param>
+        /// <param name="weight">numeric weight (1-1000)</param>
+        /// <param name="stretch">width on the 1-9 scale of <see cref="FontStretchResolver"/></param>
+        /// <param name="codepoint">the box's first non-white-space character for <c>unicode-range</c>, or null to ignore the ranges</param>
         /// <returns>
         /// the resolved font, or null when <paramref name="codepoint"/> is given and no registered face
         /// covers it, the caller then falls back to the default font
@@ -325,10 +319,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// CSS Fonts 4 §5 face matching: italic first, then stretch, then weight. With a
-        /// <paramref name="codepoint"/>, only faces whose <c>unicode-range</c> covers it are candidates. A
-        /// face without a <c>unicode-range</c> is assumed to cover everything, its glyphs aren't checked.
-        /// Returns false when no face qualifies.
+        /// CSS Fonts 4 §5.2 face matching, here italic first, then stretch, then weight. With a
+        /// <paramref name="codepoint"/>, only faces whose <c>unicode-range</c> covers it are candidates, the
+        /// glyphs of the font itself aren't checked. Returns false when no face qualifies.
         /// </summary>
         private static bool TryFindNearestFace(FontFamilyModel family, int weight, bool isItalic, int stretch, int? codepoint, out FontFaceEntry face)
         {
@@ -372,9 +365,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        /// CSS Fonts Level 4 §5.2's nearest-stretch search order: a target at or narrower than normal (5)
-        /// searches narrower first (down to 1), then wider; a target wider than normal searches wider
-        /// first (up to 9), then narrower. <paramref name="availableStretches"/> must be non-empty.
+        /// CSS Fonts 4 §5.2 nearest width. <paramref name="availableStretches"/> must be non-empty.
         /// </summary>
         private static int PickNearestStretch(List<int> availableStretches, int target)
         {
@@ -469,7 +460,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         }
 
         /// <summary>
-        // create font (try using existing font family to support custom fonts)
+        /// Creates the font, through the registered family if there's one, so added fonts are found.
         /// </summary>
         private RFont CreateFont(string family, double size, RFontStyle style)
         {

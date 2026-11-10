@@ -10,18 +10,14 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 namespace TheArtOfDev.HtmlRenderer.Core.Utils
 {
     /// <summary>
-    /// Parses a CSS <c>@font-face</c> <c>unicode-range</c> descriptor into a compact set of inclusive
-    /// codepoint <see cref="CodepointRange"/>s, reusing the existing CSS tokenizer's <c>U+</c> grammar
-    /// (<see cref="CssValueParser.GetCssTokens"/> → <see cref="RangeToken"/>, already fully implemented -
-    /// see <see cref="TheArtOfDev.HtmlRenderer.Core.CssEngine.Parser.Lexer"/>'s <c>UnicodeRange</c> method)
-    /// rather than re-implementing it.
+    /// Parses the <c>unicode-range</c> descriptor of <c>@font-face</c> (CSS Fonts 4 §4.5) into inclusive
+    /// codepoint ranges.
     /// </summary>
     public static class UnicodeRangeParser
     {
         /// <summary>
-        /// Parses a <c>unicode-range</c> descriptor into inclusive codepoint ranges, or returns null when
-        /// the descriptor is absent/blank or contains no valid range (meaning "no explicit subset - the
-        /// face applies to whatever its font actually covers").
+        /// Returns null when the descriptor is absent or has no valid range, the face is then used for
+        /// any character.
         /// </summary>
         public static IReadOnlyList<CodepointRange>? Parse(string? descriptor)
         {
@@ -30,13 +26,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
 
             List<CodepointRange>? ranges = null;
 
-            // The value can arrive either in its CSS source form ("U+41-5A, U+61-7A") or, once round-
-            // tripped through the CSS-OM, with the "U+" prefix dropped ("41-5A, 61-7A"). Split on the
-            // top-level commas and re-tokenize each segment with the "U+" prefix the lexer's range
-            // grammar expects, so both forms parse identically through the one shared tokenizer.
-            // The netstandard2.0 reference assembly's string.IsNullOrWhiteSpace has no [NotNullWhen]
-            // annotation, so the compiler can't narrow descriptor to non-null past the check above on
-            // that TFM alone (net8.0 already narrows it) - the ! makes both legs agree.
+            // The value may come without its "U+" prefixes ("41-5A, 61-7A"), the tokenizer needs them.
+            // The ! is for netstandard2.0, whose IsNullOrWhiteSpace has no [NotNullWhen].
             foreach (var segment in descriptor!.Split(','))
             {
                 var normalized = segment.Trim();
@@ -65,9 +56,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                 if (end < start)
                     continue;
 
-                // A declared range whose bound lands on a surrogate can't be a real Unicode scalar value
-                // (surrogates aren't valid codepoints on their own); nudge inward, and skip a range that
-                // is nothing but surrogates.
+                // Surrogates aren't characters, a bound on one moves past them.
                 if (start is >= 0xD800 and <= 0xDFFF)
                     start = 0xE000;
                 if (end is >= 0xD800 and <= 0xDFFF)
