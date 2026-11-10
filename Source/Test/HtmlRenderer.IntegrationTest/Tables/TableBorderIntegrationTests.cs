@@ -17,6 +17,7 @@ public sealed class TableBorderIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#borders")]
+    [Spec("css-tables-3", "#border-collapse-property")]
     public void BorderCollapse_IsSeparateByDefault()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -27,6 +28,8 @@ public sealed class TableBorderIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#separated-borders")]
+    [Spec("css-tables-3", "#computing-undistributable-space")]
+    [Spec("css-tables-3", "#bounding-box-assignment")]
     public void BorderSpacing_SeparatesAdjoiningCellsAndTheTableBorder()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -46,6 +49,7 @@ public sealed class TableBorderIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#separated-borders")]
+    [Spec("css-tables-3", "#border-spacing-property")]
     public void BorderSpacing_TwoLengthsAreHorizontalThenVertical()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -60,6 +64,7 @@ public sealed class TableBorderIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#separated-borders")]
+    [Spec("css-tables-3", "#computing-undistributable-space")]
     public void TablePadding_AddsToTheBorderSpacingAtTheEdges()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -85,6 +90,7 @@ public sealed class TableBorderIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#empty-cells")]
+    [Spec("css-tables-3", "#empty-cell-rendering")]
     public void EmptyCellsHide_PaintsNoBackgroundOrBorderAroundAnEmptyCell()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -98,6 +104,7 @@ public sealed class TableBorderIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#empty-cells")]
+    [Spec("css-tables-3", "#empty-cell-rendering")]
     public void EmptyCellsShow_PaintsTheBackgroundOfAnEmptyCell()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -111,6 +118,7 @@ public sealed class TableBorderIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#empty-cells")]
+    [Spec("css-tables-3", "#empty-cell-rendering")]
     public void EmptyCellsHide_StillPaintsTheBackgroundOfACellWithText()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -137,6 +145,7 @@ public sealed class TableBorderIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#collapsing-borders")]
+    [Spec("css-tables-3", "#drawing-collapsed-borders-2")]
     public void CollapsedBorders_AreCenteredOnTheGridLineBetweenCells()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -152,6 +161,8 @@ public sealed class TableBorderIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#collapsing-borders")]
+    [Spec("css-tables-3", "#border-collapse-property")]
+    [Spec("css-tables-3", "#collapsed-style-overrides")]
     public void Collapse_IgnoresTheBorderSpacing()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -168,6 +179,7 @@ public sealed class TableBorderIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#border-conflict-resolution")]
+    [Spec("css-tables-3", "#border-specificity")]
     public void WiderBorder_WinsTheSharedEdge()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -184,6 +196,7 @@ public sealed class TableBorderIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#border-conflict-resolution")]
+    [Spec("css-tables-3", "#border-conflict-resolution-algorithm")]
     public void TableBorder_WinsOverANarrowerCellBorder()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -197,6 +210,7 @@ public sealed class TableBorderIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#table-border-styles")]
+    [Spec("css-tables-3", "#border-style-overrides")]
     public void HiddenBorder_SuppressesTheNeighboursBorder()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(

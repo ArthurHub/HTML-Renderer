@@ -13,6 +13,7 @@ public sealed class TableModelIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#table-display")]
+    [Spec("css-tables-3", "#table-structure")]
     public void DisplayValues_TurnArbitraryElementsIntoATable()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -35,6 +36,7 @@ public sealed class TableModelIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#table-display")]
+    [Spec("css-tables-3", "#table-structure")]
     public void HeaderGroup_IsDisplayedBeforeAndFooterGroupAfterTheBody()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -55,6 +57,7 @@ public sealed class TableModelIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#table-display")]
+    [Spec("css-tables-3", "#table-structure")]
     public void SecondHeaderGroup_IsTreatedAsARowGroupInSourceOrder()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -75,6 +78,7 @@ public sealed class TableModelIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#table-display")]
+    [Spec("css-tables-3", "#table-structure")]
     public void ColumnElements_AreNotRendered()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -96,6 +100,7 @@ public sealed class TableModelIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#table-display")]
+    [Spec("css-tables-3", "#table-structure")]
     public void InlineTable_SitsOnTheLineBetweenTheSurroundingText()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -113,6 +118,7 @@ public sealed class TableModelIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#anonymous-boxes")]
+    [Spec("css-tables-3", "#fixup-algorithm")]
     public void CellsWithoutARow_ShareOneAnonymousRow()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -130,6 +136,7 @@ public sealed class TableModelIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#anonymous-boxes")]
+    [Spec("css-tables-3", "#fixup-algorithm")]
     public void NonCellContentOfARow_GetsAnAnonymousCell()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -146,6 +153,7 @@ public sealed class TableModelIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#anonymous-boxes")]
+    [Spec("css-tables-3", "#fixup-algorithm")]
     public void ChildrenOfAColumn_AreNotRendered()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -171,6 +179,7 @@ public sealed class TableModelIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#anonymous-boxes")]
+    [Spec("css-tables-3", "#fixup-algorithm")]
     public void WhiteSpaceBetweenRows_DoesNotCreateARow()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -186,6 +195,7 @@ public sealed class TableModelIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#columns")]
+    [Spec("css-tables-3", "#computing-column-measures")]
     public void ColumnWidth_IsAMinimumForTheColumn()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -200,6 +210,7 @@ public sealed class TableModelIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#columns")]
+    [Spec("css-tables-3", "#drawing-cell-backgrounds")]
     public void ColumnBackground_IsPaintedBehindItsCells()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -213,6 +224,7 @@ public sealed class TableModelIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#model")]
+    [Spec("css-tables-3", "#global-style-overrides")]
     public void Margin_IsAppliedOutsideTheTable()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -250,6 +262,7 @@ public sealed class TableModelIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#model")]
+    [Spec("css-tables-3", "#bounding-box-assignment")]
     public void Caption_IsRenderedAboveTheTable()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -267,6 +280,7 @@ public sealed class TableModelIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#caption-position")]
+    [Spec("css-tables-3", "#caption-side-property")]
     public void CaptionSideBottom_PutsTheCaptionBelowTheTable()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -280,6 +294,7 @@ public sealed class TableModelIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#table-layout")]
+    [Spec("css-tables-3", "#dimensioning-the-row-column-grid--step1")]
     public void RowspanCell_PushesTheNextRowsCellIntoTheFollowingColumn()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -297,6 +312,8 @@ public sealed class TableModelIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#table-layout")]
+    [Spec("css-tables-3", "#dimensioning-the-row-column-grid--step1")]
+    [Spec("css-tables-3", "#bounding-box-assignment")]
     public void ColspanCell_CoversTheColumnsItSpans()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -314,6 +331,7 @@ public sealed class TableModelIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#table-layout")]
+    [Spec("css-tables-3", "#global-style-overrides")]
     public void CellMargins_AreIgnored()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -329,6 +347,7 @@ public sealed class TableModelIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#table-layers")]
+    [Spec("css-tables-3", "#drawing-cell-backgrounds")]
     public void RowBackground_IsPaintedBehindItsCells()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -344,6 +363,7 @@ public sealed class TableModelIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#table-layers")]
+    [Spec("css-tables-3", "#drawing-cell-backgrounds")]
     public void RowGroupBackground_IsPaintedBehindItsCells()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -356,6 +376,8 @@ public sealed class TableModelIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#table-layers")]
+    [Spec("css-tables-3", "#drawing-table-backgrounds-and-borders")]
+    [Spec("css-tables-3", "#drawing-cell-backgrounds")]
     public void CellBackground_IsPaintedOverTheTableBackground()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(

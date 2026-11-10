@@ -11,6 +11,7 @@ public sealed class TableVisibilityCollapseIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#dynamic-effects")]
+    [Spec("css-tables-3", "#bounding-box-assignment")]
     public void CollapsedRow_DirectTableChild_TakesNoSpace()
     {
         // <tr> as a direct child of <table>, no row group
@@ -225,6 +226,7 @@ public sealed class TableVisibilityCollapseIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#dynamic-effects")]
+    [Spec("css-tables-3", "#bounding-box-assignment")]
     public void CollapsedColumn_TakesNoWidth()
     {
         var (experiment, _) = LayoutHarness.Layout("""

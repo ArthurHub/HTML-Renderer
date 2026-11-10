@@ -10,16 +10,7 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
 /// <summary>
-/// Verifies a real, spec-confirmed default-behavior gap found while auditing this port's fragmentation
-/// engine against PeachPDF a third time, then checking the actual W3C text directly
-/// (<see href="https://drafts.csswg.org/css-tables-3/#breaking-rules">css-tables-3 §6.1</see>, current
-/// Editor's Draft): "When fragmenting a table, user agents <b>must</b> attempt to preserve the table rows
-/// unfragmented if the cells spanning the row do not span any subsequent row, and their height is at
-/// least twice smaller than both the fragmentainer height and width. Other rows are said <i>freely
-/// fragmentable</i>." This is phrased as a required UA default, not something an author opts into -
-/// <c>CssLayoutEngineTable.LayoutCells</c> previously only preserved a row when the TABLE had explicit
-/// <c>break-inside:avoid</c>, meaning an ordinary multi-page table with no special markup at all rendered
-/// rows split across page boundaries by default, which the spec does not permit as the default.
+/// Rows are kept in one piece by default, unless a cell spans into a later row (CSS Tables 3 §6.1).
 /// </summary>
 [TestClass]
 [DoNotParallelize]
@@ -40,6 +31,7 @@ public sealed class TableRowDefaultAtomicityTest
     }
 
     [TestMethod]
+    [Spec("css-tables-3", "#breaking-rules")]
     public async Task OrdinaryRowWithNoBreakInsideAvoid_IsStillPreservedUnfragmented_ByDefault()
     {
         var checkedAnyStraddleCandidate = false;
@@ -48,8 +40,6 @@ public sealed class TableRowDefaultAtomicityTest
         {
             using var wrapper = new HtmlContainer();
             var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line</p>", fillerCount));
-            // Deliberately no break-inside:avoid anywhere - this is the plain, no-special-markup case
-            // css-tables-3 §6.1 says every conformant UA must handle this way by default.
             await wrapper.SetHtml(
                 $"""
                 <html><body>
@@ -80,18 +70,16 @@ public sealed class TableRowDefaultAtomicityTest
 
             checkedAnyStraddleCandidate = true;
             Assert.AreEqual(topSlot, bottomSlot,
-                $"at fillerCount={fillerCount}, the second row straddles page slots {topSlot}->{bottomSlot} with no break-inside:avoid anywhere - css-tables-3 6.1 requires it stay whole by default");
+                $"at fillerCount={fillerCount}, the second row straddles page slots {topSlot}->{bottomSlot}");
         }
 
         Assert.IsTrue(checkedAnyStraddleCandidate, "no filler count in range produced a target cell - test is not meaningful as written");
     }
 
     [TestMethod]
+    [Spec("css-tables-3", "#breaking-rules")]
     public async Task RowSpanningIntoASubsequentRow_RemainsFreelyFragmentable()
     {
-        // css-tables-3 6.1's own carve-out: a row a rowspan cell only STARTS in (spanning further rows)
-        // is explicitly excluded from the "preserve unfragmented" default - confirming the new default
-        // atomicity doesn't overreach into content the spec says must stay freely fragmentable.
         var foundAStraddle = false;
 
         for (var fillerCount = 1; fillerCount < 30; fillerCount++)

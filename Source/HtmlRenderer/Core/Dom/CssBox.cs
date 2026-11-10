@@ -84,11 +84,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// For a table box only: detached clones of the table's own &lt;thead&gt; rows, one set per
-        /// continuation page the table's body spans (css-tables-3 6.2's repeated headers) - not part
-        /// of <see cref="Boxes"/> (so re-running table layout can never mistake them for real body
-        /// content), rebuilt from scratch on every layout pass by <see cref="Fragmentation.TableHeaderRepeat"/>.
-        /// Null when the table has no header or never crosses a page boundary.
+        /// For a table: detached clones of its header rows, one set per continuation page (CSS Tables 3
+        /// §6.2), rebuilt on every layout by <see cref="Fragmentation.TableHeaderRepeat"/>. Not part of
+        /// <see cref="Boxes"/>. Null when nothing repeats.
         /// </summary>
         internal List<CssBox> RepeatedHeaderRows { get; set; }
 
@@ -591,16 +589,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Whether a forced break here could actually be deferred to (and resumed in) a later pass -
-        /// false anywhere inside a table cell's subtree. <see cref="CssLayoutEngineTable"/>'s row loop
-        /// calls <c>cell.PerformLayout</c> directly, the same way it always has, and does not participate
-        /// in the <see cref="PendingBreakToken"/> bubbling protocol an ordinary block-child loop does (see
-        /// that property's doc comment) - a table row is not itself laid out via that loop, so nothing
-        /// would ever read a cell's own <see cref="PendingBreakToken"/> and turn it into a real pass
-        /// boundary. Deferring anyway would leave the deferred content measured but never positioned
-        /// (its <see cref="PerformLayoutImp"/> call returns before reaching <c>CreateLineBoxes</c>/the
-        /// block-child loop, yet nothing ever resumes it) - found as a real regression while
-        /// investigating table fragmentation, once R1's forced-break deferral existed to trigger it.
+        /// Whether a forced break here can be deferred to a later pass. Not inside a table cell:
+        /// <see cref="CssLayoutEngineTable"/> lays cells out directly and never reads their
+        /// <see cref="PendingBreakToken"/>, so deferred content would never be positioned.
         /// </summary>
         private bool CanDeferToLaterPass()
         {

@@ -5,229 +5,299 @@ snapshot: https://www.w3.org/TR/2025/WD-css-tables-3-20251216/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#values':
-    title: 1.1 Value Definitions
-    status: unknown
+    status: n/a
   '#content-model':
     title: 2 Content Model
-    status: unknown
+    status: partial
   '#table-structure':
     title: 2.1 Table Structure
-    status: unknown
+    status: partial
+    gaps:
+      - Only the first header and footer group are handled, see CSS 2.1 17.2
+      - "'inline-table' is laid out like a block-level table, see CSS 2.1 17.2"
+      - Captions aren't rendered, see CSS 2.1 17.4
   '#terminology':
     title: 2.1.1 Terminology
-    status: unknown
+    status: n/a
   '#fixup':
     title: 2.2 Fixup
-    status: unknown
+    status: partial
   '#fixup-algorithm':
     title: 2.2.1 Fixup Algorithm
-    status: unknown
+    status: partial
+    gaps:
+      - Consecutive non-row children don't share one anonymous row, misparented boxes get no anonymous table, see CSS 2.1 17.2.1
   '#fixup-boxes':
     title: 2.2.2 Characteristics of fixup boxes
-    status: unknown
+    status: supported
   '#fixup-examples':
     title: 2.2.3 Examples
-    status: unknown
+    status: n/a
   '#layout':
     title: 3 Layout
-    status: unknown
+    status: partial
   '#layout-principles':
     title: 3.1 Core layout principles
-    status: unknown
+    status: partial
+    gaps:
+      - "'auto' margins don't center a table, see CSS 2.1 17.5.2"
   '#table-layout-algorithm':
     title: 3.2 Table layout algorithm
-    status: unknown
+    status: partial
+    gaps:
+      - Captions don't count toward the size of an empty table, see CSS 2.1 17.4
   '#dimensioning-the-row-column-grid':
     title: 3.3 Dimensioning the row/column grid
-    status: unknown
+    status: partial
   '#dimensioning-the-row-column-grid--step1':
     title: 3.3.1 HTML Algorithm
-    status: unknown
+    status: partial
+    gaps:
+      - colspan and rowspan are read from any element, not only from td and th
+      - colspan doesn't add columns, see HTML 4.9.12.1
   '#dimensioning-the-row-column-grid--step2':
     title: 3.3.2 Track merging
-    status: unknown
+    status: unsupported
+    gaps:
+      - Columns that only spanning cells cover aren't merged, a colspan past the column count breaks the table layout, see HTML 4.9.12.1
   '#missing-cells-fixup':
     title: 3.4 Missing cells fixup
-    status: unknown
+    status: supported
   '#layout-modes':
     title: 3.5 Table layout modes
-    status: unknown
+    status: partial
   '#table-layout-property':
     title: 3.5.1 The Table-Layout property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'table-layout: fixed' is ignored, see CSS 2.1 17.5.2.1"
   '#border-collapse-property':
     title: 3.5.2 The Border-Collapse property
-    status: unknown
+    status: partial
+    gaps:
+      - Collapsed borders aren't merged, see 3.7
   '#border-spacing-property':
     title: 3.5.2.1 The Border-Spacing property
-    status: unknown
+    status: partial
+    gaps:
+      - A negative value isn't rejected, its absolute value is used
   '#caption-side-property':
     title: 3.5.3 The Caption-Side property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Captions aren't rendered, see CSS 2.1 17.4
   '#style-overrides':
     title: 3.6 Style overrides
-    status: unknown
+    status: partial
   '#global-style-overrides':
     title: 3.6.1 Overrides applying in all modes
-    status: unknown
+    status: supported
   '#collapsed-style-overrides':
     title: 3.6.2 Overrides applying in collapsed-borders mode
-    status: unknown
+    status: partial
+    gaps:
+      - "'border-radius' of the cells isn't ignored"
+      - Borders aren't resolved, see 3.7
   '#border-collapsing':
     title: 3.7 Border-collapsing
-    status: unknown
+    status: unsupported
   '#conflict-resolution-for-collapsed-borders':
     title: 3.7.1 Conflict Resolution for Collapsed Borders
-    status: unknown
+    status: unsupported
   '#border-conflict-resolution-algorithm':
     title: 3.7.1.1 Conflict Resolution Algorithm for Collapsed Borders
-    status: unknown
+    status: unsupported
+    gaps:
+      - Borders aren't resolved, every cell and the table paint their own, see CSS 2.1 17.6.2.1
   '#border-style-harmonization-algorithm':
     title: 3.7.1.2 Harmonization Algorithm for Collapsed Borders
-    status: unknown
+    status: unsupported
   '#border-specificity':
     title: 3.7.1.3 Specificity of a border style
-    status: unknown
+    status: unsupported
   '#content-measure':
     title: 3.8 Computing table measures
-    status: unknown
+    status: partial
   '#computing-undistributable-space':
     title: 3.8.1 Computing Undistributable Space
-    status: unknown
+    status: partial
+    gaps:
+      - The table's padding is dropped, see CSS 2.1 17.6.1
   '#computing-cell-measures':
     title: 3.8.2 Computing Cell Measures
-    status: unknown
+    status: partial
+    gaps:
+      - "'min-width' on a cell is ignored, see CSS 2.1 10.4"
+      - A cell's 'width' includes its padding and border, as if 'box-sizing' were always 'border-box'
   '#computing-column-measures':
     title: 3.8.3 Computing Column Measures
-    status: unknown
+    status: partial
+    gaps:
+      - A spanning cell's width is split evenly over its columns instead of in proportion to their widths
+      - A column group's 'width' doesn't widen its columns, see CSS 2.1 17.5.2.2
   '#width-distribution':
     title: 3.9 Available Width Distribution
-    status: unknown
+    status: partial
   '#computing-the-table-width':
     title: 3.9.1 Computing the table width
-    status: unknown
+    status: partial
+    gaps:
+      - "'min-width' on the table is ignored"
+      - The caption's minimum width doesn't widen the table, see CSS 2.1 17.5.2.2
   '#width-distribution-principles':
     title: 3.9.2 Core distribution principles
-    status: unknown
-  '#width-distribution-principles-rN':
-    title: 3.9.2.1 Rules
-    status: unknown
-  '#width-distribution-principles-rR':
-    title: 3.9.2.2 Available sizings
-    status: unknown
+    status: n/a
   '#width-distribution-algorithm':
     title: 3.9.3 Distribution algorithm
-    status: unknown
+    status: partial
   '#width-distribution-in-fixed-mode':
     title: 3.9.3.1 Changes to width distribution in fixed mode
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'table-layout: fixed' is ignored, see 3.5.1"
   '#distributing-width-to-columns':
     title: 3.9.3.2 Distributing excess width to columns
-    status: unknown
+    status: partial
+    gaps:
+      - Excess width is split evenly over the auto columns instead of in proportion to their max-content width
   '#height-distribution':
     title: 3.10 Available Height Distribution
-    status: unknown
+    status: partial
   '#computing-the-table-height':
     title: 3.10.1 Computing the table height
-    status: unknown
+    status: partial
+    gaps:
+      - A row's 'height' is ignored, see CSS 2.1 17.5.3
   '#row-layout':
     title: 3.10.2 Row layout (first pass)
-    status: unknown
+    status: partial
+    gaps:
+      - "'vertical-align: baseline' aligns like 'top', see CSS 2.1 17.5.3"
   '#row-relayout':
     title: 3.10.3 Row layout (second pass)
-    status: unknown
+    status: unsupported
+    gaps:
+      - Percentage heights of rows and cells aren't resolved against the table height
   '#height-distribution-principles':
     title: 3.10.4 Core distribution principles
-    status: unknown
+    status: n/a
   '#height-distribution-algorithm':
     title: 3.10.5 Distribution algorithm
-    status: unknown
+    status: unsupported
+    gaps:
+      - A table taller than its rows keeps the extra height below the last row instead of growing the rows
   '#table-cell-content-relayout':
     title: 3.10.6 Table-cell content layout (second pass)
-    status: unknown
+    status: unsupported
+    gaps:
+      - Percentage heights in a cell aren't resolved against the cell's height, see CSS 2.1 10.5
   '#bounding-box-assignment':
     title: 3.11 Positioning of cells, captions and other internal table boxes
-    status: unknown
+    status: partial
+    gaps:
+      - Captions aren't positioned, see CSS 2.1 17.4
+      - "Rows and columns with 'visibility: collapse' keep their space, see CSS 2.1 17.5.5"
   '#abspos':
     title: 4 Absolute Positioning
-    status: unknown
+    status: partial
   '#abspos-boxes-in-table-root':
     title: 4.1 With a table-root as containing block
-    status: unknown
+    status: partial
+    gaps:
+      - An absolutely positioned box in a cell moves with the cell's vertical alignment
   '#abspos-boxes-in-table-internal':
     title: 4.2 With a table-internal as containing block
-    status: unknown
+    status: partial
+    gaps:
+      - An absolutely positioned box is placed against the cell's content edge instead of its padding edge, see CSS 2.1 10.1
   '#static-position':
     title: 4.3 With a table-internal box as non-containing block parent
-    status: unknown
+    status: partial
+    gaps:
+      - An absolutely positioned box whose parent isn't its containing block is placed at the containing block's origin instead of its static position
   '#rendering':
     title: 5 Rendering
-    status: unknown
+    status: partial
   '#paint-order':
     title: 5.1 Paint order of cells
-    status: unknown
+    status: supported
   '#empty-cell-rendering':
     title: 5.2 Empty cell rendering (separated-borders mode)
-    status: unknown
+    status: partial
+    gaps:
+      - "'hide' also hides cells with text, see CSS 2.1 17.6.1.1"
+      - "'hide' also hides empty cells in collapsed-borders mode"
   '#drawing-backgrounds-and-borders':
     title: 5.3 Drawing backgrounds and borders
-    status: unknown
+    status: partial
   '#drawing-table-backgrounds-and-borders':
     title: 5.3.1 Drawing table backgrounds and borders
-    status: unknown
+    status: supported
   '#drawing-collapsed-borders-1':
     title: 5.3.1.1 Changes in collapsed-borders mode
-    status: unknown
+    status: unsupported
+    gaps:
+      - The table paints its own borders, the edge cells don't take them over
   '#drawing-cell-backgrounds':
     title: 5.3.2 Drawing cell backgrounds
-    status: unknown
+    status: partial
+    gaps:
+      - Column, column group, row and row group backgrounds aren't painted, see CSS 2.1 17.5.1
   '#drawing-cell-borders':
     title: 5.3.3 Drawing cell borders
-    status: unknown
+    status: supported
   '#drawing-collapsed-borders-2':
     title: 5.3.3.1 Changes in collapsed-borders mode
-    status: unknown
+    status: unsupported
+    gaps:
+      - Cell borders are drawn side by side with a 1px overlap instead of centered on the grid line, see CSS 2.1 17.6.2
   '#border-style-overrides':
     title: 5.3.4 Border styles (collapsed-borders mode)
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'hidden' doesn't suppress the other borders at the same edge, see CSS 2.1 17.6.3"
   '#visibility-collapse-rendering':
     title: '5.4 Rendering for visibility: collapse'
-    status: unknown
+    status: partial
   '#visibility-collapse-cell-rendering':
     title: '5.4.1 Rendering a visibility: collapse table cell'
-    status: unknown
+    status: partial
+    gaps:
+      - A cell spanning a collapsed track isn't clipped, collapsed tracks keep their space, see CSS 2.1 17.5.5
   '#visibility-collapse-track-rendering':
     title: '5.4.2 Rendering a visibility: collapse table-track or table-track-group'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "Rows and columns with 'visibility: collapse' keep their space, see CSS 2.1 17.5.5"
   '#fragmentation':
     title: 6 Fragmentation
-    status: unknown
+    status: partial
   '#breaking-rules':
     title: 6.1 Breaking across fragmentainers
-    status: unknown
+    status: partial
+    gaps:
+      - "'break-before' and 'break-after' on rows and row groups are ignored"
   '#repeated-headers':
     title: 6.2 Repeating headers across pages
-    status: unknown
+    status: partial
+    gaps:
+      - Footers aren't repeated
+      - A header taller than a quarter of the page still repeats
   '#security':
     title: 7 Security Considerations
-    status: unknown
+    status: n/a
   '#privacy':
     title: 8 Privacy Considerations
-    status: unknown
+    status: n/a
   '#bug-list':
     title: 9 List of bugs being tracked
-    status: unknown
+    status: n/a
   '#appendices':
     title: 10 Appendices
-    status: unknown
-  '#mapping':
-    title: 10.1 Mapping between CSS & HTML attributes
-    status: unknown
+    status: n/a
   '#TODO':
     title: 11 (link here for missing sections)
-    status: unknown
+    status: n/a
   '#changes':
     title: 12 Changes
-    status: unknown
+    status: n/a

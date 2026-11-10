@@ -19,6 +19,7 @@ public sealed class TableSizingIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#width-layout")]
+    [Spec("css-tables-3", "#layout-principles")]
     public void AutoWidth_ShrinksToTheContent()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -30,6 +31,7 @@ public sealed class TableSizingIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#width-layout")]
+    [Spec("css-tables-3", "#layout-principles")]
     public void AutoMargins_CenterTheTable()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -41,6 +43,7 @@ public sealed class TableSizingIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#fixed-table-layout")]
+    [Spec("css-tables-3", "#table-layout-property")]
     public void FixedLayout_ColumnWidthsComeFromTheFirstRowOnly()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -55,6 +58,7 @@ public sealed class TableSizingIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#fixed-table-layout")]
+    [Spec("css-tables-3", "#table-layout-property")]
     public void FixedLayout_ContentDoesNotWidenAColumn()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -67,6 +71,7 @@ public sealed class TableSizingIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#auto-table-layout")]
+    [Spec("css-tables-3", "#computing-column-measures")]
     public void ColumnWidth_IsTheWidestCellInTheColumn()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -83,6 +88,7 @@ public sealed class TableSizingIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#auto-table-layout")]
+    [Spec("css-tables-3", "#computing-the-table-width")]
     public void SpecifiedTableWidth_IsDistributedOverTheColumns()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -97,6 +103,7 @@ public sealed class TableSizingIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#auto-table-layout")]
+    [Spec("css-tables-3", "#computing-the-table-width")]
     public void SpecifiedTableWidth_GrowsToTheMinimumContentWidth()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -111,6 +118,7 @@ public sealed class TableSizingIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#auto-table-layout")]
+    [Spec("css-tables-3", "#computing-column-measures")]
     public void CellWidth_IsAMinimumForItsColumn()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -121,6 +129,7 @@ public sealed class TableSizingIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#auto-table-layout")]
+    [Spec("css-tables-3", "#width-distribution-algorithm")]
     public void PercentageColumnWidth_IsRelativeToTheTableWidth()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -132,6 +141,7 @@ public sealed class TableSizingIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#auto-table-layout")]
+    [Spec("css-tables-3", "#computing-column-measures")]
     public void ColumnGroupWidth_IsAMinimumForItsColumns()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -144,6 +154,7 @@ public sealed class TableSizingIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#auto-table-layout")]
+    [Spec("css-tables-3", "#computing-the-table-width")]
     public void CaptionMinimumWidth_WidensTheTable()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -154,6 +165,7 @@ public sealed class TableSizingIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#height-layout")]
+    [Spec("css-tables-3", "#computing-the-table-height")]
     public void TableHeight_IsAMinimumHeight()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -165,6 +177,7 @@ public sealed class TableSizingIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#height-layout")]
+    [Spec("css-tables-3", "#computing-the-table-height")]
     public void RowHeight_IsAMinimumHeight()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -175,6 +188,7 @@ public sealed class TableSizingIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#height-layout")]
+    [Spec("css-tables-3", "#row-layout")]
     public void CellHeight_SetsTheRowHeight()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -186,6 +200,7 @@ public sealed class TableSizingIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#height-layout")]
+    [Spec("css-tables-3", "#row-layout")]
     public void RowspanCell_IsCoveredByTheRowsItSpans()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -201,6 +216,7 @@ public sealed class TableSizingIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#height-layout")]
+    [Spec("css-tables-3", "#row-layout")]
     public void VerticalAlignTop_KeepsTheContentAtTheTopOfTheRow()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -213,6 +229,7 @@ public sealed class TableSizingIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#height-layout")]
+    [Spec("css-tables-3", "#row-layout")]
     public void VerticalAlignBottom_PutsTheContentAtTheBottomOfTheRow()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -226,6 +243,7 @@ public sealed class TableSizingIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#height-layout")]
+    [Spec("css-tables-3", "#row-layout")]
     public void VerticalAlignBaseline_AlignsTheFirstLinesOfTheCells()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -238,6 +256,7 @@ public sealed class TableSizingIntegrationTests
 
     [TestMethod]
     [Spec("css21", "tables.html#height-layout")]
+    [Spec("css-tables-3", "#row-layout")]
     public void VerticalAlignSub_IsTreatedAsBaseline()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

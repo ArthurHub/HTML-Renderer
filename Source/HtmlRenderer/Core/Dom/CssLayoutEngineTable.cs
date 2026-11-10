@@ -619,12 +619,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 _tableBox.Location = new RPoint(startx - _tableBox.ActualBorderLeftWidth - _tableBox.ActualPaddingLeft - GetHorizontalSpacing(), _tableBox.Location.Y);
             }
 
-            // css-tables-3 6.2: a <thead> with an avoiding break-inside repeats on every page the table
-            // spans. The room for it is reserved here, before the first row of each continuation page is
-            // placed, so the row ends up below the repeated header instead of underneath it.
-            //
-            // The check runs once per row, at the row's start. A single row spanning several pages only
-            // gets the header on the first page it crosses onto.
+            // CSS Tables 3 §6.2. The header's room is reserved before the first row of each continuation
+            // page. Checked once per row at its start, so a row spanning several pages only gets the
+            // header on the first page it crosses onto.
             var pageGridContainer = _tableBox.HtmlContainer;
             var repeatsHeader = pageGridContainer != null && pageGridContainer.HasRealPageGrid
                                  && _headerBox != null && BreakValues.AvoidsBreak(_headerBox.BreakInside);
@@ -715,9 +712,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     }
                 }
 
-                // css-tables-3 §6.1: a row straddling a page boundary that the UA has to try to keep in
-                // one piece moves down to the next page as a whole. The table's own break-inside:avoid
-                // forces that for every row.
+                // CSS Tables 3 §6.1. The table's own break-inside:avoid keeps every row in one piece.
                 if (pageGridContainer != null && pageGridContainer.HasRealPageGrid && maxBottom > cury)
                 {
                     var topSlot = pageGridContainer.PageIndexOf(cury);
@@ -874,11 +869,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             container.PageIndexOf(Math.Max(y, _tableBox.ClientTop));
 
         /// <summary>
-        /// css-tables-3 §6.1's "the cells spanning the row do not span any subsequent row" test: true
-        /// if any cell in <paramref name="row"/> - real or the <see cref="CssSpacingBox"/> placeholder
-        /// standing in for one that started earlier - continues into a row after
-        /// <paramref name="currentrow"/>, meaning this row cannot be preserved unfragmented on its own
-        /// without also pulling along content that belongs to a row not yet reached.
+        /// Whether a cell of <paramref name="row"/>, including one spanning in from an earlier row,
+        /// continues into a later row, which makes the row freely fragmentable (CSS Tables 3 §6.1).
         /// </summary>
         private static bool RowHasCellSpanningIntoSubsequentRow(CssBox row, int currentrow)
         {

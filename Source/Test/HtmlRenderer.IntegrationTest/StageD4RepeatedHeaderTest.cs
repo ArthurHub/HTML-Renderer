@@ -15,12 +15,10 @@ namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 public sealed class StageD4RepeatedHeaderTest
 {
     [TestMethod]
+    [Spec("css-tables-3", "#repeated-headers")]
     public void ThreadRepeatsOnEveryPageTheTableSpans()
     {
-        // break-inside: avoid is explicit here rather than relied on from the UA default stylesheet's
-        // "@media print { thead, tfoot { break-inside: avoid } }" - this test renders via WinForms,
-        // whose adapter reports a "screen" media type, so that print-scoped rule never matches here
-        // (confirmed intentional: only PdfSharpAdapter overrides DefaultMediaType to "print").
+        // The UA's thead { break-inside: avoid } is in @media print, which the WinForms adapter doesn't match
         var sb = new StringBuilder("<html><body><table border='1'><thead style='break-inside:avoid;'><tr><th>Col A</th><th>Col B</th></tr></thead><tbody>");
         for (var i = 0; i < 60; i++)
         {
@@ -57,10 +55,7 @@ public sealed class StageD4RepeatedHeaderTest
         StringAssert.Contains(text, "Col A");
         StringAssert.Contains(text, "Col B");
 
-        // Every repeated header must land at the top of a page slot the table's body actually spans,
-        // and must not be positioned on the table's own first page (it's already there once, in flow).
-        // The row itself carries no Location (only its cells do - see CssLayoutEngineTable's row loop),
-        // so the first cell is the reference point.
+        // Rows have no Location of their own, only their cells
         var firstSlot = container.PageIndexOf(table.Location.Y);
         var slot = container.PageIndexOf(headerRow.Boxes[0].Location.Y);
         Assert.IsTrue(slot > firstSlot, "repeated header should not land back on the table's own first page");

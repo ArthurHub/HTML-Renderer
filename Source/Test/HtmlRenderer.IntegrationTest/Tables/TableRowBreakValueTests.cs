@@ -4,21 +4,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HtmlRenderer.IntegrationTest.Tables;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/TableRowBreakValueTests.cs: css-break-3 §3.1's forced breaks at
-/// the class-A break point between two table rows.
+/// Forced breaks between two table rows, css-break-3 §3.1.
 /// </summary>
-/// <remarks>
-/// Confirmed gap, not a rename: <c>CssLayoutEngineTable.cs</c>'s row loop never reads
-/// <c>BreakBefore</c>/<c>BreakAfter</c> anywhere - confirmed by grepping the whole file for both names (no
-/// matches). The table engine's only page-break-related logic is the straddle-driven row-preservation
-/// shift (css-tables-3 §6.1, unconditional-by-default per this fork's own commit history) and the
-/// repeated-header loop; there is no forced-break handling of any kind for a <c>&lt;tr&gt;</c> or a row
-/// group, unlike the general block layout path (<see cref="TheArtOfDev.HtmlRenderer.Core.Fragmentation.BlockFragmentation.TryGetForcedBreakTarget"/>),
-/// which table rows never go through (they are laid out by <c>CssLayoutEngineTable.LayoutCells</c>'s own
-/// manual per-cell loop, not the generic block child loop). 4 of PeachPDF's 5 tests are accordingly ported
-/// with their full original assertions but <c>[Ignore]</c>d, citing this exact gap; only the one negative
-/// control that holds regardless (no break value anywhere, nothing moves) is left active.
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class TableRowBreakValueTests
@@ -46,9 +33,9 @@ public sealed class TableRowBreakValueTests
         }
     }
 
-    [Ignore("Confirmed gap: CssLayoutEngineTable.cs's row loop never reads BreakBefore anywhere (grepped " +
-        "the whole file - no matches), so break-before:page on a <tr> has no effect on where it lands.")]
+    [Ignore("Gap, see Spec/css-tables-3.yml")]
     [TestMethod]
+    [Spec("css-tables-3", "#breaking-rules")]
     public void BreakBeforeOnARow_StartsItOnTheNextPage()
     {
         var (root, container) = LayoutHarness.Layout(Table("break-before:page"), 400, PageHeight, margin: Margin);
@@ -59,9 +46,9 @@ public sealed class TableRowBreakValueTests
         Assert.AreEqual(1, container.PageIndexOf(r3.Boxes[0].Location.Y));
     }
 
-    [Ignore("Confirmed gap: CssLayoutEngineTable.cs's row loop never reads BreakAfter anywhere (grepped the " +
-        "whole file - no matches), so break-after:page on a <tr> has no effect on the row after it.")]
+    [Ignore("Gap, see Spec/css-tables-3.yml")]
     [TestMethod]
+    [Spec("css-tables-3", "#breaking-rules")]
     public void BreakAfterOnTheRowBefore_StartsTheNextOneOnTheNextPage()
     {
         var (root, container) = LayoutHarness.Layout(Table("", "style='break-after:page'"), 400, PageHeight, margin: Margin);
@@ -72,10 +59,9 @@ public sealed class TableRowBreakValueTests
         Assert.AreEqual(1, container.PageIndexOf(r3.Boxes[0].Location.Y));
     }
 
-    [Ignore("Same confirmed gap as BreakBeforeOnARow_StartsItOnTheNextPage - a row group's own break-before " +
-        "is no more read than an individual row's, since neither ever reaches CssLayoutEngineTable's forced-" +
-        "break-free row loop.")]
+    [Ignore("Gap, see Spec/css-tables-3.yml")]
     [TestMethod]
+    [Spec("css-tables-3", "#breaking-rules")]
     public void BreakBeforeOnARowGroup_IsSeenAtItsFirstRow()
     {
         var (root, container) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -90,9 +76,9 @@ public sealed class TableRowBreakValueTests
         Assert.AreEqual(1, container.PageIndexOf(r2.Boxes[0].Location.Y));
     }
 
-    [Ignore("Same confirmed gap: break-before:page on a <tr> is never read at all, so there is no forced " +
-        "break for the repeated-header loop to take part in taking.")]
+    [Ignore("Gap, see Spec/css-tables-3.yml")]
     [TestMethod]
+    [Spec("css-tables-3", "#breaking-rules")]
     public void AForcedRowBreak_StillRepeatsTheHeaderOnTheNewPage()
     {
         var (root, container) = LayoutHarness.Layout(LayoutHarness.Wrap(

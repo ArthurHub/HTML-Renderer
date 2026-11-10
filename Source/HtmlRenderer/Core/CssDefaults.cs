@@ -101,8 +101,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
           h1, h2, h3,
           h4, h5, h6    { break-after: avoid }
 
-          /* css-tables-3 6.2 repeats a header or footer group across the pages a table spans only
-             where the group carries an avoid break-inside. */
+          /* CSS Tables 3 §6.2 */
           thead, tfoot  { break-inside: avoid }
         }
 
