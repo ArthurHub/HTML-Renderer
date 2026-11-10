@@ -11,6 +11,7 @@ public sealed class GeneratedContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#before-after-content")]
+    [Spec("css-pseudo-4", "#generated-content")]
     public void BeforeAndAfter_AreTheFirstAndLastChildOfTheElement()
     {
         var x = Box("<p id=x><span>a</span></p><style>#x::before { content: 'B' } #x::after { content: 'A' }</style>");
@@ -23,6 +24,7 @@ public sealed class GeneratedContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#before-after-content")]
+    [Spec("css-pseudo-4", "#treelike")]
     public void PseudoElement_InheritsInheritedPropertiesOnly()
     {
         var before = Before("<p id=x style='color:red;border:2px solid black'>a</p><style>#x::before { content: 'B' }</style>");
@@ -36,6 +38,7 @@ public sealed class GeneratedContentTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "generate.html#before-after-content")]
+    [Spec("css-pseudo-4", "#generated-content")]
     public void BlockPseudoElement_IsLaidOutAsABlockInsideTheElement()
     {
         var inline = Box("<div id=x>Text</div><style>#x::before { content: 'Some' }</style>");
@@ -49,6 +52,7 @@ public sealed class GeneratedContentTests
     [Spec("css21", "generate.html#before-after-content")]
     [DataRow("none")]
     [DataRow("normal")]
+    [Spec("css-pseudo-4", "#generated-content")]
     public void PseudoElementWithoutContent_IsNotGenerated(string content)
     {
         var plain = Box("<div id=x>Text</div>");

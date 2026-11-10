@@ -454,6 +454,7 @@ public sealed class Css21SelectorTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "selector.html#first-line-pseudo")]
+    [Spec("css-pseudo-4", "#first-line-pseudo")]
     public void FirstLine_StylesTheFirstFormattedLine()
     {
         var p = Layout("p:first-line { color: #ff0000 }", "<p id='x'>Hello</p>");
@@ -464,6 +465,7 @@ public sealed class Css21SelectorTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "selector.html#first-letter")]
+    [Spec("css-pseudo-4", "#first-letter-pseudo")]
     public void FirstLetter_StylesTheFirstLetter()
     {
         var p = Layout("p:first-letter { color: #ff0000 }", "<p id='x'>Hello</p>");
@@ -476,6 +478,7 @@ public sealed class Css21SelectorTests
     [TestMethod]
     [Spec("css21", "selector.html#before-and-after")]
     [Spec("selectors-4", "#pseudo-element-syntax")]
+    [Spec("css-pseudo-4", "#css2-compat")]
     public void BeforeAndAfter_WithASingleColon_GenerateContent()
     {
         var p = Layout("p:before { content: 'Note: ' } p:after { content: '!' }", "<p id='x'>a</p>");
