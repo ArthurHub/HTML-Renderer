@@ -5,10 +5,8 @@ using System.Linq;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Implements CSS calc()'s type-checking rules over a parsed <see cref="CalcNode"/> tree (Layer A
-    /// only — Layer B's evaluator trusts that a value it's asked to evaluate already passed this check,
-    /// see CalcValueConverter/CalcEvaluator). Also folds pure-Number subtrees to concrete values, which
-    /// is what makes a constant divide-by-zero divisor detectable here rather than deferred to layout.
+    /// Type checking of a calc() tree (CSS Values 4 §10.9), null when the types don't combine. Only a
+    /// number may be multiplied with or divide another type, so a division by zero is found here.
     /// </summary>
     internal static class CalcTypeChecker
     {
@@ -60,9 +58,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     var right = Check(binary.Right);
                     if (left is null || right != CalcCategory.Number) return null;
 
-                    // Every valid Number-category subtree is built entirely from Number leaves, so it's
-                    // always foldable here — this is what lets a constant divide-by-zero be rejected at
-                    // validation time rather than silently producing an infinity/NaN at layout time.
                     var divisor = FoldNumber(binary.Right);
                     return divisor == null || divisor == 0d ? null : left;
                 }
@@ -140,7 +135,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 }
 
                 default:
-                    // Dimension/Percentage leaves are never purely numeric.
                     return null;
             }
         }

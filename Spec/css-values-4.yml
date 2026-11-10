@@ -5,256 +5,265 @@ snapshot: https://www.w3.org/TR/2024/WD-css-values-4-20240312/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
+    status: n/a
   '#value-defs':
     title: 2 Value Definition Syntax
-    status: unknown
-  '#component-types':
-    title: 2.1 Component Value Types
-    status: unknown
-  '#component-combinators':
-    title: 2.2 Component Value Combinators
-    status: unknown
-  '#component-multipliers':
-    title: 2.3 Component Value Multipliers
-    status: unknown
-  '#combinator-multiplier-patterns':
-    title: 2.4 Combinator and Multiplier Patterns
-    status: unknown
-  '#component-whitespace':
-    title: 2.5 Component Values and White Space
-    status: unknown
-  '#component-functions':
-    title: 2.6 Functional Notation Definitions
-    status: unknown
-  '#value-examples':
-    title: 2.7 Property Value Examples
-    status: unknown
-  '#production-blocks':
-    title: 2.8 Non-Terminal Definitions and Grammar Production Blocks
-    status: unknown
+    status: n/a
   '#combining-values':
     title: '3 Combining Values: Interpolation, Addition, and Accumulation'
-    status: unknown
-  '#combining-range':
-    title: 3.1 Range Checking
-    status: unknown
+    status: n/a
   '#textual-values':
     title: 4 Textual Data Types
-    status: unknown
+    status: partial
   '#keywords':
     title: 4.1 Pre-defined Keywords
-    status: unknown
+    status: supported
   '#common-keywords':
     title: '4.1.1 CSS-wide keywords: initial, inherit and unset'
-    status: unknown
+    status: supported
   '#custom-idents':
     title: '4.2 Unprefixed Author-defined Identifiers: the <custom-ident> type'
-    status: unknown
+    status: partial
+    gaps:
+      - default is accepted as a <custom-ident>, e.g. as a counter name
   '#dashed-idents':
     title: '4.3 Prefixed Author-defined Identifiers: the <dashed-ident> type'
-    status: unknown
+    status: supported
   '#strings':
     title: '4.4 Quoted Strings: the <string> type'
-    status: unknown
+    status: partial
+    gaps:
+      - A backslash followed by a newline is kept, see CSS 2.1 4.3.7
   '#urls':
     title: '4.5 Resource Locators: the <url> type'
-    status: unknown
+    status: partial
+    gaps:
+      - src() isn't supported, the declaration is dropped
   '#relative-urls':
     title: 4.5.1 Relative URLs
-    status: unknown
+    status: supported
+    gaps:
   '#local-urls':
     title: 4.5.1.1 Fragment URLs
-    status: unknown
+    status: n/a
   '#url-empty':
     title: 4.5.2 Empty URLs
-    status: unknown
+    status: supported
   '#url-modifiers':
     title: 4.5.3 URL Modifiers
-    status: unknown
+    status: unsupported
+    gaps:
+      - An unknown modifier after a quoted URL is appended to the URL instead of making the value invalid
   '#url-processing':
     title: 4.5.4 URL Processing Model
-    status: unknown
+    status: supported
+    gaps:
   '#numeric-types':
     title: 5 Numeric Data Types
-    status: unknown
+    status: partial
   '#numeric-ranges':
     title: 5.1 Range Restrictions and Range Definition Notation
-    status: unknown
+    status: partial
+    gaps:
+      - Negative lengths are accepted where the range forbids them, see CSS 2.1 4.3.2
   '#integers':
     title: '5.2 Integers: the <integer> type'
-    status: unknown
+    status: supported
   '#combine-integers':
     title: 5.2.1 Computation and Combination of <integer>
-    status: unknown
+    status: n/a
   '#numbers':
     title: '5.3 Real Numbers: the <number> type'
-    status: unknown
+    status: partial
+    gaps:
+      - Numbers with an exponent (1e1px) aren't accepted, the declaration is dropped
   '#combine-numbers':
     title: 5.3.1 Computation and Combination of <number>
-    status: unknown
+    status: n/a
   '#dimensions':
     title: '5.4 Numbers with Units: dimension values'
-    status: unknown
+    status: partial
+    gaps:
+      - Units are case-sensitive, 10PX is dropped, see CSS 2.1 4.1.3
   '#compat':
     title: 5.4.1 Compatible Units
-    status: unknown
+    status: supported
   '#combine-dimensions':
     title: 5.4.2 Combination of Dimensions
-    status: unknown
+    status: n/a
   '#percentages':
     title: '5.5 Percentages: the <percentage> type'
-    status: unknown
+    status: partial
+    gaps:
+      - Percentage font sizes are inherited as the percentage, see CSS 2.1 4.3.3
   '#combine-percentages':
     title: 5.5.1 Computation and Combination of <percentage>
-    status: unknown
+    status: n/a
   '#mixed-percentages':
     title: 5.6 Mixing Percentages and Dimensions
-    status: unknown
+    status: supported
   '#combine-mixed':
     title: 5.6.1 Computation and Combination of Percentage and Dimension Mixes
-    status: unknown
+    status: n/a
   '#ratios':
     title: '5.7 Ratios: the <ratio> type'
-    status: unknown
+    status: partial
+    gaps:
+      - A ratio given as a single number (1.3) isn't accepted
   '#combine-ratio':
     title: 5.7.1 Combination of <ratio>
-    status: unknown
+    status: n/a
   '#lengths':
     title: '6 Distance Units: the <length> type'
-    status: unknown
+    status: partial
   '#relative-lengths':
     title: 6.1 Relative Lengths
-    status: unknown
+    status: partial
   '#font-relative-lengths':
     title: '6.1.1 Font-relative Lengths: the em, rem, ex, rex, cap, rcap, ch, rch, ic, ric, lh, rlh units'
-    status: unknown
+    status: partial
+    gaps:
+      - ch is accepted but resolves to 0
+      - cap, ic, lh, rex, rch, rcap, ric and rlh aren't supported, the declaration is dropped
+      - rem in word-spacing doesn't resolve against the root element's font size
   '#viewport-relative-lengths':
     title: '6.1.2 Viewport-percentage Lengths: the *vw, *vh, *vi, *vb, *vmin, *vmax units'
-    status: unknown
+    status: parsed-only
   '#viewport-variants':
     title: 6.1.2.1 The Large, Small, and Dynamic Viewport Sizes
-    status: unknown
+    status: unsupported
+    gaps:
+      - The sv*, lv* and dv* units aren't supported, the declaration is dropped
   '#viewport-relative-units':
     title: 6.1.2.2 The Various Viewport-relative Units
-    status: unknown
+    status: parsed-only
+    gaps:
+      - vw, vh, vmin and vmax are accepted but resolve to 0, and invalidate a calc()
+      - vi and vb aren't supported, the declaration is dropped
   '#absolute-lengths':
     title: '6.2 Absolute Lengths: the cm, mm, Q, in, pt, pc, px units'
-    status: unknown
+    status: partial
+    gaps:
+      - Q isn't supported, the declaration is dropped
   '#other-units':
     title: 7 Other Quantities
-    status: unknown
+    status: partial
   '#angles':
     title: '7.1 Angle Units: the <angle> type and deg, grad, rad, turn units'
-    status: unknown
+    status: supported
   '#time':
     title: '7.2 Duration Units: the <time> type and s, ms units'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Times are parsed, but transitions and animations never run
   '#frequency':
     title: '7.3 Frequency Units: the <frequency> type and Hz, kHz units'
-    status: unknown
+    status: n/a
   '#resolution':
     title: '7.4 Resolution Units: the <resolution> type and dpi, dpcm, dppx units'
-    status: unknown
+    status: supported
   '#defined-elsewhere':
     title: 8 Data Types Defined Elsewhere
-    status: unknown
-  '#colors':
-    title: '8.1 Colors: the <color> type'
-    status: unknown
-  '#combine-colors':
-    title: 8.1.1 Combination of <color>
-    status: unknown
-  '#images':
-    title: '8.2 Images: the <image> type'
-    status: unknown
-  '#combine-images':
-    title: 8.2.1 Combination of <image>
-    status: unknown
+    status: n/a
   '#position':
     title: '8.3 2D Positioning: the <position> type'
-    status: unknown
+    status: partial
   '#position-parsing':
     title: 8.3.1 Parsing <position>
-    status: unknown
+    status: partial
+    gaps:
+      - "'background-position' only resolves keywords, see CSS 2.1 14.2.1"
   '#position-serialization':
     title: 8.3.2 Serializing <position>
-    status: unknown
+    status: n/a
   '#combine-positions':
     title: 8.3.3 Combination of <position>
-    status: unknown
+    status: n/a
   '#functional-notations':
     title: 9 Functional Notations
-    status: unknown
+    status: supported
   '#math':
     title: 10 Mathematical Expressions
-    status: unknown
+    status: partial
   '#calc-func':
     title: '10.1 Basic Arithmetic: calc()'
-    status: unknown
+    status: supported
   '#comp-func':
     title: '10.2 Comparison Functions: min(), max(), and clamp()'
-    status: unknown
+    status: partial
+    gaps:
+      - clamp() with a minimum above the maximum resolves to the maximum instead of the minimum
+      - none isn't accepted as a clamp() bound
   '#round-func':
     title: '10.3 Stepped Value Functions: round(), mod(), and rem()'
-    status: unknown
+    status: unsupported
   '#round-infinities':
     title: 10.3.1 Argument Ranges
-    status: unknown
+    status: unsupported
   '#trig-funcs':
     title: '10.4 Trigonometric Functions: sin(), cos(), tan(), asin(), acos(), atan(), and atan2()'
-    status: unknown
+    status: unsupported
   '#trig-infinities':
     title: 10.4.1 Argument Ranges
-    status: unknown
+    status: unsupported
   '#exponent-funcs':
     title: '10.5 Exponential Functions: pow(), sqrt(), hypot(), log(), exp()'
-    status: unknown
+    status: unsupported
   '#exponent-infinities':
     title: 10.5.1 Argument Ranges
-    status: unknown
+    status: unsupported
   '#sign-funcs':
     title: '10.6 Sign-Related Functions: abs(), sign()'
-    status: unknown
+    status: unsupported
   '#calc-keywords':
     title: 10.7 Numeric Keywords
-    status: unknown
+    status: unsupported
   '#calc-constants':
     title: '10.7.1 Numeric Constants: e, pi'
-    status: unknown
+    status: unsupported
   '#calc-error-constants':
     title: '10.7.2 Degenerate Numeric Constants: infinity, -infinity, NaN'
-    status: unknown
+    status: unsupported
   '#calc-variables':
     title: 10.7.3 Numeric Variables
-    status: unknown
+    status: n/a
   '#calc-syntax':
     title: 10.8 Syntax
-    status: unknown
+    status: partial
+    gaps:
+      - calc() only takes em, rem, ex, px, cm, mm, in, pt and pc lengths, any other unit makes it invalid
   '#calc-type-checking':
     title: 10.9 Type Checking
-    status: unknown
+    status: partial
+    gaps:
+      - A number calc() isn't accepted where an <integer> is expected, e.g. in counter-reset
+      - A product or quotient of two dimensions makes the calc() invalid even when the result has a valid type
   '#calc-ieee':
     title: 10.9.1 Infinities, NaN, and Signed Zero
-    status: unknown
+    status: unsupported
+    gaps:
+      - Division by zero makes the declaration invalid instead of producing infinity
   '#calc-internal':
     title: 10.10 Internal Representation
-    status: unknown
+    status: supported
   '#calc-simplification':
     title: 10.10.1 Simplification
-    status: unknown
+    status: partial
+    gaps:
+      - A number times a sum isn't multiplied into the sum, 'calc((1em + 5px) * 2)' stays as is
   '#calc-computed-value':
     title: 10.11 Computed Value
-    status: unknown
+    status: partial
+    gaps:
+      - A calc() with em is inherited as the expression and resolved again against the child's font size
   '#calc-range':
     title: 10.12 Range Checking
-    status: unknown
+    status: partial
+    gaps:
+      - The result isn't clamped, width and padding take a negative calc()
   '#calc-serialize':
     title: 10.13 Serialization
-    status: unknown
+    status: n/a
   '#combine-math':
     title: 10.14 Combination of Math Functions
-    status: unknown
+    status: n/a

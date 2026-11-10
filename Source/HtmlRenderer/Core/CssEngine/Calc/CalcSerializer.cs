@@ -4,10 +4,8 @@ using System.Globalization;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Produces the canonical CSS text (<see cref="IPropertyValue.CssText"/>) for a validated calc-family
-    /// AST (Layer A only). A fully-numeric expression folds to a plain number; an expression built
-    /// entirely from absolute length units folds to a single pixel length; anything needing layout
-    /// context (mixed em/rem/%) is re-serialized back to normalized calc()/min()/max()/clamp() text.
+    /// The text of a type-checked calc() (CSS Values 4 §10.10.1): numbers, angles and absolute lengths
+    /// fold to a single value, anything with em, rem, ex or % stays an expression for layout.
     /// </summary>
     internal static class CalcSerializer
     {
@@ -21,9 +19,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             if (category == CalcCategory.Angle)
             {
-                // Unlike Length/Percentage, Angle never needs layout context to resolve - deg/grad/rad/turn
-                // all convert via fixed constants - so a valid Angle expression always folds fully here;
-                // there's no "defer to layout" text-preserving fallback needed the way there is below.
                 var radians = FoldAngle(node) ?? 0d;
                 var degrees = radians * (180.0 / System.Math.PI);
                 return new Angle((float)degrees, Angle.Unit.Deg).ToString(null, CultureInfo.InvariantCulture);
@@ -122,11 +117,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         /// <summary>
-        /// Serializes a node as an operand of a parent with the given precedence (0 = none, 1 = sum-level
-        /// +/-, 2 = product-level */÷), adding parentheses whenever omitting them would change the
-        /// expression's meaning on re-parse (lower-precedence child under a higher-precedence parent, or
-        /// a same-precedence child on the right — since +/- and */÷ are left-associative and not, in
-        /// general, safe to flatten on the right).
+        /// Serializes an operand of a parent with the given precedence (0 none, 1 + and -, 2 * and /),
+        /// in parentheses where re-parsing would group it differently.
         /// </summary>
         private static string SerializeOperand(CalcNode node, bool isRightOperand, int parentPrecedence)
         {
@@ -141,11 +133,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 case PercentageCalcNode percentage:
                     return new Length((float)percentage.Value, Length.Unit.Percent).ToString(null, CultureInfo.InvariantCulture);
 
-                // Time/Resolution leaves are only produced by @property `<time>`/`<resolution>` validation,
-                // which type-checks rather than serializes, so these arms are defensive completeness. A
-                // Time/Resolution-category Serialize() (were one ever created) folds through neither the Number
-                // nor Angle branch nor TryFoldPixels, so it reaches SerializeExpression and re-serializes to
-                // normalized calc() text using these leaf renderings.
                 case TimeCalcNode time:
                     return new Time((float)time.Value, time.Unit).ToString(null, CultureInfo.InvariantCulture);
 

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// AST node for a parsed calc()/min()/max()/clamp() expression. Shared between Layer A (the CSS
-    /// object model, which type-checks and canonicalizes it) and Layer B (layout, which evaluates it to
-    /// a pixel number using context Layer A never has, such as containing-block width or font size).
+    /// A node of a parsed calc(), min(), max() or clamp() expression (CSS Values 4 §10.10).
     /// </summary>
     internal abstract class CalcNode
     {

@@ -211,6 +211,7 @@ public sealed class BackgroundPaintIntegrationTests
     [DataRow("top center", 30, 0)]
     [DataRow("0% 0%", 0, 0)]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-values-4", "#position-parsing")]
     public void BackgroundPosition_Keywords(string position, double x, double y)
     {
         var g = PaintBackground($"width:100px;height:100px;background-image:{Image};background-repeat:no-repeat;background-position:{position}");
@@ -227,6 +228,7 @@ public sealed class BackgroundPaintIntegrationTests
     [DataRow("25% 50%", 15, 35)]
     [DataRow("10% 90%", 6, 63)]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-values-4", "#position-parsing")]
     public void BackgroundPosition_Percentages(string position, double x, double y)
     {
         var g = PaintBackground($"width:100px;height:100px;background-image:{Image};background-repeat:no-repeat;background-position:{position}");
@@ -242,6 +244,7 @@ public sealed class BackgroundPaintIntegrationTests
     [DataRow("-5px 7px", -5, 7)]
     [DataRow("right 15px", 60, 15)]
     [Spec("css21", "colors.html#background-properties")]
+    [Spec("css-values-4", "#position-parsing")]
     public void BackgroundPosition_Lengths(string position, double x, double y)
     {
         var g = PaintBackground($"width:100px;height:100px;background-image:{Image};background-repeat:no-repeat;background-position:{position}");

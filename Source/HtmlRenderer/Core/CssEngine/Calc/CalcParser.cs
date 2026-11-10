@@ -3,14 +3,8 @@ using System.Collections.Generic;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Recursive-descent parser for calc()/min()/max()/clamp() expressions, shared by Layer A (which
-    /// calls it during property-value conversion) and Layer B (which re-parses already-validated
-    /// canonical text at layout time — see CalcEvaluator). Grammar:
-    /// <c>&lt;calc-sum&gt; := &lt;calc-product&gt; (('+'|'-') &lt;calc-product&gt;)*</c>
-    /// <c>&lt;calc-product&gt; := &lt;calc-value&gt; (('*'|'/') &lt;calc-value&gt;)*</c>
-    /// <c>&lt;calc-value&gt; := &lt;number&gt; | &lt;dimension&gt; | &lt;percentage&gt; | '(' &lt;calc-sum&gt; ')' | &lt;nested-call&gt; | &lt;unary-sign&gt; &lt;calc-value&gt;</c>
-    /// Per spec, binary <c>+</c>/<c>-</c> require whitespace on both sides; <c>*</c>/<c>/</c> do not.
-    /// Returns <c>null</c> on any grammar violation.
+    /// Parses calc(), min(), max() and clamp() (CSS Values 4 §10.8), both when a declaration is
+    /// converted and again at layout time from the folded text. Returns null on a syntax error.
     /// </summary>
     internal static class CalcParser
     {
@@ -87,9 +81,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     break;
                 }
 
-                // Binary +/- must have whitespace on both sides; without it, this can't be a valid
-                // binary operator here (an attached sign would already have been merged into the
-                // adjacent numeric token by the lexer).
+                // A sign without whitespace before it was already merged into the number token
                 if (!sawWhitespaceBefore) return null;
 
                 var op = tokens[pos].Data[0];
@@ -206,8 +198,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     var negative = token.Data == "-";
                     pos++;
 
-                    // A unary sign must be immediately followed by a parenthesized group or a nested
-                    // function call (a signed number/dimension is already a single token from the lexer).
+                    // Only reachable before ( or a function, a signed number is a single token
                     if (pos >= tokens.Count ||
                         (tokens[pos].Type != TokenType.RoundBracketOpen && tokens[pos].Type != TokenType.Function))
                     {
@@ -237,7 +228,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 unit == Length.Unit.Mm || unit == Length.Unit.Cm || unit == Length.Unit.In || unit == Length.Unit.Pt || unit == Length.Unit.Pc;
         }
 
-        /// <summary>Whether <paramref name="name"/> is one of calc/min/max/clamp (case-insensitive).</summary>
+        /// <summary>Whether <paramref name="name"/> is calc, min, max or clamp, ignoring case.</summary>
         public static bool IsCalcFamily(string name)
         {
             return name.Isi(FunctionNames.Calc) || name.Isi(FunctionNames.Min) ||

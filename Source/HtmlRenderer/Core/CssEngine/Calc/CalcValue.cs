@@ -3,9 +3,7 @@ using System.Collections.Generic;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// The <see cref="IPropertyValue"/> produced by <see cref="CalcValueConverter"/> for an accepted
-    /// calc()/min()/max()/clamp() declaration. Mirrors StructValueConverter's wrapper: CssText is the
-    /// canonical (possibly folded) text, Original is the raw token stream.
+    /// An accepted calc(), min(), max() or clamp() value, <see cref="CssText"/> is the folded text.
     /// </summary>
     internal sealed class CalcValue : IPropertyValue
     {

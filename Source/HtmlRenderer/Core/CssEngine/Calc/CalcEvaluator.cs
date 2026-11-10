@@ -4,9 +4,7 @@ using System.Collections.Generic;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// The layout-time context needed to resolve relative units within a calc-family expression: how
-    /// many pixels 1em/1rem are, and what 100% means for this particular call site (e.g. containing-block
-    /// width for <c>width</c>, parent font-size for <c>font-size</c>'s em-relative resolution).
+    /// What em, rem and 100% are in pixels where a calc() is resolved.
     /// </summary>
     internal readonly struct CalcContext
     {
@@ -25,21 +23,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public bool FontAdjust { get; }
 
         /// <summary>
-        /// Mirrors ParseLength's returnPoints parameter: when the caller's em/rem/percent factors are
-        /// already expressed in points (as CssBoxProperties.FontSize's caller does), a bare <c>pt</c> leaf
-        /// must bypass the normal pt-&gt;px factor rather than being converted into this already-points space.
+        /// The factors are in points instead of pixels, so a pt value is taken as is, like
+        /// <see cref="Parse.CssValueParser.ParseLength(string, double, double, string, bool, bool)"/>.
         /// </summary>
         public bool ReturnPoints { get; }
     }
 
     /// <summary>
-    /// Evaluates a validated calc-family AST to a pixel-space number. This is the one place calc()
-    /// numbers actually get computed — called only from Layer B (<c>CssValueParser.ParseLength</c>),
-    /// since only layout has the <see cref="CalcContext"/> a percentage/em/rem leaf needs to resolve.
-    /// Reuses <see cref="Length.ToPixels"/> for every leaf, so no unit-conversion arithmetic is duplicated
-    /// here. A null result signals a divide-by-zero; per the type-checker's rules every legal divisor is
-    /// a constant that Layer A already folds and rejects at validation time, so in practice this is a
-    /// defensive fallback rather than a load-bearing check.
+    /// Evaluates a type-checked calc() tree at layout time, lengths to pixels, angles to radians,
+    /// times to milliseconds and resolutions to dppx. Null on a division by zero, which the type
+    /// checker already rejects.
     /// </summary>
     internal static class CalcEvaluator
     {
@@ -62,20 +55,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                         .ToPixels(context.EmFactor, context.RemFactor, context.HundredPercent, context.FontAdjust);
 
                 case AngleCalcNode angle:
-                    // An angle leaf evaluates to radians (the canonical angle unit), so an angle-typed
-                    // calc such as `calc(1turn * 0.35)` yields 0.35 turn in radians (a Number leaf stays a
-                    // unitless scalar). Length calc()s never contain an angle leaf, so this never perturbs
-                    // length evaluation; the only current caller is conic-gradient stop-position parsing.
                     return new Angle((float)angle.Value, angle.Unit).ToRadian();
 
                 case TimeCalcNode time:
-                    // Canonical time unit is milliseconds. No layout property evaluates a time calc() today
-                    // (these nodes only arise from @property `syntax: "<time>"` validation, which type-checks
-                    // rather than evaluates), so this case is defensive completeness paralleling the angle leaf.
                     return new Time((float)time.Value, time.Unit).ToMilliseconds();
 
                 case ResolutionCalcNode resolution:
-                    // Canonical resolution unit is dots-per-pixel; same @property-only provenance as TimeCalcNode.
                     return new Resolution((float)resolution.Value, resolution.Unit).ToDotsPerPixel();
 
                 case UnaryCalcNode unary:

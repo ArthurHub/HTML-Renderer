@@ -1,13 +1,11 @@
 using HtmlRenderer.Test.CssEngineSupport;
+using HtmlRenderer.Test.TestSupport;
 using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/CalcPropertyTests.cs.
-/// CSS-object-model-level unit tests for calc()/min()/max()/clamp(): parsing, type-checking, and
-/// canonical text, exercised against HTML-Renderer's ported Source/HtmlRenderer/Core/CssEngine/Calc/
-/// folding engine. Pure CSSOM parse tests - no layout/cascade-level numeric resolution here.
+/// calc(), min(), max() and clamp() at parse time: grammar, type checking and the folded text.
 /// </summary>
 [TestClass]
 public sealed class CalcPropertyTests
@@ -15,6 +13,7 @@ public sealed class CalcPropertyTests
     // ── basic arithmetic (fully numeric/absolute -> folds to a plain value) ─────────────
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-simplification")]
     public void Width_CalcAddition_FoldsToPixelLength()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(100px + 20px)");
@@ -26,6 +25,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-simplification")]
     public void Width_CalcSubtraction_FoldsToPixelLength()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(200px - 60px)");
@@ -34,6 +34,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-simplification")]
     public void Width_CalcMultiplication_FoldsToPixelLength()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(20px * 4)");
@@ -42,6 +43,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-simplification")]
     public void Width_CalcMultiplicationNumberFirst_FoldsToPixelLength()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(4 * 20px)");
@@ -50,6 +52,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-simplification")]
     public void Width_CalcDivision_FoldsToPixelLength()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(100px / 4)");
@@ -58,11 +61,10 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#compat")]
     public void Width_CalcMixedAbsoluteUnits_FoldsToPixelLength()
     {
-        // px is spec-correct (1px = 0.75pt, i.e. 96dpi): 1in = 96px, 2cm = 2*96/2.54 ~= 75.59px,
-        // folding to ~171.59px. (Internally that's 1in = 72pt + 2cm = 56.69pt = 128.69pt, serialized
-        // back to canonical px as 128.69 / 0.75.)
+        // 1in = 96px, 2cm = 2 * 96 / 2.54px
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(1in + 2cm)");
         Assert.IsTrue(property.HasValue);
         StringAssert.StartsWith(property.Value, "171.");
@@ -72,6 +74,7 @@ public sealed class CalcPropertyTests
     // ── mixed relative units (can't fold until layout - canonical calc() text preserved) ─
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-simplification")]
     public void Width_CalcMixedEmPx_PreservesCalcExpression()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(1em + 5px)");
@@ -80,6 +83,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-simplification")]
     public void Width_CalcPercentMinusPx_PreservesCalcExpression()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(100% - 20px)");
@@ -90,6 +94,7 @@ public sealed class CalcPropertyTests
     // ── nesting ───────────────────────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-syntax")]
     public void Width_NestedCalc_FoldsToPixelLength()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(calc(10px + 10px) * 2)");
@@ -98,6 +103,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-syntax")]
     public void Width_ParenGrouping_FoldsToPixelLength()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc((10px + 10px) * 2)");
@@ -106,18 +112,28 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
-    public void Width_ParenGroupingMixedUnits_PreservesGroupingInCanonicalText()
+    [Ignore("Gap, see Spec/css-values-4.yml")]
+    [Spec("css-values-4", "#calc-simplification")]
+    public void Width_ParenGroupingMixedUnits_MultipliesIntoTheSum()
     {
-        // Without the parens this would mean "1em + (5px * 2)" = a different expression;
-        // the canonical text must keep the grouping to stay semantically equivalent.
         var property = CssConstructionFunctions.ParseDeclaration("width: calc((1em + 5px) * 2)");
         Assert.IsTrue(property.HasValue);
-        Assert.AreEqual("calc((1em + 5px) * 2)", property.Value);
+        Assert.AreEqual("calc(2em + 10px)", property.Value);
+    }
+
+    [TestMethod]
+    [Spec("css-values-4", "#calc-syntax")]
+    public void Width_ParenGroupingMixedUnits_ResolvesToTheProductOfTheSum()
+    {
+        var (root, _) = LayoutHarness.Layout("<html><body style='margin:0'><div id=x style='font-size:20px; width:calc((1em + 5px) * 2)'>a</div></body></html>");
+
+        Assert.AreEqual(50, LayoutHarness.FindById(root, "x")!.ActualWidth, 0.01);
     }
 
     // ── min() / max() / clamp() ──────────────────────────────────────────────────────
 
     [TestMethod]
+    [Spec("css-values-4", "#comp-func")]
     public void Width_Min_FoldsToSmallerPixelLength()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: min(150px, 100px)");
@@ -126,6 +142,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#comp-func")]
     public void Width_Max_FoldsToLargerPixelLength()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: max(150px, 100px)");
@@ -134,6 +151,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#comp-func")]
     public void Width_MinMixedUnits_PreservesCanonicalText()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: min(10px, 1em)");
@@ -142,6 +160,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#comp-func")]
     public void Width_ClampWithPercent_PreservesCanonicalText()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: clamp(10px, 50%, 200px)");
@@ -150,6 +169,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#comp-func")]
     public void Width_ClampAllAbsolute_FoldsToPixelLength()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: clamp(10px, 300px, 150px)");
@@ -158,6 +178,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#comp-func")]
     public void Width_ClampWrongArgCount_IsInvalid()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: clamp(10px, 20px)");
@@ -165,6 +186,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#comp-func")]
     public void Width_MinNoArgs_IsInvalid()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: min()");
@@ -174,6 +196,7 @@ public sealed class CalcPropertyTests
     // ── plain-number category (NumberConverter-based properties) ────────────────────
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-type-checking")]
     public void FlexGrow_CalcNumberArithmetic_FoldsToPlainNumber()
     {
         var property = CssConstructionFunctions.ParseDeclaration("flex-grow: calc(1 + 1)");
@@ -182,6 +205,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-type-checking")]
     public void FlexGrow_CalcWithLength_IsInvalid()
     {
         var property = CssConstructionFunctions.ParseDeclaration("flex-grow: calc(1px + 2px)");
@@ -191,13 +215,16 @@ public sealed class CalcPropertyTests
     // ── invalid / degenerate expressions ─────────────────────────────────────────────
 
     [TestMethod]
-    public void Width_CalcDivideByZero_IsInvalid()
+    [Ignore("Gap, see Spec/css-values-4.yml")]
+    [Spec("css-values-4", "#calc-ieee")]
+    public void Width_CalcDivideByZero_IsValid()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(10px / 0)");
-        Assert.IsFalse(property.HasValue);
+        Assert.IsTrue(property.HasValue);
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-type-checking")]
     public void Width_CalcAddNumberToLength_IsInvalid()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(10px + 5)");
@@ -205,6 +232,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-type-checking")]
     public void Width_CalcMultiplyTwoLengths_IsInvalid()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(10px * 5px)");
@@ -212,6 +240,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-type-checking")]
     public void Width_CalcDivideByLength_IsInvalid()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(10px / 5px)");
@@ -219,6 +248,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-syntax")]
     public void Width_CalcNoWhitespaceAroundPlus_IsInvalid()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(10px+5px)");
@@ -226,6 +256,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-syntax")]
     public void Width_CalcWhitespaceOnOneSideOfMinus_IsInvalid()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(10px -5px)");
@@ -233,6 +264,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-syntax")]
     public void Width_CalcUnbalancedParens_IsInvalid()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(10px + (5px)");
@@ -240,6 +272,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-type-checking")]
     public void Width_CalcAngleUnit_IsInvalid()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc(10deg + 5deg)");
@@ -247,6 +280,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#calc-syntax")]
     public void Width_CalcEmpty_IsInvalid()
     {
         var property = CssConstructionFunctions.ParseDeclaration("width: calc()");
@@ -323,6 +357,7 @@ public sealed class CalcPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#compat")]
     public void Transform_SkewXCalcMixedAngleUnits_FoldsToDegrees()
     {
         // 1turn / 4 = 90deg - division by a plain number is legal for an angle numerator.

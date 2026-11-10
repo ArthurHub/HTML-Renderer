@@ -6,17 +6,8 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/CalcEvaluatorTests.cs.
-/// Tests for <see cref="CalcEvaluator"/>'s angle-leaf evaluation: a calc() whose value is an
-/// &lt;angle&gt; (e.g. <c>calc(1turn * 0.35)</c>) evaluates to radians (the canonical angle unit).
-/// This is what lets a conic-gradient stop position be authored as a calc() expression - the
-/// Charts.css pie-slice case, whose every stop is <c>calc(1turn * &lt;value&gt;)</c>.
-///
-/// HTML-Renderer's <see cref="CalcContext"/> constructor takes 4-5 args (hundredPercent, emFactor,
-/// remFactor, fontAdjust, returnPoints = false) vs PeachPDF's 3-arg constructor (hundredPercent,
-/// emFactor, remFactor). This is a documented non-behavioral API drift, not a real gap: fontAdjust is
-/// passed <c>false</c> below (and returnPoints keeps its default of <c>false</c>) to match PeachPDF's
-/// 3-arg semantics.
+/// <see cref="CalcEvaluator"/> on non-length calc() values: angles evaluate to radians, times to
+/// milliseconds and resolutions to dppx.
 /// </summary>
 [TestClass]
 public sealed class CalcEvaluatorTests
@@ -31,6 +22,7 @@ public sealed class CalcEvaluatorTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#angles")]
     [DataRow("calc(1turn * 0.35)", 0.35)]
     [DataRow("calc(1turn * 0.5)", 0.5)]
     [DataRow("calc(0.25turn)", 0.25)]
@@ -42,6 +34,7 @@ public sealed class CalcEvaluatorTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#angles")]
     public void AngleCalc_Degrees_EvaluatesToRadians()
     {
         var radians = EvaluateAngle("calc(90deg + 90deg)");
@@ -49,10 +42,7 @@ public sealed class CalcEvaluatorTests
         Assert.AreEqual(Math.PI, radians!.Value, 1e-4); // 180deg
     }
 
-    // ── <time>/<resolution> calc leaves (issue #229 gap 2) ───────────────────────
-    // These node types are produced by CalcParser for @property `<time>`/`<resolution>` validation.
-    // No layout property evaluates or serializes a time/resolution calc, so these tests exercise the
-    // CalcEvaluator/CalcSerializer/CalcNode leaf handling that path never reaches directly.
+    // Only @property syntax validation produces time and resolution calc() values.
 
     private static double? Evaluate(string calc)
     {
@@ -72,6 +62,7 @@ public sealed class CalcEvaluatorTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#resolution")]
     [DataRow("calc(2dppx * 2)", 4.0)]     // canonical unit is dots-per-pixel
     [DataRow("calc(96dpi)", 1.0)]         // 96dpi == 1dppx
     public void ResolutionCalc_EvaluatesToDotsPerPixel(string calc, double expectedDppx)

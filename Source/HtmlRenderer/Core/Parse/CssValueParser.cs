@@ -126,9 +126,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Tokenizes <paramref name="value"/> using the vendored CSS lexer (Core/CssEngine/Parser/Lexer.cs),
-        /// skipping whitespace/end-of-file tokens - the same "just enough tokenization to recognize a
-        /// single top-level function call" approach used to detect calc()-family expressions.
+        /// Tokenizes <paramref name="value"/> with the CSS lexer, without whitespace and end-of-file tokens.
         /// </summary>
         internal static List<Token> GetCssTokens(string value, bool isInValue = false)
         {
@@ -217,10 +215,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Recognizes a length string that is a single calc-family (calc/min/max/clamp) function call.
-        /// Real grammar/type validation happens in the vendored CSS-OM's CalcValueConverter at parse
-        /// time (for any value that didn't arrive via var() substitution); this is a syntactic
-        /// recognizer only, used to gate the evaluation branch in <see cref="ParseLength(string, double, double, double, string, bool, bool)"/>.
+        /// Whether the value is a single calc(), min(), max() or clamp(). Only checks the function name,
+        /// <see cref="CalcValueConverter"/> validated it when the declaration was parsed.
         /// </summary>
         public static bool IsCalcFunction(string value)
         {
@@ -325,9 +321,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             if (length.EndsWith("%"))
                 return ParseNumber(length, hundredPercent);
 
-            // calc()/min()/max()/clamp(): evaluate via the vendored Calc engine (Core/CssEngine/Calc/)
-            // instead of falling through to the unit-suffix parsing below, which doesn't understand
-            // function syntax at all.
             FunctionToken calcFunction;
             if (TryGetCalcFunction(length, out calcFunction))
             {
@@ -363,16 +356,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                     factor = fontAdjust ? 72f / 96f : 1f; //TODO:a check support for hi dpi
                     break;
                 case CssConstants.Mm:
-                    factor = 3.779527559f; //3 pixels per millimeter
+                    factor = 3.779527559f; // 96 / 25.4
                     break;
                 case CssConstants.Cm:
-                    factor = 37.795275591f; //37 pixels per centimeter
+                    factor = 37.795275591f; // 96 / 2.54
                     break;
                 case CssConstants.In:
-                    factor = 96f; //96 pixels per inch
+                    factor = 96f;
                     break;
                 case CssConstants.Pt:
-                    factor = 96f / 72f; // 1 point = 1/72 of inch
+                    factor = 96f / 72f;
 
                     if (returnPoints)
                     {
@@ -381,7 +374,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
                     break;
                 case CssConstants.Pc:
-                    factor = 16f; // 1 pica = 12 points
+                    factor = 16f;
                     break;
                 default:
                     factor = 0f;

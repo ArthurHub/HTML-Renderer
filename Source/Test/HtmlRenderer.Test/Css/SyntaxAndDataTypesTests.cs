@@ -75,6 +75,8 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#characters")]
+    [Spec("css-values-4", "#keywords")]
+    [Spec("css-values-4", "#functional-notations")]
     public void PropertyNamesKeywordsAndFunctions_AreCaseInsensitive()
     {
         var box = Styled("DIV#x { COLOR: GREEN; Background-Color: RGB(0, 128, 0) } #x { Background-Image: URL(a.png) }");
@@ -89,6 +91,7 @@ public sealed class SyntaxAndDataTypesTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "syndata.html#characters")]
+    [Spec("css-values-4", "#dimensions")]
     public void UnitsAtKeywordsAndImportant_AreCaseInsensitive()
     {
         Assert.AreEqual(10, Styled("#x{width:10PX}").ActualWidth, Delta);
@@ -308,6 +311,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#numbers")]
+    [Spec("css-values-4", "#numbers")]
     [DataRow("+10px", 10)]
     [DataRow(".5em", 10)]
     [DataRow("0.5em", 10)]
@@ -319,6 +323,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#numbers")]
+    [Spec("css-values-4", "#numbers")]
     [DataRow("10.px")]
     [DataRow("1,5px")]
     public void MalformedNumber_IsIgnored(string value)
@@ -334,6 +339,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#length-units")]
+    [Spec("css-values-4", "#absolute-lengths")]
     [DataRow("1in")]
     [DataRow("2.54cm")]
     [DataRow("25.4mm")]
@@ -347,6 +353,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#length-units")]
+    [Spec("css-values-4", "#lengths")]
     public void UnitAfterZero_IsOptional()
     {
         Assert.AreEqual(0, Styled("#x{margin-left:5px;margin-left:0}").ActualMarginLeft, Delta);
@@ -354,6 +361,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#length-units")]
+    [Spec("css-values-4", "#lengths")]
     public void UnitAfterNonZero_IsRequired()
     {
         Assert.AreEqual(5, Styled("#x{margin-left:5px;margin-left:3}").ActualMarginLeft, Delta);
@@ -361,6 +369,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#length-units")]
+    [Spec("css-values-4", "#font-relative-lengths")]
     public void Em_IsTheFontSizeOfTheElement()
     {
         Assert.AreEqual(40, Styled("#x{font-size:20px;margin-left:2em}").ActualMarginLeft, Delta);
@@ -368,6 +377,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#length-units")]
+    [Spec("css-values-4", "#font-relative-lengths")]
     public void EmInFontSize_IsTheFontSizeOfTheParent()
     {
         var box = Styled("#p{font-size:20px} #x{font-size:1.5em;margin-left:1em}", "<div id=p><div id=x>a</div></div>");
@@ -377,6 +387,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#length-units")]
+    [Spec("css-values-4", "#font-relative-lengths")]
     public void Ex_IsHalfAnEmWithoutFontMetrics()
     {
         Assert.AreEqual(20, Styled("#x{font-size:20px;margin-left:2ex}").ActualMarginLeft, Delta);
@@ -384,6 +395,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#length-units")]
+    [Spec("css-values-4", "#font-relative-lengths")]
     public void EmOnTheRoot_RefersToTheInitialFontSize()
     {
         var (root, _) = LayoutHarness.Layout("<html style='font-size:2em'><body style='margin:0'><div id=x style='margin-left:1em'>a</div></body></html>");
@@ -404,6 +416,7 @@ public sealed class SyntaxAndDataTypesTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "syndata.html#length-units")]
+    [Spec("css-values-4", "#numeric-ranges")]
     [DataRow("width")]
     [DataRow("height")]
     [DataRow("padding-left")]
@@ -427,6 +440,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#percentage-units")]
+    [Spec("css-values-4", "#percentages")]
     public void Percentage_ResolvesAgainstTheReferenceValue()
     {
         Assert.AreEqual(50, Styled("#x{width:25%}", "<div style='width:200px'><div id=x>a</div></div>").ActualWidth, Delta);
@@ -435,6 +449,7 @@ public sealed class SyntaxAndDataTypesTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "syndata.html#percentage-units")]
+    [Spec("css-values-4", "#percentages")]
     public void Children_InheritTheComputedFontSizeNotThePercentage()
     {
         var box = Styled("#p{font-size:10px} #q{font-size:200%} #x{margin-left:1em}", "<div id=p><div id=q><div id=x>a</div></div></div>");
@@ -454,6 +469,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#uri")]
+    [Spec("css-values-4", "#urls")]
     [DataRow("url(a.png)")]
     [DataRow("url( a.png )")]
     [DataRow("url('a.png')")]
@@ -465,6 +481,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#uri")]
+    [Spec("css-values-4", "#urls")]
     public void UnquotedUrl_TakesEscapedParentheses()
     {
         Assert.AreEqual("url(\"a(b).png\")", Styled(@"#x{background-image:url(a\(b\).png)}").BackgroundImage);
@@ -479,6 +496,8 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#uri")]
+    [Spec("css-values-4", "#relative-urls")]
+    [Spec("css-values-4", "#url-processing")]
     [DataRow("url(yellow)")]
     [DataRow("url('yellow')")]
     public void RelativeUrl_ResolvesAgainstTheStyleSheet(string value)
@@ -490,6 +509,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#uri")]
+    [Spec("css-values-4", "#relative-urls")]
     public void DoubleQuotedRelativeUrl_ResolvesAgainstTheStyleSheet()
     {
         var (box, href) = StyledWithFile("style/basic.css", Encoding.UTF8.GetBytes("#x { background-image: url(\"yellow\") }"));
@@ -584,6 +604,7 @@ public sealed class SyntaxAndDataTypesTests
 
     [TestMethod]
     [Spec("css21", "syndata.html#strings")]
+    [Spec("css-values-4", "#strings")]
     [DataRow("\"this is a 'string'\"", "this is a 'string'")]
     [DataRow("\"this is a \\\"string\\\"\"", "this is a \"string\"")]
     [DataRow("'this is a \"string\"'", "this is a \"string\"")]
@@ -598,6 +619,7 @@ public sealed class SyntaxAndDataTypesTests
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "syndata.html#strings")]
     [Spec("css-syntax-3", "#consume-string-token")]
+    [Spec("css-values-4", "#strings")]
     public void StringBrokenOverLines_IsTheSameString()
     {
         var css = "#x[title=\"a not s\\\no very long title\"] { color: green }";

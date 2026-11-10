@@ -176,10 +176,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 return true;
             }
 
-            // Only a genuinely parsed bare "0" may omit its unit (CSS Values & Units §5.1) -
-            // StylesheetUnit returns an empty unit string for a plain number but null when it
-            // couldn't tokenize a number at all, and both leave value at 0, so the unit string
-            // must be checked to avoid accepting arbitrary non-length input as zero.
+            // Only 0 may omit the unit (CSS Values 4 §6). The unit is "" for a plain number and null
+            // when there was no number at all.
             if (unitString != null && unitString.Length == 0 && value == 0f)
             {
                 result = Zero;
@@ -222,10 +220,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         /// <summary>
-        ///     Resolves this length to pixels, given the context needed for relative units
-        ///     (<c>em</c>/<c>rem</c>/<c>ex</c>/<c>%</c>). This is the single source of truth for
-        ///     "unit + context -> pixels" — <see cref="ToPixel"/> delegates to it for absolute units,
-        ///     and layout-time consumers (e.g. calc() evaluation) use it directly for the relative case.
+        ///     Resolves this length to pixels. Other relative units than em, rem, ex and % resolve to 0.
         /// </summary>
         /// <param name="emFactor">Pixels per 1em, i.e. the relevant font size in pixels.</param>
         /// <param name="remFactor">Pixels per 1rem, i.e. the root element's font size in pixels.</param>
@@ -233,10 +228,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         /// <param name="fontAdjust">If the length is in pixels and font related, apply the 72/96 factor.</param>
         internal double ToPixels(double emFactor, double remFactor, double hundredPercent, bool fontAdjust = false)
         {
-            // The layout unit here is the CSS pixel, so absolute units resolve against 96dpi
-            // (CSS Values & Units §5.2: 1in = 96px, 1pt = 1/72in, 1pc = 12pt). These factors must
-            // stay identical to the ones CssValueParser.ParseLength applies to non-calc() lengths,
-            // otherwise `calc(1in)` and `width: 1in` would disagree.
+            // CSS Values 4 §6.2, keep in sync with CssValueParser.ParseLength
             switch (Type)
             {
                 case Unit.Em: return emFactor * Value;
@@ -262,7 +254,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var value = ToPixel();
 
-            // Inverse of ToPixels' absolute-unit factors: `value` is in CSS pixels.
             switch (unit)
             {
                 case Unit.In: // 1 in = 96 px
