@@ -3,29 +3,21 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 {
     /// <summary>
-    /// Builds the detached row clones <see cref="CssBox.RepeatedHeaderRows"/> holds - css-tables-3
-    /// 6.2's repeated &lt;thead&gt; content, one clone per continuation page a table's body spans.
+    /// Builds the detached row clones <see cref="CssBox.RepeatedHeaderRows"/> holds, the &lt;thead&gt;
+    /// rows repeated on every page a table continues on (CSS 2.1 §17.2).
     /// </summary>
     /// <remarks>
-    /// Unlike PeachPDF's proxy-based approach (a shared source subtree re-emitted at each page's
-    /// position purely at the fragment-tree level), this clones real, laid-out <see cref="CssBox"/>
-    /// instances. That's a deliberate simplification for this port: it makes the repeat visible
-    /// through both the existing scroll-offset PDF pipeline and the new fragment tree without
-    /// teaching two different rendering paths about "one source, several positions" - at the cost of
-    /// only reproducing what a clone can cheaply carry over (a header's own decoration and words;
-    /// multi-line per-box decoration rectangles inside a header cell are not reproduced, since that
-    /// needs cloning CssLineBox instances too - an accepted gap for the common single-line-header
-    /// case this feature targets).
+    /// A clone carries the header's decoration and words, not its line boxes, so the per-line
+    /// decoration rectangles of a multi-line header cell aren't repeated.
     /// </remarks>
     internal static class TableHeaderRepeat
     {
         /// <summary>
-        /// Clones <paramref name="source"/> (a &lt;thead&gt; row, recursively with its cells and their
-        /// content) and shifts the clone so the row's rendered top - <paramref name="sourceRenderedTop"/>,
-        /// the caller's own reference, since a &lt;tr&gt; box's own Location is never assigned by table
-        /// layout (only its cells' is - see <see cref="Dom.CssLayoutEngineTable"/>'s row loop) - lands
-        /// at <paramref name="targetTop"/>. The clone is fully detached - not part of any box's
-        /// <see cref="CssBox.Boxes"/> - so re-running table layout can never mistake it for real content.
+        /// Clones <paramref name="source"/> (a &lt;thead&gt; row with its cells and their content) and
+        /// shifts the clone from <paramref name="sourceRenderedTop"/> to <paramref name="targetTop"/>. The
+        /// caller passes the row's top because table layout only positions the cells, not the
+        /// &lt;tr&gt; box. The clone isn't in any box's <see cref="CssBox.Boxes"/>, so table layout never
+        /// sees it.
         /// </summary>
         internal static CssBox CloneAndPosition(CssBox source, double sourceRenderedTop, double targetTop)
         {
@@ -51,9 +43,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
                 clone.Text = source.Text;
                 clone.ParseToWords();
 
-                // Reuses the source's already-measured word geometry rather than re-measuring - the
-                // clone's tokenization matches the source's own (same Text, same ParseToWords), so a
-                // positional pairing is safe here.
+                // Same text, same words, so the source's measured geometry pairs up by index.
                 var count = clone.Words.Count < source.Words.Count ? clone.Words.Count : source.Words.Count;
                 for (var i = 0; i < count; i++)
                 {

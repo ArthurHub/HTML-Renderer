@@ -445,6 +445,7 @@ public sealed class PropertyBoxTests
     }
 
     [TestMethod]
+    [Spec("css-break-3", "#break-decoration")]
     public void CssBoxDecorationBreakNumberIllegal()
     {
         var snippet = "box-decoration-break : 1.5 ";
@@ -458,6 +459,7 @@ public sealed class PropertyBoxTests
     }
 
     [TestMethod]
+    [Spec("css-break-3", "#break-decoration")]
     public void CssBoxDecorationBreakSliceLegal()
     {
         var snippet = "box-decoration-break : slice ";
@@ -473,6 +475,7 @@ public sealed class PropertyBoxTests
     }
 
     [TestMethod]
+    [Spec("css-break-3", "#break-decoration")]
     public void CssBoxDecorationBreakClonePascalLegal()
     {
         var snippet = "box-decoration-break : Clone ";
@@ -488,6 +491,7 @@ public sealed class PropertyBoxTests
     }
 
     [TestMethod]
+    [Spec("css-break-3", "#break-decoration")]
     public void CssBoxDecorationBreakInheritLegal()
     {
         var snippet = "box-decoration-break : inherit!important ";
@@ -502,12 +506,13 @@ public sealed class PropertyBoxTests
         Assert.AreEqual("inherit", concrete.Original);
     }
 
-    // The rest of the CSS-wide keywords on box-decoration-break (css-break-3 §6.2).
+    // The rest of the CSS-wide keywords on box-decoration-break.
     [TestMethod]
     [DataRow("initial")]
     [DataRow("unset")]
     [DataRow("revert")]
     [DataRow("revert-layer")]
+    [Spec("css-break-3", "#break-decoration")]
     public void CssBoxDecorationBreakGlobalKeywordLegal(string keyword)
     {
         var property = ParseDeclaration($"box-decoration-break:{keyword}");
@@ -524,6 +529,7 @@ public sealed class PropertyBoxTests
     [DataRow("none")]
     [DataRow("both")]
     [DataRow("slice clone")]
+    [Spec("css-break-3", "#break-decoration")]
     public void CssBoxDecorationBreakRejectsNonSpecValue(string value)
     {
         var property = ParseDeclaration($"box-decoration-break:{value}");

@@ -100,10 +100,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         }
 
         /// <summary>
-        /// Whether <paramref name="box"/> or any descendant has some rectangle (its own decoration
-        /// rects, a word, or a child's) overlapping <paramref name="band"/> - used both to decide
-        /// whether a page-slot is content-empty (skip it) and whether a child belongs in this band's
-        /// fragment at all.
+        /// Whether <paramref name="box"/> or any descendant has a rectangle (decoration, word or child)
+        /// overlapping <paramref name="band"/>, i.e. whether the page is content-empty and whether a child
+        /// gets a fragment on it.
         /// </summary>
         private bool HasContentInBand(CssBox box, PageBand band)
         {
@@ -126,12 +125,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 
             foreach (var child in box.Boxes)
             {
-                // A fixed box is handled separately when there's a real page grid (see
-                // CollectFixedRoots/Finish) - it repeats identically on every page rather than
-                // belonging to whichever band its own (page-relative, not absolute) coordinates would
-                // otherwise overlap. Without a real page grid (WinForms/WPF continuous-scroll, one
-                // fragmentainer for the whole document) it stays in the normal walk unchanged - "stays
-                // put" there is a paint-time scroll-offset suppression, not a repeat-per-page concern.
+                // With pages a fixed box is added to every page by Finish, its coordinates are
+                // page-relative. Without pages it stays in the normal walk, paint keeps it in place.
                 if (_container.HasRealPageGrid && child.Position == CssConstants.Fixed) continue;
                 if (HasContentInBand(child, band)) return true;
             }
@@ -178,7 +173,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
             var words = new List<TextFragment>();
             foreach (var word in box.Words)
             {
-                // A word is monolithic (css-break-3 4.1) - never sliced, only localized.
+                // A word is monolithic (css-break-3 §4.1), never sliced.
                 if (Overlaps(word.Rectangle, band))
                     words.Add(new TextFragment(ToLocal(word.Rectangle, band), word));
             }
@@ -245,9 +240,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         private static RRect ToLocal(RRect rect, PageBand band) => new RRect(rect.X, rect.Y - band.Origin, rect.Width, rect.Height);
 
         /// <summary>
-        /// A no-op <see cref="SliceGeometry"/> - every edge is treated as a real box edge, since real
-        /// box-decoration-break slicing (distinguishing a genuine break edge from a real box edge) is
-        /// deferred until paint needs to draw a spanning box's borders correctly (Stage E2).
+        /// A <see cref="SliceGeometry"/> that treats every edge as a real box edge, edges at a page break
+        /// aren't told apart (css-break-3 §5.4).
         /// </summary>
         private static SliceGeometry TrivialSlice(RRect rect) => new(rect, rect, HasLeftEdge: true, HasRightEdge: true);
     }

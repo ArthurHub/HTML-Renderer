@@ -864,11 +864,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
                         if (_incomingToken != null && ReferenceEquals(_incomingToken.Box, this))
                         {
-                            // Resuming this box's own interrupted child/content loop, not placing it fresh
-                            // - css-break-3 §2 gives a box one inline position across all its fragments, so
-                            // there is nothing to re-derive here; Location already holds it from the pass
-                            // that placed this box originally. Back out the relative offset, it gets applied
-                            // again below.
+                            // Resuming this box's own child loop, Location still holds where the earlier
+                            // pass placed it. Back out the relative offset, it gets applied again below.
                             top = Location.Y - RelativeOffsetY;
                         }
                         else if (_resumeTopOverride.HasValue)
@@ -879,12 +876,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         }
                         else if (BlockFragmentation.TryGetForcedBreakTarget(this, prevSibling, baseTopWithoutMargin, out var breakSlot, out var breakTop))
                         {
-                            // css-break-3 5.2 preserves a box's own top margin at a FORCED break (unlike an
-                            // unforced one, where BlockFragmentation.ResolveBlockTop truncates it to avoid
-                            // paginating through blank space) - breakTop itself is the page's own content
-                            // top (TryGetForcedBreakTarget's own contract, kept a pure boundary value so its
-                            // slot/target stay meaningful on their own), so the margin is added here, once,
-                            // at the point it becomes this box's actual placement.
+                            // The margin after a forced break is kept (css-break-3 §5.2), breakTop is the
+                            // page's content top without it.
                             var breakTopWithMargin = breakTop + MarginTopCollapse(prevSibling);
 
                             if (CanDeferToLaterPass())

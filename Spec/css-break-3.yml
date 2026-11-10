@@ -5,76 +5,107 @@ snapshot: https://www.w3.org/TR/2018/CR-css-break-3-20181204/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Values
-    status: unknown
+    status: n/a
   '#fragmentation-model':
     title: 2 Fragmentation Model and Terminology
-    status: unknown
+    status: partial
   '#parallel-flows':
     title: 2.1 Parallel Fragmentation Flows
-    status: unknown
+    status: partial
+    gaps:
+      - Content overflowing past the end of the root box, e.g. out of a fixed-height box, makes no further pages and is cut off
   '#nested-flows':
     title: 2.2 Nested Fragmentation Flows
-    status: unknown
+    status: unsupported
+    gaps:
+      - Pages are the only fragmentation context, there's no multi-column or region fragmentation
   '#breaking-controls':
     title: 3 Controlling Breaks
-    status: unknown
+    status: partial
   '#break-between':
     title: '3.1 Breaks Between Boxes: the break-before and break-after properties'
-    status: unknown
+    status: partial
+    gaps:
+      - "'left' and 'right' don't force a break, see CSS 2.1 13.3.1"
+      - "'recto', 'verso', 'region' and 'avoid-region' are rejected as invalid"
   '#break-propagation':
     title: 3.1.1 Child→Parent Break Propagation
-    status: unknown
+    status: partial
+    gaps:
+      - A forced break before a first child or after a last child isn't propagated to its container, see CSS 2.1 13.3.4
+      - "'break-before: avoid' on a first child isn't propagated to its container"
   '#break-within':
     title: '3.2 Breaks Within Boxes: the break-inside property'
-    status: unknown
+    status: partial
+    gaps:
+      - "A 'break-inside: avoid' block without text is split instead of moved to the next page, see CSS 2.1 13.3.1"
   '#widows-orphans':
     title: '3.3 Breaks Between Lines: orphans, widows'
-    status: unknown
+    status: partial
+    gaps:
+      - "'orphans' and 'widows' of 0 or less are accepted and fall back to 2 instead of being ignored"
   '#page-break-properties':
     title: '3.4 Page Break Aliases: the page-break-before, page-break-after, and page-break-inside properties'
-    status: unknown
+    status: supported
   '#breaking-rules':
     title: 4 Rules for Breaking
-    status: unknown
+    status: partial
   '#possible-breaks':
     title: 4.1 Possible Break Points
-    status: unknown
+    status: partial
+    gaps:
+      - A forced break inside a monolithic box, e.g. a scroll container, isn't ignored
+      - When all lines of a block move to the next page, the block's top edge stays on the previous page, see CSS 2.1 13.3.3
   '#break-types':
     title: 4.2 Types of Breaks
-    status: unknown
+    status: n/a
   '#forced-breaks':
     title: 4.3 Forced Breaks
-    status: unknown
+    status: partial
+    gaps:
+      - A forced break right after a zero-height box that a forced break moved to a page top makes no new page
+      - "A different 'page' value doesn't force a break"
   '#unforced-breaks':
     title: 4.4 Unforced Breaks
-    status: unknown
+    status: partial
+    gaps:
+      - "'break-after: avoid' doesn't pull a block without text along to the next page, see CSS 2.1 13.3.3"
   '#best-breaks':
     title: 4.5 Optimizing Unforced Breaks
-    status: unknown
+    status: supported
   '#breaking-boxes':
     title: 5 Box Model for Breaking
-    status: unknown
+    status: partial
   '#varying-size-boxes':
     title: 5.1 Breaking into Varying-size Fragmentainers
-    status: unknown
+    status: unsupported
+    gaps:
+      - Every page has the same size, page sizes from @page rules aren't applied
   '#break-margins':
     title: 5.2 Adjoining Margins at Breaks
-    status: unknown
+    status: partial
+    gaps:
+      - "At a forced break the previous box's 'margin-bottom' isn't truncated, see CSS 2.1 13.3.3"
+      - The top margin of an hr isn't truncated at an unforced break, see CSS 2.1 13.3.3
+      - A forced break before the first box of the flow isn't taken, and the margin after it is truncated anyway
   '#box-splitting':
     title: 5.3 Splitting Boxes
-    status: unknown
+    status: supported
   '#break-decoration':
     title: '5.4 Fragmented Borders and Backgrounds: the box-decoration-break property'
-    status: unknown
+    status: partial
+    gaps:
+      - A box split across pages draws its border at the split, see CSS 2.1 13.3.1
+      - "'clone' is ignored, no border or padding is added at a break"
   '#joining-boxes':
     title: 5.4.1 Joining Boxes for slice
-    status: unknown
+    status: unsupported
+    gaps:
+      - A box split across pages positions its background in each page's fragment instead of across the whole box
+      - An inline box broken across lines draws its background image only in the first fragment
   '#transforms':
     title: 5.5 Transforms, Positioning, and Pagination
-    status: unknown
+    status: partial
+    gaps:
+      - A relatively positioned box is fragmented at its offset position instead of its in-flow position
+      - An absolutely positioned box reaching past the end of the root box is cut off at the last page

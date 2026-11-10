@@ -13,11 +13,13 @@ public sealed class BreakValuesTests
     [DataRow("avoid-page", false)]
     [DataRow(null, false)]
     [Spec("css21", "page.html#page-break-props")]
+    [Spec("css-break-3", "#break-between")]
     public void IsForcedBreak_MatchesThisPortsReducedValueSet(string value, bool expected) =>
         Assert.AreEqual(expected, BreakValues.IsForcedBreak(value));
 
     [TestMethod]
     [Spec("css21", "page.html#page-break-props")]
+    [Spec("css-break-3", "#break-between")]
     [DataRow("avoid", true)]
     [DataRow("avoid-page", true)]
     [DataRow("auto", false)]

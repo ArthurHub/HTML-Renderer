@@ -5,7 +5,7 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 {
     /// <summary>
-    /// Content that can't be broken (css-break-3 §2, CSS 2.1 §13.3.5 for replaced elements).
+    /// Content that can't be broken (css-break-3 §4.1, CSS 2.1 §13.3.5 for replaced elements).
     /// </summary>
     /// <remarks>
     /// <see cref="IsMonolithic"/> is a property of the content. <see cref="PaginatesItsOwnContent"/> is an
@@ -13,7 +13,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
     /// </remarks>
     internal static class MonolithicContent
     {
-        /// <summary>Whether §2 forbids breaking inside <paramref name="box"/>.</summary>
+        /// <summary>Whether <paramref name="box"/> is monolithic.</summary>
         internal static bool IsMonolithic(CssBox box) => IsReplaced(box) || IsScrollContainer(box);
 
         /// <summary>
@@ -22,11 +22,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         internal static bool IsReplaced(CssBox box) => box is CssBoxImage or CssBoxFrame;
 
         /// <summary>
-        /// Whether <paramref name="box"/> is a scroll container - §2's "elements with <c>overflow</c>
-        /// other than <c>visible</c> or <c>clip</c>". The root element is excluded (its overflow
-        /// propagates to the viewport rather than making it a scroll container, CSS Overflow 3 §3.3); the
-        /// body is excluded only while the root's own overflow is still <c>visible</c>, per the same
-        /// section's propagation rule.
+        /// Whether <paramref name="box"/> is a scroll container. Not the root, and not the body while the
+        /// root's overflow is <c>visible</c>, their overflow goes to the viewport (CSS Overflow 3 §3.3).
         /// </summary>
         internal static bool IsScrollContainer(CssBox box) =>
             box.Overflow != CssConstants.Visible && !IsViewportPropagationSource(box);
@@ -64,9 +61,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         internal static bool IsMonolithicForFragmentation(CssBox box) => IsMonolithic(box);
 
         /// <summary>
-        /// Whether content <paramref name="height"/> tall fits in no fragmentainer at all - §2's
-        /// overflow-rather-than-slice rule. Content with nowhere to fit must not be treated as breakable:
-        /// moving it only repeats the question on the next fragmentainer.
+        /// Whether content <paramref name="height"/> tall fits in no fragmentainer at all (css-break-3
+        /// §4.4). Moving such content to the next fragmentainer only repeats the question there.
         /// </summary>
         internal static bool FitsNoFragmentainer(double height, HtmlContainerInt container) =>
             height >= container.PageSize.Height;

@@ -98,6 +98,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#page-break-props")]
+    [Spec("css-break-3", "#page-break-properties")]
     public void PageBreakBeforeAlways_StartsTheBoxOnANewPage()
     {
         var (root, container) = Paginate(
@@ -108,6 +109,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#page-break-props")]
+    [Spec("css-break-3", "#page-break-properties")]
     public void PageBreakAfterAlways_StartsTheNextBoxOnANewPage()
     {
         var (root, container) = Paginate(
@@ -119,6 +121,7 @@ public sealed class PagedMediaIntegrationTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#page-break-props")]
+    [Spec("css-break-3", "#break-between")]
     [DataRow("<div style='height:50px'></div><div id='b' style='page-break-before:left;height:10px'></div>")]
     [DataRow("<div style='height:50px'></div><div id='b' style='page-break-before:right;height:10px'></div>")]
     [DataRow("<div style='height:50px;page-break-after:left'></div><div id='b' style='height:10px'></div>")]
@@ -132,6 +135,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#page-break-props")]
+    [Spec("css-break-3", "#forced-breaks")]
     [DataRow("<div style='height:50px;page-break-after:avoid'></div><div id='b' style='page-break-before:always;height:10px'></div>")]
     [DataRow("<div style='height:50px;page-break-after:always'></div><div id='b' style='page-break-before:avoid;height:10px'></div>")]
     public void Always_TakesPrecedenceOverAvoid(string body)
@@ -143,6 +147,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#page-break-props")]
+    [Spec("css-break-3", "#break-within")]
     public void PageBreakInsideAvoid_KeepsTheBoxOnOnePage()
     {
         var (root, container) = Paginate(
@@ -156,6 +161,7 @@ public sealed class PagedMediaIntegrationTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#page-break-props")]
+    [Spec("css-break-3", "#break-within")]
     public void PageBreakInsideAvoid_KeepsABoxWithoutTextOnOnePage()
     {
         var (root, container) = Paginate(
@@ -167,6 +173,7 @@ public sealed class PagedMediaIntegrationTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#page-break-props")]
+    [Spec("css-break-3", "#break-decoration")]
     public void ASplitBox_HasNoBorderWhereItIsSplit()
     {
         var (_, container) = PaintHarness.LayoutPaginated(PaintHarness.Wrap(
@@ -190,6 +197,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#break-inside")]
+    [Spec("css-break-3", "#widows-orphans")]
     public void OrphansAndWidows_DefaultToTwoAndInherit()
     {
         var (root, _) = Paginate("<div style='orphans:5;widows:4'><p id='c'>c</p></div><p id='d'>d</p>");
@@ -203,6 +211,7 @@ public sealed class PagedMediaIntegrationTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#break-inside")]
+    [Spec("css-break-3", "#widows-orphans")]
     [DataRow("orphans:0;widows:0")]
     [DataRow("orphans:-3;widows:-3")]
     public void NonPositiveOrphansAndWidows_AreIgnored(string declaration)
@@ -215,6 +224,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#break-inside")]
+    [Spec("css-break-3", "#widows-orphans")]
     public void Orphans_MovesTheParagraphWhenTooFewLinesFit()
     {
         var filler = PageHeight - 2.5 * LineHeight;
@@ -225,6 +235,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#break-inside")]
+    [Spec("css-break-3", "#widows-orphans")]
     public void Widows_PullsLinesToTheNextPage()
     {
         var filler = PageHeight - 5.5 * LineHeight;
@@ -239,6 +250,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#break-margins")]
     public void UnforcedBreakInTheMargin_SetsTheMarginToZero()
     {
         var (root, container) = Paginate(
@@ -251,6 +263,7 @@ public sealed class PagedMediaIntegrationTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#possible-breaks")]
     public void ABlockWhoseLinesAllMoveToTheNextPage_MovesWithThem()
     {
         var filler = PageHeight - 1.5 * LineHeight;
@@ -262,6 +275,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#possible-breaks")]
     public void Breaks_FallBetweenLineBoxes()
     {
         var (root, container) = Paginate("<div style='height:5px'></div>" + Paragraph("p", 40));
@@ -274,6 +288,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#unforced-breaks")]
     [DataRow("page-break-after:avoid", "")]
     [DataRow("", "page-break-before:avoid")]
     public void AvoidBetweenSiblings_MovesTheFirstAlongWithTheSecond(string headStyle, string nextStyle)
@@ -290,6 +305,7 @@ public sealed class PagedMediaIntegrationTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#unforced-breaks")]
     public void AvoidBetweenSiblings_AlsoMovesABlockWithoutText()
     {
         var (root, container) = Paginate(
@@ -302,6 +318,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#unforced-breaks")]
     public void PageBreakInsideAvoidOnAnAncestor_ForbidsBreaksBetweenItsChildren()
     {
         var (root, container) = Paginate(
@@ -315,6 +332,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#unforced-breaks")]
     public void AvoidBoxTallerThanAPage_IsStillBroken()
     {
         var (root, container) = Paginate("<div style='height:100px'></div>" + Paragraph("p", 25, "page-break-inside:avoid"));
@@ -326,6 +344,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#unforced-breaks")]
     public void OrphansAndWidowsThatCannotBeSatisfied_AreDropped()
     {
         // Fewer than 20 lines fit on a page, so no split of 25 lines satisfies both.
@@ -339,6 +358,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#break-margins")]
     public void ForcedBreak_RetainsTheMarginTop()
     {
         var (root, container) = Paginate(
@@ -350,6 +370,7 @@ public sealed class PagedMediaIntegrationTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#break-margins")]
     public void ForcedBreak_SetsTheMarginBottomToZero()
     {
         var (root, container) = Paginate(
@@ -364,6 +385,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#forced")]
+    [Spec("css-break-3", "#forced-breaks")]
     public void ForcedBreak_OccursEvenWhereTheContentWouldFit()
     {
         var (root, container) = Paginate(
@@ -380,6 +402,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#best-page-breaks")]
+    [Spec("css-break-3", "#possible-breaks")]
     public void ReplacedElement_IsNotBroken()
     {
         var (root, container) = Paginate(
@@ -392,6 +415,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#best-page-breaks")]
+    [Spec("css-break-3", "#best-breaks")]
     [DataRow(20, new[] { 20, 0 })]
     [DataRow(21, new[] { 19, 2 })]
     [DataRow(22, new[] { 20, 2 })]
@@ -406,6 +430,7 @@ public sealed class PagedMediaIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#best-page-breaks")]
+    [Spec("css-break-3", "#best-breaks")]
     [DataRow(8, new[] { 8, 0, 0 })]
     [DataRow(9, new[] { 0, 9, 0 })]
     [DataRow(30, new[] { 0, 10, 20 })]

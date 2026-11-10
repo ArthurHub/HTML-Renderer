@@ -135,9 +135,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// Shifts every word and per-box rectangle on this line down by <paramref name="delta"/> - used
-        /// by <see cref="Fragmentation.InlineFragmentation"/> to push a line (css-break-3 4.1: a line box
-        /// is monolithic - the whole of it moves, never just the words that don't fit) to the next page.
+        /// Shifts every word and per-box rectangle on this line down by <paramref name="delta"/>, a line
+        /// moves to the next page as a whole (css-break-3 §4.1).
         /// </summary>
         internal void ShiftLine(double delta)
         {

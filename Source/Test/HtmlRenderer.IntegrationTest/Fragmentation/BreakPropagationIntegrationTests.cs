@@ -65,6 +65,7 @@ public sealed class BreakPropagationIntegrationTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#forced")]
+    [Spec("css-break-3", "#break-propagation")]
     public async Task ForcedBreakBeforeAFirstChild_MovesTheContainer()
     {
         var (root, container) = await BuildAsync(
@@ -85,6 +86,7 @@ public sealed class BreakPropagationIntegrationTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#forced")]
+    [Spec("css-break-3", "#break-propagation")]
     public async Task ForcedBreakBeforeANestedFirstChild_MovesTheOutermostContainerItBegins()
     {
         var (root, container) = await BuildAsync(
@@ -101,6 +103,7 @@ public sealed class BreakPropagationIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#forced")]
+    [Spec("css-break-3", "#forced-breaks")]
     public async Task ForcedBreakBeforeALaterChild_LeavesTheContainerWhereItIs()
     {
         var (root, container) = await BuildAsync(
@@ -118,8 +121,8 @@ public sealed class BreakPropagationIntegrationTests
         Assert.AreEqual(1, SlotOf(container, second));
     }
 
-    // css-break-3 §3.1: a forced break before the first content of the root makes no blank page.
     [TestMethod]
+    [Spec("css-break-3", "#break-propagation")]
     public async Task ForcedBreakBeforeTheFirstBoxInTheFlow_ManufacturesNoBlankPage()
     {
         var (root, container) = await BuildAsync(
@@ -139,6 +142,7 @@ public sealed class BreakPropagationIntegrationTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#forced")]
+    [Spec("css-break-3", "#break-propagation")]
     public async Task BreakAfterOnALastChild_ForcesTheBreakBeforeTheFollowingSibling()
     {
         var (root, container) = await BuildAsync(
@@ -157,6 +161,7 @@ public sealed class BreakPropagationIntegrationTests
 
     [TestMethod]
     [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#unforced-breaks")]
     public async Task BreakInsideAvoidOnAFirstChild_PullsTheRunAcrossTheContainer()
     {
         var (root, container) = await BuildAsync(

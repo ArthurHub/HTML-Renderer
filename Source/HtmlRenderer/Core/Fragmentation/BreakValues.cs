@@ -5,7 +5,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
     /// <summary>
     /// Classifies <c>break-before</c>/<c>break-after</c>/<c>break-inside</c> values (CSS 2.1 §13.3.1,
     /// css-break-3 §3). Only pages fragment, so column and region values never force or avoid a break.
-    /// <c>left</c> and <c>right</c> don't force a break.
     /// </summary>
     internal static class BreakValues
     {

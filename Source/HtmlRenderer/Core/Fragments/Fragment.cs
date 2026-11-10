@@ -21,7 +21,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragments
 
     /// <summary>
     /// Tells a decoration rectangle whether each of its four physical edges is a real box edge or a
-    /// fragmentation break, for CSS <c>box-decoration-break</c> (css-break-3 §6.2). Not a <see cref="Fragment"/>
+    /// fragmentation break, for CSS <c>box-decoration-break</c> (css-break-3 §5.4). Not a <see cref="Fragment"/>
     /// itself - it's carried by a <see cref="LineFragment"/>. <paramref name="UnbrokenStrip"/> is what a
     /// <c>slice</c> value resolves against; <paramref name="FragmentRect"/> is what <c>clone</c> resolves against.
     /// </summary>

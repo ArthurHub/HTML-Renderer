@@ -3,7 +3,7 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 {
     /// <summary>
-    /// Where layout stopped in one fragmentainer, so the next pass resumes from there (css-break-3 §4.4).
+    /// Where layout stopped in one fragmentainer, so the next pass resumes from there (css-break-3 §4.3).
     /// Only forced breaks (<see cref="BlockFragmentation.TryGetForcedBreakTarget"/>) produce one, every
     /// other break is corrected within the same pass.
     /// </summary>

@@ -37,7 +37,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         /// already satisfy, and if so the page slot and top it moves to.
         /// </summary>
         /// <remarks>
-        /// Without a previous sibling the break belongs to an ancestor (css-break-3 §3.1). It isn't
+        /// Without a previous sibling the break belongs to an ancestor (css-break-3 §3.1.1). It isn't
         /// propagated, it's dropped, which also keeps a heading at the top of the document from opening a
         /// blank page.
         /// </remarks>
@@ -67,7 +67,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         /// <summary>
         /// Moves <paramref name="child"/> to the top of the next page when it straddles a page boundary but
         /// must not be broken, because of <c>break-inside: avoid</c> (CSS 2.1 §13.3.3 rule D) or because it's
-        /// monolithic (css-break-3 §2). A child taller than a page stays where it is, CSS 2.1 §13.3.3 drops
+        /// monolithic (css-break-3 §4.1). A child taller than a page stays where it is, CSS 2.1 §13.3.3 drops
         /// rule D when there aren't enough break points.
         /// </summary>
         /// <remarks>
@@ -114,7 +114,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         /// </summary>
         /// <remarks>
         /// The run is trimmed from its front until it fits on the page together with <paramref name="child"/>,
-        /// if not even its last member fits nothing moves (css-break-3 §4.3). Pulling a run that can't fit
+        /// if not even its last member fits nothing moves (css-break-3 §4.4). Pulling a run that can't fit
         /// makes its later members trigger the same pull again and again.
         /// </remarks>
         internal static void EnforceKeepWithNext(RGraphics g, CssBox child)
@@ -193,7 +193,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 
         /// <summary>
         /// While <paramref name="movedBox"/> is its parent's first in-flow child, the break before it is
-        /// also the break before the parent (css-break-3 §3.1), so the parent's top moves by the same
+        /// also the break before the parent (css-break-3 §3.1.1), so the parent's top moves by the same
         /// <paramref name="delta"/>, and so on up the ancestors.
         /// </summary>
         /// <remarks>

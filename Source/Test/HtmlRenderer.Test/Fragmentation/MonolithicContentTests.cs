@@ -16,6 +16,7 @@ public sealed class MonolithicContentTests
     [TestMethod]
     [DataRow("<img id='t' src='x.png' style='width:10pt;height:10pt'>")]
     [DataRow("<iframe id='t' style='width:10pt;height:10pt'></iframe>")]
+    [Spec("css-break-3", "#possible-breaks")]
     public void ReplacedElement_IsMonolithic(string markup)
     {
         var box = BoxOf(markup);
@@ -25,6 +26,7 @@ public sealed class MonolithicContentTests
     }
 
     [TestMethod]
+    [Spec("css-break-3", "#possible-breaks")]
     public void OrdinaryBlock_IsNotMonolithic()
     {
         var box = BoxOf("<div id='t'>text</div>");
@@ -42,6 +44,7 @@ public sealed class MonolithicContentTests
     [DataRow("visible", false)]
     // 'clip' isn't a known overflow value, the box stays 'visible', which is also what §2 wants.
     [DataRow("clip", false)]
+    [Spec("css-break-3", "#possible-breaks")]
     public void Overflow_DecidesScrollContainer(string overflow, bool expected)
     {
         var box = BoxOf($"<div id='t' style='overflow:{overflow}'>text</div>");

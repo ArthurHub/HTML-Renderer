@@ -6,7 +6,7 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
 {
     /// <summary>
-    /// Page breaks between the line boxes of a block container (CSS 2.1 §13.3.3, css-break-3 §5.4). Lines
+    /// Page breaks between the line boxes of a block container (CSS 2.1 §13.3.3, css-break-3 §3.3). Lines
     /// already laid out by <see cref="CssLayoutEngine.CreateLineBoxes"/> are shifted, a line never straddles
     /// a page boundary and <c>orphans</c>/<c>widows</c> move the break instead of the lines.
     /// </summary>
