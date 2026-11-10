@@ -64,8 +64,8 @@ public sealed class BreakPropagationIntegrationTests
 
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
-    [Spec("css21", "page.html#forced")]
     [Spec("css-break-3", "#break-propagation")]
+    [Spec("css-break-4", "#break-propagation")]
     public async Task ForcedBreakBeforeAFirstChild_MovesTheContainer()
     {
         var (root, container) = await BuildAsync(
@@ -87,6 +87,7 @@ public sealed class BreakPropagationIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#forced")]
     [Spec("css-break-3", "#break-propagation")]
+    [Spec("css-break-4", "#break-propagation")]
     public async Task ForcedBreakBeforeANestedFirstChild_MovesTheOutermostContainerItBegins()
     {
         var (root, container) = await BuildAsync(
@@ -104,6 +105,7 @@ public sealed class BreakPropagationIntegrationTests
     [TestMethod]
     [Spec("css21", "page.html#forced")]
     [Spec("css-break-3", "#forced-breaks")]
+    [Spec("css-break-4", "#forced-breaks")]
     public async Task ForcedBreakBeforeALaterChild_LeavesTheContainerWhereItIs()
     {
         var (root, container) = await BuildAsync(
@@ -123,6 +125,7 @@ public sealed class BreakPropagationIntegrationTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-propagation")]
+    [Spec("css-break-4", "#break-propagation")]
     public async Task ForcedBreakBeforeTheFirstBoxInTheFlow_ManufacturesNoBlankPage()
     {
         var (root, container) = await BuildAsync(
@@ -143,6 +146,7 @@ public sealed class BreakPropagationIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "page.html#forced")]
     [Spec("css-break-3", "#break-propagation")]
+    [Spec("css-break-4", "#break-propagation")]
     public async Task BreakAfterOnALastChild_ForcesTheBreakBeforeTheFollowingSibling()
     {
         var (root, container) = await BuildAsync(
@@ -162,6 +166,7 @@ public sealed class BreakPropagationIntegrationTests
     [TestMethod]
     [Spec("css21", "page.html#allowed-page-breaks")]
     [Spec("css-break-3", "#unforced-breaks")]
+    [Spec("css-break-4", "#unforced-breaks")]
     public async Task BreakInsideAvoidOnAFirstChild_PullsTheRunAcrossTheContainer()
     {
         var (root, container) = await BuildAsync(

@@ -38,6 +38,7 @@ public sealed class ForcedBreakTargetIsTheFramesTests
     [TestMethod]
     [Spec("css21", "page.html#forced")]
     [Spec("css-break-3", "#forced-breaks")]
+    [Spec("css-break-4", "#forced-breaks")]
     public void PlainForcedBreak_TargetsTheNextSlotsContentTop_AndIsWhereTheBoxLanded()
     {
         var (root, container) = LayoutHarness.Layout(
@@ -55,6 +56,7 @@ public sealed class ForcedBreakTargetIsTheFramesTests
     [TestMethod]
     [Spec("css21", "page.html#forced")]
     [Spec("css-break-3", "#forced-breaks")]
+    [Spec("css-break-4", "#forced-breaks")]
     public void PredecessorEndingFlushOnABoundary_TargetsThatBoundary_NotTheSlotAfterIt()
     {
         var (root, container) = LayoutHarness.Layout(
@@ -77,6 +79,7 @@ public sealed class ForcedBreakTargetIsTheFramesTests
     [Ignore("Gap, see Spec/css-break-3.yml")]
     [TestMethod]
     [Spec("css-break-3", "#forced-breaks")]
+    [Spec("css-break-4", "#forced-breaks")]
     public void ConsecutiveForcedBreaks_StepPastTheMarkerRatherThanCollapsingOntoIt()
     {
         var (root, container) = LayoutHarness.Layout(
@@ -101,6 +104,7 @@ public sealed class ForcedBreakTargetIsTheFramesTests
     [TestMethod]
     [Spec("css21", "page.html#allowed-page-breaks")]
     [Spec("css-break-3", "#break-margins")]
+    [Spec("css-break-4", "#break-margins")]
     public void TargetIsTheBoundary_AndThePreservedMarginIsAddedToIt()
     {
         var (root, container) = LayoutHarness.Layout(
@@ -118,6 +122,7 @@ public sealed class ForcedBreakTargetIsTheFramesTests
     [TestMethod]
     [Spec("css21", "page.html#forced")]
     [Spec("css-break-3", "#break-propagation")]
+    [Spec("css-break-4", "#break-propagation")]
     public void BreakBeforeAFirstInFlowChild_IsTakenByTheContainerItBegins()
     {
         var (root, container) = LayoutHarness.Layout(
@@ -137,6 +142,7 @@ public sealed class ForcedBreakTargetIsTheFramesTests
     // Nothing precedes the box, so there is no break to take and no leading blank page.
     [TestMethod]
     [Spec("css-break-3", "#break-propagation")]
+    [Spec("css-break-4", "#break-propagation")]
     public void BoxThatBeginsTheFlow_HasNoTargetAtAll()
     {
         var (root, container) = LayoutHarness.Layout(

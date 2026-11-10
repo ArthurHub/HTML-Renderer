@@ -14,6 +14,7 @@ public sealed class PropertyBreakTests
 {
     [TestMethod]
     [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
     public void CssBreakAfterLegalAvoid()
     {
         var snippet = "break-after:avoid";
@@ -31,6 +32,7 @@ public sealed class PropertyBreakTests
     [TestMethod]
     [Spec("css21", "page.html#page-break-props")]
     [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     public void CssPageBreakAfterLegalAvoid()
     {
         var snippet = "page-break-after:avoid";
@@ -47,6 +49,7 @@ public sealed class PropertyBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
     public void CssBreakAfterLegalPageCapital()
     {
         var snippet = "break-after:Page";
@@ -64,6 +67,7 @@ public sealed class PropertyBreakTests
     [TestMethod]
     [Spec("css21", "page.html#page-break-props")]
     [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     public void CssPageBreakAfterIllegalAvoidColumn()
     {
         var snippet = "page-break-after:avoid-column";
@@ -78,6 +82,7 @@ public sealed class PropertyBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
     public void CssBreakAfterLegalAvoidColumn()
     {
         var snippet = "break-after:avoid-column";
@@ -94,6 +99,7 @@ public sealed class PropertyBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
     public void CssBreakBeforeLegalAuto()
     {
         var snippet = "break-before:AUTO";
@@ -111,6 +117,7 @@ public sealed class PropertyBreakTests
     [TestMethod]
     [Spec("css21", "page.html#page-break-props")]
     [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     public void CssPageBreakBeforeLegalAuto()
     {
         var snippet = "page-break-before:AUTO";
@@ -128,6 +135,7 @@ public sealed class PropertyBreakTests
     [TestMethod]
     [Spec("css21", "page.html#page-break-props")]
     [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     public void CssPageBreakBeforeLegalLeft()
     {
         var snippet = "page-break-before:left";
@@ -144,6 +152,7 @@ public sealed class PropertyBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
     public void CssBreakBeforeIllegalValue()
     {
         var snippet = "break-before:whatever";
@@ -158,6 +167,7 @@ public sealed class PropertyBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-within")]
+    [Spec("css-break-4", "#break-within")]
     public void CssBreakInsideIllegalPage()
     {
         var snippet = "break-inside:page";
@@ -172,6 +182,7 @@ public sealed class PropertyBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-within")]
+    [Spec("css-break-4", "#break-within")]
     public void CssBreakInsideLegalAvoidRegionUppercase()
     {
         var snippet = "break-inside:avoid-REGION";
@@ -189,6 +200,7 @@ public sealed class PropertyBreakTests
     [TestMethod]
     [Spec("css21", "page.html#page-break-props")]
     [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     public void CssPageBreakInsideLegalAvoid()
     {
         var snippet = "page-break-inside:avoid";
@@ -206,6 +218,7 @@ public sealed class PropertyBreakTests
     [TestMethod]
     [Spec("css21", "page.html#page-break-props")]
     [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     public void CssPageBreakInsideLegalAutoUppercase()
     {
         var snippet = "page-break-inside:AUTO";
@@ -224,6 +237,7 @@ public sealed class PropertyBreakTests
     [DataRow("break-before")]
     [DataRow("break-after")]
     [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
     public void BreakBeforeAfter_AcceptsSupportedSpecValues(string name)
     {
         string[] supportedValues =
@@ -250,6 +264,7 @@ public sealed class PropertyBreakTests
     [DataRow("break-after", "avoid-region")]
     [DataRow("break-after", "region")]
     [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
     public void BreakBeforeAfter_AcceptsRectoVersoAndRegionValues(string name, string value)
     {
         var property = ParseDeclaration($"{name}:{value}");
@@ -261,6 +276,7 @@ public sealed class PropertyBreakTests
     [DataRow("break-before")]
     [DataRow("break-after")]
     [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
     public void BreakBeforeAfter_IsCaseInsensitiveAndKeepsAuthoredText(string name)
     {
         var property = ParseDeclaration($"{name}:AvOiD-PaGe");
@@ -280,10 +296,10 @@ public sealed class PropertyBreakTests
         Assert.IsFalse(property.HasValue);
     }
 
-    // Not a css-break-3 value, css-break-4 adds it.
     [TestMethod]
     [DataRow("break-before")]
     [DataRow("break-after")]
+    [Spec("css-break-4", "#break-between")]
     public void BreakBeforeAfter_AcceptsAlways(string name)
     {
         var property = ParseDeclaration($"{name}:always");
@@ -298,6 +314,7 @@ public sealed class PropertyBreakTests
     [DataRow("avoid-column")]
     [DataRow("avoid-region")]
     [Spec("css-break-3", "#break-within")]
+    [Spec("css-break-4", "#break-within")]
     public void BreakInside_AcceptsSpecValue(string value)
     {
         var property = ParseDeclaration($"break-inside:{value}");
@@ -313,6 +330,7 @@ public sealed class PropertyBreakTests
     [DataRow("recto")]
     [DataRow("always")]
     [Spec("css-break-3", "#break-within")]
+    [Spec("css-break-4", "#break-within")]
     public void BreakInside_RejectsNonSpecValue(string value)
     {
         var property = ParseDeclaration($"break-inside:{value}");
@@ -332,6 +350,7 @@ public sealed class PropertyBreakTests
     [DataRow("page-break-after", "right")]
     [Spec("css21", "page.html#page-break-props")]
     [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     public void PageBreakBeforeAfter_AcceptsLegacyValue(string name, string value)
     {
         var property = ParseDeclaration($"{name}:{value}");
@@ -350,6 +369,7 @@ public sealed class PropertyBreakTests
     [DataRow("page-break-after", "verso")]
     [Spec("css21", "page.html#page-break-props")]
     [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     public void PageBreakBeforeAfter_RejectsModernOnlyValue(string name, string value)
     {
         var property = ParseDeclaration($"{name}:{value}");
@@ -361,6 +381,7 @@ public sealed class PropertyBreakTests
     [DataRow("avoid")]
     [Spec("css21", "page.html#page-break-props")]
     [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     public void PageBreakInside_AcceptsLegacyValue(string value)
     {
         var property = ParseDeclaration($"page-break-inside:{value}");
@@ -375,6 +396,7 @@ public sealed class PropertyBreakTests
     [DataRow("page")]
     [Spec("css21", "page.html#page-break-props")]
     [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     public void PageBreakInside_RejectsNonLegacyValue(string value)
     {
         var property = ParseDeclaration($"page-break-inside:{value}");

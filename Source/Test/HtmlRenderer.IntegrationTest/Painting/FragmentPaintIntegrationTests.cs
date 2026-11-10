@@ -20,6 +20,7 @@ public sealed class FragmentPaintIntegrationTests
     [TestMethod]
     [Spec("css21", "page.html#forced")]
     [Spec("css-break-3", "#fragmentation-model")]
+    [Spec("css-break-4", "#fragmentation-model")]
     public void EachPage_PaintsOnlyItsOwnFragmentainersContent()
     {
         var (_, container) = PaintHarness.LayoutPaginated(PaintHarness.Wrap(

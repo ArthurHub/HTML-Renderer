@@ -122,9 +122,9 @@ public sealed class PageBreakIntegrationTests
             $"break-before: page should start the box on page 2, but it starts at y={second.Location.Y}");
     }
 
-    // 'always' is also accepted on the unprefixed break-before (css-break-4).
     [TestMethod]
-    public async Task BreakBeforeAlways_IsAcceptedAsAForcedBreak_UnlikePeachPDF()
+    [Spec("css-break-4", "#break-between")]
+    public async Task BreakBeforeAlways_ForcesBreak()
     {
         var (root, container) = await BuildAsync(ForcedBreakHtml("break-before:always"));
 

@@ -22,6 +22,7 @@ public sealed class BoxDecorationBreakIntegrationTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-decoration")]
+    [Spec("css-break-4", "#break-decoration")]
     public void Slice_InlineBrokenAcrossLines_HasNoBorderAtTheBrokenEdges()
     {
         var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -36,6 +37,7 @@ public sealed class BoxDecorationBreakIntegrationTests
     [TestMethod]
     [Ignore("Gap, see Spec/css-break-3.yml")]
     [Spec("css-break-3", "#break-decoration")]
+    [Spec("css-break-4", "#break-decoration")]
     public void Clone_InlineBrokenAcrossLines_HasBordersOnEveryFragment()
     {
         var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(

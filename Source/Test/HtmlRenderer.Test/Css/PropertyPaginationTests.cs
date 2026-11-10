@@ -26,6 +26,7 @@ public sealed class PropertyPaginationTests
     [TestMethod]
     [Spec("css21", "page.html#break-inside")]
     [Spec("css-break-3", "#widows-orphans")]
+    [Spec("css-break-4", "#widows-orphans")]
     public void CssOrphansTwoLegal()
     {
         var snippet = "orphans : 2 ";
@@ -43,6 +44,7 @@ public sealed class PropertyPaginationTests
     [TestMethod]
     [Spec("css21", "page.html#break-inside")]
     [Spec("css-break-3", "#widows-orphans")]
+    [Spec("css-break-4", "#widows-orphans")]
     public void CssOrphansNegativeIllegal()
     {
         var snippet = "orphans : -2 ";
@@ -58,6 +60,7 @@ public sealed class PropertyPaginationTests
     [TestMethod]
     [Spec("css21", "page.html#break-inside")]
     [Spec("css-break-3", "#widows-orphans")]
+    [Spec("css-break-4", "#widows-orphans")]
     public void CssOrphansFloatingIllegal()
     {
         var snippet = "orphans : 1.5 ";
@@ -88,6 +91,7 @@ public sealed class PropertyPaginationTests
     [TestMethod]
     [Spec("css21", "page.html#break-inside")]
     [Spec("css-break-3", "#widows-orphans")]
+    [Spec("css-break-4", "#widows-orphans")]
     public void CssWidowsThreeLegal()
     {
         var snippet = "widows: 3";
@@ -105,6 +109,7 @@ public sealed class PropertyPaginationTests
     [TestMethod]
     [Spec("css21", "page.html#break-inside")]
     [Spec("css-break-3", "#widows-orphans")]
+    [Spec("css-break-4", "#widows-orphans")]
     public void CssWidowsLengthIllegal()
     {
         var snippet = "widows: 5px";

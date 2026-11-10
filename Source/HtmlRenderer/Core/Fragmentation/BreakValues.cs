@@ -9,8 +9,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
     internal static class BreakValues
     {
         /// <summary>
-        /// Whether <paramref name="value"/> forces a page break. The legacy <c>always</c> is accepted on
-        /// <c>break-before</c>/<c>break-after</c> too, they share their value with <c>page-break-*</c>.
+        /// Whether <paramref name="value"/> forces a page break. <c>always</c> comes from <c>page-break-*</c>
+        /// and from css-break-4 §3.1.
         /// </summary>
         internal static bool IsForcedBreak(string value) =>
             value is CssConstants.Page or CssConstants.Always;

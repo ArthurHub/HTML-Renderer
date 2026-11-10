@@ -38,6 +38,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
     public void ColumnBreak_DoesNotBreakThePage()
     {
         var (root, container) = Paginate("<div style='height:50px'></div><div id='b' style='break-before:column;height:10px'></div>");
@@ -48,6 +49,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
     [DataRow("avoid", true)]
     [DataRow("avoid-page", true)]
     [DataRow("avoid-column", false)]
@@ -64,6 +66,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-within")]
+    [Spec("css-break-4", "#break-within")]
     [DataRow("avoid", 1)]
     [DataRow("avoid-page", 1)]
     [DataRow("avoid-column", 0)]
@@ -78,6 +81,7 @@ public sealed class CssBreakTests
     [TestMethod]
     [Ignore("Gap, see Spec/css-break-3.yml")]
     [Spec("css-break-3", "#break-propagation")]
+    [Spec("css-break-4", "#break-propagation")]
     public void BreakBeforeAvoidOnAFirstChild_AppliesBeforeItsContainer()
     {
         var (root, container) = Paginate(
@@ -92,6 +96,7 @@ public sealed class CssBreakTests
     [TestMethod]
     [Ignore("Gap, see Spec/css-break-3.yml")]
     [Spec("css-break-3", "#possible-breaks")]
+    [Spec("css-break-4", "#possible-breaks")]
     public void ForcedBreakInsideAMonolithicBox_IsIgnored()
     {
         var (root, container) = Paginate(
@@ -104,6 +109,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#fragmentation-model")]
+    [Spec("css-break-4", "#fragmentation-model")]
     public void BoxSpanningTwoPages_HasOneFragmentPerPage()
     {
         var (root, container) = Paginate("<div style='height:250px'></div><div id='b' style='height:100px'></div>");
@@ -119,6 +125,7 @@ public sealed class CssBreakTests
     [TestMethod]
     [Ignore("Gap, see Spec/css-break-3.yml")]
     [Spec("css-break-3", "#forced-breaks")]
+    [Spec("css-break-4", "#forced-breaks")]
     [Spec("css-page-3", "#using-named-pages")]
     public void DifferentPageValues_ForceABreak()
     {
@@ -130,6 +137,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
     public void AbsolutelyPositionedBox_IgnoresBreakBefore()
     {
         var (root, container) = Paginate(
@@ -140,6 +148,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
     public void Float_HonorsBreakBefore()
     {
         var (root, container) = Paginate(
@@ -151,6 +160,7 @@ public sealed class CssBreakTests
     [TestMethod]
     [Ignore("Gap, see Spec/css-break-3.yml")]
     [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
     [DataRow("recto")]
     [DataRow("verso")]
     public void RectoAndVerso_ForceABreak(string value)
@@ -162,6 +172,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     public void BreakBefore_OverridesAnEarlierPageBreakBefore()
     {
         var (root, container) = Paginate(
@@ -173,6 +184,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     public void PageBreakBefore_OverridesAnEarlierBreakBefore()
     {
         var (root, container) = Paginate(
@@ -184,6 +196,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#page-break-properties")]
+    [Spec("css-break-4", "#page-break-properties")]
     [DataRow("page-break-before:always")]
     [DataRow("break-before:page")]
     public void PageBreakAlwaysAndBreakPage_ForceTheSameBreak(string declaration)
@@ -195,6 +208,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#forced-breaks")]
+    [Spec("css-break-4", "#forced-breaks")]
     public void ForcedBreak_HasNoEffectWithoutPages()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -205,6 +219,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#parallel-flows")]
+    [Spec("css-break-4", "#parallel-flows")]
     public void ForcedBreakInsideAFloat_DoesNotMoveContentBesideIt()
     {
         var (root, container) = Paginate(
@@ -216,6 +231,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#parallel-flows")]
+    [Spec("css-break-4", "#parallel-flows")]
     public void TableCellsInOneRow_BreakIndependently()
     {
         var filler = PageHeight - 1.5 * LineHeight;
@@ -231,6 +247,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#best-breaks")]
+    [Spec("css-break-4", "#best-breaks")]
     public void ZeroHeightBoxAtTheEndOfAFullPage_StaysOnThatPage()
     {
         var (root, container) = Paginate($"<div style='height:{Px(PageHeight - 1)}'></div><div id='z'></div>");
@@ -241,6 +258,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#box-splitting")]
+    [Spec("css-break-4", "#box-splitting")]
     public void SplitBox_FillsTheRestOfThePage()
     {
         var filler = PageHeight - 1.5 * LineHeight;
@@ -255,6 +273,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#box-splitting")]
+    [Spec("css-break-4", "#box-splitting")]
     public void BreakGap_CountsTowardsAFixedHeight()
     {
         var filler = PageHeight - 1.5 * LineHeight;
@@ -267,6 +286,7 @@ public sealed class CssBreakTests
     [TestMethod]
     [Ignore("Gap, see Spec/css-break-3.yml")]
     [Spec("css-break-3", "#break-decoration")]
+    [Spec("css-break-4", "#break-decoration")]
     public void Clone_RepeatsTheBorderAndPaddingAfterTheBreak()
     {
         var filler = PageHeight - 1.5 * LineHeight;
@@ -282,6 +302,7 @@ public sealed class CssBreakTests
     [TestMethod]
     [Ignore("Gap, see Spec/css-break-3.yml")]
     [Spec("css-break-3", "#transforms")]
+    [Spec("css-break-4", "#transforms")]
     public void RelativeOffset_IsAppliedAfterFragmentation()
     {
         var filler = PageHeight - 1.5 * LineHeight;
@@ -295,6 +316,7 @@ public sealed class CssBreakTests
 
     [TestMethod]
     [Spec("css-break-3", "#transforms")]
+    [Spec("css-break-4", "#transforms")]
     public void AbsoluteBoxSpanningABreak_IsSplitAcrossBothPages()
     {
         var (root, container) = Paginate(
@@ -310,6 +332,7 @@ public sealed class CssBreakTests
     [TestMethod]
     [Ignore("Gap, see Spec/css-break-3.yml")]
     [Spec("css-break-3", "#transforms")]
+    [Spec("css-break-4", "#transforms")]
     public void AbsoluteBoxReachingPastTheLastPage_GetsAPageOfItsOwn()
     {
         var (_, container) = Paginate(
@@ -321,6 +344,7 @@ public sealed class CssBreakTests
     [TestMethod]
     [Ignore("Gap, see Spec/css-break-3.yml")]
     [Spec("css-break-3", "#parallel-flows")]
+    [Spec("css-break-4", "#parallel-flows")]
     public void ContentOverflowingAFixedHeightBox_SpillsOntoMorePages()
     {
         var (_, container) = Paginate(Paragraph("p", 60, "height:50px"));

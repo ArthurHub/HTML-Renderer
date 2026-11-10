@@ -6,32 +6,7 @@ using static HtmlRenderer.Test.CssEngineSupport.CssConstructionFunctions;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/Property.cs (the BoxShadow/Clip/Cursor/BoxDecorationBreak cases).
-///
-/// box-shadow (StyleProperties/Box/BoxShadowProperty.cs) is parsed by
-/// Source/HtmlRenderer/Core/CssEngine/BoxShadowGrammar.cs, which validates the
-/// <c>none | [ inset? &amp;&amp; &lt;length&gt;{2,4} &amp;&amp; &lt;color&gt;? ]#</c> grammar but then
-/// stores the token stream's own reconstructed text verbatim as <c>Value</c>/<c>Original</c>
-/// (BoxShadowValueConverter.cs: <c>CssText => Original.Text</c>) rather than a normalized
-/// representation - so authored casing like "NONE"/"INITIAL" survives unchanged in both Value and
-/// Original, while multi-space runs between tokens still collapse to one space because the tokenizer
-/// itself only ever emits a single whitespace token between significant tokens. These assertions are
-/// parse-only per the port task's caveat: box-shadow is a layout/paint no-op in this renderer, but that
-/// does not affect what the parser records here.
-///
-/// clip (StyleProperties/Visibility/ClipProperty.cs) uses <c>Converters.ShapeConverter</c>
-/// (Model/Converters.cs line 122), a <c>rect(&lt;length&gt;{4})</c> function grammar via the shared
-/// LengthConverter, which normalizes zero-with-unit lengths ("0cm") down to unitless "0" the same way
-/// the rest of the length grammar does (see BorderPropertyTests.cs's border-width port), while non-zero
-/// units and comma placement are preserved from the authored value.
-///
-/// cursor (StyleProperties/CursorProperty.cs) accepts a list of <c>url()</c> image sources (each
-/// optionally followed by an x/y hotspot pair) that must end in a plain keyword from <c>Map.Cursors</c>
-/// (Model/Map.cs) - a url()-only list with no trailing keyword fallback is invalid, matching PeachPDF.
-///
-/// box-decoration-break (StyleProperties/Box/BoxDecorationBreak.cs) is a
-/// <c>Toggle(Keywords.Clone, Keywords.Slice)</c> (Model/Converters.cs line 543) plus the standard
-/// CSS-wide keyword chain, both value sets confirmed identical to the source file's expectations.
+/// box-shadow keeps its authored text, so "NONE" keeps its casing, while clip turns a zero length into a unitless 0.
 /// </summary>
 [TestClass]
 public sealed class PropertyBoxTests
@@ -446,6 +421,7 @@ public sealed class PropertyBoxTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-decoration")]
+    [Spec("css-break-4", "#break-decoration")]
     public void CssBoxDecorationBreakNumberIllegal()
     {
         var snippet = "box-decoration-break : 1.5 ";
@@ -460,6 +436,7 @@ public sealed class PropertyBoxTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-decoration")]
+    [Spec("css-break-4", "#break-decoration")]
     public void CssBoxDecorationBreakSliceLegal()
     {
         var snippet = "box-decoration-break : slice ";
@@ -476,6 +453,7 @@ public sealed class PropertyBoxTests
 
     [TestMethod]
     [Spec("css-break-3", "#break-decoration")]
+    [Spec("css-break-4", "#break-decoration")]
     public void CssBoxDecorationBreakClonePascalLegal()
     {
         var snippet = "box-decoration-break : Clone ";
@@ -491,7 +469,6 @@ public sealed class PropertyBoxTests
     }
 
     [TestMethod]
-    [Spec("css-break-3", "#break-decoration")]
     public void CssBoxDecorationBreakInheritLegal()
     {
         var snippet = "box-decoration-break : inherit!important ";
@@ -512,7 +489,6 @@ public sealed class PropertyBoxTests
     [DataRow("unset")]
     [DataRow("revert")]
     [DataRow("revert-layer")]
-    [Spec("css-break-3", "#break-decoration")]
     public void CssBoxDecorationBreakGlobalKeywordLegal(string keyword)
     {
         var property = ParseDeclaration($"box-decoration-break:{keyword}");
@@ -530,6 +506,7 @@ public sealed class PropertyBoxTests
     [DataRow("both")]
     [DataRow("slice clone")]
     [Spec("css-break-3", "#break-decoration")]
+    [Spec("css-break-4", "#break-decoration")]
     public void CssBoxDecorationBreakRejectsNonSpecValue(string value)
     {
         var property = ParseDeclaration($"box-decoration-break:{value}");

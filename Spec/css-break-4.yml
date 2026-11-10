@@ -5,76 +5,101 @@ snapshot: https://www.w3.org/TR/2018/WD-css-break-4-20181218/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Values
-    status: unknown
+    status: n/a
   '#fragmentation-model':
     title: 2 Fragmentation Model and Terminology
-    status: unknown
+    status: partial
   '#parallel-flows':
     title: 2.1 Parallel Fragmentation Flows
-    status: unknown
+    status: partial
+    gaps:
+      - Content overflowing past the end of the root box is cut off, see css-break-3 2.1
   '#nested-flows':
     title: 2.2 Nested Fragmentation Flows
-    status: unknown
+    status: unsupported
+    gaps:
+      - Pages are the only fragmentation context, there's no multi-column or region fragmentation
   '#breaking-controls':
     title: 3 Controlling Breaks
-    status: unknown
+    status: partial
   '#break-between':
     title: '3.1 Breaks Between Boxes: the break-before and break-after properties'
-    status: unknown
+    status: partial
+    gaps:
+      - "'all' is rejected"
+      - "'left' and 'right' don't force a break and 'recto', 'verso', 'region' and 'avoid-region' are rejected, see css-break-3 3.1"
   '#break-propagation':
     title: 3.1.1 Child→Parent Break Propagation
-    status: unknown
+    status: partial
+    gaps:
+      - Breaks on a first or last child aren't propagated to its container, see css-break-3 3.1.1
   '#break-within':
     title: '3.2 Breaks Within Boxes: the break-inside property'
-    status: unknown
+    status: partial
+    gaps:
+      - "A 'break-inside: avoid' block without text is split, see css-break-3 3.2"
   '#widows-orphans':
     title: '3.3 Breaks Between Lines: orphans, widows'
-    status: unknown
+    status: partial
+    gaps:
+      - "'orphans' and 'widows' of 0 or less are accepted, see css-break-3 3.3"
   '#page-break-properties':
     title: '3.4 Page Break Aliases: the page-break-before, page-break-after, and page-break-inside properties'
-    status: unknown
+    status: supported
   '#breaking-rules':
     title: 4 Rules for Breaking
-    status: unknown
+    status: partial
   '#possible-breaks':
     title: 4.1 Possible Break Points
-    status: unknown
+    status: partial
+    gaps:
+      - Forced breaks inside monolithic boxes aren't ignored and a block's top edge can stay behind its lines, see css-break-3 4.1
   '#break-types':
     title: 4.2 Types of Breaks
-    status: unknown
+    status: n/a
   '#forced-breaks':
     title: 4.3 Forced Breaks
-    status: unknown
+    status: partial
+    gaps:
+      - Some forced breaks make no new page, see css-break-3 4.3
   '#unforced-breaks':
     title: 4.4 Unforced Breaks
-    status: unknown
+    status: partial
+    gaps:
+      - "'break-after: avoid' doesn't pull a block without text along, see css-break-3 4.4"
   '#best-breaks':
     title: 4.5 Optimizing Unforced Breaks
-    status: unknown
+    status: supported
   '#breaking-boxes':
     title: 5 Box Model for Breaking
-    status: unknown
+    status: partial
   '#varying-size-boxes':
     title: 5.1 Breaking into Varying-size Fragmentainers
-    status: unknown
+    status: unsupported
+    gaps:
+      - Every page has the same size, see css-break-3 5.1
   '#break-margins':
     title: '5.2 Adjoining Margins at Breaks: the margin-break property'
-    status: unknown
+    status: partial
+    gaps:
+      - "'margin-break' is dropped by the parser"
+      - "At a forced break the previous box's 'margin-bottom' isn't truncated, see CSS 2.1 13.3.3"
   '#box-splitting':
     title: 5.3 Splitting Boxes
-    status: unknown
+    status: supported
   '#break-decoration':
     title: '5.4 Fragmented Borders and Backgrounds: the box-decoration-break property'
-    status: unknown
+    status: partial
+    gaps:
+      - A box split across pages draws its border at the split, see CSS 2.1 13.3.1
+      - "'clone' is ignored, no border or padding is added at a break"
   '#joining-boxes':
     title: 5.4.1 Joining Boxes for slice
-    status: unknown
+    status: unsupported
+    gaps:
+      - Backgrounds of split boxes aren't positioned across the whole box, see css-break-3 5.4.1
   '#transforms':
     title: 5.5 Transforms, Positioning, and Pagination
-    status: unknown
+    status: partial
+    gaps:
+      - Relatively and absolutely positioned boxes aren't fragmented as specified, see css-break-3 5.5
