@@ -109,7 +109,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static bool IsInvalid(this int c)
         {
             return c == 0 || c > Symbols.MaximumCodepoint ||
-                   (c > Symbols.UTF16SurrogateMin && c < Symbols.UTF16SurrogateMax);
+                   (c >= Symbols.UTF16SurrogateMin && c <= Symbols.UTF16SurrogateMax);
         }
 
         public static bool IsOneOf(this char c, char a, char b)
