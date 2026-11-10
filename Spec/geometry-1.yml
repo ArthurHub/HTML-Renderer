@@ -5,61 +5,31 @@ snapshot: https://www.w3.org/TR/2025/CRD-geometry-1-20251204/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
+    status: n/a
   '#DOMPoint':
     title: 2 The DOMPoint interfaces
-    status: unknown
-  '#transforming-a-point-with-a-matrix':
-    title: 2.1 Transforming a point with a matrix
-    status: unknown
+    status: n/a
   '#DOMRect':
     title: 3 The DOMRect interfaces
-    status: unknown
+    status: n/a
   '#DOMRectList':
     title: 4 The DOMRectList interface
-    status: unknown
+    status: n/a
   '#DOMQuad':
     title: 5 The DOMQuad interface
-    status: unknown
+    status: n/a
   '#DOMMatrix':
     title: 6 The DOMMatrix interfaces
-    status: unknown
-  '#dommatrixinit-dictionary':
-    title: 6.1 DOMMatrix2DInit and DOMMatrixInit dictionaries
-    status: unknown
-  '#dommatrix-parse':
-    title: 6.2 Parsing a string into an abstract matrix
-    status: unknown
-  '#dommatrix-create':
-    title: 6.3 Creating DOMMatrixReadOnly and DOMMatrix objects
-    status: unknown
-  '#dommatrix-attributes':
-    title: 6.4 DOMMatrix attributes
-    status: unknown
-  '#immutable-transformation-methods':
-    title: 6.5 Immutable transformation methods
-    status: unknown
-  '#mutable-transformation-methods':
-    title: 6.6 Mutable transformation methods
-    status: unknown
+    status: n/a
   '#structured-serialization':
     title: 7 Structured serialization
-    status: unknown
+    status: n/a
   '#security':
     title: 8 Security Considerations
-    status: unknown
+    status: n/a
   '#priv-sec':
     title: 9 Privacy Considerations
-    status: unknown
+    status: n/a
   '#historical':
     title: 10 Historical
-    status: unknown
-  '#historical-cssom-view':
-    title: 10.1 CSSOM View
-    status: unknown
-  '#historical-svg':
-    title: 10.2 SVG
-    status: unknown
-  '#historical-non-standard':
-    title: 10.3 Non-standard
-    status: unknown
+    status: n/a
