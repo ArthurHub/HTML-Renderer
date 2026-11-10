@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using HtmlKit;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
@@ -38,6 +39,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
             var curBox = root;
 
+            // HtmlKit tokenizes noscript content as raw text, split into data tokens at every '<'. Without
+            // scripting it's markup (HTML 4.12.2), so it's collected and parsed with the noscript box as root.
+            StringBuilder noscriptContent = null;
+
             using (var sourceReader = new StringReader(source))
             {
                 var tokenizer = new HtmlTokenizer(sourceReader);
@@ -45,6 +50,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 HtmlToken token;
                 while (tokenizer.ReadNextToken(out token))
                 {
+                    if (noscriptContent != null && token.Kind != HtmlTokenKind.Data)
+                    {
+                        ParseDocument(noscriptContent.ToString(), curBox);
+                        noscriptContent = null;
+                    }
+
                     switch (token.Kind)
                     {
                         case HtmlTokenKind.Tag:
@@ -57,9 +68,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                             {
                                 var text = (HtmlDataToken)token;
 
-                                if (curBox.HtmlTag != null && curBox.HtmlTag.Name.Equals(HtmlConstants.NoScript, StringComparison.OrdinalIgnoreCase))
+                                if (curBox != root && curBox.HtmlTag != null && curBox.HtmlTag.Name.Equals(HtmlConstants.NoScript, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    curBox = ParseDocument(text.Data, curBox);
+                                    noscriptContent ??= new StringBuilder();
+                                    noscriptContent.Append(text.Data);
                                 }
                                 else
                                 {
@@ -77,6 +89,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                             throw new ArgumentOutOfRangeException();
                     }
                 }
+
+                if (noscriptContent != null)
+                    ParseDocument(noscriptContent.ToString(), curBox);
             }
 
             return root;
