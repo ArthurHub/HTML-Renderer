@@ -13,6 +13,7 @@ public sealed class CasesTests
     }
 
     [TestMethod]
+    [Spec("css-namespaces-3", "#syntax")]
     public void StyleSheetAtNamespace()
     {
         var sheet = ParseSheet(@"@namespace svg ""http://www.w3.org/2000/svg"";");
@@ -865,6 +866,7 @@ background: #fffef0;
     }
 
     [TestMethod]
+    [Spec("css-namespaces-3", "#syntax")]
     public void StyleSheetNamespaceLinebreak()
     {
         var sheet = ParseSheet(@"@namespace
@@ -874,6 +876,7 @@ background: #fffef0;
     }
 
     [TestMethod]
+    [Spec("css-namespaces-3", "#syntax")]
     public void StyleSheetNamespace()
     {
         var sheet = ParseSheet(@"@namespace ""http://www.w3.org/1999/xhtml"";
