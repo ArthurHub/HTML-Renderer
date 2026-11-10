@@ -5,19 +5,14 @@ snapshot: https://www.w3.org/TR/2021/CR-css-scrollbars-1-20211209/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#scope':
-    title: 1.1 Scope
-    status: unknown
-  '#out-of-scope':
-    title: 1.1.1 Out Of Scope
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
+    status: n/a
   '#scrollbar-color':
     title: '2 Scrollbar Colors: the scrollbar-color property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'scrollbar-color' isn't parsed, the scrollbars of the panel controls keep the platform colors"
   '#scrollbar-width':
     title: '3 Scrollbar Thickness: the scrollbar-width property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'scrollbar-width' isn't parsed, the scrollbars of the panel controls keep the platform width and can't be hidden"
