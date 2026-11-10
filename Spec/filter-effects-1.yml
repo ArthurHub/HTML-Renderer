@@ -5,217 +5,216 @@ snapshot: https://www.w3.org/TR/2018/WD-filter-effects-1-20181218/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
+    status: n/a
   '#placement':
     title: 2 Module interactions
-    status: unknown
+    status: n/a
   '#values':
     title: 3 Values
-    status: unknown
+    status: n/a
   '#definitions':
     title: 4 Terminology
-    status: unknown
+    status: n/a
   '#FilterProperty':
     title: '5 Graphic filters: the filter property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - filter isn't parsed
   '#filter-functions':
     title: 6 Filter Functions
-    status: unknown
+    status: unsupported
   '#supported-filter-functions':
     title: 6.1 Supported Filter Functions
-    status: unknown
+    status: unsupported
   '#computed-values-of-filter-functions':
     title: 6.2 Computed Values of Filter Functions
-    status: unknown
+    status: unsupported
   '#serialization-of-filter-functions':
     title: 6.3 Serialization of Filter Functions
-    status: unknown
+    status: n/a
   '#interpolation-of-filter-functions':
     title: 6.4 Interpolation of Filter Functions
-    status: unknown
+    status: n/a
   '#FilterElement':
     title: '7 SVG Filter Sources: the filter element'
-    status: unknown
+    status: unsupported
+    gaps:
+      - No SVG support
   '#FilterEffectsRegion':
     title: 8 Filter Region
-    status: unknown
+    status: unsupported
   '#FilterPrimitivesOverview':
     title: 9 Filter primitives
-    status: unknown
+    status: unsupported
+    gaps:
+      - No SVG support
   '#FilterPrimitivesOverviewIntro':
     title: 9.1 Overview
-    status: unknown
+    status: unsupported
   '#CommonAttributes':
     title: 9.2 Common filter primitive attributes
-    status: unknown
+    status: unsupported
   '#FilterPrimitiveTree':
     title: 9.3 Filter primitive tree
-    status: unknown
+    status: unsupported
   '#FilterPrimitiveSubRegion':
     title: 9.4 Filter primitive subregion
-    status: unknown
+    status: unsupported
   '#feBlendElement':
     title: 9.5 Filter primitive feBlend
-    status: unknown
+    status: unsupported
   '#feColorMatrixElement':
     title: 9.6 Filter primitive feColorMatrix
-    status: unknown
+    status: unsupported
   '#feComponentTransferElement':
     title: 9.7 Filter primitive feComponentTransfer
-    status: unknown
+    status: unsupported
   '#feFuncRElement':
     title: 9.7.1 Transfer function feFuncR
-    status: unknown
+    status: unsupported
   '#feFuncGElement':
     title: 9.7.2 Transfer function feFuncG
-    status: unknown
+    status: unsupported
   '#feFuncBElement':
     title: 9.7.3 Transfer function feFuncB
-    status: unknown
+    status: unsupported
   '#feFuncAElement':
     title: 9.7.4 Transfer function feFuncA
-    status: unknown
+    status: unsupported
   '#feCompositeElement':
     title: 9.8 Filter primitive feComposite
-    status: unknown
+    status: unsupported
   '#feConvolveMatrixElement':
     title: 9.9 Filter primitive feConvolveMatrix
-    status: unknown
+    status: unsupported
   '#feDiffuseLightingElement':
     title: 9.10 Filter primitive feDiffuseLighting
-    status: unknown
+    status: unsupported
   '#feDisplacementMapElement':
     title: 9.11 Filter primitive feDisplacementMap
-    status: unknown
+    status: unsupported
   '#feDropShadowElement':
     title: 9.12 Filter primitive feDropShadow
-    status: unknown
+    status: unsupported
   '#feFloodElement':
     title: 9.13 Filter primitive feFlood
-    status: unknown
+    status: unsupported
   '#FloodColorProperty':
     title: 9.13.1 The flood-color property
-    status: unknown
+    status: unsupported
+    gaps:
+      - flood-color isn't parsed
   '#FloodOpacityProperty':
     title: 9.13.2 The flood-opacity property
-    status: unknown
+    status: unsupported
+    gaps:
+      - flood-opacity isn't parsed
   '#feGaussianBlurElement':
     title: 9.14 Filter primitive feGaussianBlur
-    status: unknown
+    status: unsupported
   '#feImageElement':
     title: 9.15 Filter primitive feImage
-    status: unknown
+    status: unsupported
   '#feMergeElement':
     title: 9.16 Filter primitive feMerge
-    status: unknown
+    status: unsupported
   '#feMergeNodeElement':
     title: 9.16.1 Merge node feMergeNode
-    status: unknown
+    status: unsupported
   '#feMorphologyElement':
     title: 9.17 Filter primitive feMorphology
-    status: unknown
+    status: unsupported
   '#feOffsetElement':
     title: 9.18 Filter primitive feOffset
-    status: unknown
+    status: unsupported
   '#feSpecularLightingElement':
     title: 9.19 Filter primitive feSpecularLighting
-    status: unknown
+    status: unsupported
   '#feTileElement':
     title: 9.20 Filter primitive feTile
-    status: unknown
+    status: unsupported
   '#feTurbulenceElement':
     title: 9.21 Filter primitive feTurbulence
-    status: unknown
+    status: unsupported
   '#ColorInterpolationFiltersProperty':
     title: 10 The color-interpolation-filters property
-    status: unknown
+    status: unsupported
+    gaps:
+      - color-interpolation-filters isn't parsed
   '#LightSourceDefinitions':
     title: 11 Light source elements and properties
-    status: unknown
+    status: unsupported
+    gaps:
+      - No SVG support
   '#LightSourceIntro':
     title: 11.1 Introduction
-    status: unknown
+    status: unsupported
   '#feDistantLightElement':
     title: 11.2 Light source feDistantLight
-    status: unknown
+    status: unsupported
   '#fePointLightElement':
     title: 11.3 Light source fePointLight
-    status: unknown
+    status: unsupported
   '#feSpotLightElement':
     title: 11.4 Light source feSpotLight
-    status: unknown
+    status: unsupported
   '#LightingColorProperty':
     title: 11.5 The lighting-color property
-    status: unknown
+    status: unsupported
+    gaps:
+      - lighting-color isn't parsed
   '#FilterCSSImageValue':
     title: 12 Filter CSS <image> values
-    status: unknown
+    status: unsupported
+    gaps:
+      - filter() isn't accepted as an <image>
   '#interpolating-filter-image':
     title: 12.1 Interpolating filter()
-    status: unknown
+    status: n/a
   '#ShorthandEquivalents':
     title: 13 Shorthands defined in terms of the filter element
-    status: unknown
+    status: unsupported
+    gaps:
+      - No filter functions, see 6
   '#FilterPrimitiveRepresentation':
     title: 13.1 Filter primitive representation
-    status: unknown
+    status: unsupported
   '#grayscaleEquivalent':
     title: 13.1.1 grayscale
-    status: unknown
+    status: unsupported
   '#sepiaEquivalent':
     title: 13.1.2 sepia
-    status: unknown
+    status: unsupported
   '#saturateEquivalent':
     title: 13.1.3 saturate
-    status: unknown
+    status: unsupported
   '#huerotateEquivalent':
     title: 13.1.4 hue-rotate
-    status: unknown
+    status: unsupported
   '#invertEquivalent':
     title: 13.1.5 invert
-    status: unknown
+    status: unsupported
   '#opacityEquivalent':
     title: 13.1.6 opacity
-    status: unknown
+    status: unsupported
   '#brightnessEquivalent':
     title: 13.1.7 brightness
-    status: unknown
+    status: unsupported
   '#contrastEquivalent':
     title: 13.1.8 contrast
-    status: unknown
+    status: unsupported
   '#blurEquivalent':
     title: 13.1.9 blur
-    status: unknown
+    status: unsupported
   '#dropshadowEquivalent':
     title: 13.1.10 drop-shadow
-    status: unknown
+    status: unsupported
   '#filter-region-for-shorthands':
     title: 13.2 Filter region for shorthands
-    status: unknown
+    status: unsupported
   '#animation-of-filters':
     title: 14 Animation of Filters
-    status: unknown
-  '#interpolation-of-filters':
-    title: 14.1 Interpolation of Filter Function Lists
-    status: unknown
-  '#addition':
-    title: 14.2 Addition
-    status: unknown
-  '#accumulation':
-    title: 14.3 Accumulation
-    status: unknown
+    status: n/a
   '#priv-sec':
     title: 15 Privacy and Security Considerations
-    status: unknown
-  '#tainted-filter-primitives':
-    title: 15.1 Tainted Filter Primitives
-    status: unknown
-  '#fedisplacemnentmap-restrictions':
-    title: 15.2 feDisplacementMap Restrictions
-    status: unknown
-  '#origin-restrictions':
-    title: 15.3 Origin Restrictions
-    status: unknown
-  '#timing-attack':
-    title: 15.4 Timing Attacks
-    status: unknown
+    status: n/a
