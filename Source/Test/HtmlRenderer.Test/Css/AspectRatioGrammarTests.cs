@@ -5,11 +5,6 @@ using System.Linq;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/AspectRatioGrammarTests.cs.
-/// Tests for the shared <see cref="AspectRatioGrammar"/> (the <c>aspect-ratio</c> value grammar
-/// <c>[ auto || &lt;ratio&gt; ]</c>) and its Layer-A accept/reject via the full parser.
-/// </summary>
 [TestClass]
 public sealed class AspectRatioGrammarTests
 {
@@ -26,6 +21,7 @@ public sealed class AspectRatioGrammarTests
     [DataRow("3 / 2", 1.5)]
     [DataRow("auto 21 / 9", 21.0 / 9.0)]
     [DataRow("21 / 9 auto", 21.0 / 9.0)]
+    [Spec("css-sizing-4", "#aspect-ratio")]
     public void ValidRatio_ParsesToWidthOverHeight(string value, double expected)
     {
         Assert.IsTrue(TryParse(value, out var ratio));
@@ -91,6 +87,7 @@ public sealed class AspectRatioGrammarTests
     [DataRow("aspect-ratio: 2", true)]
     [DataRow("aspect-ratio: banana", false)]
     [DataRow("aspect-ratio: 2px", false)]
+    [Spec("css-sizing-4", "#aspect-ratio")]
     public void LayerA_AcceptsValid_RejectsInvalid(string declaration, bool shouldApply)
     {
         var sheet = CssConstructionFunctions.ParseStyleSheet($"div {{ {declaration}; }}");

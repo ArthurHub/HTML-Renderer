@@ -67,6 +67,7 @@ public sealed class CssSizingTests
     [DataRow("block-size:40px", "height")]
     [Spec("css-sizing-3", "#preferred-size-properties")]
     [Spec("css-logical-1", "#dimension-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void FlowRelativePreferredSize_MapsToThePhysicalSize(string style, string axis)
     {
         var root = Layout($"<div style='width:300px'><div id='b' style='{style}'><div style='height:10px'></div></div></div>");
@@ -79,6 +80,7 @@ public sealed class CssSizingTests
     [TestMethod]
     [Spec("css-sizing-3", "#min-size-properties")]
     [Spec("css-logical-1", "#dimension-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void MinBlockSize_GrowsTheBox()
     {
         var root = Layout("<div id='b' style='min-block-size:40px'></div>");
@@ -90,6 +92,7 @@ public sealed class CssSizingTests
     [TestMethod]
     [Spec("css-sizing-3", "#max-size-properties")]
     [Spec("css-logical-1", "#dimension-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void MaxInlineSize_LimitsTheBox()
     {
         var root = Layout("<div style='width:300px'><div id='b' style='max-inline-size:100px;height:10px'></div></div>");
@@ -100,16 +103,28 @@ public sealed class CssSizingTests
     [TestMethod]
     [Spec("css-sizing-3", "#sizing-values")]
     [Spec("css-sizing-3", "#percentage-sizing")]
+    [Spec("css-sizing-4", "#percentage-sizing")]
     public void PercentageSizes_ResolveAgainstADefiniteContainingBlock()
     {
-        var root = Layout("<div style='width:300px'><div id='b' style='width:50%;max-width:40%;height:10px'></div></div>");
+        var root = Layout("<div style='width:300px'><div id='b' style='width:50%;height:10px'></div></div>");
 
         Assert.AreEqual(150, Box(root, "b").Size.Width, Delta);
     }
 
     [Ignore("Gap, see Spec/css-sizing-3.yml")]
     [TestMethod]
+    [Spec("css-sizing-3", "#max-size-properties")]
+    public void PercentageMaxWidth_ClampsThePercentageWidth()
+    {
+        var root = Layout("<div style='width:300px'><div id='b' style='width:50%;max-width:40%;height:10px'></div></div>");
+
+        Assert.AreEqual(120, Box(root, "b").Size.Width, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css-sizing-3.yml")]
+    [TestMethod]
     [Spec("css-sizing-3", "#percentage-sizing")]
+    [Spec("css-sizing-4", "#percentage-sizing")]
     public void NestedPercentageHeights_ResolveAgainstTheResolvedPercentage()
     {
         var root = Layout("<div style='height:200px'><div id='f' style='height:50%'><div id='i' style='height:50%'></div></div></div>");
@@ -135,6 +150,7 @@ public sealed class CssSizingTests
     [TestMethod]
     [Spec("css-sizing-3", "#sizing-values")]
     [Spec("css-sizing-3", "#stretch-fit-sizing")]
+    [Spec("css-sizing-4", "#extrinsic")]
     public void Stretch_FillsTheContainingBlock()
     {
         var root = Layout("<div style='width:300px'><span id='b' style='display:inline-block;width:stretch;margin:0 10px;height:10px'></span></div>");
@@ -153,6 +169,7 @@ public sealed class CssSizingTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#stretch-fit-sizing")]
+    [Spec("css-sizing-4", "#extrinsic")]
     public void AutoWidthBlock_IsStretchFit()
     {
         var root = Layout("<div style='width:300px'><div id='b' style='margin:0 10px 0 20px;padding:0 5px;border:0 solid;border-left-width:3px;height:10px'></div></div>");
@@ -164,7 +181,9 @@ public sealed class CssSizingTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#intrinsic-sizes")]
+    [Spec("css-sizing-4", "#intrinsic-sizes")]
     [Spec("css-sizing-3", "#intrinsic-contribution")]
+    [Spec("css-sizing-4", "#intrinsic-contribution")]
     public void TableColumns_UseTheMinAndMaxContentOfTheirCells()
     {
         var root = Layout("<table id='t' style='border-spacing:0'><tr><td id='a' style='padding:0'><span style='display:inline-block;width:80px;height:10px'></span></td>"
@@ -176,6 +195,7 @@ public sealed class CssSizingTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#intrinsic-sizes")]
+    [Spec("css-sizing-4", "#intrinsic-sizes")]
     public void NarrowTable_ShrinksColumnsToTheirMinContent()
     {
         var root = Layout("<table id='t' style='width:10px;border-spacing:0'><tr><td id='a' style='padding:0'>aaaa bbbb cccc</td></tr></table>");
@@ -188,6 +208,7 @@ public sealed class CssSizingTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#cyclic-percentage-contribution")]
+    [Spec("css-sizing-4", "#intrinsic-contribution")]
     public void CyclicPercentageWidth_IsAutoForTheContribution_ThenResolves()
     {
         var root = Layout("<div style='width:400px'><div id='f' style='float:left'><div id='c' style='width:50%'><span style='display:inline-block;width:100px;height:10px'></span></div></div></div>");

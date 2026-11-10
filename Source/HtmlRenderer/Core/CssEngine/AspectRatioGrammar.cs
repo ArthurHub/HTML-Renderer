@@ -4,29 +4,19 @@ using System.Linq;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// The shared grammar for the <c>aspect-ratio</c> value (<c>[ auto || &lt;ratio&gt; ]</c>, where
-    /// <c>&lt;ratio&gt; = &lt;number [0,∞]&gt; [ / &lt;number [0,∞]&gt; ]?</c>). Used by both Layer A (to
-    /// validate/accept-or-reject at parse time) and Layer B (to compute the used ratio during layout), so the
-    /// grammar is defined once — the <see cref="BasicShapeGrammar"/> precedent.
+    /// The <c>aspect-ratio</c> grammar (CSS Sizing 4 §4.1) and the <c>&lt;ratio&gt;</c> type (CSS Values 4 §5.7).
     /// </summary>
     internal static class AspectRatioGrammar
     {
         /// <summary>
-        /// Validates the token stream as an <c>aspect-ratio</c> value. Returns false for anything that is not a
-        /// valid value. On success, <paramref name="ratio"/> is the used width/height ratio, or null when there
-        /// is no usable ratio (a bare <c>auto</c>, or a ratio with a zero term — both of which mean "no
-        /// preferred aspect ratio" for a non-replaced box).
+        /// <paramref name="ratio"/> is width / height, or null for a bare <c>auto</c> or a degenerate ratio.
         /// </summary>
         internal static bool TryParse(IReadOnlyList<Token> tokens, out double? ratio) =>
             TryParse(tokens, out ratio, out _);
 
         /// <summary>
-        /// Validates the token stream as an <c>aspect-ratio</c> value, additionally reporting whether the
-        /// <c>auto</c> keyword was present (<c>[ auto || &lt;ratio&gt; ]</c>). <paramref name="hasAuto"/> lets a
-        /// replaced element prefer its natural aspect ratio and fall back to the specified <c>&lt;ratio&gt;</c>
-        /// (CSS Box Sizing 4 §5): <c>auto &lt;ratio&gt;</c> ⇒ <c>hasAuto=true</c> with a usable
-        /// <paramref name="ratio"/>; a bare <c>&lt;ratio&gt;</c> ⇒ <c>hasAuto=false</c> (the ratio always
-        /// overrides); a bare <c>auto</c> ⇒ <c>hasAuto=true</c> with a null <paramref name="ratio"/>.
+        /// Like <see cref="TryParse(IReadOnlyList{Token}, out double?)"/>, <paramref name="hasAuto"/> tells
+        /// <c>auto &lt;ratio&gt;</c>, where a replaced element's natural ratio wins, from a bare <c>&lt;ratio&gt;</c>.
         /// </summary>
         internal static bool TryParse(IReadOnlyList<Token> tokens, out double? ratio, out bool hasAuto)
         {
@@ -54,11 +44,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         /// <summary>
-        /// Validates a bare <c>&lt;ratio&gt;</c> value (<c>&lt;number [0,∞]&gt; [ / &lt;number [0,∞]&gt; ]?</c>),
-        /// with no <c>auto</c> — the CSS Values 4 <c>&lt;ratio&gt;</c> data type, as used by the <c>@property</c>
-        /// <c>syntax: "&lt;ratio&gt;"</c> matcher. Distinct from <see cref="TryParse(IReadOnlyList{Token}, out double?)"/>, whose <c>aspect-ratio</c>
-        /// grammar additionally permits <c>auto</c>. On success <paramref name="ratio"/> is the used width/height
-        /// ratio, or null when a term is zero.
+        /// A bare <c>&lt;ratio&gt;</c> without <c>auto</c>, for the <c>@property</c> syntax matcher.
         /// </summary>
         internal static bool TryParseRatio(IReadOnlyList<Token> tokens, out double? ratio)
         {

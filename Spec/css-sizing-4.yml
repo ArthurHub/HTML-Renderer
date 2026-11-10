@@ -5,82 +5,97 @@ snapshot: https://www.w3.org/TR/2026/WD-css-sizing-4-20260904/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
+    status: n/a
   '#terms':
     title: 2 Terminology
-    status: unknown
+    status: n/a
   '#specifying-sizes':
     title: 3 Specifying Box Sizes
-    status: unknown
+    status: partial
   '#sizing-properties':
     title: 3.1 Sizing Properties
-    status: unknown
+    status: partial
+    gaps:
+      - The 'size', 'min-size' and 'max-size' shorthands are ignored
+      - The sizing properties have the gaps listed in css-sizing-3 3.1
   '#sizing-values':
     title: '3.2 New Sizing Values: the contain, fit-content(), and calc-size() values'
-    status: unknown
+    status: unsupported
+    gaps:
+      - contain, fit-content() and calc-size() are rejected
   '#ratios':
     title: 4 Aspect Ratios
-    status: unknown
+    status: parsed-only
   '#aspect-ratio':
     title: '4.1 Preferred Aspect Ratios: the aspect-ratio property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Layout ignores 'aspect-ratio', only a replaced element's natural aspect ratio is used, see CSS 2.1 10.3.2
   '#aspect-ratio-automatic':
     title: 4.2 Effects of Preferred Aspect Ratio on Automatic Sizes
-    status: unknown
+    status: unsupported
   '#aspect-ratio-margin-collapse':
     title: 4.2.1 Margin-collapsing
-    status: unknown
+    status: unsupported
   '#aspect-ratio-minimum':
     title: 4.3 Automatic Content-based Minimum Sizes
-    status: unknown
+    status: unsupported
   '#aspect-ratio-size-transfers':
     title: 4.4 Min/Max Size Transfers
-    status: unknown
+    status: unsupported
   '#intrinsic':
     title: 5 Intrinsic Size Determination
-    status: unknown
+    status: partial
   '#intrinsic-sizes':
     title: 5.1 Intrinsic Sizes
-    status: unknown
+    status: partial
+    gaps:
+      - Floats and inline-blocks aren't sized to their content as specified, see css-sizing-3 5.1
   '#intrinsic-size-override':
     title: '5.2 Overriding Contained Intrinsic Sizes: the contain-intrinsic-* properties'
-    status: unknown
+    status: unsupported
+    gaps:
+      - The contain-intrinsic-* properties are dropped by the parser
   '#last-remembered':
     title: 5.2.1 Last Remembered Size
-    status: unknown
+    status: unsupported
   '#cis-scrollbars':
     title: '5.2.2 Interaction With overflow: auto'
-    status: unknown
+    status: n/a
+    gaps:
+      - No scrollbars are rendered, see css-overflow-3 4
   '#responsive-iframes':
     title: '5.3 Responsively-sized iframes: the frame-sizing property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'frame-sizing' is dropped and an iframe's document isn't rendered, see HTML 4.8.5"
   '#iframe-frame-sizing':
     title: 5.3.1 HTML iframe Details
-    status: unknown
+    status: unsupported
   '#window-requestresize':
     title: 5.3.2 Extensions to the Window Interface
-    status: unknown
+    status: n/a
   '#intrinsic-contribution':
     title: 5.4 Intrinsic Size Contributions
-    status: unknown
+    status: supported
   '#intrinsic-contribution-override':
     title: '5.5 Zeroing Min-Content Size Contributions: the min-intrinsic-sizing property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'min-intrinsic-sizing' is dropped by the parser"
   '#column-sizing':
     title: '5.6 New Column Sizing Values: the stretch, min-content, max-content, fit-content, and fit-content() values'
-    status: unknown
+    status: unsupported
+    gaps:
+      - Multi-column layout isn't supported, see css-multicol-1
   '#extrinsic':
     title: 6 Extrinsic Size Determination
-    status: unknown
+    status: partial
   '#contain-fit-sizing':
     title: '6.1 Contain-fit Sizing: stretching while maintaining an aspect ratio'
-    status: unknown
+    status: unsupported
   '#percentage-sizing':
     title: 6.2 Percentage Sizing
-    status: unknown
+    status: partial
+    gaps:
+      - Percentage heights compute to auto even against a definite height, see css-sizing-3 4.1

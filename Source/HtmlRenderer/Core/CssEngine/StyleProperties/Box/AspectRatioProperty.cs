@@ -1,9 +1,7 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// The <c>aspect-ratio</c> property (CSS Box Sizing Level 4). The value is validated by the shared
-    /// <see cref="AspectRatioGrammar"/> and the authored text preserved for the layout engine, which computes
-    /// an auto dimension from the definite one.
+    /// <c>aspect-ratio</c>, CSS Sizing 4 §4.1.
     /// </summary>
     internal sealed class AspectRatioProperty : Property
     {

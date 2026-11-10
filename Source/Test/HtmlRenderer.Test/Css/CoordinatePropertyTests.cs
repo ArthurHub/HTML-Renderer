@@ -15,6 +15,7 @@ public sealed class CoordinatePropertyTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#preferred-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void CssHeightLegalPercentage()
     {
         Assert.AreEqual("28%", GetProperty("height: 28%", "height"));
@@ -22,6 +23,7 @@ public sealed class CoordinatePropertyTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#preferred-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void CssHeightLegalLengthInEm()
     {
         Assert.AreEqual("0.3em", GetProperty("height: 0.3em", "height"));
@@ -29,6 +31,7 @@ public sealed class CoordinatePropertyTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#preferred-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void CssHeightLegalLengthInPx()
     {
         Assert.AreEqual("144px", GetProperty("height: 144px", "height"));
@@ -36,6 +39,7 @@ public sealed class CoordinatePropertyTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#preferred-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void CssHeightLegalAutoUppercase()
     {
         Assert.AreEqual("auto", GetProperty("height: AUTO", "height"));
@@ -43,6 +47,7 @@ public sealed class CoordinatePropertyTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#preferred-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void CssWidthLegalLengthInCm()
     {
         Assert.AreEqual("0.5cm", GetProperty("width: 0.5cm", "width"));
@@ -50,6 +55,7 @@ public sealed class CoordinatePropertyTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#preferred-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void CssWidthLegalLengthInMm()
     {
         Assert.AreEqual("1.5mm", GetProperty("width: 1.5mm", "width"));
@@ -57,6 +63,7 @@ public sealed class CoordinatePropertyTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#preferred-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void CssWidthIllegalLength()
     {
         Assert.IsTrue(string.IsNullOrEmpty(GetProperty("width: 1.5 meter", "width")));
@@ -64,6 +71,7 @@ public sealed class CoordinatePropertyTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#preferred-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void CssWidthPercentLegal()
     {
         Assert.AreEqual("20.5%", GetProperty("width: 20.5%", "width"));
@@ -71,6 +79,7 @@ public sealed class CoordinatePropertyTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#preferred-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void CssWidthLegalLengthInInches()
     {
         Assert.AreEqual("3in", GetProperty("width: 3in", "width"));
@@ -78,6 +87,7 @@ public sealed class CoordinatePropertyTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#preferred-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void CssHeightAngleIllegal()
     {
         Assert.IsTrue(string.IsNullOrEmpty(GetProperty("height: 3deg", "height")));
@@ -85,6 +95,7 @@ public sealed class CoordinatePropertyTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#preferred-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void CssHeightResolutionIllegal()
     {
         Assert.IsTrue(string.IsNullOrEmpty(GetProperty("height: 3dpi", "height")));
@@ -92,6 +103,7 @@ public sealed class CoordinatePropertyTests
 
     [TestMethod]
     [Spec("css-sizing-3", "#max-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     [DataRow("max-width")]
     [DataRow("max-height")]
     public void MaxSizeNone_IsAccepted(string property)
@@ -102,6 +114,7 @@ public sealed class CoordinatePropertyTests
     [Ignore("Gap, see Spec/css-sizing-3.yml")]
     [TestMethod]
     [Spec("css-sizing-3", "#min-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     [DataRow("min-width")]
     [DataRow("min-height")]
     public void MinSizeAuto_IsAccepted(string property)

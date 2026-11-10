@@ -11,6 +11,7 @@ public sealed class MinMaxHeightIntegrationTests
     [TestMethod]
     [Spec("css21", "visudet.html#min-max-heights")]
     [Spec("css-sizing-3", "#min-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
     public void MinHeightWinsOverConflictingMaxHeight()
     {
         var html = LayoutHarness.Wrap("<div id='b' style='height:8px; min-height:20px; max-height:5px;'></div>");
