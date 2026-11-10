@@ -5,181 +5,201 @@ snapshot: https://www.w3.org/TR/2024/CRD-compositing-1-20240321/
 sections:
   '#introduction':
     title: 1 Introduction
-    status: unknown
+    status: n/a
   '#reading-this-document':
     title: 2 Reading This Document
-    status: unknown
-  '#module-interactions':
-    title: 2.1 Module interactions
-    status: unknown
-  '#values':
-    title: 2.2 Values
-    status: unknown
+    status: n/a
   '#csscompositingandblending':
     title: 3 Specifying Blending in CSS
-    status: unknown
+    status: unsupported
   '#compositingandblendingorder':
     title: 3.1 Order of graphical operations
-    status: unknown
+    status: unsupported
+    gaps:
+      - No filters, clip-path, masks or blending, only overflow clipping and source-over painting
   '#csscompositingrules_CSS':
     title: 3.2 Behavior specific to HTML
-    status: unknown
+    status: unsupported
+    gaps:
+      - Stacking contexts aren't isolated groups, see 8
   '#csscompositingrules_SVG':
     title: 3.3 Behavior specific to SVG
-    status: unknown
+    status: unsupported
+    gaps:
+      - No SVG support
   '#csskeywords':
     title: 3.4 CSS Properties
-    status: unknown
+    status: unsupported
+    gaps:
+      - mix-blend-mode, isolation and background-blend-mode aren't parsed
   '#mix-blend-mode':
     title: 3.4.1 The mix-blend-mode property
-    status: unknown
+    status: unsupported
   '#isolation':
     title: 3.4.2 The isolation property
-    status: unknown
+    status: unsupported
   '#background-blend-mode':
     title: 3.4.3 The background-blend-mode property
-    status: unknown
+    status: unsupported
   '#canvascompositingandblending':
     title: 4 Specifying Compositing and Blending in Canvas 2D
-    status: unknown
+    status: n/a
   '#whatiscompositing':
     title: 5 Introduction to compositing
-    status: unknown
+    status: supported
   '#simplealphacompositing':
     title: 5.1 Simple alpha compositing
-    status: unknown
+    status: supported
   '#simplealphacompositingexamples':
     title: 5.1.1 Examples of simple alpha compositing
-    status: unknown
+    status: n/a
   '#generalformula':
     title: 6 General Formula for Compositing and Blending
-    status: unknown
+    status: partial
+    gaps:
+      - Only the normal blend mode, see 10
   '#backdropCalc':
     title: 7 Backdrop calculation
-    status: unknown
+    status: unsupported
+    gaps:
+      - No blending, see 10
   '#backdropexamples':
     title: 7.1 Examples of backdrop calculation
-    status: unknown
+    status: n/a
   '#groups':
     title: 8 Compositing Groups
-    status: unknown
+    status: unsupported
+    gaps:
+      - No compositing groups, everything paints directly onto the canvas
   '#groupinvariance':
     title: 8.1 Group invariance
-    status: unknown
+    status: unsupported
   '#isolatedgroups':
     title: 8.2 Isolated Groups
-    status: unknown
+    status: unsupported
   '#pagebackdrop':
     title: 8.3 The Root Element Group
-    status: unknown
+    status: unsupported
   '#rootgroup':
     title: 8.4 The Root Group
-    status: unknown
+    status: unsupported
   '#advancedcompositing':
     title: 9 Advanced compositing features
-    status: unknown
+    status: partial
   '#porterduffcompositingoperators':
     title: 9.1 The Porter Duff Compositing Operators
-    status: unknown
+    status: partial
+    gaps:
+      - Only source-over, the other operators are only reachable through canvas and mask-composite
   '#porterduffcompositingoperators_clear':
     title: 9.1.1 Clear
-    status: unknown
+    status: n/a
   '#porterduffcompositingoperators_src':
     title: 9.1.2 Copy
-    status: unknown
+    status: n/a
   '#porterduffcompositingoperators_dst':
     title: 9.1.3 Destination
-    status: unknown
+    status: n/a
   '#porterduffcompositingoperators_srcover':
     title: 9.1.4 Source Over
-    status: unknown
+    status: supported
   '#porterduffcompositingoperators_dstover':
     title: 9.1.5 Destination Over
-    status: unknown
+    status: n/a
   '#porterduffcompositingoperators_srcin':
     title: 9.1.6 Source In
-    status: unknown
+    status: unsupported
+    gaps:
+      - "Only used by mask-composite, see css-masking-1 #the-mask-composite"
   '#porterduffcompositingoperators_dstin':
     title: 9.1.7 Destination In
-    status: unknown
+    status: n/a
   '#porterduffcompositingoperators_srcout':
     title: 9.1.8 Source Out
-    status: unknown
+    status: unsupported
+    gaps:
+      - "Only used by mask-composite, see css-masking-1 #the-mask-composite"
   '#porterduffcompositingoperators_dstout':
     title: 9.1.9 Destination Out
-    status: unknown
+    status: n/a
   '#porterduffcompositingoperators_srcatop':
     title: 9.1.10 Source Atop
-    status: unknown
+    status: n/a
   '#porterduffcompositingoperators_dstatop':
     title: 9.1.11 Destination Atop
-    status: unknown
+    status: n/a
   '#porterduffcompositingoperators_xor':
     title: 9.1.12 XOR
-    status: unknown
+    status: unsupported
+    gaps:
+      - "Only used by mask-composite, see css-masking-1 #the-mask-composite"
   '#porterduffcompositingoperators_plus':
     title: 9.1.13 Lighter
-    status: unknown
+    status: n/a
   '#groupcompositing':
     title: 9.2 Group compositing behavior with Porter Duff modes
-    status: unknown
+    status: unsupported
   '#blending':
     title: 10 Blending
-    status: unknown
+    status: partial
+    gaps:
+      - Only the normal blend mode is used, mix-blend-mode and background-blend-mode aren't parsed
   '#blendingseparable':
     title: 10.1 Separable blend modes
-    status: unknown
+    status: partial
+    gaps:
+      - Only normal
   '#blendingnormal':
     title: 10.1.1 normal blend mode
-    status: unknown
+    status: supported
   '#blendingmultiply':
     title: 10.1.2 multiply blend mode
-    status: unknown
+    status: unsupported
   '#blendingscreen':
     title: 10.1.3 screen blend mode
-    status: unknown
+    status: unsupported
   '#blendingoverlay':
     title: 10.1.4 overlay blend mode
-    status: unknown
+    status: unsupported
   '#blendingdarken':
     title: 10.1.5 darken blend mode
-    status: unknown
+    status: unsupported
   '#blendinglighten':
     title: 10.1.6 lighten blend mode
-    status: unknown
+    status: unsupported
   '#blendingcolordodge':
     title: 10.1.7 color-dodge blend mode
-    status: unknown
+    status: unsupported
   '#blendingcolorburn':
     title: 10.1.8 color-burn blend mode
-    status: unknown
+    status: unsupported
   '#blendinghardlight':
     title: 10.1.9 hard-light blend mode
-    status: unknown
+    status: unsupported
   '#blendingsoftlight':
     title: 10.1.10 soft-light blend mode
-    status: unknown
+    status: unsupported
   '#blendingdifference':
     title: 10.1.11 difference blend mode
-    status: unknown
+    status: unsupported
   '#blendingexclusion':
     title: 10.1.12 exclusion blend mode
-    status: unknown
+    status: unsupported
   '#blendingnonseparable':
     title: 10.2 Non-separable blend modes
-    status: unknown
+    status: unsupported
   '#blendinghue':
     title: 10.2.1 hue blend mode
-    status: unknown
+    status: unsupported
   '#blendingsaturation':
     title: 10.2.2 saturation blend mode
-    status: unknown
+    status: unsupported
   '#blendingcolor':
     title: 10.2.3 color blend mode
-    status: unknown
+    status: unsupported
   '#blendingluminosity':
     title: 10.2.4 luminosity blend mode
-    status: unknown
+    status: unsupported
   '#isolationblending':
     title: 10.3 Effect of group isolation on blending
-    status: unknown
+    status: unsupported
