@@ -9,6 +9,7 @@ public sealed class DirectionIntegrationTests
 {
     [TestMethod]
     [Spec("css21", "visuren.html#direction")]
+    [Spec("css-writing-modes-4", "#direction")]
     public void Direction_IsInherited()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div style='direction:rtl'><p id='p'>text</p></div>"));
@@ -18,6 +19,8 @@ public sealed class DirectionIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#direction")]
+    [Spec("css-writing-modes-4", "#bidi-para-direction")]
+    [Spec("css-writing-modes-4", "#logical-direction-layout")]
     public void RightToLeftWords_InAnRtlBlock_RunFromRightToLeft()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -32,6 +35,7 @@ public sealed class DirectionIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#direction")]
+    [Spec("css-writing-modes-4", "#bidi-algo")]
     public void LeftToRightWords_InAnRtlBlock_KeepTheirOrder()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -43,6 +47,7 @@ public sealed class DirectionIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#direction")]
+    [Spec("css-writing-modes-4", "#bidi-control-codes")]
     public void DirectionOnAnInline_WithoutUnicodeBidi_DoesNotReorder()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

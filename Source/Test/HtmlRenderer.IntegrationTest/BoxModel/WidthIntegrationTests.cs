@@ -153,6 +153,7 @@ public sealed class WidthIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#blockwidth")]
+    [Spec("css-writing-modes-4", "#logical-direction-layout")]
     public void OverConstrained_InRtl_IgnoresMarginLeft()
     {
         var root = Layout("<div style='width:200px;direction:rtl'><div id='c' style='width:100px;margin:0 10px;height:5px'></div></div>");

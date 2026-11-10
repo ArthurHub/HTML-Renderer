@@ -5,172 +5,193 @@ snapshot: https://www.w3.org/TR/2019/CR-css-writing-modes-4-20190730/
 sections:
   '#text-flow':
     title: 1 Introduction to Writing Modes
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Types and Terminology
-    status: unknown
+    status: n/a
   '#text-direction':
     title: 2 Inline Direction and Bidirectionality
-    status: unknown
+    status: partial
   '#direction':
     title: '2.1 Specifying Directionality: the direction property'
-    status: unknown
+    status: partial
+    gaps:
+      - No Unicode bidirectional algorithm, see 2.4
   '#unicode-bidi':
     title: '2.2 Embeddings and Overrides: the unicode-bidi property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - unicode-bidi is ignored, embed, isolate, bidi-override and plaintext don't change the reordering
   '#bidi-example':
     title: 2.3 Example of Bidirectional Text
-    status: unknown
+    status: n/a
   '#bidi-algo':
     title: 2.4 Applying the Bidirectional Reordering Algorithm
-    status: unknown
+    status: partial
+    gaps:
+      - No Unicode bidirectional algorithm, rtl reverses the order of all words on a line, left-to-right runs included, see CSS 2.1 9.10
   '#bidi-para-direction':
     title: 2.4.1 Bidi Paragraph Embedding Levels
-    status: unknown
+    status: partial
+    gaps:
+      - plaintext doesn't take the paragraph direction from the text
   '#bidi-control-codes':
     title: 2.4.2 CSS–Unicode Bidi Control Translation, Text Reordering
-    status: unknown
+    status: unsupported
+    gaps:
+      - An inline element's direction reorders its words although unicode-bidi is normal, see CSS 2.1 9.10
+      - isolate and embed don't keep an ltr run together in an rtl line
   '#bidi-atomic-inlines':
     title: 2.4.3 Bidi Treatment of Atomic Inlines
-    status: unknown
+    status: partial
+    gaps:
+      - An inline-block keeps its place in an rtl line instead of being reordered with the words
   '#bidi-embedding-breaks':
     title: 2.4.4 Paragraph Breaks Within Embeddings and Isolates
-    status: unknown
+    status: unsupported
   '#bidi-box-model':
     title: 2.4.5 Reordering-induced Box Fragmentation
-    status: unknown
+    status: unsupported
   '#bidi-fragmentation':
     title: 2.4.5.1 Conditions of Reordering-induced Box Fragmentation
-    status: unknown
+    status: unsupported
   '#bidi-fragment-boxes':
     title: 2.4.5.2 Box Model of Reordering-induced Box Fragments
-    status: unknown
+    status: unsupported
+    gaps:
+      - A split inline box in rtl text gets its left border on the first line, see CSS 2.1 8.6
   '#vertical-modes':
     title: 3 Vertical Writing Modes
-    status: unknown
+    status: unsupported
   '#vertical-intro':
     title: 3.1 Introduction to Vertical Writing
-    status: unknown
+    status: n/a
   '#block-flow':
     title: '3.2 Block Flow Direction: the writing-mode property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - writing-mode isn't accepted, layout is always horizontal-tb
   '#svg-writing-mode':
     title: 3.2.1 Obsolete SVG1.1 writing-mode Values
-    status: unknown
+    status: unsupported
   '#svg-writing-mode-css':
     title: 3.2.1.1 Supporting SVG1.1 writing-mode values in CSS syntax
-    status: unknown
+    status: unsupported
   '#svg-writing-mode-markup':
     title: 3.2.1.2 Supporting SVG1.1 writing-mode values in presentational attributes
-    status: unknown
+    status: unsupported
   '#inline-alignment':
     title: 4 Inline-level Alignment
-    status: unknown
+    status: partial
   '#intro-baselines':
     title: 4.1 Introduction to Baselines
-    status: unknown
+    status: n/a
   '#text-baselines':
     title: 4.2 Text Baselines
-    status: unknown
+    status: partial
+    gaps:
+      - Only horizontal text, so only the alphabetic baseline is used
   '#replaced-baselines':
     title: 4.3 Atomic Inline Baselines
-    status: unknown
+    status: partial
+    gaps:
+      - Images are aligned with the top of the line instead of sitting on the baseline, see CSS 2.1 10.8
   '#baseline-alignment':
     title: 4.4 Baseline Alignment
-    status: unknown
+    status: partial
+    gaps:
+      - vertical-align values other than baseline align like baseline or the top of the line, see CSS 2.1 10.8.1
   '#intro-text-layout':
     title: 5 Introduction to Vertical Text Layout
-    status: unknown
+    status: unsupported
   '#text-orientation':
     title: '5.1 Orienting Text: the text-orientation property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - text-orientation isn't accepted
   '#vertical-font-features':
     title: 5.1.1 Vertical Typesetting and Font Features
-    status: unknown
+    status: unsupported
   '#vertical-orientations':
     title: 5.1.2 Mixed Vertical Orientations
-    status: unknown
+    status: unsupported
   '#glyph-orientation':
     title: '5.1.3 Obsolete: the SVG1.1 glyph-orientation-vertical property'
-    status: unknown
+    status: unsupported
   '#abstract-box':
     title: 6 Abstract Box Terminology
-    status: unknown
-  '#abstract-axes':
-    title: 6.1 Abstract Dimensions
-    status: unknown
-  '#logical-directions':
-    title: 6.2 Flow-relative Directions
-    status: unknown
-  '#line-directions':
-    title: 6.3 Line-relative Directions
-    status: unknown
+    status: n/a
   '#logical-to-physical':
     title: 6.4 Abstract-to-Physical Mappings
-    status: unknown
+    status: partial
+    gaps:
+      - Flow-relative properties always map as horizontal-tb ltr, also when direction is rtl, see css-logical-1
   '#abstract-layout':
     title: 7 Abstract Box Layout
-    status: unknown
+    status: partial
   '#vertical-layout':
     title: 7.1 Principles of Layout in Vertical Writing Modes
-    status: unknown
+    status: unsupported
   '#dimension-mapping':
     title: 7.2 Dimensional Mapping
-    status: unknown
+    status: unsupported
   '#orthogonal-flows':
     title: 7.3 Orthogonal Flows
-    status: unknown
+    status: unsupported
   '#orthogonal-auto':
     title: 7.3.1 Available Space in Orthogonal Flows
-    status: unknown
+    status: unsupported
   '#auto-multicol':
     title: 7.3.2 Auto-sizing Block Containers in Orthogonal Flows
-    status: unknown
+    status: unsupported
   '#orthogonal-layout':
     title: 7.3.3 Auto-sizing Other Orthogonal Flow Roots
-    status: unknown
+    status: unsupported
   '#orthogonal-pagination':
     title: 7.3.4 Fragmenting Orthogonal Flows
-    status: unknown
+    status: unsupported
   '#logical-direction-layout':
     title: 7.4 Flow-Relative Mappings
-    status: unknown
+    status: partial
+    gaps:
+      - In rtl an over-constrained block ignores margin-right instead of margin-left, see CSS 2.1 10.3.3
+      - The initial text-align acts as left in rtl, see CSS 2.1 16.2
   '#line-mappings':
     title: 7.5 Line-Relative Mappings
-    status: unknown
+    status: supported
   '#physical-only':
     title: 7.6 Purely Physical Mappings
-    status: unknown
+    status: supported
   '#principal-flow':
     title: 8 The Principal Writing Mode
-    status: unknown
+    status: unsupported
   '#icb':
     title: 8.1 Propagation to the Initial Containing Block
-    status: unknown
+    status: unsupported
+    gaps:
+      - Neither writing-mode nor direction of the root or body is propagated to the initial containing block
   '#page-direction':
     title: '8.2 Page Flow: the page progression direction'
-    status: unknown
+    status: unsupported
+    gaps:
+      - Pages aren't classified as left or right pages, see css-page-3
   '#text-combine':
     title: 9 Glyph Composition
-    status: unknown
+    status: unsupported
   '#text-combine-upright':
     title: '9.1 Horizontal-in-Vertical Composition: the text-combine-upright property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - text-combine-upright isn't accepted
   '#text-combine-runs':
     title: 9.1.1 Text Run Rules
-    status: unknown
+    status: unsupported
   '#text-combine-layout':
     title: 9.1.2 Layout Rules
-    status: unknown
+    status: unsupported
   '#text-combine-compression':
     title: 9.1.3 Compression Rules
-    status: unknown
+    status: unsupported
   '#text-combine-fullwidth':
     title: 9.1.3.1 Full-width Characters
-    status: unknown
+    status: unsupported
   '#priv-sec':
     title: 10 Privacy and Security Considerations
-    status: unknown
+    status: n/a

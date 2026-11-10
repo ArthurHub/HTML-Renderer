@@ -71,6 +71,7 @@ public sealed class LineHeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#line-height")]
+    [Spec("css-writing-modes-4", "#replaced-baselines")]
     public void Image_SitsOnTheBaseline()
     {
         var root = TestImages.Layout($"<div id='p' style='font-size:20px'><span id='t'>x</span><img id='i' src='{Image}'></div>");

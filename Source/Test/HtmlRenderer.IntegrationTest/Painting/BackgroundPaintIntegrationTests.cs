@@ -231,6 +231,19 @@ public sealed class BackgroundPaintIntegrationTests
         Assert.AreEqual(y, image.DestRect.Y, 0.5);
     }
 
+    [TestMethod]
+    [DataRow("left top", 0, 0)]
+    [DataRow("right bottom", 60, 70)]
+    [Spec("css-writing-modes-4", "#physical-only")]
+    public void BackgroundPosition_StaysPhysicalInRtl(string position, double x, double y)
+    {
+        var g = PaintBackground($"direction:rtl;width:100px;height:100px;background-image:{Image};background-repeat:no-repeat;background-position:{position}");
+
+        var image = g.DrawImageCalls.Single();
+        Assert.AreEqual(x, image.DestRect.X, 0.5);
+        Assert.AreEqual(y, image.DestRect.Y, 0.5);
+    }
+
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [DataRow("50% 50%", 30, 35)]

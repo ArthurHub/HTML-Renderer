@@ -614,11 +614,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
         }
 
-        /// <summary>
-        /// Applies right to left direction to words
-        /// </summary>
-        /// <param name="blockBox"></param>
-        /// <param name="lineBox"></param>
+        // CSS Writing Modes 4 §2.4. Mirrors the word order instead of running the Unicode bidi algorithm,
+        // so every word counts as right-to-left.
         private static void ApplyRightToLeft(CssBox blockBox, CssLineBox lineBox)
         {
             if (blockBox.Direction == CssConstants.Rtl)
@@ -637,10 +634,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
         }
 
-        /// <summary>
-        /// Applies RTL direction to all the words on the line.
-        /// </summary>
-        /// <param name="line">the line to apply RTL to</param>
         private static void ApplyRightToLeftOnLine(CssLineBox line)
         {
             if (line.Words.Count > 0)
@@ -657,11 +650,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
         }
 
-        /// <summary>
-        /// Applies RTL direction to specific box words on the line.
-        /// </summary>
-        /// <param name="lineBox"></param>
-        /// <param name="box"></param>
         private static void ApplyRightToLeftOnSingleBox(CssLineBox lineBox, CssBox box)
         {
             int leftWordIdx = -1;

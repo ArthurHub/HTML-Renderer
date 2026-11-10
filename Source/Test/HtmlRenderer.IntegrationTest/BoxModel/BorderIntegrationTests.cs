@@ -105,6 +105,7 @@ public sealed class BorderIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "box.html#bidi-box-model")]
+    [Spec("css-writing-modes-4", "#bidi-fragment-boxes")]
     public void SplitRtlInline_PutsTheRightBorderOnTheFirstLine()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(

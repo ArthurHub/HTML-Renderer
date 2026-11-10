@@ -15,6 +15,7 @@ public sealed class LineBaselineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#leading")]
+    [Spec("css-writing-modes-4", "#baseline-alignment")]
     public void SmallerText_SitsOnTheBaselineOfTheLargerText()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -28,6 +29,7 @@ public sealed class LineBaselineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#leading")]
+    [Spec("css-writing-modes-4", "#text-baselines")]
     public void SmallerText_SitsOnTheBaselineOfTheBlocksOwnFont()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
