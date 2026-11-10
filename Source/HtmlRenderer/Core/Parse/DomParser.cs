@@ -317,6 +317,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             AssignCssBlocks(box, uaRules, true, afterInlineImportantSnapshot, afterInlineImportantCustomSnapshot, pendingVarProperties);
 
             // 9. Resolve var() references now that every custom property's final cascaded value is known
+            ResolveCustomProperties(box);
             ResolveDeferredVarProperties(box, pendingVarProperties);
 
             // cascade text decoration only to boxes that actually have text so it will be handled correctly.
@@ -549,6 +550,31 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
             public bool Success;
             public string Value;
+        }
+
+        /// <summary>
+        /// Replaces the box's custom properties with their computed values, so children inherit them
+        /// with var() already substituted against this box (css-variables-1 §2). Cyclic or otherwise
+        /// invalid ones become the guaranteed-invalid value, i.e. absent.
+        /// </summary>
+        private static void ResolveCustomProperties(CssBox box)
+        {
+            if (box.CustomProperties == null || !box.CustomProperties.Values.Any(v => v.IndexOf("var(", StringComparison.OrdinalIgnoreCase) >= 0))
+                return;
+
+            var resolvedCache = new Dictionary<string, string>();
+            var resolving = new HashSet<string>();
+            var cyclic = new HashSet<string>();
+            var computed = new Dictionary<string, string>();
+
+            foreach (var name in box.CustomProperties.Keys)
+            {
+                string value;
+                if (TryResolveCustomProperty(box, name, resolvedCache, resolving, cyclic, out value))
+                    computed[name] = value;
+            }
+
+            box.CustomProperties = computed;
         }
 
         /// <summary>
