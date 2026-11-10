@@ -21,6 +21,7 @@ public sealed class CssUi3Tests
     [Ignore("Gap, see Spec/css-ui-3.yml")]
     [TestMethod]
     [Spec("css-ui-3", "#outline-style")]
+    [Spec("css-ui-4", "#outline-style")]
     public void OutlineStyleAuto_IsAccepted()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-style: auto");
@@ -31,6 +32,7 @@ public sealed class CssUi3Tests
     [Ignore("Gap, see Spec/css-ui-3.yml")]
     [TestMethod]
     [Spec("css-ui-3", "#outline-color")]
+    [Spec("css-ui-4", "#outline-color")]
     public void OutlineColorInvert_IsRejectedWithoutColorInversion()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-color: invert");
@@ -42,6 +44,7 @@ public sealed class CssUi3Tests
     [DataRow("cursor: pointer")]
     [DataRow("cursor: url(hand.cur) 2 3, pointer")]
     [Spec("css-ui-3", "#cursor")]
+    [Spec("css-ui-4", "#cursor")]
     public void Cursor_IsAccepted(string declaration)
     {
         var property = CssConstructionFunctions.ParseDeclaration(declaration);
@@ -52,6 +55,7 @@ public sealed class CssUi3Tests
     [Ignore("Gap, see Spec/css-ui-3.yml")]
     [TestMethod]
     [Spec("css-ui-3", "#cursor")]
+    [Spec("css-ui-4", "#cursor")]
     public void Cursor_SetsThePointerOverTheElement()
     {
         var (_, container) = LayoutHarness.Layout(LayoutHarness.Wrap("<div style='cursor:pointer;height:100px'></div>"));

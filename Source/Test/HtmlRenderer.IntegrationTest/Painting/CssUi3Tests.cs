@@ -35,6 +35,7 @@ public sealed class CssUi3Tests
 
     [TestMethod]
     [Spec("css-ui-3", "#outline-width")]
+    [Spec("css-ui-4", "#outline-width")]
     public void OutlineWidth_TakesTheBorderWidthKeywords()
     {
         var g = Paint("<div id='b' style='width:100px;height:50px;outline:thick solid rgb(51,51,51)'>x</div>");
@@ -46,6 +47,7 @@ public sealed class CssUi3Tests
     [Ignore("Gap, see Spec/css-ui-3.yml")]
     [TestMethod]
     [Spec("css-ui-3", "#outline-width")]
+    [Spec("css-ui-4", "#outline-width")]
     public void OutlineWidth_InitialValueIsMedium()
     {
         var g = Paint("<div id='b' style='width:100px;height:50px;outline-style:solid;outline-color:rgb(51,51,51)'>x</div>");
@@ -57,6 +59,7 @@ public sealed class CssUi3Tests
     [Ignore("Gap, see Spec/css-ui-3.yml")]
     [TestMethod]
     [Spec("css-ui-3", "#outline-props")]
+    [Spec("css-ui-4", "#outline")]
     public void Outline_FollowsTheBorderRadius()
     {
         var g = Paint("<div id='b' style='width:100px;height:50px;border-radius:10px;outline:5px solid rgb(51,51,51)'>x</div>");

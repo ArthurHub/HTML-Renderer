@@ -24,6 +24,7 @@ public sealed class OutlinePropertyTests
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
     [Spec("css-ui-3", "#outline-style")]
+    [Spec("css-ui-4", "#outline-style")]
     public void CssOutlineStyleSolidLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-style   :  solid");
@@ -53,6 +54,7 @@ public sealed class OutlinePropertyTests
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
     [Spec("css-ui-3", "#outline-style")]
+    [Spec("css-ui-4", "#outline-style")]
     public void CssOutlineStyleHiddenIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-style : hidden");
@@ -105,6 +107,7 @@ public sealed class OutlinePropertyTests
 
     [TestMethod]
     [Spec("css-ui-3", "#outline-color")]
+    [Spec("css-ui-4", "#outline-color")]
     public void CssOutlineColorRedLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-color :  red ");
@@ -132,6 +135,7 @@ public sealed class OutlinePropertyTests
 
     [TestMethod]
     [Spec("css-ui-3", "#outline-width")]
+    [Spec("css-ui-4", "#outline-width")]
     public void CssOutlineWidthThinImportantLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline-width :  thin !important");
@@ -230,6 +234,7 @@ public sealed class OutlinePropertyTests
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
     [Spec("css-ui-3", "#outline")]
+    [Spec("css-ui-4", "#outline")]
     public void CssOutlineAllSolidLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("outline :  1px solid #000");

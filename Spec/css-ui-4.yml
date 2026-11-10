@@ -5,121 +5,123 @@ snapshot: https://www.w3.org/TR/2026/WD-css-ui-4-20260120/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#purpose':
-    title: 1.1 Purpose
-    status: unknown
+    status: n/a
   '#interaction':
     title: 2 Module Interactions
-    status: unknown
-  '#values':
-    title: 2.1 Value Definitions
-    status: unknown
+    status: n/a
   '#outline-props':
     title: 3 Outline properties
-    status: unknown
+    status: partial
   '#outline':
     title: '3.1 Outlines Shorthand: the outline property'
-    status: unknown
+    status: partial
+    gaps:
+      - "'auto' isn't accepted"
+      - The outline is painted right after the box's border, descendants can cover it, see CSS 2.1 18.4
+      - An inline broken across lines gets a separate ring per line box, see CSS 2.1 18.4
+      - The outline doesn't follow the 'border-radius' curve
   '#outline-width':
     title: '3.2 Outline Thickness: the outline-width property'
-    status: unknown
+    status: partial
+    gaps:
+      - The initial width is 2px instead of 'medium'
   '#outline-style':
     title: '3.3 Outline Patterns: the outline-style property'
-    status: unknown
+    status: partial
+    gaps:
+      - Only solid outlines are painted, see CSS 2.1 18.4
+      - "'hidden' is accepted, see CSS 2.1 18.4"
+      - "'auto' isn't accepted"
   '#outline-color':
     title: '3.4 Outline Colors: the outline-color property'
-    status: unknown
+    status: partial
+    gaps:
+      - "'auto' isn't accepted, the initial value still paints as currentcolor"
+      - "'invert' is accepted and painted as currentcolor"
   '#outline-offset':
     title: '3.5 Offsetting the Outline: the outline-offset property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'outline-offset' isn't parsed"
   '#resizing':
     title: 4 Resizing
-    status: unknown
-  '#resize':
-    title: '4.1 Resizing Boxes: the resize property'
-    status: unknown
+    status: n/a
   '#pointing-keyboard':
     title: 5 Pointing Devices and Keyboards
-    status: unknown
+    status: parsed-only
   '#pointer-interaction':
     title: 5.1 Pointer interaction
-    status: unknown
+    status: parsed-only
   '#cursor':
     title: '5.1.1 Styling the Cursor: the cursor property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'cursor' is ignored, the controls show a hand over links, an I-beam over text and the arrow elsewhere"
   '#predefined-cursors':
     title: 5.1.1.1 Predefined Cursors
-    status: unknown
+    status: parsed-only
   '#canvas_cursor':
     title: 5.1.1.2 Cursor of the canvas
-    status: unknown
+    status: parsed-only
   '#the-insertion-caret':
     title: 5.2 Insertion caret
-    status: unknown
-  '#caret-color':
-    title: '5.2.1 Coloring the Insertion Caret: the caret-color property'
-    status: unknown
-  '#caret-animation':
-    title: '5.2.2 Animation of the insertion caret: caret-animation'
-    status: unknown
-  '#caret-shape':
-    title: '5.2.3 Shape of the insertion caret: caret-shape'
-    status: unknown
-  '#caret':
-    title: '5.2.4 Insertion caret shorthand: caret'
-    status: unknown
+    status: n/a
   '#keyboard':
     title: 5.3 Keyboard control
-    status: unknown
-  '#nav-dir':
-    title: '5.3.1 Directional Focus Navigation: the nav-up, nav-right, nav-down, nav-left properties'
-    status: unknown
-  '#example-positioned-buttons':
-    title: '5.3.1.1 Example: positioned buttons'
-    status: unknown
-  '#example-moving-focus-to-inside-a-frame':
-    title: '5.3.1.2 Example: moving focus to inside a frame'
-    status: unknown
-  '#input-method-editor':
-    title: '5.3.2 Obsolete: the ime-mode property'
-    status: unknown
+    status: n/a
   '#user-interaction':
     title: 6 User Interaction
-    status: unknown
+    status: unsupported
   '#content-selection':
     title: 6.1 Controlling content selection
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'user-select' and '-webkit-user-select' aren't parsed, the text selection of the controls covers every element"
+      - The user-agent stylesheet doesn't set 'user-select' on button, meter, progress and select
   '#pointer-events-control':
     title: '6.2 Exclusion from Hit-testing: the pointer-events property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'pointer-events' isn't parsed, links stay clickable"
   '#inertness':
     title: '6.3 Preventing All Interaction: the interactivity property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'interactivity' isn't parsed, inert content stays clickable and selectable"
   '#interest':
     title: '6.4 User Interest Delay: the interest-delay-* properties'
-    status: unknown
+    status: n/a
   '#styling-widgets':
     title: 7 Styling Widgets
-    status: unknown
+    status: unsupported
   '#widget-accent':
     title: '7.1 Widget Accent Colors: the accent-color property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'accent-color' isn't parsed, widgets aren't drawn, see HTML 15.5.1"
   '#appearance-switching':
     title: '7.2 Switching appearance: the appearance property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'appearance' and '-webkit-appearance' aren't parsed, widgets have no native appearance, see HTML 15.5.1"
   '#appearance-disabling-properties':
     title: 7.2.1 Properties Disabling Native Appearance
-    status: unknown
+    status: unsupported
+    gaps:
+      - Widgets have no native appearance to devolve, see HTML 15.5.1
   '#appearance-decorative':
     title: 7.2.2 Effects of appearance on Decorative Aspects of Elements
-    status: unknown
+    status: unsupported
+    gaps:
+      - Widgets have no native appearance, see HTML 15.5.1
   '#appearance-semantics':
     title: 7.2.3 Effects of appearance on Semantic Aspects of Elements
-    status: unknown
+    status: n/a
   '#control-specific-rules':
     title: 7.3 Control-Specific Rules
-    status: unknown
+    status: unsupported
   '#input-rules':
     title: 7.3.1 Single-Line Text Input Controls
-    status: unknown
+    status: unsupported
+    gaps:
+      - A text input is an empty inline-block without its value, see HTML 15.5.6

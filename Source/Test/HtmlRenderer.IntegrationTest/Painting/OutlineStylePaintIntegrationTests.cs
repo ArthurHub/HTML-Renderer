@@ -11,6 +11,7 @@ public sealed class OutlineStylePaintIntegrationTests
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
     [Spec("css-ui-3", "#outline")]
+    [Spec("css-ui-4", "#outline")]
     public void SolidOutline_PaintsAFourSidedRingAroundTheBorderBox()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -31,6 +32,7 @@ public sealed class OutlineStylePaintIntegrationTests
     [Ignore("Gap, see Spec/css-ui-3.yml")]
     [TestMethod]
     [Spec("css-ui-3", "#outline-style")]
+    [Spec("css-ui-4", "#outline-style")]
     public void OutlineAuto_PaintsTheSameAsSolid()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -47,6 +49,7 @@ public sealed class OutlineStylePaintIntegrationTests
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
     [Spec("css-ui-3", "#outline-color")]
+    [Spec("css-ui-4", "#outline-color")]
     public void OutlineColorUnset_FallsBackToCurrentColor()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -82,6 +85,7 @@ public sealed class OutlineStylePaintIntegrationTests
     [DataRow("hidden")]
     [Spec("css21", "ui.html#dynamic-outlines")]
     [Spec("css-ui-3", "#outline-style")]
+    [Spec("css-ui-4", "#outline-style")]
     public void OutlineStyleNoneOrHidden_PaintsNothing(string style)
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -96,6 +100,7 @@ public sealed class OutlineStylePaintIntegrationTests
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
     [Spec("css-ui-3", "#outline-width")]
+    [Spec("css-ui-4", "#outline-width")]
     public void ZeroWidthOutline_PaintsNothing()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -110,6 +115,7 @@ public sealed class OutlineStylePaintIntegrationTests
     [Ignore("Gap, see Spec/css-ui-3.yml")]
     [TestMethod]
     [Spec("css-ui-3", "#outline-offset")]
+    [Spec("css-ui-4", "#outline-offset")]
     public void OutlineOffset_PushesTheRingFurtherFromTheBorderBox()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -169,6 +175,7 @@ public sealed class OutlineStylePaintIntegrationTests
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
     [Spec("css-ui-3", "#outline-props")]
+    [Spec("css-ui-4", "#outline-props")]
     public void Outline_DoesNotTakeUpSpace()
     {
         var (root, _) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -193,6 +200,7 @@ public sealed class OutlineStylePaintIntegrationTests
     [DataRow("outset")]
     [Spec("css21", "ui.html#dynamic-outlines")]
     [Spec("css-ui-3", "#outline-style")]
+    [Spec("css-ui-4", "#outline-style")]
     public void OutlineStyle_AcceptsEveryBorderStyle(string style)
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -209,6 +217,7 @@ public sealed class OutlineStylePaintIntegrationTests
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
     [Spec("css-ui-3", "#outline-props")]
+    [Spec("css-ui-4", "#outline")]
     public void Outline_IsPaintedOnTopOfTheContent()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -228,6 +237,7 @@ public sealed class OutlineStylePaintIntegrationTests
     [TestMethod]
     [Spec("css21", "ui.html#dynamic-outlines")]
     [Spec("css-ui-3", "#outline-props")]
+    [Spec("css-ui-4", "#outline")]
     public void InlineBrokenAcrossLines_GetsOneOutlineEnclosingAllItsBoxes()
     {
         var (_, container) = PaintHarness.Layout(PaintHarness.Wrap(

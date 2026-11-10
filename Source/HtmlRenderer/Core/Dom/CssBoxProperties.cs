@@ -768,8 +768,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         }
 
         /// <summary>
-        /// The resolved paint color for <c>outline-color</c>. Without support for <c>invert</c> the initial
-        /// value is the element's <c>color</c>, CSS 2.1 §18.4.
+        /// The resolved paint color for <c>outline-color</c>, CSS UI 4 §3.4. The initial value and <c>invert</c>
+        /// paint as <c>currentcolor</c>.
         /// </summary>
         public RColor ActualOutlineColor
         {
