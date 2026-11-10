@@ -53,6 +53,7 @@ public sealed class GeneratedContentTests
     [DataRow("none")]
     [DataRow("normal")]
     [Spec("css-pseudo-4", "#generated-content")]
+    [Spec("css-content-3", "#content-property")]
     public void PseudoElementWithoutContent_IsNotGenerated(string content)
     {
         var plain = Box("<div id=x>Text</div>");
@@ -63,6 +64,7 @@ public sealed class GeneratedContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-content-3", "#strings")]
     public void Content_ConcatenatesStringsAndAttributes()
     {
         var before = Before("<p id=x data-n='7'>a</p><style>#x::before { content: 'No. ' attr(data-n) attr(data-missing) '!' }</style>");
@@ -115,6 +117,7 @@ public sealed class GeneratedContentTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-content-3", "#content-uri")]
     public void Uri_InsertsTheImage()
     {
         var before = Before("<p id=x>a</p><style>#x::before { content: url(data:image/png;base64,iVBORw0KGgo=) }</style>");
@@ -125,6 +128,7 @@ public sealed class GeneratedContentTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "generate.html#quotes-specify")]
+    [Spec("css-content-3", "#quotes-property")]
     public void Quotes_SuppliesTheQuoteMarks()
     {
         Assert.AreEqual("<a>", Before("<p id=x style=\"quotes:'<' '>'\">a</p><style>#x::before { content: open-quote 'a' close-quote }</style>").Text);
@@ -133,6 +137,7 @@ public sealed class GeneratedContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#quotes-insert")]
+    [Spec("css-content-3", "#quote-values")]
     public void OpenAndCloseQuote_InsertQuoteMarks()
     {
         var html = "<p><q id=x>a</q></p><style>q::before { content: open-quote } q::after { content: close-quote }</style>";
@@ -145,6 +150,7 @@ public sealed class GeneratedContentTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "generate.html#quotes-insert")]
+    [Spec("css-content-3", "#quote-values")]
     public void NestedQuote_UsesTheNextPair()
     {
         var html = "<p style=\"quotes:'1' '1' '2' '2'\"><q>a <q id=x>b</q></q></p>"
@@ -156,6 +162,7 @@ public sealed class GeneratedContentTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "generate.html#quotes-insert")]
+    [Spec("css-content-3", "#quote-values")]
     public void CloseQuoteAtDepthZero_InsertsNothing()
     {
         Assert.AreEqual("a", Before("<p id=x>a</p><style>#x::before { content: close-quote 'a' }</style>").Text);

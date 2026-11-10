@@ -4,8 +4,7 @@ using System.Linq;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Converter for the content() function used in string-set property.
-    /// Supports: content(text), content(before), content(after), content(first-letter)
+    /// <c>content()</c> (CSS Generated Content 3 §2.7.3), without the <c>marker</c> argument.
     /// </summary>
     internal sealed class ContentFunctionConverter : IValueConverter
     {
@@ -18,7 +17,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             if (!(first is FunctionToken funcToken) || !funcToken.Data.Equals(FunctionNames.Content, System.StringComparison.OrdinalIgnoreCase))
                 return null;
 
-            // Default mode is "text" if no argument provided
             var mode = "text";
 
             if (funcToken.ArgumentTokens.Any())

@@ -1,9 +1,7 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Represents the CSS string-set property from CSS Generated Content for Paged Media Module.
-    /// Syntax: string-set: [ &lt;custom-ident&gt; &lt;content-list&gt; ]# | none
-    /// where &lt;content-list&gt; = [ &lt;string&gt; | &lt;counter()&gt; | &lt;counters()&gt; | &lt;content()&gt; | &lt;attr()&gt; ]+
+    /// <c>string-set</c> (CSS Generated Content 3 §2.7.1).
     /// </summary>
     internal sealed class StringSetProperty : Property
     {

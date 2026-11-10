@@ -4,8 +4,7 @@ using System.Linq;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Converter for the string() function used in content and string-set properties.
-    /// Supports: string(name), string(name, first), string(name, last), string(name, start), string(name, first-except)
+    /// <c>string()</c> (CSS Generated Content 3 §2.7.2).
     /// </summary>
     internal sealed class StringFunctionConverter : IValueConverter
     {
@@ -18,7 +17,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             if (!(first is FunctionToken funcToken) || !funcToken.Data.Equals("string", System.StringComparison.OrdinalIgnoreCase))
                 return null;
 
-            // First argument must be the string name (identifier)
             var argToken = funcToken.ArgumentTokens.FirstOrDefault();
 
             if (!(argToken is KeywordToken nameToken))
@@ -26,10 +24,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             var name = nameToken.Data;
 
-            // Default keyword is "first" if not specified
             var keyword = "first";
 
-            // Check for optional second argument (keyword)
             var args = funcToken.ArgumentTokens
  .Where(t => t.Type != TokenType.Comma && t.Type != TokenType.Whitespace)
 .ToArray();

@@ -5,21 +5,13 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/ValueConverters/StringFunctionConverterTests.cs.
-/// Tests for the value converter that parses the string() CSS function, which retrieves named strings
-/// set by the string-set property: string(&lt;custom-ident&gt; [, [ first | start | last | first-except ] ]?).
-/// The CSS engine port's <c>StringFunctionConverter</c> is wired into both <c>ContentProperty</c> and
-/// <c>StringSetValueConverter</c>, matching PeachPDF's chain exactly. The token-level tests use
-/// <see cref="CssValueParser.GetCssTokens"/>, this fork's internal equivalent of PeachPDF's
-/// CssValueParser.GetCssTokens, accessible here via the InternalsVisibleTo("HtmlRenderer.Test") grant on
-/// HtmlRenderer.csproj. Unlike PeachPDF's raw tokenizer, this fork's GetCssTokens already filters out
-/// whitespace tokens - the ".Where(t => t.Type != TokenType.Whitespace)" filters below are therefore
-/// no-ops here, kept only to mirror the source 1:1.
+/// Parsing of string(). GetCssTokens already drops whitespace tokens, the whitespace filters below change nothing.
 /// </summary>
 [TestClass]
 public sealed class StringFunctionConverterTests
 {
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void StringFunction_WithNameOnly_ParsesCorrectly()
     {
         const string input = "string(chapter)";
@@ -40,6 +32,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void StringFunction_WithFirstKeyword_ParsesCorrectly()
     {
         const string input = "string(chapter, first)";
@@ -62,6 +55,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void StringFunction_WithLastKeyword_ParsesCorrectly()
     {
         const string input = "string(chapter, last)";
@@ -78,6 +72,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void StringFunction_WithStartKeyword_ParsesCorrectly()
     {
         const string input = "string(chapter, start)";
@@ -94,6 +89,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void StringFunction_WithFirstExceptKeyword_ParsesCorrectly()
     {
         const string input = "string(chapter, first-except)";
@@ -110,6 +106,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void StringFunction_WithHyphenatedName_ParsesCorrectly()
     {
         const string input = "string(my-chapter-title)";
@@ -125,6 +122,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void StringFunction_WithUnderscoreName_ParsesCorrectly()
     {
         const string input = "string(chapter_title)";
@@ -140,6 +138,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void StringFunction_InContentProperty_ParsesCorrectly()
     {
         const string input = "content: string(chapter)";
@@ -152,6 +151,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void StringFunction_CombinedWithStringLiteral_ParsesCorrectly()
     {
         const string input = "content: \"Chapter: \" string(chapter)";
@@ -164,6 +164,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void StringFunction_CombinedWithCounter_ParsesCorrectly()
     {
         const string input = "content: string(chapter) \" - Page \" counter(page)";
@@ -176,6 +177,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void StringFunction_MultipleInContent_ParsesCorrectly()
     {
         const string input = "content: string(chapter) \" / \" string(section)";
@@ -188,6 +190,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void StringFunction_WithWhitespaceAroundComma_ParsesCorrectly()
     {
         const string input = "string(chapter , last)";
@@ -204,6 +207,7 @@ public sealed class StringFunctionConverterTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void StringFunction_CaseInsensitiveKeyword_ParsesCorrectly()
     {
         const string input = "string(chapter, LAST)";

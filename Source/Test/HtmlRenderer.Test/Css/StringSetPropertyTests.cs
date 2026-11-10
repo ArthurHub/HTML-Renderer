@@ -4,16 +4,13 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/StringSetPropertyTests.cs.
-/// <see cref="StringSetProperty"/> and its <c>StringSetValueConverter</c> fully implement "none", a
-/// single name+content-list pair, comma-separated multiple pairs, and reject non-ident names/a missing
-/// content-list, matching PeachPDF's grammar exactly. Its <c>content()</c> sub-converter collapses
-/// "content(text)" to "content()" the same way PeachPDF's does.
+/// Parsing of string-set. content(text) serializes as content().
 /// </summary>
 [TestClass]
 public sealed class StringSetPropertyTests
 {
     [TestMethod]
+    [Spec("css-content-3", "#string-set")]
     public void StringSetNoneLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: none");
@@ -27,6 +24,7 @@ public sealed class StringSetPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-set")]
     public void StringSetSimpleTextLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: chapter content(text)");
@@ -40,6 +38,7 @@ public sealed class StringSetPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-set")]
     public void StringSetWithStringLiteral()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: header \"Page \" counter(page)");
@@ -53,6 +52,7 @@ public sealed class StringSetPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-set")]
     public void StringSetWithAttrFunction()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: title attr(title)");
@@ -66,6 +66,7 @@ public sealed class StringSetPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-set")]
     public void StringSetContentBefore()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: heading content(before) \":\" content(text)");
@@ -79,6 +80,7 @@ public sealed class StringSetPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-set")]
     public void StringSetContentAfter()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: heading content(after)");
@@ -92,6 +94,7 @@ public sealed class StringSetPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-set")]
     public void StringSetContentFirstLetter()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: initial content(first-letter)");
@@ -105,6 +108,7 @@ public sealed class StringSetPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-set")]
     public void StringSetMultiplePairs()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: header content(text), footer counter(page)");
@@ -118,6 +122,7 @@ public sealed class StringSetPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-set")]
     public void StringSetInvalidNoContentListIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: header");
@@ -130,6 +135,7 @@ public sealed class StringSetPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-set")]
     public void StringSetInvalidNumberIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("string-set: 123 content(text)");

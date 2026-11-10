@@ -21,7 +21,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 {
     /// <summary>
     /// Turns the <c>content</c> value of a <c>::before</c>/<c>::after</c> box into its <see cref="CssBox.Text"/>
-    /// (CSS 2.1 §12.2). Components it doesn't know are skipped.
+    /// (CSS 2.1 §12.2, CSS Generated Content 3 §2). Components it doesn't know are skipped.
     /// </summary>
     internal static class CssContentEngine
     {
@@ -76,7 +76,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                             : CssConstants.Decimal;
 
                         // The pseudo-element has its own counter snapshot, a counter not in scope reads as 0
-                        // (CSS 2.1 §12.4.1)
+                        // (CSS Lists 3 §4.7)
                         int counterValue;
                         if (!box.Counters.TryGetValue(counterNameToken.Data, out counterValue))
                         {
@@ -95,7 +95,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     {
                         sb.Append('”');
                     }
-                    // The quote depth isn't tracked, no-open-quote and no-close-quote do nothing
                 }
             }
 

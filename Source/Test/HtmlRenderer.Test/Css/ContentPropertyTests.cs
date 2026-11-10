@@ -3,8 +3,7 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/ContentProperty.cs. Pure CSSOM parse tests exercising the
-/// "content" property's GCPM function support (content(), string(), counter(), attr()) - no layout involved.
+/// Parsing of content values, no layout.
 /// </summary>
 [TestClass]
 public sealed class ContentPropertyTests
@@ -17,6 +16,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-syntax-3", "#consume-string-token")]
     public void CssContentParseStringWithDoubleQuoteEscape()
     {
         var source = "a{content:\"\\\"\"}";
@@ -25,6 +25,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-syntax-3", "#consume-string-token")]
     public void CssContentParseStringWithSingleQuoteEscape()
     {
         var source = "a{content:'\\''}";
@@ -33,6 +34,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-syntax-3", "#consume-string-token")]
     public void CssContentParseStringWithDoubleQuoteMultipleEscapes()
     {
         var source = "a{content:\"abc\\\"\\\"d\\\"ef\"}";
@@ -41,6 +43,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-syntax-3", "#consume-string-token")]
     public void CssContentParseStringWithSingleQuoteMultipleEscapes()
     {
         var source = "a{content:'abc\\'\\'d\\'ef'}";
@@ -49,6 +52,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#content-function")]
     public void CssContentParseContentFunctionText()
     {
         var source = "a::before{content:content(text)}";
@@ -57,6 +61,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#content-function")]
     public void CssContentParseContentFunctionBefore()
     {
         var source = "a::before{content:content(before)}";
@@ -65,6 +70,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#content-function")]
     public void CssContentParseContentFunctionAfter()
     {
         var source = "a::before{content:content(after)}";
@@ -73,6 +79,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#content-function")]
     public void CssContentParseContentFunctionFirstLetter()
     {
         var source = "a::before{content:content(first-letter)}";
@@ -81,6 +88,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#content-function")]
     public void CssContentParseContentFunctionWithString()
     {
         var source = "a::before{content:\"Chapter \" content(text)}";
@@ -89,6 +97,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#content-function")]
     public void CssContentParseContentFunctionWithCounter()
     {
         var source = "a::before{content:content(before) \" - \" counter(page)}";
@@ -97,6 +106,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void CssContentParseStringFunction()
     {
         var source = "a::before{content:string(chapter)}";
@@ -105,6 +115,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void CssContentParseStringFunctionWithFirstKeyword()
     {
         var source = "a::before{content:string(chapter, first)}";
@@ -113,6 +124,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void CssContentParseStringFunctionWithLastKeyword()
     {
         var source = "a::before{content:string(chapter, last)}";
@@ -121,6 +133,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void CssContentParseStringFunctionWithStartKeyword()
     {
         var source = "a::before{content:string(chapter, start)}";
@@ -129,6 +142,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void CssContentParseStringFunctionWithFirstExceptKeyword()
     {
         var source = "a::before{content:string(chapter, first-except)}";
@@ -137,6 +151,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void CssContentParseStringFunctionWithStringLiteral()
     {
         var source = "a::before{content:\"Chapter: \" string(chapter)}";
@@ -145,6 +160,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void CssContentParseStringFunctionWithCounter()
     {
         var source = "a::before{content:string(chapter) \" - Page \" counter(page)}";
@@ -153,6 +169,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void CssContentParseMultipleStringFunctions()
     {
         var source = "a::before{content:string(chapter) \" / \" string(section)}";
@@ -161,6 +178,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void CssContentParseStringFunctionWithContentFunction()
     {
         var source = "a::before{content:string(chapter) \": \" content(text)}";
@@ -169,6 +187,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void CssContentParseStringFunctionWithAttr()
     {
         var source = "a::before{content:string(chapter) \" - \" attr(title)}";
@@ -177,6 +196,7 @@ public sealed class ContentPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-content-3", "#string-function")]
     public void CssContentParseComplexCombination()
     {
         var source = "a::before{content:\"Part \" string(part, first) \" - Chapter \" string(chapter) \" (Page \" counter(page) \")\"}";

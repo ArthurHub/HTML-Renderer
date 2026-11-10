@@ -10,6 +10,7 @@ public sealed class CssContentEngineIntegrationTests
 {
     [TestMethod]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-content-3", "#strings")]
     public void ApplyContent_WithStringLiteral_SetsText()
     {
         var before = ResolveBeforeContent("\"Hello World\"");
@@ -18,6 +19,7 @@ public sealed class CssContentEngineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-content-3", "#strings")]
     public void ApplyContent_WithMultipleStringLiterals_Concatenates()
     {
         var before = ResolveBeforeContent("\"Hello\" \" \" \"World\"");
@@ -26,6 +28,7 @@ public sealed class CssContentEngineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-content-3", "#content-property")]
     public void ApplyContent_WithNone_DoesNotCreateContent()
     {
         var html = LayoutHarness.Wrap("<p id='p'>text</p><style>#p::before { content: none; }</style>");
@@ -37,6 +40,7 @@ public sealed class CssContentEngineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-content-3", "#strings")]
     public void ApplyContent_WithAttrFunction_RetrievesAttribute()
     {
         var html = LayoutHarness.Wrap(
@@ -50,6 +54,7 @@ public sealed class CssContentEngineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "generate.html#quotes-insert")]
+    [Spec("css-content-3", "#quote-values")]
     public void ApplyContent_WithOpenAndCloseQuote_UsesCurlyQuotes()
     {
         var before = ResolveBeforeContent("open-quote \"quoted\" close-quote");
@@ -110,6 +115,7 @@ public sealed class CssContentEngineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-content-3", "#content-values")]
     public void ApplyContent_WithCounterAndStyleAndLiteral_Concatenates()
     {
         var html = LayoutHarness.Wrap(

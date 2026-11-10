@@ -98,6 +98,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-content-3", "#content-property")]
     public void CssContentNormalLegal()
     {
         var snippet = "content : normal ";
@@ -114,6 +115,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-content-3", "#content-property")]
     public void CssContentNoneLegalUppercaseN()
     {
         var snippet = "content : noNe ";
@@ -130,6 +132,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-content-3", "#content-values")]
     public void CssContentStringLegal()
     {
         var snippet = "content : 'hi' ";
@@ -146,6 +149,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-content-3", "#content-values")]
     public void CssContentNoOpenQuoteNoCloseQuoteLegal()
     {
         var snippet = "content : no-open-quote no-close-quote ";
@@ -162,6 +166,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-content-3", "#content-values")]
     public void CssContentUrlLegal()
     {
         var snippet = "content : url(test.html) ";
@@ -178,6 +183,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#content")]
+    [Spec("css-content-3", "#content-values")]
     public void CssContentStringsLegal()
     {
         var snippet = "content : 'how' 'are' 'you' ";
@@ -194,6 +200,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#quotes-specify")]
+    [Spec("css-content-3", "#quotes-property")]
     public void CssQuoteStringIllegal()
     {
         var snippet = "quotes : '\"' ";
@@ -208,6 +215,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#quotes-specify")]
+    [Spec("css-content-3", "#quotes-property")]
     public void CssQuoteStringsLegal()
     {
         var snippet = "quotes : '\"' '\"' ";
@@ -224,6 +232,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#quotes-specify")]
+    [Spec("css-content-3", "#quotes-property")]
     public void CssQuoteStringsIllegal()
     {
         var snippet = "quotes : \"'\"";
@@ -238,6 +247,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#quotes-specify")]
+    [Spec("css-content-3", "#quotes-property")]
     public void CssQuoteStringsMultipleLegal()
     {
         // The fourth quote mark is a literal U+FFFD on purpose
@@ -255,6 +265,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#quotes-specify")]
+    [Spec("css-content-3", "#quotes-property")]
     public void CssQuoteStringsMultipleIllegal()
     {
         var snippet = "quotes : '\"' '\"' '`' ";
@@ -269,6 +280,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#quotes-specify")]
+    [Spec("css-content-3", "#quotes-property")]
     public void CssQuoteNoneLegal()
     {
         var snippet = "quotes : none";
@@ -285,6 +297,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#quotes-specify")]
+    [Spec("css-content-3", "#quotes-property")]
     public void CssQuoteNoneStringIllegal()
     {
         var snippet = "quotes : 'none'";
@@ -299,6 +312,7 @@ public sealed class PropertyContentTests
 
     [TestMethod]
     [Spec("css21", "generate.html#quotes-specify")]
+    [Spec("css-content-3", "#quotes-property")]
     public void CssQuoteNormalIllegal()
     {
         var snippet = "quotes : normal ";

@@ -4,9 +4,8 @@ using System.Linq;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Converter for the string-set property.
-    /// Syntax: string-set: [ &lt;custom-ident&gt; &lt;content-list&gt; ]# | none
-    /// where &lt;content-list&gt; = [ &lt;string&gt; | &lt;counter()&gt; | &lt;counters()&gt; | &lt;content()&gt; | &lt;attr()&gt; ]+
+    /// <c>string-set</c> (CSS Generated Content 3 §2.7.1). Each name takes the GCPM content list
+    /// (counters, <c>content()</c>, <c>attr()</c>, <c>string()</c>), not just the strings of the /TR grammar.
     /// </summary>
     internal sealed class StringSetValueConverter : IValueConverter
     {
@@ -14,7 +13,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public StringSetValueConverter()
         {
-            // Content list can contain: strings, counter(), counters(), content(), attr(), string()
             _contentListItemConverter = Converters.StringConverter
                 .Or(Converters.CounterConverter)
                 .Or(new ContentFunctionConverter())
@@ -26,14 +24,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var first = value.OnlyOrDefault();
 
-            // Check for "none" keyword
             if (first is KeywordToken keyword && keyword.Data.Isi(Keywords.None))
             {
                 return new StringSetValue(null, value);
             }
 
-            // Parse comma-separated list of name/content-list pairs using ToList()
-            var items = value.ToList(); // This splits by commas, returns List<List<Token>>
+            // ValueExtensions.ToList, not LINQ's: one token list per comma-separated pair
+            var items = value.ToList();
             var pairs = new List<StringSetPair>();
 
             foreach (var item in items)
@@ -56,13 +53,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             if (tokens.Count < 2)
                 return null;
 
-            // First token should be an identifier (the name)
             if (!(tokens[0] is KeywordToken nameToken) || nameToken.Type != TokenType.Ident)
                 return null;
 
             var name = nameToken.Data;
 
-            // Remaining tokens form the content-list - split by whitespace
             var contentItems = tokens.Skip(1).ToItems();
             var values = new List<IPropertyValue>();
 

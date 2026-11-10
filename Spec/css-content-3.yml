@@ -5,85 +5,104 @@ snapshot: https://www.w3.org/TR/2025/WD-css-content-3-20251204/
 sections:
   '#content-property':
     title: '1 Inserting and Replacing Content: the content property'
-    status: unknown
+    status: partial
+    gaps:
+      - An <image> on an element doesn't replace the element
+      - "A ::before or ::after with 'content: none' or 'normal' still generates a box, see CSS 2.1 12.1"
   '#accessibility':
     title: 1.1 Accessibility of Generated Content
-    status: unknown
+    status: n/a
   '#alt':
     title: 1.2 Alternative Text for Accessibility
-    status: unknown
+    status: unsupported
+    gaps:
+      - A value with alt text after / is rejected, so the pseudo-element isn't generated at all
   '#content-values':
     title: '2 Generated Content Values: the <content-list> type'
-    status: unknown
+    status: partial
   '#strings':
     title: '2.1 Basic Strings: <string> and <attr()> values'
-    status: unknown
+    status: supported
   '#content-uri':
     title: '2.2 2D Images: <image> values'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - url() and gradients insert nothing, see CSS 2.1 12.2
   '#element-content':
     title: '2.3 Elemental Content: the contents keyword'
-    status: unknown
+    status: unsupported
   '#quotes':
     title: 2.4 Quotation Marks
-    status: unknown
+    status: partial
   '#quotes-property':
     title: '2.4.1 Quotation Mark System: the quotes property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'quotes' is ignored, see CSS 2.1 12.3.1"
+      - auto and match-parent are rejected
   '#quote-values':
     title: '2.4.2 Inserting Quotation Marks: the *-quote keywords'
-    status: unknown
+    status: partial
+    gaps:
+      - The quote depth isn't tracked, see CSS 2.1 12.3.2
   '#leaders':
     title: 2.5 Leaders
-    status: unknown
+    status: unsupported
   '#leader-function':
     title: 2.5.1 The leader() function
-    status: unknown
+    status: unsupported
   '#leader-rules':
     title: 2.5.2 Rendering leaders
-    status: unknown
+    status: unsupported
   '#leader-alignment':
     title: 2.5.3 Procedure for rendering leaders
-    status: unknown
+    status: unsupported
   '#cross-references':
     title: 2.6 Cross References
-    status: unknown
+    status: unsupported
   '#target-counter':
     title: 2.6.1 The target-counter() function
-    status: unknown
+    status: unsupported
   '#target-counters':
     title: 2.6.2 The target-counters() function
-    status: unknown
+    status: unsupported
   '#target-text':
     title: 2.6.3 The target-text() function
-    status: unknown
+    status: unsupported
   '#named-strings':
     title: 2.7 Named Strings
-    status: unknown
+    status: parsed-only
   '#string-set':
     title: '2.7.1 Naming Strings: the string-set property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - string-set never assigns a named string
+      - A CSS-wide keyword is accepted as the name
   '#string-function':
     title: '2.7.2 Inserting Named Strings: the string() function'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - string() inserts nothing
   '#content-function':
     title: 2.7.3 The content() function
-    status: unknown
+    status: parsed-only
+    gaps:
+      - content() inserts nothing
   '#counters':
     title: 2.8 Automatic Counters and Numbering
-    status: unknown
+    status: n/a
   '#bookmark-generation':
     title: 3 Bookmarks
-    status: unknown
+    status: unsupported
   '#bookmark-level':
     title: '3.1 Setting a Bookmark: the bookmark-level property'
-    status: unknown
+    status: unsupported
   '#bookmark-label':
     title: '3.2 Labelling a Bookmark: the bookmark-label property'
-    status: unknown
+    status: unsupported
   '#bookmark-state':
     title: '3.3 Initial Bookmark Toggle State: the bookmark-state property'
-    status: unknown
+    status: unsupported
   '#changes':
     title: 4 Changes
-    status: unknown
+    status: n/a
