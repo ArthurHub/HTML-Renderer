@@ -112,6 +112,7 @@ public sealed class MediaTypeTests
     [Spec("css21", "media.html#media-types")]
     [DataRow("screen")]
     [DataRow("print")]
+    [Spec("mediaqueries-4", "#media-types")]
     public void All_MatchesEveryMediaType(string mediaType)
     {
         Assert.AreEqual(Green, ColorOf("<style>@media all { p { color: green } }</style>", mediaType));
@@ -121,6 +122,7 @@ public sealed class MediaTypeTests
     [Spec("css21", "media.html#media-types")]
     [DataRow("SCREEN")]
     [DataRow("Screen")]
+    [Spec("mediaqueries-4", "#mq-syntax")]
     public void MediaTypeNames_AreCaseInsensitive(string name)
     {
         Assert.AreEqual(Green, ColorOf($"<style>@media {name} {{ p {{ color: green }} }}</style>"));
@@ -137,6 +139,7 @@ public sealed class MediaTypeTests
     [Spec("css21", "media.html#media-types")]
     [DataRow("holographic, screen")]
     [DataRow("screen, holographic")]
+    [Spec("mediaqueries-4", "#error-handling")]
     public void UnknownMediaType_IsTreatedAsNotPresent(string mediaList)
     {
         Assert.AreEqual(Green, ColorOf($"<style>@media {mediaList} {{ p {{ color: green }} }}</style>"));
@@ -145,6 +148,7 @@ public sealed class MediaTypeTests
     [TestMethod]
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "media.html#media-types")]
+    [Spec("mediaqueries-4", "#error-handling")]
     public void MalformedEntryInAMediaList_DoesNotDisableTheOthers()
     {
         Assert.AreEqual(Green, ColorOf("<style>@media screen, 3D { p { color: green } }</style>"));
@@ -152,6 +156,7 @@ public sealed class MediaTypeTests
 
     [TestMethod]
     [Spec("css21", "media.html#media-types")]
+    [Spec("mediaqueries-4", "#error-handling")]
     public void OnlyUnknownMediaTypes_DoNotMatch()
     {
         Assert.AreNotEqual(Green, ColorOf("<style>@media holographic { p { color: green } }</style>"));
@@ -159,6 +164,7 @@ public sealed class MediaTypeTests
 
     [TestMethod]
     [Spec("css21", "media.html#media-types")]
+    [Spec("mediaqueries-4", "#error-handling")]
     public void MalformedMediaType_InvalidatesTheStatement()
     {
         Assert.AreNotEqual(Green, ColorOf("<style>@media @screen { p { color: green } }</style>"));

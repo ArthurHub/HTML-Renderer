@@ -10,6 +10,7 @@ public sealed class PrintMediaTests
 {
     [TestMethod]
     [Spec("html", "rendering.html#print-media")]
+    [Spec("mediaqueries-4", "#media-types")]
     public async Task Pdf_IsRenderedForPrintMedia()
     {
         const string html = "<html><head><style>div { height: 10pt } @media print { div { height: 1000pt } }</style></head>"

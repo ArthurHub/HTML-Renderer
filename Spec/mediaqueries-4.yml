@@ -5,121 +5,131 @@ snapshot: https://www.w3.org/TR/2026/CRD-mediaqueries-4-20260219/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module interactions
-    status: unknown
-  '#values':
-    title: 1.2 Values
-    status: unknown
+    status: n/a
   '#units':
     title: 1.3 Units
-    status: unknown
+    status: supported
   '#media':
     title: 2 Media Queries
-    status: unknown
+    status: partial
   '#mq-list':
     title: 2.1 Combining Media Queries
-    status: unknown
+    status: partial
+    gaps:
+      - An empty media query list is false instead of true
   '#mq-prefix':
     title: 2.2 Media Query Modifiers
-    status: unknown
+    status: supported
   '#mq-not':
     title: '2.2.1 Negating a Media Query: the not keyword'
-    status: unknown
+    status: supported
   '#mq-only':
     title: '2.2.2 Hiding a Media Query From Legacy user agents: the only keyword'
-    status: unknown
+    status: supported
   '#media-types':
     title: 2.3 Media Types
-    status: unknown
+    status: supported
   '#mq-features':
     title: 2.4 Media Features
-    status: unknown
+    status: partial
   '#mq-ranges':
     title: '2.4.1 Media Feature Types: “range” and “discrete”'
-    status: unknown
+    status: supported
   '#mq-boolean-context':
     title: 2.4.2 Evaluating Media Features in a Boolean Context
-    status: unknown
+    status: partial
+    gaps:
+      - Only features with a zero or none value take the boolean form, e.g. (width) and (orientation) are invalid
   '#mq-range-context':
     title: 2.4.3 Evaluating Media Features in a Range Context
-    status: unknown
+    status: partial
+    gaps:
+      - The = operator, value-first ranges like (600px <= width) and double ranges like (400px < width < 1000px) are invalid
   '#mq-min-max':
     title: 2.4.4 Using “min-” and “max-” Prefixes On Range Features
-    status: unknown
+    status: supported
   '#media-conditions':
     title: 2.5 Combining Media Features
-    status: unknown
+    status: partial
+    gaps:
+      - or, not in front of a feature and nested parentheses are invalid, only and is supported
   '#mq-syntax':
     title: 3 Syntax
-    status: unknown
+    status: partial
+    gaps:
+      - Uppercase units, e.g. 800PX, aren't recognized
   '#evaluating':
     title: 3.1 Evaluating Media Queries
-    status: unknown
+    status: supported
   '#error-handling':
     title: 3.2 Error Handling
-    status: unknown
+    status: partial
+    gaps:
+      - An invalid query turns the whole media query list into not all instead of only itself, see CSS 2.1 7.3
   '#mf-dimensions':
     title: 4 Viewport/Page Dimensions Media Features
-    status: unknown
+    status: supported
   '#width':
     title: '4.1 Width: the width feature'
-    status: unknown
+    status: supported
   '#height':
     title: '4.2 Height: the height feature'
-    status: unknown
+    status: supported
   '#aspect-ratio':
     title: '4.3 Aspect-Ratio: the aspect-ratio feature'
-    status: unknown
+    status: supported
   '#orientation':
     title: '4.4 Orientation: the orientation feature'
-    status: unknown
+    status: supported
   '#mf-display-quality':
     title: 5 Display Quality Media Features
-    status: unknown
+    status: partial
   '#resolution':
     title: '5.1 Display Resolution: the resolution feature'
-    status: unknown
+    status: partial
+    gaps:
+      - infinite isn't accepted, and vector output like PDF reports 96dpi instead of infinite
   '#scan':
     title: '5.2 Display Type: the scan feature'
-    status: unknown
+    status: supported
   '#grid':
     title: '5.3 Detecting Console Displays: the grid feature'
-    status: unknown
+    status: supported
   '#update':
     title: '5.4 Display Update Frequency: the update feature'
-    status: unknown
+    status: supported
   '#mf-overflow-block':
     title: '5.5 Block-Axis Overflow: the overflow-block feature'
-    status: unknown
+    status: unsupported
   '#mf-overflow-inline':
     title: '5.6 Inline-Axis Overflow: the overflow-inline feature'
-    status: unknown
+    status: unsupported
   '#mf-colors':
     title: 6 Color Media Features
-    status: unknown
+    status: partial
+    gaps:
+      - color-gamut is an unknown feature, see 6.4
   '#color':
     title: '6.1 Color Depth: the color feature'
-    status: unknown
+    status: supported
   '#color-index':
     title: '6.2 Paletted Color Screens: the color-index feature'
-    status: unknown
+    status: supported
   '#monochrome':
     title: '6.3 Monochrome Screens: the monochrome feature'
-    status: unknown
+    status: supported
   '#color-gamut':
     title: '6.4 Color Display Quality: the color-gamut feature'
-    status: unknown
+    status: unsupported
   '#mf-interaction':
     title: 7 Interaction Media Features
-    status: unknown
+    status: supported
   '#pointer':
     title: '7.1 Pointing Device Quality: the pointer feature'
-    status: unknown
+    status: supported
   '#hover':
     title: '7.2 Hover Capability: the hover feature'
-    status: unknown
+    status: supported
   '#@media/any-input':
     title: '7.3 All Available Interaction Capabilities: the any-pointer and any-hover features'
-    status: unknown
+    status: supported

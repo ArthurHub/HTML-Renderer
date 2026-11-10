@@ -25,6 +25,7 @@ public sealed class MediaListTests
     }
 
     [TestMethod]
+    [Spec("mediaqueries-4", "#error-handling")]
     public void MediaListAtIllegal()
     {
         var source = @"@media @screen {
@@ -194,6 +195,7 @@ public sealed class MediaListTests
     }
 
     [TestMethod]
+    [Spec("mediaqueries-4", "#error-handling")]
     public void NotNoMediaTypeOrExpressionSkip()
     {
         var source = @"@media not {
@@ -222,6 +224,7 @@ public sealed class MediaListTests
     }
 
     [TestMethod]
+    [Spec("mediaqueries-4", "#error-handling")]
     public void MediaFeatureMissingSkip()
     {
         var source = @"@media () {
@@ -253,6 +256,7 @@ h1 { color: green }";
     }
 
     [TestMethod]
+    [Spec("mediaqueries-4", "#error-handling")]
     public void FeatureMaxWidthMediaListMissingConnectedAnd()
     {
         var source = @"@media (max-width:30px) (min-width:10px) {
@@ -267,6 +271,7 @@ h1 { color: green }";
     }
 
     [TestMethod]
+    [Spec("mediaqueries-4", "#error-handling")]
     public void TvScreenMediaListMissingComma()
     {
         var source = @"@media tv screen {
@@ -281,6 +286,7 @@ h1 { color: green }";
     }
 
     [TestMethod]
+    [Spec("mediaqueries-4", "#mq-syntax")]
     public void AllFeatureMaxWidthMediaListWithAndKeyword()
     {
         var source = @"@media all and (max-width:30px) {
@@ -397,6 +403,7 @@ h1 { color: green }";
     }
 
     [TestMethod]
+    [Spec("mediaqueries-4", "#mq-range-context")]
     public void CombinedConditionMediaQueriesLevel4()
     {
         const string source = @"/* Traditionelle Syntax */

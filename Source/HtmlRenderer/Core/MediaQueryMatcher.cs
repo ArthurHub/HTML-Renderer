@@ -18,26 +18,18 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 namespace TheArtOfDev.HtmlRenderer.Core
 {
     /// <summary>
-    /// Evaluates a rule's enclosing <c>@media</c> chain against a <see cref="MediaQueryContext"/>, so
-    /// feature conditions (<c>min-width</c>, range syntax like <c>width &gt;= 48rem</c>,
-    /// <c>orientation</c>, <c>resolution</c>, <c>prefers-color-scheme</c>, ...) actually gate which rules
-    /// apply. Media Queries 4.
+    /// Evaluates a rule's enclosing <c>@media</c> chain against a <see cref="MediaQueryContext"/>, Media
+    /// Queries 4 §3.1.
     /// </summary>
     /// <remarks>
-    /// Any feature this matcher cannot actually evaluate causes its <c>@media</c> block to be ignored: a
-    /// feature name the CSS engine does not register fails to parse and its query becomes <c>not all</c>
-    /// upstream, and a registered feature this matcher does not model hits the <c>default</c> arm and
-    /// returns false. Both are Media Queries 4's "unknown feature is false" - rather than apply rules
-    /// guarded by a condition that cannot be tested, the block is dropped. A feature that IS modelled but
-    /// whose runtime context is missing (a <c>width</c> query before the viewport is known) stays
-    /// permissive; that is an unknown *context*, not an unsupported feature.
+    /// A feature the parser doesn't know turns its query into <c>not all</c>, a known one that isn't
+    /// evaluated here is false. A viewport feature matches while the viewport size isn't known yet.
     /// </remarks>
     internal static class MediaQueryMatcher
     {
         /// <summary>
-        /// True if every level of the enclosing <c>@media</c> chain matches (nesting is conjunctive), or
-        /// the rule isn't nested in any <c>@media</c> at all. Within one level's comma-separated media
-        /// query list, at least one query must match.
+        /// True if every nested <c>@media</c> matches (CSS Conditional 3 §2), each when any query of its
+        /// list matches (Media Queries 4 §2.1).
         /// </summary>
         internal static bool Matches(MediaList[] enclosingMedia, MediaQueryContext context)
         {
@@ -63,8 +55,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
         private static bool MediumMatches(Medium medium, MediaQueryContext context)
         {
-            // CSS 2.1 §7.3. A query with only features, e.g. `(min-width: 768px)`, has no type and matches
-            // like `all`.
+            // Media Queries 4 §2, a query without a type matches any type
             var typeMatches = string.IsNullOrEmpty(medium.Type)
                 || string.Equals(medium.Type, context.MediaType, StringComparison.OrdinalIgnoreCase)
                 || string.Equals(medium.Type, "all", StringComparison.OrdinalIgnoreCase)
@@ -72,7 +63,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
             var result = typeMatches && medium.Features.All(feature => FeatureMatches(feature, context));
 
-            // `not` negates the whole query (type + features), per Media Queries 4 §3.1.
+            // Media Queries 4 §2.2.1, not negates the type and the features
             return medium.IsInverse ? !result : result;
         }
 
@@ -96,7 +87,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 case "orientation":
                 {
                     if (!context.ViewportWidth.HasValue || !context.ViewportHeight.HasValue) return true;
-                    // MQ4 §4.1: portrait is height >= width, so a square viewport is portrait.
+                    // Media Queries 4 §4.4, a square viewport is portrait
                     var orientation = context.ViewportWidth.Value > context.ViewportHeight.Value ? "landscape" : "portrait";
                     return !feature.HasValue
                         || string.Equals(feature.Value, orientation, StringComparison.OrdinalIgnoreCase);
@@ -121,8 +112,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
                 case "device-pixel-ratio":
                 {
-                    // Non-standard feature; the value is a plain number of device pixels per CSS px,
-                    // i.e. the same as `resolution` in dppx.
+                    // Non-standard, the same as resolution in dppx
                     var dpr = feature.AsRatio();
                     if (!dpr.HasValue) return true;
                     return CompareNumeric(context.ResolutionDpi / 96d, dpr.Value, feature.Comparison);
@@ -143,10 +133,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                         || string.Equals(feature.Value, scheme, StringComparison.OrdinalIgnoreCase);
                 }
 
-                // The rendered output is static: it does not animate, cannot be hovered or pointed at,
-                // and once painted does not update. The stance for reduced motion is `reduce`, which is
-                // NOT the `no-preference` resting value, so the boolean form `(prefers-reduced-motion)`
-                // is true (MQ5 §5.3).
+                // The output is static, it doesn't animate, update or take pointer input
                 case "prefers-reduced-motion":
                     return MatchesKeyword(feature, "reduce", true);
                 case "hover":
@@ -161,9 +148,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                     return MatchesKeyword(feature, "no-preference", false);
 
                 default:
-                    // A registered feature this matcher does not evaluate (e.g. `scan`): treat as not
-                    // matching so the whole @media block is ignored, rather than applying rules guarded
-                    // by a condition that cannot be tested (see the class remarks).
+                    // e.g. scan, which doesn't apply to the output
                     return false;
             }
         }
@@ -175,8 +160,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             var length = feature.AsLength();
             if (!length.HasValue) return true;
 
-            // In a media query, `em`/`rem` resolve against the initial font size (16px), NOT the
-            // document root's font size (Media Queries 4 §1.3 / §6).
+            // Media Queries 4 §1.3, em and rem are relative to the initial font size
             const double initialFontPx = 16d;
             var valuePx = length.Value.ToPixels(initialFontPx, initialFontPx, actualPx.Value);
 
@@ -194,9 +178,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
         private static bool MatchesKeyword(MediaFeature feature, string deviceValue, bool booleanContextResult)
         {
-            // The value form `(feature: value)` matches iff the queried value equals the device's value.
-            // The boolean form `(feature)` is true iff the device value is not the feature's "none"/
-            // "no-preference" resting state.
+            // Media Queries 4 §2.4.2, the boolean form is true unless the device value is none
             if (!feature.HasValue) return booleanContextResult;
             return string.Equals(feature.Value, deviceValue, StringComparison.OrdinalIgnoreCase);
         }

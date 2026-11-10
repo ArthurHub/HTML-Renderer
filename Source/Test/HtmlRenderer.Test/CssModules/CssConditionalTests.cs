@@ -36,6 +36,7 @@ public sealed class CssConditionalTests
 
     [TestMethod]
     [Spec("css-conditional-3", "#processing")]
+    [Spec("mediaqueries-4", "#media")]
     public void ChangedCondition_IsReflected()
     {
         var html = LayoutHarness.Wrap("<style>@media (max-width: 600px) { p { color: green } }</style><p id=x>a</p>");
@@ -74,6 +75,7 @@ public sealed class CssConditionalTests
     [Ignore("Gap, see Spec/css-conditional-3.yml")]
     [TestMethod]
     [Spec("css-conditional-3", "#at-media")]
+    [Spec("mediaqueries-4", "#mq-list")]
     public void MediaRule_WithAnEmptyQueryList_Applies()
     {
         var x = Box("<style>@media { p { color: green } }</style><p id=x>a</p>");
