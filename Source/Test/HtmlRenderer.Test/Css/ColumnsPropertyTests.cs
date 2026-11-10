@@ -4,11 +4,11 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>Ported from PeachPDF.Tests/CSS/PropertyTests/ColumnsProperty.cs. Pure CSSOM parse tests - no layout involved.</summary>
 [TestClass]
 public sealed class ColumnsPropertyTests
 {
     [TestMethod]
+    [Spec("css-multicol-1", "#cw")]
     public void CssColumnWidthLengthLegal()
     {
         var snippet = "column-width: 300px";
@@ -23,6 +23,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#cw")]
     public void CssColumnWidthPercentIllegal()
     {
         var snippet = "column-width: 30%";
@@ -36,6 +37,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#cw")]
     public void CssColumnWidthVwLegal()
     {
         var snippet = "column-width: 0.3vw";
@@ -50,6 +52,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#cw")]
     public void CssColumnWidthAutoUppercaseLegal()
     {
         var snippet = "column-width: AUTO";
@@ -64,6 +67,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#cc")]
     public void CssColumnCountAutoLowercaseLegal()
     {
         var snippet = "column-count: auto";
@@ -78,6 +82,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#cc")]
     public void CssColumnCountNumberLegal()
     {
         var snippet = "column-count: 3";
@@ -92,7 +97,9 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
-    public void CssColumnCountZeroLegal()
+    [Ignore("Gap, see Spec/css-multicol-1.yml")]
+    [Spec("css-multicol-1", "#cc")]
+    public void CssColumnCountZeroIllegal()
     {
         var snippet = "column-count: 0";
         var property = CssConstructionFunctions.ParseDeclaration(snippet);
@@ -101,11 +108,11 @@ public sealed class ColumnsPropertyTests
         Assert.IsInstanceOfType<ColumnCountProperty>(property);
         var concrete = (ColumnCountProperty)property;
         Assert.IsFalse(concrete.IsInherited);
-        Assert.IsTrue(concrete.HasValue);
-        Assert.AreEqual("0", concrete.Value);
+        Assert.IsFalse(concrete.HasValue);
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#columns")]
     public void CssColumsZeroLegal()
     {
         var snippet = "columns: 0";
@@ -120,6 +127,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#columns")]
     public void CssColumsLengthLegal()
     {
         var snippet = "columns: 10px";
@@ -134,6 +142,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#columns")]
     public void CssColumsNumberLegal()
     {
         var snippet = "columns: 4";
@@ -148,6 +157,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#columns")]
     public void CssColumsLengthNumberLegal()
     {
         var snippet = "columns: 25em 5";
@@ -162,6 +172,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#columns")]
     public void CssColumsNumberLengthLegal()
     {
         var snippet = "columns : 5   25em  ";
@@ -176,6 +187,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#columns")]
     public void CssColumsAutoAutoLegal()
     {
         var snippet = "columns : auto auto";
@@ -190,6 +202,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#columns")]
     public void CssColumsAutoWidthOrderIndependentLegal()
     {
         // "auto" is valid for both column-count and column-width, so a positional match lets
@@ -205,6 +218,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#columns")]
     public void CssColumsWidthAutoLegal()
     {
         // Control: the already-ordered form parses through the fast path.
@@ -218,6 +232,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#columns")]
     public void CssColumsAutoLegal()
     {
         var snippet = "columns : auto  ";
@@ -232,6 +247,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#columns")]
     public void CssColumsNumberPercenIllegal()
     {
         var snippet = "columns : 5   25%  ";
@@ -245,6 +261,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#column-span")]
     public void CssColumSpanAllLegal()
     {
         var snippet = "column-span: all";
@@ -259,6 +276,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#column-span")]
     public void CssColumSpanNoneUppercaseLegal()
     {
         var snippet = "column-span: None";
@@ -273,6 +291,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#column-span")]
     public void CssColumSpanLengthIllegal()
     {
         var snippet = "column-span: 10px";
@@ -287,10 +306,12 @@ public sealed class ColumnsPropertyTests
 
     [TestMethod]
     [DynamicData(nameof(ColumnGapTestDataValues))]
+    [Spec("css-multicol-1", "#cg")]
     public void ColumnGapLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<ColumnGapProperty>(PropertyNames.ColumnGap, value);
 
     [TestMethod]
+    [Spec("css-multicol-1", "#cf")]
     public void CssColumFillBalanceLegal()
     {
         var snippet = "column-fill: balance;";
@@ -305,6 +326,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#cf")]
     public void CssColumFillAutoLegal()
     {
         var snippet = "column-fill: auto;";
@@ -319,6 +341,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#crc")]
     public void CssColumRuleColorTransparentLegal()
     {
         var snippet = "column-rule-color: transparent";
@@ -333,6 +356,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#crc")]
     public void CssColumRuleColorRgbLegal()
     {
         var snippet = "column-rule-color: rgb(192, 56, 78)";
@@ -347,6 +371,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#crc")]
     public void CssColumRuleColorRedLegal()
     {
         var snippet = "column-rule-color: red";
@@ -361,6 +386,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#crc")]
     public void CssColumRuleColorNoneIllegal()
     {
         var snippet = "column-rule-color: none";
@@ -374,6 +400,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#crs")]
     public void CssColumRuleStyleInsetTailUpperLegal()
     {
         var snippet = "column-rule-style: inSET";
@@ -388,6 +415,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#crs")]
     public void CssColumRuleStyleNoneLegal()
     {
         var snippet = "column-rule-style: none";
@@ -402,6 +430,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#crs")]
     public void CssColumRuleStyleAutoIllegal()
     {
         var snippet = "column-rule-style: auto ";
@@ -415,6 +444,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#crw")]
     public void CssColumRuleWidthLengthLegal()
     {
         var snippet = "column-rule-width: 2px";
@@ -429,6 +459,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#crw")]
     public void CssColumRuleWidthThickLegal()
     {
         var snippet = "column-rule-width: thick";
@@ -443,6 +474,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#crw")]
     public void CssColumRuleWidthMediumLegal()
     {
         var snippet = "column-rule-width : medium !important ";
@@ -457,6 +489,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#crw")]
     public void CssColumRuleWidthThinUppercaseLegal()
     {
         var snippet = "column-rule-width: THIN";
@@ -471,6 +504,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#cr")]
     public void CssColumRuleDottedLegal()
     {
         var snippet = "column-rule: dotted";
@@ -485,6 +519,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#cr")]
     public void CssColumRuleSolidBlueLegal()
     {
         var snippet = "column-rule: solid  blue";
@@ -499,6 +534,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#cr")]
     public void CssColumRuleSolidLengthLegal()
     {
         var snippet = "column-rule: solid 8px";
@@ -513,6 +549,7 @@ public sealed class ColumnsPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-multicol-1", "#cr")]
     public void CssColumRuleThickInsetBlueLegal()
     {
         var snippet = "column-rule: thick inset blue";

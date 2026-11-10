@@ -238,6 +238,7 @@ public sealed class PropertyBreakTests
     [DataRow("break-after")]
     [Spec("css-break-3", "#break-between")]
     [Spec("css-break-4", "#break-between")]
+    [Spec("css-multicol-1", "#break-before-break-after-break-inside")]
     public void BreakBeforeAfter_AcceptsSupportedSpecValues(string name)
     {
         string[] supportedValues =

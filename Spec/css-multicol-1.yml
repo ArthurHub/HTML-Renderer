@@ -5,73 +5,78 @@ snapshot: https://www.w3.org/TR/2024/CR-css-multicol-1-20240516/
 sections:
   '#introduction':
     title: 1 Introduction
-    status: unknown
-  '#values':
-    title: 1.1 Value Definitions
-    status: unknown
+    status: n/a
   '#the-multi-column-model':
     title: 2 The Multi-Column Model
-    status: unknown
+    status: unsupported
+    gaps:
+      - No multi-column container is established, the content lays out in a single column
   '#the-number-and-width-of-columns':
     title: 3 The Number and Width of Columns
-    status: unknown
+    status: parsed-only
   '#cw':
     title: '3.1 The Inline Size of Columns: the column-width property'
-    status: unknown
+    status: parsed-only
   '#cc':
     title: '3.2 The Number of Columns: the column-count property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "column-count: 0 is accepted"
   '#columns':
     title: '3.3 The column-width and column-count Shorthand: The columns Property'
-    status: unknown
+    status: parsed-only
   '#pseudo-algorithm':
     title: 3.4 The Pseudo-algorithm
-    status: unknown
+    status: unsupported
   '#stacking-context':
     title: 3.5 Stacking Context
-    status: unknown
+    status: unsupported
   '#column-gaps-and-rules':
     title: 4 Column Gaps and Rules
-    status: unknown
+    status: parsed-only
   '#cg':
     title: '4.1 Gutters Between Columns: the column-gap property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'normal' is rejected"
   '#crc':
     title: '4.2 The Color of Column Rules: the column-rule-color property'
-    status: unknown
+    status: parsed-only
   '#crs':
     title: '4.3 The Style Of Column Rules: the column-rule-style property'
-    status: unknown
+    status: parsed-only
   '#crw':
     title: '4.4 The Width Of Column Rules: the column-rule-width property'
-    status: unknown
+    status: parsed-only
   '#cr':
     title: '4.5 Column Rule Shorthand: the column-rule property'
-    status: unknown
+    status: parsed-only
   '#column-breaks':
     title: 5 Column Breaks
-    status: unknown
+    status: parsed-only
   '#break-before-break-after-break-inside':
     title: '5.1 Controlling Fragmentation: the break-before, break-after, break-inside properties'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "The column values are accepted but there are no columns to break, see css-break-3 2.2"
   '#spanning-columns':
     title: 6 Spanning Columns
-    status: unknown
+    status: parsed-only
   '#column-span':
     title: '6.1 Spanning An Element Across Columns: the column-span property'
-    status: unknown
+    status: parsed-only
   '#filling-columns':
     title: 7 Filling Columns
-    status: unknown
+    status: parsed-only
   '#cf':
     title: '7.1 Column Balancing: the column-fill property'
-    status: unknown
+    status: parsed-only
   '#overflow':
     title: 8 Overflow
-    status: unknown
+    status: unsupported
   '#overflow-inside-multicol-elements':
     title: 8.1 Overflow Inside Multicol Containers
-    status: unknown
+    status: unsupported
   '#pagination-and-overflow-outside-multicol':
     title: 8.2 Pagination and Overflow Outside Multicol Containers
-    status: unknown
+    status: unsupported

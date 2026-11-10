@@ -4,9 +4,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
     internal sealed class ColumnsProperty : ShorthandProperty
     {
-        // columns is order-independent (CSS Multi-column 1 - "<'column-width'> || <'column-count'>"), and
-        // both longhands accept "auto", so a positional match lets column-width claim "auto" and strand the
-        // length in "columns: auto 12em". Match in any order, like list-style.
+        // CSS Multi-column 1 §3.3. Both longhands take "auto", a positional match would let column-width
+        // claim the "auto" of "columns: auto 12em" and strand the length.
         private static readonly IValueConverter StyleConverter = WithAnyOrderIndependent(
             AutoLengthConverter.Option().For(PropertyNames.ColumnWidth),
             OptionalIntegerConverter.Option().For(PropertyNames.ColumnCount)).OrDefault();
