@@ -14,6 +14,7 @@ public sealed class FontFaceTests
     [Spec("css-fonts-4", "#font-face-rule")]
     [Spec("css-fonts-4", "#src-desc")]
     [Spec("css-fonts-4", "#font-face-src-parsing")]
+    [Spec("css-fonts-5", "#font-face-src-parsing")]
     public void FontFaceOpenSansWithSource()
     {
         var src = "@font-face{font-family:'Open Sans';src:url(fonts/OpenSans-Light.eot);src:local('Open Sans Light'),local('OpenSans-Light'),url(fonts/OpenSans-Light.ttf) format('truetype'),url(fonts/OpenSans-Light.woff) format('woff');font-style:normal}";
@@ -35,6 +36,7 @@ public sealed class FontFaceTests
     [TestMethod]
     [Spec("css-fonts-4", "#src-desc")]
     [Spec("css-fonts-4", "#font-face-src-parsing")]
+    [Spec("css-fonts-5", "#font-face-src-parsing")]
     public void FontFaceWithWoff2Source()
     {
         var src = "@font-face{font-family:'Inter';src:url(fonts/Inter-Medium.woff2) format('woff2');font-weight:500}";

@@ -85,6 +85,7 @@ public sealed class CssFonts4IntegrationTests
     [Ignore("Gap, see Spec/css-fonts-4.yml")]
     [TestMethod]
     [Spec("css-fonts-4", "#font-face-src-formats")]
+    [Spec("css-fonts-5", "#font-face-src-parsing")]
     public void FontFace_SourceInAnUnsupportedFormat_IsSkipped()
     {
         var font = FontOf(
