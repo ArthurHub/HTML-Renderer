@@ -4,15 +4,7 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/TransformProperty.cs (source class
-/// <c>CssTransformPropertyTests</c>).
-/// <see cref="PerspectiveProperty"/>, <see cref="PerspectiveOriginProperty"/>,
-/// <see cref="TransformStyleProperty"/>, <see cref="TransformOriginProperty"/>, and
-/// <see cref="TransformProperty"/> all exist; <c>TransformOriginProperty</c>/
-/// <c>PerspectiveOriginProperty</c> reproduce the exact ordered-vs-keyword-reorderable
-/// &lt;position&gt; grammar (including the "length forces ordered form" invalid cases) PeachPDF's own
-/// tests exercise. These are pure parsing tests - no rendered-transform assertions - so the fact that
-/// this fork's layout engine doesn't yet apply transforms visually doesn't disqualify anything here.
+/// Which transform, transform-origin, transform-style, perspective and perspective-origin values the CSS engine accepts.
 /// </summary>
 [TestClass]
 public sealed class TransformPropertyTests
@@ -188,9 +180,7 @@ public sealed class TransformPropertyTests
     [TestMethod]
     public void CssPerspectiveOriginVerticalKeywordThenLengthIllegal()
     {
-        // "top 2px" is invalid (CSS Transforms 1 <position>): a length in the second (vertical)
-        // position forces the ordered two-value form, but "top" is a vertical-only keyword and cannot
-        // fill the horizontal position.
+        // A length forces horizontal-then-vertical order, only keyword pairs may be swapped
         var property = CssConstructionFunctions.ParseDeclaration("perspective-origin:  top 2px ");
         Assert.AreEqual("perspective-origin", property.Name);
         Assert.IsInstanceOfType<PerspectiveOriginProperty>(property);
@@ -235,6 +225,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginXOffsetLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  2px ");
@@ -248,6 +239,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginXOffsetKeywordLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  bottom ");
@@ -261,6 +253,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginYOffsetLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  3cm 2px");
@@ -274,11 +267,10 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginLengthThenWrongAxisKeywordIllegal()
     {
-        // "2px left" is invalid (CSS Transforms 1): a length in the first (horizontal) position forces
-        // the ordered two-value form, but "left" is a horizontal-only keyword and cannot fill the
-        // vertical position. The keyword-only reorderable form forbids lengths, so it does not apply.
+        // A length forces horizontal-then-vertical order, only keyword pairs may be swapped
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  2px left");
         Assert.AreEqual("transform-origin", property.Name);
         Assert.IsFalse(property.IsImportant);
@@ -288,6 +280,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginVerticalKeywordThenLengthIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  top 2px ");
@@ -299,6 +292,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginVerticalKeywordThenLengthWithZIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  top 2px 10px ");
@@ -310,6 +304,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginXKeywordYOffsetLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  left 2px ");
@@ -323,6 +318,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginXKeywordYKeywordLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  right top ");
@@ -336,6 +332,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginYKeywordXKeywordLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  top  right ");
@@ -349,6 +346,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginXYZLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  2px 30% 10px ");
@@ -362,6 +360,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginLengthThenWrongAxisKeywordWithZIllegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  2px left 10px ");
@@ -373,6 +372,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginXKeywordYZLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  left 5px -3px ");
@@ -386,6 +386,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginXKeywordYKeywordZLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  right bottom 2cm ");
@@ -399,6 +400,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-origin-property")]
     public void CssTransformOriginYKeywordXKeywordZLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform-origin:  bottom  right  2cm ");
@@ -412,6 +414,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-property")]
     public void CssTransformNoneLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  none ");
@@ -425,6 +428,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#two-d-transform-functions")]
     public void CssTransformMatrixLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  matrix(1.0, 2.0, 3.0, 4.0, 5.0, 6.0) ");
@@ -438,6 +442,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#two-d-transform-functions")]
     public void CssTransformTranslateLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  translate(12px, 50%) ");
@@ -451,6 +456,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#two-d-transform-functions")]
     public void CssTransformTranslateXLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  translateX(2em) ");
@@ -464,6 +470,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#two-d-transform-functions")]
     public void CssTransformTranslateYLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  translateY(3in) ");
@@ -477,6 +484,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#two-d-transform-functions")]
     public void CssTransformScaleLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  scale(2, 0.5) ");
@@ -490,6 +498,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#two-d-transform-functions")]
     public void CssTransformScaleXLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  scaleX(0.1) ");
@@ -503,6 +512,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#two-d-transform-functions")]
     public void CssTransformScaleYLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  scaleY(1.5) ");
@@ -516,6 +526,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#two-d-transform-functions")]
     public void CssTransformRotateLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  rotate(0.5turn) ");
@@ -529,6 +540,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#two-d-transform-functions")]
     public void CssTransformSkewXLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  skewX(  30deg  ) ");
@@ -542,6 +554,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#two-d-transform-functions")]
     public void CssTransformSkewYLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  skewY(  1.07rad  ) ");
@@ -555,6 +568,7 @@ public sealed class TransformPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-transforms-1", "#transform-property")]
     public void CssTransformMultipleLegal()
     {
         var property = CssConstructionFunctions.ParseDeclaration("transform:  translate(50%, 50%) rotate(45deg) scale(1.5)");

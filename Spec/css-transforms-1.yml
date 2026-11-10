@@ -5,103 +5,93 @@ snapshot: https://www.w3.org/TR/2019/CR-css-transforms-1-20190214/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#module-interactions':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#css-values':
-    title: 1.2 CSS Values
-    status: unknown
+    status: n/a
   '#terminology':
     title: 2 Terminology
-    status: unknown
+    status: n/a
   '#transform-rendering':
     title: 3 The Transform Rendering Model
-    status: unknown
+    status: unsupported
+    gaps:
+      - Transforms aren't applied when painting
+      - A transformed box doesn't establish a containing block for absolute and fixed descendants
+      - A transformed box doesn't establish a stacking context, z-index isn't supported either, see CSS 2.1 9.9.1
+      - Transforms don't extend the overflow area
   '#transform-property':
     title: 4 The transform Property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'transform' is parsed, but layout and painting ignore it"
   '#serialization-of-transform-functions':
     title: 4.1 Serialization of <transform-function>s
-    status: unknown
+    status: n/a
   '#serialization-of-the-computed-value':
     title: 4.2 Serialization of the computed value of <transform-list>
-    status: unknown
+    status: n/a
   '#transform-origin-property':
     title: 5 The transform-origin Property
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'transform-origin' is parsed, but transforms aren't applied"
   '#transform-box':
     title: '6 Transform reference box: the transform-box property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'transform-box' isn't parsed"
   '#svg-transform':
     title: 7 The SVG transform Attribute
-    status: unknown
+    status: unsupported
+    gaps:
+      - No SVG support
   '#transform-attribute-specificity':
     title: 7.1 SVG presentation attributes
-    status: unknown
+    status: unsupported
   '#svg-syntax':
     title: 7.2 Syntax of the SVG transform attribute
-    status: unknown
+    status: unsupported
   '#svg-transform-functions':
     title: 7.3 SVG transform functions
-    status: unknown
+    status: unsupported
   '#svg-user-coordinate-space':
     title: 7.4 User coordinate space
-    status: unknown
+    status: unsupported
   '#transform-attribute-dom':
     title: 7.5 SVG DOM interface for the transform attribute
-    status: unknown
+    status: n/a
   '#svg-animation':
     title: 8 SVG Animation
-    status: unknown
-  '#svg-animate-element':
-    title: 8.1 The animate and set element
-    status: unknown
-  '#neutral-element':
-    title: 8.2 Neutral element for addition
-    status: unknown
-  '#svg-attribute-name':
-    title: 8.3 The SVG 1.1 'attributeName' attribute
-    status: unknown
+    status: n/a
   '#transform-functions':
     title: 9 The Transform Functions
-    status: unknown
+    status: parsed-only
   '#two-d-transform-functions':
     title: 9.1 2D Transform Functions
-    status: unknown
+    status: parsed-only
+    gaps:
+      - skew() with a single angle is rejected
+      - A unitless 0 isn't accepted as an angle in rotate(), skew(), skewX() and skewY()
   '#transform-primitives':
     title: 9.2 Transform function primitives and derivatives
-    status: unknown
+    status: n/a
   '#transform-function-lists':
     title: 10 The Transform Function Lists
-    status: unknown
+    status: unsupported
+    gaps:
+      - Transform lists are never turned into a matrix that gets applied, see 3
   '#interpolation-of-transforms':
     title: 11 Interpolation of Transforms
-    status: unknown
+    status: n/a
   '#interpolation-of-transform-functions':
     title: 12 Interpolation of primitives and derived transform functions
-    status: unknown
+    status: n/a
   '#matrix-interpolation':
     title: 13 Interpolation of Matrices
-    status: unknown
-  '#supporting-functions':
-    title: 13.1 Supporting functions
-    status: unknown
-  '#interpolation-of-2d-matrices':
-    title: 13.2 Interpolation of 2D matrices
-    status: unknown
-  '#decomposing-a-2d-matrix':
-    title: 13.2.1 Decomposing a 2D matrix
-    status: unknown
-  '#interpolation-of-decomposed-2d-matrix-values':
-    title: 13.2.2 Interpolation of decomposed 2D matrix values
-    status: unknown
-  '#recomposing-to-a-2d-matrix':
-    title: 13.2.3 Recomposing to a 2D matrix
-    status: unknown
+    status: n/a
   '#mathematical-description':
     title: 14 Mathematical Description of Transform Functions
-    status: unknown
+    status: unsupported
+    gaps:
+      - Transform matrices are never applied, see 3
   '#priv-sec':
     title: 15 Privacy and Security Considerations
-    status: unknown
+    status: n/a
