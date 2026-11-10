@@ -1516,46 +1516,7 @@ sections:
     status: n/a
   webstorage.html#webstorage:
     title: 12 Web storage
-    status: unknown
-  webstorage.html#introduction-16:
-    title: 12.1 Introduction
-    status: unknown
-  webstorage.html#storage:
-    title: 12.2 The API
-    status: unknown
-  webstorage.html#the-storage-interface:
-    title: 12.2.1 The Storage interface
-    status: unknown
-  webstorage.html#the-sessionstorage-attribute:
-    title: 12.2.2 The sessionStorage getter
-    status: unknown
-  webstorage.html#the-localstorage-attribute:
-    title: 12.2.3 The localStorage getter
-    status: unknown
-  webstorage.html#the-storageevent-interface:
-    title: 12.2.4 The StorageEvent interface
-    status: unknown
-  webstorage.html#privacy:
-    title: 12.3 Privacy
-    status: unknown
-  webstorage.html#user-tracking:
-    title: 12.3.1 User tracking
-    status: unknown
-  webstorage.html#sensitivity-of-data:
-    title: 12.3.2 Sensitivity of data
-    status: unknown
-  webstorage.html#security-storage:
-    title: 12.4 Security
-    status: unknown
-  webstorage.html#dns-spoofing-attacks:
-    title: 12.4.1 DNS spoofing attacks
-    status: unknown
-  webstorage.html#cross-directory-attacks:
-    title: 12.4.2 Cross-directory attacks
-    status: unknown
-  webstorage.html#implementation-risks:
-    title: 12.4.3 Implementation risks
-    status: unknown
+    status: n/a
   syntax.html#syntax:
     title: 13 The HTML syntax
     status: partial
