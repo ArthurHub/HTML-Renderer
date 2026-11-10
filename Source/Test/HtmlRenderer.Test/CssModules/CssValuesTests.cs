@@ -27,6 +27,7 @@ public sealed class CssValuesTests
 
     [TestMethod]
     [Spec("css-values-4", "#custom-idents")]
+    [Spec("css-values-5", "#textual-values")]
     public void CustomIdent_IsCaseSensitive()
     {
         Assert.AreEqual("2", Before("#x{counter-reset:foo 2} #x::before{content:counter(foo)}"));

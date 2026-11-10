@@ -17,6 +17,7 @@ public sealed class CssColor5Tests
     [DataRow("color-mix(in srgb, #ff0000, rgb(0 0 255))", 128, 0, 128, 255)]
     [DataRow("color-mix(in srgb, color-mix(in srgb, red, blue), white)", 191, 128, 191, 255)]
     [DataRow("color-mix(in srgb, 25% red, blue)", 64, 0, 191, 255)]
+    [Spec("css-values-5", "#color-mix")]
     public void ColorMix_MixesTwoColors(string value, int r, int g, int b, int a)
     {
         AssertColor(RColor.FromArgb(a, r, g, b), Color(value));

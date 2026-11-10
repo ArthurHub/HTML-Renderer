@@ -14,11 +14,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         Percentage = 4,
         LengthPercentage = Length | Percentage,
         Angle = 8,
-
-        /// <summary>Only produced by @property syntax validation.</summary>
         Time = 16,
-
-        /// <summary>Only produced by @property syntax validation.</summary>
         Resolution = 32
     }
 }

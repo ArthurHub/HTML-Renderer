@@ -474,6 +474,7 @@ public sealed class SyntaxAndDataTypesTests
     [DataRow("url( a.png )")]
     [DataRow("url('a.png')")]
     [DataRow("url( \"a.png\" )")]
+    [Spec("css-values-5", "#urls")]
     public void Url_AllowsQuotesAndWhitespace(string value)
     {
         Assert.AreEqual("url(\"a.png\")", Styled($"#x{{background-image:{value}}}").BackgroundImage);

@@ -4,10 +4,8 @@ using System.Linq;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// An <c>@property</c> at-rule (CSS Properties &amp; Values API Level 1 §3): registers a typed custom
-    /// property with a <c>syntax</c>, <c>initial-value</c>, and <c>inherits</c> descriptor. The descriptor
-    /// block is stored like <see cref="FontFaceRule"/>; the registered name (a dashed-ident such as
-    /// <c>--my-color</c>) is captured from the prelude like <see cref="KeyframesRule.Name"/>.
+    /// An <c>@property</c> rule (CSS Properties and Values API 1 §3). Parsed only, the registration has no
+    /// effect on the cascade.
     /// </summary>
     internal sealed class PropertyRule : DeclarationRule, IPropertyRule
     {

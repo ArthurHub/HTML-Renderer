@@ -104,6 +104,7 @@ public sealed class CssVariablesTests
 
     [TestMethod]
     [Spec("css-variables-1", "#using-variables")]
+    [Spec("css-values-5", "#var-notation")]
     public void Var_UsesTheFallback_WhenThePropertyIsMissing()
     {
         var x = Box("<p id=x style='color: var(--missing, green)'>a</p>");

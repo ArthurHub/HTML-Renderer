@@ -24,9 +24,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private readonly Dictionary<string, LonghandCreator> _fonts;
 
-        // @property descriptors (syntax / initial-value / inherits). Their values have no fixed CSS grammar
-        // (initial-value depends on the syntax; syntax is an arbitrary string), so each is stored raw via an
-        // UnknownProperty (Converters.Any) and validated later against the syntax string.
+        // @property descriptors, stored raw, nothing reads them yet
         private readonly Dictionary<string, LonghandCreator> _propertyDescriptors;
 
         // @font-palette-values descriptors (font-family / base-palette / override-colors). Stored raw via
