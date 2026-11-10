@@ -5,67 +5,65 @@ snapshot: https://www.w3.org/TR/2022/WD-css-contain-2-20220917/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#interaction':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
+    status: n/a
   '#contain-property':
     title: '2 Strong Containment: the contain property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'contain' is dropped by the parser"
   '#containment-types':
     title: 3 Types of Containment
-    status: unknown
+    status: unsupported
   '#containment-size':
     title: 3.1 Size Containment
-    status: unknown
+    status: unsupported
   '#containment-size-opt':
     title: 3.1.1 Possible Size-Containment Optimizations
-    status: unknown
+    status: n/a
   '#containment-layout':
     title: 3.2 Layout Containment
-    status: unknown
+    status: unsupported
   '#containment-layout-opt':
     title: 3.2.1 Possible Layout-Containment Optimizations
-    status: unknown
+    status: n/a
   '#containment-style':
     title: 3.3 Style Containment
-    status: unknown
+    status: unsupported
   '#containment-style-opt':
     title: 3.3.1 Possible Style-Containment Optimizations
-    status: unknown
+    status: n/a
   '#containment-paint':
     title: 3.4 Paint Containment
-    status: unknown
+    status: unsupported
   '#containment-paint-opt':
     title: 3.4.1 Possible Paint-Containment Optimizations
-    status: unknown
+    status: n/a
   '#content-visibility':
     title: '4 Suppressing An Element’s Contents Entirely: the content-visibility property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - "'content-visibility' is dropped by the parser"
   '#using-cv-hidden':
     title: '4.1 Using content-visibility: hidden'
-    status: unknown
+    status: n/a
   '#using-cv-auto':
     title: '4.2 Using content-visibility: auto'
-    status: unknown
+    status: n/a
   '#content-visibility-auto-state-changed':
     title: '4.3 Detecting content-visibility: auto state changes: the contentvisibilityautostatechanged event'
-    status: unknown
+    status: n/a
   '#cv-notes':
     title: 4.4 Restrictions and Clarifications
-    status: unknown
+    status: unsupported
   '#cv-a11y':
     title: 4.5 Accessibility Implications
-    status: unknown
+    status: n/a
   '#cv-examples':
     title: 4.6 Examples
-    status: unknown
+    status: n/a
   '#privacy':
     title: 5 Privacy Considerations
-    status: unknown
+    status: n/a
   '#security':
     title: 6 Security Considerations
-    status: unknown
+    status: n/a
