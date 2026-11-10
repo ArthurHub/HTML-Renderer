@@ -12,6 +12,7 @@ public sealed class CssTextDecor3PaintIntegrationTests
 
     [TestMethod]
     [Spec("css-text-decor-3", "#text-decoration-property")]
+    [Spec("css-text-decor-4", "#text-decoration-property")]
     public void Shorthand_WithStyleAndColor_SetsTheLine()
     {
         var lines = Log("<span style='text-decoration:dotted underline rgb(255,0,0)'>text</span>").OfType<RecordingGraphics.DrawLineCall>();
@@ -22,6 +23,7 @@ public sealed class CssTextDecor3PaintIntegrationTests
     [Ignore("Gap, see Spec/css-text-decor-3.yml")]
     [TestMethod]
     [Spec("css-text-decor-3", "#text-decoration-property")]
+    [Spec("css-text-decor-4", "#text-decoration-property")]
     public void Shorthand_SetsTheColor()
     {
         var line = Log("<span style='color:rgb(0,0,255);text-decoration:underline rgb(255,0,0)'>text</span>").OfType<RecordingGraphics.DrawLineCall>().Single();
@@ -32,6 +34,7 @@ public sealed class CssTextDecor3PaintIntegrationTests
     [Ignore("Gap, see Spec/css-text-decor-3.yml")]
     [TestMethod]
     [Spec("css-text-decor-3", "#text-decoration-color-property")]
+    [Spec("css-text-decor-4", "#text-decoration-color-property")]
     public void DecorationColor_IsTheColorOfTheLine()
     {
         var line = Log("<span style='color:rgb(0,0,255);text-decoration-line:underline;text-decoration-color:rgb(255,0,0)'>text</span>").OfType<RecordingGraphics.DrawLineCall>().Single();
@@ -42,6 +45,7 @@ public sealed class CssTextDecor3PaintIntegrationTests
     [Ignore("Gap, see Spec/css-text-decor-3.yml")]
     [TestMethod]
     [Spec("css-text-decor-3", "#text-decoration-style-property")]
+    [Spec("css-text-decor-4", "#text-decoration-style-property")]
     public void Double_DrawsTwoLines()
     {
         var lines = Log("<span style='text-decoration-line:underline;text-decoration-style:double'>text</span>").OfType<RecordingGraphics.DrawLineCall>();
@@ -52,6 +56,7 @@ public sealed class CssTextDecor3PaintIntegrationTests
     [Ignore("Gap, see Spec/css-text-decor-3.yml")]
     [TestMethod]
     [Spec("css-text-decor-3", "#text-shadow-property")]
+    [Spec("css-text-decor-4", "#text-shadow-property")]
     public void TextShadow_PaintsTheTextInTheShadowColor()
     {
         var strings = Log("<span style='color:black;text-shadow:2px 2px rgb(255,0,0)'>text</span>").OfType<RecordingGraphics.DrawStringCall>();
@@ -62,6 +67,7 @@ public sealed class CssTextDecor3PaintIntegrationTests
     [Ignore("Gap, see Spec/css-text-decor-3.yml")]
     [TestMethod]
     [Spec("css-text-decor-3", "#painting-order")]
+    [Spec("css-text-decor-4", "#painting-order")]
     [DataRow("underline")]
     [DataRow("overline")]
     public void UnderlineAndOverline_ArePaintedBelowTheText(string line)
@@ -73,6 +79,7 @@ public sealed class CssTextDecor3PaintIntegrationTests
 
     [TestMethod]
     [Spec("css-text-decor-3", "#painting-order")]
+    [Spec("css-text-decor-4", "#painting-order")]
     public void LineThrough_IsPaintedOverTheText()
     {
         var log = Log("<span style='text-decoration:line-through'>text</span>");
@@ -82,6 +89,7 @@ public sealed class CssTextDecor3PaintIntegrationTests
 
     [TestMethod]
     [Spec("css-text-decor-3", "#overflow")]
+    [Spec("css-text-decor-4", "#overflow")]
     public void Decorations_DontChangeTheLayout()
     {
         var (plain, _) = PaintHarness.Layout(PaintHarness.Wrap("<div id='d'>text</div>"));

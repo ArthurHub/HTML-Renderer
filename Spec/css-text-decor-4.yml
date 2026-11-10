@@ -5,106 +5,127 @@ snapshot: https://www.w3.org/TR/2022/WD-css-text-decor-4-20220504/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
-  '#terms':
-    title: 1.3 Terminology
-    status: unknown
+    status: n/a
   '#line-decoration':
     title: '2 Line Decoration: Underline, Overline, and Strike-Through'
-    status: unknown
+    status: partial
+    gaps:
+      - A propagated decoration is drawn in the color of the descendant instead of the decorating box, see CSS 2.1 16.3.1
+      - "A descendant's text-decoration: none removes the decoration of its ancestor, see CSS 2.1 16.3.1"
+      - Decorations propagate to floats, absolutely positioned boxes and inline-blocks, see CSS 2.1 16.3.1
   '#text-decoration-line-property':
     title: '2.1 Text Decoration Lines: the text-decoration-line property'
-    status: unknown
+    status: partial
+    gaps:
+      - spelling-error and grammar-error aren't accepted
   '#text-decoration-style-property':
     title: '2.2 Text Decoration Style: the text-decoration-style property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Every line is drawn solid
   '#text-decoration-color-property':
     title: '2.3 Text Decoration Color: the text-decoration-color property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - The lines are drawn in the color of the text
   '#text-decoration-thickness-property':
     title: '2.4 Text Decoration Line Thickness: the text-decoration-thickness property'
-    status: unknown
+    status: unsupported
   '#text-decoration-thickness':
     title: 2.4.1 Automatic Thickness of Text Decoration Lines
-    status: unknown
+    status: unsupported
+    gaps:
+      - Lines are always 1px thick, the font's thickness isn't used
   '#line-position':
     title: 2.5 Determining the Position and Thickness of Line Decorations
-    status: unknown
+    status: partial
+    gaps:
+      - The thickness doesn't depend on the decorated text, see 2.4.1
   '#text-decoration-property':
     title: '2.6 Text Decoration Shorthand: the text-decoration property'
-    status: unknown
+    status: partial
+    gaps:
+      - Only the line is applied, the style and color are ignored, see 2.2 and 2.3
+      - A thickness isn't accepted
   '#text-underline-position-property':
     title: '2.7 Text Underline Position: the text-underline-position property'
-    status: unknown
+    status: unsupported
   '#underline-offset':
     title: '2.8 Text Underline Offset: the text-underline-offset property'
-    status: unknown
+    status: unsupported
   '#line-offset-zero':
     title: 2.8.1 Underline Offset Origin (Zero Position)
-    status: unknown
+    status: unsupported
   '#line-auto-offset':
     title: 2.8.2 Using Font Metrics for Automatic Positioning
-    status: unknown
+    status: partial
+    gaps:
+      - from-font isn't accepted, see 2.7
   '#text-line-constancy':
     title: 2.9 Text Decoration Line Uniformity
-    status: unknown
+    status: supported
   '#text-decoration-skipping':
     title: '2.10 Text Decoration Line Continuity: the text-decoration-skip shorthand and its sub-properties'
-    status: unknown
+    status: partial
+    gaps:
+      - text-decoration-skip and its longhands aren't accepted, only their initial values apply
   '#text-decoration-skip-self-property':
     title: '2.10.1 Skipping Spaces: the text-decoration-skip-self property'
-    status: unknown
+    status: partial
+    gaps:
+      - The property isn't accepted, atomic inlines such as images are always skipped
   '#text-decoration-skip-box-property':
     title: '2.10.2 Skipping Spaces: the text-decoration-skip-box property'
-    status: unknown
+    status: unsupported
   '#text-decoration-skip-inset-property':
     title: '2.10.3 Inset Edges: the text-decoration-skip-inset property'
-    status: unknown
+    status: unsupported
   '#text-decoration-skip-spaces-property':
     title: '2.10.4 Skipping Spaces: the text-decoration-skip-spaces property'
-    status: unknown
+    status: partial
+    gaps:
+      - A space next to an element boundary inside the decorating box isn't decorated
+      - The property isn't accepted, only its initial value applies
   '#text-decoration-skip-ink-property':
     title: '2.10.5 Skipping Glyphs: the text-decoration-skip-ink property'
-    status: unknown
+    status: unsupported
   '#ink-skip-shape':
     title: 2.10.6 Shaping Interruptions
-    status: unknown
+    status: unsupported
   '#emphasis-marks':
     title: 3 Additional Controls for Emphasis Marks
-    status: unknown
+    status: unsupported
   '#text-emphasis-style-property':
     title: '3.1 Emphasis Mark Style: the text-emphasis-style property'
-    status: unknown
+    status: unsupported
   '#text-emphasis-color-property':
     title: '3.2 Emphasis Mark Color: the text-emphasis-color property'
-    status: unknown
+    status: unsupported
   '#text-emphasis-property':
     title: '3.3 Emphasis Mark Shorthand: the text-emphasis property'
-    status: unknown
+    status: unsupported
   '#text-emphasis-position-property':
     title: '3.4 Emphasis Mark Position: the text-emphasis-position property'
-    status: unknown
+    status: unsupported
   '#text-emphasis-skip':
     title: '3.5 Emphasis Mark Skip: the text-emphasis-skip property'
-    status: unknown
+    status: unsupported
   '#text-shadow-property':
     title: '4 Text Shadows: the text-shadow property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - No shadow is painted
   '#painting':
     title: 5 Painting Text Decorations
-    status: unknown
+    status: partial
   '#painting-order':
     title: 5.1 Painting Order of Text Decorations
-    status: unknown
+    status: partial
+    gaps:
+      - Underlines and overlines are painted over the text instead of below it
   '#overflow':
     title: 5.2 Overflow of Text Decorations
-    status: unknown
+    status: supported
   '#priv-sec':
     title: 6 Privacy and Security Considerations
-    status: unknown
+    status: n/a

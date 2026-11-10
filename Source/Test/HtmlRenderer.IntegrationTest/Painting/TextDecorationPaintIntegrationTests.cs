@@ -11,6 +11,8 @@ public sealed class TextDecorationPaintIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#lining-striking-props")]
     [Spec("css-text-decor-3", "#text-decoration-line-property")]
+    [Spec("css-text-decor-4", "#text-decoration-line-property")]
+    [Spec("css-text-decor-4", "#line-auto-offset")]
     public void Underline_DrawsLineBelowRectangleTop()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -25,11 +27,13 @@ public sealed class TextDecorationPaintIntegrationTests
         var rect = s.Rectangles.Values.Single();
         Assert.IsTrue(line.Y1 > rect.Top, "underline should sit below the rectangle's top edge");
         Assert.IsTrue(line.Y1 <= rect.Bottom, "underline should still sit within the rectangle");
+        Assert.AreEqual(rect.Top + s.ActualFont.UnderlineOffset, line.Y1, 1);
     }
 
     [TestMethod]
     [Spec("css21", "text.html#lining-striking-props")]
     [Spec("css-text-decor-3", "#text-decoration-line-property")]
+    [Spec("css-text-decor-4", "#text-decoration-line-property")]
     public void Overline_DrawsLineAtRectangleTop()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -47,6 +51,7 @@ public sealed class TextDecorationPaintIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#lining-striking-props")]
     [Spec("css-text-decor-3", "#text-decoration-line-property")]
+    [Spec("css-text-decor-4", "#text-decoration-line-property")]
     public void LineThrough_DrawsLineNearRectangleMiddle()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -65,6 +70,7 @@ public sealed class TextDecorationPaintIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#lining-striking-props")]
     [Spec("css-text-decor-3", "#text-decoration-line-property")]
+    [Spec("css-text-decor-4", "#text-decoration-line-property")]
     public void Underline_OverlineLineThrough_ProduceDifferentYPositions()
     {
         var underlineY = GetDecorationY("underline");
@@ -78,6 +84,7 @@ public sealed class TextDecorationPaintIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#lining-striking-props")]
     [Spec("css-text-decor-3", "#text-decoration-line-property")]
+    [Spec("css-text-decor-4", "#text-decoration-line-property")]
     public void TextDecorationNone_DrawsNoLine()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -92,6 +99,7 @@ public sealed class TextDecorationPaintIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#lining-striking-props")]
     [Spec("css-text-decor-3", "#text-decoration-line-property")]
+    [Spec("css-text-decor-4", "#text-decoration-line-property")]
     public void SeveralLines_AreAllDrawn()
     {
         var lines = PageLines("<span style='text-decoration:underline overline'>text</span>");
@@ -102,6 +110,7 @@ public sealed class TextDecorationPaintIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#lining-striking-props")]
     [Spec("css-text-decor-3", "#text-decoration-line-property")]
+    [Spec("css-text-decor-4", "#text-decoration-line-property")]
     public void Blink_DrawsNoLine()
     {
         Assert.AreEqual(0, PageLines("<span style='text-decoration:blink'>text</span>").Count);
@@ -110,6 +119,7 @@ public sealed class TextDecorationPaintIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#lining-striking-props")]
     [Spec("css-text-decor-3", "#line-decoration")]
+    [Spec("css-text-decor-4", "#line-decoration")]
     public void Block_PropagatesTheDecorationToItsText()
     {
         Assert.AreEqual(1, PageLines("<div style='text-decoration:underline'>text</div>").Count);
@@ -118,6 +128,7 @@ public sealed class TextDecorationPaintIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#lining-striking-props")]
     [Spec("css-text-decor-3", "#line-decoration")]
+    [Spec("css-text-decor-4", "#line-decoration")]
     public void Inline_PropagatesTheDecorationToTheBlockThatSplitsIt()
     {
         Assert.AreEqual(3, PageLines("<span style='text-decoration:underline'>a<div>b</div>c</span>").Count);
@@ -126,6 +137,7 @@ public sealed class TextDecorationPaintIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#lining-striking-props")]
     [Spec("css-text-decor-3", "#line-decoration")]
+    [Spec("css-text-decor-4", "#line-decoration")]
     public void Underline_SkipsMarginAndPadding()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -142,6 +154,8 @@ public sealed class TextDecorationPaintIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#lining-striking-props")]
     [Spec("css-text-decor-3", "#line-decoration")]
+    [Spec("css-text-decor-4", "#line-decoration")]
+    [Spec("css-text-decor-4", "#text-decoration-skip-self-property")]
     public void Image_IsntUnderlined()
     {
         var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
@@ -158,6 +172,7 @@ public sealed class TextDecorationPaintIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#lining-striking-props")]
     [Spec("css-text-decor-3", "#line-decoration")]
+    [Spec("css-text-decor-4", "#line-decoration")]
     public void PropagatedDecoration_KeepsTheColorOfTheElementItIsSetOn()
     {
         var lines = PageLines("<div style='text-decoration:underline;color:rgb(0,0,255)'>a <span style='color:rgb(255,0,0)'>b</span></div>");
@@ -170,6 +185,7 @@ public sealed class TextDecorationPaintIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#lining-striking-props")]
     [Spec("css-text-decor-3", "#line-decoration")]
+    [Spec("css-text-decor-4", "#line-decoration")]
     public void Descendant_CantRemoveTheDecorationOfAnAncestor()
     {
         Assert.AreEqual(2, PageLines("<div style='text-decoration:underline'>a <span style='text-decoration:none'>b</span></div>").Count);
@@ -182,6 +198,7 @@ public sealed class TextDecorationPaintIntegrationTests
     [DataRow("position:absolute;top:100px")]
     [DataRow("display:inline-block")]
     [Spec("css-text-decor-3", "#line-decoration")]
+    [Spec("css-text-decor-4", "#line-decoration")]
     public void Decoration_IsntPropagatedToFloatsAbsolutesAndInlineBlocks(string style)
     {
         Assert.AreEqual(1, PageLines($"<div style='text-decoration:underline'>a <span style='{style}'>b</span></div>").Count);
