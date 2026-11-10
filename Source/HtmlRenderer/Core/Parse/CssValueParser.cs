@@ -111,6 +111,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 {
                     number = value.Substring(0, value.Length - 1);
                 }
+                else if (value.EndsWith(CssConstants.Rem))
+                {
+                    number = value.Substring(0, value.Length - 3);
+                }
                 else if (value.Length > 2)
                 {
                     number = value.Substring(0, value.Length - 2);
@@ -216,7 +220,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// Recognizes a length string that is a single calc-family (calc/min/max/clamp) function call.
         /// Real grammar/type validation happens in the vendored CSS-OM's CalcValueConverter at parse
         /// time (for any value that didn't arrive via var() substitution); this is a syntactic
-        /// recognizer only, used to gate the evaluation branch in <see cref="ParseLength(string, double, double, string, bool, bool)"/>.
+        /// recognizer only, used to gate the evaluation branch in <see cref="ParseLength(string, double, double, double, string, bool, bool)"/>.
         /// </summary>
         public static bool IsCalcFunction(string value)
         {
@@ -284,7 +288,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// <returns>the parsed length value with adjustments</returns>
         public static double ParseLength(string length, double hundredPercent, CssBoxProperties box, bool fontAdjust = false)
         {
-            return ParseLength(length, hundredPercent, box.GetEmHeight(), null, fontAdjust, false);
+            return ParseLength(length, hundredPercent, box.GetEmHeight(), box.GetRemHeight(), null, fontAdjust, false);
         }
 
         /// <summary>
@@ -297,7 +301,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// <returns>the parsed length value with adjustments</returns>
         public static double ParseLength(string length, double hundredPercent, CssBoxProperties box, string defaultUnit)
         {
-            return ParseLength(length, hundredPercent, box.GetEmHeight(), defaultUnit, false, false);
+            return ParseLength(length, hundredPercent, box.GetEmHeight(), box.GetRemHeight(), defaultUnit, false, false);
         }
 
         /// <summary>
@@ -306,11 +310,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// <param name="length">Specified length</param>
         /// <param name="hundredPercent">Equivalent to 100 percent when length is percentage</param>
         /// <param name="emFactor"></param>
+        /// <param name="remFactor">the root element's font size, in the same unit as <paramref name="emFactor"/></param>
         /// <param name="defaultUnit"></param>
         /// <param name="fontAdjust">if the length is in pixels and the length is font related it needs to use 72/96 factor</param>
         /// <param name="returnPoints">Allows the return double to be in points. If false, result will be pixels</param>
         /// <returns>the parsed length value with adjustments</returns>
-        public static double ParseLength(string length, double hundredPercent, double emFactor, string defaultUnit, bool fontAdjust, bool returnPoints)
+        public static double ParseLength(string length, double hundredPercent, double emFactor, double remFactor, string defaultUnit, bool fontAdjust, bool returnPoints)
         {
             //Return zero if no length specified, zero specified
             if (string.IsNullOrEmpty(length) || length == "0")
@@ -327,7 +332,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             if (TryGetCalcFunction(length, out calcFunction))
             {
                 var node = CalcParser.Parse(calcFunction);
-                var context = new CalcContext(hundredPercent, emFactor, emFactor, fontAdjust, returnPoints);
+                var context = new CalcContext(hundredPercent, emFactor, remFactor, fontAdjust, returnPoints);
                 var pixels = node != null ? CalcEvaluator.Evaluate(node, context) : null;
                 return pixels ?? 0d;
             }
@@ -340,13 +345,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             double factor;
 
             //Number of the length
-            string number = hasUnit ? length.Substring(0, length.Length - 2) : length;
+            string number = hasUnit ? length.Substring(0, length.Length - unit.Length) : length;
 
             //TODO: Units behave different in paper and in screen!
             switch (unit)
             {
                 case CssConstants.Em:
                     factor = emFactor;
+                    break;
+                case CssConstants.Rem:
+                    factor = remFactor;
                     break;
                 case CssConstants.Ex:
                     factor = emFactor / 2;
@@ -388,9 +396,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// </summary>
         private static string GetUnit(string length, string defaultUnit, out bool hasUnit)
         {
-            var unit = length.Length >= 3 ? length.Substring(length.Length - 2, 2) : string.Empty;
+            var unit = length.EndsWith(CssConstants.Rem) ? CssConstants.Rem : length.Length >= 3 ? length.Substring(length.Length - 2, 2) : string.Empty;
             switch (unit)
             {
+                case CssConstants.Rem:
                 case CssConstants.Em:
                 case CssConstants.Ex:
                 case CssConstants.Px:

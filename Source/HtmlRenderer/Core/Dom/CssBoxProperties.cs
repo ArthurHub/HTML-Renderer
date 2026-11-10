@@ -913,6 +913,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                     {
                         computedValue = len.ConvertEmToPoints(GetParent().ActualFont.Size).ToString();
                     }
+                    else if (len.Unit == CssUnit.Rems)
+                    {
+                        computedValue = string.Format(NumberFormatInfo.InvariantInfo, "{0}pt", len.Number * GetRootFontSize());
+                    }
                     else
                     {
                         computedValue = len.ToString();
@@ -1762,7 +1766,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                             fsize = parentSize + 2;
                             break;
                         default:
-                            fsize = CssValueParser.ParseLength(FontSize, parentSize, parentSize, null, true, true);
+                            fsize = CssValueParser.ParseLength(FontSize, parentSize, parentSize, GetRootFontSize(), null, true, true);
                             break;
                     }
 
@@ -1883,7 +1887,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// Gets the size of 1em in CSS pixels, per spec: an element's own computed font-size, not
         /// the font's line-spacing metric (ascent+descent+leading), which is typically 15-30%+
         /// larger and would inflate every em-based margin/padding/line-height. <see cref="ActualFont"/>
-        /// is created from a font-size already converted to points (<see cref="Parse.CssValueParser.ParseLength(string, double, double, string, bool, bool)"/>'s
+        /// is created from a font-size already converted to points (<see cref="Parse.CssValueParser.ParseLength(string, double, double, double, string, bool, bool)"/>'s
         /// fontAdjust factor, 72/96, applied when the declared value is in CSS px), so its own
         /// <see cref="Adapters.RFont.Size"/> is in points too - convert back to CSS px (the unit
         /// every other length in this engine resolves to) with the inverse, 96/72.
@@ -1892,6 +1896,47 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         public double GetEmHeight()
         {
             return ActualFont.Size * 96d / 72d;
+        }
+
+        /// <summary>
+        /// Gets the size of 1rem in CSS pixels, the root element's font size (css-values-4 §6.1.1).
+        /// </summary>
+        public double GetRemHeight()
+        {
+            return GetRootElement().GetEmHeight();
+        }
+
+        /// <summary>
+        /// Whether this box is the document's root element.
+        /// </summary>
+        protected virtual bool IsRootElement
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        /// Gets the root element, or the topmost box for a fragment without an html element.
+        /// </summary>
+        private CssBoxProperties GetRootElement()
+        {
+            var root = this;
+            for (var box = this; box != null; box = box.GetParent())
+            {
+                root = box;
+                if (box.IsRootElement)
+                    break;
+            }
+            return root;
+        }
+
+        /// <summary>
+        /// Gets the font size in points that rem refers to in this box's font-size.
+        /// </summary>
+        private double GetRootFontSize()
+        {
+            // css-values-4 §6.1.1: rem in the root element's own font-size refers to the initial value
+            var root = GetRootElement();
+            return root == this ? CssConstants.FontSize : root.ActualFont.Size;
         }
 
         /// <summary>

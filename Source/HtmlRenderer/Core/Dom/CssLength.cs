@@ -57,14 +57,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
 
             //Get units of the length
-            string u = length.Substring(length.Length - 2, 2);
+            string u = length.EndsWith(CssConstants.Rem) ? CssConstants.Rem : length.Substring(length.Length - 2, 2);
 
             //Number of the length
-            string number = length.Substring(0, length.Length - 2);
+            string number = length.Substring(0, length.Length - u.Length);
 
             //TODO: Units behave different in paper and in screen!
             switch (u)
             {
+                case CssConstants.Rem:
+                    _unit = CssUnit.Rems;
+                    _isRelative = true;
+                    break;
                 case CssConstants.Em:
                     _unit = CssUnit.Ems;
                     _isRelative = true;
@@ -217,6 +221,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         break;
                     case CssUnit.Ems:
                         u = "em";
+                        break;
+                    case CssUnit.Rems:
+                        u = "rem";
                         break;
                     case CssUnit.Pixels:
                         u = "px";

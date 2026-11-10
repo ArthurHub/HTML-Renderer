@@ -164,6 +164,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         public const string Em = "em";
 
         /// <summary>
+        /// Rem - The font size of the root element
+        /// </summary>
+        public const string Rem = "rem";
+
+        /// <summary>
         /// The 'x-height' of the relevan font
         /// </summary>
         public const string Ex = "ex";
