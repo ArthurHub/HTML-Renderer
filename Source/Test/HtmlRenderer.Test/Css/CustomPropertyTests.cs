@@ -1,13 +1,15 @@
 using System.Linq;
 using HtmlRenderer.Test.CssEngineSupport;
+using HtmlRenderer.Test.TestSupport;
 using TheArtOfDev.HtmlRenderer.Core.CssEngine;
+using TheArtOfDev.HtmlRenderer.Core.Dom;
 
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
 /// Ported from PeachPDF.Tests/CSS/PropertyTests/CustomPropertyTests.cs. Verifies that the CSS module
 /// correctly parses custom properties (--foo) and tolerates the var() function inside any property's
-/// value. Pure CSSOM parse tests - no layout/cascade resolution of var() is exercised here.
+/// value. The inheritance tests at the end run the cascade, the rest are pure CSSOM parse tests.
 /// </summary>
 [TestClass]
 public sealed class CustomPropertyTests
@@ -128,5 +130,45 @@ public sealed class CustomPropertyTests
         Assert.AreEqual("margin-top", property.Name);
         Assert.IsTrue(property.HasValue);
         Assert.AreEqual("-5px", property.Value);
+    }
+
+    // css-variables-1 §2: the computed value of a custom property has its var() substituted, and that
+    // is what inherits.
+    [TestMethod]
+    public void CustomProperty_IsInheritedWithVarSubstitutedOnTheParent()
+    {
+        var p = FindBoxByTag("<div style='--a: #ff0000; --b: var(--a)'><p style='--a: #0000ff; color: var(--b)'>a</p></div>", "p");
+        Assert.AreEqual("rgb(255, 0, 0)", p.Color);
+    }
+
+    [TestMethod]
+    public void CustomProperty_IsInheritedWithVarSubstitutedOnEachAncestor()
+    {
+        var p = FindBoxByTag(
+            "<div style='--foo: 10px'><div style='--bar: calc(var(--foo) + 10px)'>" +
+            "<p style='--foo: calc(var(--bar) + 10px); margin-left: var(--foo)'>a</p></div></div>", "p");
+        Assert.AreEqual(30, p.ActualMarginLeft, 0.01);
+    }
+
+    [TestMethod]
+    public void CyclicCustomProperty_IsInheritedAsGuaranteedInvalid()
+    {
+        var p = FindBoxByTag("<div style='--a: var(--b); --b: var(--a)'><p style='--b: #ff0000; color: var(--a, #008000)'>a</p></div>", "p");
+        Assert.AreEqual("rgb(0, 128, 0)", p.Color);
+    }
+
+    [TestMethod]
+    public void InheritedProperty_UsingVar_InheritsTheParentsResolvedValue()
+    {
+        var p = FindBoxByTag("<div style='--a: #ff0000; color: var(--a)'><p style='--a: #0000ff'>a</p></div>", "p");
+        Assert.AreEqual("rgb(255, 0, 0)", p.Color);
+    }
+
+    private static CssBox FindBoxByTag(string body, string tag)
+    {
+        var (root, _) = LayoutHarness.Layout("<!DOCTYPE html><html><body>" + body + "</body></html>");
+        var box = LayoutHarness.Descendants(root).FirstOrDefault(b => b.HtmlTag != null && b.HtmlTag.Name == tag);
+        Assert.IsNotNull(box);
+        return box!;
     }
 }
