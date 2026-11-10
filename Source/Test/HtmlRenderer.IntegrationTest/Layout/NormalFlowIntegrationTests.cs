@@ -60,6 +60,7 @@ public sealed class NormalFlowIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#inline-formatting")]
+    [Spec("css-inline-3", "#line-boxes")]
     public void InlineBoxes_AreLaidOutHorizontallyRespectingMarginsBordersAndPadding()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -74,6 +75,7 @@ public sealed class NormalFlowIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#inline-formatting")]
+    [Spec("css-inline-3", "#line-boxes")]
     public void ContentThatDoesNotFit_IsDistributedOverStackedLineBoxes()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -104,6 +106,7 @@ public sealed class NormalFlowIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#inline-formatting")]
+    [Spec("css-inline-3", "#line-boxes")]
     public void AnUnbreakableWord_StaysOnTheFirstLine()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -117,6 +120,7 @@ public sealed class NormalFlowIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#inline-formatting")]
+    [Spec("css-inline-3", "#line-boxes")]
     public void ASplitInlineBox_HasNoPaddingWhereItIsSplit()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -131,6 +135,7 @@ public sealed class NormalFlowIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#inline-formatting")]
+    [Spec("css-inline-3", "#invisible-line-boxes")]
     public void ALineBoxWithoutContent_HasZeroHeight()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

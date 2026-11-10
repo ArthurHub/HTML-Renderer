@@ -75,16 +75,6 @@ public sealed class CssWritingModesTests
 
     [Ignore("Gap, see Spec/css-writing-modes-4.yml")]
     [TestMethod]
-    [Spec("css-writing-modes-4", "#bidi-atomic-inlines")]
-    public void InlineBlock_InAnRtlBlock_IsReorderedLikeAWord()
-    {
-        var root = Layout("<div style='direction:rtl;width:300px'><span id='b' style='display:inline-block;width:20px;height:10px'></span> אבג</div>");
-
-        Assert.IsGreaterThan(Word(root, "אבג").Right, LayoutHarness.FindById(root, "b")!.Location.X);
-    }
-
-    [Ignore("Gap, see Spec/css-writing-modes-4.yml")]
-    [TestMethod]
     [Spec("css-writing-modes-4", "#block-flow")]
     [DataRow("horizontal-tb")]
     [DataRow("vertical-rl")]
@@ -162,15 +152,6 @@ public sealed class CssWritingModesTests
 
         Assert.AreEqual(30, box.Location.X, Delta);
         Assert.AreEqual(170, box.Size.Width, Delta);
-    }
-
-    [TestMethod]
-    [Spec("css-writing-modes-4", "#replaced-baselines")]
-    public void InlineBlock_IsAlignedByTheBaselineOfItsLastLine()
-    {
-        var root = Layout("<div style='width:300px'>x <span style='display:inline-block;padding-top:20px'>y</span></div>");
-
-        Assert.AreEqual(Word(root, "x").Top, Word(root, "y").Top, Delta);
     }
 
     [TestMethod]

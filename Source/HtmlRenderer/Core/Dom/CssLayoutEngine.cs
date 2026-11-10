@@ -745,11 +745,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             return font.Height;
         }
 
-        /// <summary>
-        /// Applies vertical alignment to the linebox
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="lineBox"></param>
+        // CSS 2.1 §10.8.1, CSS Inline 3 §4.2. baseline is done by ApplyBaselineAlignment.
         private static void ApplyVerticalAlignment(RGraphics g, CssLineBox lineBox)
         {
             double baseline = Single.MinValue;
@@ -761,7 +757,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             var boxes = new List<CssBox>(lineBox.Rectangles.Keys);
             foreach (CssBox box in boxes)
             {
-                // CSS 2.1 §10.8.1
                 switch (box.VerticalAlign)
                 {
                     case CssConstants.Sub:

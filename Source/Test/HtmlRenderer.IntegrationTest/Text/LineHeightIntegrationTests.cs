@@ -21,6 +21,8 @@ public sealed class LineHeightIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#line-height")]
+    [Spec("css-inline-3", "#line-layout")]
+    [Spec("css-inline-3", "#inline-height")]
     public void TallerInlineText_MakesTheLineTaller()
     {
         var root = Layout("<div id='p'>x<span id='s' style='font-size:60px'>T</span></div>");
@@ -28,17 +30,24 @@ public sealed class LineHeightIntegrationTests
         Assert.AreEqual(Box(root, "s").ActualFont.Height, Height(Box(root, "p")), Delta);
     }
 
+    // The image sits on the baseline, so the text's descent hangs below it.
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#line-height")]
+    [Spec("css-inline-3", "#line-layout")]
     public void TallImage_MakesTheLineTaller()
     {
+        var plain = Layout("<div id='p'>x</div>");
+        var plainP = Box(plain, "p");
+        var descent = Height(plainP) - (FirstWord(plainP).Top - plainP.Location.Y) - plainP.ActualFont.UnderlineOffset;
         var root = TestImages.Layout($"<div id='p'>x<img style='width:10px;height:100px' src='{Image}'>y</div>");
 
-        Assert.AreEqual(100, Height(Box(root, "p")), Delta);
+        Assert.AreEqual(100 + descent, Height(Box(root, "p")), Delta);
     }
 
     [TestMethod]
     [Spec("css21", "visudet.html#line-height")]
+    [Spec("css-inline-3", "#line-layout")]
     public void InlineBlockVerticalPadding_MakesTheLineTaller()
     {
         var plain = Layout("<div id='p'>a<div style='display:inline-block'>x</div></div>");
@@ -50,6 +59,7 @@ public sealed class LineHeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#line-height")]
+    [Spec("css-inline-3", "#line-layout")]
     public void InlineBlockVerticalMargins_MakeTheLineTaller()
     {
         var plain = Layout("<div id='p'>a<div style='display:inline-block'>x</div></div>");
@@ -61,6 +71,7 @@ public sealed class LineHeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#line-height")]
+    [Spec("css-inline-3", "#inline-height")]
     public void InlineLineHeight_MakesTheLineTaller()
     {
         var root = Layout("<div id='p'>x<span style='line-height:60px'>y</span></div>");
@@ -72,6 +83,7 @@ public sealed class LineHeightIntegrationTests
     [TestMethod]
     [Spec("css21", "visudet.html#line-height")]
     [Spec("css-writing-modes-4", "#replaced-baselines")]
+    [Spec("css-inline-3", "#baseline-tables")]
     public void Image_SitsOnTheBaseline()
     {
         var root = TestImages.Layout($"<div id='p' style='font-size:20px'><span id='t'>x</span><img id='i' src='{Image}'></div>");
@@ -83,6 +95,7 @@ public sealed class LineHeightIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#leading")]
+    [Spec("css-inline-3", "#line-height-property")]
     public void LineHeightLargerThanTheFont_MakesTheLineTaller()
     {
         var root = Layout("<div id='p' style='line-height:40px'>x</div>");
@@ -93,6 +106,7 @@ public sealed class LineHeightIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#leading")]
+    [Spec("css-inline-3", "#line-height-property")]
     public void NumberLineHeight_ScalesWithTheFontSize()
     {
         var small = Layout("<div id='p' style='font-size:20px;line-height:2'>x</div>");
@@ -103,6 +117,7 @@ public sealed class LineHeightIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#leading")]
+    [Spec("css-inline-3", "#line-height-property")]
     public void EveryLine_GetsTheLineHeight()
     {
         var one = Layout("<div id='p' style='line-height:40px'>x</div>");
@@ -114,6 +129,7 @@ public sealed class LineHeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#leading")]
+    [Spec("css-inline-3", "#line-height-property")]
     public void LengthLineHeight_IsTheHeightOfTheLine()
     {
         var root = Layout("<div id='p' style='line-height:40px'>x</div>");
@@ -124,6 +140,7 @@ public sealed class LineHeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#leading")]
+    [Spec("css-inline-3", "#inline-height")]
     public void LineHeightSmallerThanTheFont_MakesTheLineShorter()
     {
         var root = Layout("<div id='p' style='line-height:5px'>x</div>");
@@ -134,6 +151,7 @@ public sealed class LineHeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#leading")]
+    [Spec("css-inline-3", "#inline-height")]
     public void HalfLeading_CentersTheTextInTheLine()
     {
         var root = Layout("<div id='p' style='line-height:60px'>x</div>");
@@ -145,6 +163,7 @@ public sealed class LineHeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#leading")]
+    [Spec("css-inline-3", "#line-height-property")]
     public void PercentageLineHeight_ResolvesAgainstTheFontSize()
     {
         var root = Layout("<div id='p' style='font-size:20px;line-height:300%'>x</div>");
@@ -155,6 +174,7 @@ public sealed class LineHeightIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#leading")]
+    [Spec("css-inline-3", "#line-height-property")]
     public void NumberLineHeight_IsInheritedAsTheNumber()
     {
         var root = Layout("<div style='font-size:10px;line-height:3'><div id='p' style='font-size:20px'>x</div></div>");

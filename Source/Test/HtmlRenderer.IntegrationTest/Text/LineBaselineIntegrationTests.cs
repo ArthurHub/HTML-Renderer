@@ -16,6 +16,8 @@ public sealed class LineBaselineIntegrationTests
     [TestMethod]
     [Spec("css21", "visudet.html#leading")]
     [Spec("css-writing-modes-4", "#baseline-alignment")]
+    [Spec("css-inline-3", "#alignment")]
+    [Spec("css-inline-3", "#ascent-descent")]
     public void SmallerText_SitsOnTheBaselineOfTheLargerText()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -30,6 +32,7 @@ public sealed class LineBaselineIntegrationTests
     [TestMethod]
     [Spec("css21", "visudet.html#leading")]
     [Spec("css-writing-modes-4", "#text-baselines")]
+    [Spec("css-inline-3", "#alignment")]
     public void SmallerText_SitsOnTheBaselineOfTheBlocksOwnFont()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -42,6 +45,7 @@ public sealed class LineBaselineIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#leading")]
+    [Spec("css-inline-3", "#inline-height")]
     public void LineWithOnlySmallerText_IsAsTallAsTheBlocksFont()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

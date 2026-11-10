@@ -5,187 +5,213 @@ snapshot: https://www.w3.org/TR/2024/WD-css-inline-3-20241218/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
+    status: n/a
   '#model':
     title: 2 Inline Layout Model
-    status: unknown
+    status: partial
   '#line-boxes':
     title: 2.1 Layout of Line Boxes
-    status: unknown
+    status: partial
+    gaps:
+      - The start padding, border and margin of an inline box are repeated on every line it's split onto, see CSS 2.1 9.4.2
+      - A word wider than the line box starts a new line, leaving an empty line above it, see CSS 2.1 9.4.2
   '#line-layout':
     title: 2.2 Layout Within Line Boxes
-    status: unknown
+    status: partial
+    gaps:
+      - Vertical margins of an inline-block don't make the line box taller, see CSS 2.1 10.8
   '#invisible-line-boxes':
     title: 2.3 Phantom Line Boxes
-    status: unknown
+    status: supported
   '#paint-order':
     title: 2.4 Painting Order
-    status: unknown
+    status: supported
   '#css-metrics':
     title: 3 Baselines and Alignment Metrics
-    status: unknown
+    status: partial
   '#baseline-intro':
     title: 3.1 Introduction to Baselines
-    status: unknown
+    status: n/a
   '#baseline-types':
     title: 3.2 Baselines and Metrics
-    status: unknown
+    status: partial
+    gaps:
+      - Only the alphabetic baseline, there are no ideographic, central, hanging or math baselines
   '#ascent-descent':
     title: 3.2.1 Ascent and Descent Metrics
-    status: unknown
+    status: supported
   '#font-line-gap':
     title: 3.2.2 Line Gap Metrics
-    status: unknown
+    status: n/a
+    gaps:
+      - Optional, the adapter's font height decides whether the line gap is included
   '#baseline-tables':
     title: 3.3 Baselines of Glyphs and Boxes
-    status: unknown
+    status: partial
+    gaps:
+      - Images are aligned with the top of the line instead of sitting on the baseline, see CSS 2.1 10.8
+      - An inline-block is aligned by its first line instead of its last line
   '#alignment':
     title: 4 Baseline Alignment
-    status: unknown
+    status: partial
   '#dominant-baseline-property':
     title: '4.1 Dominant Baselines: the dominant-baseline property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - dominant-baseline isn't accepted
   '#transverse-alignment':
     title: '4.2 Transverse Box Alignment: the vertical-align property'
-    status: unknown
+    status: partial
+    gaps:
+      - first, last and the alignment-baseline keywords such as central aren't accepted
+      - top, bottom, middle, text-top, text-bottom, lengths and percentages align like baseline, see CSS 2.1 10.8.1
+      - sub and super both move the text to the top of the line, see CSS 2.1 10.8.1
   '#baseline-source':
     title: '4.2.1 Alignment Baseline Source: the baseline-source longhand'
-    status: unknown
+    status: unsupported
+    gaps:
+      - baseline-source isn't accepted
   '#alignment-baseline-property':
     title: '4.2.2 Alignment Baseline Type: the alignment-baseline longhand'
-    status: unknown
+    status: unsupported
+    gaps:
+      - alignment-baseline isn't accepted
   '#alignment-baseline-svg-legacy':
     title: 4.2.2.1 Legacy Values for SVG
-    status: unknown
+    status: unsupported
   '#baseline-shift-property':
     title: '4.2.3 Post-Alignment Shift: the baseline-shift longhand'
-    status: unknown
+    status: unsupported
+    gaps:
+      - baseline-shift isn't accepted
   '#baseline-shift-svg-legacy':
     title: 4.2.3.1 Legacy Values for SVG
-    status: unknown
+    status: unsupported
   '#line-height':
     title: 5 Logical Heights and Inter-line Spacing
-    status: unknown
+    status: partial
   '#line-height-property':
     title: '5.1 Line Spacing: the line-height property'
-    status: unknown
+    status: partial
+    gaps:
+      - Negative values are accepted instead of being invalid
+      - The used line height is 90% of line-height, see CSS 2.1 10.8.1
+      - Percentages compute to normal, see CSS 2.1 10.8.1
+      - A number is inherited as the parent's computed length instead of the number, see CSS 2.1 10.8.1
   '#text-edges':
     title: '5.2 Text Edge Metrics: the line-fit-edge property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - line-fit-edge isn't accepted
   '#inline-height':
     title: 5.3 Calculating the Logical Height Contributions (“Layout Bounds”) of Inline Boxes
-    status: unknown
+    status: partial
+    gaps:
+      - line-height on an inline box is ignored, only the block's own line-height sizes the line, see CSS 2.1 10.8
+      - A line-height smaller than the font doesn't make the line shorter, see CSS 2.1 10.8.1
+      - No half-leading, the text sits at the top of the line instead of in its middle, see CSS 2.1 10.8.1
   '#leading-trim':
     title: 6 Trimming Leading Over/Under Text
-    status: unknown
+    status: unsupported
+    gaps:
+      - text-box, text-box-trim and text-box-edge aren't accepted
   '#text-box-shorthand':
     title: '6.1 Shorthand for Text Box Trimming: the text-box property'
-    status: unknown
+    status: unsupported
   '#text-box-trim':
     title: '6.2 Trimming Over/Under Text: the text-box-trim property'
-    status: unknown
+    status: unsupported
   '#text-box-edge':
     title: '6.3 Text Trimming Metrics: the text-box-edge property'
-    status: unknown
+    status: unsupported
   '#line-fill':
     title: '6.4 Inline Box Drawing Height: the inline-sizing property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - inline-sizing isn't accepted
   '#initial-letter-styling':
     title: 7 Initial Letters
-    status: unknown
+    status: unsupported
+    gaps:
+      - initial-letter, initial-letter-align and initial-letter-wrap aren't accepted
   '#initial-letter-intro':
     title: 7.1 An Introduction to Initial Letters
-    status: unknown
-  '#drop-initial':
-    title: 7.1.1 Drop Initial
-    status: unknown
-  '#sunk-initial':
-    title: 7.1.2 Sunken Initial Letters
-    status: unknown
-  '#raise-initial':
-    title: 7.1.3 Raised Initial Letters
-    status: unknown
+    status: n/a
   '#selecting-drop-initials':
     title: 7.2 Selecting Initial Letters
-    status: unknown
+    status: unsupported
   '#sizing-drop-initials':
     title: '7.3 Creating Initial Letters: the initial-letter property'
-    status: unknown
+    status: unsupported
   '#first-most-inline-level':
     title: 7.3.1 Applicability
-    status: unknown
+    status: unsupported
   '#aligning-initial-letter':
     title: '7.4 Alignment of Initial Letters: the initial-letter-align property'
-    status: unknown
+    status: unsupported
   '#initial-letter-align-defaults':
     title: 7.4.1 UA Default Stylesheet for initial-letter-align
-    status: unknown
+    status: unsupported
   '#initial-letter-layout':
     title: 7.5 Initial Letter Layout
-    status: unknown
+    status: unsupported
   '#initial-letter-properties':
     title: 7.5.1 Properties Applying to Initial Letters
-    status: unknown
+    status: unsupported
   '#initial-letter-box':
     title: 7.5.2 Margins, Borders, and Padding
-    status: unknown
+    status: unsupported
   '#sizing-initial-letter':
     title: 7.5.3 Font Sizing of Initial Letters
-    status: unknown
+    status: unsupported
   '#initial-letter-shaping':
     title: 7.5.4 Shaping and Glyph Selection
-    status: unknown
+    status: unsupported
   '#initial-letter-box-size':
     title: 7.5.5 Sizing the Initial Letter Box
-    status: unknown
+    status: unsupported
   '#initial-letter-content-align':
     title: 7.5.6 Alignment Within an Initial Letter Box
-    status: unknown
+    status: unsupported
   '#initial-letter-position':
     title: 7.6 Initial Letter Positioning and Spacing
-    status: unknown
+    status: unsupported
   '#initial-letter-block-position':
     title: 7.6.1 Block-axis Positioning
-    status: unknown
+    status: unsupported
   '#initial-letter-inline-position':
     title: 7.6.2 Inline Kerning
-    status: unknown
+    status: unsupported
   '#initial-letter-wrapping':
     title: '7.7 Initial Letter Wrapping: the initial-letter-wrap property'
-    status: unknown
+    status: unsupported
   '#initial-letter-line-layout':
     title: 7.8 Line Layout
-    status: unknown
+    status: unsupported
   '#initial-letter-inline-flow':
     title: '7.8.1 Inline Flow Layout: Alignment, Justification, and White Space'
-    status: unknown
+    status: unsupported
   '#initial-letter-indentation':
     title: '7.8.2 Edge Effects: Indentation and Hanging Punctuation'
-    status: unknown
+    status: unsupported
   '#initial-letter-ancestors':
     title: 7.8.3 Ancestor Inlines
-    status: unknown
+    status: unsupported
   '#initial-letter-multi-line':
     title: 7.8.4 Multi-line Initial Letters
-    status: unknown
+    status: unsupported
   '#initial-letter-paragraphs':
     title: 7.9 Clearing Initial Letters
-    status: unknown
+    status: unsupported
   '#raised-sunken-caps':
     title: 7.9.1 Raised and sunken caps
-    status: unknown
+    status: unsupported
   '#short-para-initial-letter':
     title: 7.9.2 Short paragraphs with initial letters
-    status: unknown
+    status: unsupported
   '#initial-letter-floats':
     title: 7.9.3 Interaction with floats
-    status: unknown
+    status: unsupported
   '#initial-letter-breaking':
     title: 7.9.4 Interaction with Fragmentation (Pagination)
-    status: unknown
+    status: unsupported

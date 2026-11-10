@@ -33,6 +33,7 @@ public sealed class VerticalAlignIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "visudet.html#leading")]
     [TestMethod]
+    [Spec("css-inline-3", "#transverse-alignment")]
     public void Top_PositionsHigherThanBottom()
     {
         var topY = GetAlignedTop("top");
@@ -44,6 +45,7 @@ public sealed class VerticalAlignIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "visudet.html#leading")]
     [TestMethod]
+    [Spec("css-inline-3", "#transverse-alignment")]
     public void Middle_PositionsBetweenTopAndBottom()
     {
         var topY = GetAlignedTop("top");
@@ -56,6 +58,7 @@ public sealed class VerticalAlignIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "visudet.html#leading")]
     [TestMethod]
+    [Spec("css-inline-3", "#transverse-alignment")]
     public void TextTop_PositionsAboveTextBottom()
     {
         var textTopY = GetAlignedTop("text-top");
@@ -67,6 +70,7 @@ public sealed class VerticalAlignIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "visudet.html#leading")]
     [TestMethod]
+    [Spec("css-inline-3", "#transverse-alignment")]
     public void Sub_PositionsBelowSuper()
     {
         var subY = GetAlignedTop("sub");
@@ -184,6 +188,7 @@ public sealed class VerticalAlignIntegrationTests
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "visudet.html#leading")]
     [TestMethod]
+    [Spec("css-inline-3", "#transverse-alignment")]
     public void Length_PositiveValue_RaisesTheBoxAboveBaseline()
     {
         var baselineY = GetAlignedTop("baseline");
