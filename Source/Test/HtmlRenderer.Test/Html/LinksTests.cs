@@ -64,6 +64,7 @@ public sealed class LinksTests
     [TestMethod]
     [Spec("html", "links.html#following-hyperlinks")]
     [Spec("html", "iana.html#text/html")]
+    [Spec("html", "browsing-the-web.html#scrolling-to-a-fragment")]
     public void FragmentLink_ScrollsToTheElement()
     {
         var (root, container) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -76,6 +77,7 @@ public sealed class LinksTests
     [Ignore("Gap, see Spec/html.yml")]
     [Spec("html", "links.html#following-hyperlinks")]
     [Spec("html", "iana.html#text/html")]
+    [Spec("html", "browsing-the-web.html#scrolling-to-a-fragment")]
     public void FragmentLink_MatchesTheIdCaseSensitively()
     {
         var (root, container) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -88,6 +90,7 @@ public sealed class LinksTests
     [Ignore("Gap, see Spec/html.yml")]
     [Spec("html", "links.html#following-hyperlinks")]
     [Spec("html", "iana.html#text/html")]
+    [Spec("html", "browsing-the-web.html#scrolling-to-a-fragment")]
     public void FragmentLink_FallsBackToANamedAnchor()
     {
         var (root, container) = LayoutHarness.Layout(LayoutHarness.Wrap(

@@ -1427,466 +1427,72 @@ sections:
     status: n/a
   browsers.html#browsers:
     title: 7 Loading web pages
-    status: unknown
+    status: partial
   browsers.html#loading-web-pages-supporting-concepts:
     title: 7.1 Supporting concepts
-    status: unknown
-  browsers.html#origin:
-    title: 7.1.1 Origins
-    status: unknown
-  browsers.html#sites:
-    title: 7.1.1.1 Sites
-    status: unknown
-  browsers.html#relaxing-the-same-origin-restriction:
-    title: 7.1.1.2 Relaxing the same-origin restriction
-    status: unknown
-  browsers.html#the-origin-interface:
-    title: 7.1.1.3 The Origin interface
-    status: unknown
-  browsers.html#origin-keyed-agent-clusters:
-    title: 7.1.2 Origin-keyed agent clusters
-    status: unknown
-  browsers.html#cross-origin-opener-policies:
-    title: 7.1.3 Cross-origin opener policies
-    status: unknown
-  browsers.html#the-coop-headers:
-    title: 7.1.3.1 The headers
-    status: unknown
-  browsers.html#browsing-context-group-switches-due-to-cross-origin-opener-policy:
-    title: 7.1.3.2 Browsing context group switches due to opener policy
-    status: unknown
-  browsers.html#coop-reporting:
-    title: 7.1.3.3 Reporting
-    status: unknown
-  browsers.html#coep:
-    title: 7.1.4 Cross-origin embedder policies
-    status: unknown
-  browsers.html#the-coep-headers:
-    title: 7.1.4.1 The headers
-    status: unknown
-  browsers.html#embedder-policy-checks:
-    title: 7.1.4.2 Embedder policy checks
-    status: unknown
-  browsers.html#sandboxing:
-    title: 7.1.5 Sandboxing
-    status: unknown
-  browsers.html#iframe-element-referrer-policy:
-    title: 7.1.6 iframe element referrer policy
-    status: unknown
-  browsers.html#policy-containers:
-    title: 7.1.7 Policy containers
-    status: unknown
+    status: n/a
   nav-history-apis.html#nav-traversal-apis:
     title: 7.2 APIs related to navigation and session history
-    status: unknown
-  nav-history-apis.html#cross-origin-objects:
-    title: 7.2.1 Security infrastructure for Window, WindowProxy, and Location objects
-    status: unknown
-  nav-history-apis.html#integration-with-idl:
-    title: 7.2.1.1 Integration with IDL
-    status: unknown
-  nav-history-apis.html#shared-internal-slot:-crossoriginpropertydescriptormap:
-    title: '7.2.1.2 Shared internal slot: [[CrossOriginPropertyDescriptorMap]]'
-    status: unknown
-  nav-history-apis.html#shared-abstract-operations:
-    title: 7.2.1.3 Shared abstract operations
-    status: unknown
-  nav-history-apis.html#crossoriginproperties-(-o-):
-    title: 7.2.1.3.1 CrossOriginProperties ( O )
-    status: unknown
-  nav-history-apis.html#crossoriginpropertyfallback-(-p-):
-    title: 7.2.1.3.2 CrossOriginPropertyFallback ( P )
-    status: unknown
-  nav-history-apis.html#isplatformobjectsameorigin-(-o-):
-    title: 7.2.1.3.3 IsPlatformObjectSameOrigin ( O )
-    status: unknown
-  nav-history-apis.html#crossorigingetownpropertyhelper-(-o,-p-):
-    title: 7.2.1.3.4 CrossOriginGetOwnPropertyHelper ( O, P )
-    status: unknown
-  nav-history-apis.html#crossoriginget-(-o,-p,-receiver-):
-    title: 7.2.1.3.5 CrossOriginGet ( O, P, Receiver )
-    status: unknown
-  nav-history-apis.html#crossoriginset-(-o,-p,-v,-receiver-):
-    title: 7.2.1.3.6 CrossOriginSet ( O, P, V, Receiver )
-    status: unknown
-  nav-history-apis.html#crossoriginownpropertykeys-(-o-):
-    title: 7.2.1.3.7 CrossOriginOwnPropertyKeys ( O )
-    status: unknown
-  nav-history-apis.html#the-window-object:
-    title: 7.2.2 The Window object
-    status: unknown
-  nav-history-apis.html#apis-for-creating-and-navigating-browsing-contexts-by-name:
-    title: 7.2.2.1 Opening and closing windows
-    status: unknown
-  nav-history-apis.html#accessing-other-browsing-contexts:
-    title: 7.2.2.2 Indexed access on the Window object
-    status: unknown
-  nav-history-apis.html#named-access-on-the-window-object:
-    title: 7.2.2.3 Named access on the Window object
-    status: unknown
-  nav-history-apis.html#navigating-nested-browsing-contexts-in-the-dom:
-    title: 7.2.2.4 Accessing related windows
-    status: unknown
-  nav-history-apis.html#browser-interface-elements:
-    title: 7.2.2.5 Historical browser interface element APIs
-    status: unknown
-  nav-history-apis.html#script-settings-for-window-objects:
-    title: 7.2.2.6 Script settings for Window objects
-    status: unknown
-  nav-history-apis.html#the-windowproxy-exotic-object:
-    title: 7.2.3 The WindowProxy exotic object
-    status: unknown
-  nav-history-apis.html#windowproxy-getprototypeof:
-    title: 7.2.3.1 [[GetPrototypeOf]] ( )
-    status: unknown
-  nav-history-apis.html#windowproxy-setprototypeof:
-    title: 7.2.3.2 [[SetPrototypeOf]] ( V )
-    status: unknown
-  nav-history-apis.html#windowproxy-isextensible:
-    title: 7.2.3.3 [[IsExtensible]] ( )
-    status: unknown
-  nav-history-apis.html#windowproxy-preventextensions:
-    title: 7.2.3.4 [[PreventExtensions]] ( )
-    status: unknown
-  nav-history-apis.html#windowproxy-getownproperty:
-    title: 7.2.3.5 [[GetOwnProperty]] ( P )
-    status: unknown
-  nav-history-apis.html#windowproxy-defineownproperty:
-    title: 7.2.3.6 [[DefineOwnProperty]] ( P, Desc )
-    status: unknown
-  nav-history-apis.html#windowproxy-get:
-    title: 7.2.3.7 [[Get]] ( P, Receiver )
-    status: unknown
-  nav-history-apis.html#windowproxy-set:
-    title: 7.2.3.8 [[Set]] ( P, V, Receiver )
-    status: unknown
-  nav-history-apis.html#windowproxy-delete:
-    title: 7.2.3.9 [[Delete]] ( P )
-    status: unknown
-  nav-history-apis.html#windowproxy-ownpropertykeys:
-    title: 7.2.3.10 [[OwnPropertyKeys]] ( )
-    status: unknown
-  nav-history-apis.html#the-location-interface:
-    title: 7.2.4 The Location interface
-    status: unknown
-  nav-history-apis.html#location-getprototypeof:
-    title: 7.2.4.1 [[GetPrototypeOf]] ( )
-    status: unknown
-  nav-history-apis.html#location-setprototypeof:
-    title: 7.2.4.2 [[SetPrototypeOf]] ( V )
-    status: unknown
-  nav-history-apis.html#location-isextensible:
-    title: 7.2.4.3 [[IsExtensible]] ( )
-    status: unknown
-  nav-history-apis.html#location-preventextensions:
-    title: 7.2.4.4 [[PreventExtensions]] ( )
-    status: unknown
-  nav-history-apis.html#location-getownproperty:
-    title: 7.2.4.5 [[GetOwnProperty]] ( P )
-    status: unknown
-  nav-history-apis.html#location-defineownproperty:
-    title: 7.2.4.6 [[DefineOwnProperty]] ( P, Desc )
-    status: unknown
-  nav-history-apis.html#location-get:
-    title: 7.2.4.7 [[Get]] ( P, Receiver )
-    status: unknown
-  nav-history-apis.html#location-set:
-    title: 7.2.4.8 [[Set]] ( P, V, Receiver )
-    status: unknown
-  nav-history-apis.html#location-delete:
-    title: 7.2.4.9 [[Delete]] ( P )
-    status: unknown
-  nav-history-apis.html#location-ownpropertykeys:
-    title: 7.2.4.10 [[OwnPropertyKeys]] ( )
-    status: unknown
-  nav-history-apis.html#the-history-interface:
-    title: 7.2.5 The History interface
-    status: unknown
-  nav-history-apis.html#navigation-api:
-    title: 7.2.6 The navigation API
-    status: unknown
-  nav-history-apis.html#navigation-api-intro:
-    title: 7.2.6.1 Introduction
-    status: unknown
-  nav-history-apis.html#navigation-interface:
-    title: 7.2.6.2 The Navigation interface
-    status: unknown
-  nav-history-apis.html#navigation-api-core:
-    title: 7.2.6.3 Core infrastructure
-    status: unknown
-  nav-history-apis.html#navigation-api-entry-updates:
-    title: 7.2.6.4 Initializing and updating the entry list
-    status: unknown
-  nav-history-apis.html#the-navigationhistoryentry-interface:
-    title: 7.2.6.5 The NavigationHistoryEntry interface
-    status: unknown
-  nav-history-apis.html#the-history-entry-list:
-    title: 7.2.6.6 The history entry list
-    status: unknown
-  nav-history-apis.html#navigation-api-initiating-navigations:
-    title: 7.2.6.7 Initiating navigations
-    status: unknown
-  nav-history-apis.html#ongoing-navigation-tracking:
-    title: 7.2.6.8 Ongoing navigation tracking
-    status: unknown
-  nav-history-apis.html#navigation-activation-interface:
-    title: 7.2.6.9 The NavigationActivation interface
-    status: unknown
-  nav-history-apis.html#the-navigate-event:
-    title: 7.2.6.10 The navigate event
-    status: unknown
-  nav-history-apis.html#the-navigateevent-interface:
-    title: 7.2.6.10.1 The NavigateEvent interface
-    status: unknown
-  nav-history-apis.html#the-navigationprecommitcontroller-interface:
-    title: 7.2.6.10.2 The NavigationPrecommitController interface
-    status: unknown
-  nav-history-apis.html#the-navigationdestination-interface:
-    title: 7.2.6.10.3 The NavigationDestination interface
-    status: unknown
-  nav-history-apis.html#navigate-event-firing:
-    title: 7.2.6.10.4 Firing the event
-    status: unknown
-  nav-history-apis.html#navigate-event-scroll-focus:
-    title: 7.2.6.10.5 Scroll and focus behavior
-    status: unknown
-  nav-history-apis.html#nav-traversal-event-interfaces:
-    title: 7.2.7 Event interfaces
-    status: unknown
-  nav-history-apis.html#the-navigationcurrententrychangeevent-interface:
-    title: 7.2.7.1 The NavigationCurrentEntryChangeEvent interface
-    status: unknown
-  nav-history-apis.html#the-popstateevent-interface:
-    title: 7.2.7.2 The PopStateEvent interface
-    status: unknown
-  nav-history-apis.html#the-hashchangeevent-interface:
-    title: 7.2.7.3 The HashChangeEvent interface
-    status: unknown
-  nav-history-apis.html#the-pageswapevent-interface:
-    title: 7.2.7.4 The PageSwapEvent interface
-    status: unknown
-  nav-history-apis.html#the-pagerevealevent-interface:
-    title: 7.2.7.5 The PageRevealEvent interface
-    status: unknown
-  nav-history-apis.html#the-pagetransitionevent-interface:
-    title: 7.2.7.6 The PageTransitionEvent interface
-    status: unknown
-  nav-history-apis.html#the-beforeunloadevent-interface:
-    title: 7.2.7.7 The BeforeUnloadEvent interface
-    status: unknown
-  nav-history-apis.html#the-notrestoredreasons-interface:
-    title: 7.2.8 The NotRestoredReasons interface
-    status: unknown
+    status: n/a
   document-sequences.html#infrastructure-for-sequences-of-documents:
     title: 7.3 Infrastructure for sequences of documents
-    status: unknown
-  document-sequences.html#navigables:
-    title: 7.3.1 Navigables
-    status: unknown
-  document-sequences.html#traversable-navigables:
-    title: 7.3.1.1 Traversable navigables
-    status: unknown
-  document-sequences.html#top-level-traversables:
-    title: 7.3.1.2 Top-level traversables
-    status: unknown
-  document-sequences.html#child-navigables:
-    title: 7.3.1.3 Child navigables
-    status: unknown
-  document-sequences.html#jake-diagrams:
-    title: 7.3.1.4 Jake diagrams
-    status: unknown
-  document-sequences.html#related-navigable-collections:
-    title: 7.3.1.5 Related navigable collections
-    status: unknown
-  document-sequences.html#garbage-collection-and-browsing-contexts:
-    title: 7.3.1.6 Navigable destruction
-    status: unknown
-  document-sequences.html#navigable-target-names:
-    title: 7.3.1.7 Navigable target names
-    status: unknown
-  document-sequences.html#windows:
-    title: 7.3.2 Browsing contexts
-    status: unknown
-  document-sequences.html#creating-browsing-contexts:
-    title: 7.3.2.1 Creating browsing contexts
-    status: unknown
-  document-sequences.html#nested-browsing-contexts:
-    title: 7.3.2.2 Related browsing contexts
-    status: unknown
-  document-sequences.html#groupings-of-browsing-contexts:
-    title: 7.3.2.3 Groupings of browsing contexts
-    status: unknown
-  document-sequences.html#fully-active-documents:
-    title: 7.3.3 Fully active documents
-    status: unknown
+    status: n/a
   browsing-the-web.html#navigation-and-session-history:
     title: 7.4 Navigation and session history
-    status: unknown
+    status: partial
   browsing-the-web.html#session-history-infrastructure:
     title: 7.4.1 Session history
-    status: unknown
-  browsing-the-web.html#session-history-entries:
-    title: 7.4.1.1 Session history entries
-    status: unknown
-  browsing-the-web.html#document-state:
-    title: 7.4.1.2 Document state
-    status: unknown
-  browsing-the-web.html#centralized-modifications-of-session-history:
-    title: 7.4.1.3 Centralized modifications of session history
-    status: unknown
-  browsing-the-web.html#low-level-operations-on-session-history:
-    title: 7.4.1.4 Low-level operations on session history
-    status: unknown
+    status: n/a
   browsing-the-web.html#navigating-across-documents:
     title: 7.4.2 Navigation
-    status: unknown
-  browsing-the-web.html#navigation-supporting-concepts:
-    title: 7.4.2.1 Supporting concepts
-    status: unknown
-  browsing-the-web.html#beginning-navigation:
-    title: 7.4.2.2 Beginning navigation
-    status: unknown
-  browsing-the-web.html#ending-navigation:
-    title: 7.4.2.3 Ending navigation
-    status: unknown
-  browsing-the-web.html#the-usual-cross-document-navigation-case:
-    title: 7.4.2.3.1 The usual cross-document navigation case
-    status: unknown
-  browsing-the-web.html#the-javascript:-url-special-case:
-    title: '7.4.2.3.2 The javascript: URL special case'
-    status: unknown
-  browsing-the-web.html#scroll-to-fragid:
-    title: 7.4.2.3.3 Fragment navigations
-    status: unknown
-  browsing-the-web.html#non-fetch-schemes-and-external-software:
-    title: 7.4.2.3.4 Non-fetch schemes and external software
-    status: unknown
-  browsing-the-web.html#preventing-navigation:
-    title: 7.4.2.4 Preventing navigation
-    status: unknown
-  browsing-the-web.html#aborting-navigation:
-    title: 7.4.2.5 Aborting navigation
-    status: unknown
+    status: n/a
   browsing-the-web.html#reloading-and-traversing:
     title: 7.4.3 Reloading and traversing
-    status: unknown
+    status: n/a
   browsing-the-web.html#navigate-non-frag-sync:
     title: 7.4.4 Non-fragment synchronous "navigations"
-    status: unknown
+    status: n/a
   browsing-the-web.html#populating-a-session-history-entry:
     title: 7.4.5 Populating a session history entry
-    status: unknown
+    status: n/a
   browsing-the-web.html#applying-the-history-step:
     title: 7.4.6 Applying the history step
-    status: unknown
+    status: partial
   browsing-the-web.html#updating-the-traversable:
     title: 7.4.6.1 Updating the traversable
-    status: unknown
+    status: n/a
   browsing-the-web.html#updating-the-document:
     title: 7.4.6.2 Updating the document
-    status: unknown
+    status: n/a
   browsing-the-web.html#revealing-the-document:
     title: 7.4.6.3 Revealing the document
-    status: unknown
+    status: n/a
   browsing-the-web.html#scrolling-to-a-fragment:
     title: 7.4.6.4 Scrolling to a fragment
-    status: unknown
+    status: partial
+    gaps:
+      - A fragment matches ids case-insensitively and doesn't fall back to the name of an a element
+      - The fragment isn't percent-decoded
+      - A fragment of top or an empty fragment doesn't scroll to the top, an empty one is opened with Process.Start instead
+      - The scrolled-to element doesn't become the target element, :target never matches
   browsing-the-web.html#persisted-user-state-restoration:
     title: 7.4.6.5 Persisted history entry state
-    status: unknown
+    status: n/a
   document-lifecycle.html#document-lifecycle:
     title: 7.5 Document lifecycle
-    status: unknown
-  document-lifecycle.html#shared-document-creation-infrastructure:
-    title: 7.5.1 Shared document creation infrastructure
-    status: unknown
-  document-lifecycle.html#read-html:
-    title: 7.5.2 Loading HTML documents
-    status: unknown
-  document-lifecycle.html#read-xml:
-    title: 7.5.3 Loading XML documents
-    status: unknown
-  document-lifecycle.html#read-text:
-    title: 7.5.4 Loading text documents
-    status: unknown
-  document-lifecycle.html#read-multipart-x-mixed-replace:
-    title: 7.5.5 Loading multipart/x-mixed-replace documents
-    status: unknown
-  document-lifecycle.html#read-media:
-    title: 7.5.6 Loading media documents
-    status: unknown
-  document-lifecycle.html#read-ua-inline:
-    title: 7.5.7 Loading a document for inline content that doesn't have a DOM
-    status: unknown
-  document-lifecycle.html#loading-documents:
-    title: 7.5.8 Finishing the loading process
-    status: unknown
-  document-lifecycle.html#unloading-documents:
-    title: 7.5.9 Unloading documents
-    status: unknown
-  document-lifecycle.html#destroying-documents:
-    title: 7.5.10 Destroying documents
-    status: unknown
-  document-lifecycle.html#aborting-a-document-load:
-    title: 7.5.11 Aborting a document load
-    status: unknown
+    status: n/a
   speculative-loading.html#speculative-loading:
     title: 7.6 Speculative loading
-    status: unknown
-  speculative-loading.html#speculation-rules:
-    title: 7.6.1 Speculation rules
-    status: unknown
-  speculative-loading.html#speculation-rules-data-model:
-    title: 7.6.1.1 Data model
-    status: unknown
-  speculative-loading.html#speculation-rules-parsing:
-    title: 7.6.1.2 Parsing
-    status: unknown
-  speculative-loading.html#speculation-rules-processing-model:
-    title: 7.6.1.3 Processing model
-    status: unknown
-  speculative-loading.html#navigational-prefetching:
-    title: 7.6.2 Navigational prefetching
-    status: unknown
-  speculative-loading.html#the-speculation-rules-header:
-    title: 7.6.3 The `Speculation-Rules` header
-    status: unknown
-  speculative-loading.html#the-sec-speculation-tags-header:
-    title: 7.6.4 The `Sec-Speculation-Tags` header
-    status: unknown
-  speculative-loading.html#speculative-loading-security:
-    title: 7.6.5 Security considerations
-    status: unknown
-  speculative-loading.html#speculative-loading-cross-site-requests:
-    title: 7.6.5.1 Cross-site requests
-    status: unknown
-  speculative-loading.html#speculative-loading-injected-content:
-    title: 7.6.5.2 Injected content
-    status: unknown
-  speculative-loading.html#speculative-loading-ip-anonymization:
-    title: 7.6.5.3 IP anonymization
-    status: unknown
-  speculative-loading.html#speculative-loading-privacy:
-    title: 7.6.6 Privacy considerations
-    status: unknown
-  speculative-loading.html#speculative-loading-heuristics:
-    title: 7.6.6.1 Heuristics and optionality
-    status: unknown
-  speculative-loading.html#speculative-loading-state-partitioning:
-    title: 7.6.6.2 State partitioning
-    status: unknown
-  speculative-loading.html#speculative-loading-identity-joining:
-    title: 7.6.6.3 Identity joining
-    status: unknown
+    status: n/a
   speculative-loading.html#the-x-frame-options-header:
     title: 7.7 The `X-Frame-Options` header
-    status: unknown
+    status: n/a
   speculative-loading.html#the-refresh-header:
     title: 7.8 The `Refresh` header
-    status: unknown
+    status: n/a
   speculative-loading.html#nav-traversal-ui:
     title: 7.9 Browser user interface considerations
-    status: unknown
+    status: n/a
   webappapis.html#webappapis:
     title: 8 Web application APIs
     status: unknown
