@@ -87,7 +87,7 @@ sections:
     status: partial
     gaps:
       - A percentage font-size is inherited as the percentage and applied again in each descendant
-      - A percentage line-height resolves to 0 instead of a percentage of the font size
+      - "A percentage line-height computes to 0 instead of a percentage of the font size, so the line gets the height of 'normal'"
   syndata.html#uri:
     title: 4.3.4 URLs and URIs
     status: supported
@@ -599,7 +599,7 @@ sections:
       - The used line height is 90% of 'line-height'
       - A 'line-height' smaller than the font doesn't make the line shorter
       - No half-leading, the text sits at the top of the line instead of in its middle
-      - Percentages compute to 'normal'
+      - "A percentage line-height computes to 0 instead of a percentage of the font size, so the line gets the height of 'normal'"
       - A number is inherited as the parent's computed length instead of the number
       - "'vertical-align' top, bottom, middle, text-top, text-bottom, lengths and percentages are treated as 'baseline'"
       - "'vertical-align: sub' and 'super' both move the text to the top of the line"
@@ -1023,51 +1023,9 @@ sections:
     status: n/a
   aural.html#q19.0:
     title: A Aural style sheets
-    status: unsupported
+    status: n/a
     gaps:
-      - None of the aural properties are parsed
-  aural.html#aural-media-group:
-    title: A.1 The media types 'aural' and 'speech'
-    status: n/a
-  aural.html#aural-intro:
-    title: A.2 Introduction to aural style sheets
-    status: n/a
-  aural.html#volume-props:
-    title: A.3 Volume properties
-    status: unsupported
-  aural.html#speaking-props:
-    title: A.4 Speaking properties
-    status: unsupported
-  aural.html#pause-props:
-    title: A.5 Pause properties
-    status: unsupported
-  aural.html#cue-props:
-    title: A.6 Cue properties
-    status: unsupported
-  aural.html#mixing-props:
-    title: A.7 Mixing properties
-    status: unsupported
-  aural.html#spatial-props:
-    title: A.8 Spatial properties
-    status: unsupported
-  aural.html#voice-char-props:
-    title: A.9 Voice characteristic properties
-    status: unsupported
-  aural.html#speech-props:
-    title: A.10 Speech properties
-    status: unsupported
-  aural.html#aural-tables:
-    title: A.11 Audio rendering of tables
-    status: unsupported
-  aural.html#speak-headers:
-    title: A.11.1 Speaking headers
-    status: unsupported
-  aural.html#sample:
-    title: A.12 Sample style sheet for HTML
-    status: n/a
-  aural.html#Emacspeak:
-    title: A.13 Emacspeak
-    status: n/a
+      - Informative appendix, the library is a visual renderer and doesn't speak, none of the aural properties are parsed
   sample.html#q22.0:
     title: D Default style sheet for HTML 4
     status: n/a

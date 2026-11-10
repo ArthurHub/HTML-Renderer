@@ -21,6 +21,8 @@ public sealed class DirectionIntegrationTests
     [Spec("css21", "visuren.html#direction")]
     [Spec("css-writing-modes-4", "#bidi-para-direction")]
     [Spec("css-writing-modes-4", "#logical-direction-layout")]
+    [Spec("css-text-3", "#bidi-linebox")]
+    [Spec("css-text-4", "#bidi-linebox")]
     public void RightToLeftWords_InAnRtlBlock_RunFromRightToLeft()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(

@@ -168,11 +168,12 @@ sections:
   '#position':
     title: '8.3 2D Positioning: the <position> type'
     status: partial
-  '#position-parsing':
-    title: 8.3.1 Parsing <position>
-    status: partial
     gaps:
       - "'background-position' only resolves keywords, see CSS 2.1 14.2.1"
+      - "Four value forms that start with 'top' or 'bottom' are rejected, see css-backgrounds-3 #background-position"
+  '#position-parsing':
+    title: 8.3.1 Parsing <position>
+    status: parsed-only
   '#position-serialization':
     title: 8.3.2 Serializing <position>
     status: n/a

@@ -17,7 +17,9 @@ sections:
     status: supported
   '#scrolling':
     title: 2.3 Scrolling Overflow
-    status: n/a
+    status: partial
+    gaps:
+      - "Only the viewport of the panel controls scrolls, a box with 'overflow: scroll' or 'auto' isn't a scroll container, see 3.1"
   '#overflow-properties':
     title: 3 Scrolling and Clipping Overflow
     status: partial
@@ -51,10 +53,22 @@ sections:
       - "'overflow' on the root or body clips that box instead of being applied to the viewport, only pagination treats it as propagated"
   '#smooth-scrolling':
     title: '3.4 Smooth Scrolling: the scroll-behavior Property'
-    status: n/a
+    status: unsupported
+    gaps:
+      - "'scroll-behavior' isn't parsed, the viewport of the panel controls always scrolls instantly"
   '#scrollbar-layout':
     title: 4 Scrollbars and Layout
-    status: n/a
+    status: unsupported
+  '#scrollbar-sizing':
+    title: 4.1 Scrollbar Contributions to Sizing
+    status: unsupported
+    gaps:
+      - "Only the viewport of the panel controls has scrollbars, a box with 'overflow: scroll' or 'auto' gets none and keeps its full content width"
+  '#scrollbar-gutter-property':
+    title: '4.2 Reserving space for the scrollbar: the scrollbar-gutter property'
+    status: unsupported
+    gaps:
+      - "'scrollbar-gutter' isn't parsed"
   '#auto-ellipsis':
     title: 5 Automatic Ellipses
     status: unsupported

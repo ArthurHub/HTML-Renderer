@@ -652,13 +652,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private PageSelector CreatePageSelector(ref Token token)
         {
-            // Parses the CSS Paged Media selector grammar per comma-separated entry: an optional
-            // <ident> page name followed by an optional :<ident> pseudo-class, e.g.
-            // "@page chapter1:left, chapter2:left { ... }" (name+pseudo), "@page chapter { ... }"
-            // (name only), "@page :first { ... }" (pseudo only). Page names are case-sensitive
-            // custom-idents; pseudo-class keywords (first/left/right) are matched case-insensitively
-            // by the caller. Chaining multiple pseudo-classes on one entry (e.g. ":first:left") isn't
-            // supported — out of scope, not used by any known real-world stylesheet.
+            // CSS Paged Media 3 §4.3. One pseudo-class per selector, a second one or a functional one (GCPM's
+            // :nth()) leaves the selector unfinished and the caller drops the rule.
             var entries = new List<PageSelectorEntry>();
 
             while (true)
@@ -694,30 +689,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             }
 
             var selector = new PageSelector(entries);
-
-            //var start = token.Position;
-
-            //while (token.IsNot(TokenType.EndOfFile, TokenType.CurlyBracketOpen, TokenType.CurlyBracketClose))
-            //{
-            //    var a = 1;
-            //    token = NextToken();
-            //}
-
-            //var result = selector.ToPool();
-
-            //if (result is StylesheetNode node)
-            //{
-            //    var end = token.Position.Shift(-1);
-            //node.StylesheetText = CreateView(start, end);
-            //}
-
-            //if (!selectorIsValid && !_parser.Options.AllowInvalidValues)
-            //{
-            //    RaiseErrorOccurred(ParseError.InvalidSelector, start);
-            //    result = null;
-            //}
-
-            //return result;
 
             return selector;
         }

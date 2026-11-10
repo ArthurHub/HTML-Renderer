@@ -105,6 +105,9 @@ sections:
   '#text-justify-property':
     title: '6.4 Justification Method: the text-justify property'
     status: parsed-only
+    gaps:
+      - none and inter-character aren't accepted
+      - The non-standard values distribute-all-lines and distribute-center-last are accepted
   '#expanding-text':
     title: 6.4.1 Expanding and Compressing Text
     status: partial

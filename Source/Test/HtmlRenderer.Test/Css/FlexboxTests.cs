@@ -24,6 +24,8 @@ public sealed class FlexboxTests
     [TestMethod]
     [DynamicData(nameof(OrderTestDataValues))]
     [Spec("css-flexbox-1", "#order-property")]
+    [Spec("css-display-3", "#order-property")]
+    [Spec("css-display-4", "#order-property")]
     public void OrderLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<OrderProperty>(PropertyNames.Order, value);
 

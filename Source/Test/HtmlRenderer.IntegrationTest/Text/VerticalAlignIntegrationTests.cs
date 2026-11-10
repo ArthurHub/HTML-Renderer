@@ -3,12 +3,7 @@ using HtmlRenderer.IntegrationTest.TestSupport;
 
 namespace HtmlRenderer.IntegrationTest.Text;
 
-// This fork's CssParser keeps a process-wide, non-thread-safe regex cache
-// (RegexParserUtils.GetRegex's static Dictionary) that SetHtml/DefaultCssData populate lazily on first use per
-// AppDomain; running HtmlContainerInt.SetHtml from more than one thread at once (as MSTestSettings.cs's
-// assembly-wide [Parallelize(Scope = ExecutionScope.MethodLevel)] does by default) can corrupt it and throw
-// "A concurrent update was performed on this collection". [DoNotParallelize] avoids tripping that pre-existing
-// library race rather than masking it.
+// The regex cache in RegexParserUtils isn't thread-safe, parallel SetHtml calls can corrupt it.
 [DoNotParallelize]
 [TestClass]
 public sealed class VerticalAlignIntegrationTests
@@ -101,29 +96,34 @@ public sealed class VerticalAlignIntegrationTests
         Assert.AreNotEqual(baselineY, middleY);
     }
 
+    [Ignore("Gap, see Spec/css21.yml")]
+    [Spec("css21", "visudet.html#leading")]
     [TestMethod]
-    public void TextTop_ReferencesParentFontAscent_NotJustLineTop()
+    [Spec("css-inline-3", "#transverse-alignment")]
+    public void TextTop_RaisesTheSmallerBoxAboveItsBaselinePosition()
     {
-        // text-top aligns with the top of the *parent's* font (CSS1 §5.6.11), not the line's raw top extent
-        // the way plain "top" does - changing only the parent's font-size (the target span stays fixed at
-        // 10px in both builds) must still move the result, proving the parent's font metrics are actually
-        // consulted rather than this collapsing to plain "top".
-        var htmlSmallParent = LayoutHarness.Wrap(
-            "<p id='p' style='font-size:10px'><span style='font-size:60px'>TALL</span> " +
+        var textTopY = GetAlignedTop("text-top");
+        var baselineY = GetAlignedTop("baseline");
+
+        Assert.IsTrue(textTopY < baselineY, $"text-top={textTopY} baseline={baselineY}");
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [Spec("css21", "visudet.html#leading")]
+    [TestMethod]
+    [Spec("css-inline-3", "#transverse-alignment")]
+    public void TextTop_AlignsWithTheTopOfTheParentsFont()
+    {
+        var html = LayoutHarness.Wrap(
+            "<p id='p' style='font-size:40px'>ref <span style='font-size:60px'>TALL</span> " +
             "<span id='v' style='vertical-align:text-top; font-size:10px'>small</span></p>");
-        var htmlLargeParent = LayoutHarness.Wrap(
-            "<p id='p' style='font-size:40px'><span style='font-size:60px'>TALL</span> " +
-            "<span id='v' style='vertical-align:text-top; font-size:10px'>small</span></p>");
 
-        var (rootSmall, _) = LayoutHarness.Layout(htmlSmallParent);
-        var (rootLarge, _) = LayoutHarness.Layout(htmlLargeParent);
+        var (root, _) = LayoutHarness.Layout(html);
+        var words = LayoutHarness.Descendants(LayoutHarness.FindById(root, "p")!).SelectMany(b => b.Words).ToList();
+        var parentTop = words.First(w => w.Text == "ref").Top;
+        var textTop = words.First(w => w.Text == "small").Top;
 
-        var vSmall = LayoutHarness.FindById(rootSmall, "v")!;
-        var vLarge = LayoutHarness.FindById(rootLarge, "v")!;
-        var ySmall = LayoutHarness.Descendants(vSmall).SelectMany(b => b.Words).First().Top;
-        var yLarge = LayoutHarness.Descendants(vLarge).SelectMany(b => b.Words).First().Top;
-
-        Assert.AreNotEqual(ySmall, yLarge);
+        Assert.AreEqual(parentTop, textTop, Delta);
     }
 
     [TestMethod]
@@ -219,21 +219,15 @@ public sealed class VerticalAlignIntegrationTests
         Assert.IsTrue(raisedY < baselineY, $"raised={raisedY} baseline={baselineY}");
     }
 
+    [Ignore("Gap, see Spec/css21.yml")]
+    [Spec("css21", "visudet.html#leading")]
     [TestMethod]
     public void Percentage_ResolvesAgainstTheBoxsOwnLineHeight()
     {
-        // A percentage is a fraction of the box's own line-height (CSS 2.1 §10.8.1) - doubling the
-        // line-height (everything else unchanged) must double the raise relative to that line-height's own
-        // baseline, proving the percentage is actually resolved against it rather than some other fixed
-        // reference (e.g. font-size).
-        var baseline20 = GetAlignedTop("baseline", lineHeight: "20px");
-        var percent20 = GetAlignedTop("50%", lineHeight: "20px");
-        var baseline40 = GetAlignedTop("baseline", lineHeight: "40px");
-        var percent40 = GetAlignedTop("50%", lineHeight: "40px");
+        var raise20 = GetAlignedTop("baseline", lineHeight: "20px") - GetAlignedTop("50%", lineHeight: "20px");
+        var raise40 = GetAlignedTop("baseline", lineHeight: "40px") - GetAlignedTop("50%", lineHeight: "40px");
 
-        var raise20 = baseline20 - percent20;
-        var raise40 = baseline40 - percent40;
-
-        Assert.AreEqual(raise20 * 2, raise40, Delta);
+        Assert.AreEqual(10, raise20, Delta);
+        Assert.AreEqual(20, raise40, Delta);
     }
 }

@@ -42,6 +42,8 @@ sections:
       - Only keywords are resolved, see CSS 2.1 14.2.1
       - Edge offsets like 'right 10px bottom 20px' aren't resolved
       - "'10px left' and 'top 10px' are accepted, though the first of two values has to be horizontal"
+      - Three and four value forms that start with 'top' or 'bottom' are rejected
+      - "'center' followed by an offset, like 'left center 10px', is accepted"
   '#bg-position-serialization':
     title: 2.6.1 Serialization of background-position values
     status: n/a
@@ -103,7 +105,9 @@ sections:
       - "'border-style: hidden' keeps the width and the initial width isn't 'medium', see CSS 2.1 8.5.1"
   '#border-shorthands':
     title: 3.4 Border Shorthand Properties
-    status: supported
+    status: partial
+    gaps:
+      - "'border' doesn't reset 'border-image'"
   '#corners':
     title: 4 Rounded Corners
     status: partial

@@ -225,10 +225,10 @@ public sealed class BackgroundPaintIntegrationTests
     [DataRow("top center", 30, 0)]
     [DataRow("0% 0%", 0, 0)]
     [Spec("css21", "colors.html#background-properties")]
-    [Spec("css-values-4", "#position-parsing")]
+    [Spec("css-values-4", "#position")]
     [Spec("css-backgrounds-3", "#background-position")]
     [Spec("css-backgrounds-4", "#background-position")]
-    [Spec("css-values-5", "#position-parsing")]
+    [Spec("css-values-5", "#position")]
     public void BackgroundPosition_Keywords(string position, double x, double y)
     {
         var g = PaintBackground($"width:100px;height:100px;background-image:{Image};background-repeat:no-repeat;background-position:{position}");

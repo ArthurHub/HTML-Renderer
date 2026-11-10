@@ -1475,6 +1475,7 @@ sections:
       - The fragment isn't percent-decoded
       - A fragment of top or an empty fragment doesn't scroll to the top, an empty one is opened with Process.Start instead
       - The scrolled-to element doesn't become the target element, :target never matches
+      - The inline axis scrolls to the target's left edge instead of only as far as needed, see cssom-view-1 6.1
   browsing-the-web.html#persisted-user-state-restoration:
     title: 7.4.6.5 Persisted history entry state
     status: n/a

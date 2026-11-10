@@ -66,6 +66,7 @@ public sealed class CssBorders4ParseTests
     [Ignore("Gap, see Spec/css-borders-4.yml")]
     [TestMethod]
     [Spec("css-borders-4", "#border-shorthands")]
+    [Spec("css-backgrounds-3", "#border-shorthands")]
     public void BorderShorthand_ResetsTheBorderImage()
     {
         var style = CssConstructionFunctions.ParseDeclarations("border-image-source: url(a.png); border: solid red");

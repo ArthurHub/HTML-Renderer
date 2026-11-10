@@ -199,6 +199,7 @@ public sealed class OverflowClipIntegrationTests
     [DataRow("scroll")]
     [DataRow("auto")]
     [Spec("css-overflow-3", "#overflow-control")]
+    [Spec("css-overflow-3", "#scrolling")]
     public void ScrollAndAuto_ClipOverflowingContent(string overflow)
     {
         var clip = ClipOfRedBox(

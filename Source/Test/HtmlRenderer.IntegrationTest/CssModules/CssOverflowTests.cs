@@ -122,6 +122,17 @@ public sealed class CssOverflowTests
         Assert.IsTrue(g.DrawStringCalls.Any(c => c.Text.Contains('…')));
     }
 
+    [Ignore("Gap, see Spec/css-overflow-3.yml")]
+    [TestMethod]
+    [Spec("css-overflow-3", "#scrollbar-layout")]
+    [Spec("css-overflow-3", "#scrollbar-sizing")]
+    public void OverflowScroll_TakesTheScrollbarFromTheContentWidth()
+    {
+        var (root, _) = LayoutHarness.Layout(Doc("<div style='overflow:scroll;width:100px;height:50px'><div id='c'>x</div></div>"));
+
+        Assert.IsLessThan(100, LayoutHarness.FindById(root, "c")!.Size.Width);
+    }
+
     private static string Doc(string body) => $"<!DOCTYPE html><html><head></head><body style='margin:0'>{body}</body></html>";
 
     private static RRect ClipOfRedBox(string body)

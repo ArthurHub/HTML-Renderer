@@ -43,12 +43,12 @@ sections:
   '#position':
     title: '4.2 2D Positioning: the <position> type'
     status: partial
-  '#position-parsing':
-    title: 4.2.1 Parsing <position>
-    status: partial
     gaps:
       - The x-/y-, block-/inline- and start/end keywords aren't supported, the declaration is dropped
       - "'background-position' only resolves keywords, see CSS 2.1 14.2.1"
+  '#position-parsing':
+    title: 4.2.1 Parsing <position>
+    status: parsed-only
   '#position-serialization':
     title: 4.2.2 Serializing <position>
     status: n/a

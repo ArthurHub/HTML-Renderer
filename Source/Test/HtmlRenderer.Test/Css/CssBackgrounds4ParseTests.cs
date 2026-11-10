@@ -71,11 +71,23 @@ public sealed class CssBackgrounds4ParseTests
 
     [Ignore("Gap, see Spec/css-backgrounds-4.yml")]
     [TestMethod]
-    [DataRow("bottom 10px right 20px")]
+    [Spec("css-backgrounds-4", "#background-position")]
+    [Spec("css-backgrounds-3", "#background-position")]
+    [Spec("css-values-4", "#position")]
+    public void BackgroundPosition_FourValueFormWithVerticalEdgeFirstIsAccepted()
+    {
+        var property = CssConstructionFunctions.ParseDeclaration("background-position: bottom 10px right 20px");
+
+        Assert.IsTrue(property.HasValue);
+    }
+
+    [Ignore("Gap, see Spec/css-backgrounds-4.yml")]
+    [TestMethod]
     [DataRow("top 10px left")]
     [DataRow("bottom right 5px")]
     [Spec("css-backgrounds-4", "#background-position")]
-    public void BackgroundPosition_VerticalEdgeFirstIsAccepted(string position)
+    [Spec("css-backgrounds-3", "#background-position")]
+    public void BackgroundPosition_ThreeValueFormWithVerticalEdgeFirstIsAccepted(string position)
     {
         var property = CssConstructionFunctions.ParseDeclaration($"background-position: {position}");
 
@@ -87,6 +99,7 @@ public sealed class CssBackgrounds4ParseTests
     [DataRow("left center 10px")]
     [DataRow("center 10px top")]
     [Spec("css-backgrounds-4", "#background-position")]
+    [Spec("css-backgrounds-3", "#background-position")]
     public void BackgroundPosition_CenterWithAnOffsetIsRejected(string position)
     {
         var property = CssConstructionFunctions.ParseDeclaration($"background-position: {position}");

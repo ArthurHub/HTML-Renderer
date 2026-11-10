@@ -1,6 +1,7 @@
 using System.Text;
 using HtmlRenderer.Test.CssEngineSupport;
 using HtmlRenderer.Test.TestSupport;
+using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 using TheArtOfDev.HtmlRenderer.Core.Network;
@@ -118,6 +119,8 @@ public sealed class FontFaceTests
     [DataRow(@"url('f\'g.ttf')", "f'g.ttf")]
     [DataRow(@"url(f\(g\).ttf)", "f(g).ttf")]
     [DataRow(@"url(""f\67 .ttf"")", "fg.ttf")]
+    [Spec("css-fonts-4", "#font-face-src-loading")]
+    [Spec("css-values-4", "#relative-urls")]
     public void FontFaceInALinkedStyleSheet_ResolvesAgainstTheStyleSheetUrl(string src, string expected)
     {
         CollectionAssert.Contains(FontFaceRequests(src), "https://example.com/doc/css/" + expected);

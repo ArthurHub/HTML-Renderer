@@ -281,7 +281,7 @@ public sealed class TextPropertyTests
         Assert.IsInstanceOfType<TextIndentProperty>(property);
         var concrete = (TextIndentProperty)property;
         Assert.IsFalse(concrete.IsInherited);
-        Assert.AreEqual("each-line hanging 40pt", concrete.Value);
+        Assert.AreEqual("40pt hanging each-line", concrete.Value);
     }
 
     [TestMethod]
@@ -811,15 +811,17 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [DataRow("none")]
+    [DataRow("inter-character")]
     [Spec("css-text-3", "#text-justify-property")]
-    public void TextJustifyNoneIllegal()
+    [Spec("css-text-4", "#text-justify-property")]
+    [Ignore("Gap, see Spec/css-text-3.yml")]
+    public void TextJustifyNoneAndInterCharacterLegal(string value)
     {
-        var property = CssConstructionFunctions.ParseDeclaration("text-justify: none");
-        Assert.AreEqual("text-justify", property.Name);
-        Assert.IsFalse(property.IsInherited);
-        Assert.IsFalse(property.IsImportant);
+        var property = CssConstructionFunctions.ParseDeclaration("text-justify: " + value);
         Assert.IsInstanceOfType<TextJustifyProperty>(property);
-        Assert.IsFalse(property.HasValue);
+        Assert.IsTrue(property.HasValue);
+        Assert.AreEqual(value, ((TextJustifyProperty)property).Value);
     }
 
     [TestMethod]

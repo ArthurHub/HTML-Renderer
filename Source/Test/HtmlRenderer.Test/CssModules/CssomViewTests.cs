@@ -45,6 +45,7 @@ public sealed class CssomViewTests
     [TestMethod]
     [Ignore("Gap, see Spec/cssom-view-1.yml")]
     [Spec("cssom-view-1", "#element-scrolling-members")]
+    [Spec("html", "browsing-the-web.html#scrolling-to-a-fragment")]
     public void FragmentNavigation_ScrollsTheInlineAxisOnlyAsFarAsNeeded()
     {
         var (root, container) = LayoutHarness.Layout(LayoutHarness.Wrap(

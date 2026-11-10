@@ -13,12 +13,14 @@ public sealed class TextAlignStartEndIntegrationTests
     private static CssRect FirstWord(CssBox box) =>
         LayoutHarness.Descendants(box).SelectMany(b => b.Words).First(w => !w.IsSpaces);
 
+    // The inherited right alignment keeps an unparsed start or end from passing as the initial left.
+    [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#text-align-property")]
     [Spec("css-text-4", "#text-align-property")]
     public void Start_InLtrBlock_PacksTextAgainstTheLeftEdge()
     {
-        var html = LayoutHarness.Wrap("<p id='p' style='text-align: start; width: 200px'>hi</p>");
+        var html = LayoutHarness.Wrap("<div style='text-align: right'><p id='p' style='text-align: start; width: 200px'>hi</p></div>");
 
         var (root, _) = LayoutHarness.Layout(html);
         var p = LayoutHarness.FindById(root, "p")!;
@@ -59,6 +61,7 @@ public sealed class TextAlignStartEndIntegrationTests
         Assert.AreEqual(p.ClientRight, word.Right, Delta);
     }
 
+    [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#text-align-property")]
     [Spec("css-text-4", "#text-align-property")]
@@ -66,7 +69,7 @@ public sealed class TextAlignStartEndIntegrationTests
     [Spec("css-text-4", "#bidi-linebox")]
     public void End_InRtlBlock_PacksTextAgainstTheLeftEdge()
     {
-        var html = LayoutHarness.Wrap("<p id='p' dir='rtl' style='text-align: end; width: 200px'>hi</p>");
+        var html = LayoutHarness.Wrap("<div style='text-align: right'><p id='p' dir='rtl' style='text-align: end; width: 200px'>hi</p></div>");
 
         var (root, _) = LayoutHarness.Layout(html);
         var p = LayoutHarness.FindById(root, "p")!;

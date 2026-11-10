@@ -175,8 +175,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
         /// <summary>
         /// Every rule in a rule list, in document order, descending into nested style rules,
-        /// <c>@layer</c>, <c>@media</c>, <c>@container</c> and, when its condition is true,
-        /// <c>@supports</c>. <c>@media</c> conditions aren't evaluated here.
+        /// <c>@layer</c>, <c>@media</c> and <c>@container</c> without evaluating their conditions, and
+        /// into <c>@supports</c> when its condition is true. Used for <c>@font-face</c>, <c>::selection</c>
+        /// and the HTML export, the cascade walks the rules itself in <see cref="IndexRules"/>.
         /// </summary>
         internal static IEnumerable<IRule> FlattenRules(IEnumerable<IRule> rules)
         {
