@@ -6,6 +6,11 @@ sections:
   '#intro':
     title: 1 Introduction
     status: n/a
+  '#characters':
+    title: 1.4 Characters and Letters
+    status: partial
+    gaps:
+      - "Text is split into UTF-16 code units, not extended grapheme clusters, e.g. 'word-break: break-all' separates a combining mark from its base"
   '#transforming':
     title: 2 Transforming Text
     status: parsed-only

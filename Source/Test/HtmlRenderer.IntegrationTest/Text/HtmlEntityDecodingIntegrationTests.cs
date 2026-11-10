@@ -67,6 +67,7 @@ public sealed class HtmlEntityDecodingIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-model")]
     [Spec("css-text-3", "#white-space-phase-1")]
+    [Spec("css-text-4", "#white-space-phase-1")]
     public void SingleEscapedNbsp_RendersAsNonBreakingSpace()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p'>Use&nbsp;here</p>"));

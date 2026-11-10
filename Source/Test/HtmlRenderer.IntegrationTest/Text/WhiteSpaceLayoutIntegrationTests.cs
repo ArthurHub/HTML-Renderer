@@ -13,6 +13,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
     [Spec("css-text-3", "#white-space-property")]
+    [Spec("css-text-4", "#white-space-property")]
     public void Pre_PreservesMultipleConsecutiveSpacesAsLiteralWord()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='white-space:pre'>A     B</p>"));
@@ -25,6 +26,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
     [Spec("css-text-3", "#white-space-property")]
+    [Spec("css-text-4", "#white-space-property")]
     public void Normal_CollapsesConsecutiveSpaces_NoLiteralSpaceWord()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p'>A     B</p>"));
@@ -37,6 +39,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
     [Spec("css-text-3", "#white-space-property")]
+    [Spec("css-text-4", "#white-space-property")]
     public void Pre_TreatsExplicitNewlineAsForcedLineBreak()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='white-space:pre'>A\nB</p>"));
@@ -48,6 +51,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
     [Spec("css-text-3", "#white-space-property")]
+    [Spec("css-text-4", "#white-space-property")]
     public void Pre_TreatsCrLfAsASingleNewline()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='white-space:pre'>A\r\nB</p>"));
@@ -70,6 +74,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
     [Spec("css-text-3", "#white-space-property")]
+    [Spec("css-text-4", "#white-space-property")]
     public void Pre_DoesntWrapAtTheLineBoxEdge()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='margin:0;white-space:pre;width:30px'>AAAA BBBB</p>"));
@@ -81,6 +86,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
     [Spec("css-text-3", "#white-space-property")]
+    [Spec("css-text-4", "#white-space-property")]
     public void Normal_IgnoresEmbeddedNewline_NoForcedBreak()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p'>A\nB</p>"));
@@ -92,6 +98,8 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
     [Spec("css-text-3", "#white-space-property")]
+    [Spec("css-text-4", "#white-space-property")]
+    [Spec("css-text-4", "#text-wrapping")]
     public void NoWrap_PreventsWrapping_EvenWhenNarrowerThanContent()
     {
         var html = LayoutHarness.Wrap("<p id='p' style='white-space:nowrap; width:50px'>a long run of unwrapped text here</p>");
@@ -104,6 +112,8 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
     [Spec("css-text-3", "#white-space-property")]
+    [Spec("css-text-4", "#white-space-property")]
+    [Spec("css-text-4", "#text-wrapping")]
     public void Normal_WrapsAtNarrowWidth_ForContrastWithNoWrap()
     {
         var html = LayoutHarness.Wrap("<p id='p' style='width:50px'>a long run of unwrapped text here</p>");
@@ -116,6 +126,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
     [Spec("css-text-3", "#white-space-property")]
+    [Spec("css-text-4", "#white-space-property")]
     public void PreWrap_PreservesSpacesAndWraps()
     {
         var words = Words("<p id='p' style='margin:0;white-space:pre-wrap;width:40px'>AAAA   BBBB CCCC</p>");
@@ -127,6 +138,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
     [Spec("css-text-3", "#white-space-property")]
+    [Spec("css-text-4", "#white-space-property")]
     public void PreLine_CollapsesSpacesButKeepsNewlines()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='margin:0;white-space:pre-line'>A    B\nC</p>"));
@@ -141,6 +153,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
     [Spec("css-text-3", "#white-space-property")]
+    [Spec("css-text-4", "#white-space-property")]
     public void PreLine_WrapsAtTheLineBoxEdge()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<p id='p' style='margin:0;white-space:pre-line;width:40px'>AAAA BBBB CCCC</p>"));
@@ -152,6 +165,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
     [Spec("css-text-3", "#white-space-property")]
+    [Spec("css-text-4", "#white-space-property")]
     public void WhiteSpace_IsInherited()
     {
         var words = Words("<div style='white-space:pre'><p id='p' style='margin:0'>A   B</p></div>");
@@ -162,6 +176,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-model")]
     [Spec("css-text-3", "#line-break-transform")]
+    [Spec("css-text-4", "#line-break-transform")]
     public void Normal_TransformsALinefeedAndTheSpacesAroundItIntoOneSpace()
     {
         var expected = GapBetween("<p id='p' style='margin:0'>AA BB</p>", "AA", "BB");
@@ -172,6 +187,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-model")]
     [Spec("css-text-3", "#white-space-phase-1")]
+    [Spec("css-text-4", "#white-space-phase-1")]
     public void Normal_ConvertsATabToASpace()
     {
         var expected = GapBetween("<p id='p' style='margin:0'>AA BB</p>", "AA", "BB");
@@ -182,6 +198,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-model")]
     [Spec("css-text-3", "#white-space-phase-2")]
+    [Spec("css-text-4", "#white-space-phase-2")]
     public void Normal_RemovesASpaceAtTheBeginningOfALine()
     {
         var word = Words("<p id='p' style='margin:0'>   AA</p>").Single();
@@ -192,6 +209,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-model")]
     [Spec("css-text-3", "#white-space-phase-1")]
+    [Spec("css-text-4", "#white-space-phase-1")]
     public void Normal_CollapsesASpaceAtTheStartOfAnInlineWithOneBeforeIt_WhenTheFirstHasNoSpaceAfter()
     {
         var expected = GapBetween("<p id='p' style='margin:0'>AA BB</p>", "AA", "BB");
@@ -203,6 +221,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-model")]
     [Spec("css-text-3", "#white-space-phase-1")]
+    [Spec("css-text-4", "#white-space-phase-1")]
     public void Normal_RemovesASpaceFollowingAnotherSpaceAcrossAnElementBoundary()
     {
         var expected = GapBetween("<p id='p' style='margin:0'>AA BB</p>", "AA", "BB");
@@ -214,6 +233,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-model")]
     [Spec("css-text-3", "#white-space-phase-2")]
+    [Spec("css-text-4", "#white-space-phase-2")]
     public void Pre_RendersATabUpToTheNextTabStop()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -228,6 +248,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-model")]
     [Spec("css-text-3", "#white-space-phase-1")]
+    [Spec("css-text-4", "#white-space-phase-1")]
     public void NoBreakSpaces_ArentCollapsed()
     {
         var expected = GapBetween("<p id='p' style='margin:0'>A B</p>", "A", "B");
@@ -239,6 +260,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-model")]
     [Spec("css-text-3", "#white-space-phase-1")]
+    [Spec("css-text-4", "#white-space-phase-1")]
     public void Nbsp_OnlyContent_ProducesNonZeroHeight_MatchingRealText()
     {
         var (nbspRoot, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='b'>&nbsp;</div>"));
@@ -255,7 +277,8 @@ public sealed class WhiteSpaceLayoutIntegrationTests
 
     [TestMethod]
     [Spec("css21", "text.html#white-space-model")]
-    [Spec("css-text-3", "#white-space-phase-1")]
+    [Spec("css-text-3", "#white-space-phase-2")]
+    [Spec("css-text-4", "#white-space-phase-2")]
     public void OrdinaryWhitespaceOnlyContent_StillProducesZeroHeight_NoRegression()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='b'>   </div>"));
@@ -269,6 +292,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-model")]
     [Spec("css-text-3", "#white-space-phase-1")]
+    [Spec("css-text-4", "#white-space-phase-1")]
     public void Nbsp_BetweenTokens_PreventsLineWrap_ContrastOrdinarySpace()
     {
         // Narrow enough that an ordinary space between "10" and "km" wraps.
@@ -287,6 +311,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-model")]
     [Spec("css-text-3", "#line-break-details")]
+    [Spec("css-text-4", "#line-break-details")]
     public void ElementBoundaryWithoutWhiteSpace_IsntALineBreakingOpportunity()
     {
         var words = Words("<p id='p' style='margin:0;width:60px'>AAAA<b>BBBB</b></p>");
@@ -298,6 +323,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-model")]
     [Spec("css-text-3", "#line-break-details")]
+    [Spec("css-text-4", "#line-break-details")]
     public void Float_DoesntIntroduceALineBreakingOpportunity()
     {
         var words = Words("<p id='p' style='margin:0;width:60px'>AAAA<span style='float:right'>x</span>BBBB</p>");
@@ -309,7 +335,8 @@ public sealed class WhiteSpaceLayoutIntegrationTests
 
     [TestMethod]
     [Spec("css21", "text.html#ctrlchars")]
-    [Spec("css-text-3", "#white-space-processing")]
+    [Spec("css-text-3", "#characters")]
+    [Spec("css-text-4", "#characters")]
     public void CombiningCharacter_StaysWithItsBaseCharacter()
     {
         var word = Words("<p id='p' style='margin:0'>öx</p>").Single();
@@ -317,10 +344,22 @@ public sealed class WhiteSpaceLayoutIntegrationTests
         Assert.AreEqual("öx", word.Text);
     }
 
+    [Ignore("Gap, see Spec/css-text-3.yml")]
+    [TestMethod]
+    [Spec("css-text-3", "#characters")]
+    [Spec("css-text-4", "#characters")]
+    public void BreakAll_DoesntSeparateACombiningMarkFromItsBase()
+    {
+        var words = Words("<p id='p' style='margin:0;width:1px;word-break:break-all'>öx</p>");
+
+        Assert.IsTrue(words.Any(w => w.Text == "ö"));
+    }
+
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "text.html#ctrlchars")]
     [Spec("css-text-3", "#white-space-processing")]
+    [Spec("css-text-4", "#white-space-processing")]
     [DataRow("\u000B")]
     [DataRow("\u0085")]
     public void ControlCharacter_IsRenderedLikeANormalCharacter(string control)
@@ -332,6 +371,7 @@ public sealed class WhiteSpaceLayoutIntegrationTests
 
     [TestMethod]
     [Spec("css-text-3", "#word-break-property")]
+    [Spec("css-text-4", "#word-break-property")]
     public void BreakAll_ForcesMidWordBreak_ContrastNormal()
     {
         // No space anywhere: "normal" has no break opportunity and overflows, "break-all" wraps.

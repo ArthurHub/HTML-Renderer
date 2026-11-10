@@ -429,6 +429,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css-text-3", "#letter-spacing-property")]
+    [Spec("css-text-4", "#letter-spacing-property")]
     public void CssLetterSpacingLengthPxLegal()
     {
         var property = ParseDeclaration("letter-spacing: 3px ");
@@ -443,6 +444,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css-text-3", "#letter-spacing-property")]
+    [Spec("css-text-4", "#letter-spacing-property")]
     public void CssLetterSpacingLengthFloatPxLegal()
     {
         var property = ParseDeclaration("letter-spacing: .3px ");
@@ -457,6 +459,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css-text-3", "#letter-spacing-property")]
+    [Spec("css-text-4", "#letter-spacing-property")]
     public void CssLetterSpacingLengthFloatEmLegal()
     {
         var property = ParseDeclaration("letter-spacing: 0.3em ");
@@ -471,6 +474,7 @@ public sealed class FontKeywordPropertyTests
 
     [TestMethod]
     [Spec("css-text-3", "#letter-spacing-property")]
+    [Spec("css-text-4", "#letter-spacing-property")]
     public void CssLetterSpacingNormalLegal()
     {
         var property = ParseDeclaration("letter-spacing: normal ");

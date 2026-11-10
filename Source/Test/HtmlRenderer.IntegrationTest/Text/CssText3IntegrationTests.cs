@@ -17,7 +17,7 @@ public sealed class CssText3IntegrationTests
     [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#white-space-property")]
-    [Spec("css-text-3", "#white-space-phase-1")]
+    [Spec("css-text-4", "#white-space-property")]
     public void BreakSpaces_PreservesSpaces()
     {
         var p = Paragraph("<p id='p' style='white-space:break-spaces'>A     B</p>");
@@ -28,6 +28,7 @@ public sealed class CssText3IntegrationTests
     [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#word-break-property")]
+    [Spec("css-text-4", "#word-break-property")]
     public void KeepAll_DoesntBreakBetweenCjkCharacters()
     {
         var p = Paragraph($"<p id='p' style='width:50px;word-break:keep-all'>{Cjk}</p>");
@@ -37,7 +38,9 @@ public sealed class CssText3IntegrationTests
 
     [TestMethod]
     [Spec("css-text-3", "#word-break-property")]
+    [Spec("css-text-4", "#word-break-property")]
     [Spec("css-text-3", "#line-break-details")]
+    [Spec("css-text-4", "#line-break-details")]
     public void Normal_BreaksBetweenCjkCharacters()
     {
         var p = Paragraph($"<p id='p' style='width:50px'>{Cjk}</p>");
@@ -48,6 +51,7 @@ public sealed class CssText3IntegrationTests
     [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#word-break-property")]
+    [Spec("css-text-4", "#word-break-property")]
     public void BreakWord_BreaksAWordThatOverflows()
     {
         var p = Paragraph($"<p id='p' style='width:50px;word-break:break-word'>{LongWord}</p>");
@@ -58,6 +62,7 @@ public sealed class CssText3IntegrationTests
     [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#overflow-wrap-property")]
+    [Spec("css-text-4", "#overflow-wrap-property")]
     [DataRow("overflow-wrap:break-word")]
     [DataRow("overflow-wrap:anywhere")]
     [DataRow("word-wrap:break-word")]
@@ -71,6 +76,7 @@ public sealed class CssText3IntegrationTests
     [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#hyphenation")]
+    [Spec("css-text-4", "#hyphens-property")]
     public void SoftHyphen_IsABreakOpportunity()
     {
         var p = Paragraph("<p id='p' style='width:60px'>abcdefghijkl­mnopqrstuvwx</p>");
@@ -80,6 +86,7 @@ public sealed class CssText3IntegrationTests
 
     [TestMethod]
     [Spec("css-text-3", "#line-break-details")]
+    [Spec("css-text-4", "#line-break-details")]
     public void HyphenMinus_IsABreakOpportunity()
     {
         var p = Paragraph("<p id='p' style='width:60px'>abcdefghijkl-mnopqrstuvwx</p>");
@@ -89,6 +96,7 @@ public sealed class CssText3IntegrationTests
 
     [TestMethod]
     [Spec("css-text-3", "#justify-algos")]
+    [Spec("css-text-4", "#justify-algos")]
     public void Justify_ExpandsBetweenCjkCharacters()
     {
         var p = Paragraph($"<p id='p' style='width:100px;text-align:justify'>{Cjk}</p>");
@@ -101,6 +109,7 @@ public sealed class CssText3IntegrationTests
     [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#text-align-last-property")]
+    [Spec("css-text-4", "#text-align-last-property")]
     public void TextAlignLast_AlignsTheLastLine()
     {
         var p = Paragraph("<p id='p' style='width:200px;text-align:justify;text-align-last:right'>hi</p>");
@@ -111,6 +120,7 @@ public sealed class CssText3IntegrationTests
     [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#text-align-property")]
+    [Spec("css-text-4", "#text-align-property")]
     public void JustifyAll_JustifiesTheLastLine()
     {
         var p = Paragraph("<p id='p' style='width:200px;text-align:justify-all'>hi there</p>");

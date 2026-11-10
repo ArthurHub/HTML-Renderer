@@ -15,6 +15,7 @@ public sealed class TextAlignStartEndIntegrationTests
 
     [TestMethod]
     [Spec("css-text-3", "#text-align-property")]
+    [Spec("css-text-4", "#text-align-property")]
     public void Start_InLtrBlock_PacksTextAgainstTheLeftEdge()
     {
         var html = LayoutHarness.Wrap("<p id='p' style='text-align: start; width: 200px'>hi</p>");
@@ -29,7 +30,9 @@ public sealed class TextAlignStartEndIntegrationTests
     [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#text-align-property")]
+    [Spec("css-text-4", "#text-align-property")]
     [Spec("css-text-3", "#bidi-linebox")]
+    [Spec("css-text-4", "#bidi-linebox")]
     public void Start_InRtlBlock_PacksTextAgainstTheRightEdge()
     {
         var html = LayoutHarness.Wrap("<p id='p' dir='rtl' style='text-align: start; width: 200px'>hi</p>");
@@ -44,6 +47,7 @@ public sealed class TextAlignStartEndIntegrationTests
     [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#text-align-property")]
+    [Spec("css-text-4", "#text-align-property")]
     public void End_InLtrBlock_PacksTextAgainstTheRightEdge()
     {
         var html = LayoutHarness.Wrap("<p id='p' style='text-align: end; width: 200px'>hi</p>");
@@ -57,7 +61,9 @@ public sealed class TextAlignStartEndIntegrationTests
 
     [TestMethod]
     [Spec("css-text-3", "#text-align-property")]
+    [Spec("css-text-4", "#text-align-property")]
     [Spec("css-text-3", "#bidi-linebox")]
+    [Spec("css-text-4", "#bidi-linebox")]
     public void End_InRtlBlock_PacksTextAgainstTheLeftEdge()
     {
         var html = LayoutHarness.Wrap("<p id='p' dir='rtl' style='text-align: end; width: 200px'>hi</p>");
@@ -72,6 +78,7 @@ public sealed class TextAlignStartEndIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#alignment-prop")]
     [Spec("css-text-3", "#text-align-property")]
+    [Spec("css-text-4", "#text-align-property")]
     public void DefaultsToStart_UnsetTextAlign_BehavesLikeLeftInLtr()
     {
         var html = LayoutHarness.Wrap("<p id='p' style='width: 200px'>hi</p>");

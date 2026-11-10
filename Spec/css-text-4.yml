@@ -5,223 +5,265 @@ snapshot: https://www.w3.org/TR/2026/WD-css-text-4-20260814/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
-  '#languages':
-    title: 1.3 Languages and Typesetting
-    status: unknown
+    status: n/a
   '#characters':
     title: 1.4 Characters and Letters
-    status: unknown
-  '#text-encoding':
-    title: 1.5 Text Processing
-    status: unknown
+    status: partial
+    gaps:
+      - "Text is split into UTF-16 code units, not extended grapheme clusters, see css-text-3 #characters"
   '#transforming':
     title: 2 Transforming Text
-    status: unknown
+    status: parsed-only
   '#text-transform-property':
     title: '2.1 Case Transforms: the text-transform property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "text-transform is ignored, see css-text-3 #text-transform-property"
+      - full-size-kana, math-auto and combinations such as 'uppercase full-width' aren't accepted
   '#text-transform-mapping':
     title: 2.1.1 Mapping Rules
-    status: unknown
+    status: unsupported
   '#word-space-transform':
     title: '2.2 Expanding Between Words: the word-space-transform property'
-    status: unknown
+    status: unsupported
   '#text-transform-order':
     title: 2.3 Order of Operations
-    status: unknown
+    status: unsupported
   '#white-space-property':
     title: '3 White Space and Wrapping: the white-space property'
-    status: unknown
+    status: partial
+    gaps:
+      - Only the keywords normal, pre, nowrap, pre-wrap and pre-line are accepted, not longhand values such as 'preserve nowrap'
+      - break-spaces isn't accepted
   '#white-space-processing':
     title: 4 White Space Processing & Control Characters
-    status: unknown
+    status: partial
+    gaps:
+      - "Control characters such as U+000B are treated as white space instead of being rendered, see css-text-3 #white-space-processing"
   '#white-space-collapsing':
     title: '4.1 White Space Collapsing: the white-space-collapse property'
-    status: unknown
+    status: unsupported
+    gaps:
+      - white-space-collapse isn't accepted, collapsing is only controlled through the white-space keywords
   '#white-space-trim':
     title: '4.2 White Space Trimming: the white-space-trim property'
-    status: unknown
+    status: unsupported
   '#white-space-rules':
     title: 4.3 The White Space Processing Rules
-    status: unknown
+    status: partial
   '#white-space-phase-1':
     title: '4.3.1 Phase I: Collapsing and Transformation'
-    status: unknown
+    status: partial
+    gaps:
+      - "A space following another space isn't removed when an element boundary is between them, see css-text-3 #white-space-phase-1"
+      - "U+00A0 is collapsed and breakable like a space, see css-text-3 #white-space-phase-1"
   '#white-space-phase-2':
     title: '4.3.2 Phase II: Trimming and Positioning'
-    status: unknown
+    status: partial
+    gaps:
+      - Preserved tabs are as wide as their glyph instead of reaching the next tab stop
   '#line-break-transform':
     title: 4.3.3 Segment Break Transformation Rules
-    status: unknown
+    status: supported
   '#tab-size-property':
     title: '4.4 Tab Character Size: the tab-size property'
-    status: unknown
+    status: unsupported
   '#text-wrapping':
     title: 5 Text Wrapping
-    status: unknown
+    status: partial
+    gaps:
+      - Wrapping can only be turned off through white-space, text-wrap-mode and text-wrap aren't accepted
   '#text-wrap-mode':
     title: '5.1 Deciding Whether to Wrap: the text-wrap-mode property'
-    status: unknown
+    status: unsupported
   '#wrap-inside':
     title: '5.2 Controlling Breaks Within Boxes: the wrap-inside property'
-    status: unknown
+    status: unsupported
   '#example-avoid':
     title: "5.2.1 Example of using 'wrap-inside: avoid' in presenting a footer"
-    status: unknown
+    status: n/a
   '#wrap-before':
     title: '5.3 Controlling Breaks Between Boxes: the wrap-before/wrap-after properties'
-    status: unknown
+    status: unsupported
   '#text-wrap-style':
     title: '5.4 Selecting How to Wrap: the text-wrap-style property'
-    status: unknown
+    status: unsupported
   '#text-wrap-shorthand':
     title: '5.5 Joint Wrapping Control: the text-wrap shorthand property'
-    status: unknown
+    status: unsupported
   '#line-breaking':
     title: 6 Line Breaking and Word Boundaries
-    status: unknown
+    status: partial
   '#word-break-property':
     title: '6.1 Breaking Rules for Letters: the word-break property'
-    status: unknown
+    status: partial
+    gaps:
+      - keep-all doesn't keep CJK text together
+      - manual, auto-phrase and break-word aren't accepted
   '#analytical-word-breaking':
     title: 6.1.1 Analytical Word Breaking
-    status: unknown
+    status: unsupported
   '#lexical-breaking':
     title: 6.1.1.1 Lexical Word Breaking
-    status: unknown
+    status: unsupported
   '#orthographic-breaking':
     title: 6.1.1.2 Orthographic Breaking
-    status: unknown
+    status: unsupported
   '#fallback-breaking':
     title: 6.1.1.3 Fallback Breaking
-    status: unknown
+    status: unsupported
   '#phrase-pref':
     title: 6.1.2 Expressing User Preferences for Phrase-based Line Breaking
-    status: unknown
+    status: n/a
+    gaps:
+      - There are no user preferences or user style sheets
   '#line-break-property':
     title: '6.2 Line Breaking Strictness: the line-break property'
-    status: unknown
+    status: unsupported
   '#hyphenation':
     title: '6.3 Hyphenation: Morphological Breaking Within Words'
-    status: unknown
+    status: parsed-only
   '#hyphens-property':
     title: '6.3.1 Hyphenation Control: the hyphens property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - Soft hyphens (U+00AD) aren't break opportunities
   '#hyphenate-character':
     title: '6.3.2 Hyphens: the hyphenate-character property'
-    status: unknown
+    status: unsupported
   '#hyphenate-size-limits':
     title: '6.3.3 Hyphenation Size Limit: the hyphenate-limit-zone property'
-    status: unknown
+    status: unsupported
   '#hyphenate-char-limits':
     title: '6.3.4 Hyphenation Character Limits: the hyphenate-limit-chars property'
-    status: unknown
+    status: unsupported
   '#hyphenate-line-limits':
     title: '6.3.5 Hyphenation Line Limits: the hyphenate-limit-lines and hyphenate-limit-last properties'
-    status: unknown
+    status: unsupported
   '#overflow-wrap-property':
     title: '6.4 Overflow Wrapping: the overflow-wrap (word-wrap) property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - overflow-wrap and word-wrap are ignored, a word that doesn't fit overflows
+      - anywhere isn't accepted
   '#line-break-details':
     title: 6.5 Line Breaking Details
-    status: unknown
+    status: partial
+    gaps:
+      - A line can break at an element boundary or a float without white space in the text, see CSS 2.1 16.6.1
   '#justification':
     title: 7 Alignment and Justification
-    status: unknown
+    status: partial
   '#text-align-property':
     title: '7.1 Text Alignment: the text-align shorthand'
-    status: unknown
+    status: partial
+    gaps:
+      - "start, end, match-parent, justify-all and <string> aren't accepted, see css-text-3 #text-align-property"
+      - The initial value acts as left also when direction is rtl, see CSS 2.1 16.2
   '#character-alignment':
     title: 7.2 Character-based Alignment in a Table Column
-    status: unknown
+    status: unsupported
   '#text-align-all-property':
     title: '7.3 Default Text Alignment: the text-align-all property'
-    status: unknown
+    status: unsupported
   '#text-align-last-property':
     title: '7.4 Last Line Alignment: the text-align-last property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - text-align-last is ignored, the last line of justified text is aligned left
+      - match-parent isn't accepted
   '#text-justify-property':
     title: '7.5 Justification Method: the text-justify property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - none, inter-character, ruby and no-compress aren't accepted
+      - "The non-standard values distribute-all-lines and distribute-center-last are accepted, see css-text-3 #text-justify-property"
   '#expanding-text':
     title: 7.5.1 Expanding and Compressing Text
-    status: unknown
+    status: partial
+    gaps:
+      - Preserved spaces in pre and pre-wrap text are stretched too, see CSS 2.1 16.2
   '#justify-symbols':
     title: 7.5.2 Handling Symbols and Punctuation
-    status: unknown
+    status: n/a
   '#justify-limits':
     title: 7.5.3 Unexpandable Text
-    status: unknown
+    status: n/a
   '#justify-cursive':
     title: 7.5.4 Cursive Scripts
-    status: unknown
+    status: n/a
   '#justify-algos':
     title: 7.5.5 Minimum Requirements for auto Justification
-    status: unknown
+    status: supported
   '#text-group-align-property':
     title: '7.6 Aligning a block of text within its container: the text-group-align property'
-    status: unknown
+    status: unsupported
   '#spacing':
     title: 8 Spacing
-    status: unknown
+    status: parsed-only
   '#word-spacing-property':
     title: '8.1 Word Spacing: the word-spacing property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - word-spacing has no effect, see CSS 2.1 16.4
+      - Percentages aren't accepted
   '#letter-spacing-property':
     title: '8.2 Tracking: the letter-spacing property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - letter-spacing is ignored, see CSS 2.1 16.4
+      - Percentages aren't accepted
   '#cursive-tracking':
     title: 8.2.1 Cursive Scripts
-    status: unknown
+    status: n/a
   '#line-padding-property':
     title: '8.3 Line Start/End Padding: the line-padding property'
-    status: unknown
+    status: unsupported
   '#text-autospace-property':
     title: '8.4 Automatic Contextual Spacing: the text-autospace property'
-    status: unknown
+    status: unsupported
   '#inter-script-spacing':
     title: 8.4.1 Inter-script Spacing
-    status: unknown
+    status: unsupported
   '#autospace-bidi':
     title: 8.4.2 Interaction with Bidirectional Text
-    status: unknown
+    status: unsupported
   '#text-spacing-trim-property':
     title: '8.5 CJK Punctuation Spacing: the text-spacing-trim property'
-    status: unknown
+    status: unsupported
   '#fullwidth-collapsing':
     title: 8.5.1 Fullwidth Punctuation Collapsing
-    status: unknown
+    status: unsupported
   '#text-spacing-classes':
     title: 8.5.2 Text Spacing Trim Character Classes
-    status: unknown
+    status: unsupported
   '#japanese-start-edges':
     title: 8.5.3 Japanese Paragraph-start Conventions in CSS
-    status: unknown
+    status: n/a
   '#text-spacing-property':
     title: '8.6 Character Class Spacing Shorthand: the text-spacing property'
-    status: unknown
+    status: unsupported
   '#boundary-shaping':
     title: 8.7 Shaping Across Element Boundaries
-    status: unknown
+    status: unsupported
   '#edge-effects':
     title: 9 Edge Effects
-    status: unknown
+    status: partial
   '#text-indent-property':
     title: '9.1 First Line Indentation: the text-indent property'
-    status: unknown
+    status: partial
+    gaps:
+      - hanging and each-line aren't accepted
+      - "The gaps of CSS 2.1 16.1 apply: percentages, anonymous blocks, rtl and inline-blocks"
   '#hanging':
     title: 9.2 Hanging Glyphs
-    status: unknown
+    status: unsupported
   '#hanging-punctuation-property':
     title: '9.2.1 Hanging Punctuation: the hanging-punctuation property'
-    status: unknown
+    status: unsupported
   '#bidi-linebox':
     title: 9.3 Bidirectionality and Line Boxes
-    status: unknown
+    status: partial
+    gaps:
+      - The line's direction doesn't change which side start and end refer to, see 7.1
+      - In rtl text-indent is applied at the left edge, see CSS 2.1 16.1

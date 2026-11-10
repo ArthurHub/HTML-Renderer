@@ -13,6 +13,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#spacing-props")]
     [Spec("css-text-3", "#word-spacing-property")]
+    [Spec("css-text-4", "#word-spacing-property")]
     public void WordSpacing_IncreasesGapBetweenAdjacentWords()
     {
         var spacedGap = InterWordGap("<p id='p' style='word-spacing:10px'>AA BB</p>");
@@ -25,6 +26,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#spacing-props")]
     [Spec("css-text-3", "#word-spacing-property")]
+    [Spec("css-text-4", "#word-spacing-property")]
     public void WordSpacing_OnAncestor_AffectsDescendantGap()
     {
         var spacedGap = InterWordGap("<div style='word-spacing:10px'><p id='p'>AA BB</p></div>");
@@ -36,6 +38,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#spacing-props")]
     [Spec("css-text-3", "#word-spacing-property")]
+    [Spec("css-text-4", "#word-spacing-property")]
     public void WordSpacingNormal_LeavesGapUnchanged()
     {
         var normalGap = InterWordGap("<p id='p' style='word-spacing:normal'>AA BB</p>");
@@ -48,6 +51,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#spacing-props")]
     [Spec("css-text-3", "#word-spacing-property")]
+    [Spec("css-text-4", "#word-spacing-property")]
     public void WordSpacingNegative_ReducesGap()
     {
         var negativeGap = InterWordGap("<p id='p' style='word-spacing:-5px'>AA BB</p>");
@@ -60,6 +64,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#spacing-props")]
     [Spec("css-text-3", "#letter-spacing-property")]
+    [Spec("css-text-4", "#letter-spacing-property")]
     public void LetterSpacing_WidensTheWordByTheSpacingPerCharacter()
     {
         var spaced = FirstWordWidth("<p id='p' style='letter-spacing:10px'>AAAA</p>");
@@ -71,6 +76,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#indentation-prop")]
     [Spec("css-text-3", "#text-indent-property")]
+    [Spec("css-text-4", "#text-indent-property")]
     public void TextIndent_IndentsOnlyTheFirstLine()
     {
         var html = LayoutHarness.Wrap(
@@ -91,6 +97,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#indentation-prop")]
     [Spec("css-text-3", "#text-indent-property")]
+    [Spec("css-text-4", "#text-indent-property")]
     public void TextIndentZero_NoIndentOnAnyLine()
     {
         var html = LayoutHarness.Wrap("<p id='p' style='margin:0;'>Hello world</p>");
@@ -104,6 +111,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#indentation-prop")]
     [Spec("css-text-3", "#text-indent-property")]
+    [Spec("css-text-4", "#text-indent-property")]
     public void NegativeTextIndent_PullsTheFirstLineOutOfTheBlock()
     {
         Assert.AreEqual(30, FirstWordLeft(
@@ -113,6 +121,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#indentation-prop")]
     [Spec("css-text-3", "#text-indent-property")]
+    [Spec("css-text-4", "#text-indent-property")]
     public void TextIndent_IsInheritedByABlockChild()
     {
         Assert.AreEqual(40, FirstWordLeft(
@@ -122,6 +131,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#indentation-prop")]
     [Spec("css-text-3", "#text-indent-property")]
+    [Spec("css-text-4", "#text-indent-property")]
     public void TextIndent_DoesntApplyAfterALineBreak()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='p' style='text-indent:40px'>aa<br>bb</div>"));
@@ -135,6 +145,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#indentation-prop")]
     [Spec("css-text-3", "#text-indent-property")]
+    [Spec("css-text-4", "#text-indent-property")]
     public void PercentageTextIndent_ResolvesAgainstTheContainingBlockWidth()
     {
         Assert.AreEqual(40, FirstWordLeft(
@@ -145,6 +156,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#indentation-prop")]
     [Spec("css-text-3", "#text-indent-property")]
+    [Spec("css-text-4", "#text-indent-property")]
     public void TextIndent_DoesntApplyToAnAnonymousBlockThatIsntTheFirstChild()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap("<div id='p' style='text-indent:40px'><div>bb</div>cc</div>"));
@@ -157,7 +169,9 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#indentation-prop")]
     [Spec("css-text-3", "#text-indent-property")]
+    [Spec("css-text-4", "#text-indent-property")]
     [Spec("css-text-3", "#bidi-linebox")]
+    [Spec("css-text-4", "#bidi-linebox")]
     public void TextIndent_InRtl_IndentsFromTheRightEdge()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -171,6 +185,7 @@ public sealed class TextSpacingAndIndentLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#indentation-prop")]
     [Spec("css-text-3", "#text-indent-property")]
+    [Spec("css-text-4", "#text-indent-property")]
     public void TextIndent_IndentsTheFirstLineOfAnInlineBlock()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
