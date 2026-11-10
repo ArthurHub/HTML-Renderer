@@ -152,31 +152,10 @@ sections:
     status: n/a
   dom.html#dom:
     title: 3 Semantics, structure, and APIs of HTML documents
-    status: unknown
+    status: partial
   dom.html#documents:
     title: 3.1 Documents
-    status: unknown
-  dom.html#the-document-object:
-    title: 3.1.1 The Document object
-    status: unknown
-  dom.html#the-documentorshadowroot-interface:
-    title: 3.1.2 The DocumentOrShadowRoot interface
-    status: unknown
-  dom.html#ancestor-origins:
-    title: 3.1.3 Ancestor origins
-    status: unknown
-  dom.html#resource-metadata-management:
-    title: 3.1.4 Resource metadata management
-    status: unknown
-  dom.html#reporting-document-loading-status:
-    title: 3.1.5 Reporting document loading status
-    status: unknown
-  dom.html#render-blocking-mechanism:
-    title: 3.1.6 Render-blocking mechanism
-    status: unknown
-  dom.html#dom-tree-accessors:
-    title: 3.1.7 DOM tree accessors
-    status: unknown
+    status: n/a
   dom.html#elements:
     title: 3.2 Elements
     status: partial
