@@ -5,157 +5,181 @@ snapshot: https://www.w3.org/TR/2026/WD-css-align-3-20261008/
 sections:
   '#intro':
     title: 1 Introduction
-    status: unknown
-  '#placement':
-    title: 1.1 Module Interactions
-    status: unknown
-  '#values':
-    title: 1.2 Value Definitions
-    status: unknown
-  '#partial':
-    title: 1.3 Partial Implementations
-    status: unknown
+    status: n/a
   '#overview':
     title: 2 Overview of Alignment Properties
-    status: unknown
+    status: n/a
   '#terms':
     title: 3 Alignment Terminology
-    status: unknown
+    status: n/a
   '#alignment-values':
     title: 4 Alignment Keywords
-    status: unknown
+    status: parsed-only
   '#positional-values':
     title: '4.1 Positional Alignment: the center, start, end, self-start, self-end, flex-start, flex-end, left, and right keywords'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'left' and 'right' are rejected in 'justify-self' and 'justify-items'"
   '#baseline-values':
     title: '4.2 Baseline Alignment: the baseline keyword and first/last modifiers'
-    status: unknown
+    status: parsed-only
   '#distribution-values':
     title: '4.3 Distributed Alignment: the stretch, space-between, space-around, and space-evenly keywords'
-    status: unknown
+    status: parsed-only
   '#overflow-values':
     title: '4.4 Overflow Alignment: the safe and unsafe keywords and scroll safety limits'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'safe' and 'unsafe' are only accepted before 'center', e.g. 'safe start' is rejected"
   '#auto-safety':
     title: 4.4.1 Automatic Overflow Alignment Safety
-    status: unknown
+    status: unsupported
   '#auto-safety-scroll':
     title: 4.4.1.1 Content Distribution for Scroll Containers
-    status: unknown
+    status: unsupported
   '#auto-safety-position':
     title: 4.4.1.2 Self-Alignment for Absolutely Positioned Boxes
-    status: unknown
+    status: unsupported
   '#auto-safety-default':
     title: 4.4.1.3 All Other Alignment
-    status: unknown
+    status: unsupported
   '#content-distribution':
     title: '5 Content Distribution: Aligning a Box’s Contents Within Itself'
-    status: unknown
+    status: parsed-only
   '#align-justify-content':
     title: 5.1 The justify-content and align-content Properties
-    status: unknown
+    status: parsed-only
   '#distribution-block':
     title: 5.1.1 Block Containers (Including Table Cells)
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'align-content' is ignored on block containers and table cells"
   '#distribution-multicol':
     title: 5.1.2 Multicol Containers
-    status: unknown
+    status: unsupported
+    gaps:
+      - No multicol layout, see css-multicol-1
   '#distribution-flex':
     title: 5.1.3 Flex Containers
-    status: unknown
+    status: unsupported
+    gaps:
+      - No flex layout, see css-flexbox-1
   '#distribution-grid':
     title: 5.1.4 Grid Containers
-    status: unknown
+    status: unsupported
+    gaps:
+      - No grid layout, see css-grid-2
   '#place-content':
     title: '5.2 Content-Distribution Shorthand: the place-content property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "A baseline value, e.g. 'place-content: baseline', is rejected"
+      - "A first value that's only valid for 'justify-content', e.g. 'place-content: left', is accepted"
   '#overflow-scroll-position':
     title: 5.3 Alignment Overflow and Scroll Containers
-    status: unknown
+    status: unsupported
   '#baseline-align-content':
     title: 5.4 Baseline Content-Alignment
-    status: unknown
+    status: unsupported
   '#self-alignment':
     title: '6 Self-Alignment: Aligning the Box Within Its Parent'
-    status: unknown
+    status: parsed-only
   '#justify-self-property':
     title: '6.1 Inline-Axis (or Main-Axis) Self-Alignment: the justify-self property'
-    status: unknown
+    status: parsed-only
   '#justify-block':
     title: 6.1.1 Block-Level Boxes
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'justify-self' is ignored on block-level boxes"
   '#justify-abspos':
     title: 6.1.2 Absolutely-Positioned Boxes
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'justify-self' is ignored on absolutely positioned boxes"
   '#justify-cell':
     title: 6.1.3 Table Cells
-    status: unknown
+    status: n/a
   '#justify-flex':
     title: 6.1.4 Flex Items
-    status: unknown
+    status: n/a
   '#justify-grid':
     title: 6.1.5 Grid Items
-    status: unknown
+    status: unsupported
+    gaps:
+      - No grid layout, see css-grid-2
   '#align-self-property':
     title: '6.2 Block-Axis (or Cross-Axis) Self-Alignment: the align-self property'
-    status: unknown
+    status: parsed-only
   '#align-block':
     title: 6.2.1 Block-Level Boxes
-    status: unknown
+    status: n/a
   '#align-abspos':
     title: 6.2.2 Absolutely-Positioned Boxes
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'align-self' is ignored on absolutely positioned boxes"
   '#align-cell':
     title: 6.2.3 Table Cells
-    status: unknown
+    status: n/a
   '#align-flex':
     title: 6.2.4 Flex Items
-    status: unknown
+    status: unsupported
+    gaps:
+      - No flex layout, see css-flexbox-1
   '#align-grid':
     title: 6.2.5 Grid Items
-    status: unknown
+    status: unsupported
+    gaps:
+      - No grid layout, see css-grid-2
   '#place-self-property':
     title: '6.3 Self-Alignment Shorthand: the place-self property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "A second value that isn't valid for 'align-self', e.g. 'place-self: center left', is rejected"
   '#baseline-align-self':
     title: 6.4 Baseline Self-Alignment
-    status: unknown
+    status: unsupported
   '#abspos-sizing':
     title: 6.5 Effects on Sizing of Absolutely Positioned Boxes with Static-Position Insets
-    status: unknown
+    status: unsupported
   '#default-alignment':
     title: 7 Default Alignment
-    status: unknown
+    status: parsed-only
   '#justify-items-property':
     title: '7.1 Inline-Axis (or Main-Axis) Default Alignment: the justify-items property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "'legacy' is rejected"
   '#align-items-property':
     title: '7.2 Block-Axis (or Cross-Axis) Default Alignment: the align-items property'
-    status: unknown
+    status: parsed-only
   '#place-items-property':
     title: '7.3 Default Alignment Shorthand: the place-items property'
-    status: unknown
+    status: parsed-only
+    gaps:
+      - "A second value that isn't valid for 'align-items', e.g. 'place-items: start legacy', is rejected"
   '#gaps':
     title: 8 Gaps Between Boxes
-    status: unknown
+    status: n/a
   '#baseline-rules':
     title: 9 Baseline Alignment Details
-    status: unknown
+    status: unsupported
   '#baseline-export':
     title: 9.1 Determining the Baselines of a Box
-    status: unknown
+    status: unsupported
   '#baseline-terms':
     title: 9.2 Baseline Alignment Grouping
-    status: unknown
+    status: unsupported
   '#align-by-baseline':
     title: 9.3 Aligning Boxes by Baseline
-    status: unknown
+    status: unsupported
   '#changes':
     title: 10 Changes
-    status: unknown
+    status: n/a
   '#privacy':
     title: 11 Privacy Considerations
-    status: unknown
+    status: n/a
   '#security':
     title: 12 Security Considerations
-    status: unknown
+    status: n/a

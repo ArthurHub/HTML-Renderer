@@ -1,6 +1,6 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary>The <c>place-content</c> shorthand (CSS Box Alignment): <c>&lt;align-content&gt; &lt;justify-content&gt;?</c>.</summary>
+    /// <summary>CSS Box Alignment 3 §5.2</summary>
     internal sealed class PlaceContentProperty : ShorthandProperty
     {
         private static readonly IValueConverter StyleConverter = Converters.PlaceContentConverter.OrGlobalValue();

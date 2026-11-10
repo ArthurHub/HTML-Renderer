@@ -48,24 +48,28 @@ public sealed class FlexboxTests
     [TestMethod]
     [DynamicData(nameof(AlignContentTestDataValues))]
     [Spec("css-flexbox-1", "#align-content-property")]
+    [Spec("css-align-3", "#align-justify-content")]
     public void AlignContentLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<AlignContentProperty>(PropertyNames.AlignContent, value);
 
     [TestMethod]
     [DynamicData(nameof(AlignItemsTestDataValues))]
     [Spec("css-flexbox-1", "#align-items-property")]
+    [Spec("css-align-3", "#align-items-property")]
     public void AlignItemsLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<AlignItemsProperty>(PropertyNames.AlignItems, value);
 
     [TestMethod]
     [DynamicData(nameof(AlignSelfTestDataValues))]
     [Spec("css-flexbox-1", "#align-items-property")]
+    [Spec("css-align-3", "#align-self-property")]
     public void AlignSelfLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<AlignSelfProperty>(PropertyNames.AlignSelf, value);
 
     [TestMethod]
     [DynamicData(nameof(JustifyContentTestDataValues))]
     [Spec("css-flexbox-1", "#justify-content-property")]
+    [Spec("css-align-3", "#align-justify-content")]
     public void JustifyContentLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<JustifyContentProperty>(PropertyNames.JustifyContent, value);
 
@@ -84,6 +88,7 @@ public sealed class FlexboxTests
     [TestMethod]
     [DynamicData(nameof(AlignContentInvalidPrefixTestDataValues))]
     [Spec("css-flexbox-1", "#align-content-property")]
+    [Spec("css-align-3", "#align-justify-content")]
     public void AlignContentIllegalPrefixValues(string value)
     {
         var snippet = $"align-content: {value}";
@@ -95,6 +100,7 @@ public sealed class FlexboxTests
     [TestMethod]
     [DynamicData(nameof(AlignItemsInvalidPrefixTestDataValues))]
     [Spec("css-flexbox-1", "#align-items-property")]
+    [Spec("css-align-3", "#align-items-property")]
     public void AlignItemsIllegalPrefixValues(string value)
     {
         var snippet = $"align-items: {value}";
@@ -106,6 +112,7 @@ public sealed class FlexboxTests
     [TestMethod]
     [DynamicData(nameof(JustifyContentInvalidPrefixTestDataValues))]
     [Spec("css-flexbox-1", "#justify-content-property")]
+    [Spec("css-align-3", "#align-justify-content")]
     public void JustifyContentIllegalPrefixValues(string value)
     {
         var snippet = $"justify-content: {value}";
