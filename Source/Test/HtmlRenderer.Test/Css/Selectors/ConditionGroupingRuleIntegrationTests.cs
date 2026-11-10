@@ -5,21 +5,9 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 namespace HtmlRenderer.Test.Css.Selectors;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/ConditionGroupingRuleIntegrationTests.cs. <c>@supports</c> and
-/// <c>@container</c> parse and have working condition-evaluation code
-/// (<see cref="TheArtOfDev.HtmlRenderer.Core.CssEngine.SupportsRule"/>,
-/// <see cref="TheArtOfDev.HtmlRenderer.Core.CssEngine.ContainerRule"/>,
-/// <see cref="TheArtOfDev.HtmlRenderer.Core.CssEngine.DeclarationCondition"/>), but
-/// <c>TheArtOfDev.HtmlRenderer.Core.CssData.cs:330-332</c> explicitly documents that the real per-box
-/// cascade NEVER applies their inner rules, regardless of whether the condition is true or false - this
-/// is a deliberate, still-open scope gap (unlike PeachPDF, which genuinely evaluates and applies both).
-///
-/// Only the four cases that assert the inner rule DOES apply are ported, as <see cref="Ignore"/>d - they
-/// would genuinely fail against the real engine today. The mirror-image "does NOT apply" cases (and the
-/// AND/OR combination case, which also expects the block does not apply) are NOT ported: they'd pass,
-/// but only vacuously (inner rules never apply here regardless of the condition), so they're not
-/// meaningful regression coverage. <c>Supports_SvgOnlyProperty_AppliesToAnInlineSvgElement</c> is not
-/// ported either - HTML-Renderer has no SVG rendering pipeline.
+/// Ported from PeachPDF.Tests/CSS/ConditionGroupingRuleIntegrationTests.cs.
+/// <c>Supports_SvgOnlyProperty_AppliesToAnInlineSvgElement</c> is not ported, HTML-Renderer has no SVG
+/// rendering pipeline. The cascade doesn't apply <c>@container</c>'s inner rules yet.
 /// </summary>
 [TestClass]
 public sealed class ConditionGroupingRuleIntegrationTests
@@ -27,8 +15,6 @@ public sealed class ConditionGroupingRuleIntegrationTests
     private static readonly RColor Blue = RColor.FromArgb(0, 0, 255);
 
     [TestMethod]
-    [Ignore("not yet spec compliant - CssData.cs:330-332 documents that the real per-box cascade never " +
-            "applies @supports'/@container's inner rules, regardless of the condition. See class doc comment.")]
     public void Supports_InnerRules_Apply_WhenConditionIsSupported()
     {
         var html = Html(
@@ -39,8 +25,18 @@ public sealed class ConditionGroupingRuleIntegrationTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant - CssData.cs:330-332 documents that the real per-box cascade never " +
-            "applies @supports'/@container's inner rules, regardless of the condition. See class doc comment.")]
+    public void SupportsNot_Applies_WhenDeclarationIsInvalid()
+    {
+        var html = Html(
+            "@supports not (display: no-such-value) { p { color: #0000ff; } }",
+            "<p>text</p>");
+        var box = FindBoxByTag(html, "p");
+        Assert.AreEqual(Blue, box.ActualColor);
+    }
+
+    [TestMethod]
+    [Ignore("not yet spec compliant - DeclarationCondition.Check() reports animation-name as supported, " +
+            "see SupportsTests.SupportsAnimationNameRule_NoLongerFalsePositive")]
     public void SupportsNot_Fallback_Applies_WhenFeatureIsUnsupported()
     {
         var html = Html(
@@ -54,8 +50,6 @@ public sealed class ConditionGroupingRuleIntegrationTests
     // block and its not-guarded fallback wrapping the same declaration, both present in one
     // stylesheet. Real evaluation must let exactly one of them win, never both and never neither.
     [TestMethod]
-    [Ignore("not yet spec compliant - CssData.cs:330-332 documents that the real per-box cascade never " +
-            "applies @supports'/@container's inner rules, regardless of the condition. See class doc comment.")]
     public void SupportsEnhancedBlockAndNotGuardedFallback_ExactlyOneApplies()
     {
         var html = Html(
@@ -68,8 +62,41 @@ public sealed class ConditionGroupingRuleIntegrationTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant - CssData.cs:330-332 documents that the real per-box cascade never " +
-            "applies @supports'/@container's inner rules, regardless of the condition. See class doc comment.")]
+    public void Supports_InnerRules_DoNotApply_WhenConditionIsNotSupported()
+    {
+        var html = Html(
+            "p { color: #ff0000; } @supports (display: no-such-value) { p { color: #0000ff; } }",
+            "<p>text</p>");
+        var box = FindBoxByTag(html, "p");
+        Assert.AreEqual(RColor.FromArgb(255, 0, 0), box.ActualColor);
+    }
+
+    [TestMethod]
+    public void Supports_NestedWithMedia_AppliesOnlyWhenAllConditionsHold()
+    {
+        var html = Html(
+            "p { color: #ff0000; } " +
+            "@supports (display: block) { @media screen { @supports (display: block) { p { color: #0000ff; } } } } " +
+            "@media screen { @supports (display: no-such-value) { p { color: #00ff00; } } } " +
+            "@supports (display: block) { @media print { p { color: #00ff00; } } }",
+            "<p>text</p>");
+        var box = FindBoxByTag(html, "p");
+        Assert.AreEqual(Blue, box.ActualColor);
+    }
+
+    [TestMethod]
+    public void Supports_InsideLayer_AppliesOnlyWhenConditionIsSupported()
+    {
+        var html = Html(
+            "@layer base { @supports (display: block) { p { color: #0000ff; } } " +
+            "@supports (display: no-such-value) { p { color: #00ff00; } } }",
+            "<p>text</p>");
+        var box = FindBoxByTag(html, "p");
+        Assert.AreEqual(Blue, box.ActualColor);
+    }
+
+    [TestMethod]
+    [Ignore("not yet spec compliant - the cascade never applies @container's inner rules")]
     public void Container_InnerRules_Apply_WhenAnEligibleAncestorContainerMatches()
     {
         var html = Html(

@@ -253,7 +253,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
         /// <summary>
         /// Walks a rule list in true document order, recursing into <c>@media</c> blocks, <c>@layer</c>
-        /// blocks and CSS-Nesting child rules (any nesting depth) in place, and buckets every style rule
+        /// blocks, <c>@supports</c> blocks whose condition is true and CSS-Nesting child rules (any nesting depth) in place, and buckets every style rule
         /// found - assigning each an ever-increasing <see cref="IndexedRule.DocumentOrder"/> and recording
         /// the chain of enclosing media conditions it's nested under, if any.
         /// </summary>
@@ -327,9 +327,15 @@ namespace TheArtOfDev.HtmlRenderer.Core
                     // rule inside a layer would silently stop applying.
                     IndexRules(layerRule.Rules, isUserAgent, enclosingMedia, tagIndex, classIndex, idIndex, universal, keys, ref order);
                 }
-                // Everything else (@layer statements, @property, @font-palette-values, @supports,
-                // @container, ...) contributes no style rules to the cascade, so falling through is the
-                // correct handling rather than an oversight.
+                else if (rule is ISupportsRule supportsRule)
+                {
+                    // css-conditional-3 #at-supports: the condition doesn't depend on the device, so it
+                    // is decided once here instead of per box like @media.
+                    if (supportsRule.Condition.Check())
+                        IndexRules(supportsRule.Rules, isUserAgent, enclosingMedia, tagIndex, classIndex, idIndex, universal, keys, ref order);
+                }
+                // Everything else (@layer statements, @property, @font-palette-values, @container, ...)
+                // contributes no style rules to the cascade.
             }
         }
 
