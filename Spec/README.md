@@ -1,6 +1,6 @@
 # Spec compliance
 
-**tl;dr:** `<spec>.yml` says per spec section how well HTML Renderer implements it, `[Spec]` on a test says which section it verifies, and `SpecComplianceTests` keeps the two in sync. The report shows up in the summary of the Windows .NET 8 CI job.
+**tl;dr:** `<spec>.yml` says per spec section how well HTML Renderer implements it, `[Spec]` on a test says which section it verifies, and `SpecComplianceTests` keeps the two in sync. The overview table shows up in the summary of the Windows .NET 8 CI job, the full report is its "Spec compliance report" artifact.
 
 ## Manifest
 
@@ -41,6 +41,6 @@ Run from the repository root:
 # Validate manifests and [Spec] references, same as SpecComplianceTests
 dotnet run --project Source/Tools/HtmlRenderer.SpecCompliance -- check
 
-# Write the report
+# Write the report, --summary <file> also appends the overview table to a file, e.g. the job summary in CI
 dotnet run --project Source/Tools/HtmlRenderer.SpecCompliance -- report --output report.md
 ```

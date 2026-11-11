@@ -2,24 +2,22 @@ using System.Text;
 
 namespace HtmlRenderer.SpecCompliance;
 
-/// <summary>Renders the compliance as Markdown, for the GitHub Actions job summary or a file.</summary>
+/// <summary>Renders the compliance as Markdown, the overview table for the GitHub Actions job summary and the full report as a file.</summary>
 public static class Report
 {
     private static readonly string[] Columns = [SectionStatus.Supported, SectionStatus.Partial, SectionStatus.ParsedOnly, SectionStatus.Unsupported, SectionStatus.NotApplicable, SectionStatus.Unknown];
 
+    public static string RenderOverview(Compliance compliance)
+    {
+        var sb = new StringBuilder();
+        AppendOverview(sb, compliance);
+        return sb.ToString();
+    }
+
     public static string Render(Compliance compliance)
     {
         var sb = new StringBuilder();
-        sb.AppendLine("## Spec compliance").AppendLine();
-        sb.AppendLine("| Spec | Sections | Supported | Partial | Parsed only | Unsupported | N/A | Unknown | Tested |");
-        sb.AppendLine("|---|--:|--:|--:|--:|--:|--:|--:|--:|");
-        foreach (var spec in compliance.Specs)
-        {
-            var sections = spec.Manifest.Sections;
-            var counts = Columns.Select(c => sections.Values.Count(s => s.Status == c).ToString());
-            var tested = sections.Keys.Count(a => spec.TestsOf(a).Count > 0);
-            sb.AppendLine($"| [{spec.Manifest.Title}]({spec.Manifest.Url}) | {sections.Count} | {string.Join(" | ", counts)} | {tested} |");
-        }
+        AppendOverview(sb, compliance);
 
         foreach (var spec in compliance.Specs)
         {
@@ -34,6 +32,20 @@ public static class Report
         }
 
         return sb.ToString();
+    }
+
+    private static void AppendOverview(StringBuilder sb, Compliance compliance)
+    {
+        sb.AppendLine("## Spec compliance").AppendLine();
+        sb.AppendLine("| Spec | Sections | Supported | Partial | Parsed only | Unsupported | N/A | Unknown | Tested |");
+        sb.AppendLine("|---|--:|--:|--:|--:|--:|--:|--:|--:|");
+        foreach (var spec in compliance.Specs)
+        {
+            var sections = spec.Manifest.Sections;
+            var counts = Columns.Select(c => sections.Values.Count(s => s.Status == c).ToString());
+            var tested = sections.Keys.Count(a => spec.TestsOf(a).Count > 0);
+            sb.AppendLine($"| [{spec.Manifest.Title}]({spec.Manifest.Url}) | {sections.Count} | {string.Join(" | ", counts)} | {tested} |");
+        }
     }
 
     private static void RenderChapter(StringBuilder sb, SpecResult spec, List<SpecSection> sections)

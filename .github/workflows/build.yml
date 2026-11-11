@@ -84,7 +84,15 @@ jobs:
 
     - name: Spec compliance report
       if: ${{ !cancelled() && runner.os == 'Windows' && matrix.dotnet.name == '.NET 8' }}
-      run: dotnet run --project Source/Tools/HtmlRenderer.SpecCompliance --configuration Release --no-build -- report --output $env:GITHUB_STEP_SUMMARY
+      run: dotnet run --project Source/Tools/HtmlRenderer.SpecCompliance --configuration Release --no-build -- report --output spec-compliance.md --summary $env:GITHUB_STEP_SUMMARY
+
+    - name: Upload spec compliance report
+      if: ${{ !cancelled() && runner.os == 'Windows' && matrix.dotnet.name == '.NET 8' }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: Spec compliance report
+        path: spec-compliance.md
+        if-no-files-found: ignore
 
     - name: Create HtmlRenderer.Core NuGet package
       run: dotnet pack Source/HtmlRenderer/HtmlRenderer.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --no-build --verbosity normal --output ${{ env.NuGetDirectory }}

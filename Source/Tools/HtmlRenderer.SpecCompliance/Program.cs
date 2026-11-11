@@ -3,8 +3,9 @@ using HtmlRenderer.SpecCompliance;
 
 const string Usage = """
     Usage:
-      check                      Validate the manifests and the [Spec] references in the tests
-      report [--output <file>]   Write the compliance report as Markdown, to stdout by default
+      check                                       Validate the manifests and the [Spec] references in the tests
+      report [--output <file>] [--summary <file>]  Write the compliance report as Markdown, to stdout by default,
+                                                  and append the overview table to the summary file
     """;
 
 Console.OutputEncoding = new UTF8Encoding(false);
@@ -36,12 +37,18 @@ switch (args[0])
 
     case "report":
     {
-        var markdown = Report.Render(Compliance.Load(root));
+        var compliance = Compliance.Load(root);
+        var markdown = Report.Render(compliance);
         var output = Option("--output");
         if (output == null)
             Console.Write(markdown);
         else
             File.WriteAllText(output, markdown);
+
+        // Appends, as $GITHUB_STEP_SUMMARY is shared by all steps of a job
+        var summary = Option("--summary");
+        if (summary != null)
+            File.AppendAllText(summary, Report.RenderOverview(compliance));
         return 0;
     }
 
