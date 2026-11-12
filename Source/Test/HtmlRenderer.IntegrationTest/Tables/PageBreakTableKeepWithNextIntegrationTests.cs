@@ -8,36 +8,12 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 namespace HtmlRenderer.IntegrationTest.Tables;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/PageBreakTableKeepWithNextIntegrationTests.cs: a heading
-/// carrying <c>break-after:avoid</c> must not be stranded alone at the bottom of a page while the table
-/// immediately following it starts on the next one.
+/// A heading with <c>break-after: avoid</c> isn't left alone at the bottom of a page while the table after it
+/// starts on the next one.
 /// </summary>
 /// <remarks>
-/// PeachPDF names two independent gaps its own fixtures are built around ("Gap 1": the general block path
-/// relocating a box across a margin-crossing boundary without pulling a preceding keep-with-next run;
-/// "Gap 2": a repeating-header table's own pre-check being gated off whenever it repeats a header at all).
-/// Confirmed by reading both of this fork's real mechanisms and then running the fixtures below (not just
-/// reading source): Gap 1 does NOT reproduce here - <c>BlockFragmentation.EnforceKeepWithNext</c> is called
-/// UNCONDITIONALLY from the block child loop, for every child regardless of what relocated it (its own doc
-/// comment even names this as the general fix for exactly this class of bug) - so a table whose margin gets
-/// truncated across a page boundary (css-break-3 §5.2) already pulls a preceding <c>break-after:avoid</c>
-/// heading along, with no table-specific handling needed at all.
-/// <para>
-/// Gap 2's shape, however, DOES reproduce, for a different and more fundamental reason than PeachPDF's own
-/// (a table-specific pre-check being gated off): this fork's row preservation
-/// (<c>CssLayoutEngineTable.LayoutCells</c>) shifts a straddling row's CELLS, never the table's own outer
-/// <see cref="CssBox.Location"/> (see <c>Tables/PageBreakTableIntegrationTests.cs</c>'s own class remarks
-/// for the same fact) - and <c>EnforceKeepWithNext</c> reads the CHILD's (the table's) own
-/// <see cref="CssBoxProperties.EffectiveTop"/>, which never moves via an internal row-shift. So when a
-/// table's own header fits under a heading but its first BODY row does not, the header (and the heading
-/// above it) are left exactly where flow put them while only the straddling row moves on - an orphaned
-/// header, not a whole-table-plus-heading move. <see cref="HeaderFitsButNoBodyRowDoes_MovesWholeTableAndHeadingTogether"/>
-/// and <see cref="LongRepeatingHeaderTable_StartingNearPageBottom_StartsOnNextPageAndRepeatsHeaders"/> are
-/// ported with PeachPDF's full original assertions but <c>[Ignore]</c>d, citing this. PeachPDF's own
-/// three-way composition test (<c>GapOneThenGapTwo_...</c>) has no counterpart to port onto - it exists
-/// specifically to pin two SEPARATE pre-checks not double-counting each other's own offset, and this fork
-/// has only the one (general) mechanism, which does not re-fire the way two independent passes could.
-/// </para>
+/// Keeping a row whole moves its cells, not the table's own box, so a header that fits on the page stays
+/// there with the heading while the first body row moves on.
 /// </remarks>
 [TestClass]
 [DoNotParallelize]
@@ -100,14 +76,7 @@ public sealed class PageBreakTableKeepWithNextIntegrationTests
             $"Heading (bottom={heading.ActualBottom:F1}) must sit above the moved table (top={table.Location.Y:F1})");
     }
 
-    // Confirmed gap (see class remarks): the <thead> row fits comfortably under the heading on page 1, but
-    // the tall .rbox body row does not - only the straddling ROW is relocated (css-tables-3 6.1), and
-    // neither the table's own outer box nor the heading above it follow it, since EnforceKeepWithNext reads
-    // the table's own EffectiveTop, which the internal row-shift never touches.
-    [Ignore("Confirmed gap: row preservation shifts only the straddling row's cells, never the table's own " +
-        "outer Location - EnforceKeepWithNext reads the table's EffectiveTop (unchanged) and finds no gap " +
-        "to react to, so the heading and the table's own header are left in place while only the body row " +
-        "moves on. See this file's own class remarks for the full mechanism.")]
+    [Ignore("Only the body row moves to the next page, moving the header and the heading along with it isn't implemented")]
     [TestMethod]
     public void HeaderFitsButNoBodyRowDoes_MovesWholeTableAndHeadingTogether()
     {
@@ -173,15 +142,7 @@ public sealed class PageBreakTableKeepWithNextIntegrationTests
         Assert.IsTrue(heading!.Location.Y < PageHeight);
     }
 
-    // Confirmed gap, same mechanism as HeaderFitsButNoBodyRowDoes_MovesWholeTableAndHeadingTogether: a
-    // table whose entire body clearly does not fit on one page still leaves its header (and the heading
-    // above it) in flow on the ORIGINAL page - orphaned - rather than starting fresh on the next page,
-    // because only the first straddling row is what row preservation ever relocates.
-    [Ignore("Confirmed gap: the header (and the heading above it) stay in flow on the original page while " +
-        "only the first straddling body row is relocated by row preservation - see class remarks. The " +
-        "header does still repeat correctly on every page the table's body spans from there, which is a " +
-        "real, working, SEPARATE mechanism from the one this test is about (not stranding the header's " +
-        "own first appearance).")]
+    [Ignore("Only the first body row moves to the next page, moving the header and the heading along with it isn't implemented")]
     [TestMethod]
     public void LongRepeatingHeaderTable_StartingNearPageBottom_StartsOnNextPageAndRepeatsHeaders()
     {

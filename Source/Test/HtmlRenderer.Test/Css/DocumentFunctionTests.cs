@@ -4,11 +4,6 @@ using static HtmlRenderer.Test.CssEngineSupport.CssConstructionFunctions;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/DocumentFunction.cs (<c>CssDocumentFunctionTests</c>). <c>DocumentRule</c>,
-/// <c>IDocumentFunction</c>, and <c>DomainFunction</c> all match HTML-Renderer's
-/// <see cref="TheArtOfDev.HtmlRenderer.Core.CssEngine.DocumentRule"/> / <c>Functions/DocumentFunction.cs</c>.
-/// </summary>
 [TestClass]
 public sealed class DocumentFunctionTests
 {

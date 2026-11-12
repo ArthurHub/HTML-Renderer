@@ -3,14 +3,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/StrokeProperty.cs (source class <c>StrokePropertyTests</c>).
-/// All SVG paint/stroke longhands exist: <see cref="StrokeProperty"/> (paint - colors/"none"/"url()"),
-/// <see cref="StrokeDasharrayProperty"/>, <see cref="StrokeDashoffsetProperty"/>,
-/// <see cref="StrokeLinecapProperty"/>, <see cref="StrokeLinejoinProperty"/>,
-/// <see cref="StrokeMiterlimitProperty"/>, <see cref="StrokeOpacityProperty"/>, and
-/// <see cref="StrokeWidthProperty"/>, all matching PeachPDF's grammar.
-/// </summary>
 [TestClass]
 public sealed class StrokePropertyTests
 {

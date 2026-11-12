@@ -9,12 +9,8 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
 /// <summary>
-/// Verifies the fragmentation-engine-parity plan's R7 investigation finding: a table cell whose own
-/// content spans several pages by itself (the content routes through the same, already-fixed
-/// <c>CssBox.PerformLayoutImp</c>/<c>CreateLineBoxes</c>/<c>ApplyLineBreaking</c> machinery as any other
-/// box) is preserved intact and subsequent rows correctly continue after it - no TableBreakToken/
-/// TableRowCursor machinery needed for this case, matching the R2/R5/R6 finding that this port's
-/// architecture rarely needs what it looks like it needs at first glance.
+/// A table cell whose own content spans several pages is kept intact, and the following rows continue
+/// after it.
 /// </summary>
 /// <remarks>
 /// Does NOT cover repeated-header behavior for this shape - a row whose own content spans multiple

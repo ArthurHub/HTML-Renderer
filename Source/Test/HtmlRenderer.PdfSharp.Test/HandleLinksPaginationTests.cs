@@ -4,27 +4,8 @@ using TheArtOfDev.HtmlRenderer.PdfSharp;
 namespace HtmlRenderer.PdfSharp.Test;
 
 /// <summary>
-/// Ported from PeachPDF.Tests' <c>HandleLinksPaginationTests</c>: end-to-end tests for link-annotation
-/// page attribution through the real <see cref="PdfGenerator"/> pipeline, asserting on the generated
-/// <c>PdfDocument</c>'s own <c>Pages[i].Annotations</c>.
+/// A link annotation lands on the PDF page its link is painted on, also when blank page slots are skipped.
 /// </summary>
-/// <remarks>
-/// PeachPDF's own two historical bugs this file documented (an un-shifted <c>MarginTop</c> in the
-/// page-index formula, and a raw grid-slot index used directly as a <c>document.Pages</c> index) don't
-/// map onto this fork's own <c>PdfGenerator.HandleLinks</c> (<c>Source/HtmlRenderer.PdfSharp/PdfGenerator.cs</c>
-/// ~235-285) verbatim - this fork was written already carrying the fix: it builds a <c>slotToPage</c>
-/// dictionary from <c>tree.Fragmentainers</c> up front (so a content-empty slot skipped by blank-page
-/// skipping is simply absent from the map, never silently misindexed) and matches each link against
-/// every fragmentainer's own <c>Geometry</c> band rather than dividing by a fixed page height. These
-/// tests are therefore regression PINS for that already-correct behavior, not bug repros - but real ones,
-/// exercised through the actual generator rather than assumed.
-///
-/// PeachPDF's first fixture used <c>page-break-before:always</c> to land its link deterministically on
-/// "page two" - this fork has no such property (confirmed elsewhere in this branch's own history; see
-/// <c>HtmlRenderer.PdfSharp.Test.FixedPositionPaginationIntegrationTests</c>'s remarks), so both fixtures
-/// here instead force genuine multi-page output the same way the other real-PDF tests in this project do:
-/// with enough filler content that the layout itself overflows onto further pages.
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class HandleLinksPaginationTests

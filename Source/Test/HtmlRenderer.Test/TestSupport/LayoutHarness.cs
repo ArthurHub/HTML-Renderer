@@ -25,7 +25,7 @@ internal static class LayoutHarness
     /// <param name="pageHeight">
     /// Optional: enables a real page grid (<see cref="HtmlContainerInt.HasRealPageGrid"/>) for fragmentation
     /// tests. Assigned directly to <see cref="HtmlContainerInt.PageSize"/>'s height - i.e. this is already the
-    /// per-page CONTENT BAND, not a sheet height margins are subtracted from, matching this fork's own
+    /// per-page CONTENT BAND, not a sheet height margins are subtracted from, matching the
     /// <see cref="HtmlContainerInt.PageTopOf"/>/<see cref="HtmlContainerInt.PageIndexOf"/> convention (a
     /// caller wanting a 300px sheet with 20px margins passes <c>pageHeight: 260</c>). <paramref name="margin"/>
     /// pixels of top/bottom margin are applied on top - the root box is placed at <c>(margin, margin)</c>, and

@@ -10,15 +10,8 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
 /// <summary>
-/// Verifies a real, previously-undocumented gap found while auditing this port's fragmentation engine
-/// against PeachPDF a second time: <c>CssLayoutEngineTable.LayoutCells</c>'s <c>break-inside:avoid</c>
-/// row-shift correction did <c>foreach (CssBox cell in row.Boxes) cell.OffsetTop(delta)</c> - but for a
-/// row that is the END of a rowspan, <c>row.Boxes</c> holds only the <c>CssSpacingBox</c> placeholder
-/// (Display:none, no children/words/rectangles), not the real spanning cell (<c>ExtendedBox</c>).
-/// <c>OffsetTop</c> on the placeholder was a silent no-op, leaving the spanning cell's real bottom edge
-/// stale relative to the rest of the row, which moved on to the next page. Confirmed by temporarily
-/// reverting the fix and re-running this exact test: it reliably reproduced the spanning cell's bottom
-/// edge lagging behind its sibling's at several filler counts.
+/// Moving a row that ends a rowspan to the next page also moves the spanning cell, the row itself only holds
+/// a <c>CssSpacingBox</c> placeholder for it.
 /// </summary>
 [TestClass]
 [DoNotParallelize]

@@ -109,9 +109,6 @@ public sealed class CommonUtilsTests
         Assert.IsFalse(CommonUtils.SubStringEquals("Hi", 0, 5, "hello"));
     }
 
-    // Style keywords below use TheArtOfDev.HtmlRenderer.Core.Utils.CssConstants -- HTML-Renderer has
-    // no PeachPDF.CSS.Keywords equivalent, and ConvertToAlphaNumber's own style parameter is just a
-    // plain CSS keyword string.
     [TestMethod]
     [DataRow(0, CssConstants.UpperAlpha, "")]
     [DataRow(1, CssConstants.UpperAlpha, "A")]
@@ -187,7 +184,8 @@ public sealed class CommonUtilsTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant")]
+    [Ignore("Gap, see Spec/css-counter-styles-3.yml")]
+    [Spec("css-counter-styles-3", "#simple-alphabetic")]
     public void ConvertToAlphaNumber_HiraganaIroha_DiffersFromDictionaryOrderHiragana()
     {
         // CSS Counter Styles Level 3's hiragana-iroha system reorders the 47 kana by the classical
@@ -203,7 +201,8 @@ public sealed class CommonUtilsTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant")]
+    [Ignore("Gap, see Spec/css-counter-styles-3.yml")]
+    [Spec("css-counter-styles-3", "#simple-alphabetic")]
     public void ConvertToAlphaNumber_KatakanaIroha_DiffersFromDictionaryOrderKatakana()
     {
         var dictionaryOrder = CommonUtils.ConvertToAlphaNumber(2, CssConstants.Katakana);
@@ -220,11 +219,6 @@ public sealed class CommonUtilsTests
     [DataRow(CssConstants.KatakanaIroha)]
     public void ConvertToAlphaNumber_KanaAlphabets_DoNotThrowPastFirstWraparound(string style)
     {
-        // The hiragana/katakana tables here are both a fixed 48 characters (including trailing "n"),
-        // and HiraganaIroha/KatakanaIroha reuse those exact same tables rather than a separate
-        // 47-character iroha-ordered array -- so, unlike PeachPDF's fixed version (which guards
-        // against a smaller 47-character iroha table), there's no out-of-range indexing to trigger
-        // here. This still confirms the algorithm never throws and always produces output.
         for (var number = 1; number <= 200; number++)
         {
             var result = CommonUtils.ConvertToAlphaNumber(number, style);

@@ -6,44 +6,9 @@ using TheArtOfDev.HtmlRenderer.PdfSharp;
 namespace HtmlRenderer.PdfSharp.Test;
 
 /// <summary>
-/// Ported from PeachPDF.Tests' <c>FixedPositionPaginationIntegrationTests</c>, which confirms
-/// <c>position:fixed</c> content repeats identically across real, multi-page <see cref="PdfGenerator"/>
-/// output by scanning generated PDF content streams for a fixed box's own fill operator appearing on
-/// every one of 3 real pages, produced there via <c>page-break-before:always</c>.
+/// <c>position: fixed</c> content repaints at the same page position on every generated PDF page, checked
+/// through the fill of a fixed box in each page's content stream. Filler content makes the pages.
 /// </summary>
-/// <remarks>
-/// <para>
-/// This fork has no <c>page-break-before</c>/<c>page-break-after</c> support at all - already confirmed
-/// and documented by <c>HtmlRenderer.IntegrationTest.Positioning.FixedPositionPaginationIntegrationTests</c>'s
-/// own <c>PageBreakBefore_PushesFollowingContentToTheNextSimulatedPage</c> test, which is <c>[Ignore]</c>d
-/// for exactly that reason (no <c>PageBreakBefore</c>/<c>PageBreakAfter</c> property anywhere in
-/// <c>CssBoxProperties</c>, and the default stylesheet's own rules for it are inert). Real multiple pages
-/// are forced here the same way <c>MultiPageTextVisibilityTest</c>/<c>FixedPositionRepeatsPerPdfPageTest</c>
-/// already do it: enough filler paragraph content to genuinely overflow several A4 pages.
-/// </para>
-/// <para>
-/// This is deliberately NOT a duplicate of the two fixed-position tests already in this branch's
-/// history:
-/// </para>
-/// <list type="bullet">
-/// <item><c>HtmlRenderer.IntegrationTest.FixedPositionRepeatsPerPageTest</c> asserts against the
-/// fragment tree directly (<c>FragmentainerFragment.Root</c> word positions) and never generates a real
-/// PDF at all.</item>
-/// <item><c>HtmlRenderer.PdfSharp.Test.FixedPositionRepeatsPerPdfPageTest</c> does go through the real
-/// generator, but only ever checks a relative <c>Tj</c>-operator COUNT for fixed TEXT content - it never
-/// confirms a fixed box's own painted geometry (a <c>background-color</c> fill, drawn through
-/// <c>GraphicsAdapter.DrawRectangle(RBrush,...)</c>, a different code path than <c>DrawString</c>), and
-/// never confirms the fixed content repaints at the SAME page-local position on every page rather than
-/// merely "some extra content exists somewhere".</item>
-/// </list>
-/// <para>
-/// This test fills that specific, previously-uncovered gap. The content-stream shape of a filled rect -
-/// a "&lt;r&gt; &lt;g&gt; &lt;b&gt; rg" color-set operator followed (not necessarily immediately, since
-/// PdfSharp's writer elides a redundant "gs"/state push in between) by an "x y w h re" path and an "f"
-/// fill operator - was confirmed empirically by dumping a real generated content stream for this exact
-/// fixture during porting, not guessed.
-/// </para>
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class FixedPositionPaginationIntegrationTests

@@ -2,10 +2,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/UrlTests.cs. HTML-Renderer's <see cref="TheArtOfDev.HtmlRenderer.Core.CssEngine.Url"/>
-/// is a near-verbatim structural port of PeachPDF's <c>Model/Url.cs</c> (same state machine, same public surface).
-/// </summary>
 [TestClass]
 public sealed class UrlTests
 {

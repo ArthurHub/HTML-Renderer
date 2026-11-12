@@ -7,28 +7,9 @@ using TheArtOfDev.HtmlRenderer.Core.Paint.Content;
 namespace HtmlRenderer.IntegrationTest.Painting;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/FragmentContentPainterTests.cs: the per-box-type paint dispatch -
-/// <c>FragmentContentPainters.For</c> picks the painter, and the ones the other paint suites don't already
-/// drive (<c>&lt;iframe&gt;</c>, <c>&lt;hr&gt;</c>) draw what they should.
+/// <c>FragmentContentPainters.For</c> picks the painter per box type, and the ones the other paint suites
+/// don't already drive (<c>&lt;iframe&gt;</c>, <c>&lt;hr&gt;</c>) draw what they should.
 /// </summary>
-/// <remarks>
-/// <c>FragmentContentPainters.For</c>'s <c>switch</c> (Core/Paint/Content/FragmentContentPainters.cs) lists
-/// only 3 cases - <see cref="TheArtOfDev.HtmlRenderer.Core.Dom.CssBoxImage"/>,
-/// <see cref="TheArtOfDev.HtmlRenderer.Core.Dom.CssBoxHr"/>,
-/// <see cref="TheArtOfDev.HtmlRenderer.Core.Dom.CssBoxFrame"/> - confirmed by direct source read, HTML-Renderer
-/// has no distinct box type for <c>&lt;object&gt;</c> or inline <c>&lt;svg&gt;</c> at all (no
-/// <c>CssBoxObject</c>/<c>CssBoxSvg</c> anywhere in <c>Core/Dom/</c>), so PeachPDF's theory rows for those two
-/// element types are dropped.
-/// <para>
-/// <c>Iframe_PaintsItsOwnBoxOnly_WithNoEmbeddedContent</c> ports for a different underlying reason than in
-/// PeachPDF: this fork's <c>CssBoxFrame</c> is not a stub - it can render a YouTube/Vimeo video thumbnail/
-/// title/play button for a matching <c>src</c> (see <c>CssBoxFrame</c>'s own doc comment). An ordinary
-/// (non-video) <c>&lt;iframe&gt;</c> with no matching <c>src</c> still draws nothing beyond its own
-/// background/border, though: <c>_isVideo</c> is false, so <c>DrawImage</c>/<c>DrawTitle</c>/<c>DrawPlay</c>
-/// all no-op (confirmed by reading <c>CssBoxFrame.DrawFrameContent</c> and its three private helpers in
-/// full), which happens to match PeachPDF's own "no embedded content" expectation for this fixture.
-/// </para>
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class FragmentContentPainterTests

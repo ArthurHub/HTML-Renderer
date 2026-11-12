@@ -6,49 +6,12 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 namespace HtmlRenderer.IntegrationTest.Tables;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/TableSpannedBandRepetitionTests.cs: whether a repeated
-/// <c>&lt;thead&gt;</c> appears on bands a table spans WITHOUT breaking on them - a single row (or cell)
-/// tall enough to overflow straight through one or more page bands, rather than a break falling neatly
-/// between two rows.
+/// Whether a repeated <c>&lt;thead&gt;</c> appears on pages a table spans without breaking between rows there,
+/// because one row or cell runs through them.
 /// </summary>
 /// <remarks>
-/// A drastic reduction from PeachPDF's 13 (thead half only, per the port plan's tfoot-drop rule - this
-/// fork implements no <c>&lt;tfoot&gt;</c> repeat at all), not a rename - confirmed by direct source read
-/// that almost all of the rest assert against machinery this fork does not have:
-/// <list type="bullet">
-/// <item><c>BoxFragment.OverflowClip</c> is <c>null</c> on every fragment this fork ever builds - confirmed
-/// by grep: <c>Core/Fragmentation/FragmentEmitter.cs</c> constructs every <c>BoxFragment</c> with
-/// <c>OverflowClip: null</c> literally, with no other assignment anywhere in the file. PeachPDF's own
-/// "slice the row's graphical representation, leave room for the header, state the strip's confinement"
-/// mechanism (<c>TheStripsMeetExactly_...</c>, <c>TheStripsCoverTheWholeRow_...</c>,
-/// <c>EveryBandOfASlicedRun_...</c>, <c>AClipOutsideTheSlicedRow_...</c>) has nothing to port onto: this
-/// fork's <see cref="TheArtOfDev.HtmlRenderer.Core.Fragmentation.FragmentEmitter"/> already fragments any
-/// box taller than one band into one <see cref="TheArtOfDev.HtmlRenderer.Core.Fragments.BoxFragment"/> per
-/// band it overlaps (proven generically by <c>Painting/FragmentPaintIntegrationTests.BoxSpanningTwoPages_PaintsItsBackgroundOnBoth</c>),
-/// with no room-reservation step and no separate "confinement" object - so there is no "does the strip
-/// begin below the header" question to ask; the header repeat and the tall row's own natural per-band
-/// fragments simply overlap in painted space when the header-repeat loop's own known limitation (see
-/// below) doesn't apply.</item>
-/// <item>A quarter-of-the-page-height cap on repeat eligibility (css-tables-3 6.2's second condition) is
-/// not implemented - confirmed by reading <c>CssLayoutEngineTable.LayoutCells</c>'s <c>repeatsHeader</c>
-/// gate in full: it checks only <c>BreakValues.AvoidsBreak(_headerBox.BreakInside)</c>, no height
-/// comparison of any kind. <c>TableRepeatedGroupConditionsTests</c> documents this gap; it is not
-/// re-documented here.</item>
-/// <item><c>AFixedBoxInsideASlicedRow_...</c> is subsumed by the already-ported, general
-/// <c>Painting/FragmentPaintIntegrationTests.FixedBox_PaintsAtTheSameCoordinatesOnEveryPage</c> - nothing
-/// about a fixed box's own repeat-per-page mechanism (<c>FragmentEmitter.CollectFixedRoots</c>) is
-/// table-specific.</item>
-/// <item><c>ARowspanTallerThanABand_DoesNotSliceTheRowThatEndsIt</c> is <c>TableRowspanContinuationTests</c>'
-/// own subject (the rowspan-extension mechanism), not this file's.</item>
-/// </list>
-/// What remains and DOES port is the file's own real, confirmed subject: the loop's own documented
-/// per-row-only slot check (<c>CssLayoutEngineTable.cs</c> ~634-645's own "KNOWN LIMITATION" remark) means
-/// a table that breaks BETWEEN rows across several bands repeats its header on every one of them (the
-/// common case), but a table whose header-repeat opportunity is reached only through a SINGLE row's own
-/// straddle - one cell taller than the rows around it, overflowing through one or more bands with no later
-/// row to trigger the next check - only ever gets the FIRST such band's repeat, never a later intermediate
-/// one. Pinned here as the accurate, current behavior (a documented gap, not silently reproduced as if it
-/// were correct) rather than Ignored, since it is exactly what the loop's own comment already promises.
+/// The header repeat is only checked at the start of a row, so a single row running through several pages
+/// only gets the repeat on the first of them. These tests pin that.
 /// </remarks>
 [TestClass]
 [DoNotParallelize]
@@ -79,8 +42,7 @@ public sealed class TableSpannedBandRepetitionTests
 
         var table = TableOf(root);
         Assert.IsNotNull(table.RepeatedHeaderRows);
-        // One repeat per continuation page (slot 1..pages-1) - the header's own first page is in flow, not
-        // a repeat, matching this fork's own established, confirmed count convention.
+        // One repeat per continuation page, the header's own first page is in flow, not a repeat.
         Assert.AreEqual(pages - 1, table.RepeatedHeaderRows!.Count);
     }
 

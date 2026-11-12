@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace HtmlRenderer.Test.CssEngineSupport;
 
 /// <summary>
-/// Mirrors PeachPDF.Tests/CSS/ObjectArrayComparer.cs. Used to de-duplicate <c>object[]</c> test-case rows
+/// Used to de-duplicate <c>object[]</c> test-case rows
 /// (e.g. when unioning a keyword list with the shared CSS-wide-keyword list) by comparing their contents
 /// rather than reference identity.
 /// </summary>

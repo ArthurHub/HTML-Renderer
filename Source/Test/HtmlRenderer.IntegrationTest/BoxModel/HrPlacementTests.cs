@@ -3,12 +3,8 @@ using HtmlRenderer.IntegrationTest.TestSupport;
 namespace HtmlRenderer.IntegrationTest.BoxModel;
 
 /// <summary>
-/// Port of PeachPDF.Tests' <c>HrPlacementTests</c>. <c>&lt;hr&gt;</c> resolves its own size but is positioned by
-/// the frame above it, like every other block-level box - <c>CssBoxHr.PerformLayoutImp</c>
-/// (<c>Core/Dom/CssBoxHr.cs</c>) still carries its own hand-written copy of the same top-placement formula
-/// <c>CssBox.PerformLayoutImp</c> uses for ordinary blocks (the "seam" <see cref="BlockPlacementSeamTests"/>
-/// documents), rather than PeachPDF's now-unified placement code - so this fork inherits every quirk (and bug)
-/// that shared seam has, plus a couple of its own.
+/// <c>&lt;hr&gt;</c> sizes itself but is placed by the frame above it like any other block,
+/// <c>CssBoxHr.PerformLayoutImp</c> has its own copy of the top placement of <c>CssBox.PerformLayoutImp</c>.
 /// </summary>
 /// <remarks>
 /// One quirk specific to <c>CssBoxHr</c>: <c>CssBox.MarginTopCollapse</c> (<c>Core/Dom/CssBox.cs</c> ~1103-1127)
@@ -57,15 +53,9 @@ public sealed class HrPlacementTests
         Assert.AreEqual(30, h.Location.Y - a.ActualBottom, Delta);
     }
 
-    [Ignore("CssBoxHr.PerformLayoutImp places the next box's top at " +
-            "'prevSibling.ActualBottom + prevSibling.ActualBorderBottomWidth' (mirroring the same seam in " +
-            "CssBox.PerformLayoutImp) - but ActualBottom (Location.Y + ActualHeight, see CssBox.cs ~703) does " +
-            "NOT itself include the predecessor's own border-bottom thickness; ActualHeight is just the raw " +
-            "parsed CSS height. So a bottom-bordered predecessor genuinely widens the gap between its own " +
-            "ActualBottom and the following rule by exactly its border-bottom width, instead of that border " +
-            "already being 'baked into' ActualBottom the way PeachPDF's placement code assumes. Confirmed by " +
-            "direct source read of both CssBoxHr.cs and CssBox.cs.")]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "visuren.html#block-formatting")]
     public void ABorderedPredecessorsBottomBorder_IsNotCountedTwice()
     {
         var (borderless, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
@@ -81,23 +71,19 @@ public sealed class HrPlacementTests
         Assert.AreEqual(plainGap, borderedGap, Delta);
     }
 
-    [Ignore("This fork has no page-fragmentation/pagination support anywhere in Core (confirmed - no " +
-            "PageBreakBefore/PageBreakAfter property exists, and layout runs against a single unbounded canvas, " +
-            "not a sequence of fixed-height page bands - see FixedPositionPaginationIntegrationTests' remarks for " +
-            "the same fact in more detail). There is no fragmentainer for an oversized margin to be truncated " +
-            "against, so the rule's margin-top is never clipped at a simulated page boundary - it is simply " +
-            "added in full, same as it would be at any height.")]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#break-margins")]
     public void AnOversizedTopMarginAdjoiningAnUnforcedBreak_IsTruncated()
     {
-        // 200px sheet, 20px margins - page k's band is [20 + 160k, 180 + 160k).
-        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+        var (root, container) = LayoutHarness.Layout(LayoutHarness.Wrap(
             "<div id='a' style='height:40px'></div><hr id='h' style='margin-top:300px'>"),
             maxHeight: 200, margin: 20);
 
         var h = LayoutHarness.FindById(root, "h")!;
 
-        Assert.AreEqual(180, h.Location.Y, Delta * 3);
+        Assert.AreEqual(container.PageTopOf(1), h.Location.Y, Delta * 3);
     }
 
     [TestMethod]

@@ -4,16 +4,7 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/VerticalAlignProperty.cs.
-/// PeachPDF.CSS tests only that "vertical-align" keyword/length/percentage values are parsed and stored
-/// (via a typed VerticalAlignProperty) -- none of the PeachPDF cases assert an actual visual alignment effect.
-/// HTML-Renderer's <see cref="CssBoxProperties.VerticalAlign"/> is a plain string set verbatim by the CSS
-/// pipeline, with no legality validation. In <see cref="CssLayoutEngine"/>'s ApplyVerticalAlignment, only
-/// "sub" and "super" carry a real layout effect; "top", "bottom", "middle", "text-top" and "text-bottom" are
-/// empty-body no-ops for inline layout (table-cell vertical alignment is handled separately by
-/// ApplyCellVerticalAlignment and isn't exercised here). Since none of the ported cases assert that visual
-/// effect, all keyword cases are ported as plain passing tests of value parsing/storage, read back from a real
-/// laid-out <see cref="CssBox"/> via <see cref="LayoutHarness"/>.
+/// Only checks that vertical-align is parsed and stored, read back from a laid-out box.
 /// </summary>
 [TestClass]
 public sealed class VerticalAlignPropertyTests
@@ -69,11 +60,6 @@ public sealed class VerticalAlignPropertyTests
     [TestMethod]
     public void VerticalAlignInvalidKeywordIllegal()
     {
-        // PeachPDF: an invalid vertical-align keyword is rejected, so the property reports HasValue == false
-        // and the previous (default, "baseline") value is retained. HTML-Renderer's CssBoxProperties.VerticalAlign
-        // is a plain string setter with no legality validation, so an invalid keyword is currently accepted and
-        // stored verbatim instead of being rejected. Target/intended behavior: the box keeps its default
-        // "baseline" alignment when given an invalid keyword.
         var target = GetTargetBox("wavy");
 
         Assert.AreEqual("baseline", target.VerticalAlign);

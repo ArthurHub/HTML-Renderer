@@ -3,16 +3,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/RowGapProperty.cs.
-/// RowGapLegalValues (length/percent/global keywords) is ported as a plain passing test.
-/// RowGapAcceptsNormalKeyword is ported under [Ignore] - HTML-Renderer's
-/// <see cref="RowGapProperty"/> (Source/HtmlRenderer/Core/CssEngine/StyleProperties/RowGapProperty.cs:5)
-/// uses <c>Converters.LengthOrPercentConverter.OrGlobalValue().OrDefault(0)</c>, while PeachPDF's
-/// RowGapProperty.cs:5 uses <c>Converters.LengthOrPercentOrNormalConverter...</c> instead;
-/// <c>LengthOrPercentOrNormalConverter</c> does not exist anywhere under Source/HtmlRenderer (confirmed
-/// via grep), so "row-gap: normal" is silently rejected here.
-/// </summary>
 [TestClass]
 public sealed class RowGapPropertyTests
 {
@@ -32,7 +22,8 @@ public sealed class RowGapPropertyTests
         => CssConstructionFunctions.TestForLegalValue<RowGapProperty>(PropertyNames.RowGap, value);
 
     [TestMethod]
-    [Ignore("not yet spec compliant")]
+    [Ignore("Gap, see Spec/css-grid-2.yml")]
+    [Spec("css-grid-2", "#gutters")]
     public void RowGapAcceptsNormalKeyword()
         => CssConstructionFunctions.TestForLegalValue<RowGapProperty>(PropertyNames.RowGap, "normal");
 }

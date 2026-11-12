@@ -6,13 +6,8 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/CssDataRuleIndexingTests.cs.
-/// Regression tests for <c>CssData</c>'s tag/class/id rule index (added to avoid linearly scanning every
-/// stylesheet rule against every box during cascade). These render real HTML/CSS and assert on the
-/// resulting box tree, so they exercise <see cref="TheArtOfDev.HtmlRenderer.Core.CssData"/>'s
-/// <c>GetUserAgentStyleRules</c>/<c>GetAuthorStyleRules</c> exactly as the cascade does - the index only
-/// narrows candidates, <c>DoesSelectorMatch</c> is still the source of truth, but a bucketing bug would
-/// show up here as a rule silently failing to apply (or applying somewhere it shouldn't).
+/// The tag, class and id rule index of <c>CssData</c> only narrows the candidates, a bucketing bug shows up as
+/// a rule that doesn't apply, or applies where it shouldn't.
 /// </summary>
 [TestClass]
 public sealed class CssDataRuleIndexingTests

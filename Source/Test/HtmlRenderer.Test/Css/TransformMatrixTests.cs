@@ -2,12 +2,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/TransformMatrixTests.cs.
-/// HTML-Renderer's <see cref="TransformMatrix"/> is a field-for-field match of PeachPDF's: the same
-/// Zero/One statics, the same 16-value column-major and 15-value explicit constructors, and the same
-/// Equals/GetHashCode implementation over the backing 4x4 array.
-/// </summary>
 [TestClass]
 public sealed class TransformMatrixTests
 {

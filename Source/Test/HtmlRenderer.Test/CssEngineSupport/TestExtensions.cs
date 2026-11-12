@@ -2,7 +2,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.CssEngineSupport;
 
-/// <summary>Mirrors PeachPDF.Tests/CSS/TestExtensions.cs, adapted to HTML-Renderer's internal CssEngine namespace.</summary>
 internal static class TestExtensions
 {
     public static Stylesheet ToCssStylesheet(this string sourceCode)

@@ -4,49 +4,10 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 
 namespace HtmlRenderer.Test.Dom;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/Html/Core/Dom/CssLayoutEngineTablePageBreakTests.cs
-/// (CssLayoutEngineTablePageBreakTests).
-/// </summary>
-/// <remarks>
-/// A real rewrite, not a rename - confirmed by direct source read that most of the original file's 19
-/// tests assert against PeachPDF-only internal state or paint output with no counterpart here:
-/// <list type="bullet">
-/// <item>7 tests (the <c>PageBreakBottoms_*</c> group plus <c>PageBreakBottoms_WithRepeatingFooter_...</c>)
-/// assert against <c>CssBox.PageBreakBottoms</c>, a dictionary this fork's <see cref="CssBox"/> simply does
-/// not have (confirmed: no such member exists anywhere in Core/Dom/CssBox.cs) - there is nothing to port
-/// them onto.</item>
-/// <item>3 tests (<c>TableBorderPaint_*</c>) and 1 more (<c>TableFooter_MultiPageTable_FooterTextIsPaintedOnEveryPage</c>)
-/// verify PAINT output (drawn border lines / drawn strings) via a real <c>PdfSharpAdapter</c>-backed
-/// recording graphics and a per-page paint harness. This batch's own established convention (see
-/// <c>Dom/CssLayoutEngineTableTests.cs</c> and the sibling files in <c>Fragmentation/</c>) is adapter-free
-/// layout/geometry assertions only, with no GDI+/paint harness in scope - paint-level border verification
-/// belongs in a later, IntegrationTest-based batch, not here.</item>
-/// <item>4 tests (<c>RepeatedThead_BoundaryToBody_...</c>, <c>RepeatedThead_OwnInternalGridLine_...</c>,
-/// <c>RepeatedThead_RowspanInHeadersLastRow_...</c>, <c>RepeatedThead_BoundaryAgainstABorderedTbody_...</c>)
-/// exercise PeachPDF's <c>CollapsedBorderModel</c>/<c>CollapsedBorderSegments</c> - a per-page collapsed-
-/// border RESOLUTION model this fork has no counterpart for at all (confirmed: no such types exist
-/// anywhere in Core). What DOES map to real, confirmed machinery here - as the port plan itself notes -
-/// is the repeated-header MECHANISM underneath those tests: <c>TableHeaderRepeat.CloneAndPosition</c>
-/// (Core/Fragmentation/TableHeaderRepeat.cs) and <see cref="CssBox.RepeatedHeaderRows"/>. The
-/// <c>RepeatedThead_*</c> tests below are a genuine adaptation - same underlying feature, rewritten as
-/// geometry/content assertions against the real clone rows rather than border-segment resolution.</item>
-/// <item>The 2 <c>RepeatedTfoot_*</c> tests are dropped per the port plan (only <c>&lt;thead&gt;</c> repeat
-/// is implemented, not <c>&lt;tfoot&gt;</c>).</item>
-/// </list>
-/// What remains and DOES port, as genuine black-box geometry assertions against real <see cref="CssBox"/>/
-/// <see cref="TheArtOfDev.HtmlRenderer.Core.HtmlContainerInt"/> state (<c>Location</c>/<c>ActualBottom</c>,
-/// <c>PageTopOf</c>/<c>PageIndexOf</c>), matching the sibling <c>Fragmentation/</c> tests' own style: the
-/// three page-break-offset/margin-bleed regression tests, rewritten onto this port's own row-preservation
-/// behavior (css-tables-3 §6.1 - rows are shifted whole to the next page rather than split, per the
-/// <c>CssLayoutEngineTable.LayoutCells</c> row loop, ~739-782), and the repeated-header geometry tests.
-/// </remarks>
 [TestClass]
 public sealed class CssLayoutEngineTablePageBreakTests
 {
-    // Regression test (adapted): a multi-page table's rows on page 2+ must start flush at that page's own
-    // content top, not further down (the original PeachPDF bug this guards was a page-break offset
-    // computation that added marginTop twice).
+    // Guards against adding the top page margin twice.
     [TestMethod]
     public void PageBreakOffset_RowsOnSubsequentPages_StartAtCorrectY()
     {
@@ -70,9 +31,7 @@ public sealed class CssLayoutEngineTablePageBreakTests
             $"row starting page-slot {slot} should be flush at that page's own content top");
     }
 
-    // Regression test (adapted): a row placed on a given page must not bleed past that page's own content
-    // bottom into the margin band below it (the original PeachPDF bug this guards was an availableHeight
-    // computation missing "- marginTop", firing the page break one row too late).
+    // Guards against leaving the top page margin out of the available height, which breaks one row too late.
     [TestMethod]
     public void AvailableHeight_PageBreakFiringPoint_RowDoesNotBleedIntoBottomMargin()
     {
@@ -130,22 +89,8 @@ public sealed class CssLayoutEngineTablePageBreakTests
         }
     }
 
-    // The repeated-header MECHANISM this batch's port plan actually points at: a multi-page table's
-    // <thead> clones itself onto every continuation page (but one - see the remark below), at that
-    // page's own content top - the real, confirmed machinery behind PeachPDF's (unportable, border-
-    // resolution-based) RepeatedThead_* tests.
-    // "break-inside:avoid" is explicit on <thead> here rather than relied on from the UA default
-    // stylesheet's own thead/tfoot rule, matching this repository's own established convention (see
-    // StageD4RepeatedHeaderTest's identical note) - that rule lives under "@media print" in
-    // Core/CssDefaults.cs, and MockAdapter's own DefaultMediaType is "screen", so it would never match here.
-    // Adapted count, confirmed empirically and matching a real, documented limitation: the LAST page a
-    // table spans never gets a repeated header. CssLayoutEngineTable.LayoutCells (~654-686) only checks
-    // for a slot advance once per ROW, at that row's own start - there is no row after the table's last
-    // one to trigger the check for whatever slot the last row's own tail end lands in, so that final slot
-    // never gets a repeat inserted. This is a generalization of the file's own "KNOWN LIMITATION" comment
-    // (~634-645, written about a single row spanning multiple pages by itself) to the ordinary multi-row
-    // case: <see cref="RepeatedHeaderRows"/> ends up with entries for page-slots 1..(lastSlot-1), not
-    // 1..lastSlot.
+    // break-inside: avoid is set on <thead> because the UA rule for it is under @media print and MockAdapter
+    // uses screen. The last page a table spans gets no repeated header, the check only runs at the start of a row.
     [TestMethod]
     public void RepeatedThead_ClonesOntoEveryContinuationPage_AtThePagesOwnContentTop()
     {

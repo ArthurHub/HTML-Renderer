@@ -4,7 +4,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>Ported from PeachPDF.Tests/CSS/Container.cs.</summary>
 [TestClass]
 public sealed class ContainerTests
 {
@@ -103,9 +102,8 @@ public sealed class ContainerTests
     }
 
     [TestMethod]
-    [Ignore("HTML-Renderer's PropertyFactory only registers longhand container-name/container-type; no " +
-            "'container' shorthand/ContainerShorthandConverter exists to compose the two into a single " +
-            "serialized value. See Source/HtmlRenderer/Core/CssEngine/Factories/PropertyFactory.cs:202-203.")]
+    [Ignore("Gap, see Spec/css-conditional-5.yml")]
+    [Spec("css-conditional-5", "#container-shorthand")]
     public void ContainerShorthand_BothLonghandsSet_ComposesShorthandValue()
     {
         // Exercises ContainerShorthandConverter.Construct: setting both container-name and
@@ -116,9 +114,6 @@ public sealed class ContainerTests
     }
 
     [TestMethod]
-    [Ignore("HTML-Renderer's PropertyFactory only registers longhand container-name/container-type; no " +
-            "'container' shorthand/ContainerShorthandConverter exists. See " +
-            "Source/HtmlRenderer/Core/CssEngine/Factories/PropertyFactory.cs:202-203.")]
     public void ContainerShorthand_OnlyOneLonghandSet_ShorthandIsEmpty()
     {
         var style = CssConstructionFunctions.ParseDeclarations("container-name: sidebar;");

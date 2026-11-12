@@ -23,7 +23,7 @@ public sealed class HtmlUtilsTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant")]
+    [Ignore("DecodeHtml throws for a code point above U+10FFFF, the tokenizer has already replaced it when DecodeHtml runs")]
     public void DecodeHtml_OutOfRangeCodePoint_DecodesToReplacementCharacter()
     {
         // WHATWG HTML 13.2.5.80 numeric-character-reference-end-state: an out-of-range code point
@@ -34,14 +34,14 @@ public sealed class HtmlUtilsTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant")]
+    [Ignore("DecodeHtml throws for a surrogate code point, the tokenizer has already replaced it when DecodeHtml runs")]
     public void DecodeHtml_SurrogateRangeCodePoint_DecodesToReplacementCharacter()
     {
         Assert.AreEqual("�", HtmlUtils.DecodeHtml("&#xD800;"));
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant")]
+    [Ignore("DecodeHtml turns &#0; into U+0000, the tokenizer has already replaced it when DecodeHtml runs")]
     public void DecodeHtml_NullCodePoint_DecodesToReplacementCharacter()
     {
         // Unlike the out-of-range/surrogate cases (which decode to an empty string), U+0000 passes

@@ -7,35 +7,9 @@ using TheArtOfDev.HtmlRenderer.PdfSharp;
 namespace HtmlRenderer.PdfSharp.Test;
 
 /// <summary>
-/// Ported from PeachPDF.Tests' <c>TableHeaderPdfRenderingTests</c>: real end-to-end PDF rendering of a
-/// repeating <c>&lt;thead&gt;</c> across multiple real generated pages.
+/// A repeating <c>&lt;thead&gt;</c> across generated PDF pages, the header's background fill is checked in
+/// each page's content stream since the page count alone doesn't catch a missing or doubled header.
 /// </summary>
-/// <remarks>
-/// <para>
-/// PeachPDF's own file verified only page count and "the page has some content" (its own doc-comment
-/// admits as much: "Extracting and decoding PDF text content is complex... For full text verification,
-/// manual inspection... would be needed"). This branch's own history has since specifically shown that
-/// page-count-only checks are NOT sufficient to catch a real header-repeat bug (see
-/// <c>MultiPageTextVisibilityTest</c>'s own doc-comment, and Batch 4's phantom-double-header-paint fix) -
-/// so every test here additionally confirms the header's own background fill repeats on every real
-/// generated page via the raw content stream, using the same fill-operator convention confirmed
-/// empirically while porting (see <see cref="HeaderFillPattern"/>).
-/// </para>
-/// <para>
-/// PeachPDF's file name says "header/footer", but only 1 of its 5 tests is pure footer-repetition
-/// (<c>TableFooter_MultiPageTable_GeneratesWithFooter</c>) and 1 mixes header+footer in a single-page,
-/// paint-order-recording test (<c>TableHeaderAndFooter_SinglePageTable_PaintsEachCellTextExactlyOnce</c>,
-/// which used PeachPDF's own <c>FragmentPaintHarness</c>/<c>DrawStringRecordingGraphics</c> test-only
-/// mock, not a real generated PDF). This fork implements no <c>&lt;tfoot&gt;</c> repeat at all -
-/// confirmed across this whole branch by <c>TableHeaderRepeat.cs</c> being thead-only - so the pure-footer
-/// test is dropped outright, and the mixed test is rewritten below as a header-only, real-PDF,
-/// content-stream-level equivalent (<see cref="TableHeader_SinglePageTable_PaintsHeaderBackgroundExactlyOnce"/>)
-/// rather than ported with PeachPDF's own mock-graphics harness, which this project has no equivalent of
-/// and which would test paint-call sequencing rather than the real generated PDF this project's own
-/// established pattern (<c>MultiPageTextVisibilityTest</c>, <c>FixedPositionRepeatsPerPdfPageTest</c>)
-/// insists on.
-/// </para>
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class TableHeaderPdfRenderingTests
@@ -140,18 +114,7 @@ public sealed class TableHeaderPdfRenderingTests
     }
 
     /// <summary>
-    /// Rewrite of PeachPDF's <c>TableHeaderAndFooter_SinglePageTable_PaintsEachCellTextExactlyOnce</c> -
-    /// a regression test for two real bugs PeachPDF found together there: a header/footer row never
-    /// getting its own <c>Bounds</c> set (so paint-time visibility culling silently dropped it), and its
-    /// proxy row being both self-registering AND explicitly re-added by its caller, painting every
-    /// header/footer cell twice at identical coordinates. This fork's <c>TableHeaderRepeat</c> mechanism
-    /// is architecturally different (an independent, already-positioned <c>CssBox</c> clone per repeat,
-    /// not a shared-subtree proxy - see <c>RepeatedTableHeaderClipIntegrationTests</c>'s own doc-comment
-    /// from Batch 4), so this exact bug shape doesn't apply here; ported instead as a real-PDF regression
-    /// PIN, through the real generator, that a single-page table's header paints its background exactly
-    /// once - not zero (dropped by culling) and not two (duplicated by a proxy re-add), the same class of
-    /// defect PeachPDF's test was guarding against, verified the way this project's own established
-    /// pattern requires (a real content stream, not a mock paint-recording harness).
+    /// The header paints its background exactly once, not zero times (dropped by culling) or twice.
     /// </summary>
     [TestMethod]
     public async Task TableHeader_SinglePageTable_PaintsHeaderBackgroundExactlyOnce()

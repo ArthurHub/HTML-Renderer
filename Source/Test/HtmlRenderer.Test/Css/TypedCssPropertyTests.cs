@@ -4,7 +4,6 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/CssPropertyTests.cs.
 /// Tests for <see cref="CssProperty{T}"/> (the typed box-side property value) and the Layer A →
 /// <see cref="ITypedPropertyValue{T}"/> carrier that threads a converter's parse to the box without
 /// re-parsing.

@@ -4,7 +4,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>Ported from PeachPDF.Tests/CSS/AtPropertyTests.cs.</summary>
 [TestClass]
 public sealed class AtPropertyTests
 {

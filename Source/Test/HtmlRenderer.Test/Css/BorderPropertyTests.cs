@@ -4,25 +4,7 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/BorderProperty.cs.
-/// The CSS engine port replaced the old hand-rolled border parsing entirely - both the
-/// Dictionary&lt;string,string&gt; longhand expansion via <c>CssParser.AddProperty</c>/
-/// <c>SplitMultiDirectionValues</c> (no legality validation of individual tokens: illegal keywords like
-/// "wavy" used to be stored verbatim, and a too-long value list used to silently leave the whole
-/// longhand set unset) and the public <c>CssParser.ParseBorder</c> whitespace-only tokenizer (which
-/// couldn't recognize a color function containing internal spaces, e.g. "rgb(255, 100, 0)", or a bare
-/// unitless "0" width, or "currentColor") - with the same real, typed, validating value-converter
-/// pipeline PeachPDF's own CSS engine uses (see Source/HtmlRenderer/Core/CssEngine/StyleProperties/Border/).
-/// Exercised here through <see cref="CssParser.ParseInlineStyle"/> and the resulting
-/// <c>StyleDeclaration</c>'s longhand properties (colors normalize to "rgb(r, g, b)"/"rgba(r, g, b, a)"
-/// text; a longhand a shorthand's grammar didn't cover resolves to the literal string "initial" per CSS
-/// Cascading - a shorthand always sets every longhand it manages, explicitly or to its initial value -
-/// rather than being left unset/null as the old parser's positional splitting did).
-/// Every case the old whitespace-tokenizer/no-validation model couldn't handle now genuinely works
-/// against the real engine and is un-ignored below: BorderSpacingPercentIllegal, BorderStyleWavyIllegal,
-/// BorderLeftZeroLegal (bare "0" width), BorderBottomRgbLegal (color function with internal spaces), and
-/// BorderOutSetCurrentColor ("currentColor" keyword) - all verified by actually running against the real
-/// pipeline (see the probe values in this port's chat history), not assumed.
+/// A shorthand sets every longhand it manages, a longhand its value doesn't cover reads "initial".
 /// </summary>
 [TestClass]
 public sealed class BorderPropertyTests
@@ -271,10 +253,7 @@ public sealed class BorderPropertyTests
     }
 
     // ── border-width (longhand + all-sides shorthand) ────────────────────────────────────────────────────
-    // NOTE: unlike the old parser (which stored the "thin"/"medium"/"thick" keyword text verbatim), the
-    // real engine's LineWidthConverter resolves these keywords straight to their pixel value at parse
-    // time (this fork's scale: thin=1px, medium=3px, thick=5px - matching PeachPDF's own scale, since
-    // both share the same vendored converter), so the stored longhand value is already "1px"/"3px"/"5px".
+    // thin, medium and thick are resolved to 1px, 3px and 5px when parsed, so the stored longhand is a length.
 
     [TestMethod]
     public void BorderBottomWidthThinLegal()

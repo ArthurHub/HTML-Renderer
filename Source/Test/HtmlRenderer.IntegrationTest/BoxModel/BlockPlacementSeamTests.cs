@@ -17,12 +17,7 @@ namespace HtmlRenderer.IntegrationTest.BoxModel;
 /// to mean is that it finds nothing before it, exactly as a box with no parent always did.
 /// </para>
 /// </remarks>
-// This fork's CssParser keeps a process-wide, non-thread-safe regex cache
-// (RegexParserUtils.GetRegex's static Dictionary) that SetHtml/DefaultCssData populate lazily on first use per
-// AppDomain; running HtmlContainerInt.SetHtml from more than one thread at once (as MSTestSettings.cs's
-// assembly-wide [Parallelize(Scope = ExecutionScope.MethodLevel)] does by default) can corrupt it and throw
-// "A concurrent update was performed on this collection". [DoNotParallelize] avoids tripping that pre-existing
-// library race rather than masking it.
+// The regex cache in RegexParserUtils isn't thread-safe, parallel SetHtml calls can corrupt it.
 [TestClass]
 [DoNotParallelize]
 public sealed class BlockPlacementSeamTests

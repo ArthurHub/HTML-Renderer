@@ -3,11 +3,9 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/ParserExtensionsCreateRuleTests.cs. <c>ParserExtensions.CreateRule</c> is a
-/// near-verbatim match with HTML-Renderer's <c>Model/ParserExtensions.cs</c>: the same 13 <see cref="RuleType"/>
-/// cases construct a concrete rule, and the same 4 types with no concrete subtype (<see cref="RuleType.Unknown"/>,
+/// The rule types without a rule class of their own (<see cref="RuleType.Unknown"/>,
 /// <see cref="RuleType.RegionStyle"/>, <see cref="RuleType.FontFeatureValues"/>, <see cref="RuleType.CounterStyle"/>)
-/// fall through to <see langword="null"/>.
+/// give <see langword="null"/>.
 /// </summary>
 [TestClass]
 public sealed class ParserExtensionsCreateRuleTests

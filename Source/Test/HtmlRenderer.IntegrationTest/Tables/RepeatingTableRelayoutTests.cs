@@ -6,21 +6,9 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 namespace HtmlRenderer.IntegrationTest.Tables;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/RepeatingTableRelayoutTests.cs: a container holding a
-/// repeating-header table takes the same relocation any other <c>break-inside:avoid</c> box does when it
-/// straddles a page boundary - real relayout at its destination, not a translate.
+/// A container holding a repeating-header table is moved like any other <c>break-inside: avoid</c> box that
+/// straddles a page boundary, laid out again at its destination, not translated.
 /// </summary>
-/// <remarks>
-/// PeachPDF's own excuse for excluding this ("laying the table out a second time did not reproduce the
-/// first result - the repeating group was detached and replaced by per-page proxies nothing removed, so a
-/// second run threw") does not apply here by construction: <c>CssLayoutEngineTable.LayoutCells</c> resets
-/// <c>_tableBox.RepeatedHeaderRows = null</c> at the very start of every call (confirmed by direct source
-/// read, line ~652), and <see cref="TableHeaderRepeat"/>'s clones are freshly built, fully detached
-/// <see cref="CssBox"/> instances - never mutating or reusing state from a previous pass. A relaid-out
-/// table's repeated-header list is simply rebuilt from scratch, matching that field's own doc comment
-/// ("rebuilt from scratch on every layout pass"). These two tests are accordingly regression pins of that
-/// idempotency, not reproductions of a PeachPDF-specific bug - confirmed by actually running them.
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class RepeatingTableRelayoutTests

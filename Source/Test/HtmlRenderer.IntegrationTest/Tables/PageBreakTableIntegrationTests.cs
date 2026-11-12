@@ -10,35 +10,14 @@ namespace HtmlRenderer.IntegrationTest.Tables;
 /// Verifies table page-break behaviour for single-row tables.
 /// </summary>
 /// <remarks>
-/// This file predates (#262) the fragmentation-engine-parity branch's own table work, and its original
-/// remarks described a mechanism (<c>CssBox.BreakPage()</c>, gated on the table's own explicit
-/// <c>page-break-inside:avoid</c>) that no longer exists at all - confirmed by grep, no such method remains
-/// anywhere in <c>Core/Dom/CssBox.cs</c>. Revised here to match the CURRENT, confirmed mechanics: since
-/// css-tables-3 §6.1 row preservation landed (commit <c>362dee9</c>), <c>CssLayoutEngineTable.LayoutCells</c>
-/// attempts to keep every row unfragmented by default - unconditionally, not gated on the table's own
-/// <c>break-inside</c> at all - unless the row is "freely fragmentable" (its own height is at least half
-/// the fragmentainer's height OR width, or a cell only STARTS spanning into a later row there).
-/// <para>
-/// The important nuance this revision is built around: that default preservation shifts the STRADDLING
-/// ROW'S CELLS (<c>cell.OffsetTop(delta)</c>), not the table's own outer box - <c>_tableBox.Location</c> is
-/// set once, before <c>CssLayoutEngineTable.PerformLayout</c> even runs, and is never itself touched by the
-/// internal row-shift (only <c>ActualBottom</c> grows to cover it). So a straddling single-row table's
-/// CONTENT is correctly relocated by default now, but <c>table.Location.Y</c> - what most of this file's
-/// original assertions check - stays exactly where it always would have. Moving the table's own outer box
-/// still requires the SEPARATE, parent-level <c>BlockFragmentation.RelocateIfNeeded</c>, gated on an
-/// EXPLICIT <c>break-inside:avoid</c> declared directly on the &lt;table&gt; (none of this file's fixtures
-/// declare one, matching PeachPDF's own fixtures). <see cref="SingleRowTable_CrossingPageBoundary_IsMovedToNextPage"/>
-/// is accordingly rewritten to check the cell's own position (what the fix actually does), rather than the
-/// table's outer box (what it does not); every other test's ORIGINAL assertion (checking <c>table.Location.Y</c>)
-/// is left as-is, with its Ignore reason corrected to cite the real, current gap where one remains.
-/// </para>
+/// Keeping a row whole moves its cells, not the table's own box, so <c>table.Location.Y</c> only moves when
+/// the table itself is relocated.
 /// </remarks>
 [DoNotParallelize]
 [TestClass]
 public sealed class PageBreakTableIntegrationTests
 {
-    // Mirrors PeachPDF's A4-at-1:1-scale page height; treated as px here since LayoutHarness measures in
-    // px, not pt - the numbers below only need generous relative separation, which they already have.
+    // A4 height in pt, used as px.
     private const double PageHeight = 842.0;
 
     // A spacer this tall pushes the table close enough to the page end to plausibly cross a page boundary
@@ -82,11 +61,7 @@ public sealed class PageBreakTableIntegrationTests
     [TestMethod]
     public void MultiRowTable_CrossingPageBoundary_PerRowBreakStillWorks()
     {
-        // PeachPDF's original ran a full PDF-generation pass and asserted no exception. This fork has no
-        // PdfGenerator/PDF-generation API at all (it is a WinForms/GDI+ HTML renderer, not a PDF library),
-        // so this is adapted into a layout-only smoke test: a multi-row table near the page boundary must
-        // still lay out without throwing, whichever rows css-tables-3 6.1's default preservation ends up
-        // shifting (see the class remarks).
+        // Smoke test, laying out a multi-row table near the page boundary must not throw.
         var html = BuildHtml(SpacerThatCrossesPage, rowCount: 3);
 
         Exception? thrown = null;
@@ -105,12 +80,7 @@ public sealed class PageBreakTableIntegrationTests
     [TestMethod]
     public void SingleRowTable_WithRoundedBoxes_GeneratesPdf()
     {
-        // Adapted from a PDF-generation regression smoke test (PdfGenerator.GeneratePdf does not exist in
-        // this fork) into a layout-only smoke test: a page of single-row tables with border-radius content
-        // near a page boundary must lay out without throwing. Trimmed to two of the original six sections
-        // (including the "Combined Styles" one specifically called out as the original regression trigger)
-        // to keep this focused; the @page at-rule was dropped since this fork's parser is not known to
-        // support it.
+        // Smoke test, rounded boxes in tables near the page boundary must lay out without throwing.
         const string html = """
             <!DOCTYPE html><html><head><style>
             body { font: 8.5px Arial, sans-serif; margin: 0 }
@@ -149,12 +119,7 @@ public sealed class PageBreakTableIntegrationTests
         Assert.IsNull(thrown, $"Layout of tables with border-radius content should not throw, but got: {thrown}");
     }
 
-    [Ignore("Confirmed (not just assumed): a row's css-tables-3 6.1 default preservation has its own carve-" +
-            "out for a row whose height is at least half the fragmentainer's height OR width - and this " +
-            "fixture's 400px cell content is well past half PageSize.Width (595/2=297.5), so the row is " +
-            "'freely fragmentable' and the table (declaring no break-inside:avoid of its own, so " +
-            "RelocateIfNeeded also declines) is never relocated. Confirmed empirically: the cell straddles " +
-            "at Y=499..905 across the 842px boundary, untouched.")]
+    [Ignore("The 400px row is over half the page width, so it breaks across the pages instead of the table moving")]
     [TestMethod]
     public void SingleRowTable_TallCellContentMissedByEstimate_IsMovedToNextPageAfterLayout()
     {
@@ -185,15 +150,7 @@ public sealed class PageBreakTableIntegrationTests
             $"Table taller than a page should stay on page 1 (Y < {PageHeight}) but Y={table.Location.Y:F1}");
     }
 
-    [Ignore("Confirmed gap, for two independent reasons. First, this fixture's 400px cell content is " +
-            "freely-fragmentable (past half PageSize.Width=595, same as " +
-            "SingleRowTable_TallCellContentMissedByEstimate_IsMovedToNextPageAfterLayout), so nothing " +
-            "relocates at all. Second, and more fundamentally, even a fixture that DID engage row " +
-            "preservation would still not pull the heading: BlockFragmentation.EnforceKeepWithNext (the " +
-            "only keep-with-next mechanism that exists) reads the table's own EffectiveTop, and the " +
-            "internal row-shift never touches the table's own Location (see class remarks) - so from " +
-            "EnforceKeepWithNext's perspective the table never appears to have moved at all, and there is " +
-            "no gap for it to notice between the heading and the table to begin with.")]
+    [Ignore("The 400px row breaks across the pages instead of the table moving, so there is no move for the heading to follow")]
     [TestMethod]
     public void SingleRowTable_MovedByPostCheck_PullsAvoidChainedHeadingAlong()
     {

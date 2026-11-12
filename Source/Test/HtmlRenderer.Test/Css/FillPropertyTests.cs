@@ -3,11 +3,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/FillProperty.cs (source class <c>FillPropertyTests</c>).
-/// Covers the SVG paint/fill longhands: <see cref="FillProperty"/> (paint - colors/"none"/"url()"),
-/// <see cref="FillOpacityProperty"/>, and <see cref="FillRuleProperty"/>, matching PeachPDF's grammar.
-/// </summary>
 [TestClass]
 public sealed class FillPropertyTests
 {

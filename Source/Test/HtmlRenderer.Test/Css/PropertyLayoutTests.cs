@@ -5,17 +5,6 @@ using static HtmlRenderer.Test.CssEngineSupport.CssConstructionFunctions;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/Property.cs (the Clear/Position/Display/Visibility/Overflow/TableLayout
-/// cases). Each property here is a plain single-keyword map lookup
-/// (Source/HtmlRenderer/Core/CssEngine/StyleProperties/Flow/ClearProperty.cs,
-/// PositionProperty.cs, DisplayProperty.cs; StyleProperties/Visibility/VisibilityProperty.cs;
-/// StyleProperties/Flow/OverflowProperty.cs; StyleProperties/TableLayoutProperty.cs), backed respectively
-/// by <c>Map.ClearModes</c>, <c>Map.PositionModes</c>, <c>Map.DisplayModes</c>, <c>Map.Visibilities</c>,
-/// <c>Map.OverflowModes</c> (Model/Map.cs) and the <c>Toggle(Keywords.Fixed, Keywords.Auto)</c> converter
-/// for table-layout (Model/Converters.cs line 538) - all verified to contain every keyword this port
-/// exercises, so this file is a faithful, unmodified port of the source cases.
-/// </summary>
 [TestClass]
 public sealed class PropertyLayoutTests
 {

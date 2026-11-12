@@ -10,29 +10,16 @@ namespace HtmlRenderer.IntegrationTest.BoxModel;
 /// Verifies block height around a padded <c>inline-block</c> (e.g. a themeable button).
 /// </summary>
 /// <remarks>
-/// HTML-Renderer fact (confirmed, searched all of Core): <c>display:inline-block</c> has NO dedicated
-/// sizing/measurement path - <c>CssBox.IsInline</c> is simply <c>Display==Inline || Display==InlineBlock</c>,
-/// so inline-block boxes are routed through the exact same inline-flow word-wrap algorithm
-/// (<c>CssLayoutEngine.FlowBox</c>/<c>CreateLineBoxes</c>) as plain <c>inline</c>, just with their own
-/// margin/border/padding added around each child. A SIMPLE inline-block (single line of content, padding
-/// around inline content with no internal wrapping complexity) plausibly measures/positions correctly by
-/// accident, since the general inline-flow algorithm handles padding around any inline box reasonably.
-/// Anything requiring inline-block to be measured/sized ONCE as a single atomic unit before being placed
-/// (multi-line content wrapping independently at a fixed width, or interaction with ::before/multi-column,
-/// neither of which exist in this fork at all) is not properly supported, and is [Ignore]d below.
+/// An inline-block goes through the same inline flow as an inline (<c>CssBox.IsInline</c>), it isn't measured
+/// as one atomic box first.
 /// </remarks>
 [DoNotParallelize]
 [TestClass]
 public sealed class InlineBlockHeightRegressionTests
 {
-    [Ignore("Confirmed real limitation (matches this class's own remarks): the WRAPPING block's height does " +
-            "not grow to cover its sole inline-block child's vertical padding at all - measured height came " +
-            "back as just the word's own line height (~20px), not >=200px. Since inline-block is routed " +
-            "through the same inline-flow algorithm as plain 'inline' (CssBox.IsInline), and CSS2.1 section " +
-            "10.8.1 correctly keeps plain-inline padding from growing line-box height, that same non-growth " +
-            "leaks onto inline-block here too, even though inline-block's OWN padding box is sized correctly " +
-            "in isolation (see PaddedInlineBlock_WordsSitInsidePaddingBox, which passes).")]
+    [Ignore("Gap, see Spec/html.yml")]
     [TestMethod]
+    [Spec("html", "rendering.html#button-layout")]
     public void PaddedInlineBlock_SoleContentOfBlock_BlockHeightCoversPadding()
     {
         const string html = "<div style='height:300px'>filler</div>" +
@@ -53,9 +40,9 @@ public sealed class InlineBlockHeightRegressionTests
     // A tighter companion to the test above: asserts the block's height against the button's own measured
     // insets and word height, not just a loose lower bound. Delta of 1px is a guess at cross-engine
     // rounding/line-metric slack - flagging for the follow-up verification pass in case it needs widening.
-    [Ignore("Same confirmed limitation as PaddedInlineBlock_SoleContentOfBlock_BlockHeightCoversPadding - the " +
-            "wrapping block's height does not grow to cover the inline-block's vertical insets at all.")]
+    [Ignore("Gap, see Spec/html.yml")]
     [TestMethod]
+    [Spec("html", "rendering.html#button-layout")]
     public void PaddedInlineBlock_SoleContentOfBlock_BlockHeightMatchesInsetsExactly()
     {
         const string html = "<div style='height:300px'>filler</div>" +
@@ -139,12 +126,9 @@ public sealed class InlineBlockHeightRegressionTests
 
     // With only padding-bottom set, the rect must extend below the words by that amount while the top edge
     // stays at the word band - regression guard against padding-top/padding-bottom being swapped.
-    [Ignore("Confirmed real limitation: with asymmetric padding (zero padding-top, 30px padding-bottom), the " +
-            "box's own rect.Bottom does not extend past the words by the padding-bottom amount at all - unlike " +
-            "the symmetric-padding case (see PaddedInlineBlock_WordsSitInsidePaddingBox, which passes with " +
-            "equal top/bottom padding). The rect ends up sized to just the word band, with padding-bottom " +
-            "silently dropped from the box's own height computation.")]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "visudet.html#block-root-margin")]
     public void AsymmetricPaddingBottom_ExpandsRectBottomByPaddingBottom()
     {
         const string html = "<button class='btn' style='padding:0 0 30px 0'>Go</button>";
@@ -205,11 +189,9 @@ public sealed class InlineBlockHeightRegressionTests
             $"Inset-shifted word should not straddle a page boundary (top={word.Top:F1}, bottom={word.Bottom:F1}, pageHeight={pageHeight})");
     }
 
-    [Ignore("Multi-column layout (the CSS 'columns' shorthand) is not implemented anywhere in this fork's " +
-            "Core layout engine - a <div style='columns:2'> lays out as an ordinary single-column block, so " +
-            "there is no column-boundary-aware line relocation for this button's padding-inset shift to " +
-            "interact with.")]
+    [Ignore("Gap, see Spec/css-multicol-1.yml")]
     [TestMethod]
+    [Spec("css-multicol-1", "#the-multi-column-model")]
     public void InsetShiftNearColumnBoundary_WholeLineMovesToNextColumn()
     {
         const string html = "<div id='mc' style='columns:2;column-gap:0;column-fill:auto;width:200px'>" +
@@ -231,11 +213,9 @@ public sealed class InlineBlockHeightRegressionTests
             $"expected padding-top (60) to apply once, at column 2's own content top, word top={word.Top}");
     }
 
-    [Ignore("Multi-column layout (the CSS 'columns' shorthand) is not implemented anywhere in this fork's " +
-            "Core layout engine, so there is no column-boundary-aware relocation of an inline-block's " +
-            "internal lines for a padding-inset shift to interact with (orphans/widows control is not " +
-            "implemented either).")]
+    [Ignore("Gap, see Spec/css-multicol-1.yml")]
     [TestMethod]
+    [Spec("css-multicol-1", "#the-multi-column-model")]
     public void InsetShiftedInlineBlock_SecondInternalLine_MovesAloneToNextColumn()
     {
         const string html = "<div id='mc' style='columns:2;column-gap:0;column-fill:auto;width:200px;orphans:1;widows:1'>" +

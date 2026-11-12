@@ -3,11 +3,7 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 namespace HtmlRenderer.Test.CssEngineSupport;
 
 /// <summary>
-/// Mirrors PeachPDF.Tests/CSS/ConstructionFunctions.cs's <c>CssConstructionFunctions</c> helper, adapted to
-/// HTML-Renderer's internal <see cref="TheArtOfDev.HtmlRenderer.Core.CssEngine"/> namespace (accessible here via
-/// the <c>InternalsVisibleTo("HtmlRenderer.Test")</c> grant on HtmlRenderer.csproj). Shared by CSS engine unit
-/// tests ported from PeachPDF that parse a snippet in isolation, rather than laying out a full document (for
-/// which <see cref="TestSupport.LayoutHarness"/> is the equivalent).
+/// Parses a CSS snippet with the internal CSS engine, for tests that don't need a whole document.
 /// </summary>
 internal static class CssConstructionFunctions
 {

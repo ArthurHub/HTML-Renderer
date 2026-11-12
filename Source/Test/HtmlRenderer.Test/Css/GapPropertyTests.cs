@@ -5,7 +5,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>Ported from PeachPDF.Tests/CSS/PropertyTests/GapProperty.cs (source class <c>GapPropertyTests</c>).</summary>
 [TestClass]
 public sealed class GapPropertyTests
 {
@@ -14,11 +13,9 @@ public sealed class GapPropertyTests
     public void GapLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<GapProperty>(PropertyNames.Gap, value);
 
-    [Ignore("not yet spec compliant: GapProperty's converter (StyleProperties/GapProperty.cs) is " +
-            "Converters.LengthOrPercentConverter.OrGlobalValue().Periodic(RowGap, ColumnGap) - there is no " +
-            "'normal'-accepting branch anywhere in the chain (same gap as RowGapProperty/ColumnGapProperty), " +
-            "so 'normal' is rejected instead of accepted as the spec's default keyword.")]
+    [Ignore("Gap, see Spec/css-grid-2.yml")]
     [TestMethod]
+    [Spec("css-grid-2", "#gutters")]
     public void GapAcceptsNormalKeyword()
         => CssConstructionFunctions.TestForLegalValue<GapProperty>(PropertyNames.Gap, "normal");
 
@@ -35,9 +32,9 @@ public sealed class GapPropertyTests
         Assert.AreEqual(expectedColumnGap, rule.Style.ColumnGap);
     }
 
-    [Ignore("not yet spec compliant: same missing-'normal' gap as GapAcceptsNormalKeyword - the periodic " +
-            "expansion never even runs since GapProperty's converter rejects 'normal' outright.")]
+    [Ignore("Gap, see Spec/css-grid-2.yml")]
     [TestMethod]
+    [Spec("css-grid-2", "#gutters")]
     public void GapShorthandValueExpanded_Normal()
         => GapShorthandValueExpanded("normal", "normal", "normal");
 

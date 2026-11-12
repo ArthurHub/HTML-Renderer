@@ -33,7 +33,7 @@ public sealed class CssValueParserIsValidLengthTests
     }
 
     [TestMethod]
-    [Ignore("not yet spec compliant")]
+    [Ignore("IsValidLength rejects a bare 0, which layout still handles like 0px")]
     public void BareZero_ReturnsTrue_NotYetSpecCompliant()
     {
         // CSS2.1 §4.3.2 / CSS Values §6.2: the unit identifier is optional after a zero length, so a

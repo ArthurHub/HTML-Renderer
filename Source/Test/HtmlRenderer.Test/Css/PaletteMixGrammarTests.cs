@@ -3,11 +3,6 @@ using TheArtOfDev.HtmlRenderer.Core.Parse;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/PaletteMixGrammarTests.cs.
-/// Tests for the shared <see cref="PaletteMixGrammar"/> - the <c>palette-mix()</c> function grammar
-/// (CSS Fonts Module Level 4), confirmed a field-for-field match against PeachPDF's implementation.
-/// </summary>
 [TestClass]
 public sealed class PaletteMixGrammarTests
 {

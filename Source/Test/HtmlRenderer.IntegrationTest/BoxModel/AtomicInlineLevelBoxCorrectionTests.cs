@@ -10,26 +10,13 @@ namespace HtmlRenderer.IntegrationTest.BoxModel;
 /// correction pass misclassify the box's content as containing a "block", incorrectly splitting the child out of
 /// its real parent entirely.
 /// </summary>
-/// <remarks>
-/// The triage note for this file claimed both cases already pass on this fork. Direct testing shows otherwise
-/// for the inline-block case: dumping the box tree for the &lt;select&gt;/&lt;option&gt; markup below shows
-/// <c>opt1</c> (the FIRST display:none &lt;option&gt;) gets hoisted out from under &lt;select&gt; entirely and
-/// becomes a sibling of the anonymous block box CorrectInlineBoxesParent wraps &lt;select&gt; in, while
-/// <c>opt2</c> (the second, otherwise-identical &lt;option&gt;) correctly stays nested. That first-child-only
-/// asymmetry is exactly the atomic-inline-level gap the class doc describes - it just was not caught by the
-/// triage pass. The inline-table case genuinely does pass, so only the inline-block test method is ignored
-/// (with the real, faithfully-ported assertions kept, to document the target behavior).
-/// </remarks>
 [DoNotParallelize]
 [TestClass]
 public sealed class AtomicInlineLevelBoxCorrectionTests
 {
-    [Ignore("Confirmed real bug on this fork, not a porting mistake: dumping the box tree shows opt1 (the " +
-            "FIRST display:none <option> child of an inline-block <select>) gets hoisted out from under " +
-            "<select> and becomes a sibling of the anonymous block wrapper CorrectInlineBoxesParent creates, " +
-            "while opt2 (second, otherwise-identical child) stays correctly nested. DomUtils.ContainsInlinesOnly " +
-            "does not treat inline-block as opaque the way an atomic-inline-level check should.")]
+    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
+    [Spec("css21", "visuren.html#anonymous-block-level")]
     public void DisplayNoneChildOfInlineBlockBox_StaysNestedUnderItsRealParent()
     {
         var html = LayoutHarness.Wrap(
@@ -64,13 +51,6 @@ public sealed class AtomicInlineLevelBoxCorrectionTests
 
         Assert.IsTrue(IsDescendantOf(hidden, inlineTable), "a display:none sibling inside an inline-table must stay nested under it.");
     }
-
-    // PeachPDF's source file also has a "DisplayNoneChildOfInlineFlexBox_StillStaysNestedUnderItsRealParent"
-    // regression case, guarding pre-existing display:inline-flex handling. HTML-Renderer (this fork) implements
-    // no flexbox layout at all - "flex"/"inline-flex" are not recognized display values anywhere in
-    // TheArtOfDev.HtmlRenderer.Core (confirmed: no "flex" hits in the Core source tree) - so there is no such
-    // pre-existing handling to guard, and porting that case would document a feature this fork doesn't have.
-    // Intentionally dropped rather than ported under a false premise.
 
     private static bool IsDescendantOf(TheArtOfDev.HtmlRenderer.Core.Dom.CssBox box, TheArtOfDev.HtmlRenderer.Core.Dom.CssBox ancestor)
     {

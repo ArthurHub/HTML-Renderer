@@ -7,9 +7,7 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace HtmlRenderer.IntegrationTest.Tables;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/StructuralCloneBreakValueBehaviourTests.cs: what a structurally
-/// cloned box's <c>break-*</c> values actually DO to pagination, now that <see cref="BreakValueCascadeTests"/>
-/// confirms (and this batch's fix to <c>CssBoxProperties.InheritStyle</c> ensures) the clone carries them.
+/// What the <c>break-*</c> values a structural clone keeps (<see cref="BreakValueCascadeTests"/>) do to pagination.
 /// </summary>
 /// <remarks>
 /// Characterization, not desired output: carrying the values is a box-model correctness fix, and on its own
@@ -24,7 +22,7 @@ namespace HtmlRenderer.IntegrationTest.Tables;
 /// so its break values are stored and read by nothing.</item>
 /// <item><b>Block-in-inline split.</b> Only inline boxes are split by <c>DomParser.CorrectBlockSplitBadBox</c>,
 /// and css-break-3 §3.1/§3.2 apply break properties to block-level boxes (not inlines) - so the values are
-/// inert on a split fragment by specification, independent of this fork's own architecture. Separately,
+/// inert on a split fragment by specification. Separately,
 /// <c>CorrectBlockSplitBadBox</c> wraps each fragment behind an anonymous block
 /// (<c>CssBox.CreateBox(leftBlock/parentBox, badBox.HtmlTag)</c> creates <c>leftbox</c>/<c>rightBox</c> as
 /// new, separate boxes - the split fragments become their CHILDREN, not their equals in the sibling chain),
@@ -94,9 +92,7 @@ public sealed class StructuralCloneBreakValueBehaviourTests
     // CorrectBlockSplitBadBox creates still separates each fragment from the sibling that would otherwise
     // read it, so a box genuinely chained by break-after:avoid to the span never actually gets pulled
     // across a page boundary the way it would if chained to an ordinary, unsplit break-after:avoid box.
-    // Adapted from PeachPDF's own direct call into DomUtils.GetPrecedingKeepWithNextRun - this fork's
-    // equivalent (BlockFragmentation.CollectPrecedingKeepWithNextRun) is private, so this is stated as the
-    // observable layout outcome instead: the same fixture, once with an ordinary break-after:avoid box
+    // BlockFragmentation.CollectPrecedingKeepWithNextRun is private, so this checks the layout instead: the same fixture, once with an ordinary break-after:avoid box
     // immediately preceding 'kept' (which DOES get pulled - PageBreakIntegrationTests already covers this
     // as a general invariant) and once with the split span in its place (which does not).
     [TestMethod]

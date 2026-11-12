@@ -7,42 +7,12 @@ using TheArtOfDev.HtmlRenderer.PdfSharp;
 namespace HtmlRenderer.PdfSharp.Test;
 
 /// <summary>
-/// Ported from PeachPDF.Tests' <c>TableHeaderRepetitionThroughTheGeneratorTests</c>: a repeating
-/// <c>&lt;thead&gt;</c> above a single row that continues mid-cell across several pages, laid out the way
-/// the real generator lays a document out - not PeachPDF's isolated <c>LayoutHarness</c>, which parses
-/// once and computes its own content band. PeachPDF's own remarks are explicit that this distinction is
-/// the file's whole point: two green unit-level tests over the same behavior weren't enough to know the
-/// header was wrong, because nothing else in that suite laid a document out through the real generator's
-/// own path with a repeating header.
+/// A repeating <c>&lt;thead&gt;</c> above a single row that continues across several pages, laid out through
+/// the real generator rather than <c>LayoutHarness</c>.
 /// </summary>
 /// <remarks>
-/// <para>
-/// Three of PeachPDF's adaptation notes don't apply here at all: this fork implements no
-/// <c>&lt;tfoot&gt;</c> repeat (confirmed across the whole branch by <c>TableHeaderRepeat.cs</c> being
-/// thead-only), its <c>@page</c> at-rule is confirmed parse-only with no consumer anywhere (so the
-/// original fixture's <c>@page { size: a6; margin: 12mm }</c> is dropped in favor of driving page size
-/// through <see cref="PdfGenerateConfig"/> directly, the same as every other real-generator test in this
-/// project), and this project has no <c>InternalsVisibleTo</c> access to <c>HtmlContainerInt</c>/
-/// <c>FragmentTree</c> (only <c>HtmlRenderer.Test</c>/<c>HtmlRenderer.IntegrationTest</c> do - confirmed
-/// by reading <c>Source/HtmlRenderer/HtmlRenderer.csproj</c>'s <c>InternalsVisibleTo</c> list), so every
-/// assertion here goes through the real generated PDF's content stream instead of the fragment tree
-/// PeachPDF's own version asserted on.
-/// </para>
-/// <para>
-/// Porting this fixture surfaced a real, already-documented architectural gap rather than a new bug:
-/// <c>HtmlRenderer.IntegrationTest.Tables.TableSpannedBandRepetitionTests</c> (Batch 4) already pins that
-/// <c>CssLayoutEngineTable</c>'s header-repeat loop only re-checks for a "did we cross into a new band"
-/// transition at the START of each subsequent row's own iteration - so a table whose only body row is a
-/// single cell tall enough to overflow through several bands on its own, with no later row to trigger that
-/// check, never gets the header repeated onto any of those bands at all. That is exactly PeachPDF's
-/// fixture shape (one row, one very tall cell, no trailing row) - confirmed empirically here, through the
-/// full real <see cref="PdfGenerator"/> pipeline rather than <c>LayoutHarness</c>, by dumping a real
-/// generated content stream during porting: the header's own background fill appears once on the row's
-/// starting page and not at all on any of the pages the row's content continues onto afterward. This is
-/// pinned below as the accurate, current, real-pipeline-confirmed behavior (extending Batch 4's coverage
-/// of the same gap past the isolated layout harness) rather than silently reproduced as if it were
-/// correct, or forced to pass by reshaping the fixture into something PeachPDF never tested.
-/// </para>
+/// The header repeat is only checked at the start of a row, so with one tall row the header's fill is only on
+/// the row's first page. This pins that behavior.
 /// </remarks>
 [TestClass]
 [DoNotParallelize]

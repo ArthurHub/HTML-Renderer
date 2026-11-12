@@ -11,7 +11,7 @@ namespace HtmlRenderer.IntegrationTest.TestSupport;
 /// DrawRectangle, colors, positions, ordering) rather than just resulting geometry. Uses the local
 /// <see cref="MockAdapter"/>/<see cref="RecordingGraphics"/> pair (deterministic word metrics, every draw call
 /// logged) instead of a real GDI+ surface, since real WinForms rendering has no way to intercept individual
-/// draw calls. Mirrors the shape of PeachPDF.Tests' FragmentPaintHarness/TestRecordingGraphics.
+/// draw calls.
 /// </summary>
 internal static class PaintHarness
 {

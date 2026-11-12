@@ -7,37 +7,13 @@ using TheArtOfDev.HtmlRenderer.Core.Utils;
 namespace HtmlRenderer.IntegrationTest.Tables;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/BreakValueCascadeTests.cs: the survival of
-/// <c>break-before</c>/<c>break-after</c>/<c>break-inside</c> across a STRUCTURAL CLONE of a box -
-/// <see cref="TheArtOfDev.HtmlRenderer.Core.Dom.CssBoxProperties.InheritStyle"/>'s <c>everything: true</c>
-/// branch. These properties are not ordinarily inherited (an unrelated child must not pick them up from
-/// its parent), but a structural duplicate is a fragment of the same element, and css-break-3 §3 attaches
-/// these values to the element rather than to one of its boxes - so both directions have to hold.
+/// <c>break-before</c>, <c>break-after</c> and <c>break-inside</c> aren't inherited, but a structural clone of a
+/// box (<see cref="TheArtOfDev.HtmlRenderer.Core.Dom.CssBoxProperties.InheritStyle"/> with
+/// <c>everything: true</c>) is a fragment of the same element and keeps them, css-break-3 §3.
 /// </summary>
 /// <remarks>
-/// A real, confirmed production bug was found and fixed while porting this file, not merely documented:
-/// <c>CssBoxProperties.InheritStyle</c>'s <c>everything: true</c> branch copied every other originating-
-/// element property (background, border, position, size, ...) but never <c>_pageBreakInside</c>/
-/// <c>_breakBefore</c>/<c>_breakAfter</c> - confirmed by grep, none of the three appeared anywhere in that
-/// method. Both of this method's real <c>everything: true</c> callers are exactly the two structural-clone
-/// sites this file is about: <c>TableHeaderRepeat.CloneSubtree</c> (a repeated <c>&lt;thead&gt;</c> row) and
-/// <c>DomParser.CorrectBlockSplitBadBox</c> (the block-in-inline split, <c>leftbox</c>/<c>rightBox</c>) - so
-/// every clone of either kind silently read <c>auto</c>/<c>auto</c>/<c>auto</c> regardless of what the
-/// source element declared, before this fix. Fixed at its source in <c>CssBoxProperties.cs</c> - see that
-/// method's own remarks for the full mechanism. These tests assert the fix's storage; what the stored value
-/// then does (or, mostly, does not do) to pagination is <see cref="StructuralCloneBreakValueBehaviourTests"/>.
-/// <para>
-/// Adapted, not renamed, for <see cref="RepeatedTableHeaderProxy_CarriesTheSourceBreakValues"/>: PeachPDF's
-/// UA stylesheet gives <c>thead</c> an avoiding <c>break-inside</c> unconditionally (its print-scoped rule
-/// applies to its own harness's media type), so its fixture can vary <c>break-inside</c> itself as one of
-/// the four cases under test and still get a proxy to inspect. This fork's UA default lives under
-/// <c>@media print</c>, which <see cref="LayoutHarness"/>'s <c>WinFormsAdapter</c> (media type
-/// <c>"screen"</c>) never matches - so <c>break-inside:avoid</c> is held FIXED across all three cases below
-/// (needed just to get a repeated header to inspect at all, per this repo's own established convention),
-/// varying <c>break-before</c>/<c>break-after</c> instead of also varying <c>break-inside</c> itself, which
-/// TableRepeatedGroupConditionsTests already covers from the opposite direction (does an EXPLICIT
-/// <c>break-inside:auto</c> suppress the repeat at all).
-/// </para>
+/// <c>break-inside: avoid</c> stays on the <c>thead</c> in every case, the UA rule for it is under
+/// <c>@media print</c> and <see cref="LayoutHarness"/> uses screen, without it there's no repeated header.
 /// </remarks>
 [TestClass]
 [DoNotParallelize]

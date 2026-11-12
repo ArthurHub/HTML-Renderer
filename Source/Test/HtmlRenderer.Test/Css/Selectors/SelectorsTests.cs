@@ -4,8 +4,7 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 namespace HtmlRenderer.Test.Css.Selectors;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/CSS/SelectorsTests.cs. Loads the same bootstrap.css fixture (embedded as
-/// a resource via HtmlRenderer.Test.csproj) and exercises it against HTML-Renderer's CSS engine port.
+/// Runs selectors against the bootstrap.css fixture, embedded as a resource.
 /// </summary>
 [TestClass]
 public sealed class SelectorsTests
@@ -56,28 +55,33 @@ public sealed class SelectorsTests
         PseudoElementNames.Selection
     ];
 
-    /// <summary>
-    /// PORT-UNIT-IGNORED: PeachPDF's expected counts (277 / 6) were calibrated to a PeachPDF-only fix
-    /// (vendor-prefixed pseudo-elements like ::-moz-placeholder parsing without invalidating their
-    /// rule) that has no counterpart in HTML-Renderer's CSS engine port - porting the exact expected
-    /// counts here would just be asserting HTML-Renderer's (currently undetermined, unverified) parser
-    /// behavior on bootstrap.css's vendor-prefixed selectors, not a real regression guard.
-    /// </summary>
     [TestMethod]
-    [Ignore("not yet spec compliant - expected counts were calibrated to a PeachPDF-only vendor-prefixed " +
-            "pseudo-element fix with no HTML-Renderer counterpart; see method doc comment.")]
-    [DataRow(false, false, 277)]
-    [DataRow(false, true, 6)]
-    [DataRow(true, false, 277)]
-    [DataRow(true, true, 6)]
-    public void FindAllStandardPseudoElementSelectors(bool allowInvalidSelectors, bool nonStandard, int expectedCount)
+    [DataRow(false)]
+    [DataRow(true)]
+    public void FindAllStandardPseudoElementSelectors(bool allowInvalidSelectors)
+    {
+        Assert.AreEqual(277, CountPseudoElementRules(allowInvalidSelectors, nonStandard: false));
+    }
+
+    [TestMethod]
+    public void FindAllNonStandardPseudoElementSelectors_WhenToleratingInvalidSelectors()
+    {
+        Assert.AreEqual(6, CountPseudoElementRules(allowInvalidSelectors: true, nonStandard: true));
+    }
+
+    [TestMethod]
+    [Ignore("Gap, see Spec/selectors-4.yml")]
+    [Spec("selectors-4", "#invalid")]
+    public void FindAllNonStandardPseudoElementSelectors_KeepsOnlyTheWebkitOnes()
+    {
+        Assert.AreEqual(3, CountPseudoElementRules(allowInvalidSelectors: false, nonStandard: true));
+    }
+
+    private static int CountPseudoElementRules(bool allowInvalidSelectors, bool nonStandard)
     {
         var sheet = ParseBootstrap(allowInvalidSelectors);
 
-        var list = sheet.StyleRules
-            .Where(r => HasStandardPseudoElementSelector(r.Selector, negate: nonStandard));
-
-        Assert.AreEqual(expectedCount, list.Count());
+        return sheet.StyleRules.Count(r => HasStandardPseudoElementSelector(r.Selector, negate: nonStandard));
     }
 
     [TestMethod]

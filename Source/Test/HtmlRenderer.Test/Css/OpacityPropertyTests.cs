@@ -3,13 +3,6 @@ using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.Css;
 
-/// <summary>
-/// Ported from PeachPDF.Tests/CSS/PropertyTests/OpacityPropertyTests.cs.
-/// <see cref="OpacityProperty"/> is a plain <see cref="Property"/> whose value converter accepts a bare
-/// number or a percentage, matching PeachPDF's own grammar exactly - both cases port unchanged, exercised
-/// directly against the real CSS engine's declaration parser via
-/// <see cref="CssConstructionFunctions.ParseDeclaration"/>.
-/// </summary>
 [TestClass]
 public sealed class OpacityPropertyTests
 {

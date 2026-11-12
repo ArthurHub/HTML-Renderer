@@ -7,29 +7,12 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 namespace HtmlRenderer.IntegrationTest.Tables;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/WholeTableRelocationTests.cs: a table that did not fragment
-/// internally between any two of its own rows is content §4.3 treats as monolithic, so a table declaring
-/// <c>break-inside:avoid</c> that straddles a page boundary is moved whole rather than sliced.
+/// A table that didn't break between its own rows is monolithic content (css-break-3 §4.3), so a table with
+/// <c>break-inside: avoid</c> that straddles a page boundary is moved whole rather than sliced.
 /// </summary>
 /// <remarks>
-/// Real adaptation, not a rename: PeachPDF's "whole-table move" is a dedicated post-check
-/// (<c>CssBox.PerformLayoutEpilogue</c>) reacting to a pre-layout height ESTIMATE that can miss tall cell
-/// content. This port has neither an estimate nor a table-specific post-check - the SAME generic mover
-/// every other <c>break-inside:avoid</c> box uses, <c>BlockFragmentation.RelocateIfNeeded</c>, called from
-/// the block child loop right after a child (here, the table) finishes its own layout
-/// (<c>Core/Dom/CssBox.cs</c>, ~985) - already sees the table's real, fully-laid-out height, so there is no
-/// separate "estimate was wrong" case to port; every scenario below goes through the same one check. This
-/// also means - unlike this fork's <c>Tables/PageBreakTableIntegrationTests.cs</c>, which documents that a
-/// STRADDLING ROW is preserved unfragmented by css-tables-3 6.1 automatically, with no author opt-in needed
-/// - a table declaring no <c>break-inside:avoid</c> at all is never moved AS A WHOLE by this mechanism (it
-/// requires <c>BreakValues.AvoidsBreak(child.BreakInside)</c> or <see cref="TheArtOfDev.HtmlRenderer.Core.Fragmentation.MonolithicContent.IsMonolithic"/>
-/// - see <c>RelocateIfNeeded</c>'s own doc comment), so every fixture below declares it explicitly, unlike
-/// PeachPDF's own (which assumes automatic avoidance).
-/// <para>
-/// <c>PageBreakBottoms</c> (PeachPDF's own per-band table-slice bookkeeping) has no counterpart here -
-/// confirmed by grep, no such member exists on this fork's <see cref="CssBox"/> - so
-/// <c>ATableThatBrokeBetweenItsOwnRows_IsNotMoved</c> is adapted to check position alone.
-/// </para>
+/// Without <c>break-inside: avoid</c> a table is never moved as a whole, only a straddling row is, so every
+/// fixture declares it.
 /// </remarks>
 [TestClass]
 [DoNotParallelize]
@@ -57,8 +40,7 @@ public sealed class WholeTableRelocationTests
         return (table, container, root);
     }
 
-    // No pre-layout estimate exists to be "wrong" in this port (see the class remarks) - RelocateIfNeeded
-    // always sees the table's real, already-measured height, so a single-row table with tall cell content
+    // RelocateIfNeeded always sees the table's real, already-measured height, so a single-row table with tall cell content
     // is moved whole exactly like any other straddling break-inside:avoid box.
     [TestMethod]
     public void ATallSingleRowTable_IsMovedWholeOnceItsHeightIsKnown()
@@ -99,9 +81,7 @@ public sealed class WholeTableRelocationTests
 
     // A table that fragments between two of its own rows (css-tables-3 6.1's per-row preservation, not
     // this whole-table mover) straddles a boundary too - but RelocateIfNeeded's own "fits on no single
-    // page" guard (its total height clearly exceeds one page) declines to move it either way, for a
-    // different reason than PeachPDF's "the mover has nothing to say about a break it chose": this port has
-    // no concept of "the table itself chose this break", only whether moving it whole would help.
+    // page" guard (its total height clearly exceeds one page) declines to move it.
     [TestMethod]
     public void ATableThatBrokeBetweenItsOwnRows_IsNotMoved()
     {
@@ -136,10 +116,8 @@ public sealed class WholeTableRelocationTests
             "the heading must still precede the table it is chained to");
     }
 
-    // A repeating <thead> used to be excluded from PeachPDF's own equivalent correction because its engine
-    // could not run a second time; this port's table engine rebuilds RepeatedHeaderRows from scratch on
-    // every LayoutCells call (see RepeatingTableRelayoutTests), so relocating the table and relaying it out
-    // fresh at its destination just works, with no stale/duplicate header state left over.
+    // The table engine rebuilds RepeatedHeaderRows on every layout, so the moved table gets no stale or
+    // duplicate header.
     [TestMethod]
     public void ATableWithARepeatingHeader_IsMovedAndItsHeaderRepeatsCorrectlyAtTheNewPosition()
     {
@@ -159,12 +137,7 @@ public sealed class WholeTableRelocationTests
         Assert.AreEqual(1, headerCells, "the header must appear exactly once, not duplicated by relocation");
     }
 
-    // A table with a <tfoot> and no <thead> is moved like any other break-inside:avoid table -
-    // RelocateIfNeeded has no special-casing for header/footer presence at all (unlike PeachPDF's own
-    // correction, which PeachPDF's remarks describe as falling between two header/footer-aware pre-checks).
-    // Adapted rather than dropped outright: this still confirms tfoot's absence from the repeat mechanism
-    // (this fork implements no footer repeat at all - see the port plan's tfoot-drop rule) does not somehow
-    // also disable the unrelated whole-table relocation.
+    // A table with a <tfoot> and no <thead> is moved like any other break-inside:avoid table.
     [TestMethod]
     public void ATableWithAFooterAndNoHeader_IsMovedToo()
     {

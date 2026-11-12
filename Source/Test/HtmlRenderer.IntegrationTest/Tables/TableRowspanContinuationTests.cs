@@ -6,50 +6,9 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 namespace HtmlRenderer.IntegrationTest.Tables;
 
 /// <summary>
-/// Ported from PeachPDF.Tests/Integration/TableRowspanContinuationTests.cs: a <c>rowspan</c> cell whose
-/// ending row is preserved-and-shifted onto the next page (css-tables-3 §6.1) must have its own bottom
-/// edge extend to cover the gap that shift opens up, rather than being silently left stale.
+/// A <c>rowspan</c> cell whose ending row is moved to the next page (css-tables-3 §6.1) extends its bottom
+/// edge to cover the gap that move opens up.
 /// </summary>
-/// <remarks>
-/// A near-total rewrite, not a rename - confirmed by direct source read that PeachPDF's own 17 tests
-/// assert against a resumable-pass architecture this fork does not have at all: <c>TableRowCursor</c>
-/// (per-cell continuation tracking across bands), <c>CssBox.PageBreakBottoms</c> (per-band table-slice
-/// bookkeeping the paint clip reads), <c>FragmentEmitter.ShellIn</c> (content-free continuation shells for
-/// a band with no real per-pass content), and <c>SlotStartingAt</c>/<c>SlotEndingAt</c>/<c>BandOfSlot</c>/
-/// <c>FallsPast</c> (none of which exist on this fork's <see cref="HtmlContainerInt"/> - confirmed by
-/// grep). This fork's mechanism is fundamentally simpler: <c>CssLayoutEngineTable.LayoutCells</c>'s
-/// row-preservation straddle-shift extends a spanning cell's own <see cref="CssBox.ActualBottom"/> by the
-/// same delta the row shift applies (the confirmed bugfix <c>RowspanCellShiftTest.cs</c> already pins with
-/// a real-WinForms/text-sweep fixture) - after which the box is just an ordinary, taller
-/// <see cref="CssBox"/>, and <c>FragmentEmitter</c>'s existing generic per-band walk (already proven for
-/// any tall box by <c>Painting/FragmentPaintIntegrationTests.BoxSpanningTwoPages_PaintsItsBackgroundOnBoth</c>)
-/// produces one <see cref="TheArtOfDev.HtmlRenderer.Core.Fragments.BoxFragment"/> per band it spans, with
-/// no table-specific continuation-shell machinery needed. These tests accordingly focus on what IS real
-/// here - the extension itself, deterministically (explicit pixel heights, not PeachPDF's <c>pt</c>
-/// fixtures or this fork's own text-sweep calibration) - rather than PeachPDF's fragment-count/box-
-/// decoration-break-edge assertions, which have no counterpart to port onto.
-/// <para>
-/// Dropped outright (no HTML-Renderer counterpart, confirmed by source read): every fragment-count/
-/// <c>SliceGeometry</c>-edge assertion (<c>box-decoration-break</c> is a confirmed stub -
-/// <c>FragmentEmitter.TrivialSlice</c> always reports every edge real, per Batch 3's own finding - so
-/// "does a continuation fragment repaint its top border" cannot be asked here); every <c>PageBreakBottoms</c>
-/// assertion (member does not exist); <c>ASpanningCellReachedTwice_IsAlignedOnce</c> (this fork's
-/// <c>ApplyCellVerticalAlignment</c> dispatch - <c>LayoutCells</c>'s per-row alignment loop - visits a
-/// spanning cell's <c>ExtendedBox</c> exactly once, only via its <see cref="CssSpacingBox"/> placeholder on
-/// the row that ends the span, never via the cell's own opening row (gated by <c>GetRowSpan(cell)==1</c>) -
-/// so the "reached twice" defect this test guards against cannot occur here by construction); the
-/// header-opened-rowspan-crossing-into-the-body pagination test (<c>SeedCrossBoundaryRowSpans</c>-style
-/// cross-boundary rowspan seeding has no counterpart - a header/body split does not exist in this fork's
-/// row loop, which walks <c>_allRows</c> as one continuous sequence regardless of header/body/footer
-/// origin).
-/// </para>
-/// <para>
-/// A forced <c>break-before:page</c> declared on a row in the middle of a span is Ignored, not ported as
-/// passing, per the same confirmed gap documented on <c>TableRowBreakValueTests</c>: <c>CssLayoutEngineTable.cs</c>
-/// never reads <c>BreakBefore</c>/<c>BreakAfter</c> anywhere (confirmed by grep - no matches) - the table
-/// row loop has no forced-break support of any kind.
-/// </para>
-/// </remarks>
 [TestClass]
 [DoNotParallelize]
 public sealed class TableRowspanContinuationTests
@@ -63,9 +22,8 @@ public sealed class TableRowspanContinuationTests
 
     // Four 40px rows, then a row opening a two-row span, then a 120px row that ENDS it and would land
     // across the band boundary [20, 300) on its own. The spanning cell is deliberately the FIRST cell of
-    // its opening row (column 0), and the ending row's own real cell comes after it: a confirmed, separate
-    // gap in this fork's CssLayoutEngineTable.InsertEmptyBoxes (matching PeachPDF's own issue #522, not fixed
-    // here) means a CssSpacingBox placeholder is only ever inserted into a later row by walking that row's
+    // its opening row (column 0), and the ending row's own real cell comes after it: a separate
+    // gap in CssLayoutEngineTable.InsertEmptyBoxes means a CssSpacingBox placeholder is only ever inserted into a later row by walking that row's
     // OWN EXISTING cells looking for a matching column - so a spanning cell whose column sits at or past the
     // ending row's own last existing cell gets NO placeholder there at all, and neither the row-shift's
     // ActualBottom-extension nor anything else that reaches the span through its placeholder ever fires.
@@ -202,15 +160,9 @@ public sealed class TableRowspanContinuationTests
         CollectionAssert.Contains(words, "spans");
     }
 
-    // css-break-3 3.1 requires a forced break be honored exactly where declared - a row in the middle of a
-    // span carrying break-before:page should fragment the span there rather than at the row-preservation's
-    // own straddle point. Confirmed gap: CssLayoutEngineTable.cs never reads BreakBefore/BreakAfter (no
-    // matches anywhere in the file), so the table row loop has no forced-break support at all - a row
-    // carrying it lays out completely normally, wherever geometry happens to place it.
-    [Ignore("Confirmed gap: CssLayoutEngineTable.cs's row loop never reads BreakBefore/BreakAfter on a <tr> " +
-        "anywhere (grepped the whole file - no matches) - forced row breaks are not implemented in the " +
-        "table engine at all, so break-before:page on a row mid-span has no effect on where anything lands.")]
+    [Ignore("Gap, see Spec/css-tables-3.yml")]
     [TestMethod]
+    [Spec("css-tables-3", "#breaking-rules")]
     public void AForcedBreakOnARowInsideASpan_FragmentsTheCellAtTheDeclaredRow()
     {
         var html = LayoutHarness.Wrap(
