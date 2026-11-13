@@ -210,6 +210,29 @@ public sealed class WidthIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visudet.html#float-width")]
+    public void AutoWidthFloat_IsSizedByTheFirstLayout()
+    {
+        var (root, container) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='overflow:hidden;border:1px solid blue'>" +
+            "<div id='f' style='float:left;font-size:56px;margin-right:24px'>8.6</div>" +
+            "<p id='p'>line one</p><p>line two</p></div>"), maxWidth: 400);
+        var f = Box(root, "f");
+        var words = LayoutHarness.Descendants(f).SelectMany(b => b.Words).ToList();
+        var size = container.ActualSize;
+
+        Assert.AreEqual(words[^1].Right - words[0].Left, f.Size.Width, 1);
+        Assert.AreEqual(1, f.Location.X, Delta);
+        Assert.AreEqual(f.ActualRight + 24, FirstWord(Box(root, "p"))!.Left, 1);
+
+        // Another layout pass must not change anything
+        LayoutHarness.PerformLayout(container);
+
+        Assert.AreEqual(size.Width, container.ActualSize.Width, Delta);
+        Assert.AreEqual(size.Height, container.ActualSize.Height, Delta);
+    }
+
+    [TestMethod]
     [Spec("css21", "visudet.html#float-replaced-width")]
     public void FloatedImage_KeepsItsIntrinsicWidth()
     {
