@@ -30,14 +30,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
     /// The control will handle pointer and keyboard events on it to support html text selection, copy-paste and mouse clicks.<br/>
     /// </summary>
     /// <remarks>
-    /// See <see cref="HtmlControl"/> for more info. Unlike WPF's own <c>HtmlPanel</c>, which docks its
-    /// scrollbars via raw visual children (<c>FrameworkElement.AddVisualChild</c>/manual
-    /// <c>ArrangeOverride</c> pixel math) - a WPF-only API with no WinUI 3 equivalent - this control docks
-    /// its two <see cref="ScrollBar"/>s as ordinary children of <see cref="HtmlControl._rootPanel"/>,
-    /// positioned via <see cref="FrameworkElement.HorizontalAlignment"/>/<see cref="FrameworkElement.VerticalAlignment"/>
-    /// instead of a manual per-frame <c>Rect</c> computation. The HTML-side layout math (max width,
-    /// scrollbar min/max/viewport, visibility toggling to avoid a wrap/re-layout thrash) is still a
-    /// mechanical, close port of WPF's own.
+    /// See <see cref="HtmlControl"/> for more info.
     /// </remarks>
     public class HtmlPanel : HtmlControl
     {
@@ -65,10 +58,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
             _verticalScrollBar = new ScrollBar
             {
                 Orientation = Orientation.Vertical,
-                // A standalone ScrollBar (outside a ScrollViewer) defaults IndicatorMode to None, which
-                // renders nothing at all regardless of Visibility - confirmed via a documented WinUI 3
-                // issue (https://learn.microsoft.com/en-us/answers/questions/792524), whose fix is
-                // exactly this: set IndicatorMode explicitly.
+                // A standalone ScrollBar shows nothing with the default IndicatorMode of None
                 IndicatorMode = ScrollingIndicatorMode.MouseIndicator,
                 Width = 18,
                 Visibility = Visibility.Collapsed,
@@ -92,10 +82,6 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
 
             _htmlContainer.ScrollChange += OnScrollChange;
 
-            // WPF overrides TextProperty's own PropertyMetadata for the HtmlPanel type
-            // (DependencyProperty.OverrideMetadata) to reset scroll position on text change - WinUI 3's
-            // DependencyProperty has no per-subclass metadata override, so this uses the instance-level
-            // RegisterPropertyChangedCallback substitute instead.
             RegisterPropertyChangedCallback(TextProperty, (d, dp) =>
             {
                 _horizontalScrollBar.Value = _verticalScrollBar.Value = 0;
@@ -191,12 +177,15 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         }
 
         /// <summary>
-        /// Handle pointer release to set focus on the control.
+        /// Handle pointer press to set focus on the control.
         /// </summary>
-        protected override void OnPointerReleased(PointerRoutedEventArgs e)
+        protected override void OnPointerPressed(PointerRoutedEventArgs e)
         {
-            base.OnPointerReleased(e);
             Focus(FocusState.Pointer);
+            base.OnPointerPressed(e);
+
+            // Otherwise the root ScrollViewer takes the focus
+            e.Handled = true;
         }
 
         /// <summary>

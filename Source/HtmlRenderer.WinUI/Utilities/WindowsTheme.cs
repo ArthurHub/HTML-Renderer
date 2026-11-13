@@ -19,14 +19,6 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Utilities
     /// Reads the Windows app theme, which is what <c>prefers-color-scheme</c> reports for on-screen
     /// rendering.
     /// </summary>
-    /// <remarks>
-    /// The registry read is ported byte-for-byte from <c>HtmlRenderer.WPF</c>'s own
-    /// <c>Utilities.WindowsTheme</c> - it has no WPF-specific dependency, it's the same
-    /// <c>HKCU\...\Personalize\AppsUseLightTheme</c> value WPF reads. Only the change-notification
-    /// source differs (see <see cref="WinUIAdapter"/>'s constructor, which subscribes to
-    /// <c>Windows.UI.ViewManagement.UISettings.ColorValuesChanged</c> instead of WPF's
-    /// <c>SystemEvents.UserPreferenceChanged</c> - the modern WinRT-native signal for a WinUI 3 app).
-    /// </remarks>
     internal static class WindowsTheme
     {
         private const string PersonalizeKey = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
