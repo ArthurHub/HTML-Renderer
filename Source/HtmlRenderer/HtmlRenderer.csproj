@@ -44,7 +44,7 @@ For existing implementations see: HtmlRenderer.WinForms, HtmlRenderer.WPF and Ht
     <InternalsVisibleTo Include="HtmlRenderer.IntegrationTest" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="System.Resources.Extensions" Version="10.0.10" />
-	<PackageReference Include="HtmlKit" Version="1.2.0" />
+	<PackageReference Include="System.Resources.Extensions" Version="10.0.15" />
+	<PackageReference Include="HtmlKit" Version="1.3.0" />
   </ItemGroup>
 </Project>
