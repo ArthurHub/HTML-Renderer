@@ -57,14 +57,20 @@ internal static class LayoutHarness
             prepare(container.Root!);
         }
 
-        using var bitmap = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
-        using var g = Graphics.FromImage(bitmap);
-        using var graphics = new GraphicsAdapter(g, false);
-        container.PerformLayout(graphics);
+        PerformLayout(container);
 
         Assert.IsNotNull(container.Root);
 
         return (container.Root!, container);
+    }
+
+    /// <summary>Runs one layout pass of <paramref name="container"/>, e.g. a second one after <see cref="Layout"/>.</summary>
+    internal static void PerformLayout(HtmlContainerInt container)
+    {
+        using var bitmap = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
+        using var g = Graphics.FromImage(bitmap);
+        using var graphics = new GraphicsAdapter(g, false);
+        container.PerformLayout(graphics);
     }
 
     /// <summary>Wraps a body fragment in a minimal document, so a test can state only the markup it cares about.</summary>
