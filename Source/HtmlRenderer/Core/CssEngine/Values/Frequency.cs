@@ -97,7 +97,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return Value == other.Value && Type == other.Type;
         }
 
-        internal enum Unit : byte
+        public enum Unit : byte
         {
             None,
             Hz,

@@ -172,7 +172,6 @@ public sealed class CssSyntaxTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-syntax-3.yml")]
     [Spec("css-syntax-3", "#consume-number")]
     [DataRow("1e3", "1e3")]
     [DataRow("1E-3", "1E-3")]
@@ -187,7 +186,6 @@ public sealed class CssSyntaxTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-syntax-3.yml")]
     [Spec("css-syntax-3", "#consume-number")]
     public void NumberWithExponent_CanHaveAUnit()
     {

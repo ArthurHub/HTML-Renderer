@@ -3,15 +3,24 @@ using System.Linq;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary>Parsing shared by <c>grid-template</c> (CSS Grid 2 §7.4) and <c>grid</c> (§7.8).</summary>
+    /// <summary>
+    /// Shared parsing for the CSS Grid mega-shorthands <c>grid-template</c> (CSS Grid 2 §7.4) and
+    /// <c>grid</c> (§7.8): splitting the value on the top-level <c>/</c>, running the areas-form row scanner,
+    /// and validating each partitioned slice against the existing longhand grammars
+    /// (<see cref="GridTrackListGrammar"/>/<see cref="GridTemplateAreasGrammar"/>). The two converters stay
+    /// thin over this helper.
+    /// </summary>
     internal static class GridTemplateShorthand
     {
-        internal static readonly Token AutoToken = new Token(TokenType.Ident, Keywords.Auto, TextPosition.Empty);
-        private static readonly Token NoneToken = new Token(TokenType.Ident, Keywords.None, TextPosition.Empty);
+        internal static readonly Token AutoToken = new(TokenType.Ident, Keywords.Auto, TextPosition.Empty);
+        private static readonly Token NoneToken = new(TokenType.Ident, Keywords.None, TextPosition.Empty);
 
         /// <summary>
-        /// No nesting depth needed, a function is a single <see cref="FunctionToken"/> and <c>[name]</c>
-        /// groups only hold idents.
+        /// Splits the flat token stream on top-level <c>/</c> delimiters, preserving each group's
+        /// whitespace. No bracket/paren depth counter is needed: functions are single
+        /// <see cref="FunctionToken"/>s (their args nested) and <c>[name]</c> groups hold only idents, so a
+        /// <c>/</c> never appears nested at the flat level (same reasoning as
+        /// <see cref="GridPlacementShorthand"/>).
         /// </summary>
         internal static List<List<Token>> SplitTopLevelSlash(IEnumerable<Token> value)
         {
@@ -29,18 +38,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         internal static Token[] Significant(IEnumerable<Token> tokens) =>
             tokens.Where(t => t.Type != TokenType.Whitespace).ToArray();
 
-        /// <summary>One side of <c>&lt;rows&gt; / &lt;columns&gt;</c>, trimmed, or null if invalid.</summary>
+        /// <summary>
+        /// Validates one axis of the <c>&lt;rows&gt; / &lt;columns&gt;</c> form — a <c>&lt;track-list&gt;</c> or
+        /// the keyword <c>none</c> (both accepted by the <c>grid-template-rows</c>/<c>-columns</c> longhands) —
+        /// returning the edge-trimmed slice, or <see langword="null"/> if invalid.
+        /// </summary>
         internal static IReadOnlyList<Token> TryTemplateAxis(IReadOnlyList<Token> raw)
         {
             var significant = Significant(raw);
             if (significant.Length == 0) return null;
-            if (significant.Length == 1 && significant[0].Type == TokenType.Ident && significant[0].Data.Isi(Keywords.None)) return Trim(raw);
-            return GridTrackListGrammar.TryParse(raw) != null ? Trim(raw) : null;
+            if (significant.Length == 1 && significant[0].Type == TokenType.Ident && significant[0].Data.Isi(Keywords.None))
+                return Trim(raw);
+            return GridTrackListGrammar.TryParse(raw) is not null ? Trim(raw) : null;
         }
 
         private static bool ContainsRepeat(IEnumerable<Token> significant) =>
             significant.Any(t => t is FunctionToken fn && fn.Data.Isi(FunctionNames.Repeat));
 
+        /// <summary>Drops leading/trailing whitespace tokens, keeping internal whitespace.</summary>
         internal static IReadOnlyList<Token> Trim(IReadOnlyList<Token> tokens)
         {
             var start = 0;
@@ -53,6 +68,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return result;
         }
 
+        /// <summary>The <c>grid-auto-flow</c> token slice for the <c>grid</c> auto-flow forms.</summary>
         internal static IReadOnlyList<Token> BuildAutoFlow(bool column, bool dense)
         {
             var flow = new List<Token> { new Token(TokenType.Ident, column ? Keywords.Column : Keywords.Row, TextPosition.Empty) };
@@ -64,21 +80,26 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return flow;
         }
 
-        /// <summary>A null slice means the longhand is reset to its initial value.</summary>
+        /// <summary>
+        /// Parses a <c>grid-template</c> value (§7.4) into the three longhand slices. A <see langword="null"/>
+        /// out-slice means "omit it" (the longhand resets to its initial value). Returns <see langword="false"/>
+        /// for an invalid value (the whole declaration is then dropped).
+        /// </summary>
         internal static bool TryParseTemplate(IEnumerable<Token> value,
             out IReadOnlyList<Token> rows, out IReadOnlyList<Token> columns, out IReadOnlyList<Token> areas)
         {
             rows = columns = areas = null;
 
             var groups = SplitTopLevelSlash(value);
-            if (groups.Count > 2) return false;
+            if (groups.Count > 2) return false; // at most one top-level '/'
 
             var leftRaw = groups[0];
             var rightRaw = groups.Count == 2 ? groups[1] : null;
             var left = Significant(leftRaw);
             var right = rightRaw is null ? null : Significant(rightRaw);
 
-            if (right == null && left.Length == 1 && left[0].Type == TokenType.Ident && left[0].Data.Isi(Keywords.None))
+            // grid-template: none  →  all three longhands none.
+            if (right is null && left.Length == 1 && left[0].Type == TokenType.Ident && left[0].Data.Isi(Keywords.None))
             {
                 rows = columns = areas = new[] { NoneToken };
                 return true;
@@ -88,6 +109,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             if (left.Any(t => t.Type == TokenType.String))
             {
+                // Areas form: [ <line-names>? <string> <track-size>? <line-names>? ]+ [ / <explicit-track-list> ]?
                 if (!TryScanAreasForm(left, out var rowsTokens, out var areaTokens)) return false;
                 if (GridTemplateAreasGrammar.TryParse(areaTokens) is null) return false;
                 if (GridTrackListGrammar.TryParse(rowsTokens) is null) return false;
@@ -95,9 +117,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 rows = rowsTokens;
                 areas = areaTokens;
 
-                if (rightRaw != null)
+                if (rightRaw is not null)
                 {
-                    // <explicit-track-list>, no repeat()
+                    // The trailing columns are an <explicit-track-list> — a <track-list> with no repeat().
                     if (right.Length == 0 || ContainsRepeat(right) || GridTrackListGrammar.TryParse(rightRaw) is null)
                         return false;
                     columns = Trim(rightRaw);
@@ -106,6 +128,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 return true;
             }
 
+            // rows / columns form: requires the slash; each side is a <track-list> or `none`.
             if (rightRaw is null) return false;
             var rowsSlice = TryTemplateAxis(leftRaw);
             var columnsSlice = TryTemplateAxis(rightRaw);
@@ -117,8 +140,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         /// <summary>
-        /// Splits the areas form into the <c>grid-template-rows</c> track list and the area strings, a row
-        /// without a track size gets <c>auto</c>.
+        /// Scans the areas-form left side, synthesizing the <c>grid-template-rows</c> track list
+        /// (<paramref name="rowsOut"/>) and collecting the ordered <c>&lt;string&gt;</c> area tokens
+        /// (<paramref name="areaStrings"/>). Every emitted token is whitespace-separated so both round-trip
+        /// serialization (via <c>ToText</c>) and re-parsing are valid.
         /// </summary>
         private static bool TryScanAreasForm(Token[] toks, out List<Token> rowsOut, out List<Token> areaStrings)
         {
@@ -133,6 +158,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
                 if (t.Type == TokenType.SquareBracketOpen)
                 {
+                    // Copy the [ name … ] line-name group (idents only) at the current line position, kept
+                    // compact as `[a b]` (edge spaces omitted, single space between names).
                     if (rowsOut.Count > 0) rowsOut.Add(Token.Whitespace);
                     rowsOut.Add(t);
                     i++;
@@ -145,8 +172,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                         firstName = false;
                         i++;
                     }
-                    if (i >= toks.Length) return false;
-                    rowsOut.Add(toks[i]);
+                    if (i >= toks.Length) return false; // unclosed '['
+                    rowsOut.Add(toks[i]); // ']'
                     i++;
                     continue;
                 }
@@ -157,6 +184,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     sawString = true;
                     i++;
 
+                    // Optional single-token <track-size> for this row (else the row track is `auto`).
                     if (i < toks.Length && toks[i].Type != TokenType.SquareBracketOpen && toks[i].Type != TokenType.String)
                     {
                         if (GridTrackListGrammar.TryParseTrackSizeList(new[] { toks[i] }) is null) return false;
@@ -171,6 +199,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     continue;
                 }
 
+                // A track-size or stray token with no preceding string at this position is invalid.
                 return false;
             }
 
@@ -184,8 +213,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         /// <summary>
-        /// The <c>[ auto-flow &amp;&amp; dense? ] &lt;track-size&gt;*</c> side of <c>grid</c>, a null
-        /// <paramref name="autoTracks"/> means it's reset to its initial value.
+        /// Parses the <c>[ auto-flow &amp;&amp; dense? ] &lt;track-size&gt;*</c> side of a <c>grid</c> auto-flow
+        /// form. Returns <see langword="false"/> when <c>auto-flow</c> is absent or the value is malformed;
+        /// <paramref name="autoTracks"/> is null when the optional track-size list is omitted (reset to initial).
         /// </summary>
         internal static bool TryParseAutoFlowSide(IReadOnlyList<Token> raw, out bool dense, out IReadOnlyList<Token> autoTracks)
         {

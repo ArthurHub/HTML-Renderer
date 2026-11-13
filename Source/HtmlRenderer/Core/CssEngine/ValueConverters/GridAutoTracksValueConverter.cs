@@ -3,7 +3,10 @@ using System.Linq;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary><c>grid-auto-columns</c>/<c>-rows</c>, CSS Grid 2 §7.6.</summary>
+    /// <summary>
+    /// Validates a <c>grid-auto-columns</c>/<c>grid-auto-rows</c> value: a <c>&lt;track-size&gt;+</c> list
+    /// (no <c>repeat()</c>) via the shared <see cref="GridTrackListGrammar"/>. The authored text is preserved.
+    /// </summary>
     internal sealed class GridAutoTracksValueConverter : IValueConverter
     {
         public IPropertyValue Convert(IEnumerable<Token> value)

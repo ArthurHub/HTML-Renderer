@@ -5,12 +5,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal sealed class MediaFeatureFactory
     {
-        private static readonly Lazy<MediaFeatureFactory> Lazy = new Lazy<MediaFeatureFactory>(() => new MediaFeatureFactory());
+        private static readonly Lazy<MediaFeatureFactory> Lazy = new (() => new MediaFeatureFactory());
 
         #region Creators
 
         private readonly Dictionary<string, Creator> _creators =
-            new Dictionary<string, Creator>(StringComparer.OrdinalIgnoreCase)
+            new (StringComparer.OrdinalIgnoreCase)
             {
                 {FeatureNames.MinWidth, () => new WidthMediaFeature(FeatureNames.MinWidth)},
                 {FeatureNames.MaxWidth, () => new WidthMediaFeature(FeatureNames.MaxWidth)},
@@ -70,6 +70,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {FeatureNames.Update, () => new UpdateMediaFeature()},
                 {FeatureNames.AnyHover, () => new AnyHoverMediaFeature()},
                 {FeatureNames.AnyPointer, () => new AnyPointerMediaFeature()},
+                {FeatureNames.ForcedColors, () => new ForcedColorsMediaFeature()},
+                {FeatureNames.PrefersReducedData, () => new PrefersReducedDataMediaFeature()},
+                {FeatureNames.InvertedColors, () => new InvertedColorsMediaFeature()},
+                {FeatureNames.DynamicRange, () => new DynamicRangeMediaFeature()},
+                {FeatureNames.VideoDynamicRange, () => new VideoDynamicRangeMediaFeature()},
+                {FeatureNames.OverflowBlock, () => new OverflowBlockMediaFeature()},
+                {FeatureNames.OverflowInline, () => new OverflowInlineMediaFeature()},
             };
 
         #endregion

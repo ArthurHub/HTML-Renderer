@@ -25,15 +25,22 @@ public sealed class CssColorTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-color-4.yml")]
     [Spec("css-color-4", "#color-syntax-modern")]
     [DataRow("hsl(120 100% 50%)", 0, 255, 0)]
-    [DataRow("hsl(120deg 100 50)", 0, 255, 0)]
     [DataRow("hsla(120 100% 50%)", 0, 255, 0)]
+    [DataRow("rgb(calc(200 + 55) 0 0)", 255, 0, 0)]
+    public void ModernSyntax_IsSupportedByHslAndCalc(string value, int r, int g, int b)
+    {
+        Assert.AreEqual(RColor.FromArgb(255, r, g, b), Color(value));
+    }
+
+    [TestMethod]
+    [Ignore("Gap, see Spec/css-color-4.yml")]
+    [Spec("css-color-4", "#color-syntax-modern")]
+    [DataRow("hsl(120deg 100 50)", 0, 255, 0)]
     [DataRow("rgb(100% 0% 0%)", 255, 0, 0)]
     [DataRow("rgb(255.4 0 0)", 255, 0, 0)]
-    [DataRow("rgb(calc(200 + 55) 0 0)", 255, 0, 0)]
-    public void ModernSyntax_IsSupportedByEveryFunction(string value, int r, int g, int b)
+    public void ModernSyntax_TakesNumbersPercentagesAndFractions(string value, int r, int g, int b)
     {
         Assert.AreEqual(RColor.FromArgb(255, r, g, b), Color(value));
     }
@@ -51,12 +58,19 @@ public sealed class CssColorTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#color-syntax-legacy")]
+    [DataRow("hsl(120, 100%, 50%, 0.5)", 0, 255, 0, 128)]
+    public void LegacyHsl_TakesAFourthValueAsAlpha(string value, int r, int g, int b, int a)
+    {
+        Assert.AreEqual(RColor.FromArgb(a, r, g, b), Color(value));
+    }
+
+    [TestMethod]
     [Ignore("Gap, see Spec/css-color-4.yml")]
     [Spec("css-color-4", "#color-syntax-legacy")]
     [DataRow("rgb(255, 0, 0, 0.5)", 255, 0, 0, 128)]
-    [DataRow("hsl(120, 100%, 50%, 0.5)", 0, 255, 0, 128)]
     [DataRow("rgb(127.6, 0, 0)", 128, 0, 0, 255)]
-    public void LegacySyntax_TakesAnAlphaAndFractions(string value, int r, int g, int b, int a)
+    public void LegacySyntax_TakesAnAlphaInRgbAndFractions(string value, int r, int g, int b, int a)
     {
         Assert.AreEqual(RColor.FromArgb(a, r, g, b), Color(value));
     }
@@ -89,12 +103,19 @@ public sealed class CssColorTests
     }
 
     [TestMethod]
+    [Spec("css-color-4", "#alpha-syntax")]
+    [DataRow("rgba(255 0 0 / 50%)", 128)]
+    public void Alpha_AfterASlash_IsAppliedInRgba(string value, int alpha)
+    {
+        Assert.AreEqual(alpha, Color(value).A);
+    }
+
+    [TestMethod]
     [Ignore("Gap, see Spec/css-color-4.yml")]
     [Spec("css-color-4", "#alpha-syntax")]
     [DataRow("rgb(255 0 0 / 0.5)", 128)]
-    [DataRow("rgba(255 0 0 / 50%)", 128)]
     [DataRow("lab(50 40 59.5 / -1)", 0)]
-    public void Alpha_IsAppliedAndClamped(string value, int alpha)
+    public void Alpha_IsAppliedAndClampedInEveryFunction(string value, int alpha)
     {
         Assert.AreEqual(alpha, Color(value).A);
     }
@@ -133,18 +154,23 @@ public sealed class CssColorTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-color-4.yml")]
     [Spec("css-color-4", "#missing")]
-    [DataRow("rgb(none 0 0)", 0, 0, 0, 255)]
-    [DataRow("hsl(none 100% 50%)", 255, 0, 0, 255)]
     [DataRow("lab(50 40 59.5 / none)", 191, 87, 0, 0)]
-    public void MissingComponent_IsZeroInEveryFunction(string value, int r, int g, int b, int a)
+    public void MissingAlpha_IsZero(string value, int r, int g, int b, int a)
     {
         Assert.AreEqual(RColor.FromArgb(a, r, g, b), Color(value));
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-color-4.yml")]
+    [Spec("css-color-4", "#missing")]
+    [DataRow("rgb(none 0 0)", 0, 0, 0, 255)]
+    [DataRow("hsl(none 100% 50%)", 255, 0, 0, 255)]
+    public void MissingComponent_IsZeroInRgbAndHsl(string value, int r, int g, int b, int a)
+    {
+        Assert.AreEqual(RColor.FromArgb(a, r, g, b), Color(value));
+    }
+
+    [TestMethod]
     [Spec("css-color-4", "#powerless")]
     [DataRow("color-mix(in lch, white, blue)", 175, 137, 255)]
     [DataRow("color-mix(in hsl, white, blue)", 159, 159, 223)]
@@ -304,7 +330,6 @@ public sealed class CssColorTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-color-4.yml")]
     [Spec("css-color-4", "#specifying-lab-lch")]
     public void NegativeChroma_IsClampedToZero()
     {
@@ -312,8 +337,11 @@ public sealed class CssColorTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-color-4.yml")]
     [Spec("css-color-4", "#color-function")]
+    [Spec("css-color-4", "#predefined-sRGB")]
+    [Spec("css-color-4", "#predefined-sRGB-linear")]
+    [Spec("css-color-4", "#predefined-display-p3")]
+    [Spec("css-color-4", "#predefined-xyz")]
     [DataRow("color(srgb 1 0 0)", 255, 0, 0)]
     [DataRow("color(srgb 100% 0% 0%)", 255, 0, 0)]
     [DataRow("color(srgb-linear 1 0 0)", 255, 0, 0)]
@@ -348,8 +376,6 @@ public sealed class CssColorTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-color-4.yml")]
-    [Spec("css-color-4", "#predefined-display-p3-linear")]
     [Spec("css-color-4", "#predefined-a98-rgb")]
     [Spec("css-color-4", "#predefined-prophoto-rgb")]
     [Spec("css-color-4", "#predefined-rec2020")]
@@ -357,13 +383,21 @@ public sealed class CssColorTests
     [DataRow("rec2020", 197, 160, 16)]
     [DataRow("prophoto-rgb", 0, 0, 0)]
     [DataRow("a98-rgb", 0, 0, 0)]
-    [DataRow("display-p3-linear", 0, 0, 0)]
     public void WideGamutColorSpace_IsUsedToInterpolate(string space, int r, int g, int b)
     {
         var mixed = Color($"color-mix(in {space}, red, lime)");
 
         Assert.AreNotEqual(RColor.FromArgb(255, 128, 128, 0), mixed);
         if (r + g + b > 0) AssertColor(RColor.FromArgb(255, r, g, b), mixed, 1);
+    }
+
+    [TestMethod]
+    [Ignore("Gap, see Spec/css-color-4.yml")]
+    [Spec("css-color-4", "#predefined-display-p3-linear")]
+    [Spec("css-color-4", "#interpolation-space")]
+    public void DisplayP3Linear_IsUsedToInterpolate()
+    {
+        Assert.AreNotEqual(RColor.FromArgb(255, 128, 128, 0), Color("color-mix(in display-p3-linear, red, lime)"));
     }
 
     [TestMethod]
@@ -387,7 +421,6 @@ public sealed class CssColorTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-color-4.yml")]
     [Spec("css-color-4", "#interpolation-missing")]
     [DataRow("color-mix(in lch, lch(50 72 none), lch(50 72 120))", "lch(50 72 120)")]
     [DataRow("color-mix(in hsl, hsl(none 50% 50%), hsl(120, 50%, 50%))", "hsl(120, 50%, 50%)")]
@@ -422,7 +455,6 @@ public sealed class CssColorTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-color-4.yml")]
     [Spec("css-color-4", "#hue-interpolation")]
     [DataRow("color-mix(in hsl, red, blue)", 255, 0, 255)]
     [DataRow("color-mix(in hwb decreasing hue, red, blue)", 255, 0, 255)]

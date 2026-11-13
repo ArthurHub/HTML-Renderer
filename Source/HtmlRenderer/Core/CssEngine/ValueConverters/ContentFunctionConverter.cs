@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// <c>content()</c> (CSS Generated Content 3 §2.7.3), without the <c>marker</c> argument.
+    /// The <c>content()</c> function used in <c>content</c> and <c>string-set</c> (GCPM §7.5):
+    /// <c>content()</c>, <c>content(text)</c>, <c>content(before)</c>, <c>content(after)</c>,
+    /// <c>content(first-letter)</c>. Default mode is <c>text</c>.
     /// </summary>
     internal sealed class ContentFunctionConverter : IValueConverter
     {
@@ -12,28 +15,23 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public IPropertyValue Convert(IEnumerable<Token> value)
         {
-            var first = value.OnlyOrDefault();
-
-            if (!(first is FunctionToken funcToken) || !funcToken.Data.Equals(FunctionNames.Content, System.StringComparison.OrdinalIgnoreCase))
+            if (value.OnlyOrDefault() is not FunctionToken function ||
+                !function.Data.Equals(FunctionNames.Content, StringComparison.OrdinalIgnoreCase))
+            {
                 return null;
+            }
 
             var mode = "text";
+            var arg = function.ArgumentTokens.FirstOrDefault(t =>
+                t.Type != TokenType.Whitespace && t.Type != TokenType.RoundBracketClose);
 
-            if (funcToken.ArgumentTokens.Any())
+            if (arg != null)
             {
-                var argToken = funcToken.ArgumentTokens.FirstOrDefault();
-                if (argToken is KeywordToken keywordToken)
-                {
-                    var keyword = keywordToken.Data.ToLowerInvariant();
-                    if (!ValidModes.Contains(keyword))
-                        return null;
+                if (arg is not KeywordToken keyword) return null;
 
-                    mode = keyword;
-                }
-                else
-                {
-                    return null;
-                }
+                var name = keyword.Data.ToLowerInvariant();
+                if (!ValidModes.Contains(name)) return null;
+                mode = name;
             }
 
             return new ContentFunctionValue(mode, value);
@@ -54,18 +52,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 Original = new TokenValue(tokens);
             }
 
-            public string CssText => _mode == "text"
-                ? "content()"
-                : $"content({_mode})";
+            public string CssText => _mode == "text" ? "content()" : $"content({_mode})";
 
             public TokenValue Original { get; }
 
-            public TokenValue ExtractFor(string name)
-            {
-                return Original;
-            }
-
-            public string Mode => _mode;
+            public TokenValue ExtractFor(string name) => Original;
         }
     }
 }

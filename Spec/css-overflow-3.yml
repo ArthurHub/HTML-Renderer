@@ -29,7 +29,7 @@ sections:
     gaps:
       - "'hidden' clips at the content edge (widened by 2px on the left) instead of the padding edge, see CSS 2.1 11.1.1"
       - "'scroll' and 'auto' don't clip, they behave like 'visible'"
-      - "'clip' is rejected"
+      - "'clip' doesn't clip, it behaves like 'visible'"
       - "'overflow-x' and 'overflow-y' are ignored and 'overflow' only takes a single value"
       - Content overflowing a non-clipping box inside a clipping one is clipped at the content edge of the non-clipping box
       - Absolutely positioned and fixed descendants are clipped even when their containing block is outside the clipping box
@@ -53,9 +53,7 @@ sections:
       - "'overflow' on the root or body clips that box instead of being applied to the viewport, only pagination treats it as propagated"
   '#smooth-scrolling':
     title: '3.4 Smooth Scrolling: the scroll-behavior Property'
-    status: unsupported
-    gaps:
-      - "'scroll-behavior' isn't parsed, the viewport of the panel controls always scrolls instantly"
+    status: parsed-only
   '#scrollbar-layout':
     title: 4 Scrollbars and Layout
     status: unsupported
@@ -66,9 +64,7 @@ sections:
       - "Only the viewport of the panel controls has scrollbars, a box with 'overflow: scroll' or 'auto' gets none and keeps its full content width"
   '#scrollbar-gutter-property':
     title: '4.2 Reserving space for the scrollbar: the scrollbar-gutter property'
-    status: unsupported
-    gaps:
-      - "'scrollbar-gutter' isn't parsed"
+    status: parsed-only
   '#auto-ellipsis':
     title: 5 Automatic Ellipses
     status: unsupported

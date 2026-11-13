@@ -10,37 +10,37 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         /// <summary>
         ///     Gets a zero pixel length value.
         /// </summary>
-        public static readonly Length Zero = new Length(0f, Unit.Px);
+        public static readonly Length Zero = new(0f, Unit.Px);
 
         /// <summary>
         ///     Gets the half relative length, i.e. 50%.
         /// </summary>
-        public static readonly Length Half = new Length(50f, Unit.Percent);
+        public static readonly Length Half = new(50f, Unit.Percent);
 
         /// <summary>
         ///     Gets the full relative length, i.e. 100%.
         /// </summary>
-        public static readonly Length Full = new Length(100f, Unit.Percent);
+        public static readonly Length Full = new(100f, Unit.Percent);
 
         /// <summary>
         ///     Gets a thin length value.
         /// </summary>
-        public static readonly Length Thin = new Length(1f, Unit.Px);
+        public static readonly Length Thin = new(1f, Unit.Px);
 
         /// <summary>
         ///     Gets a medium length value.
         /// </summary>
-        public static readonly Length Medium = new Length(3f, Unit.Px);
+        public static readonly Length Medium = new(3f, Unit.Px);
 
         /// <summary>
         ///     Gets a thick length value.
         /// </summary>
-        public static readonly Length Thick = new Length(5f, Unit.Px);
+        public static readonly Length Thick = new(5f, Unit.Px);
 
         /// <summary>
         ///     Gets the missing value.
         /// </summary>
-        public static readonly Length Missing = new Length(-1f, Unit.Ch);
+        public static readonly Length Missing = new(-1f, Unit.Ch);
 
         public Length(float value, Unit unit)
         {
@@ -54,7 +54,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         /// </summary>
         public bool IsAbsolute =>
             Type == Unit.In || Type == Unit.Mm || Type == Unit.Pc || Type == Unit.Px ||
-            Type == Unit.Pt || Type == Unit.Cm;
+            Type == Unit.Pt || Type == Unit.Cm || Type == Unit.Q;
 
         /// <summary>
         ///     Gets if the length is given in relative units.
@@ -109,6 +109,76 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                         return UnitNames.Vmin;
                     case Unit.Vmax:
                         return UnitNames.Vmax;
+                    case Unit.Q:
+                        return UnitNames.Q;
+                    case Unit.Cap:
+                        return UnitNames.Cap;
+                    case Unit.Ic:
+                        return UnitNames.Ic;
+                    case Unit.Lh:
+                        return UnitNames.Lh;
+                    case Unit.Rlh:
+                        return UnitNames.Rlh;
+                    case Unit.Rex:
+                        return UnitNames.Rex;
+                    case Unit.Rch:
+                        return UnitNames.Rch;
+                    case Unit.Rcap:
+                        return UnitNames.Rcap;
+                    case Unit.Ric:
+                        return UnitNames.Ric;
+                    case Unit.Vi:
+                        return UnitNames.Vi;
+                    case Unit.Vb:
+                        return UnitNames.Vb;
+                    case Unit.Svw:
+                        return UnitNames.Svw;
+                    case Unit.Svh:
+                        return UnitNames.Svh;
+                    case Unit.Svi:
+                        return UnitNames.Svi;
+                    case Unit.Svb:
+                        return UnitNames.Svb;
+                    case Unit.Svmin:
+                        return UnitNames.Svmin;
+                    case Unit.Svmax:
+                        return UnitNames.Svmax;
+                    case Unit.Lvw:
+                        return UnitNames.Lvw;
+                    case Unit.Lvh:
+                        return UnitNames.Lvh;
+                    case Unit.Lvi:
+                        return UnitNames.Lvi;
+                    case Unit.Lvb:
+                        return UnitNames.Lvb;
+                    case Unit.Lvmin:
+                        return UnitNames.Lvmin;
+                    case Unit.Lvmax:
+                        return UnitNames.Lvmax;
+                    case Unit.Dvw:
+                        return UnitNames.Dvw;
+                    case Unit.Dvh:
+                        return UnitNames.Dvh;
+                    case Unit.Dvi:
+                        return UnitNames.Dvi;
+                    case Unit.Dvb:
+                        return UnitNames.Dvb;
+                    case Unit.Dvmin:
+                        return UnitNames.Dvmin;
+                    case Unit.Dvmax:
+                        return UnitNames.Dvmax;
+                    case Unit.Cqw:
+                        return UnitNames.Cqw;
+                    case Unit.Cqh:
+                        return UnitNames.Cqh;
+                    case Unit.Cqi:
+                        return UnitNames.Cqi;
+                    case Unit.Cqb:
+                        return UnitNames.Cqb;
+                    case Unit.Cqmin:
+                        return UnitNames.Cqmin;
+                    case Unit.Cqmax:
+                        return UnitNames.Cqmax;
                     case Unit.Percent:
                         return UnitNames.Percent;
                     default:
@@ -176,8 +246,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 return true;
             }
 
-            // Only 0 may omit the unit (CSS Values 4 §6). The unit is "" for a plain number and null
-            // when there was no number at all.
+            // Only a genuinely parsed unitless "0" may omit its unit (CSS Values 3 5.2). StylesheetUnit
+            // returns an empty unit string for a plain number but null when it could not tokenize a number
+            // at all, and both leave value at 0 - so the unit string has to be checked as well, otherwise
+            // arbitrary non-length input is accepted as zero.
             if (unitString != null && unitString.Length == 0 && value == 0f)
             {
                 result = Zero;
@@ -190,33 +262,82 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static Unit GetUnit(string s)
         {
-            switch (s)
+            return s?.ToLowerInvariant() switch
             {
-                case "ch": return Unit.Ch;
-                case "cm": return Unit.Cm;
-                case "em": return Unit.Em;
-                case "ex": return Unit.Ex;
-                case "in": return Unit.In;
-                case "mm": return Unit.Mm;
-                case "pc": return Unit.Pc;
-                case "pt": return Unit.Pt;
-                case "px": return Unit.Px;
-                case "rem": return Unit.Rem;
-                case "vh": return Unit.Vh;
-                case "vmax": return Unit.Vmax;
-                case "vmin": return Unit.Vmin;
-                case "vw": return Unit.Vw;
-                case "%": return Unit.Percent;
-                default: return Unit.None;
-            }
+                "ch" => Unit.Ch,
+                "cm" => Unit.Cm,
+                "em" => Unit.Em,
+                "ex" => Unit.Ex,
+                "in" => Unit.In,
+                "mm" => Unit.Mm,
+                "pc" => Unit.Pc,
+                "pt" => Unit.Pt,
+                "px" => Unit.Px,
+                "rem" => Unit.Rem,
+                "vh" => Unit.Vh,
+                "vmax" => Unit.Vmax,
+                "vmin" => Unit.Vmin,
+                "vw" => Unit.Vw,
+                "q" => Unit.Q,
+                "cap" => Unit.Cap,
+                "ic" => Unit.Ic,
+                "lh" => Unit.Lh,
+                "rlh" => Unit.Rlh,
+                "rex" => Unit.Rex,
+                "rch" => Unit.Rch,
+                "rcap" => Unit.Rcap,
+                "ric" => Unit.Ric,
+                "vi" => Unit.Vi,
+                "vb" => Unit.Vb,
+                "svw" => Unit.Svw,
+                "svh" => Unit.Svh,
+                "svi" => Unit.Svi,
+                "svb" => Unit.Svb,
+                "svmin" => Unit.Svmin,
+                "svmax" => Unit.Svmax,
+                "lvw" => Unit.Lvw,
+                "lvh" => Unit.Lvh,
+                "lvi" => Unit.Lvi,
+                "lvb" => Unit.Lvb,
+                "lvmin" => Unit.Lvmin,
+                "lvmax" => Unit.Lvmax,
+                "dvw" => Unit.Dvw,
+                "dvh" => Unit.Dvh,
+                "dvi" => Unit.Dvi,
+                "dvb" => Unit.Dvb,
+                "dvmin" => Unit.Dvmin,
+                "dvmax" => Unit.Dvmax,
+                "cqw" => Unit.Cqw,
+                "cqh" => Unit.Cqh,
+                "cqi" => Unit.Cqi,
+                "cqb" => Unit.Cqb,
+                "cqmin" => Unit.Cqmin,
+                "cqmax" => Unit.Cqmax,
+                "%" => Unit.Percent,
+                _ => Unit.None
+            };
         }
 
         public float ToPixel()
         {
-            if (IsRelative)
-                throw new InvalidOperationException("A relative unit cannot be converted.");
-
-            return (float)ToPixels(0, 0, 0);
+            return Type switch
+            {
+                Unit.In => // 1 in = 2.54 cm
+                    Value * 96f,
+                Unit.Mm => // 1 mm = 0.1 cm
+                    Value * 5f * 96f / 127f,
+                Unit.Pc => // 1 pc = 12 pt
+                    Value * 12f * 96f / 72f,
+                Unit.Pt => // 1 pt = 1/72 in
+                    Value * 96f / 72f,
+                Unit.Cm => // 1 cm = 50/127 in
+                    Value * 50f * 96f / 127f,
+                Unit.Q => // 1 Q = 1/40 cm
+                    Value * 50f * 96f / (127f * 40f),
+                Unit.Px => // 1 px = 1/96 in
+                    Value,
+                _ => throw new InvalidOperationException("A relative unit cannot be converted.")
+            };
         }
 
         /// <summary>
@@ -234,19 +355,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 case Unit.Em: return emFactor * Value;
                 case Unit.Rem: return remFactor * Value;
                 case Unit.Ex: return emFactor / 2 * Value;
-                case Unit.Px: return (fontAdjust ? 72d / 96d : 1d) * Value; //TODO: a check support for hi dpi
-                case Unit.In: // 1 in = 96 px
-                    return 96d * Value;
-                case Unit.Mm: // 1 mm = 96/25.4 px
-                    return (96d / 25.4d) * Value;
-                case Unit.Pc: // 1 pc = 12 pt = 16 px
-                    return 16d * Value;
-                case Unit.Pt: // 1 pt = 1/72 in = 96/72 px
-                    return (96d / 72d) * Value;
-                case Unit.Cm: // 1 cm = 96/2.54 px
-                    return (96d / 2.54d) * Value;
+                case Unit.Px: return (fontAdjust ? 72d / 96d : 1d) * Value;
                 case Unit.Percent: return hundredPercent / 100d * Value;
-                default: return 0d;
+                default: return IsAbsolute ? ToPixel() : 0d;
             }
         }
 
@@ -254,23 +365,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var value = ToPixel();
 
-            switch (unit)
+            return unit switch
             {
-                case Unit.In: // 1 in = 96 px
-                    return value / 96f;
-                case Unit.Mm: // 1 mm = 96/25.4 px
-                    return value * 25.4f / 96f;
-                case Unit.Pc: // 1 pc = 16 px
-                    return value / 16f;
-                case Unit.Pt: // 1 pt = 96/72 px
-                    return value * 72f / 96f;
-                case Unit.Cm: // 1 cm = 96/2.54 px
-                    return value * 2.54f / 96f;
-                case Unit.Px: // px is the layout unit
-                    return value;
-                default:
-                    throw new InvalidOperationException("An absolute unit cannot be converted to a relative one.");
-            }
+                Unit.In => // 1 in = 2.54 cm
+                    value / 96f,
+                Unit.Mm => // 1 mm = 0.1 cm
+                    value * 127f / (5f * 96f),
+                Unit.Pc => // 1 pc = 12 pt
+                    value * 72f / (12f * 96f),
+                Unit.Pt => // 1 pt = 1/72 in
+                    value * 72f / 96f,
+                Unit.Cm => // 1 cm = 50/127 in
+                    value * 127f / (50f * 96f),
+                Unit.Q => // 1 Q = 1/40 cm
+                    value * 127f * 40f / (50f * 96f),
+                Unit.Px => // 1 px = 1/96 in
+                    value,
+                _ => throw new InvalidOperationException("An absolute unit cannot be converted to a relative one.")
+            };
         }
 
         public bool Equals(Length other)
@@ -278,7 +390,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return Value == other.Value && Type == other.Type;
         }
 
-        internal enum Unit : byte
+        public enum Unit : byte
         {
             None,
             Px,
@@ -295,7 +407,42 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             Vh,
             Vmin,
             Vmax,
-            Percent
+            Percent,
+            Q,
+            Cap,
+            Ic,
+            Lh,
+            Rlh,
+            Rex,
+            Rch,
+            Rcap,
+            Ric,
+            Vi,
+            Vb,
+            Svw,
+            Svh,
+            Svi,
+            Svb,
+            Svmin,
+            Svmax,
+            Lvw,
+            Lvh,
+            Lvi,
+            Lvb,
+            Lvmin,
+            Lvmax,
+            Dvw,
+            Dvh,
+            Dvi,
+            Dvb,
+            Dvmin,
+            Dvmax,
+            Cqw,
+            Cqh,
+            Cqi,
+            Cqb,
+            Cqmin,
+            Cqmax
         }
 
         /// <summary>

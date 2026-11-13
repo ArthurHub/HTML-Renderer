@@ -4,10 +4,20 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
     internal sealed class TransitionProperty : ShorthandProperty
     {
-        // css-transitions-1 §2.5: none is only valid when the list has a single item
+        // CSS Transitions 1 §2.5, none is only valid as a single transition
         internal static readonly IValueConverter ListConverter = SingleTransition(AnimatableConverter).FromList()
             .Or(SingleTransition(AnimatableConverter.OrNone()))
             .OrDefault();
+
+        private static IValueConverter SingleTransition(IValueConverter propertyConverter)
+        {
+            return WithAny(
+                propertyConverter.Option().For(PropertyNames.TransitionProperty),
+                TimeConverter.Option().For(PropertyNames.TransitionDuration),
+                TransitionConverter.Option().For(PropertyNames.TransitionTimingFunction),
+                TimeConverter.Option().For(PropertyNames.TransitionDelay),
+                TimelineConverters.TransitionBehavior.Option().For(PropertyNames.TransitionBehavior));
+        }
 
         internal TransitionProperty()
             : base(PropertyNames.Transition)
@@ -15,17 +25,5 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         internal override IValueConverter Converter => ListConverter;
-
-        private static IValueConverter SingleTransition(IValueConverter propertyConverter)
-        {
-            return new TimeBasedShorthandConverter(
-                1, // duration index
-                3, // delay index
-                propertyConverter.Option().For(PropertyNames.TransitionProperty), // 0
-                TimeConverter.Option().For(PropertyNames.TransitionDuration), // 1
-                TransitionConverter.Option().For(PropertyNames.TransitionTimingFunction), // 2
-                TimeConverter.Option().For(PropertyNames.TransitionDelay) // 3
-            );
-        }
     }
 }

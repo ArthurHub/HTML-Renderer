@@ -3,7 +3,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     internal sealed class BorderInlineStyleProperty : ShorthandProperty
     {
         private static readonly IValueConverter StyleConverter = Converters.LineStyleConverter.Periodic(
-            PropertyNames.BorderLeftStyle, PropertyNames.BorderRightStyle).OrDefault();
+                PropertyNames.BorderInlineStartStyle, PropertyNames.BorderInlineEndStyle)
+            .OrDefault();
 
         internal BorderInlineStyleProperty()
             : base(PropertyNames.BorderInlineStyle)

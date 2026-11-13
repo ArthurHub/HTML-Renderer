@@ -5,8 +5,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal static class Map
     {
+        public static readonly Dictionary<string, RotationAxis> RotationAxes =
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                {"x", RotationAxis.X},
+                {"y", RotationAxis.Y},
+                {"z", RotationAxis.Z}
+            };
         public static readonly Dictionary<string, Whitespace> WhitespaceModes =
-            new Dictionary<string, Whitespace>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Normal, Whitespace.Normal},
                 {Keywords.Pre, Whitespace.Pre},
@@ -14,8 +21,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.PreWrap, Whitespace.PreWrap},
                 {Keywords.PreLine, Whitespace.PreLine}
             };
+        public static readonly Dictionary<string, Hyphens> HyphensModes =
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                {Keywords.None, Hyphens.None},
+                {Keywords.Manual, Hyphens.Manual},
+                {Keywords.Auto, Hyphens.Auto}
+            };
         public static readonly Dictionary<string, TextTransform> TextTransforms =
-            new Dictionary<string, TextTransform>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.None, TextTransform.None},
                 {Keywords.Capitalize, TextTransform.Capitalize},
@@ -23,8 +37,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Lowercase, TextTransform.Lowercase},
                 {Keywords.FullWidth, TextTransform.FullWidth}
             };
+        public static readonly Dictionary<string, TextOverflow> TextOverflowModes =
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                {Keywords.Clip, TextOverflow.Clip},
+                {Keywords.Ellipsis, TextOverflow.Ellipsis}
+            };
         public static readonly Dictionary<string, TextAlignLast> TextAlignmentsLast =
-            new Dictionary<string, TextAlignLast>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Auto, TextAlignLast.Auto},
                 {Keywords.Start, TextAlignLast.Start},
@@ -32,17 +52,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Right, TextAlignLast.Right},
                 {Keywords.Left, TextAlignLast.Left},
                 {Keywords.Center, TextAlignLast.Center},
-                {Keywords.Justify, TextAlignLast.Justify}
+                {Keywords.Justify, TextAlignLast.Justify},
+                {Keywords.MatchParent, TextAlignLast.MatchParent}
             };
         public static readonly Dictionary<string, TextAnchor> TextAnchors =
-            new Dictionary<string, TextAnchor>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Start, TextAnchor.Start},
                 {Keywords.Middle, TextAnchor.Middle},
                 {Keywords.End, TextAnchor.End}
             };
         public static readonly Dictionary<string, TextJustify> TextJustifyOptions =
-            new Dictionary<string, TextJustify>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Auto, TextJustify.Auto},
                 {Keywords.Distribute, TextJustify.Distribute},
@@ -55,7 +76,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Newspaper, TextJustify.Newspaper}
             };
         public static readonly Dictionary<string, JustifyContent> JustifyContentOptions =
-            new Dictionary<string, JustifyContent>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Start, JustifyContent.Start},
                 {Keywords.Center, JustifyContent.Center},
@@ -71,15 +92,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Stretch, JustifyContent.Stretch },
             };
         public static readonly Dictionary<string, HorizontalAlignment> HorizontalAlignments =
-            new Dictionary<string, HorizontalAlignment>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Left, HorizontalAlignment.Left},
                 {Keywords.Right, HorizontalAlignment.Right},
                 {Keywords.Center, HorizontalAlignment.Center},
-                {Keywords.Justify, HorizontalAlignment.Justify}
+                {Keywords.Justify, HorizontalAlignment.Justify},
+                {Keywords.Start, HorizontalAlignment.Start},
+                {Keywords.End, HorizontalAlignment.End},
+                {Keywords.MatchParent, HorizontalAlignment.MatchParent}
             };
         public static readonly Dictionary<string, VerticalAlignment> VerticalAlignments =
-            new Dictionary<string, VerticalAlignment>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Baseline, VerticalAlignment.Baseline},
                 {Keywords.Sub, VerticalAlignment.Sub},
@@ -91,7 +115,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Bottom, VerticalAlignment.Bottom}
             };
         public static readonly Dictionary<string, LineStyle> LineStyles =
-            new Dictionary<string, LineStyle>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.None, LineStyle.None},
                 {Keywords.Solid, LineStyle.Solid},
@@ -104,15 +128,26 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Groove, LineStyle.Groove},
                 {Keywords.Hidden, LineStyle.Hidden}
             };
+        // <bg-clip>: the <box> keywords plus text and border-area. Only the keywords matter, so the values are the keywords themselves.
+        public static readonly Dictionary<string, string> BackgroundClips =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                {Keywords.BorderBox, Keywords.BorderBox},
+                {Keywords.PaddingBox, Keywords.PaddingBox},
+                {Keywords.ContentBox, Keywords.ContentBox},
+                {Keywords.Text, Keywords.Text},
+                {Keywords.BorderArea, Keywords.BorderArea}
+            };
+
         public static readonly Dictionary<string, BoxModel> BoxModels =
-            new Dictionary<string, BoxModel>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.BorderBox, BoxModel.BorderBox},
                 {Keywords.PaddingBox, BoxModel.PaddingBox},
                 {Keywords.ContentBox, BoxModel.ContentBox}
             };
         public static readonly Dictionary<string, ITimingFunction> TimingFunctions =
-            new Dictionary<string, ITimingFunction>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Ease, new CubicBezierTimingFunction(0.25f, 0.1f, 0.25f, 1f)},
                 {Keywords.EaseIn, new CubicBezierTimingFunction(0.42f, 0f, 1f, 1f)},
@@ -123,7 +158,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.StepEnd, new StepsTimingFunction(1)}
             };
         public static readonly Dictionary<string, AnimationFillStyle> AnimationFillStyles =
-            new Dictionary<string, AnimationFillStyle>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.None, AnimationFillStyle.None},
                 {Keywords.Forwards, AnimationFillStyle.Forwards},
@@ -131,7 +166,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Both, AnimationFillStyle.Both}
             };
         public static readonly Dictionary<string, AnimationDirection> AnimationDirections =
-            new Dictionary<string, AnimationDirection>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Normal, AnimationDirection.Normal},
                 {Keywords.Reverse, AnimationDirection.Reverse},
@@ -139,32 +174,32 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.AlternateReverse, AnimationDirection.AlternateReverse}
             };
         public static readonly Dictionary<string, Visibility> Visibilities =
-            new Dictionary<string, Visibility>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Visible, Visibility.Visible},
                 {Keywords.Hidden, Visibility.Hidden},
                 {Keywords.Collapse, Visibility.Collapse}
             };
         public static readonly Dictionary<string, PlayState> PlayStates =
-            new Dictionary<string, PlayState>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Running, PlayState.Running},
                 {Keywords.Paused, PlayState.Paused}
             };
         public static readonly Dictionary<string, FontVariant> FontVariants =
-            new Dictionary<string, FontVariant>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Normal, FontVariant.Normal},
                 {Keywords.SmallCaps, FontVariant.SmallCaps}
             };
         public static readonly Dictionary<string, DirectionMode> DirectionModes =
-            new Dictionary<string, DirectionMode>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Ltr, DirectionMode.Ltr},
                 {Keywords.Rtl, DirectionMode.Rtl}
             };
         public static readonly Dictionary<string, ListStyle> ListStyles =
-            new Dictionary<string, ListStyle>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Disc, ListStyle.Disc},
                 {Keywords.Circle, ListStyle.Circle},
@@ -184,13 +219,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.None, ListStyle.None}
             };
         public static readonly Dictionary<string, ListPosition> ListPositions =
-            new Dictionary<string, ListPosition>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Inside, ListPosition.Inside},
                 {Keywords.Outside, ListPosition.Outside}
             };
         public static readonly Dictionary<string, FontSize> FontSizes =
-            new Dictionary<string, FontSize>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.XxSmall, FontSize.Tiny},
                 {Keywords.XSmall, FontSize.Little},
@@ -203,7 +238,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Smaller, FontSize.Smaller}
             };
         public static readonly Dictionary<string, TextDecorationStyle> TextDecorationStyles =
-            new Dictionary<string, TextDecorationStyle>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Solid, TextDecorationStyle.Solid},
                 {Keywords.Double, TextDecorationStyle.Double},
@@ -212,7 +247,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Wavy, TextDecorationStyle.Wavy}
             };
         public static readonly Dictionary<string, TextDecorationLine> TextDecorationLines =
-            new Dictionary<string, TextDecorationLine>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Underline, TextDecorationLine.Underline},
                 {Keywords.Overline, TextDecorationLine.Overline},
@@ -220,14 +255,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Blink, TextDecorationLine.Blink}
             };
         public static readonly Dictionary<string, BorderRepeat> BorderRepeatModes =
-            new Dictionary<string, BorderRepeat>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Stretch, BorderRepeat.Stretch},
                 {Keywords.Repeat, BorderRepeat.Repeat},
                 {Keywords.Round, BorderRepeat.Round}
             };
         public static readonly Dictionary<string, string> DefaultFontFamilies =
-            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Serif, "Times New Roman"},
                 {Keywords.SansSerif, "Arial"},
@@ -236,21 +271,21 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Fantasy, "Comic Sans"}
             };
         public static readonly Dictionary<string, BackgroundAttachment> BackgroundAttachments =
-            new Dictionary<string, BackgroundAttachment>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Fixed, BackgroundAttachment.Fixed},
                 {Keywords.Local, BackgroundAttachment.Local},
                 {Keywords.Scroll, BackgroundAttachment.Scroll}
             };
         public static readonly Dictionary<string, FontStyle> FontStyles =
-            new Dictionary<string, FontStyle>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Normal, FontStyle.Normal},
                 {Keywords.Italic, FontStyle.Italic},
                 {Keywords.Oblique, FontStyle.Oblique}
             };
         public static readonly Dictionary<string, FontStretch> FontStretches =
-            new Dictionary<string, FontStretch>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Normal, FontStretch.Normal},
                 {Keywords.UltraCondensed, FontStretch.UltraCondensed},
@@ -263,7 +298,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.UltraExpanded, FontStretch.UltraExpanded}
             };
         public static readonly Dictionary<string, BreakMode> BreakModes =
-            new Dictionary<string, BreakMode>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Auto, BreakMode.Auto},
                 {Keywords.Always, BreakMode.Always},
@@ -273,10 +308,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Page, BreakMode.Page},
                 {Keywords.Column, BreakMode.Column},
                 {Keywords.AvoidPage, BreakMode.AvoidPage},
-                {Keywords.AvoidColumn, BreakMode.AvoidColumn}
+                {Keywords.AvoidColumn, BreakMode.AvoidColumn},
+                {Keywords.Recto, BreakMode.Recto},
+                {Keywords.Verso, BreakMode.Verso}
             };
         public static readonly Dictionary<string, BreakMode> PageBreakModes =
-            new Dictionary<string, BreakMode>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Auto, BreakMode.Auto},
                 {Keywords.Always, BreakMode.Always},
@@ -285,7 +322,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Right, BreakMode.Right}
             };
         public static readonly Dictionary<string, BreakMode> BreakInsideModes =
-            new Dictionary<string, BreakMode>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Auto, BreakMode.Auto},
                 {Keywords.Avoid, BreakMode.Avoid},
@@ -294,21 +331,21 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.AvoidRegion, BreakMode.AvoidRegion}
             };
         public static readonly Dictionary<string, float> HorizontalModes =
-            new Dictionary<string, float>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Left, 0f},
                 {Keywords.Center, 0.5f},
                 {Keywords.Right, 1f}
             };
         public static readonly Dictionary<string, float> VerticalModes =
-            new Dictionary<string, float>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Top, 0f},
                 {Keywords.Center, 0.5f},
                 {Keywords.Bottom, 1f}
             };
         public static readonly Dictionary<string, UnicodeMode> UnicodeModes =
-            new Dictionary<string, UnicodeMode>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Normal, UnicodeMode.Normal},
                 {Keywords.Embed, UnicodeMode.Embed},
@@ -318,7 +355,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Plaintext, UnicodeMode.Plaintext}
             };
         public static readonly Dictionary<string, SystemCursor> Cursors =
-            new Dictionary<string, SystemCursor>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Auto, SystemCursor.Auto},
                 {Keywords.Default, SystemCursor.Default},
@@ -358,7 +395,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Grabbing, SystemCursor.Grabbing}
             };
         public static readonly Dictionary<string, PositionMode> PositionModes =
-            new Dictionary<string, PositionMode>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Static, PositionMode.Static},
                 {Keywords.Relative, PositionMode.Relative},
@@ -367,22 +404,25 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Fixed, PositionMode.Fixed}
             };
         public static readonly Dictionary<string, Overflow> OverflowModes =
-            new Dictionary<string, Overflow>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Visible, Overflow.Visible},
                 {Keywords.Hidden, Overflow.Hidden},
                 {Keywords.Scroll, Overflow.Scroll},
-                {Keywords.Auto, Overflow.Auto}
+                {Keywords.Auto, Overflow.Auto},
+                {Keywords.Clip, Overflow.Clip}
             };
         public static readonly Dictionary<string, Floating> FloatingModes =
-            new Dictionary<string, Floating>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.None, Floating.None},
                 {Keywords.Left, Floating.Left},
-                {Keywords.Right, Floating.Right}
+                {Keywords.Right, Floating.Right},
+                {Keywords.InlineStart, Floating.InlineStart},
+                {Keywords.InlineEnd, Floating.InlineEnd}
             };
         public static readonly Dictionary<string, DisplayMode> DisplayModes =
-            new Dictionary<string, DisplayMode>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.None, DisplayMode.None},
                 {Keywords.Inline, DisplayMode.Inline},
@@ -402,18 +442,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Flex, DisplayMode.Flex},
                 {Keywords.InlineFlex, DisplayMode.InlineFlex},
                 {Keywords.Grid, DisplayMode.Grid},
-                {Keywords.InlineGrid, DisplayMode.InlineGrid}
+                {Keywords.InlineGrid, DisplayMode.InlineGrid},
+                {Keywords.Contents, DisplayMode.Contents},
+                {Keywords.FlowRoot, DisplayMode.FlowRoot}
             };
         public static readonly Dictionary<string, ClearMode> ClearModes =
-            new Dictionary<string, ClearMode>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.None, ClearMode.None},
                 {Keywords.Left, ClearMode.Left},
                 {Keywords.Right, ClearMode.Right},
-                {Keywords.Both, ClearMode.Both}
+                {Keywords.Both, ClearMode.Both},
+                {Keywords.InlineStart, ClearMode.InlineStart},
+                {Keywords.InlineEnd, ClearMode.InlineEnd}
             };
         public static readonly Dictionary<string, BackgroundRepeat> BackgroundRepeats =
-            new Dictionary<string, BackgroundRepeat>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.NoRepeat, BackgroundRepeat.NoRepeat},
                 {Keywords.Repeat, BackgroundRepeat.Repeat},
@@ -421,7 +465,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Space, BackgroundRepeat.Space}
             };
         public static readonly Dictionary<string, BlendMode> BlendModes =
-            new Dictionary<string, BlendMode>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Color, BlendMode.Color},
                 {Keywords.ColorBurn, BlendMode.ColorBurn},
@@ -441,35 +485,35 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.SoftLight, BlendMode.SoftLight}
             };
         public static readonly Dictionary<string, UpdateFrequency> UpdateFrequencies =
-            new Dictionary<string, UpdateFrequency>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.None, UpdateFrequency.None},
                 {Keywords.Slow, UpdateFrequency.Slow},
                 {Keywords.Normal, UpdateFrequency.Normal}
             };
         public static readonly Dictionary<string, ScriptingState> ScriptingStates =
-            new Dictionary<string, ScriptingState>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.None, ScriptingState.None},
                 {Keywords.InitialOnly, ScriptingState.InitialOnly},
                 {Keywords.Enabled, ScriptingState.Enabled}
             };
         public static readonly Dictionary<string, PointerAccuracy> PointerAccuracies =
-            new Dictionary<string, PointerAccuracy>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.None, PointerAccuracy.None},
                 {Keywords.Coarse, PointerAccuracy.Coarse},
                 {Keywords.Fine, PointerAccuracy.Fine}
             };
         public static readonly Dictionary<string, HoverAbility> HoverAbilities =
-            new Dictionary<string, HoverAbility>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.None, HoverAbility.None},
                 {Keywords.OnDemand, HoverAbility.OnDemand},
                 {Keywords.Hover, HoverAbility.Hover}
             };
         public static readonly Dictionary<string, RadialGradient.SizeMode> RadialGradientSizeModes =
-            new Dictionary<string, RadialGradient.SizeMode>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.ClosestSide, RadialGradient.SizeMode.ClosestSide},
                 {Keywords.FarthestSide, RadialGradient.SizeMode.FarthestSide},
@@ -477,7 +521,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.FarthestCorner, RadialGradient.SizeMode.FarthestCorner}
             };
         public static readonly Dictionary<string, ObjectFitting> ObjectFittings =
-            new Dictionary<string, ObjectFitting>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.None, ObjectFitting.None},
                 {Keywords.Cover, ObjectFitting.Cover},
@@ -486,7 +530,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.ScaleDown, ObjectFitting.ScaleDown}
             };
         public static readonly Dictionary<string, FontWeight> FontWeights =
-            new Dictionary<string, FontWeight>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Normal, FontWeight.Normal},
                 {Keywords.Bold, FontWeight.Bold},
@@ -494,7 +538,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.Lighter, FontWeight.Lighter}
             };
         public static readonly Dictionary<string, SystemFont> SystemFonts =
-            new Dictionary<string, SystemFont>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Caption, SystemFont.Caption},
                 {Keywords.Icon, SystemFont.Icon},
@@ -504,41 +548,42 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {Keywords.StatusBar, SystemFont.StatusBar}
             };
         public static readonly Dictionary<string, StrokeLinecap> StrokeLinecaps =
-            new Dictionary<string, StrokeLinecap>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Butt, StrokeLinecap.Butt},
                 {Keywords.Round, StrokeLinecap.Round},
                 {Keywords.Square, StrokeLinecap.Square}
             };
         public static readonly Dictionary<string, StrokeLinejoin> StrokeLinejoins =
-            new Dictionary<string, StrokeLinejoin>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Miter, StrokeLinejoin.Miter},
                 {Keywords.Round, StrokeLinejoin.Round},
                 {Keywords.Bevel, StrokeLinejoin.Bevel}
             };
         public static readonly Dictionary<string, WordBreak> WordBreaks =
-            new Dictionary<string, WordBreak>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Normal, WordBreak.Normal},
                 {Keywords.BreakAll, WordBreak.BreakAll},
                 {Keywords.KeepAll, WordBreak.KeepAll}
             };
         public static readonly Dictionary<string, OverflowWrap> OverflowWraps =
-            new Dictionary<string, OverflowWrap>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Normal, OverflowWrap.Normal},
-                {Keywords.BreakWord, OverflowWrap.BreakWord}
+                {Keywords.BreakWord, OverflowWrap.BreakWord},
+                {Keywords.Anywhere, OverflowWrap.Anywhere}
             };
         public static readonly Dictionary<string, FillRule> FillRules =
-            new Dictionary<string, FillRule>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Nonzero, FillRule.Nonzero},
                 {Keywords.Evenodd, FillRule.Evenodd}
             };
 
         public static readonly Dictionary<string, FlexDirection> FlexDirections =
-            new Dictionary<string, FlexDirection>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 { Keywords.Row, FlexDirection.Row },
                 { Keywords.RowReverse, FlexDirection.RowReverse },
@@ -547,7 +592,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             };
 
         public static readonly Dictionary<string, FlexWrap> FlexWraps =
-            new Dictionary<string, FlexWrap>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 { Keywords.Nowrap, FlexWrap.NoWrap },
                 { Keywords.Wrap, FlexWrap.Wrap },
@@ -555,7 +600,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             };
 
         public static readonly Dictionary<string, IntrinsicSizing> IntrinsicSizings =
-            new Dictionary<string, IntrinsicSizing>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 { Keywords.MaxContent, IntrinsicSizing.MaxContent },
                 { Keywords.MinContent, IntrinsicSizing.MinContent },
@@ -564,7 +609,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             };
 
         public static readonly Dictionary<string, AlignContent> AlignContents =
-            new Dictionary<string, AlignContent>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 { Keywords.Center, AlignContent.Center },
                 { Keywords.Start, AlignContent.Start },
@@ -580,7 +625,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             };
 
         public static readonly Dictionary<string, AlignItem> AlignItems =
-            new Dictionary<string, AlignItem>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 { Keywords.Normal, AlignItem.Normal },
                 { Keywords.Stretch, AlignItem.Stretch },
@@ -595,7 +640,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             };
 
         public static readonly Dictionary<string, ContainerType> ContainerTypes =
-            new Dictionary<string, ContainerType>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {Keywords.Normal, ContainerType.Normal},
                 {Keywords.Size, ContainerType.Size},

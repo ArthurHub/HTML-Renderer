@@ -78,7 +78,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {
                     var extracted = option.ExtractFor(name);
 
-                    if (extracted != null && extracted.Count > 0)
+                    if (extracted is {Count: > 0})
                     {
                         if (tokens.Count > 0) tokens.Add(Token.Whitespace);
 

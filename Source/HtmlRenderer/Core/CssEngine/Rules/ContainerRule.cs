@@ -23,10 +23,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public string Name { get; set; }
 
+        public IContainerCondition Condition { get; internal set; }
+
         public string ConditionText
         {
-            get => Media.MediaText;
-            set => Media.MediaText = value;
+            get => Condition != null ? Condition.ToCss() : Media.MediaText;
+            set
+            {
+                Condition = null;
+                Media.MediaText = value;
+            }
         }
     }
 }

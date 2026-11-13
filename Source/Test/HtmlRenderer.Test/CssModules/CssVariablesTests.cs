@@ -197,6 +197,34 @@ public sealed class CssVariablesTests
         Assert.AreEqual(Green, x.ActualBorderLeftColor);
     }
 
+    [TestMethod]
+    [Spec("css-variables-1", "#using-variables")]
+    public void DeclarationWithVar_LosesToALaterDeclarationOfTheSameLonghand()
+    {
+        Assert.AreEqual("2px", Styled(":root{--m:10px} div{margin-inline-start:var(--m)} #x{margin-left:2px}").MarginLeft);
+        Assert.AreEqual("normal", Styled(":root{--w:pre} div{white-space:var(--w)} #x{white-space:normal}").WhiteSpace);
+        Assert.AreEqual("left", Styled(":root{--a:right} div{text-align:var(--a)} #x{text-align:left}").TextAlign);
+    }
+
+    [TestMethod]
+    [Spec("css-variables-1", "#variables-in-shorthands")]
+    public void ShorthandWithVar_KeepsTheLonghandsNoLaterDeclarationSets()
+    {
+        var x = Styled(":root{--m:10px} div{margin:var(--m)} #x{margin-left:2px}");
+
+        Assert.AreEqual("2px", x.MarginLeft);
+        Assert.AreEqual("10px", x.MarginTop);
+        Assert.AreEqual("10px", x.MarginRight);
+    }
+
+    private static CssBox Styled(string css)
+    {
+        var (root, _) = LayoutHarness.Layout($"<html><head><style>{css}</style></head><body><div id=x>a</div></body></html>", 800, 600);
+        var box = LayoutHarness.FindById(root, "x");
+        Assert.IsNotNull(box);
+        return box;
+    }
+
     private static CssBox Box(string body, string id = "x")
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(body));

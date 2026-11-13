@@ -43,14 +43,21 @@ public sealed class PseudoElements4Tests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-pseudo-4.yml")]
     [Spec("css-pseudo-4", "#highlight-selectors")]
-    [DataRow("p::search-text, p")]
     [DataRow("p::target-text, p")]
     [DataRow("p::spelling-error, p")]
     [DataRow("p::grammar-error, p")]
     [DataRow("p::highlight(a), p")]
     public void OtherHighlightPseudoElements_AreValidSelectors(string selector)
+    {
+        Assert.AreEqual(Red, Box($"{selector} {{ color: #ff0000 }}", "<p id='x'>a</p>").ActualColor);
+    }
+
+    [TestMethod]
+    [Ignore("Gap, see Spec/css-pseudo-4.yml")]
+    [Spec("css-pseudo-4", "#highlight-selectors")]
+    [DataRow("p::search-text, p")]
+    public void SearchText_IsAValidSelector(string selector)
     {
         Assert.AreEqual(Red, Box($"{selector} {{ color: #ff0000 }}", "<p id='x'>a</p>").ActualColor);
     }
@@ -85,7 +92,6 @@ public sealed class PseudoElements4Tests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-pseudo-4.yml")]
     [Spec("css-pseudo-4", "#placeholder-pseudo")]
     [Spec("css-pseudo-4", "#file-selector-button-pseudo")]
     [Spec("css-pseudo-4", "#details-content-pseudo")]

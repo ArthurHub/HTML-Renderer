@@ -73,6 +73,17 @@ public sealed class CssDisplayTests
         Assert.AreEqual(50, d.Size.Height, Delta);
     }
 
+    [TestMethod]
+    [Spec("css-display-3", "#inner-model")]
+    [Spec("css-display-4", "#inner-model")]
+    public void FlowRoot_IsBlockLevel()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div>first <span id='fr' style='display:flow-root'>second</span></div>"));
+
+        Assert.IsGreaterThan(FindWord(root, "first")!.Top + Delta, FindWord(root, "second")!.Top);
+    }
+
     [Ignore("Gap, see Spec/css-display-3.yml")]
     [TestMethod]
     [Spec("css-display-3", "#inner-model")]

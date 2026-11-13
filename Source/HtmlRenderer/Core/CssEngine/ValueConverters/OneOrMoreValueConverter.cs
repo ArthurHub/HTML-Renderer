@@ -44,7 +44,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
                 for (var i = 0; i < properties.Length; i++)
                 {
-                    var value = _converter.Construct(new[] { properties[i] });
+                    var value = _converter.Construct(new[] {properties[i]});
 
                     if (value == null) return null;
 

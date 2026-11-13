@@ -5,7 +5,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal sealed class NumberToken : Token
     {
-        private static readonly char[] FloatIndicators = { '.', 'e', 'E' };
+        private static readonly char[] FloatIndicators = {'.', 'e', 'E'};
 
         public NumberToken(string number, TextPosition position)
             : base(TokenType.Number, number, position)

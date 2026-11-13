@@ -130,7 +130,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// </summary>
         internal static List<Token> GetCssTokens(string value, bool isInValue = false)
         {
-            var lexer = new Lexer(value) { IsInValue = isInValue };
+            var lexer = new Lexer(new TextSource(value)) { IsInValue = isInValue };
             var tokens = new List<Token>();
             Token token;
             do
@@ -440,30 +440,40 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             {
                 if (!string.IsNullOrEmpty(str))
                 {
+                    // CSS Color 5 §8, color-scheme is ignored, so the used color scheme is always light
+                    if (length > 12 && CommonUtils.SubStringEquals(str, idx, 11, "light-dark(") && str[idx + length - 1] == ')')
+                    {
+                        var arguments = GetCssTokens(str.Substring(idx + 11, length - 12), true).ToList();
+                        if (arguments.Count == 2)
+                        {
+                            var light = arguments[0].ToText().Trim();
+                            return TryGetColor(light, 0, light.Length, out color);
+                        }
+                    }
+
+                    // The engine resolves what the quick parsers don't, e.g. calc() in rgb()
                     if (length > 1 && str[idx] == '#')
                     {
-                        return GetColorByHex(str, idx, length, out color);
+                        if (GetColorByHex(str, idx, length, out color)) return true;
                     }
                     else if (length > 10 && CommonUtils.SubStringEquals(str, idx, 4, "rgb(") && str[length - 1] == ')')
                     {
-                        return GetColorByRgb(str, idx, length, out color);
+                        if (GetColorByRgb(str, idx, length, out color)) return true;
                     }
                     else if (length > 13 && CommonUtils.SubStringEquals(str, idx, 5, "rgba(") && str[length - 1] == ')')
                     {
-                        return GetColorByRgba(str, idx, length, out color);
+                        if (GetColorByRgba(str, idx, length, out color)) return true;
                     }
                     else if (length > 9 && CommonUtils.SubStringEquals(str, idx, 4, "hsl(") && str[length - 1] == ')')
                     {
-                        return GetColorByHsl(str, idx, length, false, out color);
+                        if (GetColorByHsl(str, idx, length, false, out color)) return true;
                     }
                     else if (length > 10 && CommonUtils.SubStringEquals(str, idx, 5, "hsla(") && str[length - 1] == ')')
                     {
-                        return GetColorByHsl(str, idx, length, true, out color);
+                        if (GetColorByHsl(str, idx, length, true, out color)) return true;
                     }
-                    else
-                    {
-                        return GetColorByName(str, idx, length, out color);
-                    }
+
+                    return GetColorByName(str, idx, length, out color);
                 }
             }
             catch

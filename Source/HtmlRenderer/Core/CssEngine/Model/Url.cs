@@ -12,8 +12,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         private const string CurrentDirectory = ".";
         private const string CurrentDirectoryAlternative = "%2e";
         private const string UpperDirectory = "..";
-        private static readonly string[] UpperDirectoryAlternatives = { "%2e%2e", ".%2e", "%2e." };
-        private static readonly Url DefaultBase = new Url(string.Empty, string.Empty, string.Empty);
+        private static readonly string[] UpperDirectoryAlternatives = {"%2e%2e", ".%2e", "%2e."};
+        private static readonly Url DefaultBase = new(string.Empty, string.Empty, string.Empty);
 
         private string _fragment;
         private string _query;
@@ -25,7 +25,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static implicit operator Uri(Url value)
         {
-            return new Uri(value.Serialize(), value.IsRelative ? UriKind.Relative : UriKind.Absolute);
+            return new(value.Serialize(), value.IsRelative ? UriKind.Relative : UriKind.Absolute);
         }
 
         private Url(string scheme, string host, string port)
@@ -64,12 +64,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static Url Create(string address)
         {
-            return new Url(address);
+            return new(address);
         }
 
         public static Url Convert(Uri uri)
         {
-            return new Url(uri.OriginalString);
+            return new(uri.OriginalString);
         }
 
         public string Origin
@@ -801,18 +801,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     case Symbols.ReverseSolidus:
                         break;
                     case Symbols.Dot:
-                        chars[count++] = (byte)hostName[i];
+                        chars[count++] = (byte) hostName[i];
                         break;
                     case Symbols.Percent:
                         if (i + 2 < n && hostName[i + 1].IsHex() && hostName[i + 2].IsHex())
                         {
                             var weight = hostName[i + 1].FromHex() * 16 + hostName[i + 2].FromHex();
-                            chars[count++] = (byte)weight;
+                            chars[count++] = (byte) weight;
                             i += 2;
                         }
                         else
                         {
-                            chars[count++] = (byte)Symbols.Percent;
+                            chars[count++] = (byte) Symbols.Percent;
                         }
 
                         break;
@@ -820,7 +820,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
                         if (Symbols.Punycode.TryGetValue(hostName[i], out var chr))
                         {
-                            chars[count++] = (byte)chr;
+                            chars[count++] = (byte) chr;
                         }
                         else if (hostName[i].IsAlphanumericAscii() == false)
                         {
@@ -836,7 +836,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                         }
                         else
                         {
-                            chars[count++] = (byte)char.ToLowerInvariant(hostName[i]);
+                            chars[count++] = (byte) char.ToLowerInvariant(hostName[i]);
                         }
 
                         break;

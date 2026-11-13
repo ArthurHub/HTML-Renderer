@@ -9,16 +9,65 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         private readonly IValueConverter _endConverter;
         private readonly IValueConverter _listConverter;
 
-        public EndListValueConverter(IValueConverter listConverter, IValueConverter endConverter)
+        private readonly IReadOnlyDictionary<string, List<Token>> _layerDefaults;
+        private readonly IReadOnlyDictionary<string, string> _layerFallbacks;
+
+        /// <summary>
+        /// A list of layers, every one but the last converted by <paramref name="listConverter"/> and the last by
+        /// <paramref name="endConverter"/> (the <c>background</c> shorthand: a final layer that alone may carry a colour).
+        /// </summary>
+        /// <param name="listConverter">The converter for every layer but the last.</param>
+        /// <param name="endConverter">The converter for the last layer.</param>
+        /// <param name="layerDefaults">
+        /// For the longhands that hold one value per layer: the value a layer takes when its text leaves that longhand out
+        /// (CSS Backgrounds 3 section 2.10). A longhand that is not listed (the colour, which only the last layer sets) is
+        /// taken from the layers that do set it.
+        /// </param>
+        /// <param name="layerFallbacks">
+        /// For a longhand whose omitted value comes from another longhand of the same layer rather than from its own initial
+        /// value: <c>background-clip</c> takes what <c>background-origin</c> was given. Tried before <paramref name="layerDefaults"/>.
+        /// </param>
+        public EndListValueConverter(IValueConverter listConverter, IValueConverter endConverter,
+            IReadOnlyDictionary<string, string> layerDefaults = null, IReadOnlyDictionary<string, string> layerFallbacks = null)
         {
             _listConverter = listConverter;
             _endConverter = endConverter;
+            _layerFallbacks = layerFallbacks;
+
+            // Tokenized once: ExtractFor runs for every longhand of every declaration, and the defaults never change.
+            if (layerDefaults != null)
+            {
+                var defaults = new Dictionary<string, List<Token>>();
+                foreach (var pair in layerDefaults) defaults[pair.Key] = Tokenize(pair.Value);
+                _layerDefaults = defaults;
+            }
+        }
+
+        private static List<Token> Tokenize(string text)
+        {
+            using var lexer = new Lexer(new TextSource(text)) { IsInValue = true };
+            var tokens = new List<Token>();
+            Token token;
+
+            do
+            {
+                token = lexer.Get();
+                if (token.Type != TokenType.EndOfFile) tokens.Add(token);
+            } while (token.Type != TokenType.EndOfFile);
+
+            tokens.Trim();
+            return tokens;
         }
 
         public IPropertyValue Convert(IEnumerable<Token> value)
         {
             var items = value.ToList();
             var n = items.Count - 1;
+
+            // A comma with nothing on one side of it is not a layer: the declaration is invalid. The layer converters accept an
+            // empty layer, and the hole this left in the longhands' comma lists used to hide that.
+            if (n > 0 && items.Exists(item => item.Count == 0)) return null;
+
             var values = new IPropertyValue[n + 1];
 
             for (var i = 0; i < n; i++)
@@ -29,7 +78,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             }
 
             values[n] = _endConverter.Convert(items[n]);
-            return values[n] != null ? new ListValue(values, value) : null;
+            return values[n] != null ? new ListValue(values, value, _layerDefaults, _layerFallbacks) : null;
         }
 
         public IPropertyValue Construct(Property[] properties)
@@ -62,16 +111,21 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 values[i] = converter.Construct(dummies);
             }
 
-            return new ListValue(values, Enumerable.Empty<Token>());
+            return new ListValue(values, Enumerable.Empty<Token>(), _layerDefaults, _layerFallbacks);
         }
 
         private sealed class ListValue : IPropertyValue
         {
             private readonly IPropertyValue[] _values;
+            private readonly IReadOnlyDictionary<string, List<Token>> _layerDefaults;
+            private readonly IReadOnlyDictionary<string, string> _layerFallbacks;
 
-            public ListValue(IPropertyValue[] values, IEnumerable<Token> tokens)
+            public ListValue(IPropertyValue[] values, IEnumerable<Token> tokens,
+                IReadOnlyDictionary<string, List<Token>> layerDefaults, IReadOnlyDictionary<string, string> layerFallbacks)
             {
                 _values = values;
+                _layerDefaults = layerDefaults;
+                _layerFallbacks = layerFallbacks;
                 Original = new TokenValue(tokens);
             }
 
@@ -82,19 +136,46 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             public TokenValue Original { get; }
 
+            private static List<Token> ToTokens(TokenValue value) => value == null ? null : new List<Token>(value);
+
             public TokenValue ExtractFor(string name)
             {
-                var tokens = new List<Token>();
+                var layers = new List<List<Token>>(_values.Length);
 
                 foreach (var value in _values)
                 {
-                    var extracted = value.ExtractFor(name);
+                    var extracted = ToTokens(value.ExtractFor(name));
 
-                    if (extracted == null) continue;
+                    if ((extracted == null || extracted.Count == 0) && _layerFallbacks != null &&
+                        _layerFallbacks.TryGetValue(name, out var fallbackName))
+                    {
+                        extracted = ToTokens(value.ExtractFor(fallbackName));
+                    }
+
+                    layers.Add(extracted is { Count: > 0 } ? extracted : null);
+                }
+
+                // No layer names this longhand: it is left to its initial value, which an empty value stands for.
+                if (layers.TrueForAll(layer => layer == null)) return new TokenValue(Enumerable.Empty<Token>());
+
+                List<Token> layerDefault = null;
+                _layerDefaults?.TryGetValue(name, out layerDefault);
+
+                var tokens = new List<Token>();
+
+                // Layers stay comma-separated when exported to a longhand, matching CssText above. A layer that leaves a
+                // per-layer longhand out takes that longhand's initial value so the list keeps one entry per layer; any other
+                // longhand (the colour of the last layer) is only taken from the layers that set it. Without this the join left
+                // a hole in the comma list, which no longhand accepts, and the whole longhand was lost.
+                foreach (var layer in layers)
+                {
+                    var entry = layer ?? layerDefault;
+
+                    if (entry == null) continue;
 
                     if (tokens.Count > 0) tokens.Add(Token.Comma);
 
-                    tokens.AddRange(extracted);
+                    tokens.AddRange(entry);
                 }
 
                 return new TokenValue(tokens);

@@ -17,17 +17,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             get
             {
-                switch (Type)
+                return Type switch
                 {
-                    case Unit.Dpcm:
-                        return UnitNames.Dpcm;
-                    case Unit.Dpi:
-                        return UnitNames.Dpi;
-                    case Unit.Dppx:
-                        return UnitNames.Dppx;
-                    default:
-                        return string.Empty;
-                }
+                    Unit.Dpcm => UnitNames.Dpcm,
+                    Unit.Dpi => UnitNames.Dpi,
+                    Unit.Dppx => UnitNames.Dppx,
+                    _ => string.Empty
+                };
             }
         }
 
@@ -47,19 +43,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static Unit GetUnit(string s)
         {
-            switch (s)
+            return s switch
             {
-                case "dpcm":
-                    return Unit.Dpcm;
-                case "dpi":
-                    return Unit.Dpi;
-                case "dppx":
-                    return Unit.Dppx;
-                case "x": // `x` is the canonical alias for `dppx` (CSS Values 4 §7.4)
-                    return Unit.Dppx;
-                default:
-                    return Unit.None;
-            }
+                "dpcm" => Unit.Dpcm,
+                "dpi" => Unit.Dpi,
+                "dppx" => Unit.Dppx,
+                "x" => Unit.Dppx, // `x` is the canonical alias for `dppx` (CSS Values 4 7.4)
+                _ => Unit.None
+            };
         }
 
         public float ToDotsPerPixel()
@@ -85,7 +76,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return Value == other.Value && Type == other.Type;
         }
 
-        internal enum Unit : byte
+        public enum Unit : byte
         {
             None,
             Dpi,

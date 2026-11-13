@@ -5,6 +5,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         Left,
         Center,
         Right,
-        Justify
+        Justify,
+        Start,
+        End,
+        MatchParent
     }
 }

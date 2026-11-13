@@ -42,7 +42,6 @@ sections:
       - Only keywords are resolved, see CSS 2.1 14.2.1
       - Edge offsets like 'right 10px bottom 20px' aren't resolved
       - "'10px left' and 'top 10px' are accepted, though the first of two values has to be horizontal"
-      - Three and four value forms that start with 'top' or 'bottom' are rejected
       - "'center' followed by an offset, like 'left center 10px', is accepted"
   '#bg-position-serialization':
     title: 2.6.1 Serialization of background-position values
@@ -64,9 +63,7 @@ sections:
       - "'background-size' is ignored, images are drawn at their natural size"
   '#background':
     title: '2.10 Backgrounds Shorthand: the background property'
-    status: partial
-    gaps:
-      - A single box value only sets 'background-origin', not 'background-clip' too
+    status: supported
   '#special-backgrounds':
     title: 2.11 Backgrounds of Special Elements
     status: partial

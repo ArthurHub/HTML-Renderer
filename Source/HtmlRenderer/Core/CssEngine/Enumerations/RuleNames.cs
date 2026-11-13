@@ -16,5 +16,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Property = "property";
         public static readonly string Layer = "layer";
         public static readonly string FontPaletteValues = "font-palette-values";
+        public static readonly string StartingStyle = "starting-style";
+        public static readonly string CounterStyle = "counter-style";
+        public static readonly string FontFeatureValues = "font-feature-values";
+        public static readonly string Styleset = "styleset";
+        public static readonly string CharacterVariant = "character-variant";
+        public static readonly string Swash = "swash";
+        public static readonly string Ornaments = "ornaments";
+        public static readonly string Annotation = "annotation";
+        public static readonly string Stylistic = "stylistic";
     }
 }

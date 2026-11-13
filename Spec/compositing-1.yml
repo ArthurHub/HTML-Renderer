@@ -29,18 +29,16 @@ sections:
       - No SVG support
   '#csskeywords':
     title: 3.4 CSS Properties
-    status: unsupported
-    gaps:
-      - mix-blend-mode, isolation and background-blend-mode aren't parsed
+    status: parsed-only
   '#mix-blend-mode':
     title: 3.4.1 The mix-blend-mode property
-    status: unsupported
+    status: parsed-only
   '#isolation':
     title: 3.4.2 The isolation property
-    status: unsupported
+    status: parsed-only
   '#background-blend-mode':
     title: 3.4.3 The background-blend-mode property
-    status: unsupported
+    status: parsed-only
   '#canvascompositingandblending':
     title: 4 Specifying Compositing and Blending in Canvas 2D
     status: n/a
@@ -143,7 +141,7 @@ sections:
     title: 10 Blending
     status: partial
     gaps:
-      - Only the normal blend mode is used, mix-blend-mode and background-blend-mode aren't parsed
+      - Only the normal blend mode is used, mix-blend-mode and background-blend-mode are ignored
   '#blendingseparable':
     title: 10.1 Separable blend modes
     status: partial

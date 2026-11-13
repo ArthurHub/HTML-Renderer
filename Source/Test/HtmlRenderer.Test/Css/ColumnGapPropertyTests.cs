@@ -13,7 +13,6 @@ public sealed class ColumnGapPropertyTests
     public void ColumnGapLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<ColumnGapProperty>(PropertyNames.ColumnGap, value);
 
-    [Ignore("Gap, see Spec/css-multicol-1.yml")]
     [TestMethod]
     [Spec("css-multicol-1", "#cg")]
     public void ColumnGapAcceptsNormalKeyword()

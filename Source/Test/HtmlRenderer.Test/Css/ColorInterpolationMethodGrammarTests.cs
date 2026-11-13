@@ -48,6 +48,9 @@ public sealed class ColorInterpolationMethodGrammarTests
     [DataRow("in oklch longer hue")]
     [DataRow("in hwb increasing hue")]
     [DataRow("in lch decreasing hue")]
+    [DataRow("in a98-rgb")]
+    [DataRow("in prophoto-rgb")]
+    [DataRow("in rec2020")]
     public void ValidMethodOnly_HasInWithEmptyRemainder(string value)
     {
         var (ok, hasIn, remainder) = Extract(value);
@@ -75,9 +78,6 @@ public sealed class ColorInterpolationMethodGrammarTests
     [DataRow("in nonsense")]            // unknown space
     [DataRow("in")]                     // "in" with nothing after
     [DataRow("in oklch longer")]        // polar hue direction without the trailing "hue"
-    [DataRow("in a98-rgb")]             // valid CSS space, unsupported interpolation
-    [DataRow("in prophoto-rgb")]
-    [DataRow("in rec2020")]
     public void InvalidMethod_ReturnsFalse(string value)
     {
         var ok = ColorInterpolationMethodGrammar.TryExtractInterpolationMethod(
@@ -89,12 +89,12 @@ public sealed class ColorInterpolationMethodGrammarTests
     [DataRow("srgb")]
     [DataRow("oklab")]
     [DataRow("oklch")]
+    [DataRow("a98-rgb")]
+    [DataRow("prophoto-rgb")]
     public void IsColorSpace_RecognizesSupportedSpaces(string name) =>
         Assert.IsTrue(ColorInterpolationMethodGrammar.IsColorSpace(name));
 
     [TestMethod]
-    [DataRow("a98-rgb")]
-    [DataRow("prophoto-rgb")]
     [DataRow("banana")]
     public void IsColorSpace_RejectsUnsupportedOrUnknown(string name) =>
         Assert.IsFalse(ColorInterpolationMethodGrammar.IsColorSpace(name));

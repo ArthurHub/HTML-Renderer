@@ -2,9 +2,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal sealed class RowGapProperty : Property
     {
-        private static readonly IValueConverter StyleConverter = Converters.LengthOrPercentConverter
-                                                                           .OrGlobalValue()
-                                                                           .OrDefault(0);
+        private static readonly IValueConverter StyleConverter = Converters.GapConverter.OrGlobalValue();
 
         internal RowGapProperty()
             : base(PropertyNames.RowGap, PropertyFlags.Animatable)

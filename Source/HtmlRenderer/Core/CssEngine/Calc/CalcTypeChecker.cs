@@ -1,12 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Type checking of a calc() tree (CSS Values 4 §10.9), null when the types don't combine. Only a
-    /// number may be multiplied with or divide another type, so a division by zero is found here.
+    /// Implements CSS calc()'s type-checking rules (CSS Values 4 §10.10) over a parsed
+    /// <see cref="CalcNode"/> tree, returning the resolved category or null when the expression is
+    /// dimensionally inconsistent (e.g. adding a length to a time, or dividing by something that isn't a
+    /// number). Also folds pure-number subtrees, which is what makes a constant divide-by-zero divisor
+    /// detectable here.
     /// </summary>
     internal static class CalcTypeChecker
     {
@@ -36,17 +38,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     return Check(unary.Operand);
 
                 case BinaryCalcNode binary when binary.Operator == '+' || binary.Operator == '-':
-                {
-                    var left = Check(binary.Left);
-                    var right = Check(binary.Right);
-                    return Combine(left, right);
-                }
+                    return Combine(Check(binary.Left), Check(binary.Right));
 
                 case BinaryCalcNode binary when binary.Operator == '*':
                 {
                     var left = Check(binary.Left);
                     var right = Check(binary.Right);
-                    if (left is null || right is null) return null;
+                    if (left == null || right == null) return null;
                     if (left == CalcCategory.Number) return right;
                     if (right == CalcCategory.Number) return left;
                     return null;
@@ -56,10 +54,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {
                     var left = Check(binary.Left);
                     var right = Check(binary.Right);
-                    if (left is null || right != CalcCategory.Number) return null;
+                    if (left == null || right != CalcCategory.Number) return null;
 
+                    // A Number-category subtree is built entirely from number leaves, so it always folds -
+                    // this is what lets a constant divide-by-zero be rejected here rather than deferred.
                     var divisor = FoldNumber(binary.Right);
-                    return divisor == null || divisor == 0d ? null : left;
+                    return divisor == null || divisor.Value == 0d ? (CalcCategory?) null : left;
                 }
 
                 case CallCalcNode call:
@@ -68,9 +68,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     foreach (var argument in call.Arguments)
                     {
                         var category = Check(argument);
-                        if (category is null) return null;
-                        combined = combined is null ? category : Combine(combined, category);
-                        if (combined is null) return null;
+                        if (category == null) return null;
+                        combined = combined == null ? category : Combine(combined, category);
+                        if (combined == null) return null;
                     }
 
                     return combined;
@@ -81,7 +81,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             }
         }
 
-        /// <summary>Folds a pure-Number subtree to a concrete value; null if it isn't purely numeric.</summary>
+        // Folds a pure-number subtree to a concrete value; null if it isn't purely numeric.
         public static double? FoldNumber(CalcNode node)
         {
             switch (node)
@@ -92,27 +92,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 case UnaryCalcNode unary:
                 {
                     var value = FoldNumber(unary.Operand);
-                    return value is null ? null : (double?)(unary.Negative ? -value.Value : value.Value);
+                    return value == null ? (double?) null : unary.Negative ? -value.Value : value.Value;
                 }
 
                 case BinaryCalcNode binary:
                 {
                     var left = FoldNumber(binary.Left);
                     var right = FoldNumber(binary.Right);
-                    if (left is null || right is null) return null;
+                    if (left == null || right == null) return null;
 
                     switch (binary.Operator)
                     {
-                        case '+':
-                            return left.Value + right.Value;
-                        case '-':
-                            return left.Value - right.Value;
-                        case '*':
-                            return left.Value * right.Value;
-                        case '/':
-                            return right.Value != 0d ? (double?)(left.Value / right.Value) : null;
-                        default:
-                            return null;
+                        case '+': return left.Value + right.Value;
+                        case '-': return left.Value - right.Value;
+                        case '*': return left.Value * right.Value;
+                        case '/': return right.Value != 0d ? left.Value / right.Value : (double?) null;
+                        default: return null;
                     }
                 }
 
@@ -122,26 +117,34 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     foreach (var argument in call.Arguments)
                     {
                         var value = FoldNumber(argument);
-                        if (value is null) return null;
+                        if (value == null) return null;
                         values.Add(value.Value);
                     }
 
                     if (call.Name.Isi(FunctionNames.Min)) return values.Min();
                     if (call.Name.Isi(FunctionNames.Max)) return values.Max();
                     if (call.Name.Isi(FunctionNames.Clamp) && values.Count == 3)
-                        return values[0] > values[2] ? values[2] : Math.Max(values[0], Math.Min(values[2], values[1]));
+                    {
+                        var min = values[0];
+                        var val = values[1];
+                        var max = values[2];
+                        // clamp(min, val, max) == max(min, min(val, max)); if min > max, min wins.
+                        var upper = val < max ? val : max;
+                        return upper < min ? min : upper;
+                    }
 
                     return null;
                 }
 
                 default:
+                    // Dimension/percentage leaves are never purely numeric.
                     return null;
             }
         }
 
         private static CalcCategory? Combine(CalcCategory? left, CalcCategory? right)
         {
-            if (left is null || right is null) return null;
+            if (left == null || right == null) return null;
             if (left == CalcCategory.Number && right == CalcCategory.Number) return CalcCategory.Number;
             if (left.Value.HasFlag(CalcCategory.Number) || right.Value.HasFlag(CalcCategory.Number)) return null;
             return left.Value | right.Value;

@@ -20,10 +20,17 @@ public sealed class FontPaletteParsingTests
     [DataRow("light")]
     [DataRow("dark")]
     [DataRow("--my-palette")]
+    [Spec("css-fonts-4", "#font-palette-prop")]
+    public void FontPalette_AcceptsValidValues(string value)
+    {
+        Assert.AreEqual(value, FontPalette(value));
+    }
+
+    [TestMethod]
     [DataRow("palette-mix(in oklab, --a, --b)")]
     [DataRow("palette-mix(in lch longer hue, normal 30%, --b 70%)")]
     [Spec("css-fonts-4", "#font-palette-prop")]
-    public void FontPalette_AcceptsValidValues(string value)
+    public void FontPalette_AcceptsPaletteMix(string value)
     {
         Assert.AreEqual(value, FontPalette(value));
     }
@@ -32,7 +39,7 @@ public sealed class FontPaletteParsingTests
     [DataRow("5px")]
     [DataRow("#fff")]
     [DataRow("rgb(0,0,0)")]
-    [DataRow("palette-mix(in oklab, --a)")]              // needs two operands
+    [DataRow("palette-mix(in oklab)")]                   // needs an operand
     [DataRow("palette-mix(in bogusspace, --a, --b)")]   // unknown color space
     [DataRow("palette-mix(--a, --b)")]                  // missing color-interpolation-method
     [Spec("css-fonts-4", "#font-palette-prop")]

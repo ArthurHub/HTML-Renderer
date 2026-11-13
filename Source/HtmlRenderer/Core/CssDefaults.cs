@@ -163,6 +163,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             { "font-size", "medium" },
             { "font-style", "normal" },
             { "font-variant", "normal" },
+            { "font-variant-caps", "normal" },
             { "font-weight", "normal" },
             { "font-stretch", "normal" },
             { "float", "none" },
@@ -196,6 +197,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             { "orphans", "2" },
             { "page", "auto" },
             { "text-align", "" },
+            { "text-align-all", "" },
             { "text-decoration-line", "" },
             { "text-indent", "0" },
             { "top", "auto" },
@@ -207,6 +209,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
             { "word-break", "normal" },
             { "visibility", "visible" },
             { "white-space", "normal" },
+            { "white-space-collapse", "collapse" },
+            { "text-wrap-mode", "wrap" },
         };
 
         /// <summary>
@@ -219,10 +223,10 @@ namespace TheArtOfDev.HtmlRenderer.Core
             "border-spacing", "border-collapse",
             "color",
             "empty-cells",
-            "white-space",
+            "white-space", "white-space-collapse", "text-wrap-mode",
             "visibility",
-            "text-indent", "text-align",
-            "font-family", "font-size", "font-style", "font-variant", "font-weight", "font-stretch",
+            "text-indent", "text-align", "text-align-all",
+            "font-family", "font-size", "font-style", "font-variant", "font-variant-caps", "font-weight", "font-stretch",
             "list-style-image", "list-style-position", "list-style-type", "list-style",
             "line-height",
             "word-break",
@@ -237,7 +241,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         internal static string GetInitialValue(string propertyName)
         {
             string value;
-            return InitialValues.TryGetValue(propertyName, out value) ? value : null;
+            return InitialValues.TryGetValue(Utils.CssUtils.ToPhysicalPropertyName(propertyName), out value) ? value : null;
         }
     }
 }

@@ -65,9 +65,7 @@ sections:
     status: n/a
   '#block-flow':
     title: '3.2 Block Flow Direction: the writing-mode property'
-    status: unsupported
-    gaps:
-      - writing-mode isn't accepted, layout is always horizontal-tb
+    status: parsed-only
   '#svg-writing-mode':
     title: 3.2.1 Obsolete SVG1.1 writing-mode Values
     status: unsupported
@@ -103,9 +101,7 @@ sections:
     status: unsupported
   '#text-orientation':
     title: '5.1 Orienting Text: the text-orientation property'
-    status: unsupported
-    gaps:
-      - text-orientation isn't accepted
+    status: parsed-only
   '#vertical-font-features':
     title: 5.1.1 Vertical Typesetting and Font Features
     status: unsupported
@@ -177,9 +173,7 @@ sections:
     status: unsupported
   '#text-combine-upright':
     title: '9.1 Horizontal-in-Vertical Composition: the text-combine-upright property'
-    status: unsupported
-    gaps:
-      - text-combine-upright isn't accepted
+    status: parsed-only
   '#text-combine-runs':
     title: 9.1.1 Text Run Rules
     status: unsupported

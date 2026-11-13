@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 // ReSharper disable UnusedMember.Global
@@ -15,48 +16,57 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         [FieldOffset(3)] private readonly byte _blue;
         [FieldOffset(0)] private readonly int _hashcode;
 
+        // CSS Color 5 device-cmyk(): a color authored that way is carried in its native components and is never
+        // collapsed to an sRGB approximation (there is no profile-free RGB<->CMYK conversion that is not a guess).
+        // _red/_green/_blue stay 0 for it and mean nothing; alpha is colorspace-independent and still lives in _alpha.
+        [FieldOffset(4)] private readonly bool _isDeviceCmyk;
+        [FieldOffset(8)] private readonly float _cyan;
+        [FieldOffset(12)] private readonly float _magenta;
+        [FieldOffset(16)] private readonly float _yellow;
+        [FieldOffset(20)] private readonly float _key;
+
 
         #region Basic colors
 
         /// <summary>
         ///      #000000.
         /// </summary>
-        public static readonly Color Black = new Color(0, 0, 0);
+        public static readonly Color Black = new(0, 0, 0);
 
         /// <summary>
         ///      #FFFFFF.
         /// </summary>
-        public static readonly Color White = new Color(255, 255, 255);
+        public static readonly Color White = new(255, 255, 255);
 
         /// <summary>
         ///      #FF0000.
         /// </summary>
-        public static readonly Color Red = new Color(255, 0, 0);
+        public static readonly Color Red = new(255, 0, 0);
 
         /// <summary>
         ///      #FF00FF.
         /// </summary>
-        public static readonly Color Magenta = new Color(255, 0, 255);
+        public static readonly Color Magenta = new(255, 0, 255);
 
         /// <summary>
         ///      #008000.
         /// </summary>
-        public static readonly Color Green = new Color(0, 128, 0);
+        public static readonly Color Green = new(0, 128, 0);
 
         /// <summary>
         ///      #00FF00.
         /// </summary>
-        public static readonly Color PureGreen = new Color(0, 255, 0);
+        public static readonly Color PureGreen = new(0, 255, 0);
 
         /// <summary>
         ///      #0000FF.
         /// </summary>
-        public static readonly Color Blue = new Color(0, 0, 255);
+        public static readonly Color Blue = new(0, 0, 255);
 
         /// <summary>
         ///      #00000000.
         /// </summary>
-        public static readonly Color Transparent = new Color(0, 0, 0, 0);
+        public static readonly Color Transparent = new(0, 0, 0, 0);
 
         #endregion
 
@@ -67,6 +77,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             _red = r;
             _blue = b;
             _green = g;
+            _isDeviceCmyk = false;
+            _cyan = 0f;
+            _magenta = 0f;
+            _yellow = 0f;
+            _key = 0f;
         }
 
         public Color(byte red, byte green, byte blue, byte alpha)
@@ -76,21 +91,54 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             _red = red;
             _blue = blue;
             _green = green;
+            _isDeviceCmyk = false;
+            _cyan = 0f;
+            _magenta = 0f;
+            _yellow = 0f;
+            _key = 0f;
         }
+
+        private Color(float cyan, float magenta, float yellow, float key, byte alpha)
+        {
+            _hashcode = 0;
+            _alpha = alpha;
+            _red = 0;
+            _green = 0;
+            _blue = 0;
+            _isDeviceCmyk = true;
+            _cyan = ClampUnit(cyan);
+            _magenta = ClampUnit(magenta);
+            _yellow = ClampUnit(yellow);
+            _key = ClampUnit(key);
+        }
+
+        /// <summary>
+        /// A <see href="https://www.w3.org/TR/css-color-5/#device-cmyk">CSS Color 5 <c>device-cmyk()</c></see> color, carried in its
+        /// own components: <see cref="IsDeviceCmyk"/> is true and <see cref="C"/>/<see cref="M"/>/<see cref="Y"/>/<see cref="K"/> hold
+        /// them, each clamped to 0..1. No sRGB value is computed for it (that needs an ICC profile), so <see cref="R"/>, <see cref="G"/>
+        /// and <see cref="B"/> are 0 and must not be read for it. <paramref name="alpha"/> is 0..1, as in
+        /// <see cref="FromRgba(float, float, float, float)"/>.
+        /// </summary>
+        public static Color FromDeviceCmyk(float cyan, float magenta, float yellow, float key, float alpha = 1f)
+        {
+            return new Color(cyan, magenta, yellow, key, Normalize(alpha));
+        }
+
+        private static float ClampUnit(float value) => value < 0f ? 0f : (value > 1f ? 1f : value);
 
         public static Color FromRgba(byte red, byte green, byte blue, float alpha)
         {
-            return new Color(red, green, blue, Normalize(alpha));
+            return new(red, green, blue, Normalize(alpha));
         }
 
         public static Color FromRgba(float red, float green, float blue, float alpha)
         {
-            return new Color(Normalize(red), Normalize(green), Normalize(blue), Normalize(alpha));
+            return new(Normalize(red), Normalize(green), Normalize(blue), Normalize(alpha));
         }
 
         public static Color FromGray(byte number, float alpha = 1f)
         {
-            return new Color(number, number, number, Normalize(alpha));
+            return new(number, number, number, Normalize(alpha));
         }
 
         public static Color FromGray(float value, float alpha = 1f)
@@ -105,7 +153,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static Color FromRgb(byte red, byte green, byte blue)
         {
-            return new Color(red, green, blue);
+            return new(red, green, blue);
         }
 
         public static Color FromHex(string color)
@@ -132,7 +180,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     break;
             }
 
-            return new Color((byte)r, (byte)g, (byte)b, (byte)a);
+            return new Color((byte) r, (byte) g, (byte) b, (byte) a);
         }
 
         public static bool TryFromHex(string color, out Color value)
@@ -173,14 +221,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 var r = chars[0 * n + s].FromHex();
                 var g = chars[1 * n + s].FromHex();
                 var b = chars[2 * n + s].FromHex();
-                return new Color((byte)r, (byte)g, (byte)b);
+                return new Color((byte) r, (byte) g, (byte) b);
             }
             else
             {
                 var r = 16 * chars[0 * n + s].FromHex() + chars[0 * n + s + 1].FromHex();
                 var g = 16 * chars[1 * n + s].FromHex() + chars[1 * n + s + 1].FromHex();
                 var b = 16 * chars[2 * n + s].FromHex() + chars[2 * n + s + 1].FromHex();
-                return new Color((byte)r, (byte)g, (byte)b);
+                return new Color((byte) r, (byte) g, (byte) b);
             }
         }
 
@@ -218,7 +266,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 blackness *= ratio;
             }
 
-            var p = (int)(6 * hue);
+            var p = (int) (6 * hue);
             var f = 6 * hue - p;
 
             if ((p & 0x01) != 0) f = 1 - f;
@@ -268,48 +316,96 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return FromRgba(red, green, blue, alpha);
         }
 
-        // CSS Color 4 §9. Components are in each space's own units: L 0..100 for lab/lch and 0..1 for
-        // oklab/oklch, H in degrees.
+        // ── CSS Color 4/5 spaces (lab/oklab/lch/oklch) and color-mix() ────────
+        // Components are in each space's native units (L: lab/lch 0..100, oklab/oklch 0..1; a/b and C
+        // in native chroma units; H in degrees). The conversion math is shared with any future gradient
+        // interpolation via ColorSpaceMath so there is a single implementation of the color science.
 
         public static Color FromLab(double l, double a, double b, float alpha = 1f)
-        {
-            return FromSpaceComponents(new[] { l, a, b }, ColorSpaceMath.Space.Lab, alpha);
-        }
+            => FromSpaceComponents(new[] { l, a, b }, ColorSpaceMath.Space.Lab, alpha);
 
         public static Color FromOklab(double l, double a, double b, float alpha = 1f)
-        {
-            return FromSpaceComponents(new[] { l, a, b }, ColorSpaceMath.Space.Oklab, alpha);
-        }
+            => FromSpaceComponents(new[] { l, a, b }, ColorSpaceMath.Space.Oklab, alpha);
 
         public static Color FromLch(double l, double c, double h, float alpha = 1f)
-        {
-            return FromSpaceComponents(new[] { l, c, h }, ColorSpaceMath.Space.Lch, alpha);
-        }
+            => FromSpaceComponents(new[] { l, c, h }, ColorSpaceMath.Space.Lch, alpha);
 
         public static Color FromOklch(double l, double c, double h, float alpha = 1f)
-        {
-            return FromSpaceComponents(new[] { l, c, h }, ColorSpaceMath.Space.Oklch, alpha);
-        }
+            => FromSpaceComponents(new[] { l, c, h }, ColorSpaceMath.Space.Oklch, alpha);
 
-        private static Color FromSpaceComponents(double[] v, ColorSpaceMath.Space cs, float alpha)
+        internal static Color FromSpaceComponents(double[] v, ColorSpaceMath.Space cs, float alpha)
         {
-            var rgb = ColorSpaceMath.FromSpace(v, cs);
-            return new Color(ToByte(rgb.Item1), ToByte(rgb.Item2), ToByte(rgb.Item3), Normalize(alpha));
+            var (r, g, b) = ColorSpaceMath.FromSpace(v, cs);
+            return new Color(ToByte(r), ToByte(g), ToByte(b), Normalize(alpha));
         }
 
         /// <summary>
-        /// Interpolates with premultiplied alpha in <paramref name="cs"/> (CSS Color 4 §13), <paramref name="t"/>
-        /// is the weight of <paramref name="c2"/>. <paramref name="alphaMultiplier"/> is below 1 when the
-        /// color-mix() percentages add up to less than 100% (CSS Color 5 §3.3).
+        /// <see href="https://www.w3.org/TR/css-color-5/#color-mix">CSS Color 5 <c>color-mix()</c></see>:
+        /// premultiplied-alpha interpolation in <paramref name="cs"/> with weight <paramref name="t"/>
+        /// toward <paramref name="c2"/>, the result alpha then scaled by <paramref name="alphaMultiplier"/>
+        /// (below 1 only when the two percentages summed to under 100%).
         /// </summary>
-        public static Color Mix(Color c1, Color c2, double t, ColorSpaceMath.Space cs, ColorSpaceMath.HueMethod hue, double alphaMultiplier)
+        internal static Color Mix(Color c1, Color c2, double t, ColorSpaceMath.Space cs, ColorSpaceMath.HueMethod hue, double alphaMultiplier,
+            double[] oklab1 = null, double[] oklab2 = null, ColorSpaceMath.WrittenCoords? written1 = null, ColorSpaceMath.WrittenCoords? written2 = null)
         {
-            t = Math.Min(Math.Max(t, 0.0), 1.0);
+            var v = MixComponents(c1, c2, t, cs, hue, out var mixedAlpha, oklab1, oklab2, written1, written2);
+            var (r, g, b) = ColorSpaceMath.FromSpace(v, cs);
+            var outAlpha = (byte)Math.Round(ColorSpaceMath.Clamp01(mixedAlpha * alphaMultiplier) * 255);
+            return new Color(ToByte(r), ToByte(g), ToByte(b), outAlpha);
+        }
+
+        // An operand's coordinates in the mix's space: as written when it was written in that space (or its polar/rectangular form), so a gray keeps the
+        // hue it was written with; else from its Oklab coordinates when it lies outside the gamut its Color is clipped to; else from the Color.
+        private static double[] Operand(Color c, double[] oklab, ColorSpaceMath.WrittenCoords? written, ColorSpaceMath.Space cs)
+        {
+            if (written.HasValue)
+            {
+                var asWritten = ColorSpaceMath.ToSpaceFromWritten(written.Value, cs);
+                if (asWritten != null) return asWritten;
+            }
+
+            return oklab != null
+                ? ColorSpaceMath.ToSpaceFromOklab(oklab, cs)
+                : ColorSpaceMath.ToSpace(c.R / 255.0, c.G / 255.0, c.B / 255.0, cs);
+        }
+
+        /// <summary>
+        /// The premultiplied mix <see cref="Mix(Color, Color, double, ColorSpaceMath.Space, ColorSpaceMath.HueMethod, double, double[], double[], ColorSpaceMath.WrittenCoords?, ColorSpaceMath.WrittenCoords?)"/>
+        /// makes, as its coordinates in <paramref name="cs"/> before they are mapped to sRGB: a color outside the sRGB gamut keeps its
+        /// out-of-range coordinates here, where <c>Mix</c> clips them. <paramref name="oklab1"/> and <paramref name="oklab2"/> are an operand's
+        /// Oklab coordinates when it lies outside the sRGB gamut its <see cref="Color"/> is clipped to; <paramref name="written1"/> and
+        /// <paramref name="written2"/> are the components an operand was written with, and which of them were <c>none</c>.
+        /// </summary>
+        internal static double[] MixComponents(Color c1, Color c2, double t, ColorSpaceMath.Space cs, ColorSpaceMath.HueMethod hue, out double mixedAlpha,
+            double[] oklab1 = null, double[] oklab2 = null, ColorSpaceMath.WrittenCoords? written1 = null, ColorSpaceMath.WrittenCoords? written2 = null)
+        {
+            t = ColorSpaceMath.Clamp01(t);
             double a1 = c1.A / 255.0, a2 = c2.A / 255.0;
 
-            var v1 = ColorSpaceMath.ToSpace(c1.R / 255.0, c1.G / 255.0, c1.B / 255.0, cs);
-            var v2 = ColorSpaceMath.ToSpace(c2.R / 255.0, c2.G / 255.0, c2.B / 255.0, cs);
+            var v1 = Operand(c1, oklab1, written1, cs);
+            var v2 = Operand(c2, oklab2, written2, cs);
             var hueIndex = ColorSpaceMath.HueIndex(cs);
+
+            // A missing component (CSS Color 4 section 12.2, written as none) takes the other color's value, so the mix leaves it as that color has it; it only
+            // counts where the other space has an analogous component (section 12.4). A missing alpha does the same with the alpha.
+            var missing1 = written1.HasValue ? ColorSpaceMath.MapMissing(written1.Value.Space, written1.Value.Missing, cs) : 0;
+            var missing2 = written2.HasValue ? ColorSpaceMath.MapMissing(written2.Value.Space, written2.Value.Missing, cs) : 0;
+            for (var i = 0; i < 3; i++)
+            {
+                var bit = 1 << i;
+                if ((missing1 & bit) != 0 && (missing2 & bit) == 0) v1[i] = v2[i];
+                else if ((missing2 & bit) != 0 && (missing1 & bit) == 0) v2[i] = v1[i];
+            }
+
+            if ((missing1 & ColorSpaceMath.AlphaMissing) != 0 && (missing2 & ColorSpaceMath.AlphaMissing) == 0) a1 = a2;
+            else if ((missing2 & ColorSpaceMath.AlphaMissing) != 0 && (missing1 & ColorSpaceMath.AlphaMissing) == 0) a2 = a1;
+
+            // A gray has no hue of its own: the other color's stands in for it (CSS Color 4, interpolating with a missing hue), instead of whatever angle the
+            // conversion leaves behind. (A color written in the mix's own space keeps the hue it was written with, even at a chroma of 0:
+            // only a hue that conversion produced is powerless.)
+            ColorSpaceMath.ResolveMissingHues(v1, v2, cs,
+                written1.HasValue && written1.Value.Space == cs,
+                written2.HasValue && written2.Value.Space == cs);
 
             for (var i = 0; i < 3; i++)
             {
@@ -318,7 +414,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 v2[i] *= a2;
             }
 
-            var mixedAlpha = a1 + t * (a2 - a1);
+            mixedAlpha = a1 + t * (a2 - a1);
             var v = new double[3];
             for (var i = 0; i < 3; i++)
             {
@@ -332,15 +428,33 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 v[i] = mixedAlpha > 1e-10 ? mixed / mixedAlpha : 0;
             }
 
-            var rgb = ColorSpaceMath.FromSpace(v, cs);
-            var outAlpha = (byte)Math.Round(Math.Min(Math.Max(mixedAlpha * alphaMultiplier, 0), 1) * 255);
-            return new Color(ToByte(rgb.Item1), ToByte(rgb.Item2), ToByte(rgb.Item3), outAlpha);
+            return v;
         }
 
-        private static byte ToByte(double v)
+        /// <summary>
+        /// <c>color-mix()</c> between two <c>device-cmyk()</c> operands - an extension, not literal spec behavior: CSS Color 5 has no
+        /// "cmyk" interpolation space, and the fallback it defines for mixing a device-cmyk() color without an ICC profile is the naive
+        /// CMYK-to-RGB formula. Mixing the C/M/Y/K components directly (premultiplied by alpha, like the other spaces) keeps two CMYK
+        /// operands lossless. The <c>in &lt;space&gt;</c> of the mix is not consulted.
+        /// </summary>
+        internal static Color MixCmyk(Color c1, Color c2, double t, double alphaMultiplier)
         {
-            return (byte)Math.Round(Math.Min(Math.Max(v, 0), 1) * 255);
+            t = ColorSpaceMath.Clamp01(t);
+            double a1 = c1.A / 255.0, a2 = c2.A / 255.0;
+            var mixedAlpha = a1 + t * (a2 - a1);
+
+            float Channel(float v1, float v2)
+            {
+                var mixed = v1 * a1 + t * (v2 * a2 - v1 * a1);
+                return mixedAlpha > 1e-10 ? (float)(mixed / mixedAlpha) : 0f;
+            }
+
+            var outAlpha = (float)ColorSpaceMath.Clamp01(mixedAlpha * alphaMultiplier);
+            return FromDeviceCmyk(Channel(c1._cyan, c2._cyan), Channel(c1._magenta, c2._magenta),
+                Channel(c1._yellow, c2._yellow), Channel(c1._key, c2._key), outAlpha);
         }
+
+        private static byte ToByte(double v) => (byte)Math.Round(ColorSpaceMath.Clamp01(v) * 255);
 
         public int Value => _hashcode;
         public byte A => _alpha;
@@ -349,18 +463,38 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public byte G => _green;
         public byte B => _blue;
 
+        /// <summary>
+        /// True if this color was written with <c>device-cmyk()</c> and is carried in its native
+        /// <see cref="C"/>/<see cref="M"/>/<see cref="Y"/>/<see cref="K"/> components; <see cref="R"/>, <see cref="G"/> and <see cref="B"/> are
+        /// meaningless (0) for it.
+        /// </summary>
+        public bool IsDeviceCmyk => _isDeviceCmyk;
+
+        // C/M/Y/K rather than Cyan/Magenta/...: Magenta is already a named-color field of this type.
+        public float C => _cyan;
+        public float M => _magenta;
+        public float Y => _yellow;
+        public float K => _key;
+
         public static bool operator ==(Color a, Color b)
         {
-            return a._hashcode == b._hashcode;
+            return a.Equals(b);
         }
 
         public static bool operator !=(Color a, Color b)
         {
-            return a._hashcode != b._hashcode;
+            return !a.Equals(b);
         }
 
         public bool Equals(Color other)
         {
+            if (_isDeviceCmyk || other._isDeviceCmyk)
+            {
+                return _isDeviceCmyk == other._isDeviceCmyk && _alpha == other._alpha &&
+                       _cyan.Equals(other._cyan) && _magenta.Equals(other._magenta) &&
+                       _yellow.Equals(other._yellow) && _key.Equals(other._key);
+            }
+
             return _hashcode == other._hashcode;
         }
 
@@ -375,12 +509,34 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         int IComparable<Color>.CompareTo(Color other)
         {
+            if (_isDeviceCmyk || other._isDeviceCmyk)
+            {
+                // sRGB colors order before device-cmyk() ones, which order by alpha and then C, M, Y, K.
+                if (_isDeviceCmyk != other._isDeviceCmyk) return _isDeviceCmyk ? 1 : -1;
+                var order = _alpha.CompareTo(other._alpha);
+                if (order == 0) order = _cyan.CompareTo(other._cyan);
+                if (order == 0) order = _magenta.CompareTo(other._magenta);
+                if (order == 0) order = _yellow.CompareTo(other._yellow);
+                return order != 0 ? order : _key.CompareTo(other._key);
+            }
+
             return _hashcode - other._hashcode;
         }
 
         public override int GetHashCode()
         {
-            return _hashcode;
+            if (!_isDeviceCmyk) return _hashcode;
+
+            unchecked
+            {
+                var hash = 17;
+                hash = hash * 31 + _alpha;
+                hash = hash * 31 + _cyan.GetHashCode();
+                hash = hash * 31 + _magenta.GetHashCode();
+                hash = hash * 31 + _yellow.GetHashCode();
+                hash = hash * 31 + _key.GetHashCode();
+                return hash;
+            }
         }
 
         public static Color Mix(Color above, Color below)
@@ -390,21 +546,35 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static Color Mix(double alpha, Color above, Color below)
         {
+            // Two device-cmyk() colors blend in their own components; one of them with an sRGB color has no profile-free result.
+            if (above._isDeviceCmyk && below._isDeviceCmyk)
+            {
+                var weight = (float)alpha;
+                return FromDeviceCmyk(
+                    weight * above._cyan + (1f - weight) * below._cyan,
+                    weight * above._magenta + (1f - weight) * below._magenta,
+                    weight * above._yellow + (1f - weight) * below._yellow,
+                    weight * above._key + (1f - weight) * below._key);
+            }
+
+            if (above._isDeviceCmyk || below._isDeviceCmyk)
+                throw new NotSupportedException("A device-cmyk() color cannot be mixed with an sRGB color: there is no profile-free conversion between them.");
+
             var gamma = 1.0 - alpha;
             var r = gamma * below.R + alpha * above.R;
             var g = gamma * below.G + alpha * above.G;
             var b = gamma * below.B + alpha * above.B;
-            return new Color((byte)r, (byte)g, (byte)b);
+            return new Color((byte) r, (byte) g, (byte) b);
         }
 
         private static byte Normalize(float value)
         {
-            return (byte)Math.Max(Math.Min(Math.Round(255 * value), 255), 0);
+            return (byte) Math.Max(Math.Min(Math.Round(255 * value), 255), 0);
         }
 
         private static byte Convert(float value)
         {
-            return (byte)Math.Round(255f * value);
+            return (byte) Math.Round(255f * value);
         }
 
         private static float HueToRgb(float m1, float m2, float h)
@@ -425,6 +595,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public override string ToString()
         {
+            if (_isDeviceCmyk) return ToDeviceCmykString(null, CultureInfo.InvariantCulture);
+
             if (_alpha == 255)
             {
                 var arguments = string.Join(", ", R.ToString(), G.ToString(), B.ToString());
@@ -437,8 +609,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             }
         }
 
+        // Re-serializes a device-cmyk() color as CSS Color 5 space-separated syntax, so it round-trips.
+        private string ToDeviceCmykString(string format, IFormatProvider formatProvider)
+        {
+            var components = string.Join(" ", _cyan.ToString(format, formatProvider),
+                _magenta.ToString(format, formatProvider),
+                _yellow.ToString(format, formatProvider),
+                _key.ToString(format, formatProvider));
+
+            var arguments = _alpha == 255 ? components : components + " / " + Alpha.ToString(format, formatProvider);
+            return FunctionNames.DeviceCmyk.StylesheetFunction(arguments);
+        }
+
         public string ToString(string format, IFormatProvider formatProvider)
         {
+            if (_isDeviceCmyk) return ToDeviceCmykString(format, formatProvider);
+
             if (_alpha == 255)
             {
                 var arguments = string.Join(", ", R.ToString(format, formatProvider),

@@ -5,7 +5,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     internal sealed class FontWeightProperty : Property
     {
         private static readonly IValueConverter StyleConverter = FontWeightConverter.Or(
-            WeightIntegerConverter).OrDefault(FontWeight.Normal);
+            WeightNumberConverter).OrDefault(FontWeight.Normal);
 
         internal FontWeightProperty()
             : base(PropertyNames.FontWeight, PropertyFlags.Inherited | PropertyFlags.Animatable)

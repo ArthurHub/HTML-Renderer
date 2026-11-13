@@ -22,11 +22,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Fragmentation
         internal static bool IsReplaced(CssBox box) => box is CssBoxImage or CssBoxFrame;
 
         /// <summary>
-        /// Whether <paramref name="box"/> is a scroll container. Not the root, and not the body while the
-        /// root's overflow is <c>visible</c>, their overflow goes to the viewport (CSS Overflow 3 §3.3).
+        /// Whether <paramref name="box"/> is a scroll container. Not with <c>clip</c> (CSS Overflow 3 §3.1), not the
+        /// root, and not the body while the root's overflow is <c>visible</c>, their overflow goes to the viewport
+        /// (CSS Overflow 3 §3.3).
         /// </summary>
         internal static bool IsScrollContainer(CssBox box) =>
-            box.Overflow != CssConstants.Visible && !IsViewportPropagationSource(box);
+            box.Overflow != CssConstants.Visible && box.Overflow != CssConstants.Clip && !IsViewportPropagationSource(box);
 
         private static bool IsViewportPropagationSource(CssBox box)
         {

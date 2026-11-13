@@ -10,7 +10,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal class StylesheetParser
     {
-        internal static readonly StylesheetParser Default = new StylesheetParser();
+        internal static readonly StylesheetParser Default = new();
 
         public StylesheetParser(
             bool includeUnknownRules = false,
@@ -19,7 +19,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             bool tolerateInvalidValues = false,
             bool tolerateInvalidConstraints = false,
             bool preserveComments = false,
-            bool preserveDuplicateProperties = false
+            bool preserveDuplicateProperties = false,
+            bool enableVendorPrefixAliases = false
         )
         {
             Options = new ParserOptions
@@ -31,10 +32,20 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 AllowInvalidConstraints = tolerateInvalidConstraints,
                 PreserveComments = preserveComments,
                 PreserveDuplicateProperties = preserveDuplicateProperties,
+                EnableVendorPrefixAliases = enableVendorPrefixAliases,
             };
         }
 
         internal ParserOptions Options { get; }
+
+        /// <summary>
+        ///     The location of the style sheet being parsed. When set, relative <c>url()</c> values in
+        ///     the sheet are resolved against it and exposed as absolute URLs; absolute, scheme-bearing
+        ///     (e.g. <c>data:</c>), empty and <c>#fragment</c> urls are left untouched. String-valued
+        ///     references such as <c>@import "x.css"</c> are not <c>url()</c> tokens and are not resolved.
+        ///     Null (the default) leaves every url as written.
+        /// </summary>
+        public Uri UrlBase { get; set; }
 
         public Stylesheet Parse(string content)
         {
@@ -74,7 +85,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public ISelector ParseSelector(string selectorText)
         {
-            var tokenizer = CreateTokenizer(selectorText);
+            using var tokenizer = CreateTokenizer(selectorText);
             var token = tokenizer.Get();
             var creator = GetSelectorCreator();
             while (token.Type != TokenType.EndOfFile)
@@ -104,8 +115,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         internal Stylesheet Parse(TextSource source)
         {
-            var sheet = new Stylesheet(this);
-            var tokenizer = new Lexer(source);
+            var sheet = new Stylesheet(this) { BaseUri = UrlBase };
+            var tokenizer = new Lexer(source) { UrlBase = UrlBase };
             var start = tokenizer.GetCurrentPosition();
             var builder = new StylesheetComposer(tokenizer, this);
             var end = builder.CreateRules(sheet);
@@ -117,9 +128,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         internal async Task<Stylesheet> ParseAsync(Stylesheet sheet, TextSource source)
         {
             await source.PrefetchAllAsync(CancellationToken.None).ConfigureAwait(false);
-            var tokenizer = new Lexer(source);
+            sheet.BaseUri = UrlBase;
+            var tokenizer = new Lexer(source) { UrlBase = UrlBase };
             var start = tokenizer.GetCurrentPosition();
             var builder = new StylesheetComposer(tokenizer, this);
+            //var tasks = new List<Task>();
             var end = builder.CreateRules(sheet);
             var range = new TextRange(start, end);
             sheet.StylesheetText = new StylesheetText(range, source);
@@ -130,12 +143,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 if (rule.Type != RuleType.Import) break;
             }
 
+            //await TaskEx.WhenAll(tasks).ConfigureAwait(false);
             return sheet;
         }
 
         internal TokenValue ParseValue(string valueText)
         {
-            var tokenizer = CreateTokenizer(valueText);
+            using var tokenizer = CreateTokenizer(valueText);
             var token = default(Token);
             var builder = new StylesheetComposer(tokenizer, this);
             var value = builder.CreateValue(ref token);
@@ -179,14 +193,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         internal void AppendDeclarations(StyleDeclaration style, string declarations)
         {
-            var tokenizer = CreateTokenizer(declarations);
+            using var tokenizer = CreateTokenizer(declarations);
             var builder = new StylesheetComposer(tokenizer, this);
             builder.FillDeclarations(style);
         }
 
         private T Parse<T>(string source, Func<StylesheetComposer, Token, T> create)
         {
-            var tokenizer = CreateTokenizer(source);
+            using var tokenizer = CreateTokenizer(source);
             var token = tokenizer.Get();
             var builder = new StylesheetComposer(tokenizer, this);
             var rule = create(builder, token);
@@ -195,7 +209,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private T Parse<T>(string source, Func<StylesheetComposer, Token, Tuple<T, Token>> create)
         {
-            var tokenizer = CreateTokenizer(source);
+            using var tokenizer = CreateTokenizer(source);
             var token = tokenizer.Get();
             var builder = new StylesheetComposer(tokenizer, this);
             var pair = create(builder, token);

@@ -3,7 +3,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     internal sealed class MarginBlockProperty : ShorthandProperty
     {
         private static readonly IValueConverter StyleConverter = Converters.AutoLengthOrPercentConverter.Periodic(
-                PropertyNames.MarginTop, PropertyNames.MarginBottom)
+                PropertyNames.MarginBlockStart, PropertyNames.MarginBlockEnd)
             .OrDefault(Length.Zero);
 
         internal MarginBlockProperty()

@@ -6,14 +6,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     internal sealed class Lexer : LexerBase
     {
         public event EventHandler<TokenizerError> Error;
+        private const int MaxFunctionDepth = 512;
         private TextPosition _position;
+        private int _functionDepth;
 
         public Lexer(TextSource source) : base(source)
-        {
-            IsInValue = false;
-        }
-
-        public Lexer(string source) : base(new TextSource(source))
         {
             IsInValue = false;
         }
@@ -26,7 +23,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             _position = GetCurrentPosition();
             return Data(current);
         }
-
 
         internal void RaiseErrorOccurred(ParseError error, TextPosition position)
         {
@@ -65,60 +61,62 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     current = GetNext();
                     return current == Symbols.Equality ? NewMatch(Combinators.InText) : NewDelimiter(GetPrevious());
                 case Symbols.Plus:
+                {
+                    var c1 = GetNext();
+                    if (c1 != Symbols.EndOfFile)
                     {
-                        var c1 = GetNext();
-                        if (c1 != Symbols.EndOfFile)
-                        {
-                            var c2 = GetNext();
-                            Back(2);
+                        var c2 = GetNext();
+                        Back(2);
 
-                            if (c1.IsDigit() || c1 == Symbols.Dot && c2.IsDigit()) return NumberStart(current);
-                        }
-                        else
-                        {
-                            Back();
-                        }
-
-                        return NewDelimiter(current);
+                        if (c1.IsDigit() || c1 == Symbols.Dot && c2.IsDigit()) return NumberStart(current);
                     }
+                    else
+                    {
+                        Back();
+                    }
+
+                    return NewDelimiter(current);
+                }
                 case Symbols.Comma:
                     return NewComma();
 
                 case Symbols.Dot:
-                    {
-                        var c = GetNext();
-                        return c.IsDigit() ? NumberStart(GetPrevious()) : NewDelimiter(GetPrevious());
-                    }
+                {
+                    var c = GetNext();
+                    return c.IsDigit() ? NumberStart(GetPrevious()) : NewDelimiter(GetPrevious());
+                }
                 case Symbols.Minus:
+                {
+                    var c1 = GetNext();
+                    if (c1 != Symbols.EndOfFile)
                     {
-                        var c1 = GetNext();
-                        if (c1 != Symbols.EndOfFile)
+                        var c2 = GetNext();
+                        Back(2);
+                        if (c1.IsDigit() || c1 == Symbols.Dot && c2.IsDigit()) return NumberStart(current);
+                        if (c1.IsNameStart()) return IdentStart(current);
+                        if (c1 == Symbols.ReverseSolidus && !c2.IsLineBreak() && c2 != Symbols.EndOfFile)
+                            return IdentStart(current);
+
+                        if (c1 == Symbols.Minus)
                         {
-                            var c2 = GetNext();
-                            Back(2);
-                            if (c1.IsDigit() || c1 == Symbols.Dot && c2.IsDigit()) return NumberStart(current);
-                            if (c1.IsNameStart()) return IdentStart(current);
-                            if (c1 == Symbols.ReverseSolidus && !c2.IsLineBreak() && c2 != Symbols.EndOfFile)
-                                return IdentStart(current);
-
-                            if (c1 == Symbols.Minus)
+                            // "-->" closes an HTML-style comment, but any other "--" starts an ident, so a
+                            // custom property name "--foo" (CSS Variables 1 2) is one ident.
+                            if (c2 == Symbols.GreaterThan)
                             {
-                                if (c2 == Symbols.GreaterThan)
-                                {
-                                    Advance(2);
-                                    return NewCloseComment();
-                                }
-
-                                return IdentStart(current);
+                                Advance(2);
+                                return NewCloseComment();
                             }
 
-                            return NewDelimiter(current);
+                            return IdentStart(current);
                         }
-
-                        Back();
 
                         return NewDelimiter(current);
                     }
+
+                    Back();
+
+                    return NewDelimiter(current);
+                }
                 case Symbols.Solidus:
                     current = GetNext();
                     return current == Symbols.Asterisk
@@ -157,7 +155,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
                         GetPrevious();
                         return NewDelimiter(GetPrevious());
-                    }
+                    } 
                     else if (current == Symbols.Equality)
                     {
                         Advance();
@@ -254,19 +252,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                         return NewString(FlushBuffer(), Symbols.DoubleQuote, true);
                     case Symbols.ReverseSolidus:
                         current = GetNext();
-                        if (current.IsLineBreak())
+                        if (current == Symbols.EndOfFile)
                         {
-                            StringBuffer.AppendLine();
-                        }
-                        else if (current != Symbols.EndOfFile)
-                        {
-                            StringBuffer.Append(ConsumeEscape(current));
-                        }
-                        else
-                        {
+                            // A trailing backslash at EOF is a no-op (CSS Syntax 4.3.5); the string ends here.
                             RaiseErrorOccurred(ParseError.EOF);
                             Back();
-                            return NewString(FlushBuffer(), Symbols.DoubleQuote, true);
+                            return NewString(FlushBuffer(), Symbols.DoubleQuote);
+                        }
+
+                        // A backslash followed by a newline is a line continuation and adds no characters.
+                        if (!current.IsLineBreak())
+                        {
+                            StringBuffer.Append(ConsumeEscape(current));
                         }
 
                         break;
@@ -294,19 +291,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                         return NewString(FlushBuffer(), Symbols.SingleQuote, true);
                     case Symbols.ReverseSolidus:
                         current = GetNext();
-                        if (current.IsLineBreak())
+                        if (current == Symbols.EndOfFile)
                         {
-                            StringBuffer.AppendLine();
-                        }
-                        else if (current != Symbols.EndOfFile)
-                        {
-                            StringBuffer.Append(ConsumeEscape(current));
-                        }
-                        else
-                        {
+                            // A trailing backslash at EOF is a no-op (CSS Syntax 4.3.5); the string ends here.
                             RaiseErrorOccurred(ParseError.EOF);
                             Back();
-                            return NewString(FlushBuffer(), Symbols.SingleQuote, true);
+                            return NewString(FlushBuffer(), Symbols.SingleQuote);
+                        }
+
+                        // A backslash followed by a newline is a line continuation and adds no characters.
+                        if (!current.IsLineBreak())
+                        {
+                            StringBuffer.Append(ConsumeEscape(current));
                         }
 
                         break;
@@ -321,7 +317,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var current = GetNext();
 
-            // CSS Syntax 3 §4.3.1
+            // '#' not followed by a name code point or a valid escape is a plain delimiter (CSS Syntax 4.3.4).
             if (!current.IsName() && !IsValidEscape(current))
             {
                 Back();
@@ -330,7 +326,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             Back();
 
-            // In a value an all-hex name ("#f00") becomes a color token, anything else ("#hero") stays a hash.
+            // A '#' always begins a <hash-token>, consuming a whole <name> (CSS Syntax 4.3.4). Classify it as
+            // a color literal only when the name is entirely hex digits (e.g. "#f00"); otherwise keep it as an
+            // id hash-token (e.g. "#hero", the id inside element()), instead of truncating at the first
+            // non-hex character - which turned "#hero" into an empty color plus a stray "hero" ident.
             var allHex = true;
 
             while (true)
@@ -493,6 +492,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             if (current == Symbols.Minus)
             {
                 current = GetNext();
+                // A second '-' also starts an ident, so a custom property name "--foo" (CSS Variables 1 2)
+                // lexes as one ident rather than a '-' delimiter followed by "-foo".
                 if (current.IsNameStart() || current == Symbols.Minus || IsValidEscape(current))
                 {
                     StringBuffer.Append(Symbols.Minus);
@@ -547,6 +548,23 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 current = GetNext();
             }
         }
+        //private Token TransformFunctionWhitespace(char current)
+        //{
+        //    while (true)
+        //    {
+        //        current = GetNext();
+        //        if (current == Symbols.RoundBracketOpen)
+        //        {
+        //            Back();
+        //            return NewFunction(FlushBuffer());
+        //        }
+        //        if (!current.IsSpaceCharacter())
+        //        {
+        //            Back(2);
+        //            return NewIdent(FlushBuffer());
+        //        }
+        //    }
+        //}
 
         private Token NumberStart(char current)
         {
@@ -593,6 +611,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {
                     StringBuffer.Append(current);
                 }
+                else if (current == 'e' || current == 'E')
+                {
+                    // Let NumberExponential decide between scientific notation and a unit starting with 'e'.
+                    break;
+                }
                 else if (current.IsNameStart())
                 {
                     var number = FlushBuffer();
@@ -626,16 +649,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
                     Back();
                     return NewNumber(FlushBuffer());
-                case '%':
-                    return NewPercentage(FlushBuffer());
                 case 'e':
                 case 'E':
                     return NumberExponential(current);
-                case Symbols.Minus:
-                    return NumberDash();
                 default:
-                    Back();
-                    return NewNumber(FlushBuffer());
+                    return FinishNumberOrPercentage(current);
             }
         }
 
@@ -647,6 +665,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 if (current.IsDigit())
                 {
                     StringBuffer.Append(current);
+                }
+                else if (current == 'e' || current == 'E')
+                {
+                    // Let NumberExponential decide between scientific notation and a unit starting with 'e'.
+                    break;
                 }
                 else if (current.IsNameStart())
                 {
@@ -674,14 +697,25 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 case 'e':
                 case 'E':
                     return NumberExponential(current);
-                case '%':
-                    return NewPercentage(FlushBuffer());
-                case Symbols.Minus:
-                    return NumberDash();
                 default:
-                    Back();
-                    return NewNumber(FlushBuffer());
+                    return FinishNumberOrPercentage(current);
             }
+        }
+
+        private Token FinishNumberOrPercentage(char current)
+        {
+            if (current == '%')
+            {
+                return NewPercentage(FlushBuffer());
+            }
+
+            if (current == Symbols.Minus)
+            {
+                return NumberDash();
+            }
+
+            Back();
+            return NewNumber(FlushBuffer());
         }
 
         private Token Dimension(string number)
@@ -708,19 +742,29 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private Token SciNotation()
         {
-            while (true)
+            var current = GetNext();
+            while (current.IsDigit())
             {
-                var current = GetNext();
-                if (current.IsDigit())
-                {
-                    StringBuffer.Append(current);
-                }
-                else
-                {
-                    Back();
-                    return NewNumber(FlushBuffer());
-                }
+                StringBuffer.Append(current);
+                current = GetNext();
             }
+
+            if (current.IsNameStart())
+            {
+                var number = FlushBuffer();
+                StringBuffer.Append(current);
+                return Dimension(number);
+            }
+
+            if (IsValidEscape(current))
+            {
+                current = GetNext();
+                var number = FlushBuffer();
+                StringBuffer.Append(ConsumeEscape(current));
+                return Dimension(number);
+            }
+
+            return FinishNumberOrPercentage(current);
         }
 
         private Token UrlStart(string functionName)
@@ -770,14 +814,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     current = GetNext();
                     if (current == Symbols.EndOfFile)
                     {
-                        Back(2);
+                        // Backslash + EOF is a valid escape that yields U+FFFD (CSS Syntax 4.3.7).
                         RaiseErrorOccurred(ParseError.EOF);
-                        return NewUrl(functionName, FlushBuffer(), true);
+                        StringBuffer.Append(Symbols.Replacement);
+                        return NewUrl(functionName, FlushBuffer());
                     }
 
-                    if (current.IsLineBreak())
-                        StringBuffer.AppendLine();
-                    else
+                    // A backslash followed by a newline is a line continuation and adds no characters.
+                    if (!current.IsLineBreak())
                         StringBuffer.Append(ConsumeEscape(current));
                 }
             }
@@ -811,14 +855,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     current = GetNext();
                     if (current == Symbols.EndOfFile)
                     {
-                        Back(2);
+                        // Backslash + EOF is a valid escape that yields U+FFFD (CSS Syntax 4.3.7).
                         RaiseErrorOccurred(ParseError.EOF);
-                        return NewUrl(functionName, FlushBuffer(), true);
+                        StringBuffer.Append(Symbols.Replacement);
+                        return NewUrl(functionName, FlushBuffer());
                     }
 
-                    if (current.IsLineBreak())
-                        StringBuffer.AppendLine();
-                    else
+                    // A backslash followed by a newline is a line continuation and adds no characters.
+                    if (!current.IsLineBreak())
                         StringBuffer.Append(ConsumeEscape(current));
                 }
             }
@@ -846,6 +890,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {
                     current = GetNext();
                     StringBuffer.Append(ConsumeEscape(current));
+                }
+                else if (GetNext() == Symbols.EndOfFile)
+                {
+                    // Backslash + EOF is a valid escape that yields U+FFFD (CSS Syntax 4.3.7).
+                    RaiseErrorOccurred(ParseError.EOF);
+                    StringBuffer.Append(Symbols.Replacement);
+                    return NewUrl(functionName, FlushBuffer());
                 }
                 else
                 {
@@ -921,10 +972,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 current = GetNext();
             }
 
-            // CSS Syntax 3 §4.3.14: wildcards ("U+4??") and a range end ("U+41-5A") exclude each other.
+            // Fewer than 6 hex digits may be followed by '?' wildcards - which pad the value out and are
+            // mutually exclusive with the start-end range form - OR, just like a full 6-digit start, by a
+            // '-<hex>' range end (e.g. U+41-5A). Only the wildcard form is handled here; a '-' falls
+            // through to the shared range handling below.
             if (StringBuffer.Length != 6 && current == Symbols.QuestionMark)
             {
-                // Captured up front, the loop appends to StringBuffer.
+                // The wildcard budget must be captured up front: appending to StringBuffer inside the loop
+                // would otherwise shrink a "6 - StringBuffer.Length" bound on every iteration, so only half
+                // the available wildcards were ever consumed (U+?????? stopped after three).
                 var wildcards = 6 - StringBuffer.Length;
 
                 for (var i = 0; i < wildcards; i++)
@@ -976,72 +1032,72 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private Token NewMatch(string match)
         {
-            return new Token(TokenType.Match, match, _position);
+            return new(TokenType.Match, match, _position);
         }
 
         private Token NewColumn()
         {
-            return new Token(TokenType.Column, Combinators.Column, _position);
+            return new(TokenType.Column, Combinators.Column, _position);
         }
 
         private Token NewCloseCurly()
         {
-            return new Token(TokenType.CurlyBracketClose, "}", _position);
+            return new(TokenType.CurlyBracketClose, "}", _position);
         }
 
         private Token NewOpenCurly()
         {
-            return new Token(TokenType.CurlyBracketOpen, "{", _position);
+            return new(TokenType.CurlyBracketOpen, "{", _position);
         }
 
         private Token NewCloseSquare()
         {
-            return new Token(TokenType.SquareBracketClose, "]", _position);
+            return new(TokenType.SquareBracketClose, "]", _position);
         }
 
         private Token NewOpenSquare()
         {
-            return new Token(TokenType.SquareBracketOpen, "[", _position);
+            return new(TokenType.SquareBracketOpen, "[", _position);
         }
 
         private Token NewOpenComment()
         {
-            return new Token(TokenType.Cdo, "<!--", _position);
+            return new(TokenType.Cdo, "<!--", _position);
         }
 
         private Token NewSemicolon()
         {
-            return new Token(TokenType.Semicolon, ";", _position);
+            return new(TokenType.Semicolon, ";", _position);
         }
 
         private Token NewColon()
         {
-            return new Token(TokenType.Colon, ":", _position);
+            return new(TokenType.Colon, ":", _position);
         }
 
         private Token NewCloseComment()
         {
-            return new Token(TokenType.Cdc, "-->", _position);
+            return new(TokenType.Cdc, "-->", _position);
         }
 
         private Token NewComma()
         {
-            return new Token(TokenType.Comma, ",", _position);
+            return new(TokenType.Comma, ",", _position);
         }
 
         private Token NewCloseRound()
         {
-            return new Token(TokenType.RoundBracketClose, ")", _position);
+            return new(TokenType.RoundBracketClose, ")", _position);
         }
 
         private Token NewOpenRound()
         {
-            return new Token(TokenType.RoundBracketOpen, "(", _position);
+            return new(TokenType.RoundBracketOpen, "(", _position);
         }
 
         private Token NewString(string value, char quote, bool bad = false)
         {
-            return new StringToken(value, bad, quote, _position);
+            return new StringToken(value, !bad, quote, _position);
         }
 
         private Token NewHash(string value)
@@ -1051,7 +1107,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private Token NewComment(string value, bool bad = false)
         {
-            return new CommentToken(value, bad, _position);
+            return new CommentToken(value, !bad, _position);
         }
 
         private Token NewAtKeyword(string value)
@@ -1068,8 +1124,47 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var function = new FunctionToken(value, _position);
 
-            // Depth of bare parentheses, e.g. calc((1px + 2px) * 3). Nested functions consume their own
-            // parentheses recursively.
+            // Each nested function recurses once through Get(); unbounded nesting would overflow the
+            // stack, which cannot be caught and ends the process. Past the depth cap (or when the
+            // stack is nearly exhausted, e.g. on a small thread) the function is left without
+            // arguments instead; the tokens that follow are then lexed by the enclosing levels.
+            if (_functionDepth >= MaxFunctionDepth || !HasSufficientStack())
+            {
+                return function;
+            }
+
+            _functionDepth++;
+            try
+            {
+                return ReadFunctionArguments(function);
+            }
+            finally
+            {
+                _functionDepth--;
+            }
+        }
+
+        private static bool HasSufficientStack()
+        {
+            try
+            {
+                System.Runtime.CompilerServices.RuntimeHelpers.EnsureSufficientExecutionStack();
+                return true;
+            }
+            catch (InsufficientExecutionStackException)
+            {
+                return false;
+            }
+        }
+
+        private Token ReadFunctionArguments(FunctionToken function)
+        {
+            // Tracks paren depth so a bare (non-function) parenthesized group nested inside the
+            // function's arguments - e.g. calc((1px + 2px) * 3) - isn't mistaken for the end of the
+            // function: only the closing paren matching this function's own opening paren (depth
+            // returning to 0) terminates it. A nested function call's own parens are already fully
+            // consumed by its own (recursive) call to this method before it's added as a single token
+            // here, so they never surface as bare RoundBracketOpen/Close tokens at this level.
             var depth = 1;
             var token = Get();
             while (token.Type != TokenType.EndOfFile)
@@ -1102,9 +1197,38 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return new UnitToken(TokenType.Dimension, value, unit, _position);
         }
 
+        /// <summary>
+        ///     When set, relative <c>url()</c> values are resolved against this location.
+        ///     Null leaves the text as written.
+        /// </summary>
+        internal Uri UrlBase { get; set; }
+
         private Token NewUrl(string functionName, string data, bool bad = false)
         {
-            return new UrlToken(functionName, data, bad, _position);
+            if (!bad && UrlBase != null)
+            {
+                data = ResolveAgainstUrlBase(data);
+            }
+
+            return new UrlToken(functionName, data, !bad, _position);
+        }
+
+        private string ResolveAgainstUrlBase(string data)
+        {
+            // Empty values, fragment references and anything with a scheme (http:, data:, ...) are left alone.
+            if (data.Length == 0 || data[0] == '#')
+            {
+                return data;
+            }
+
+            var colon = data.IndexOf(':');
+            var separator = data.IndexOfAny(new[] { '/', '?', '#' });
+            if (colon > 0 && (separator < 0 || colon < separator))
+            {
+                return data;
+            }
+
+            return Uri.TryCreate(UrlBase, data, out var resolved) ? resolved.AbsoluteUri : data;
         }
 
         private Token NewRange(string range)
@@ -1119,7 +1243,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private Token NewWhitespace(char character)
         {
-            return new Token(TokenType.Whitespace, character.ToString(), _position);
+            return new(TokenType.Whitespace, character.ToString(), _position);
         }
 
         private Token NewNumber(string number)
@@ -1129,7 +1253,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private Token NewDelimiter(char c)
         {
-            return new Token(TokenType.Delim, c.ToString(), _position);
+            return new(TokenType.Delim, c.ToString(), _position);
         }
 
         private Token NewColor(string text)
@@ -1139,7 +1263,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private Token NewEof()
         {
-            return new Token(TokenType.EndOfFile, string.Empty, _position);
+            return new(TokenType.EndOfFile, string.Empty, _position);
         }
 
         private Token NewGreaterThan() => new Token(TokenType.GreaterThan, ">", _position);
@@ -1168,12 +1292,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     return SciNotation();
                 }
 
+
+                // Not an exponent: step back over the sign, and the character after it.
+                Back(2);
+            }
+            else
+            {
+                // Not an exponent: step back over the character just read.
                 Back();
             }
 
             var number = FlushBuffer();
             StringBuffer.Append(letter);
-            Back();
             return Dimension(number);
         }
 

@@ -2,8 +2,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal class Token
     {
-        public static readonly Token Whitespace = new Token(TokenType.Whitespace, " ", TextPosition.Empty);
-        public static readonly Token Comma = new Token(TokenType.Comma, ",", TextPosition.Empty);
+        public static readonly Token Whitespace = new(TokenType.Whitespace, " ", TextPosition.Empty);
+        public static readonly Token Comma = new(TokenType.Comma, ",", TextPosition.Empty);
 
         public Token(TokenType type, string data, TextPosition position)
         {

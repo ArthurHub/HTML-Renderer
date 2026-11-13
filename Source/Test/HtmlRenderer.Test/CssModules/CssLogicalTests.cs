@@ -2,6 +2,7 @@ using HtmlRenderer.Test.CssEngineSupport;
 using HtmlRenderer.Test.TestSupport;
 using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Test.CssModules;
 
@@ -10,7 +11,6 @@ public sealed class CssLogicalTests
 {
     private const double Delta = 0.5;
 
-    [Ignore("Gap, see Spec/css-logical-1.yml")]
     [TestMethod]
     [Spec("css-logical-1", "#float-clear")]
     [DataRow("float", "inline-start")]
@@ -22,7 +22,6 @@ public sealed class CssLogicalTests
         Assert.AreEqual(value, Value(property, value));
     }
 
-    [Ignore("Gap, see Spec/css-logical-1.yml")]
     [TestMethod]
     [Spec("css-logical-1", "#float-clear")]
     public void FloatInlineEnd_FloatsToTheRightInLtr()
@@ -32,13 +31,20 @@ public sealed class CssLogicalTests
         Assert.AreEqual(150, LayoutHarness.FindById(root, "x")!.Location.X, Delta);
     }
 
-    [Ignore("Gap, see Spec/css-logical-1.yml")]
     [TestMethod]
     [Spec("css-logical-1", "#page")]
     [DataRow("break-before", "recto")]
     [DataRow("break-after", "verso")]
-    [DataRow("page-break-before", "recto")]
     public void RectoAndVerso_AreParsed(string property, string value)
+    {
+        Assert.AreEqual(value, Value(property, value));
+    }
+
+    [Ignore("Gap, see Spec/css-logical-1.yml")]
+    [TestMethod]
+    [Spec("css-logical-1", "#page")]
+    [DataRow("page-break-before", "recto")]
+    public void RectoAndVerso_AreParsedByThePageBreakAliases(string property, string value)
     {
         Assert.AreEqual(value, Value(property, value));
     }
@@ -73,8 +79,8 @@ public sealed class CssLogicalTests
         var sheet = CssConstructionFunctions.ParseStyleSheet(".x { margin-inline: auto; }");
         var style = sheet.Rules.OfType<StyleRule>().Single().Style;
 
-        Assert.AreEqual("auto", style.GetPropertyValue("margin-left"));
-        Assert.AreEqual("auto", style.GetPropertyValue("margin-right"));
+        Assert.AreEqual("auto", style.GetPropertyValue("margin-inline-start"));
+        Assert.AreEqual("auto", style.GetPropertyValue("margin-inline-end"));
     }
 
     [TestMethod]
@@ -184,7 +190,6 @@ public sealed class CssLogicalTests
         Assert.AreEqual(0, box.ActualBorderLeftWidth, Delta);
     }
 
-    [Ignore("Gap, see Spec/css-logical-1.yml")]
     [TestMethod]
     [Spec("css-logical-1", "#border-radius-properties")]
     [DataRow("border-start-start-radius")]
@@ -194,6 +199,19 @@ public sealed class CssLogicalTests
     public void FlowRelativeCornerRadius_IsParsed(string property)
     {
         Assert.AreEqual("5px", Value(property, "5px"));
+    }
+
+    [TestMethod]
+    [Spec("css-logical-1", "#border-radius-properties")]
+    [DataRow("border-start-start-radius", "border-top-left-radius")]
+    [DataRow("border-start-end-radius", "border-top-right-radius")]
+    [DataRow("border-end-start-radius", "border-bottom-left-radius")]
+    [DataRow("border-end-end-radius", "border-bottom-right-radius")]
+    public void FlowRelativeCornerRadius_RoundsThePhysicalCornerInLtr(string property, string physical)
+    {
+        var box = Styled($"#x{{{property}:5px}}");
+
+        Assert.AreEqual("5px", CssUtils.GetPropertyValue(box, physical));
     }
 
     [Ignore("Gap, see Spec/css-logical-1.yml")]

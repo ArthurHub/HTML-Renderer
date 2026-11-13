@@ -9,7 +9,6 @@ public sealed class CssContainTests
 {
     private const double Delta = 0.5;
 
-    [Ignore("Gap, see Spec/css-contain-2.yml")]
     [TestMethod]
     [DataRow("contain: strict")]
     [DataRow("contain: layout paint")]

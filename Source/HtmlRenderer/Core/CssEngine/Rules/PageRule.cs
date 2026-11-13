@@ -17,7 +17,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public override void ToCss(TextWriter writer, IStyleFormatter formatter)
         {
             writer.Write(formatter.Rule("@page", Selector == null ? "" : SelectorText, "{"));
-
+            
             Style.ToCss(writer, formatter);
 
             if (Style.Any())

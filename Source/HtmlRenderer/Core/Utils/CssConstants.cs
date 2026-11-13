@@ -25,6 +25,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         public const string After = "after";
         public const string Blink = "blink";
         public const string Block = "block";
+        public const string Contents = "contents";
         public const string InlineBlock = "inline-block";
         public const string Bold = "bold";
         public const string Bolder = "bolder";
@@ -132,6 +133,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         public const string XXSmall = "xx-small";
         public const string Visible = "visible";
         public const string Hidden = "hidden";
+        public const string Clip = "clip";
         public const string Dotted = "dotted";
         public const string Dashed = "dashed";
         public const string Double = "double";

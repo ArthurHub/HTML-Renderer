@@ -17,15 +17,15 @@ sections:
     status: n/a
   '#FilterProperty':
     title: '5 Graphic filters: the filter property'
-    status: unsupported
+    status: parsed-only
     gaps:
-      - filter isn't parsed
+      - url() references are rejected
   '#filter-functions':
     title: 6 Filter Functions
     status: unsupported
   '#supported-filter-functions':
     title: 6.1 Supported Filter Functions
-    status: unsupported
+    status: parsed-only
   '#computed-values-of-filter-functions':
     title: 6.2 Computed Values of Filter Functions
     status: unsupported
@@ -101,14 +101,10 @@ sections:
     status: unsupported
   '#FloodColorProperty':
     title: 9.13.1 The flood-color property
-    status: unsupported
-    gaps:
-      - flood-color isn't parsed
+    status: parsed-only
   '#FloodOpacityProperty':
     title: 9.13.2 The flood-opacity property
-    status: unsupported
-    gaps:
-      - flood-opacity isn't parsed
+    status: parsed-only
   '#feGaussianBlurElement':
     title: 9.14 Filter primitive feGaussianBlur
     status: unsupported
@@ -160,9 +156,7 @@ sections:
     status: unsupported
   '#LightingColorProperty':
     title: 11.5 The lighting-color property
-    status: unsupported
-    gaps:
-      - lighting-color isn't parsed
+    status: parsed-only
   '#FilterCSSImageValue':
     title: 12 Filter CSS <image> values
     status: unsupported

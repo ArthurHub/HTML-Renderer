@@ -25,7 +25,7 @@ sections:
     status: parsed-only
     gaps:
       - clip-path is parsed, but nothing is clipped and no stacking context is created
-      - Only a <basic-shape> on its own, url() references and <geometry-box> are rejected
+      - url() references are rejected
   '#svg-clipping-paths':
     title: 6 SVG Clipping Path Sources
     status: unsupported
@@ -36,9 +36,7 @@ sections:
     status: unsupported
   '#the-clip-rule':
     title: '6.2 Winding Rules: the clip-rule property'
-    status: unsupported
-    gaps:
-      - clip-rule isn't parsed
+    status: parsed-only
   '#positioned-masks':
     title: 7 Positioned Masks
     status: unsupported
@@ -49,25 +47,25 @@ sections:
     status: unsupported
   '#the-mask-mode':
     title: '7.2 Mask Image Interpretation: the mask-mode property'
-    status: unsupported
+    status: parsed-only
   '#the-mask-repeat':
     title: '7.3 Tiling Mask Images: the mask-repeat property'
-    status: unsupported
+    status: parsed-only
   '#the-mask-position':
     title: '7.4 Positioning Mask Images: the mask-position property'
-    status: unsupported
+    status: parsed-only
   '#the-mask-clip':
     title: '7.5 Masking Area: the mask-clip property'
-    status: unsupported
+    status: parsed-only
   '#the-mask-origin':
     title: '7.6 Positioning Area: the mask-origin property'
-    status: unsupported
+    status: parsed-only
   '#the-mask-size':
     title: '7.7 Sizing Mask Images: the mask-size property'
-    status: unsupported
+    status: parsed-only
   '#the-mask-composite':
     title: '7.8 Compositing mask layers: the mask-composite property'
-    status: unsupported
+    status: parsed-only
   '#the-mask':
     title: '7.9 Mask Shorthand: the mask property'
     status: unsupported

@@ -48,7 +48,7 @@ sections:
     title: '3.1 Selecting Highlighted Content: the ::selection, ::search-text, ::target-text, ::spelling-error, ::grammar-error, and ::highlight() pseudo-elements'
     status: partial
     gaps:
-      - "::search-text, ::target-text, ::spelling-error, ::grammar-error and ::highlight() invalidate the selector"
+      - ::search-text invalidates the selector
   '#highlight-styling':
     title: 3.2 Styling Highlights
     status: partial
@@ -110,22 +110,16 @@ sections:
       - "::marker is accepted but its declarations never apply, the marker inherits from the list item"
   '#placeholder-pseudo':
     title: '4.3 Placeholder Input: the ::placeholder pseudo-element'
-    status: unsupported
-    gaps:
-      - "::placeholder invalidates the selector"
+    status: parsed-only
   '#element-like':
     title: 5 Element-backed Pseudo-Elements
     status: unsupported
   '#file-selector-button-pseudo':
     title: '5.1 File Selector Button: the ::file-selector-button pseudo-element'
-    status: unsupported
-    gaps:
-      - "::file-selector-button invalidates the selector"
+    status: parsed-only
   '#details-content-pseudo':
     title: '5.2 Expandable contents of details element: the ::details-content pseudo-element'
-    status: unsupported
-    gaps:
-      - "::details-content invalidates the selector"
+    status: parsed-only
   '#interactions':
     title: 6 Overlapping Pseudo-element Interactions
     status: n/a

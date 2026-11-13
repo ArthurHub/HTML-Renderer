@@ -7,10 +7,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
     internal sealed class BorderRadiusConverter : IValueConverter
     {
-        private readonly IValueConverter _converter = LengthOrPercentConverter.Periodic(
-            PropertyNames.BorderTopLeftRadius, PropertyNames.BorderTopRightRadius,
-            PropertyNames.BorderBottomRightRadius,
-            PropertyNames.BorderBottomLeftRadius);
+        private readonly IValueConverter _converter;
+        private readonly string[] _labels;
+
+        // The border-radius shorthand: four corners, top-left first.
+        public BorderRadiusConverter()
+            : this(PropertyNames.BorderTopLeftRadius, PropertyNames.BorderTopRightRadius,
+                PropertyNames.BorderBottomRightRadius, PropertyNames.BorderBottomLeftRadius)
+        {
+        }
+
+        // A radius shorthand over the given two or four longhands (border-top-radius, corner, ...).
+        public BorderRadiusConverter(params string[] labels)
+        {
+            _labels = labels;
+            _converter = LengthOrPercentConverter.Periodic(labels);
+        }
 
         public IPropertyValue Convert(IEnumerable<Token> value)
         {
@@ -43,19 +55,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public IPropertyValue Construct(Property[] properties)
         {
-            if (properties.Length == 4)
+            if (properties.Length == _labels.Length)
             {
                 var front = new List<Token>();
                 var back = new List<Token>();
-                var props = new List<Property>
-                {
-                    properties.First(m => m.Name.Is(PropertyNames.BorderTopLeftRadius)),
-                    properties.First(m => m.Name.Is(PropertyNames.BorderTopRightRadius)),
-                    properties.First(
-                        m => m.Name.Is(PropertyNames.BorderBottomRightRadius)),
-                    properties.First(
-                        m => m.Name.Is(PropertyNames.BorderBottomLeftRadius))
-                };
+                var props = new List<Property>();
+
+                foreach (var label in _labels) props.Add(properties.First(m => m.Name.Is(label)));
 
                 for (var i = 0; i < props.Count; i++)
                 {

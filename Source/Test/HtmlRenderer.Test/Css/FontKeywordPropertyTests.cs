@@ -337,21 +337,9 @@ public sealed class FontKeywordPropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<FontWeightProperty>(property);
         var concrete = (FontWeightProperty)property;
-        Assert.IsFalse(concrete.IsInherited);
+        Assert.IsTrue(concrete.IsInherited);
         Assert.IsTrue(concrete.HasValue);
         Assert.AreEqual("550", concrete.Value);
-    }
-
-    [TestMethod]
-    public void CssFontWeight550IsCurrentlyIllegal()
-    {
-        var property = ParseDeclaration("font-weight : 550 ");
-        Assert.AreEqual("font-weight", property.Name);
-        Assert.IsFalse(property.IsImportant);
-        Assert.IsInstanceOfType<FontWeightProperty>(property);
-        var concrete = (FontWeightProperty)property;
-        Assert.IsTrue(concrete.IsInherited);
-        Assert.IsFalse(concrete.HasValue);
     }
 
     [TestMethod]

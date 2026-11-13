@@ -96,7 +96,7 @@ sections:
     status: partial
     gaps:
       - counter(x, none) yields the counter value instead of an empty string
-      - counters() isn't accepted, the 'content' declaration is dropped
+      - counters() inserts nothing
   syndata.html#color-units:
     title: 4.3.6 Colors
     status: partial
@@ -105,9 +105,7 @@ sections:
       - rgb() with mixed integers and percentages or with two components isn't ignored
   syndata.html#strings:
     title: 4.3.7 Strings
-    status: partial
-    gaps:
-      - A backslash followed by a newline in a string is kept as a line break instead of being removed
+    status: supported
   syndata.html#unsupported-values:
     title: 4.3.8 Unsupported Values
     status: supported
@@ -1059,7 +1057,7 @@ sections:
     title: G.2 Lexical scanner
     status: partial
     gaps:
-      - Uppercase units, at-keywords and '!important' aren't recognized, e.g. 10PX, @MEDIA and !IMPORTANT
+      - Uppercase at-keywords and '!important' aren't recognized, e.g. @MEDIA and !IMPORTANT
   grammar.html#tokenizer-diffs:
     title: G.3 Comparison of tokenization in CSS 2.1 and CSS1
     status: supported

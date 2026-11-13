@@ -95,7 +95,6 @@ public sealed class CssConditional5Tests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-conditional-5.yml")]
     [Spec("css-conditional-5", "#container-name")]
     public void ContainerName_TakesIdentifiers()
     {
@@ -103,7 +102,6 @@ public sealed class CssConditional5Tests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-conditional-5.yml")]
     [Spec("css-conditional-5", "#container-shorthand")]
     public void ContainerShorthand_IsParsed()
     {

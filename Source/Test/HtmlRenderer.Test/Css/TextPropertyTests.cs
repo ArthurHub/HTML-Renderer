@@ -83,6 +83,17 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
+    [Spec("css-text-decor-4", "#text-shadow-property")]
+    [DataRow("1px 1px 2px 3px red", true)]
+    [DataRow("1px 1px 2px -3px red", false)]
+    public void TextShadowSpread_IsAcceptedUnlessNegative(string value, bool accepted)
+    {
+        var property = CssConstructionFunctions.ParseDeclaration("text-shadow: " + value);
+
+        Assert.AreEqual(accepted, property.HasValue);
+    }
+
+    [TestMethod]
     [Spec("css-text-decor-3", "#text-shadow-property")]
     [Spec("css-text-decor-4", "#text-shadow-property")]
     public void TextShadowLegalColorInFront()
@@ -221,7 +232,6 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-text-3.yml")]
     [Spec("css-text-3", "#text-indent-property")]
     [Spec("css-text-4", "#text-indent-property")]
     public void TextIndentLegalHanging()
@@ -237,7 +247,6 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-text-3.yml")]
     [Spec("css-text-3", "#text-indent-property")]
     [Spec("css-text-4", "#text-indent-property")]
     public void TextIndentLegalEachLine()
@@ -253,7 +262,6 @@ public sealed class TextPropertyTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-text-3.yml")]
     [Spec("css-text-3", "#text-indent-property")]
     [Spec("css-text-4", "#text-indent-property")]
     public void TextIndentLegalHangingEachLine()
@@ -516,7 +524,7 @@ public sealed class TextPropertyTests
         var property = CssConstructionFunctions.ParseDeclaration("word-break : none");
         Assert.AreEqual("word-break", property.Name);
         Assert.IsFalse(property.HasValue);
-        Assert.IsFalse(property.IsInherited);
+        Assert.IsTrue(property.IsInherited);
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<WordBreakProperty>(property);
     }
@@ -633,7 +641,7 @@ public sealed class TextPropertyTests
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-align-last: none");
         Assert.AreEqual("text-align-last", property.Name);
-        Assert.IsFalse(property.IsInherited);
+        Assert.IsTrue(property.IsInherited);
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<TextAlignLastProperty>(property);
         Assert.IsFalse(property.HasValue);
@@ -683,7 +691,7 @@ public sealed class TextPropertyTests
     {
         var property = CssConstructionFunctions.ParseDeclaration("text-anchor: none");
         Assert.AreEqual("text-anchor", property.Name);
-        Assert.IsFalse(property.IsInherited);
+        Assert.IsTrue(property.IsInherited);
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<TextAnchorProperty>(property);
         Assert.IsFalse(property.HasValue);
@@ -891,7 +899,7 @@ public sealed class TextPropertyTests
     {
         var property = CssConstructionFunctions.ParseDeclaration("overflow-wrap: none");
         Assert.AreEqual("overflow-wrap", property.Name);
-        Assert.IsFalse(property.IsInherited);
+        Assert.IsTrue(property.IsInherited);
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<OverflowWrapProperty>(property);
         Assert.IsFalse(property.HasValue);
@@ -904,7 +912,7 @@ public sealed class TextPropertyTests
     {
         var property = CssConstructionFunctions.ParseDeclaration("word-wrap: none");
         Assert.AreEqual("overflow-wrap", property.Name);
-        Assert.IsFalse(property.IsInherited);
+        Assert.IsTrue(property.IsInherited);
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<OverflowWrapProperty>(property);
         Assert.IsFalse(property.HasValue);

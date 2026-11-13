@@ -3,7 +3,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     internal sealed class InsetBlockProperty : ShorthandProperty
     {
         private static readonly IValueConverter StyleConverter = Converters.AutoLengthOrPercentConverter.Periodic(
-                PropertyNames.Top, PropertyNames.Bottom)
+                PropertyNames.InsetBlockStart, PropertyNames.InsetBlockEnd)
             .OrDefault(Keywords.Auto);
 
         internal InsetBlockProperty()

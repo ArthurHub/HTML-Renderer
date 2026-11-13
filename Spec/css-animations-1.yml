@@ -17,8 +17,6 @@ sections:
     status: parsed-only
     gaps:
       - "'@keyframes' is parsed and doesn't affect other rules, its keyframes are never applied, see 2"
-      - "A string name, e.g. '@keyframes \"foo\"', invalidates the rule"
-      - "The names 'none' and CSS-wide keywords are accepted"
       - Keyframe selectors below 0% or above 100% are accepted
       - "'!important' declarations in a keyframe are kept"
   '#timing-functions':
@@ -27,9 +25,6 @@ sections:
   '#animation-name':
     title: 3.2 The animation-name property
     status: parsed-only
-    gaps:
-      - "A string name isn't accepted"
-      - "A CSS-wide keyword in a list, e.g. 'foo, initial', is accepted"
   '#animation-duration':
     title: 3.3 The animation-duration property
     status: parsed-only

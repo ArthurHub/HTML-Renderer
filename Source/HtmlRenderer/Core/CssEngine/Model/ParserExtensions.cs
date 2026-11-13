@@ -1,13 +1,13 @@
-using TheArtOfDev.HtmlRenderer.Core.CssEngine.Conditions;
 using System;
 using System.Collections.Generic;
+using TheArtOfDev.HtmlRenderer.Core.CssEngine.Conditions;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal static class ParserExtensions
     {
         private static readonly Dictionary<string, Func<string, DocumentFunction>> FunctionTypes =
-            new Dictionary<string, Func<string, DocumentFunction>>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {FunctionNames.Url, url => new UrlFunction(url)},
                 {FunctionNames.Domain, url => new DomainFunction(url)},
@@ -16,7 +16,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private static readonly Dictionary<string, Func<IEnumerable<IConditionFunction>, IConditionFunction>>
             GroupCreators =
-                new Dictionary<string, Func<IEnumerable<IConditionFunction>, IConditionFunction>>(
+                new(
                     StringComparer.OrdinalIgnoreCase)
                 {
                     {Keywords.And, CreateAndCondition},
@@ -45,8 +45,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static TokenType GetTypeFromName(this string functionName)
         {
-            return FunctionTypes.TryGetValue(functionName, out _)
-                ? TokenType.Url
+            return FunctionTypes.TryGetValue(functionName, out _) 
+                ? TokenType.Url 
                 : TokenType.Function;
         }
 
@@ -58,7 +58,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static int GetCode(this ParseError code)
         {
-            return (int)code;
+            return (int) code;
         }
 
         public static bool Is(this Token token, TokenType a)
@@ -100,21 +100,21 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             switch (token.Type)
             {
                 case TokenType.Url:
-                    {
-                        var functionName = ((UrlToken)token).FunctionName;
-                        FunctionTypes.TryGetValue(functionName, out var creator);
-                        return creator(token.Data);
-                    }
+                {
+                    var functionName = ((UrlToken)token).FunctionName;
+                    FunctionTypes.TryGetValue(functionName, out var creator);
+                    return creator(token.Data);
+                }
                 case TokenType.Function when token.Data.Isi(FunctionNames.Regexp):
+                {
+                    var css = ((FunctionToken) token).ArgumentTokens.ToCssString();
+                    if (css != null)
                     {
-                        var css = ((FunctionToken)token).ArgumentTokens.ToCssString();
-                        if (css != null)
-                        {
-                            return new RegexpFunction(css);
-                        }
-
-                        break;
+                        return new RegexpFunction(css);
                     }
+
+                    break;
+                }
             }
 
             return null;
@@ -130,6 +130,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     return new DocumentRule(parser);
                 case RuleType.FontFace:
                     return new FontFaceRule(parser);
+                case RuleType.FontFeatureValues:
+                    return new FontFeatureValuesRule(parser);
                 case RuleType.Import:
                     return new ImportRule(parser);
                 case RuleType.Keyframe:
@@ -142,6 +144,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     return new ContainerRule(parser);
                 case RuleType.Namespace:
                     return new NamespaceRule(parser);
+                case RuleType.CounterStyle:
+                    return new CounterStyleRule(parser);
                 case RuleType.Page:
                     return new PageRule(parser);
                 case RuleType.Style:
@@ -150,10 +154,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     return new SupportsRule(parser);
                 case RuleType.Viewport:
                     return new ViewportRule(parser);
+                case RuleType.StartingStyle:
+                    return new StartingStyleRule(parser);
                 //case RuleType.Unknown:
                 //case RuleType.RegionStyle:
-                //case RuleType.FontFeatureValues:
-                //case RuleType.CounterStyle:
                 default:
                     return null;
             }

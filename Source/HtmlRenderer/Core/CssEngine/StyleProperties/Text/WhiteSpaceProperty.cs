@@ -1,9 +1,8 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    internal sealed class WhiteSpaceProperty : Property
+    internal sealed class WhiteSpaceProperty : ShorthandProperty
     {
-        private static readonly IValueConverter StyleConverter =
-            Converters.WhitespaceConverter.OrDefault(Whitespace.Normal);
+        private static readonly IValueConverter StyleConverter = TextFlowConverters.WhiteSpaceConverter;
 
         internal WhiteSpaceProperty()
             : base(PropertyNames.WhiteSpace, PropertyFlags.Inherited)

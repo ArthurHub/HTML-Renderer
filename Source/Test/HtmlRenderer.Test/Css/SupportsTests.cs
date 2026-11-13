@@ -281,12 +281,12 @@ public sealed class SupportsTests
 
     [TestMethod]
     [Spec("css-conditional-3", "#support-definition")]
-    public void SupportsDisplayContentsRule_NotImplemented()
+    public void SupportsDisplayContentsRule_IsSupported()
     {
         var source = @"@supports (display: contents) { }";
         var sheet = CssConstructionFunctions.ParseStyleSheet(source);
         var supports = (SupportsRule)sheet.Rules[0];
-        Assert.IsFalse(supports.Condition.Check());
+        Assert.IsTrue(supports.Condition.Check());
     }
 
     [TestMethod]

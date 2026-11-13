@@ -3,7 +3,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     internal sealed class PositionProperty : Property
     {
         private static readonly IValueConverter StyleConverter =
-            Converters.PositionModeConverter.OrDefault(PositionMode.Static);
+            Converters.PositionModeConverter.Or(new RunningFunctionConverter()).OrDefault(PositionMode.Static);
 
         internal PositionProperty()
             : base(PropertyNames.Position)

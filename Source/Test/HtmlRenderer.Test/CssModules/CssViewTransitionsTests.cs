@@ -48,7 +48,6 @@ public sealed class CssViewTransitionsTests
         Assert.AreEqual(Green, Box("<style>p { color: green } :root" + pseudo + " { color: red }</style><p id=x>a</p>").ActualColor);
     }
 
-    [Ignore("Gap, see Spec/css-view-transitions-1.yml")]
     [TestMethod]
     [Spec("css-view-transitions-1", "#view-transition-pseudos")]
     [DataRow("::view-transition")]

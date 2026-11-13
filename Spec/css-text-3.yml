@@ -30,7 +30,7 @@ sections:
     title: '3 White Space and Wrapping: the white-space property'
     status: partial
     gaps:
-      - break-spaces isn't accepted
+      - break-spaces is laid out like normal
   '#white-space-processing':
     title: 4 White Space Processing & Control Characters
     status: partial
@@ -78,7 +78,6 @@ sections:
     status: parsed-only
     gaps:
       - overflow-wrap and word-wrap are ignored, a word that doesn't fit overflows
-      - anywhere isn't accepted
   '#line-break-details':
     title: 5.5 Line Breaking Details
     status: partial
@@ -91,7 +90,8 @@ sections:
     title: '6.1 Text Alignment: the text-align shorthand'
     status: partial
     gaps:
-      - start, end, match-parent and justify-all aren't accepted, so the alignment doesn't follow the direction
+      - match-parent is ignored
+      - "justify-all doesn't justify the last line, see #text-align-last-property"
       - The initial value acts as left also when direction is rtl, see CSS 2.1 16.2
   '#text-align-all-property':
     title: '6.2 Default Text Alignment: the text-align-all property'
@@ -101,7 +101,6 @@ sections:
     status: parsed-only
     gaps:
       - text-align-last is ignored, the last line of justified text is aligned left
-      - match-parent isn't accepted
   '#text-justify-property':
     title: '6.4 Justification Method: the text-justify property'
     status: parsed-only
@@ -151,7 +150,7 @@ sections:
     title: '8.1 First Line Indentation: the text-indent property'
     status: partial
     gaps:
-      - hanging and each-line aren't accepted
+      - A text-indent with hanging or each-line is dropped
       - "The gaps of CSS 2.1 16.1 apply: percentages, anonymous blocks, rtl and inline-blocks"
   '#hanging':
     title: 8.2 Hanging Glyphs
@@ -163,5 +162,4 @@ sections:
     title: 8.3 Bidirectionality and Line Boxes
     status: partial
     gaps:
-      - The line's direction doesn't change which side start and end refer to, see 6.1
       - In rtl text-indent is applied at the left edge, see CSS 2.1 16.1

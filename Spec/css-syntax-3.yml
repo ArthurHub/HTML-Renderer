@@ -62,7 +62,6 @@ sections:
     title: 4.3.5 Consume a string token
     status: partial
     gaps:
-      - A backslash followed by a newline is kept as a line break, see CSS 2.1 4.3.7
       - A backslash at the end of the input makes the string a bad string
       - A bad string doesn't invalidate the declaration, the string up to the line break is used
   '#consume-url-token':
@@ -92,9 +91,7 @@ sections:
     status: supported
   '#consume-number':
     title: 4.3.13 Consume a number
-    status: partial
-    gaps:
-      - An exponent isn't part of the number, 1e3 is the dimension 1e followed by the number 3
+    status: supported
   '#consume-unicode-range-token':
     title: 4.3.14 Consume a unicode-range token
     status: supported

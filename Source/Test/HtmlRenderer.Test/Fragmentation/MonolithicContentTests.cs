@@ -44,7 +44,6 @@ public sealed class MonolithicContentTests
     [DataRow("scroll", true)]
     [DataRow("auto", true)]
     [DataRow("visible", false)]
-    // 'clip' isn't a known overflow value, the box stays 'visible', which is also what §2 wants.
     [DataRow("clip", false)]
     [Spec("css-break-3", "#possible-breaks")]
     [Spec("css-break-4", "#possible-breaks")]

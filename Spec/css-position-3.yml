@@ -35,7 +35,6 @@ sections:
       - Percentage insets of a relatively positioned box resolve against its own size, see CSS 2.1 9.3.2
       - "'right' and 'bottom' of a fixed box are ignored, see CSS 2.1 9.6.1"
       - inset-inline-start and inset-inline-end always map to left and right, also in rtl
-      - The flow-relative longhands are declared as the physical property they map to, looking one up by its own name gives nothing
   '#inset-shorthands':
     title: '3.2 Box Insets Shorthands: the inset-block, inset-inline, and inset properties'
     status: supported

@@ -21,7 +21,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             var enumerator = value.GetEnumerator();
 
             bool hasToken;
-
             while ((hasToken = enumerator.MoveNext()) && enumerator.Current.Type == TokenType.Whitespace)
             {
                 //Empty on purpose.

@@ -143,7 +143,6 @@ public sealed class CssImages4ParseTests
         Assert.IsTrue(Parse($"background-image: {image}").HasValue);
     }
 
-    [Ignore("Gap, see Spec/css-images-4.yml")]
     [TestMethod]
     [DataRow("linear-gradient(in a98-rgb, red, blue)")]
     [DataRow("linear-gradient(in prophoto-rgb, red, blue)")]
@@ -164,7 +163,6 @@ public sealed class CssImages4ParseTests
         Assert.IsTrue(CssConstructionFunctions.ParseDeclaration(declaration).HasValue);
     }
 
-    [Ignore("Gap, see Spec/css-images-4.yml")]
     [TestMethod]
     [DataRow("image-resolution: 300dpi")]
     [DataRow("image-resolution: from-image 2dppx snap")]

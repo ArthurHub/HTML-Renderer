@@ -102,7 +102,6 @@ public sealed class ContainerTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-conditional-5.yml")]
     [Spec("css-conditional-5", "#container-shorthand")]
     public void ContainerShorthand_BothLonghandsSet_ComposesShorthandValue()
     {

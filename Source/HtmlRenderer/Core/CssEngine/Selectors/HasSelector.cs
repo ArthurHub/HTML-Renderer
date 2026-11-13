@@ -3,8 +3,8 @@ using System.IO;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// :has(), Selectors 4 §4.5. Only the descendant form, SelectorConstructor drops a leading
-    /// combinator.
+    /// The relational pseudo-class <c>:has(S)</c> - matches an element with a descendant matching S.
+    /// Retains the parsed argument selector rather than collapsing it to a formatted string.
     /// </summary>
     internal sealed class HasSelector : StylesheetNode, ISelector
     {
@@ -15,7 +15,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public ISelector Inner { get; }
 
-        // Selectors 4 §15
+        // The specificity of :has() is the specificity of its most specific argument (CSS Selectors 4
+        // 16.1), which ListSelector.Specificity supplies as the static max when the argument is a list.
         public Priority Specificity => Inner.Specificity;
 
         public string Text => this.ToCss();

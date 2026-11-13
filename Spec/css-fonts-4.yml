@@ -42,7 +42,7 @@ sections:
     title: '2.2 Font weight: the font-weight property'
     status: partial
     gaps:
-      - Only the multiples of 100 are accepted, not any number from 1 to 1000
+      - A fractional weight like 450.5 is rejected
   '#relative-weights':
     title: 2.2.1 Relative Weights
     status: partial
@@ -139,8 +139,7 @@ sections:
     title: '4.4 Font property descriptors: the font-style, font-weight, and font-width descriptors'
     status: partial
     gaps:
-      - "Ranges (font-weight: 100 900) and weights that aren't multiples of 100 are dropped, the face matches as weight 400"
-      - Percentages for font-stretch are dropped
+      - "Ranges (font-weight: 100 900) are dropped, the face matches as weight 400"
   '#font-stretch-desc':
     title: '4.4.1 Font width: the font-stretch legacy name alias'
     status: supported
@@ -252,7 +251,6 @@ sections:
     title: '6.11 Overall shorthand for font rendering: the font-variant property'
     status: parsed-only
     gaps:
-      - Only the CSS 2.1 values normal and small-caps are accepted
       - "'small-caps' is ignored, see CSS 2.1 15.5"
   '#font-feature-settings-prop':
     title: '6.12 Low-level font feature settings control: the font-feature-settings property'

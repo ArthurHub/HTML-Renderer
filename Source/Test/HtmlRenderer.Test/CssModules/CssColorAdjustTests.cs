@@ -5,7 +5,6 @@ namespace HtmlRenderer.Test.CssModules;
 [TestClass]
 public sealed class CssColorAdjustTests
 {
-    [Ignore("Gap, see Spec/css-color-adjust-1.yml")]
     [TestMethod]
     [DataRow("normal")]
     [DataRow("light dark")]
@@ -19,7 +18,6 @@ public sealed class CssColorAdjustTests
         Assert.AreEqual(value, style.GetPropertyValue("color-scheme"));
     }
 
-    [Ignore("Gap, see Spec/css-color-adjust-1.yml")]
     [TestMethod]
     [DataRow("forced-color-adjust", "preserve-parent-color")]
     [Spec("css-color-adjust-1", "#forced-color-adjust-prop")]
@@ -30,13 +28,21 @@ public sealed class CssColorAdjustTests
         Assert.AreEqual(value, style.GetPropertyValue(property));
     }
 
+    [TestMethod]
+    [Spec("css-color-adjust-1", "#print-color-adjust")]
+    [DataRow("print-color-adjust: exact", "print-color-adjust", "exact")]
+    public void PrintColorAdjust_IsAccepted(string declaration, string property, string value)
+    {
+        var style = CssConstructionFunctions.ParseDeclarations(declaration);
+
+        Assert.AreEqual(value, style.GetPropertyValue(property));
+    }
+
     [Ignore("Gap, see Spec/css-color-adjust-1.yml")]
     [TestMethod]
-    [DataRow("print-color-adjust: exact", "print-color-adjust", "exact")]
-    [DataRow("color-adjust: exact", "print-color-adjust", "exact")]
-    [Spec("css-color-adjust-1", "#print-color-adjust")]
     [Spec("css-color-adjust-1", "#color-adjust")]
-    public void PrintColorAdjust_IsAccepted(string declaration, string property, string value)
+    [DataRow("color-adjust: exact", "print-color-adjust", "exact")]
+    public void ColorAdjust_IsAnAliasOfPrintColorAdjust(string declaration, string property, string value)
     {
         var style = CssConstructionFunctions.ParseDeclarations(declaration);
 

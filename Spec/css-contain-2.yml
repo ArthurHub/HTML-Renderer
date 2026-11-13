@@ -8,9 +8,7 @@ sections:
     status: n/a
   '#contain-property':
     title: '2 Strong Containment: the contain property'
-    status: unsupported
-    gaps:
-      - "'contain' is dropped by the parser"
+    status: parsed-only
   '#containment-types':
     title: 3 Types of Containment
     status: unsupported
@@ -40,9 +38,7 @@ sections:
     status: n/a
   '#content-visibility':
     title: '4 Suppressing An Element’s Contents Entirely: the content-visibility property'
-    status: unsupported
-    gaps:
-      - "'content-visibility' is dropped by the parser"
+    status: parsed-only
   '#using-cv-hidden':
     title: '4.1 Using content-visibility: hidden'
     status: n/a

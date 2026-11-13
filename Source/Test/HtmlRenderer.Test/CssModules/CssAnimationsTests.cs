@@ -62,7 +62,6 @@ public sealed class CssAnimationsTests
         Assert.AreEqual(Green, Box("<style>p { color: green } @keyframes p { from { color: red } to { color: red } }</style><p id=x>a</p>").ActualColor);
     }
 
-    [Ignore("Gap, see Spec/css-animations-1.yml")]
     [TestMethod]
     [Spec("css-animations-1", "#keyframes")]
     public void KeyframesRule_WithAStringName_IsParsed()
@@ -72,7 +71,6 @@ public sealed class CssAnimationsTests
         Assert.AreEqual("initial", ((KeyframesRule)sheet.Rules.Single()).Name);
     }
 
-    [Ignore("Gap, see Spec/css-animations-1.yml")]
     [TestMethod]
     [Spec("css-animations-1", "#keyframes")]
     [DataRow("none")]
@@ -128,7 +126,6 @@ public sealed class CssAnimationsTests
 
     // ── 3.2 - 3.9 Animation properties ──────────────────────────────────
 
-    [Ignore("Gap, see Spec/css-animations-1.yml")]
     [TestMethod]
     [Spec("css-animations-1", "#animation-name")]
     public void AnimationName_AcceptsAString()
@@ -138,7 +135,6 @@ public sealed class CssAnimationsTests
         Assert.AreNotEqual(string.Empty, style.GetPropertyValue("animation-name"));
     }
 
-    [Ignore("Gap, see Spec/css-animations-1.yml")]
     [TestMethod]
     [Spec("css-animations-1", "#animation-name")]
     public void AnimationName_WithACssWideKeywordInAList_IsInvalid()

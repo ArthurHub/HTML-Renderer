@@ -1674,15 +1674,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
         /// <summary>
         /// Floats, absolutely positioned boxes, table cells and captions, and boxes with overflow other than
-        /// visible start a new block formatting context, so their margins never collapse with their
-        /// children's (CSS 2.1 §8.3.1, §9.4.1).
+        /// visible and clip start a new block formatting context, so their margins never collapse with their
+        /// children's (CSS 2.1 §8.3.1, §9.4.1, CSS Overflow 3 §3.1).
         /// </summary>
         private static bool EstablishesBlockFormattingContext(CssBox box)
         {
             return box.IsFloated
                    || box.Position == CssConstants.Absolute || box.Position == CssConstants.Fixed
                    || box.Display == CssConstants.TableCell || box.Display == CssConstants.TableCaption
-                   || (!string.IsNullOrEmpty(box.Overflow) && box.Overflow != CssConstants.Visible);
+                   || (!string.IsNullOrEmpty(box.Overflow) && box.Overflow != CssConstants.Visible && box.Overflow != CssConstants.Clip);
         }
 
         /// <summary>

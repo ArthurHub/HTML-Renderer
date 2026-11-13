@@ -5,12 +5,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     internal sealed class BorderInlineProperty : ShorthandProperty
     {
         private static readonly IValueConverter StyleConverter = WithAny(
-            LineWidthConverter.Option()
-                .For(PropertyNames.BorderLeftWidth, PropertyNames.BorderRightWidth),
-            LineStyleConverter.Option()
-                .For(PropertyNames.BorderLeftStyle, PropertyNames.BorderRightStyle),
-            CurrentColorConverter.Option()
-                .For(PropertyNames.BorderLeftColor, PropertyNames.BorderRightColor)
+            LineWidthConverter.Option().For(PropertyNames.BorderInlineStartWidth, PropertyNames.BorderInlineEndWidth),
+            LineStyleConverter.Option().For(PropertyNames.BorderInlineStartStyle, PropertyNames.BorderInlineEndStyle),
+            CurrentColorConverter.Option().For(PropertyNames.BorderInlineStartColor, PropertyNames.BorderInlineEndColor)
         ).OrDefault();
 
         internal BorderInlineProperty()

@@ -17,9 +17,7 @@ sections:
     status: unsupported
   '#scroll-snap-type':
     title: '4.1 Scroll Snapping Rules: the scroll-snap-type property'
-    status: unsupported
-    gaps:
-      - "'scroll-snap-type' isn't parsed, the viewport of the panel controls never snaps"
+    status: parsed-only
   '#snap-axis':
     title: '4.1.1 Scroll Snap Axis: the x, y, block, inline, and both values'
     status: unsupported
@@ -31,22 +29,20 @@ sections:
     status: unsupported
   '#scroll-padding':
     title: '4.2 Scroll Snapport: the scroll-padding property'
-    status: unsupported
+    status: parsed-only
     gaps:
-      - "'scroll-padding' isn't parsed, fragment navigation and ScrollToElement put the target at the top edge of the viewport"
+      - Fragment navigation and ScrollToElement put the target at the top edge of the viewport
   '#properties-on-the-elements':
     title: '5 Aligning Scroll Snap Areas: Properties on the elements'
     status: unsupported
   '#scroll-margin':
     title: '5.1 Scroll Snapping Area: the scroll-margin property'
-    status: unsupported
+    status: parsed-only
     gaps:
-      - "'scroll-margin' isn't parsed, fragment navigation and ScrollToElement scroll to the border box"
+      - Fragment navigation and ScrollToElement scroll to the border box
   '#scroll-snap-align':
     title: '5.2 Scroll Snapping Alignment: the scroll-snap-align property'
-    status: unsupported
-    gaps:
-      - "'scroll-snap-align' isn't parsed"
+    status: parsed-only
   '#snap-scope':
     title: 5.2.1 Scoping Valid Snap Positions to Visible Boxes
     status: unsupported
@@ -58,9 +54,7 @@ sections:
     status: unsupported
   '#scroll-snap-stop':
     title: '5.3 Scroll Snap Limits: the scroll-snap-stop property'
-    status: unsupported
-    gaps:
-      - "'scroll-snap-stop' isn't parsed"
+    status: parsed-only
   '#snap-concepts':
     title: 6 Snapping Mechanics
     status: unsupported

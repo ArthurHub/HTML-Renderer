@@ -1,6 +1,9 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary><c>grid</c>, CSS Grid 2 §7.8.</summary>
+    /// <summary>
+    /// The <c>grid</c> shorthand (CSS Grid §7.8): expands to the three <c>grid-template-*</c> longhands plus
+    /// <c>grid-auto-flow</c> / <c>grid-auto-rows</c> / <c>grid-auto-columns</c>.
+    /// </summary>
     internal sealed class GridProperty : ShorthandProperty
     {
         private static readonly IValueConverter StyleConverter = Converters.GridConverter.OrGlobalValue();

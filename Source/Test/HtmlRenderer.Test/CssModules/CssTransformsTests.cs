@@ -30,7 +30,6 @@ public sealed class CssTransformsTests
         Assert.AreEqual(value, Value("transform", value));
     }
 
-    [Ignore("Gap, see Spec/css-transforms-1.yml")]
     [TestMethod]
     [Spec("css-transforms-1", "#two-d-transform-functions")]
     public void Skew_WithOneAngle_IsParsed()
@@ -38,7 +37,6 @@ public sealed class CssTransformsTests
         Assert.AreEqual("skew(30deg)", Value("transform", "skew(30deg)"));
     }
 
-    [Ignore("Gap, see Spec/css-transforms-1.yml")]
     [TestMethod]
     [Spec("css-transforms-1", "#two-d-transform-functions")]
     [DataRow("rotate(0)")]
@@ -49,7 +47,6 @@ public sealed class CssTransformsTests
         Assert.AreNotEqual("", Value("transform", value));
     }
 
-    [Ignore("Gap, see Spec/css-transforms-1.yml")]
     [TestMethod]
     [Spec("css-transforms-1", "#transform-box")]
     [DataRow("content-box")]
@@ -71,7 +68,6 @@ public sealed class CssTransformsTests
         Assert.AreEqual(value, Value("backface-visibility", value));
     }
 
-    [Ignore("Gap, see Spec/css-transforms-2.yml")]
     [TestMethod]
     [Spec("css-transforms-2", "#individual-transforms")]
     [DataRow("translate", "10px 20%")]
@@ -104,7 +100,6 @@ public sealed class CssTransformsTests
         Assert.AreNotEqual("", Value("perspective-origin", value));
     }
 
-    [Ignore("Gap, see Spec/css-transforms-2.yml")]
     [TestMethod]
     [Spec("css-transforms-2", "#two-d-transform-functions")]
     [DataRow("scale(50%)")]
@@ -115,15 +110,22 @@ public sealed class CssTransformsTests
         Assert.AreEqual(value, Value("transform", value));
     }
 
-    [Ignore("Gap, see Spec/css-transforms-2.yml")]
     [TestMethod]
     [Spec("css-transforms-2", "#three-d-transform-functions")]
     [DataRow("scale3d(50%, 50%, 50%)")]
     [DataRow("scaleZ(50%)")]
     [DataRow("rotateX(0)")]
     [DataRow("rotate3d(1, 0, 0, 0)")]
-    [DataRow("perspective(none)")]
     public void ThreeDimensionalFunctions_AreParsed(string value)
+    {
+        Assert.AreNotEqual("", Value("transform", value));
+    }
+
+    [Ignore("Gap, see Spec/css-transforms-2.yml")]
+    [TestMethod]
+    [Spec("css-transforms-2", "#three-d-transform-functions")]
+    [DataRow("perspective(none)")]
+    public void PerspectiveNone_IsParsed(string value)
     {
         Assert.AreNotEqual("", Value("transform", value));
     }

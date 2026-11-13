@@ -1,12 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// <c>grid-template-columns</c>/<c>-rows</c>, CSS Grid 2 §7.2. The parsed template is kept as a typed
-    /// <see cref="CssProperty{T}"/>.
+    /// Validates a <c>grid-template-columns</c>/<c>grid-template-rows</c> value: accepts the keyword
+    /// <c>none</c> or any <c>&lt;track-list&gt;</c> the shared <see cref="GridTrackListGrammar"/> recognizes
+    /// (lengths, %, <c>fr</c>, <c>auto</c>, <c>min-content</c>/<c>max-content</c>, <c>minmax()</c>,
+    /// <c>fit-content()</c>, <c>repeat()</c>), rejecting everything else so an invalid template is dropped
+    /// at parse time. The authored text is preserved verbatim (mirrors
+    /// <see cref="AspectRatioValueConverter"/>).
     /// </summary>
     internal sealed class GridTemplateValueConverter : IValueConverter
     {
@@ -16,14 +19,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             var isNone = tokens.Length == 1 && tokens[0].Type == TokenType.Ident && tokens[0].Data.Isi(Keywords.None);
 
-            GridTemplate template = null;
-            if (!isNone)
-            {
-                template = GridTrackListGrammar.TryParse(tokens);
-                if (template is null) return null;
-            }
+            if (!isNone && GridTrackListGrammar.TryParse(tokens) is null)
+                return null;
 
-            return new GridTemplateValue(value, template);
+            return new GridTemplateValue(value);
         }
 
         public IPropertyValue Construct(Property[] properties)
@@ -31,46 +30,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return properties.Guard<GridTemplateValue>();
         }
 
-        /// <summary>
-        /// For the cascade paths that only have a string: the initial value, a CSS-wide keyword, an inherited
-        /// value or a resolved <c>var()</c>.
-        /// </summary>
-        internal static CssProperty<GridTemplate> FromCssText(string value)
+        private sealed class GridTemplateValue : IPropertyValue
         {
-            if (CssGlobalKeywords.TryParse(value, out var keyword))
-                return CssProperty<GridTemplate>.Global(keyword);
-            if (value.IndexOf("var(", StringComparison.OrdinalIgnoreCase) >= 0)
-                return CssProperty<GridTemplate>.Unresolved(value);
-            var template = GridTrackListGrammar.TryParse(Tokenize(value));
-            return CssProperty<GridTemplate>.FromValue(value, template);
-        }
-
-        /// <summary>Like <c>CssValueParser.GetCssTokens</c>, without depending on <c>Core.Parse</c>.</summary>
-        private static List<Token> Tokenize(string value)
-        {
-            using (var lexer = new Lexer(value) { IsInValue = false })
-            {
-                var tokens = new List<Token>();
-                Token token;
-                do
-                {
-                    token = lexer.Get();
-                    if (token.Type != TokenType.EndOfFile && token.Type != TokenType.Whitespace)
-                        tokens.Add(token);
-                } while (token.Type != TokenType.EndOfFile);
-                return tokens;
-            }
-        }
-
-        private sealed class GridTemplateValue : IPropertyValue, ITypedPropertyValue<GridTemplate>
-        {
-            private readonly CssProperty<GridTemplate> _typed;
-
-            public GridTemplateValue(IEnumerable<Token> tokens, GridTemplate template)
+            public GridTemplateValue(IEnumerable<Token> tokens)
             {
                 Original = new TokenValue(tokens);
-                // null template for none
-                _typed = CssProperty<GridTemplate>.FromValue(Original.Text, template);
             }
 
             public string CssText => Original.Text;
@@ -78,8 +42,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             public TokenValue Original { get; }
 
             public TokenValue ExtractFor(string name) => Original;
-
-            public CssProperty<GridTemplate> GetTypedValue() => _typed;
         }
     }
 }

@@ -69,7 +69,6 @@ public sealed class CssBackgrounds4ParseTests
         Assert.IsTrue(property.HasValue);
     }
 
-    [Ignore("Gap, see Spec/css-backgrounds-4.yml")]
     [TestMethod]
     [Spec("css-backgrounds-4", "#background-position")]
     [Spec("css-backgrounds-3", "#background-position")]
@@ -81,7 +80,6 @@ public sealed class CssBackgrounds4ParseTests
         Assert.IsTrue(property.HasValue);
     }
 
-    [Ignore("Gap, see Spec/css-backgrounds-4.yml")]
     [TestMethod]
     [DataRow("top 10px left")]
     [DataRow("bottom right 5px")]
@@ -121,13 +119,22 @@ public sealed class CssBackgrounds4ParseTests
         Assert.IsTrue(property.HasValue);
     }
 
-    [Ignore("Gap, see Spec/css-backgrounds-4.yml")]
     [TestMethod]
     [DataRow("text")]
     [DataRow("border-area")]
-    [DataRow("border-area text")]
     [Spec("css-backgrounds-4", "#background-clip")]
     public void BackgroundClip_TextAndBorderAreaAreAccepted(string clip)
+    {
+        var property = CssConstructionFunctions.ParseDeclaration($"background-clip: {clip}");
+
+        Assert.IsTrue(property.HasValue);
+    }
+
+    [Ignore("Gap, see Spec/css-backgrounds-4.yml")]
+    [TestMethod]
+    [DataRow("border-area text")]
+    [Spec("css-backgrounds-4", "#background-clip")]
+    public void BackgroundClip_BorderAreaWithTextIsAccepted(string clip)
     {
         var property = CssConstructionFunctions.ParseDeclaration($"background-clip: {clip}");
 

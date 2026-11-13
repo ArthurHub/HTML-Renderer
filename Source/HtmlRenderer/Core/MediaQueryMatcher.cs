@@ -188,8 +188,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
             const double epsilon = 1e-6;
             switch (comparison)
             {
-                case MediaFeatureComparison.Minimum: return actual >= value - epsilon;
-                case MediaFeatureComparison.Maximum: return actual <= value + epsilon;
+                case MediaFeatureComparison.GreaterThanOrEqual: return actual >= value - epsilon;
+                case MediaFeatureComparison.LessThanOrEqual: return actual <= value + epsilon;
                 case MediaFeatureComparison.GreaterThan: return actual > value + epsilon;
                 case MediaFeatureComparison.LessThan: return actual < value - epsilon;
                 default: return Math.Abs(actual - value) <= epsilon;

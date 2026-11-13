@@ -46,14 +46,10 @@ sections:
       - scroll-state isn't supported, the declaration is dropped
   '#container-name':
     title: '5.2 Naming Query Containers: the container-name property'
-    status: unsupported
-    gaps:
-      - Only a quoted string is accepted, a <custom-ident> name drops the declaration
+    status: parsed-only
   '#container-shorthand':
     title: '5.3 Creating Named Containers: the container shorthand'
-    status: unsupported
-    gaps:
-      - The container shorthand isn't a property, it doesn't serialize container-name and container-type
+    status: parsed-only
   '#container-rule':
     title: '5.4 Container Queries: the @container rule'
     status: unsupported

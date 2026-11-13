@@ -234,7 +234,6 @@ public sealed class RelationalPseudoClassSelectorTests
     [DataRow("div:has(> .foo)")]
     [DataRow("div:has(+ .foo)")]
     [DataRow("div:has(~ .foo)")]
-    [Ignore("Gap, see Spec/selectors-4.yml")]
     [Spec("selectors-4", "#relative")]
     public void Has_LeadingCombinator_RoundTripsThroughSelectorText_LeadingCombinatorForms(string selector)
     {
@@ -244,7 +243,6 @@ public sealed class RelationalPseudoClassSelectorTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/selectors-4.yml")]
     [Spec("selectors-4", "#relative")]
     public void Has_MixedLeadingCombinatorsInCommaList_RoundTripsThroughSelectorText()
     {

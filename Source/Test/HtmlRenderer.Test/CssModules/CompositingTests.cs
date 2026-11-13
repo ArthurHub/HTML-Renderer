@@ -8,7 +8,6 @@ namespace HtmlRenderer.Test.CssModules;
 [TestClass]
 public sealed class CompositingTests
 {
-    [Ignore("Gap, see Spec/compositing-1.yml")]
     [TestMethod]
     [Spec("compositing-1", "#mix-blend-mode")]
     [Spec("compositing-1", "#isolation")]

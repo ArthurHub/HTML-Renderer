@@ -224,14 +224,23 @@ public sealed class CssFonts4IntegrationTests
         Assert.AreEqual("Liberation Mono", font.Name);
     }
 
-    [Ignore("Gap, see Spec/css-fonts-4.yml")]
     [TestMethod]
     [Spec("css-fonts-4", "#font-weight-prop")]
     [DataRow("650", 650)]
     [DataRow("1", 1)]
     [DataRow("1000", 1000)]
-    [DataRow("450.5", 450.5)]
     public void FontWeight_AcceptsAnyNumberFrom1To1000(string value, double expected)
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap($"<span id='s' style='font-weight:{value}'>x</span>"));
+
+        Assert.AreEqual(expected, LayoutHarness.FindById(root, "s")!.ActualFontWeight, 0.01);
+    }
+
+    [Ignore("Gap, see Spec/css-fonts-4.yml")]
+    [TestMethod]
+    [Spec("css-fonts-4", "#font-weight-prop")]
+    [DataRow("450.5", 450.5)]
+    public void FontWeight_AcceptsAFractionalNumber(string value, double expected)
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap($"<span id='s' style='font-weight:{value}'>x</span>"));
 

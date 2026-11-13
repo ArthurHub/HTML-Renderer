@@ -58,8 +58,79 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
             "white-space", "word-break", "visibility", "word-spacing",
             "font-family", "font-size", "font-style", "font-variant", "font-weight",
             "list-style", "list-style-position", "list-style-image", "list-style-type",
-            "overflow"
+            "overflow",
+            "white-space-collapse", "text-wrap-mode", "text-align-all", "font-variant-caps",
+            "margin-block-start", "margin-block-end", "margin-inline-start", "margin-inline-end",
+            "padding-block-start", "padding-block-end", "padding-inline-start", "padding-inline-end",
+            "inset-block-start", "inset-block-end", "inset-inline-start", "inset-inline-end",
+            "border-block-start-width", "border-block-end-width", "border-inline-start-width", "border-inline-end-width",
+            "border-block-start-style", "border-block-end-style", "border-inline-start-style", "border-inline-end-style",
+            "border-block-start-color", "border-block-end-color", "border-inline-start-color", "border-inline-end-color",
+            "border-start-start-radius", "border-start-end-radius", "border-end-start-radius", "border-end-end-radius"
         };
+
+        /// <summary>
+        /// The flow-relative longhands and the physical property they set. Layout is always horizontal-tb
+        /// and ltr, so CSS Logical Properties 1 §4 maps start/end to fixed sides.
+        /// </summary>
+        private static readonly Dictionary<string, string> _physicalPropertyNames = new Dictionary<string, string>
+        {
+            { "margin-block-start", "margin-top" }, { "margin-block-end", "margin-bottom" },
+            { "margin-inline-start", "margin-left" }, { "margin-inline-end", "margin-right" },
+            { "padding-block-start", "padding-top" }, { "padding-block-end", "padding-bottom" },
+            { "padding-inline-start", "padding-left" }, { "padding-inline-end", "padding-right" },
+            { "inset-block-start", "top" }, { "inset-block-end", "bottom" },
+            { "inset-inline-start", "left" }, { "inset-inline-end", "right" },
+            { "border-block-start-width", "border-top-width" }, { "border-block-end-width", "border-bottom-width" },
+            { "border-inline-start-width", "border-left-width" }, { "border-inline-end-width", "border-right-width" },
+            { "border-block-start-style", "border-top-style" }, { "border-block-end-style", "border-bottom-style" },
+            { "border-inline-start-style", "border-left-style" }, { "border-inline-end-style", "border-right-style" },
+            { "border-block-start-color", "border-top-color" }, { "border-block-end-color", "border-bottom-color" },
+            { "border-inline-start-color", "border-left-color" }, { "border-inline-end-color", "border-right-color" },
+            { "border-start-start-radius", "border-top-left-radius" }, { "border-start-end-radius", "border-top-right-radius" },
+            { "border-end-start-radius", "border-bottom-left-radius" }, { "border-end-end-radius", "border-bottom-right-radius" },
+        };
+
+        // CSS Logical Properties 1 §2.2, in ltr inline-start is left
+        private static string ToPhysicalFloatValue(string value)
+        {
+            return value == "inline-start" ? CssConstants.Left : value == "inline-end" ? CssConstants.Right : value;
+        }
+
+        /// <summary>The physical property a flow-relative longhand sets, any other name as it is.</summary>
+        internal static string ToPhysicalPropertyName(string propName)
+        {
+            string physical;
+            return propName != null && _physicalPropertyNames.TryGetValue(propName, out physical) ? physical : propName;
+        }
+
+        // CSS Text 4 §3.1, white-space is a shorthand of white-space-collapse and text-wrap-mode, the box
+        // only knows the combined keyword
+        private static void SplitWhiteSpace(string whiteSpace, out string collapse, out string wrapMode)
+        {
+            switch (whiteSpace)
+            {
+                case "pre": collapse = "preserve"; wrapMode = "nowrap"; break;
+                case "nowrap": collapse = "collapse"; wrapMode = "nowrap"; break;
+                case "pre-wrap": collapse = "preserve"; wrapMode = "wrap"; break;
+                case "pre-line": collapse = "preserve-breaks"; wrapMode = "wrap"; break;
+                case "break-spaces": collapse = "break-spaces"; wrapMode = "wrap"; break;
+                default: collapse = "collapse"; wrapMode = "wrap"; break;
+            }
+        }
+
+        // preserve-breaks with nowrap has no white-space keyword, pre-line keeps its line breaks at least
+        private static string CombineWhiteSpace(string collapse, string wrapMode)
+        {
+            var nowrap = wrapMode == "nowrap";
+            switch (collapse)
+            {
+                case "preserve": return nowrap ? "pre" : "pre-wrap";
+                case "preserve-breaks": return "pre-line";
+                case "break-spaces": return nowrap ? "pre" : "break-spaces";
+                default: return nowrap ? "nowrap" : "normal";
+            }
+        }
 
         #endregion
 
@@ -97,8 +168,20 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         /// <returns>the value of the property, null if no such property exists</returns>
         public static string GetPropertyValue(CssBox cssBox, string propName)
         {
+            propName = ToPhysicalPropertyName(propName);
+            string collapse, wrapMode;
             switch (propName)
             {
+                case "white-space-collapse":
+                    SplitWhiteSpace(cssBox.WhiteSpace, out collapse, out wrapMode);
+                    return collapse;
+                case "text-wrap-mode":
+                    SplitWhiteSpace(cssBox.WhiteSpace, out collapse, out wrapMode);
+                    return wrapMode;
+                case "text-align-all":
+                    return cssBox.TextAlign;
+                case "font-variant-caps":
+                    return cssBox.FontVariant;
                 case "border-bottom-width":
                     return cssBox.BorderBottomWidth;
                 case "border-left-width":
@@ -276,8 +359,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
         /// <param name="value">the value to set</param>
         public static void SetPropertyValue(CssBox cssBox, string propName, string value)
         {
+            propName = ToPhysicalPropertyName(propName);
+            string collapse, wrapMode;
             switch (propName)
             {
+                case "white-space-collapse":
+                    SplitWhiteSpace(cssBox.WhiteSpace, out collapse, out wrapMode);
+                    cssBox.WhiteSpace = CombineWhiteSpace(value, wrapMode);
+                    break;
+                case "text-wrap-mode":
+                    SplitWhiteSpace(cssBox.WhiteSpace, out collapse, out wrapMode);
+                    cssBox.WhiteSpace = CombineWhiteSpace(collapse, value);
+                    break;
+                case "text-align-all":
+                    cssBox.TextAlign = value;
+                    break;
+                case "font-variant-caps":
+                    cssBox.FontVariant = value;
+                    break;
                 case "border-bottom-width":
                     cssBox.BorderBottomWidth = value;
                     break;
@@ -447,7 +546,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     cssBox.Content = value;
                     break;
                 case "display":
-                    cssBox.Display = value;
+                    // CSS Display 3 §2.2, flow-root is a block that also starts a formatting context, the
+                    // latter isn't supported
+                    cssBox.Display = value == "flow-root" ? CssConstants.Block : value;
                     break;
                 case "direction":
                     cssBox.Direction = value;
@@ -456,10 +557,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Utils
                     cssBox.EmptyCells = value;
                     break;
                 case "float":
-                    cssBox.Float = value;
+                    cssBox.Float = ToPhysicalFloatValue(value);
                     break;
                 case "clear":
-                    cssBox.Clear = value;
+                    cssBox.Clear = ToPhysicalFloatValue(value);
                     break;
                 case "box-sizing":
                     cssBox.BoxSizing = value;

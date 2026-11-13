@@ -20,7 +20,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return properties.Guard<GradientValue>();
         }
 
-        /// <summary>Validates a color stop position, a length or percentage unless overridden.</summary>
+        // The converter that parses a stop's position. Linear/radial stops are positioned with a
+        // <length-percentage>; a conic gradient overrides this with an <angle-percentage> (CSS Images 4).
         protected virtual IValueConverter StopPositionConverter => LengthOrPercentConverter;
 
         private IPropertyValue[] ToGradientStops(List<List<Token>> values, int offset)
@@ -51,8 +52,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 if (firstPosition != null) items.RemoveAt(items.Count - 1);
             }
 
-            // CSS Images 4 §3.5.1: a stop can have two positions. Both are kept, the painter reads the
-            // serialized value.
+            // <color-stop-length> = <length-percentage>{1,2} (CSS Images 4 3.5.1) - or
+            // <angle-percentage>{1,2} for a conic gradient, hence StopPositionConverter: a stop may carry
+            // two positions, equivalent to two same-colour stops, one at each position. Parsing
+            // right-to-left, the position taken above is the second (rightmost); a position immediately
+            // before it is the first, and the two are kept in source order for serialization.
             if (firstPosition != null && items.Count != 0)
             {
                 var earlier = StopPositionConverter.Convert(items[items.Count - 1]);
@@ -67,18 +71,46 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             if (items.Count != 0)
             {
-                color = ColorConverter.Convert(items[items.Count - 1]);
+                color = StopColorConverter.Convert(items[items.Count - 1]);
 
                 if (color != null) items.RemoveAt(items.Count - 1);
             }
 
-            // A position without a color is a color hint, which only takes one position
+            // The two-position form is only defined for a <color-stop>; a bare <length-percentage> with no
+            // colour is a <linear-color-hint>, which takes exactly one position.
             if (secondPosition != null && color == null) return null;
 
             return items.Count == 0 ? new StopValue(color, firstPosition, secondPosition, value) : null;
         }
 
         protected abstract IPropertyValue ConvertFirstArgument(IEnumerable<Token> value);
+
+        // A gradient stop's colour: any <color>, including currentcolor (CSS Color 4).
+        private static IValueConverter StopColorConverter { get; } = ColorConverter.WithCurrentColor();
+
+        // Keeps the authored text of a prelude that carries a <color-interpolation-method>; the grammar is
+        // validated by ColorInterpolationMethodGrammar but not otherwise interpreted.
+        protected static IPropertyValue CreatePlaceholder(IEnumerable<Token> tokens)
+        {
+            return new PlaceholderValue(tokens);
+        }
+
+        private sealed class PlaceholderValue : IPropertyValue
+        {
+            public PlaceholderValue(IEnumerable<Token> tokens)
+            {
+                Original = new TokenValue(tokens);
+            }
+
+            public string CssText => Original.Text;
+
+            public TokenValue Original { get; }
+
+            public TokenValue ExtractFor(string name)
+            {
+                return Original;
+            }
+        }
 
         private sealed class StopValue : IPropertyValue
         {
@@ -115,18 +147,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             {
                 return Original;
             }
-        }
-
-        // A validated value that isn't modeled further, serialized as written
-        protected static IPropertyValue CreatePlaceholder(IEnumerable<Token> tokens)
-            => new PlaceholderValue(tokens);
-
-        private sealed class PlaceholderValue : IPropertyValue
-        {
-            public PlaceholderValue(IEnumerable<Token> tokens) { Original = new TokenValue(tokens); }
-            public string CssText => Original.Text;
-            public TokenValue Original { get; }
-            public TokenValue ExtractFor(string name) => Original;
         }
 
         private sealed class GradientValue : IPropertyValue
@@ -181,7 +201,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         protected override IPropertyValue ConvertFirstArgument(IEnumerable<Token> value)
         {
-            // CSS Images 4 §3.1
+            // "[ <angle> | to <side-or-corner> ] || <color-interpolation-method>" (CSS Images 4).
             if (!ColorInterpolationMethodGrammar.TryExtractInterpolationMethod(value, out var remainder, out var hasIn))
                 return null;
 
@@ -189,73 +209,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 return remainder.Count == 0 || _converter.Convert(remainder) != null ? CreatePlaceholder(value) : null;
 
             return _converter.Convert(value);
-        }
-    }
-
-    // CSS Images 4 §3.3.1
-    internal sealed class ConicGradientConverter : GradientConverter
-    {
-        private readonly IValueConverter _prelude;
-
-        public ConicGradientConverter()
-        {
-            _prelude = WithAny(
-                AngleConverter.StartsWithKeyword(Keywords.From).Option(),
-                PointConverter.StartsWithKeyword(Keywords.At).Option(Point.Center));
-        }
-
-        // <angle-percentage> | <zero>
-        protected override IValueConverter StopPositionConverter { get; } =
-            AngleConverter.Or(PercentConverter).Or(new ZeroOrCalcPositionConverter());
-
-        protected override IPropertyValue ConvertFirstArgument(IEnumerable<Token> value)
-        {
-            if (!ColorInterpolationMethodGrammar.TryExtractInterpolationMethod(value, out var remainder, out var hasIn))
-                return null;
-
-            if (!hasIn)
-                return ConvertPrelude(value);
-
-            return remainder.Count == 0 || ConvertPrelude(remainder) != null ? CreatePlaceholder(value) : null;
-        }
-
-        private IPropertyValue ConvertPrelude(IEnumerable<Token> value)
-        {
-            // A group starting with any other ident is the first color stop
-            Token first = null;
-            foreach (var t in value)
-            {
-                if (t.Type != TokenType.Whitespace) { first = t; break; }
-            }
-            if (first != null && first.Type == TokenType.Ident)
-            {
-                var id = first.Data;
-                if (!string.Equals(id, Keywords.From, System.StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(id, Keywords.At, System.StringComparison.OrdinalIgnoreCase))
-                    return null;
-            }
-
-            return _prelude.Convert(value);
-        }
-
-        // A unitless 0, or any calc()-family function
-        private sealed class ZeroOrCalcPositionConverter : IValueConverter
-        {
-            public IPropertyValue Convert(IEnumerable<Token> value)
-            {
-                var only = value.OnlyOrDefault();
-                if (only == null) return null;
-
-                if (only.Type == TokenType.Number && ((NumberToken)only).Value == 0f)
-                    return CreatePlaceholder(value);
-
-                if (only is FunctionToken function && CalcParser.IsCalcFamily(function.Data))
-                    return CreatePlaceholder(value);
-
-                return null;
-            }
-
-            public IPropertyValue Construct(Property[] properties) => null;
         }
     }
 
@@ -282,35 +235,78 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         protected override IPropertyValue ConvertFirstArgument(IEnumerable<Token> value)
         {
-            // CSS Images 4 §3.2.1
+            // "[ <ending-shape> || <size> ]? [ at <position> ]? || <color-interpolation-method>".
             if (!ColorInterpolationMethodGrammar.TryExtractInterpolationMethod(value, out var remainder, out var hasIn))
                 return null;
 
-            if (!hasIn)
-                return ConvertShape(value);
+            if (hasIn)
+                return remainder.Count == 0 || _converter.Convert(remainder) != null ? CreatePlaceholder(value) : null;
 
-            return remainder.Count == 0 || ConvertShape(remainder) != null ? CreatePlaceholder(value) : null;
+            return _converter.Convert(value);
+        }
+    }
+
+    internal sealed class ConicGradientConverter : GradientConverter
+    {
+        private readonly IValueConverter _converter;
+
+        public ConicGradientConverter()
+        {
+            // The conic prelude is "[ from <angle> ]? [ at <position> ]?" (CSS Images 4 3.4).
+            var from = AngleConverter.StartsWithKeyword(Keywords.From).Option();
+            var at = PointConverter.StartsWithKeyword(Keywords.At).Option();
+
+            _converter = WithOrder(from, at);
         }
 
-        private IPropertyValue ConvertShape(IEnumerable<Token> value)
+        // A conic gradient's stops are positioned by angle, not length: <angular-color-stop> uses an
+        // <angle-percentage> (CSS Images 4 3.4.1).
+        protected override IValueConverter StopPositionConverter { get; } =
+            AngleConverter.Or(PercentConverter)
+                .Or(new ZeroPositionConverter())
+                .Or(new CalcValueConverter(CalcCategory.Angle | CalcCategory.Percentage));
+
+        // A bare 0 is accepted as an angular stop position (the universal zero, which <angle> otherwise
+        // requires a unit for).
+        private sealed class ZeroPositionConverter : IValueConverter
         {
-            // A group starting with any other ident is the first color stop
-            Token first = null;
-            foreach (var t in value)
+            public IPropertyValue Convert(IEnumerable<Token> value)
             {
-                if (t.Type != TokenType.Whitespace) { first = t; break; }
+                return value.OnlyOrDefault() is NumberToken number && number.Value == 0f
+                    ? CreatePlaceholder(value)
+                    : null;
             }
-            if (first != null && first.Type == TokenType.Ident)
+
+            public IPropertyValue Construct(Property[] properties) => null;
+        }
+
+        protected override IPropertyValue ConvertFirstArgument(IEnumerable<Token> value)
+        {
+            // "[ from <angle> ]? [ at <position> ]? || <color-interpolation-method>".
+            if (!ColorInterpolationMethodGrammar.TryExtractInterpolationMethod(value, out var remainder, out var hasIn))
+                return null;
+
+            if (hasIn)
+                return remainder.Count == 0 || ConvertPrelude(remainder) != null ? CreatePlaceholder(value) : null;
+
+            return ConvertPrelude(value);
+        }
+
+        private IPropertyValue ConvertPrelude(IEnumerable<Token> value)
+        {
+            // The prelude is optional, but this is only called for the gradient's first comma group. If
+            // that group is actually the first color stop (no from/at), it must not be swallowed here - a
+            // group that begins with a color, an angle, or a percentage is a stop, so reject it as a
+            // prelude and let the caller treat it as the first stop.
+            foreach (var token in value)
             {
-                var id = first.Data;
-                if (!string.Equals(id, "circle", System.StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(id, "ellipse", System.StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(id, "at", System.StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(id, "closest-side", System.StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(id, "farthest-corner", System.StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(id, "closest-corner", System.StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(id, "farthest-side", System.StringComparison.OrdinalIgnoreCase))
-                    return null;
+                if (token.Type == TokenType.Whitespace) continue;
+
+                var isPreludeKeyword = token.Type == TokenType.Ident &&
+                    (token.Data.Isi(Keywords.From) || token.Data.Isi(Keywords.At));
+
+                if (!isPreludeKeyword) return null;
+                break;
             }
 
             return _converter.Convert(value);

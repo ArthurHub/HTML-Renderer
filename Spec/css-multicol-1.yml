@@ -37,8 +37,6 @@ sections:
   '#cg':
     title: '4.1 Gutters Between Columns: the column-gap property'
     status: parsed-only
-    gaps:
-      - "'normal' is rejected"
   '#crc':
     title: '4.2 The Color of Column Rules: the column-rule-color property'
     status: parsed-only

@@ -20,7 +20,7 @@ sections:
     title: 3.1 Supported Shapes
     status: parsed-only
     gaps:
-      - rect(), xywh(), path() and a rounded polygon() are rejected
+      - A rounded polygon() is rejected
       - An ellipse() with a single radius is rejected
   '#shape-function':
     title: 3.1.1 The shape() Function
@@ -44,28 +44,22 @@ sections:
     status: n/a
   '#shapes-from-image':
     title: 4 Shapes from Image
-    status: unsupported
+    status: parsed-only
   '#shapes-from-box-values':
     title: 5 Shapes from Box Values
-    status: unsupported
+    status: parsed-only
   '#declaring-shapes':
     title: 6 Declaring Shapes
     status: unsupported
   '#shape-outside-property':
     title: '6.1 Float Area Shape: the shape-outside property'
-    status: unsupported
-    gaps:
-      - "'shape-outside' isn't a known property"
+    status: parsed-only
   '#shape-image-threshold-property':
     title: '6.2 Choosing Image Pixels: the shape-image-threshold property'
-    status: unsupported
-    gaps:
-      - "'shape-image-threshold' isn't a known property"
+    status: parsed-only
   '#shape-margin-property':
     title: '6.3 Expanding a Shape: the shape-margin property'
-    status: unsupported
-    gaps:
-      - "'shape-margin' isn't a known property"
+    status: parsed-only
   '#privacy':
     title: 7 Privacy Considerations
     status: n/a

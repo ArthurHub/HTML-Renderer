@@ -3,7 +3,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     internal sealed class AnimationNameProperty : Property
     {
         private static readonly IValueConverter ListConverter =
-            Converters.IdentifierConverter.FromList().OrNone().OrDefault();
+            Converters.AnimationNameConverter.FromList().OrNone().OrDefault();
 
         internal AnimationNameProperty()
             : base(PropertyNames.AnimationName)

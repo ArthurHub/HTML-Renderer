@@ -11,20 +11,6 @@ public sealed class CssScrollSnapTests
 {
     [TestMethod]
     [DataRow("scroll-snap-type: y mandatory")]
-    [DataRow("scroll-padding: 10px")]
-    [DataRow("scroll-margin: 10px")]
-    [DataRow("scroll-snap-align: start")]
-    [DataRow("scroll-snap-stop: always")]
-    public void ScrollSnapProperties_AreDropped(string declaration)
-    {
-        var style = CssConstructionFunctions.ParseDeclarations(declaration);
-
-        Assert.AreEqual(0, style.Length);
-    }
-
-    [TestMethod]
-    [Ignore("Gap, see Spec/css-scroll-snap-1.yml")]
-    [DataRow("scroll-snap-type: y mandatory")]
     [DataRow("scroll-snap-align: start")]
     [DataRow("scroll-snap-stop: always")]
     [Spec("css-scroll-snap-1", "#scroll-snap-type")]

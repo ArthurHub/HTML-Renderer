@@ -15,10 +15,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var newRule = rule as KeyframesRule;
             Name = newRule?.Name;
+            NameIsString = newRule?.NameIsString ?? false;
             base.ReplaceWith(rule);
         }
 
         public string Name { get; set; }
+        internal bool NameIsString { get; set; }
         public RuleList Rules { get; }
         IRuleList IKeyframesRule.Rules => Rules;
 
@@ -42,7 +44,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public override void ToCss(TextWriter writer, IStyleFormatter formatter)
         {
             var rules = formatter.Block(Rules);
-            writer.Write(formatter.Rule("@keyframes", Name, rules));
+            writer.Write(formatter.Rule("@keyframes", NameIsString ? Name.StylesheetString() : Name, rules));
         }
 
         IKeyframeRule IKeyframesRule.Find(string key)

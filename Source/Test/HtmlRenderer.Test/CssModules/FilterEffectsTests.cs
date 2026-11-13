@@ -8,12 +8,10 @@ namespace HtmlRenderer.Test.CssModules;
 [TestClass]
 public sealed class FilterEffectsTests
 {
-    [Ignore("Gap, see Spec/filter-effects-1.yml")]
     [TestMethod]
     [Spec("filter-effects-1", "#FilterProperty")]
     [Spec("filter-effects-1", "#supported-filter-functions")]
     [DataRow("none")]
-    [DataRow("url(#f)")]
     [DataRow("blur(2px)")]
     [DataRow("brightness(0.5)")]
     [DataRow("contrast(200%)")]
@@ -31,15 +29,30 @@ public sealed class FilterEffectsTests
 
     [Ignore("Gap, see Spec/filter-effects-1.yml")]
     [TestMethod]
+    [Spec("filter-effects-1", "#FilterProperty")]
+    [DataRow("url(#f)")]
+    public void Filter_UrlIsParsed(string value)
+    {
+        Assert.AreEqual(value, Value("filter", value));
+    }
+
+    [TestMethod]
     [Spec("filter-effects-1", "#FloodColorProperty")]
     [Spec("filter-effects-1", "#FloodOpacityProperty")]
-    [Spec("filter-effects-1", "#ColorInterpolationFiltersProperty")]
     [Spec("filter-effects-1", "#LightingColorProperty")]
     [DataRow("flood-color", "rgb(255, 0, 0)")]
     [DataRow("flood-opacity", "0.5")]
-    [DataRow("color-interpolation-filters", "linearRGB")]
     [DataRow("lighting-color", "rgb(255, 0, 0)")]
     public void FilterPrimitiveProperties_AreParsed(string property, string value)
+    {
+        Assert.AreEqual(value, Value(property, value));
+    }
+
+    [Ignore("Gap, see Spec/filter-effects-1.yml")]
+    [TestMethod]
+    [Spec("filter-effects-1", "#ColorInterpolationFiltersProperty")]
+    [DataRow("color-interpolation-filters", "linearRGB")]
+    public void ColorInterpolationFilters_IsParsed(string property, string value)
     {
         Assert.AreEqual(value, Value(property, value));
     }

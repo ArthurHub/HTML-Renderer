@@ -18,19 +18,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var a = Step.ToString();
 
-            string b;
-            if (Offset > 0)
+            var b = Offset switch
             {
-                b = "+" + Offset;
-            }
-            else if (Offset < 0)
-            {
-                b = Offset.ToString();
-            }
-            else
-            {
-                b = string.Empty;
-            }
+                > 0 => "+" + Offset,
+                < 0 => Offset.ToString(),
+                _ => string.Empty
+            };
 
             writer.Write(":{0}({1}n{2})", _name, a, b);
         }

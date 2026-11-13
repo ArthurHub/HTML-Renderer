@@ -11,7 +11,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public PeriodicValueConverter(IValueConverter converter, string[] labels)
         {
-            Debug.Assert(labels.Length == 0 || labels.Length == 4 || labels.Length == 2);
+            Debug.Assert(labels.Length is 0 or 4 or 2);
 
             _converter = converter;
             _labels = labels;
@@ -36,9 +36,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public IPropertyValue Construct(Property[] properties)
         {
+            // Without labels there are no per-side longhands to rebuild the value from (border-image-width and the like are
+            // one longhand holding all four sides): nothing can be constructed from them.
+            if (_labels.Length == 0) return null;
+
             var options = new IPropertyValue[_labels.Length];
 
-            for (var i = 0; i < _labels.Length; i++)
+            for(var i = 0; i < _labels.Length; i++)
                 options[i] = _converter.Construct(properties.Where(m => m.Name == _labels[i]).ToArray());
 
             return options.All(opt => opt != null)
@@ -53,11 +57,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             public PeriodicValue(IPropertyValue[] options, IEnumerable<Token> tokens, string[] labels)
             {
-                Debug.Assert(labels.Length == 0 || labels.Length == 2 || labels.Length == 4);
+                Debug.Assert(labels.Length is 0 or 2 or 4);
 
                 _values = new IPropertyValue[labels.Length == 0 ? 4 : labels.Length];
 
-                if (_values.Length == 0 || _values.Length == 4)
+                if (_values.Length is 0 or 4)
                 {
                     //Top, right, bottom, left
                     _values[0] = options[0];
@@ -79,7 +83,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             {
                 get
                 {
-                    if (_values.Length == 0 || _values.Length == 4)
+                    if (_values.Length is 0 or 4)
                     {
                         var top = _values[0].CssText;
                         var right = _values[1].CssText;
@@ -112,6 +116,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             public TokenValue ExtractFor(string name)
             {
+                // A converter without labels is a single longhand: it exports as the value it was parsed from.
+                if (_labels.Length == 0) return Original;
+
                 if (name.Is(_labels[0])) return _values[0].Original;
 
                 if (name.Is(_labels[1])) return _values[1].Original;

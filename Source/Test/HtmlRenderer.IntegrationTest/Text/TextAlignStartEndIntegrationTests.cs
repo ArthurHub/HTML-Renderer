@@ -14,7 +14,6 @@ public sealed class TextAlignStartEndIntegrationTests
         LayoutHarness.Descendants(box).SelectMany(b => b.Words).First(w => !w.IsSpaces);
 
     // The inherited right alignment keeps an unparsed start or end from passing as the initial left.
-    [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#text-align-property")]
     [Spec("css-text-4", "#text-align-property")]
@@ -61,7 +60,6 @@ public sealed class TextAlignStartEndIntegrationTests
         Assert.AreEqual(p.ClientRight, word.Right, Delta);
     }
 
-    [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#text-align-property")]
     [Spec("css-text-4", "#text-align-property")]

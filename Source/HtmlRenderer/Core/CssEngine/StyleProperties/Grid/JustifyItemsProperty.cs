@@ -1,6 +1,6 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary>CSS Box Alignment 3 §7.1</summary>
+    /// <summary>The <c>justify-items</c> property (CSS Box Alignment): default inline-axis alignment of grid items.</summary>
     internal sealed class JustifyItemsProperty : Property
     {
         private static readonly IValueConverter StyleConverter = Converters.JustifyItemsConverter;

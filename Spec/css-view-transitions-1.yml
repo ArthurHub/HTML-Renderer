@@ -29,9 +29,7 @@ sections:
       - The pseudo-element tree only exists during a view transition, which needs script
   '#view-transition-pseudos':
     title: 3.2 View Transition Pseudo-elements
-    status: unsupported
-    gaps:
-      - "The view transition pseudo-elements aren't recognized, a rule whose selector list contains one is dropped. Matching nothing is correct, they only exist during a view transition"
+    status: supported
   '#named-view-transition-pseudo':
     title: 3.2.1 Named View Transition Pseudo-elements
     status: unsupported

@@ -10,7 +10,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     {
         private readonly List<Token> _tokens;
         public static TokenValue Initial = FromString(Keywords.Initial);
-        public static TokenValue Empty = new TokenValue(Enumerable.Empty<Token>());
+        public static TokenValue Empty = new(Enumerable.Empty<Token>());
 
         public override void ToCss(TextWriter writer, IStyleFormatter formatter)
         {
@@ -19,7 +19,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private TokenValue(Token token)
         {
-            _tokens = new List<Token> { token };
+            _tokens = new List<Token> {token};
         }
 
         public TokenValue(IEnumerable<Token> tokens)

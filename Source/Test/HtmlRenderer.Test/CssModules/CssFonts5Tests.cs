@@ -16,7 +16,6 @@ public sealed class CssFonts5Tests
         Assert.AreEqual(value, Value("font-size-adjust", value));
     }
 
-    [Ignore("Gap, see Spec/css-fonts-5.yml")]
     [TestMethod]
     [Spec("css-fonts-5", "#font-size-adjust-prop")]
     [DataRow("from-font")]

@@ -32,7 +32,6 @@ public sealed class CssText3PropertyTests
         Assert.AreEqual(value, Value("text-transform", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#text-align-property")]
     [Spec("css-text-4", "#text-align-property")]
@@ -44,7 +43,6 @@ public sealed class CssText3PropertyTests
         Assert.AreEqual(value, Value("text-align", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#text-align-property")]
     [Spec("css-text-4", "#text-align-property")]
@@ -55,7 +53,6 @@ public sealed class CssText3PropertyTests
         Assert.AreEqual(value, Value("text-align", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#text-align-last-property")]
     [Spec("css-text-4", "#text-align-last-property")]
@@ -64,7 +61,6 @@ public sealed class CssText3PropertyTests
         Assert.AreEqual("match-parent", Value("text-align-last", "match-parent"));
     }
 
-    [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#white-space-property")]
     [Spec("css-text-4", "#white-space-property")]
@@ -84,7 +80,6 @@ public sealed class CssText3PropertyTests
         Assert.AreEqual(value, Value("hyphens", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
     [Spec("css-text-3", "#overflow-wrap-property")]
     [Spec("css-text-4", "#overflow-wrap-property")]

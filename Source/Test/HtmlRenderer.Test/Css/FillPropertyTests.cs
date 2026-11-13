@@ -79,7 +79,7 @@ public sealed class FillPropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<FillProperty>(property);
         var concrete = (FillProperty)property;
-        Assert.IsFalse(concrete.IsInherited);
+        Assert.IsTrue(concrete.IsInherited);
         Assert.IsFalse(concrete.HasValue);
     }
 
@@ -117,7 +117,7 @@ public sealed class FillPropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<FillOpacityProperty>(property);
         var concrete = (FillOpacityProperty)property;
-        Assert.IsFalse(concrete.IsInherited);
+        Assert.IsTrue(concrete.IsInherited);
         Assert.IsFalse(concrete.HasValue);
     }
 
@@ -155,7 +155,7 @@ public sealed class FillPropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<FillRuleProperty>(property);
         var concrete = (FillRuleProperty)property;
-        Assert.IsFalse(concrete.IsInherited);
+        Assert.IsTrue(concrete.IsInherited);
         Assert.IsFalse(concrete.HasValue);
     }
 }

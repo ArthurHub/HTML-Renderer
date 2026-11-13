@@ -217,7 +217,6 @@ public sealed class MediaQueriesTests
         Assert.IsTrue(Matches("(MIN-WIDTH: 100px)"));
     }
 
-    [Ignore("Gap, see Spec/mediaqueries-4.yml")]
     [TestMethod]
     [Spec("mediaqueries-4", "#mq-syntax")]
     [Spec("mediaqueries-5", "#mq-syntax")]

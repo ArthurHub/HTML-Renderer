@@ -20,7 +20,7 @@ sections:
     title: '2.2 Inner Display Layout Models: the flow, flow-root, table, flex, grid, and ruby keywords'
     status: partial
     gaps:
-      - "'flow-root' is rejected"
+      - "'flow-root' doesn't establish a block formatting context, its floats stick out"
       - flex and grid containers lay out and paint none of their content
       - "'ruby' is rejected"
   '#list-items':
@@ -37,7 +37,7 @@ sections:
     title: '2.5 Box Generation: the none and contents keywords'
     status: partial
     gaps:
-      - "'contents' is rejected, the element keeps its own box"
+      - "'contents' is ignored, the element keeps its own box"
   '#legacy-display':
     title: 2.6 Precomposed Inline-level Display Values
     status: partial

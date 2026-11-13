@@ -4,7 +4,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     {
         private static readonly IValueConverter StyleConverter = Converters.CaptionSideConverter.OrDefault(true);
 
-        internal CaptionSideProperty() : base(PropertyNames.CaptionSide)
+        internal CaptionSideProperty() : base(PropertyNames.CaptionSide, PropertyFlags.Inherited)
         {
         }
 

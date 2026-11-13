@@ -56,9 +56,7 @@ sections:
     status: partial
   '#dominant-baseline-property':
     title: '4.1 Dominant Baselines: the dominant-baseline property'
-    status: unsupported
-    gaps:
-      - dominant-baseline isn't accepted
+    status: parsed-only
   '#transverse-alignment':
     title: '4.2 Transverse Box Alignment: the vertical-align property'
     status: partial
@@ -73,17 +71,13 @@ sections:
       - baseline-source isn't accepted
   '#alignment-baseline-property':
     title: '4.2.2 Alignment Baseline Type: the alignment-baseline longhand'
-    status: unsupported
-    gaps:
-      - alignment-baseline isn't accepted
+    status: parsed-only
   '#alignment-baseline-svg-legacy':
     title: 4.2.2.1 Legacy Values for SVG
     status: unsupported
   '#baseline-shift-property':
     title: '4.2.3 Post-Alignment Shift: the baseline-shift longhand'
-    status: unsupported
-    gaps:
-      - baseline-shift isn't accepted
+    status: parsed-only
   '#baseline-shift-svg-legacy':
     title: 4.2.3.1 Legacy Values for SVG
     status: unsupported
@@ -112,18 +106,16 @@ sections:
       - No half-leading, the text sits at the top of the line instead of in its middle, see CSS 2.1 10.8.1
   '#leading-trim':
     title: 6 Trimming Leading Over/Under Text
-    status: unsupported
-    gaps:
-      - text-box, text-box-trim and text-box-edge aren't accepted
+    status: parsed-only
   '#text-box-shorthand':
     title: '6.1 Shorthand for Text Box Trimming: the text-box property'
-    status: unsupported
+    status: parsed-only
   '#text-box-trim':
     title: '6.2 Trimming Over/Under Text: the text-box-trim property'
     status: unsupported
   '#text-box-edge':
     title: '6.3 Text Trimming Metrics: the text-box-edge property'
-    status: unsupported
+    status: parsed-only
   '#line-fill':
     title: '6.4 Inline Box Drawing Height: the inline-sizing property'
     status: unsupported
@@ -133,7 +125,7 @@ sections:
     title: 7 Initial Letters
     status: unsupported
     gaps:
-      - initial-letter, initial-letter-align and initial-letter-wrap aren't accepted
+      - initial-letter-align and initial-letter-wrap aren't accepted
   '#initial-letter-intro':
     title: 7.1 An Introduction to Initial Letters
     status: n/a
@@ -142,7 +134,7 @@ sections:
     status: unsupported
   '#sizing-drop-initials':
     title: '7.3 Creating Initial Letters: the initial-letter property'
-    status: unsupported
+    status: parsed-only
   '#first-most-inline-level':
     title: 7.3.1 Applicability
     status: unsupported

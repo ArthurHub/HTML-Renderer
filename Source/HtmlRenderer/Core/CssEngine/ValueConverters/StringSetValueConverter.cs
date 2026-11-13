@@ -4,76 +4,55 @@ using System.Linq;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// <c>string-set</c> (CSS Generated Content 3 §2.7.1). Each name takes the GCPM content list
-    /// (counters, <c>content()</c>, <c>attr()</c>, <c>string()</c>), not just the strings of the /TR grammar.
+    /// The <c>string-set</c> property (GCPM §7.3):
+    /// <c>[ &lt;custom-ident&gt; &lt;content-list&gt; ]# | none</c>, where a content-list item is a
+    /// <c>&lt;string&gt;</c>, <c>counter()</c>/<c>counters()</c>, <c>content()</c>, <c>string()</c>, or
+    /// <c>attr()</c>.
     /// </summary>
     internal sealed class StringSetValueConverter : IValueConverter
     {
-        private readonly IValueConverter _contentListItemConverter;
+        private readonly IValueConverter _contentListItem;
 
         public StringSetValueConverter()
         {
-            _contentListItemConverter = Converters.StringConverter
-                .Or(Converters.CounterConverter)
-                .Or(new ContentFunctionConverter())
-                .Or(new StringFunctionConverter())
-                .Or(Converters.AttrConverter);
+            _contentListItem = Converters.ContentListItemConverter;
         }
 
         public IPropertyValue Convert(IEnumerable<Token> value)
         {
-            var first = value.OnlyOrDefault();
-
-            if (first is KeywordToken keyword && keyword.Data.Isi(Keywords.None))
-            {
+            if (value.OnlyOrDefault() is KeywordToken keyword && keyword.Data.Isi(Keywords.None))
                 return new StringSetValue(null, value);
-            }
 
-            // ValueExtensions.ToList, not LINQ's: one token list per comma-separated pair
-            var items = value.ToList();
+            var items = value.ToList(); // comma-separated groups
             var pairs = new List<StringSetPair>();
 
             foreach (var item in items)
             {
                 var pair = ParsePair(item);
-                if (pair == null)
-                    return null;
-
+                if (pair == null) return null;
                 pairs.Add(pair);
             }
 
-            if (pairs.Count == 0)
-                return null;
-
-            return new StringSetValue(pairs, value);
+            return pairs.Count == 0 ? null : new StringSetValue(pairs, value);
         }
 
         private StringSetPair ParsePair(List<Token> tokens)
         {
-            if (tokens.Count < 2)
-                return null;
+            if (tokens.Count < 2) return null;
 
-            if (!(tokens[0] is KeywordToken nameToken) || nameToken.Type != TokenType.Ident)
-                return null;
-
-            var name = nameToken.Data;
+            if (tokens[0] is not KeywordToken nameToken || nameToken.Type != TokenType.Ident) return null;
 
             var contentItems = tokens.Skip(1).ToItems();
             var values = new List<IPropertyValue>();
 
-            foreach (var item in contentItems)
+            foreach (var contentItem in contentItems)
             {
-                var converted = _contentListItemConverter.Convert(item);
-                if (converted == null)
-                    return null;
-
+                var converted = _contentListItem.Convert(contentItem);
+                if (converted == null) return null;
                 values.Add(converted);
             }
 
-            if (values.Count == 0)
-                return null;
-
-            return new StringSetPair(name, values);
+            return values.Count == 0 ? null : new StringSetPair(nameToken.Data, values);
         }
 
         public IPropertyValue Construct(Property[] properties)
@@ -107,25 +86,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             {
                 get
                 {
-                    if (_pairs == null || _pairs.Count == 0)
-                        return Keywords.None;
+                    if (_pairs == null || _pairs.Count == 0) return Keywords.None;
 
-                    var pairStrings = _pairs.Select(pair =>
-                         {
-                             var contentStr = string.Join(" ", pair.ContentList.Select(c => c.CssText));
-                             return $"{pair.Name} {contentStr}";
-                         });
-
-                    return string.Join(", ", pairStrings);
+                    return string.Join(", ", _pairs.Select(pair =>
+                        pair.Name + " " + string.Join(" ", pair.ContentList.Select(c => c.CssText))));
                 }
             }
 
             public TokenValue Original { get; }
 
-            public TokenValue ExtractFor(string name)
-            {
-                return Original;
-            }
+            public TokenValue ExtractFor(string name) => Original;
         }
     }
 }

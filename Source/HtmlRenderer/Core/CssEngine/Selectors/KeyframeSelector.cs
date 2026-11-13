@@ -30,9 +30,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
     /// <summary>
     /// One comma-separated entry of an <c>@page</c> selector list, e.g. the two entries of
-    /// <c>@page chapter1:left, chapter2:left</c> are <c>(Name: "chapter1", Pseudo: "left")</c> and
-    /// <c>(Name: "chapter2", Pseudo: "left")</c>. Either part may be absent: <c>@page chapter</c> has
-    /// <c>Pseudo: null</c>; <c>@page :first</c> has <c>Name: null</c>.
+    /// <c>@page chapter1:left, chapter2:left</c> are <c>("chapter1", "left")</c> and
+    /// <c>("chapter2", "left")</c>. Either part may be absent: <c>@page chapter</c> has a null pseudo;
+    /// <c>@page :first</c> has a null name.
     /// </summary>
     internal readonly struct PageSelectorEntry
     {

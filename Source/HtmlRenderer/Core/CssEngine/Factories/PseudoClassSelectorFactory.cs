@@ -7,16 +7,32 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     internal sealed class PseudoClassSelectorFactory
     {
         private static readonly Lazy<PseudoClassSelectorFactory> Lazy =
-            new Lazy<PseudoClassSelectorFactory>(() => new PseudoClassSelectorFactory());
+            new(() =>
+                {
+                    var factory = new PseudoClassSelectorFactory();
+                    Selectors.Add(PseudoElementNames.Before,
+                        PseudoElementSelectorFactory.Instance.Create(PseudoElementNames.Before));
+                    Selectors.Add(PseudoElementNames.After,
+                        PseudoElementSelectorFactory.Instance.Create(PseudoElementNames.After));
+                    Selectors.Add(PseudoElementNames.FirstLine,
+                        PseudoElementSelectorFactory.Instance.Create(PseudoElementNames.FirstLine));
+                    Selectors.Add(PseudoElementNames.FirstLetter,
+                        PseudoElementSelectorFactory.Instance.Create(PseudoElementNames.FirstLetter));
+                    return factory;
+                }
+            );
 
         #region Selectors
 
-        private static Dictionary<string, ISelector> BuildSelectors()
-        {
-            var selectors = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, ISelector> Selectors =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                 {
                     PseudoClassNames.Root,
                     PseudoClassNames.Scope,
+                    PseudoClassNames.FirstOfType,
+                    PseudoClassNames.LastOfType,
+                    PseudoClassNames.FirstChild,
+                    PseudoClassNames.LastChild,
                     PseudoClassNames.Empty,
                     PseudoClassNames.AnyLink,
                     PseudoClassNames.Link,
@@ -43,38 +59,43 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     PseudoClassNames.OutOfRange,
                     PseudoClassNames.Optional,
                     PseudoClassNames.Shadow,
+                    PseudoClassNames.Host,
+                    PseudoClassNames.Defined,
+                    PseudoClassNames.Modal,
+                    PseudoClassNames.Open,
+                    PseudoClassNames.PopoverOpen,
+                    PseudoClassNames.Fullscreen,
+                    PseudoClassNames.PictureInPicture,
+                    PseudoClassNames.UserValid,
+                    PseudoClassNames.UserInvalid,
+                    PseudoClassNames.Autofill,
+                    PseudoClassNames.TargetWithin,
+                    PseudoClassNames.LocalLink,
+                    PseudoClassNames.Current,
+                    PseudoClassNames.Past,
+                    PseudoClassNames.Future,
+                    PseudoClassNames.Playing,
+                    PseudoClassNames.Paused,
+                    PseudoClassNames.Seeking,
+                    PseudoClassNames.Buffering,
+                    PseudoClassNames.Stalled,
+                    PseudoClassNames.Muted,
+                    PseudoClassNames.VolumeLocked,
                 }
                 .ToDictionary(x => x, PseudoClassSelector.Create);
 
-            selectors.Add(PseudoElementNames.Before,
-                PseudoElementSelectorFactory.Instance.Create(PseudoElementNames.Before));
-            selectors.Add(PseudoElementNames.After,
-                PseudoElementSelectorFactory.Instance.Create(PseudoElementNames.After));
-            selectors.Add(PseudoElementNames.FirstLine,
-                PseudoElementSelectorFactory.Instance.Create(PseudoElementNames.FirstLine));
-            selectors.Add(PseudoElementNames.FirstLetter,
-                PseudoElementSelectorFactory.Instance.Create(PseudoElementNames.FirstLetter));
-
-            // :first-child (CSS 2.1 §5.11.1) and friends are their nth-*() function with An+B = 1.
-            // Kind is never null, same as what ChildFunctionState<T>.Produce() creates.
-            selectors.Add(PseudoClassNames.FirstChild, new FirstChildSelector().With(0, 1, AllSelector.Create()));
-            selectors.Add(PseudoClassNames.LastChild, new LastChildSelector().With(0, 1, AllSelector.Create()));
-            selectors.Add(PseudoClassNames.FirstOfType, new FirstTypeSelector().With(0, 1, AllSelector.Create()));
-            selectors.Add(PseudoClassNames.LastOfType, new LastTypeSelector().With(0, 1, AllSelector.Create()));
-            selectors.Add(PseudoClassNames.OnlyChild, new OnlyChildSelector());
-            selectors.Add(PseudoClassNames.OnlyType, new OnlyOfTypeSelector());
-
-            return selectors;
-        }
-
-        private static readonly Dictionary<string, ISelector> Selectors = BuildSelectors();
-
         #endregion
+
+        private static readonly ISelector OnlyChild = new OnlyChildSelector();
+        private static readonly ISelector OnlyOfType = new OnlyOfTypeSelector();
 
         internal static PseudoClassSelectorFactory Instance => Lazy.Value;
 
         public ISelector Create(string name)
         {
+            if (name.Equals(PseudoClassNames.OnlyChild, StringComparison.OrdinalIgnoreCase)) return OnlyChild;
+            if (name.Equals(PseudoClassNames.OnlyType, StringComparison.OrdinalIgnoreCase)) return OnlyOfType;
+
             return Selectors.TryGetValue(name, out var selector) ? selector : null;
         }
     }

@@ -8,11 +8,7 @@ sections:
     status: n/a
   '#scrollbar-color':
     title: '2 Scrollbar Colors: the scrollbar-color property'
-    status: unsupported
-    gaps:
-      - "'scrollbar-color' isn't parsed, the scrollbars of the panel controls keep the platform colors"
+    status: parsed-only
   '#scrollbar-width':
     title: '3 Scrollbar Thickness: the scrollbar-width property'
-    status: unsupported
-    gaps:
-      - "'scrollbar-width' isn't parsed, the scrollbars of the panel controls keep the platform width and can't be hidden"
+    status: parsed-only
