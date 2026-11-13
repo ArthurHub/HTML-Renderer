@@ -30,6 +30,7 @@ jobs:
         - { name: .NET 8, version: '8.0.x' }
         - { name: .NET 9, version: '9.0.x' }
         - { name: .NET 10, version: '10.0.x' }
+        - { name: .NET 11, version: '11.0.x' }
 
     steps:
     - name: Checkout HTML Renderer
