@@ -1,0 +1,19 @@
+<Window
+    x:Class="TheArtOfDev.HtmlRenderer.Demo.WinUI.GenerateImageWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <CommandBar Grid.Row="0" HorizontalAlignment="Left" DefaultLabelPosition="Right">
+            <AppBarButton Icon="Refresh" Label="Re-Generate" Click="OnGenerateImage_Click"/>
+            <AppBarSeparator/>
+            <AppBarButton Icon="Save" Label="Save to File" Click="OnSaveToFile_Click"/>
+        </CommandBar>
+        <Border x:Name="_imageBoxBorder" Grid.Row="1">
+            <Image x:Name="_imageBox" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </Border>
+    </Grid>
+</Window>
