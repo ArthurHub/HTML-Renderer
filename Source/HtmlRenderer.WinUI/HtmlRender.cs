@@ -36,20 +36,23 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         /// Adds a font family to be used in html rendering.<br/>
         /// The added font will be used by all rendering function including <see cref="HtmlContainer"/> and all WinUI 3 controls.
         /// </summary>
-        /// <remarks>
-        /// Unlike WPF's <c>AddFontFamily(FontFamily)</c>, WinUI/DirectWrite has no lightweight standalone
-        /// "font family object" outside of a loaded <see cref="CanvasFontSet"/> - pass the font set that
-        /// registered <paramref name="familyName"/> (see <see cref="HtmlRenderer.WinUI.Adapters.WinUIAdapter.LoadFontFaceFontInt"/>'s
-        /// own use of it) when adding a custom-loaded family, or leave it null for an already
-        /// system-installed family name.
-        /// </remarks>
-        /// <param name="familyName">The font family name to add.</param>
-        /// <param name="fontSet">optional: the font set that backs the family, kept alive for as long as the family is referenced</param>
-        public static void AddFontFamily(string familyName, CanvasFontSet fontSet = null)
+        /// <example>
+        /// <code>HtmlRender.AddFontFamily(new Uri(@"C:\fonts\CustomFont.ttf"));</code>
+        /// </example>
+        /// <param name="fontFile">The font file with the font families to add, a file or <c>ms-appx:///</c> URI.</param>
+        public static void AddFontFamily(Uri fontFile)
         {
-            ArgChecker.AssertArgNotNullOrEmpty(familyName, "familyName");
+            ArgChecker.AssertArgNotNull(fontFile, "fontFile");
 
-            WinUIAdapter.Instance.AddFontFamily(new FontFamilyAdapter(familyName, fontSet));
+            using (var fontSet = new CanvasFontSet(fontFile))
+            {
+                foreach (var font in fontSet.Fonts)
+                {
+                    var name = WinUIAdapter.GetPreferredFamilyName(font.FamilyNames);
+                    if (name != null)
+                        WinUIAdapter.Instance.AddFontFamily(new FontFamilyAdapter(name, fontFile));
+                }
+            }
         }
 
         /// <summary>
@@ -153,9 +156,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         /// The HTML will be layout by the given size but will be clipped if cannot fit.<br/>
         /// </summary>
         /// <remarks>
-        /// Unlike WPF's <c>RenderToImageAsync</c>, which needs a UI-thread-affine <c>RenderTargetBitmap</c>,
-        /// Win2D's <see cref="CanvasRenderTarget"/> is a plain GPU/CPU resource with no UI-thread
-        /// affinity - this needs no dispatcher/UI thread at all.
+        /// Doesn't need the UI thread.
         /// </remarks>
         /// <param name="html">HTML source to render</param>
         /// <param name="size">The size of the image to render into, layout html by width and clipped by height</param>

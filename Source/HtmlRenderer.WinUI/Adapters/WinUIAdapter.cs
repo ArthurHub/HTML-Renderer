@@ -22,12 +22,15 @@ using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Brushes;
 using Microsoft.Graphics.Canvas.Text;
 using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Network;
 using TheArtOfDev.HtmlRenderer.WinUI.Utilities;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.UI.ViewManagement;
@@ -41,8 +44,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
     {
         #region Fields and Consts
 
-        // One HttpClient shared for the adapter's (process) lifetime - see WpfAdapter's own field for why
-        // this must be declared before _instance (static field initializer ordering).
+        // Has to be initialized before _instance, the constructor uses it
         private static readonly HttpClient _sharedHttpClient = new HttpClient();
 
         /// <summary>
@@ -56,30 +58,24 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
         private static readonly List<string> ValidColorNamesLc;
 
         /// <summary>
-        /// The shared Win2D device this whole adapter (and every control it services) draws with -
-        /// created once via <see cref="CanvasDevice.GetSharedDevice"/> before any <see cref="CanvasControl"/>
-        /// exists, confirmed usable that way by the plan's Step 1 spike.
+        /// The Win2D device all resources are created on and all controls draw with.
         /// </summary>
         private readonly CanvasDevice _device;
 
         /// <summary>
-        /// The system settings object the app-theme subscription in the constructor hangs off - kept in a
-        /// field for the adapter lifetime because ColorValuesChanged only lives as long as the UISettings
-        /// instance does, so a local would be collected and the notification would never arrive.
+        /// ColorValuesChanged is only raised as long as the UISettings instance is alive.
         /// </summary>
         private readonly UISettings _uiSettings;
 
-        // Backs LoadFontFaceFontInt's temp-file registration - CanvasFontSet's documented in-memory story
-        // is a file Uri, mirroring WPF's own Fonts.GetFontFamilies(Uri) constraint (see that class's own
-        // remarks) - one directory per process, cleaned up by the OS's normal temp-file housekeeping.
+        /// <summary>
+        /// Win2D can only load a font set from a file, so the <c>@font-face</c> fonts are written to this directory.
+        /// </summary>
         private static readonly string _fontFaceTempDirectory = CreateFontFaceTempDirectory();
 
-        private static string CreateFontFaceTempDirectory()
-        {
-            var dir = Path.Combine(Path.GetTempPath(), "HtmlRenderer.FontFace." + Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(dir);
-            return dir;
-        }
+        /// <summary>
+        /// Cached app theme, null when it needs to be re-read.
+        /// </summary>
+        private RColorScheme? _colorScheme;
 
         #endregion
 
@@ -99,8 +95,6 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
         {
             _device = CanvasDevice.GetSharedDevice();
 
-            // Interactive UI backend - fetching a real http(s): image or stylesheet out of the box is the
-            // expected behavior, same reasoning as WpfAdapter's own constructor.
             NetworkLoader = new HttpClientNetworkLoader(_sharedHttpClient, (Uri)null);
 
             AddFontFamilyMapping("monospace", "Courier New");
@@ -127,8 +121,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
             }
             catch
             {
-                // System font enumeration is a nice-to-have (helps IsFontExists recognize installed
-                // families upfront); its failure shouldn't prevent the adapter itself from initializing.
+                // Without the system fonts, families are still resolved by name when the font is created
             }
 
             _uiSettings = new UISettings();
@@ -158,8 +151,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
         }
 
         /// <summary>
-        /// Rendering onto a Windows surface, so the document should follow the user's app theme.
-        /// Cached and invalidated on a system preference change rather than read per query.
+        /// The user's app theme, cached until the system colors change.
         /// </summary>
         public override RColorScheme SystemColorScheme
         {
@@ -172,11 +164,6 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
                 return _colorScheme.Value;
             }
         }
-
-        /// <summary>
-        /// Cached app theme; null when it needs to be re-read.
-        /// </summary>
-        private RColorScheme? _colorScheme;
 
         protected override RColor GetColorInt(string colorName)
         {
@@ -226,9 +213,17 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
 
         protected override RImage ImageFromStreamInt(Stream memoryStream)
         {
-            var randomAccessStream = ToRandomAccessStreamAsync(memoryStream).GetAwaiter().GetResult();
-            var bitmap = CanvasBitmap.LoadAsync(_device, randomAccessStream).AsTask().GetAwaiter().GetResult();
-            return new ImageAdapter(bitmap);
+            // Blocking is fine as long as no continuation needs the calling thread, which may be the UI thread
+            using (var memory = new MemoryStream())
+            {
+                memoryStream.CopyTo(memory);
+                memory.Position = 0;
+                using (var randomAccessStream = memory.AsRandomAccessStream())
+                {
+                    var bitmap = CanvasBitmap.LoadAsync(_device, randomAccessStream).AsTask().GetAwaiter().GetResult();
+                    return new ImageAdapter(bitmap);
+                }
+            }
         }
 
         protected override RFont CreateFontInt(string family, double size, RFontStyle style)
@@ -238,15 +233,9 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
 
         protected override RFont CreateFontInt(RFontFamily family, double size, RFontStyle style)
         {
-            return new FontAdapter(_device, ((FontFamilyAdapter)family).Name, size, style);
+            return new FontAdapter(_device, ((FontFamilyAdapter)family).TextFormatFamily, size, style);
         }
 
-        /// <summary>
-        /// Loads one <c>@font-face</c> face's bytes as a Win2D <see cref="CanvasFontSet"/> via a temp file,
-        /// mirroring <c>HtmlRenderer.WPF</c>'s own <c>WpfAdapter.LoadFontFaceFontInt</c> (same reasoning:
-        /// there is no supported in-memory-only load path). Confirmed by the plan's Step 1 spike:
-        /// <see cref="CanvasFontSet"/>'s constructor takes a single <see cref="Uri"/>, not an array.
-        /// </summary>
         protected override RFontFamily LoadFontFaceFontInt(byte[] fontBytes, string filePath)
         {
             var faceDirectory = Path.Combine(_fontFaceTempDirectory, Guid.NewGuid().ToString("N"));
@@ -254,17 +243,17 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
             var tempFilePath = Path.Combine(faceDirectory, "face.ttf");
             File.WriteAllBytes(tempFilePath, fontBytes);
 
-            var fontSet = new CanvasFontSet(new Uri(tempFilePath));
-            if (fontSet.Fonts.Count == 0)
-                return null;
-
-            var name = GetPreferredFamilyName(fontSet.Fonts[0].FamilyNames);
-            return name != null ? new FontFamilyAdapter(name, fontSet) : null;
+            var fontFile = new Uri(tempFilePath);
+            using (var fontSet = new CanvasFontSet(fontFile))
+            {
+                var name = fontSet.Fonts.Count > 0 ? GetPreferredFamilyName(fontSet.Fonts[0].FamilyNames) : null;
+                return name != null ? new FontFamilyAdapter(name, fontFile) : null;
+            }
         }
 
         protected override object GetClipboardDataObjectInt(string html, string plainText)
         {
-            return ClipboardHelper.CreateDataObject(html, plainText);
+            return new ClipboardHelper.Content(html, plainText);
         }
 
         protected override void SetToClipboardInt(string text)
@@ -293,49 +282,19 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
             return new ContextMenuAdapter();
         }
 
-        /// <summary>
-        /// Show a save-file dialog and encode the image to the chosen path.
-        /// </summary>
-        /// <remarks>
-        /// An unpackaged WinUI 3 app's <see cref="FileSavePicker"/> needs an owner HWND handed to it via
-        /// <see cref="WinRT.Interop.InitializeWithWindowAttribute"/>'s runtime counterpart - resolved here
-        /// from the passed-in control's <c>XamlRoot</c> via <see cref="Win32Interop.GetWindowFromWindowId"/>,
-        /// since this adapter (a process-wide singleton) has no <c>Window</c> reference of its own to fall
-        /// back on. If no control is given, or its window can't be resolved, the save is silently skipped -
-        /// this is a real, narrow gap versus WPF's parameterless <c>SaveFileDialog.ShowDialog()</c>; see the
-        /// implementation report.
-        /// </remarks>
         protected override void SaveToFileInt(RImage image, string name, string extension, RControl control = null)
         {
-            var element = (control as ControlAdapter)?.Control;
-            if (element?.XamlRoot == null)
-                return;
-
-            var hwnd = Win32Interop.GetWindowFromWindowId(element.XamlRoot.ContentIslandEnvironment.AppWindowId);
-            if (hwnd == IntPtr.Zero)
-                return;
-
-            var picker = new FileSavePicker
-            {
-                SuggestedFileName = name,
-                DefaultFileExtension = extension,
-            };
-            picker.FileTypeChoices.Add("Image", new List<string> { ".png", ".bmp", ".jpg", ".tif", ".gif" });
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-
-            var file = picker.PickSaveFileAsync().AsTask().GetAwaiter().GetResult();
-            if (file == null)
-                return;
-
-            var format = GetBitmapFileFormat(Path.GetExtension(file.Path));
-            var bitmap = ((ImageAdapter)image).Bitmap;
-            using (var stream = file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite).AsTask().GetAwaiter().GetResult())
-            {
-                bitmap.SaveAsync(stream, format).AsTask().GetAwaiter().GetResult();
-            }
+            _ = SaveToFileAsync(((ImageAdapter)image).Bitmap, name, extension, (control as ControlAdapter)?.Control);
         }
 
         #region Private/Protected methods
+
+        private static string CreateFontFaceTempDirectory()
+        {
+            var dir = Path.Combine(Path.GetTempPath(), "HtmlRenderer.FontFace." + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(dir);
+            return dir;
+        }
 
         /// <summary>
         /// Get solid color brush for the given color.
@@ -346,11 +305,9 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
         }
 
         /// <summary>
-        /// Pick a family name from a font's family-names table, preferring the "en-us" entry (matching
-        /// WPF's own <c>XmlLanguage</c>-keyed preference in its <c>FontFamilyAdapter</c>) and falling back
-        /// to whatever entry exists first.
+        /// Pick a family name from a font's family names, preferring the "en-us" one.
         /// </summary>
-        private static string GetPreferredFamilyName(IReadOnlyDictionary<string, string> familyNames)
+        internal static string GetPreferredFamilyName(IReadOnlyDictionary<string, string> familyNames)
         {
             if (familyNames == null || familyNames.Count == 0)
                 return null;
@@ -387,31 +344,45 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
         }
 
         /// <summary>
-        /// Copy a .NET <see cref="Stream"/> into an in-memory WinRT <see cref="IRandomAccessStream"/> -
-        /// the shape Win2D's <see cref="CanvasBitmap.LoadAsync(ICanvasResourceCreator,IRandomAccessStream)"/>
-        /// needs, since <see cref="RAdapter.ImageFromStreamInt"/>'s seam only ever gives this a plain
-        /// .NET stream.
+        /// Show a save file dialog and encode the image to the chosen file.
         /// </summary>
-        private static async Task<IRandomAccessStream> ToRandomAccessStreamAsync(Stream stream)
+        /// <remarks>
+        /// The picker of an unpackaged app needs the window handle, which is taken from the control. Without a
+        /// control nothing is saved.
+        /// </remarks>
+        private static async Task SaveToFileAsync(CanvasBitmap bitmap, string name, string extension, UIElement element)
         {
-            byte[] bytes;
-            using (var memory = new MemoryStream())
-            {
-                await stream.CopyToAsync(memory).ConfigureAwait(false);
-                bytes = memory.ToArray();
-            }
+            if (element?.XamlRoot == null)
+                return;
 
-            var randomAccessStream = new InMemoryRandomAccessStream();
-            using (var writer = new DataWriter(randomAccessStream.GetOutputStreamAt(0)))
-            {
-                writer.WriteBytes(bytes);
-                await writer.StoreAsync();
-                await writer.FlushAsync();
-                writer.DetachStream();
-            }
+            var hwnd = Win32Interop.GetWindowFromWindowId(element.XamlRoot.ContentIslandEnvironment.AppWindowId);
+            if (hwnd == IntPtr.Zero)
+                return;
 
-            randomAccessStream.Seek(0);
-            return randomAccessStream;
+            try
+            {
+                var picker = new FileSavePicker
+                {
+                    SuggestedFileName = name,
+                    DefaultFileExtension = extension,
+                };
+                picker.FileTypeChoices.Add("Image", new List<string> { ".png", ".bmp", ".jpg", ".tif", ".gif" });
+                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+
+                var file = await picker.PickSaveFileAsync();
+                if (file == null)
+                    return;
+
+                using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
+                {
+                    stream.Size = 0;
+                    await bitmap.SaveAsync(stream, GetBitmapFileFormat(Path.GetExtension(file.Path)));
+                }
+            }
+            catch (Exception ex)
+            {
+                (element as HtmlControl)?.ReportError(HtmlRenderErrorType.Image, "Failed to save the image", ex);
+            }
         }
 
         #endregion

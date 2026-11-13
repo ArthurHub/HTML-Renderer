@@ -11,176 +11,118 @@
 // "The Art of War"
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Graphics.Canvas;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using TheArtOfDev.HtmlRenderer.Core.Entities;
+using PdfSharp;
 using TheArtOfDev.HtmlRenderer.Demo.Common;
-using Windows.Storage.Streams;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace TheArtOfDev.HtmlRenderer.Demo.WinUI
 {
-    /// <summary>
-    /// Hosts a <see cref="TreeView"/> of the same showcase/test/performance samples the WPF and WinForms
-    /// demos expose (via the shared, UI-framework-agnostic <see cref="SamplesLoader"/>/<see cref="HtmlSample"/>
-    /// from <c>HtmlRenderer.Demo.Common</c>) next to a <see cref="TheArtOfDev.HtmlRenderer.WinUI.HtmlPanel"/>
-    /// that renders whichever sample is selected.
-    /// </summary>
-    /// <remarks>
-    /// Node content is a plain <see cref="string"/> (the sample/category name), matching Microsoft's own
-    /// documented <c>RootNodes</c> pattern exactly (see
-    /// https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/tree-view) - no
-    /// <see cref="TreeView.ItemTemplate"/> is needed for that case, since a string displays directly. An
-    /// earlier version wrapped each node's content in a custom object and bound it via
-    /// <c>TreeView.ItemTemplate</c>'s <c>{Binding Name}</c>, which rendered no text and never expanded -
-    /// switched to this simpler, documented shape instead of chasing the exact binding-context rules for
-    /// that pattern. <see cref="_nodeToSample"/> maps each leaf node back to its <see cref="HtmlSample"/>
-    /// since the node's own displayed Content is just its name.
-    /// </remarks>
     public sealed partial class MainWindow : Window
     {
-        private readonly Dictionary<TreeViewNode, HtmlSample> _nodeToSample = new Dictionary<TreeViewNode, HtmlSample>();
-
         public MainWindow()
         {
             InitializeComponent();
 
-            Title = "HTML Renderer - WinUI 3 Demo";
-
-            // Unlike the WPF/WinForms demo windows, a WinUI 3 window does not pick up the executable
-            // icon stamped by the csproj ApplicationIcon property, so the title bar and taskbar show the
-            // generic default until AppWindow is pointed at the .ico explicitly. BaseDirectory rather
-            // than a relative path: SetIcon resolves against the working directory, which is not the app
-            // directory when the demo is launched from elsewhere.
-            AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "html.ico"));
-
-            SamplesLoader.Init("WinUI", typeof(TheArtOfDev.HtmlRenderer.WinUI.HtmlRender).Assembly.GetName().Version.ToString());
-
-            // Without this, showcase samples' <link rel="Stylesheet" href="StyleSheet"> never resolves, so
-            // e.g. Intro.htm's `.whitehole { background-color:white; border-radius:10px }` class is simply
-            // never applied at all - not a paint bug, the rule itself never loads. DemoUtils.OnStylesheetLoad
-            // is the same platform-agnostic handler the WPF/WinForms demos use.
-            RendererPanel.StylesheetLoad += DemoUtils.OnStylesheetLoad;
-
-            // Same idea as StylesheetLoad above: samples reference icons by logical key (e.g.
-            // src="HtmlIcon") that DemoUtils.GetImageStream resolves to an embedded resource - without
-            // this, every such <img> falls through to the built-in "failed to load" icon instead.
-            RendererPanel.ImageLoad += OnImageLoad;
-
-            LoadSamples();
+            WindowHelper.Setup(this, "HTML Renderer WinUI Demo", 0.7, 0.8);
         }
 
-        private void LoadSamples()
+        /// <summary>
+        /// Open sample window.
+        /// </summary>
+        private void OnOpenSampleWindow_Click(object sender, RoutedEventArgs e)
         {
-            var showcaseRoot = new TreeViewNode { Content = "HTML Renderer" };
-            SamplesTreeView.RootNodes.Add(showcaseRoot);
-            foreach (var sample in SamplesLoader.ShowcaseSamples)
-                AddSampleNode(showcaseRoot, sample);
-
-            var testSamplesRoot = new TreeViewNode { Content = "Test Samples" };
-            SamplesTreeView.RootNodes.Add(testSamplesRoot);
-            foreach (var sample in SamplesLoader.TestSamples)
-                AddSampleNode(testSamplesRoot, sample);
-
-            if (SamplesLoader.PerformanceSamples.Count > 0)
-            {
-                var perfSamplesRoot = new TreeViewNode { Content = "Performance Samples" };
-                SamplesTreeView.RootNodes.Add(perfSamplesRoot);
-                foreach (var sample in SamplesLoader.PerformanceSamples)
-                    AddSampleNode(perfSamplesRoot, sample);
-            }
-
-            showcaseRoot.IsExpanded = true;
-            if (showcaseRoot.Children.Count > 0)
-            {
-                var firstNode = showcaseRoot.Children[0];
-                SamplesTreeView.SelectedNode = firstNode;
-                ShowSample(_nodeToSample[firstNode]);
-            }
+            new SampleWindow().Activate();
         }
 
-        private void AddSampleNode(TreeViewNode root, HtmlSample sample)
+        /// <summary>
+        /// Toggle if to show split view of HtmlPanel and WebView2 control.
+        /// </summary>
+        private void OnShowBrowserView_Click(object sender, RoutedEventArgs e)
         {
-            var node = new TreeViewNode { Content = sample.Name };
-            _nodeToSample[node] = sample;
-            root.Children.Add(node);
+            _mainControl.ShowWebBrowserView(_showBrowserView.IsChecked == true);
         }
 
-        private void OnSamplesTreeViewSelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs args)
+        /// <summary>
+        /// Open the current html in the default browser.
+        /// </summary>
+        private void OnOpenExternal_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var node in sender.SelectedNodes)
-            {
-                if (_nodeToSample.TryGetValue(node, out var sample))
-                {
-                    ShowSample(sample);
-                    break;
-                }
-            }
+            var tmpFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".htm");
+            File.WriteAllText(tmpFile, _mainControl.GetHtml());
+            Process.Start(new ProcessStartInfo(tmpFile) { UseShellExecute = true });
         }
 
-        private void ShowSample(HtmlSample sample)
+        /// <summary>
+        /// Toggle the use generated html button state.
+        /// </summary>
+        private void OnUseGeneratedHtml_Click(object sender, RoutedEventArgs e)
+        {
+            _mainControl.UseGeneratedHtml = _useGeneratedHtml.IsChecked == true;
+            _mainControl.UpdateWebBrowserHtml();
+        }
+
+        /// <summary>
+        /// Open generate image window for the current html.
+        /// </summary>
+        private void OnGenerateImage_Click(object sender, RoutedEventArgs e)
+        {
+            new GenerateImageWindow(_mainControl.GetHtml()).Activate();
+        }
+
+        /// <summary>
+        /// Create PDF using PdfSharp project, save to file and open that file.
+        /// </summary>
+        private async void OnGeneratePdf_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                RendererPanel.AvoidImagesLateLoading = !sample.FullName.Contains("Many images");
-                RendererPanel.Text = sample.Html;
+                var config = new PdfGenerateConfig();
+                config.PageSize = PageSize.A4;
+                config.SetMargins(20);
+
+                var html = _mainControl.GetHtml();
+
+                // Off the UI thread, as the image conversion blocks on Win2D
+                var pdfFile = await Task.Run(async () =>
+                {
+                    var doc = await PdfGenerator.GeneratePdf(html, config, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoadPdfSharp);
+                    var file = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".pdf");
+                    doc.Save(file);
+                    return file;
+                });
+
+                Process.Start(new ProcessStartInfo(pdfFile) { UseShellExecute = true });
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                await WindowHelper.ShowMessageAsync(Content.XamlRoot, ex.ToString(), "Failed to generate PDF");
             }
         }
 
         /// <summary>
-        /// Resolves the demo's logical icon keys (e.g. <c>src="HtmlIcon"</c>) via
-        /// <see cref="DemoUtils.GetImageStream"/> - real URLs/paths DemoUtils doesn't recognize fall
-        /// through untouched (<see cref="HtmlImageLoadEventArgs.Handled"/> left false) so the default
-        /// loader still handles them.
+        /// Execute performance test by setting all sample HTMLs in a loop.
         /// </summary>
-        private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
+        private async void OnRunPerformance_Click(object sender, RoutedEventArgs e)
         {
-            var stream = DemoUtils.GetImageStream(e.Src);
-            if (stream == null)
-                return;
+            _mainControl.UpdateLock = true;
+            _toolBar.IsEnabled = false;
 
-            e.Handled = true;
-            _ = LoadIconAsync(e, stream);
-        }
+            // There's no paint in between, unlike WinForms and WPF, WinUI has no way to pump the messages
+            var msg = DemoUtils.RunSamplesPerformanceTest(_mainControl.SetHtml);
 
-        private static async Task LoadIconAsync(HtmlImageLoadEventArgs e, Stream stream)
-        {
-            try
-            {
-                byte[] bytes;
-                using (stream)
-                using (var memory = new MemoryStream())
-                {
-                    await stream.CopyToAsync(memory).ConfigureAwait(false);
-                    bytes = memory.ToArray();
-                }
+            var dataPackage = new DataPackage();
+            dataPackage.SetText(msg);
+            Clipboard.SetContent(dataPackage);
 
-                using var randomAccessStream = new InMemoryRandomAccessStream();
-                using (var writer = new DataWriter(randomAccessStream.GetOutputStreamAt(0)))
-                {
-                    writer.WriteBytes(bytes);
-                    await writer.StoreAsync();
-                    await writer.FlushAsync();
-                    writer.DetachStream();
-                }
-                randomAccessStream.Seek(0);
+            await WindowHelper.ShowMessageAsync(Content.XamlRoot, msg, "Test run results");
 
-                var bitmap = await CanvasBitmap.LoadAsync(CanvasDevice.GetSharedDevice(), randomAccessStream);
-                e.Callback(bitmap);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                e.Callback();
-            }
+            _mainControl.UpdateLock = false;
+            _toolBar.IsEnabled = true;
         }
     }
 }

@@ -41,8 +41,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
             get { return _bitmap; }
         }
 
-        // Device pixels, matching WPF's own choice (PixelWidth/PixelHeight) rather than DIPs
-        // (CanvasBitmap.Size), so image layout matches native resolution the same way across both backends.
+        // Pixels rather than DIPs, so the image's DPI doesn't change its layout size
         public override double Width
         {
             get { return _bitmap.SizeInPixels.Width; }

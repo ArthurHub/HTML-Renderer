@@ -5,30 +5,29 @@
     <OutputType>Library</OutputType>
     <RootNamespace>TheArtOfDev.HtmlRenderer.WinUI</RootNamespace>
     <UseWinUI>true</UseWinUI>
-    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-    <WindowsPackageType>None</WindowsPackageType>
-    <WindowsAppSDKSelfContained>false</WindowsAppSDKSelfContained>
+    <!-- The library only needs Win2D's managed projection, the app picks the native DLL for its platform -->
+    <Win2DWarnNoPlatform>false</Win2DWarnNoPlatform>
   </PropertyGroup>
   <!-- NuGet Package Properties -->
   <PropertyGroup>
     <PackageId>HtmlRenderer.WinUI</PackageId>
     <Title>HTML Renderer for WinUI 3</Title>
-    <PackageTags>html render renderer draw control WinUI Win2D</PackageTags>
+    <PackageTags>html render renderer draw control WinUI WinUI3 Win2D WindowsAppSDK</PackageTags>
     <Description>Multipurpose (UI Controls / Image generation), 100% managed (C#), High performance HTML Rendering library for WinUI 3.
 
-HTML UI in .NET WinUI 3 applications using controls or static rendering.
+HTML UI in .NET WinUI 3 applications using controls or static rendering, drawn with Win2D.
 
 Features and Benefits:
 ---
 * Controls: HtmlPanel, HtmlLabel.
 * Create images from HTML snippets.
-* 100% managed code and no external dependencies, no ActiveX, no MSHTML.
+* 100% managed code, no ActiveX, no MSHTML, no WebView2.
 * Extensive HTML 4.01 and CSS level 2 specifications support.
 * Support separating CSS from HTML by loading stylesheet code separately.
-* Support text selection, copy-paste and context menu.
+* Support text selection, copy-paste, drag &amp; drop and context menu.
 * Handles "real world" malformed HTML, it doesn't have to be XHTML.
-* Lightweight, only two DLLs (~300K).
+* Works with Windows App SDK 1.8 or newer.
 * High performance and low memory footprint.
 * Extendable and configurable.</Description>
     <Summary>Multipurpose (UI Controls / Image generation), 100% managed (C#), High performance HTML Rendering library for WinUI 3.</Summary>
@@ -37,8 +36,8 @@ Features and Benefits:
     <ProjectReference Include="..\HtmlRenderer\HtmlRenderer.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.5" />
-    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.4.*" />
+    <!-- Brings in WinUI from Windows App SDK 1.8, a newer Windows App SDK of the app takes precedence -->
+    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\"/>

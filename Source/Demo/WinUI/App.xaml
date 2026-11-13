@@ -1,14 +1,12 @@
 <Application
     x:Class="TheArtOfDev.HtmlRenderer.Demo.WinUI.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    RequestedTheme="Light">
+    <!-- Light, as the HTML panels and the RTF editors are white with dark text -->
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Supplies the shared theme resources (e.g. TabViewButtonBackground) that TreeView's
-                     own default style depends on - without this, any non-trivial control throws a
-                     XamlParseException at InitializeComponent time because those keys don't exist. -->
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

@@ -1,0 +1,45 @@
+<Window
+    x:Class="TheArtOfDev.HtmlRenderer.Demo.WinUI.SampleWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:html="using:TheArtOfDev.HtmlRenderer.WinUI">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="10" ColumnSpacing="10" RowSpacing="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="6*"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="Html Label"/>
+        <Border Grid.Row="1">
+            <!-- Shows through the transparent background of the label -->
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="White" Offset="0"/>
+                    <GradientStop Color="LightSteelBlue" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <html:HtmlLabel x:Name="_htmlLabel" AutoSizeHeightOnly="True" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8"/>
+        </Border>
+        <TextBlock Grid.Row="2" Text="Html Panel"/>
+        <html:HtmlPanel x:Name="_htmlPanel" Grid.Row="3"/>
+        <ScrollViewer Grid.Row="0" Grid.RowSpan="4" Grid.Column="1">
+            <StackPanel Spacing="4">
+                <TextBlock x:Name="_selectedControlText" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                <TextBlock Text="Click on a control to edit its properties" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <CheckBox x:Name="_isSelectionEnabled" Content="IsSelectionEnabled" Click="OnPropertyChanged"/>
+                <CheckBox x:Name="_isContextMenuEnabled" Content="IsContextMenuEnabled" Click="OnPropertyChanged"/>
+                <CheckBox x:Name="_avoidImagesLateLoading" Content="AvoidImagesLateLoading" Click="OnPropertyChanged"/>
+                <CheckBox x:Name="_autoSize" Content="AutoSize" Click="OnPropertyChanged"/>
+                <CheckBox x:Name="_autoSizeHeightOnly" Content="AutoSizeHeightOnly" Click="OnPropertyChanged"/>
+                <TextBox x:Name="_text" Header="Text" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="120"/>
+                <TextBox x:Name="_baseStylesheet" Header="BaseStylesheet" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60"/>
+                <Button Content="Apply" Click="OnPropertyChanged"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

@@ -21,10 +21,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
     /// Adapter for Win2D pen (stroke) objects for core.
     /// </summary>
     /// <remarks>
-    /// Win2D has no standalone "pen" object the way GDI+/WPF do - stroking is expressed as a
-    /// (brush, width, <see cref="CanvasStrokeStyle"/>) triple passed to each
-    /// <c>CanvasDrawingSession.Draw*</c> call. This adapter lazily materializes that triple, mirroring
-    /// <c>HtmlRenderer.WPF</c>'s own <c>PenAdapter</c>'s lazy <c>CreatePen()</c> pattern.
+    /// Win2D has no pen, brush, width and stroke style are passed to every draw call.
     /// </remarks>
     internal sealed class PenAdapter : RPen
     {

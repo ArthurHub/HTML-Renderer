@@ -6,12 +6,8 @@
     <RootNamespace>TheArtOfDev.HtmlRenderer.Demo.WinUI</RootNamespace>
     <AssemblyName>HtmlRendererWinUIDemo</AssemblyName>
     <UseWinUI>true</UseWinUI>
-    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-    <!-- Unpackaged WinUI 3 app: WindowsPackageType=None + a self-contained deploy (both the .NET runtime
-         and the Windows App SDK runtime), since an unpackaged app has no MSIX identity to resolve a
-         framework-package dependency through - a genuinely new deployment concern the WPF/WinForms demos
-         don't have (see the plan's Decisions section). -->
+    <!-- Unpackaged and self-contained, so the demo runs without installing the .NET and Windows App SDK runtimes -->
     <WindowsPackageType>None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
@@ -23,8 +19,7 @@
     <ApplicationIcon>html.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <!-- ApplicationIcon alone only stamps the .exe resource; MainWindow also loads this file at runtime
-         to set the window/taskbar icon, which a WinUI 3 window does not take from the exe on its own. -->
+    <!-- Loaded by the windows, the icon of the executable isn't used for them -->
     <Content Include="html.ico" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <Target Name="HideWindowsAppSDKPayloadFiles" AfterTargets="AddMicrosoftWindowsAppSDKPayloadFilesFromComponents">
@@ -34,12 +29,13 @@
     </ItemGroup>
   </Target>
   <ItemGroup>
+    <ProjectReference Include="..\..\HtmlRenderer.PdfSharp\HtmlRenderer.PdfSharp.csproj" />
     <ProjectReference Include="..\..\HtmlRenderer.WinUI\HtmlRenderer.WinUI.csproj" />
     <ProjectReference Include="..\..\HtmlRenderer\HtmlRenderer.csproj" />
     <ProjectReference Include="..\Common\HtmlRenderer.Demo.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.5" />
-    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.4.*" />
+    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
   </ItemGroup>
 </Project>
