@@ -141,7 +141,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// </summary>
         private void Layout(RGraphics g)
         {
-            MeasureWords(_tableBox, g);
+            _tableBox.MeasureDescendantWordsSize(g);
 
             // get the table boxes into the proper fields
             AssignBoxKinds();
@@ -888,23 +888,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Recursively measures words inside the box
-        /// </summary>
-        /// <param name="box">the box to measure</param>
-        /// <param name="g">Device to use</param>
-        private static void MeasureWords(CssBox box, RGraphics g)
-        {
-            if (box != null)
-            {
-                foreach (var childBox in box.Boxes)
-                {
-                    childBox.MeasureWordsSize(g);
-                    MeasureWords(childBox, g);
-                }
-            }
         }
 
         /// <summary>

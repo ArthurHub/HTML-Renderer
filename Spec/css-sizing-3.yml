@@ -74,7 +74,6 @@ sections:
     title: 5.1 Intrinsic Sizes
     status: partial
     gaps:
-      - The fit-content width of an auto width float is computed before its content is measured, see CSS 2.1 10.3.5
       - An auto width inline-block wider than the line wraps across lines instead of shrinking, see CSS 2.1 10.3.9
   '#intrinsic-contribution':
     title: 5.2 Intrinsic Contributions
