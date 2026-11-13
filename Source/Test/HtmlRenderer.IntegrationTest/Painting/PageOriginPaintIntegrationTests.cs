@@ -11,7 +11,9 @@ namespace HtmlRenderer.IntegrationTest.Painting;
 /// Where fragment content lands on the painted surface: a PDF page keeps its top margin, and the continuous
 /// (non-paged) surface paints everything even when the container doesn't start at Y=0.
 /// </summary>
+// Parallel full layout passes race on the adapter singletons.
 [TestClass]
+[DoNotParallelize]
 public sealed class PageOriginPaintIntegrationTests
 {
     [TestMethod]

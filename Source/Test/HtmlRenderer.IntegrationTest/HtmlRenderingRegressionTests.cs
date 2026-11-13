@@ -9,7 +9,9 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace HtmlRenderer.IntegrationTest;
 
+// Parallel full layout passes race on the adapter singletons.
 [TestClass]
+[DoNotParallelize]
 public sealed class HtmlRenderingRegressionTests
 {
     private const int MaxWidth = 1200;
@@ -36,7 +38,6 @@ public sealed class HtmlRenderingRegressionTests
             $"Consecutive <br> elements should add an empty line. One break: {oneBreak.Height}px; two breaks: {consecutiveBreaks.Height}px.");
     }
 
-    [DoNotParallelize]
     [TestMethod]
     [DynamicData(nameof(GetSamples), DynamicDataDisplayName = nameof(GetSampleDisplayName))]
     public async Task Render_DemoTestSample_MatchesBaselineImage(string sampleName, string sampleHtml)

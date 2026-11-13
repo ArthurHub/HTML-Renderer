@@ -7,7 +7,9 @@ using TheArtOfDev.HtmlRenderer.PdfSharp;
 
 namespace HtmlRenderer.PdfSharp.Test;
 
+// Parallel full layout passes race on the adapter singletons.
 [TestClass]
+[DoNotParallelize]
 public sealed class PdfGeneratorTests
 {
     [TestMethod]
