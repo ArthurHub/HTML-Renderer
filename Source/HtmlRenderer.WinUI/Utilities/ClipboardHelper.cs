@@ -15,37 +15,37 @@ using Windows.ApplicationModel.DataTransfer;
 namespace TheArtOfDev.HtmlRenderer.WinUI.Utilities
 {
     /// <summary>
-    /// Helper to set HTML fragment and plain text data to the clipboard.
+    /// Helper to set HTML fragment and plain text data to the clipboard or a drag operation.
     /// </summary>
-    /// <remarks>
-    /// <c>HtmlRenderer.WPF</c>'s own <see cref="System.Windows.DataObject"/>-based helper hand-builds the
-    /// full CF_HTML header (<c>Version:</c>/<c>StartHTML:</c>/<c>EndHTML:</c>/<c>StartFragment:</c>/
-    /// <c>EndFragment:</c> with byte offsets computed via manual UTF-8 byte counting) because WPF's own
-    /// clipboard API has no higher-level "give me an HTML fragment, I'll build the header" helper.
-    /// <para>
-    /// The WinRT clipboard API does: <see cref="HtmlFormatHelper.CreateHtmlFormat"/> takes a plain HTML
-    /// fragment string and returns it already wrapped in a correct CF_HTML header (offsets included), and
-    /// <see cref="DataPackage.SetHtmlFormat"/> is documented to accept exactly that pre-built CF_HTML
-    /// string. That makes WPF's entire byte-offset-arithmetic <c>GetHtmlDataString</c> implementation
-    /// (StartFragment/EndFragment comment injection, UTF-8 byte counting, header back-patching)
-    /// unnecessary here - confirmed during implementation per the plan's Step 6 note anticipating exactly
-    /// this outcome.
-    /// </para>
-    /// </remarks>
     internal static class ClipboardHelper
     {
         /// <summary>
-        /// Create a <see cref="DataPackage"/> with given html and plain-text ready to be used for clipboard
-        /// or drag-drop operation.
+        /// HTML fragment and plain text to put on the clipboard or drag.
         /// </summary>
-        /// <param name="html">a html fragment</param>
-        /// <param name="plainText">the plain text</param>
-        public static DataPackage CreateDataObject(string html, string plainText)
+        /// <remarks>
+        /// A drag operation brings its own <see cref="DataPackage"/>, so the content is kept separate from it.
+        /// </remarks>
+        public sealed class Content
         {
-            var dataPackage = new DataPackage();
-            dataPackage.SetHtmlFormat(HtmlFormatHelper.CreateHtmlFormat(html ?? string.Empty));
-            dataPackage.SetText(plainText ?? string.Empty);
-            return dataPackage;
+            public Content(string html, string plainText)
+            {
+                Html = html ?? string.Empty;
+                PlainText = plainText ?? string.Empty;
+            }
+
+            public string Html { get; }
+
+            public string PlainText { get; }
+        }
+
+        /// <summary>
+        /// Set the given content as HTML and plain text on the data package.
+        /// </summary>
+        public static void Fill(DataPackage dataPackage, Content content)
+        {
+            // CreateHtmlFormat builds the CF_HTML header with its byte offsets
+            dataPackage.SetHtmlFormat(HtmlFormatHelper.CreateHtmlFormat(content.Html));
+            dataPackage.SetText(content.PlainText);
         }
 
         /// <summary>
@@ -55,7 +55,9 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Utilities
         /// <param name="plainText">the plain text</param>
         public static void CopyToClipboard(string html, string plainText)
         {
-            Clipboard.SetContent(CreateDataObject(html, plainText));
+            var dataPackage = new DataPackage();
+            Fill(dataPackage, new Content(html, plainText));
+            Clipboard.SetContent(dataPackage);
         }
 
         /// <summary>
