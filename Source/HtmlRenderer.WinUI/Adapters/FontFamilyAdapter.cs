@@ -10,7 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using Microsoft.Graphics.Canvas.Text;
+using System;
 using TheArtOfDev.HtmlRenderer.Adapters;
 
 namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
@@ -18,48 +18,39 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
     /// <summary>
     /// Adapter for Win2D/DirectWrite font family object for core.
     /// </summary>
-    /// <remarks>
-    /// Unlike WPF's <see cref="System.Windows.Media.FontFamily"/>, which is itself the object that must
-    /// stay alive to keep a loaded font usable, Win2D/DirectWrite resolves a <see cref="CanvasTextFormat.FontFamily"/>
-    /// string by name at layout-construction time. For an <c>@font-face</c> family that name only resolves
-    /// while the backing <see cref="CanvasFontSet"/> that registered it is still alive - so this adapter
-    /// holds a strong reference to that font set (null for ordinary system-installed families) purely to
-    /// keep it from being garbage collected for as long as this <see cref="RFontFamily"/> handle is
-    /// referenced (by <see cref="TheArtOfDev.HtmlRenderer.Core.Handlers.FontsHandler"/>'s own cache).
-    /// </remarks>
     internal sealed class FontFamilyAdapter : RFontFamily
     {
         /// <summary>
-        /// the family name, as resolved by DirectWrite at text-layout time.
+        /// the family name.
         /// </summary>
         private readonly string _name;
 
         /// <summary>
-        /// Strong reference to the backing font set for an <c>@font-face</c> family, keeping it alive for
-        /// as long as this handle is referenced. Null for ordinary system-installed families.
+        /// The font file of an <c>@font-face</c> or custom family, null for system families.
         /// </summary>
-        private readonly CanvasFontSet _fontSet;
+        private readonly Uri _fontFile;
 
         /// <summary>
         /// Init.
         /// </summary>
-        public FontFamilyAdapter(string name, CanvasFontSet fontSet = null)
+        public FontFamilyAdapter(string name, Uri fontFile = null)
         {
             _name = name;
-            _fontSet = fontSet;
-        }
-
-        /// <summary>
-        /// the backing font set for an <c>@font-face</c> family, or null for an ordinary system family.
-        /// </summary>
-        public CanvasFontSet FontSet
-        {
-            get { return _fontSet; }
+            _fontFile = fontFile;
         }
 
         public override string Name
         {
             get { return _name; }
+        }
+
+        /// <summary>
+        /// The family for <see cref="Microsoft.Graphics.Canvas.Text.CanvasTextFormat.FontFamily"/>, DirectWrite
+        /// only finds a family that isn't installed with the font file in front of the name.
+        /// </summary>
+        public string TextFormatFamily
+        {
+            get { return _fontFile != null ? _fontFile.AbsoluteUri + "#" + _name : _name; }
         }
     }
 }

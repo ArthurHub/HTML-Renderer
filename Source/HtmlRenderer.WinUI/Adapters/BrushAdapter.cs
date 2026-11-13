@@ -42,27 +42,10 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
         }
 
         /// <summary>
-        /// No-op, matching <c>HtmlRenderer.WPF</c>'s own <c>BrushAdapter.Dispose</c> exactly.
+        /// Does nothing, the core also disposes the cached solid brushes, which would break their next use.
         /// </summary>
         /// <remarks>
-        /// <see cref="Core.Dom.CssBox.PaintBackground"/> calls <c>brush.Dispose()</c> unconditionally
-        /// after every background fill, including for solid-color brushes obtained from
-        /// <see cref="TheArtOfDev.HtmlRenderer.Adapters.RAdapter.GetSolidBrush"/> - which is a
-        /// process-wide singleton CACHE (see that method's own doc comment: "cached... instance"),
-        /// reused for the lifetime of the adapter, not a fresh per-call resource. WPF's <c>Brush</c>
-        /// needs no real disposal, so that unconditional call is harmless there - it's the reason this
-        /// pattern was never caught before. Win2D's <see cref="ICanvasBrush"/> is a real unmanaged/GPU
-        /// resource: actually disposing it here permanently kills the shared cached brush for every
-        /// color after its first use, so the SECOND time any element needs (for example) a white
-        /// background, the disposed brush silently paints nothing - confirmed by reproducing exactly
-        /// this symptom (background-color:white showing the page's own gradient background through
-        /// instead) via two consecutive real <see cref="HtmlContainer.PerformPaint"/> calls against the
-        /// same document. Not disposing here leaks gradient/texture brushes (the one kind of
-        /// <see cref="RBrush"/> that genuinely is fresh-per-call, from
-        /// <see cref="WinUIAdapter.CreateLinearGradientBrush"/>/<see cref="GraphicsAdapter.GetTextureBrush"/>)
-        /// - accepted deliberately, mirroring WPF's identical no-op for its own gradient/texture
-        /// <c>Brush</c> objects, since the alternative (silently breaking every cached solid-color fill
-        /// after its first paint) is far worse than a small, bounded resource lifetime extension.
+        /// Gradient and texture brushes aren't cached, they're left to the finalizer.
         /// </remarks>
         public override void Dispose()
         {

@@ -33,16 +33,12 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
         #region Fields and Consts
 
         /// <summary>
-        /// The wrapped Win2D drawing session - null for a measure-only instance (see the parameterless/
-        /// device-only constructors), matching <c>HtmlRenderer.WPF</c>'s own <c>GraphicsAdapter</c>'s
-        /// null-<c>DrawingContext</c> measure-only mode.
+        /// The Win2D drawing session, null for a measure-only instance.
         /// </summary>
         private readonly CanvasDrawingSession _g;
 
         /// <summary>
-        /// The device used to build measurement-only <see cref="CanvasTextLayout"/>/<see cref="CanvasPathBuilder"/>
-        /// instances - Win2D's text/geometry APIs need a live device even when there's no drawing session
-        /// (unlike WPF's <see cref="System.Windows.Media.FormattedText"/>, which needs none).
+        /// Text layouts and geometries need a device, also when only measuring.
         /// </summary>
         private readonly CanvasDevice _device;
 
@@ -52,17 +48,13 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
         private readonly bool _releaseGraphics;
 
         /// <summary>
-        /// The stack of active Win2D clip layers, one pushed per <see cref="PushClip"/>/<see cref="PushClipExclude"/>
-        /// call - Win2D layers are <see cref="IDisposable"/> and must be disposed in LIFO order, unlike
-        /// WPF's <see cref="System.Windows.Media.DrawingContext.Pop"/>, which needs no such bookkeeping.
+        /// The active clip layers, one per <see cref="PushClip"/>/<see cref="PushClipExclude"/>, disposed in reverse order.
         /// </summary>
         private readonly Stack<ClipLayer> _layerStack = new Stack<ClipLayer>();
 
         /// <summary>
-        /// A single entry of <see cref="_layerStack"/>: the pushed Win2D layer and, for
-        /// <see cref="PushClipExclude"/>, the geometry masking it. The mask has to outlive the layer - D2D
-        /// reads it until the layer is popped - so the two are released together in <see cref="PopClip"/>.
-        /// Both are null on a measure-only instance, which has no session to push a layer on.
+        /// A clip layer and the geometry masking it, D2D reads the mask until the layer is popped.
+        /// Both are null on a measure-only instance.
         /// </summary>
         private readonly struct ClipLayer
         {
@@ -135,9 +127,6 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
         public override void PushClip(RRect rect)
         {
             _clipStack.Push(rect);
-
-            // Measure-only instance - the clip is still tracked for layout, but there is no session to
-            // push it onto (same null-session guard as SetAntiAliasSmoothingMode below).
             _layerStack.Push(_g != null
                 ? new ClipLayer(_g.CreateLayer(1f, Utils.Convert(rect)), null)
                 : new ClipLayer(null, null));
@@ -154,9 +143,6 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
                 return;
             }
 
-            // full/excluded are only inputs to the combine, so they are released right away; combined is
-            // handed to the layer and released with it. All three are unmanaged D2D resources created on
-            // every clip-exclude of every paint, so none of them can be left to the finalizer.
             CanvasGeometry combined;
             using (var full = CanvasGeometry.CreateRectangle(_device, Utils.Convert(current)))
             using (var excluded = CanvasGeometry.CreateRectangle(_device, Utils.Convert(rect)))
@@ -185,31 +171,9 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
 
         public override RSize MeasureString(string str, RFont font)
         {
-            var fontAdapter = (FontAdapter)font;
-            using (var layout = new CanvasTextLayout(_device, str, fontAdapter.TextFormat, float.MaxValue, float.MaxValue))
+            using (var layout = new CanvasTextLayout(_device, str, ((FontAdapter)font).TextFormat, float.MaxValue, float.MaxValue))
             {
-                var width = layout.LayoutBounds.Width;
-                if (width <= 0 && str.Length > 0)
-                {
-                    // CanvasTextLayout.LayoutBounds is an ink-bounds rectangle that excludes trailing
-                    // whitespace advance entirely - a string made up only of whitespace (notably the single
-                    // space GetWhitespaceWidth measures, and cached forever once wrong) always comes back
-                    // as zero-width. Recover the true advance width via an append-a-sentinel-glyph trick:
-                    // lay out str+sentinel and sentinel alone: the difference is str's own advance width.
-                    width = MeasureAdvanceWidthViaSentinel(str, fontAdapter);
-                }
-                return new RSize(width, font.Height);
-            }
-        }
-
-        private double MeasureAdvanceWidthViaSentinel(string str, FontAdapter fontAdapter)
-        {
-            const string sentinel = "|";
-            using (var combined = new CanvasTextLayout(_device, str + sentinel, fontAdapter.TextFormat, float.MaxValue, float.MaxValue))
-            using (var sentinelOnly = new CanvasTextLayout(_device, sentinel, fontAdapter.TextFormat, float.MaxValue, float.MaxValue))
-            {
-                var width = combined.LayoutBounds.Width - sentinelOnly.LayoutBounds.Width;
-                return width > 0 ? width : 0;
+                return new RSize(layout.LayoutBoundsIncludingTrailingWhitespace.Width, font.Height);
             }
         }
 
@@ -225,10 +189,11 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
                     return;
                 }
 
-                if (layout.LayoutBounds.Width <= maxWidth)
+                var width = layout.LayoutBoundsIncludingTrailingWhitespace.Width;
+                if (width <= maxWidth)
                 {
                     charFit = str.Length;
-                    charFitWidth = layout.LayoutBounds.Width;
+                    charFitWidth = width;
                     return;
                 }
 
@@ -240,10 +205,8 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
                 }
                 else
                 {
-                    // Beyond the text's own extent but MeasureString(str,font) said it doesn't fit maxWidth -
-                    // shouldn't normally happen, but fail safe to "whole string fits".
                     charFit = str.Length;
-                    charFitWidth = layout.LayoutBounds.Width;
+                    charFitWidth = width;
                 }
             }
         }

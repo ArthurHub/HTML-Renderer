@@ -350,22 +350,19 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
             ArgChecker.AssertArgNotNull(e, "e");
 
             var point = e.GetCurrentPoint(parent);
-            var isLeft = point.Properties.PointerUpdateKind == Microsoft.UI.Input.PointerUpdateKind.LeftButtonReleased
-                         || point.Properties.PointerUpdateKind == Microsoft.UI.Input.PointerUpdateKind.Other;
-            var mouseEvent = new RMouseEvent(isLeft);
+            var mouseEvent = new RMouseEvent(point.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased);
             _htmlContainerInt.HandleMouseUp(new ControlAdapter(parent), Utils.Convert(point.Position), mouseEvent);
         }
 
         /// <summary>
         /// Handle mouse double click to select word under the mouse.
         /// </summary>
-        public void HandleMouseDoubleClick(Control parent, PointerRoutedEventArgs e)
+        public void HandleMouseDoubleClick(Control parent, DoubleTappedRoutedEventArgs e)
         {
             ArgChecker.AssertArgNotNull(parent, "parent");
             ArgChecker.AssertArgNotNull(e, "e");
 
-            var point = e.GetCurrentPoint(parent);
-            _htmlContainerInt.HandleMouseDoubleClick(new ControlAdapter(parent), Utils.Convert(point.Position));
+            _htmlContainerInt.HandleMouseDoubleClick(new ControlAdapter(parent), Utils.Convert(e.GetPosition(parent)));
         }
 
         /// <summary>
