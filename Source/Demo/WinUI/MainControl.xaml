@@ -1,0 +1,56 @@
+<UserControl
+    x:Class="TheArtOfDev.HtmlRenderer.Demo.WinUI.MainControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:html="using:TheArtOfDev.HtmlRenderer.WinUI">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TreeView x:Name="_samplesTreeView" Grid.Column="0" SelectionMode="Single"
+                  SelectionChanged="OnSamplesTreeView_SelectionChanged"/>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" MinHeight="80"/>
+                <RowDefinition Height="200"/>
+            </Grid.RowDefinitions>
+            <Grid x:Name="_viewsGrid" Grid.Row="0" ColumnSpacing="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0"/>
+                </Grid.ColumnDefinitions>
+                <html:HtmlPanel x:Name="_htmlPanel" Grid.Column="0">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Padding="0">
+                            <html:HtmlLabel x:Name="_htmlTooltipLabel"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </html:HtmlPanel>
+                <WebView2 x:Name="_webView" Grid.Column="1" Visibility="Collapsed"/>
+            </Grid>
+            <Grid Grid.Row="1" ColumnSpacing="4" Padding="0,4,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Spacing="12">
+                    <TextBlock Text="Input HTML" VerticalAlignment="Center"/>
+                    <HyperlinkButton Content="Refresh" Padding="2" Click="OnRefresh_Click"/>
+                    <CheckBox x:Name="_coloredCheckBox" Content="Colored" MinWidth="0" Click="OnColored_Click"/>
+                </StackPanel>
+                <RichEditBox x:Name="_htmlEditor" Grid.Row="1" Grid.Column="0" IsSpellCheckEnabled="False"
+                             FontFamily="Consolas" TextWrapping="NoWrap" TextChanged="OnHtmlEditor_TextChanged"
+                             ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Fixed HTML" VerticalAlignment="Center"/>
+                <RichEditBox x:Name="_fixedHtmlEditor" Grid.Row="1" Grid.Column="1" IsReadOnly="True" IsSpellCheckEnabled="False"
+                             FontFamily="Consolas" TextWrapping="NoWrap"
+                             ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>
