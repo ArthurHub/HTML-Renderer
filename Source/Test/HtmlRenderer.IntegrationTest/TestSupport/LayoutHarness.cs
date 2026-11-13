@@ -58,23 +58,38 @@ internal static class LayoutHarness
             prepare(container.Root!);
         }
 
-        // CssBox.PerformLayout reports exceptions instead of throwing them
-        var layoutErrors = new List<string>();
-        container.RenderError += (_, e) =>
-        {
-            if (e.Type == HtmlRenderErrorType.Layout)
-                layoutErrors.Add(e.Message + ": " + e.Exception);
-        };
+        PerformLayout(container);
 
-        using var bitmap = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
-        using var g = Graphics.FromImage(bitmap);
-        using var graphics = new GraphicsAdapter(g, false);
-        container.PerformLayout(graphics);
-
-        Assert.IsEmpty(layoutErrors, string.Join(Environment.NewLine, layoutErrors));
         Assert.IsNotNull(container.Root);
 
         return (container.Root!, container);
+    }
+
+    /// <summary>Runs one layout pass of <paramref name="container"/>, e.g. a second one after <see cref="Layout"/>.</summary>
+    internal static void PerformLayout(HtmlContainerInt container)
+    {
+        // CssBox.PerformLayout reports exceptions instead of throwing them
+        var layoutErrors = new List<string>();
+        void OnRenderError(object? sender, HtmlRenderErrorEventArgs e)
+        {
+            if (e.Type == HtmlRenderErrorType.Layout)
+                layoutErrors.Add(e.Message + ": " + e.Exception);
+        }
+
+        container.RenderError += OnRenderError;
+        try
+        {
+            using var bitmap = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
+            using var g = Graphics.FromImage(bitmap);
+            using var graphics = new GraphicsAdapter(g, false);
+            container.PerformLayout(graphics);
+        }
+        finally
+        {
+            container.RenderError -= OnRenderError;
+        }
+
+        Assert.IsEmpty(layoutErrors, string.Join(Environment.NewLine, layoutErrors));
     }
 
     /// <summary>Wraps a body fragment in a minimal document, so a test can state only the markup it cares about.</summary>
