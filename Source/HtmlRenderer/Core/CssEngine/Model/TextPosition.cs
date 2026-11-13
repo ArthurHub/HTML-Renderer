@@ -4,7 +4,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal struct TextPosition : IEquatable<TextPosition>, IComparable<TextPosition>
     {
-        public static readonly TextPosition Empty = new TextPosition();
+        public static readonly TextPosition Empty = new();
 
         private readonly ushort _line;
         private readonly ushort _column;
@@ -22,7 +22,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public TextPosition Shift(int columns)
         {
-            return new TextPosition(_line, (ushort)(_column + columns), Position + columns);
+            return new(_line, (ushort) (_column + columns), Position + columns);
         }
 
         public TextPosition After(char chr)

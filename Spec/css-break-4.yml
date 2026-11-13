@@ -27,7 +27,7 @@ sections:
     status: partial
     gaps:
       - "'all' is rejected"
-      - "'left' and 'right' don't force a break and 'recto', 'verso', 'region' and 'avoid-region' are rejected, see css-break-3 3.1"
+      - "'left', 'right', 'recto' and 'verso' don't force a break and 'region' and 'avoid-region' are rejected, see css-break-3 3.1"
   '#break-propagation':
     title: 3.1.1 Child→Parent Break Propagation
     status: partial

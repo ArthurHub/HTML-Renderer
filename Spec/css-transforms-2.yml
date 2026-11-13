@@ -44,9 +44,7 @@ sections:
     status: unsupported
   '#individual-transforms':
     title: '5 Individual Transform Properties: the translate, scale, and rotate properties'
-    status: unsupported
-    gaps:
-      - translate, rotate and scale aren't parsed
+    status: parsed-only
   '#individual-transform-serialization':
     title: 5.1 Serialization
     status: n/a
@@ -91,15 +89,10 @@ sections:
   '#two-d-transform-functions':
     title: 12.1 2D Transform Functions
     status: parsed-only
-    gaps:
-      - Percentages in scale(), scaleX() and scaleY() are rejected
-      - "skew() with one angle and a unitless 0 angle are rejected, see css-transforms-1 #two-d-transform-functions"
   '#three-d-transform-functions':
     title: 12.2 3D Transform Functions
     status: parsed-only
     gaps:
-      - Percentages in scale3d() and scaleZ() are rejected
-      - A unitless 0 angle is rejected in rotate3d(), rotateX(), rotateY() and rotateZ()
       - translateZ() and the z of translate3d() accept percentages, translate3d() accepts two arguments
       - perspective(none) is rejected, a negative length in perspective() is accepted
   '#transform-primitives':

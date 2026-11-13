@@ -11,6 +11,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         Column,
         AvoidPage,
         AvoidColumn,
-        AvoidRegion
+        AvoidRegion,
+        Recto,
+        Verso
     }
 }

@@ -1,11 +1,16 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// The text of a type-checked calc() (CSS Values 4 §10.10.1): numbers, angles and absolute lengths
-    /// fold to a single value, anything with em, rem, ex or % stays an expression for layout.
+    /// Produces the canonical CSS text for a validated calc()/min()/max()/clamp() tree. An expression made
+    /// only of numbers folds to a plain number; one made only of angles folds to a plain angle in
+    /// <c>deg</c>; one made only of absolute lengths (px, cm, mm, Q, in, pt, pc) folds to a plain
+    /// <c>px</c> length. Anything that needs layout context (em, rem, %, viewport units, ...) is
+    /// re-serialized to normalized calc()/min()/max()/clamp() text, with spaces around binary operators
+    /// and only the parentheses that precedence requires.
     /// </summary>
     internal static class CalcSerializer
     {
@@ -13,44 +18,58 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             if (category == CalcCategory.Number)
             {
-                var value = CalcTypeChecker.FoldNumber(node) ?? 0d;
-                return ((float)value).ToString(null, CultureInfo.InvariantCulture);
+                var number = CalcTypeChecker.FoldNumber(node);
+                if (number != null) return FormatNumber(number.Value);
             }
-
-            if (category == CalcCategory.Angle)
+            else if (category == CalcCategory.Angle)
             {
-                var radians = FoldAngle(node) ?? 0d;
-                var degrees = radians * (180.0 / System.Math.PI);
-                return new Angle((float)degrees, Angle.Unit.Deg).ToString(null, CultureInfo.InvariantCulture);
+                // Every angle unit converts by a fixed constant, so a valid angle expression always folds.
+                var degrees = FoldAngle(node);
+                if (degrees != null) return new Angle((float) degrees.Value, Angle.Unit.Deg).ToString(null, CultureInfo.InvariantCulture);
             }
-
-            if (TryFoldPixels(node, out var pixels))
+            else if (category == CalcCategory.Length && TryFoldPixels(node, out var pixels))
             {
-                return new Length((float)pixels, Length.Unit.Px).ToString(null, CultureInfo.InvariantCulture);
+                return new Length((float) pixels, Length.Unit.Px).ToString(null, CultureInfo.InvariantCulture);
             }
 
             return SerializeExpression(node);
         }
 
-        /// <summary>Folds an Angle-category subtree to radians; always succeeds for a validated tree.</summary>
+        /// <summary>
+        /// Evaluates a pure-number expression and returns the folded value, or null when the tree is not
+        /// purely numeric. This is the constant-folding used for <c>&lt;integer&gt;</c>/<c>&lt;number&gt;</c>
+        /// contexts; it never needs layout context.
+        /// </summary>
+        public static double? EvaluateNumber(CalcNode node)
+        {
+            return CalcTypeChecker.FoldNumber(node);
+        }
+
+        private static string FormatNumber(double value)
+        {
+            return ((float) value).ToString(null, CultureInfo.InvariantCulture);
+        }
+
+        // ---- Angle folding (degrees) ----
+
         private static double? FoldAngle(CalcNode node)
         {
             switch (node)
             {
                 case AngleCalcNode angle:
-                    return new Angle((float)angle.Value, angle.Unit).ToRadian();
+                    return ToDegrees(angle.Value, angle.Unit);
 
                 case UnaryCalcNode unary:
                 {
                     var value = FoldAngle(unary.Operand);
-                    return value is null ? null : (double?)(unary.Negative ? -value.Value : value.Value);
+                    return value == null ? (double?) null : unary.Negative ? -value.Value : value.Value;
                 }
 
                 case BinaryCalcNode binary when binary.Operator == '+' || binary.Operator == '-':
                 {
                     var left = FoldAngle(binary.Left);
                     var right = FoldAngle(binary.Right);
-                    if (left is null || right is null) return null;
+                    if (left == null || right == null) return null;
                     return binary.Operator == '+' ? left.Value + right.Value : left.Value - right.Value;
                 }
 
@@ -60,49 +79,130 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     if (leftAngle != null)
                     {
                         var scalar = CalcTypeChecker.FoldNumber(binary.Right);
-                        return scalar is null ? (double?)null : leftAngle.Value * scalar.Value;
+                        return scalar == null ? (double?) null : leftAngle.Value * scalar.Value;
                     }
 
                     var rightAngle = FoldAngle(binary.Right);
-                    if (rightAngle != null)
-                    {
-                        var scalar = CalcTypeChecker.FoldNumber(binary.Left);
-                        return scalar is null ? (double?)null : rightAngle.Value * scalar.Value;
-                    }
-
-                    return null;
+                    if (rightAngle == null) return null;
+                    var factor = CalcTypeChecker.FoldNumber(binary.Left);
+                    return factor == null ? (double?) null : rightAngle.Value * factor.Value;
                 }
 
                 case BinaryCalcNode binary when binary.Operator == '/':
                 {
                     var left = FoldAngle(binary.Left);
-                    if (left is null) return null;
                     var divisor = CalcTypeChecker.FoldNumber(binary.Right);
-                    return divisor is null || divisor == 0d ? (double?)null : left.Value / divisor.Value;
+                    if (left == null || divisor == null || divisor.Value == 0d) return null;
+                    return left.Value / divisor.Value;
                 }
 
                 case CallCalcNode call:
-                {
-                    var values = new List<double>(call.Arguments.Count);
-                    foreach (var argument in call.Arguments)
-                    {
-                        var value = FoldAngle(argument);
-                        if (value is null) return null;
-                        values.Add(value.Value);
-                    }
-
-                    if (call.Name.Isi(FunctionNames.Min)) return Min(values);
-                    if (call.Name.Isi(FunctionNames.Max)) return Max(values);
-                    if (call.Name.Isi(FunctionNames.Clamp) && values.Count == 3)
-                        return values[0] > values[2] ? values[2] : System.Math.Min(System.Math.Max(values[1], values[0]), values[2]);
-
-                    return null;
-                }
+                    return FoldCall(call, FoldAngle);
 
                 default:
                     return null;
             }
         }
+
+        private static double ToDegrees(double value, Angle.Unit unit)
+        {
+            switch (unit)
+            {
+                case Angle.Unit.Grad: return value * 0.9d;
+                case Angle.Unit.Rad: return value * (180d / Math.PI);
+                case Angle.Unit.Turn: return value * 360d;
+                default: return value;
+            }
+        }
+
+        // ---- Absolute length folding (CSS pixels) ----
+
+        private static bool TryFoldPixels(CalcNode node, out double pixels)
+        {
+            var value = FoldPixels(node);
+            pixels = value ?? 0d;
+            return value != null;
+        }
+
+        private static double? FoldPixels(CalcNode node)
+        {
+            switch (node)
+            {
+                // A unitless number is only ever a scalar operand of '*' or '/' in a Length expression.
+                case NumberCalcNode number:
+                    return number.Value;
+
+                case DimensionCalcNode dimension:
+                {
+                    var length = new Length((float) dimension.Value, dimension.Unit);
+                    return length.IsAbsolute ? length.ToPixel() : (double?) null;
+                }
+
+                case UnaryCalcNode unary:
+                {
+                    var value = FoldPixels(unary.Operand);
+                    return value == null ? (double?) null : unary.Negative ? -value.Value : value.Value;
+                }
+
+                case BinaryCalcNode binary:
+                {
+                    var left = FoldPixels(binary.Left);
+                    var right = FoldPixels(binary.Right);
+                    if (left == null || right == null) return null;
+
+                    switch (binary.Operator)
+                    {
+                        case '+': return left.Value + right.Value;
+                        case '-': return left.Value - right.Value;
+                        case '*': return left.Value * right.Value;
+                        case '/': return right.Value != 0d ? left.Value / right.Value : (double?) null;
+                        default: return null;
+                    }
+                }
+
+                case CallCalcNode call:
+                    return FoldCall(call, FoldPixels);
+
+                default:
+                    return null;
+            }
+        }
+
+        private static double? FoldCall(CallCalcNode call, Func<CalcNode, double?> fold)
+        {
+            var values = new List<double>(call.Arguments.Count);
+            foreach (var argument in call.Arguments)
+            {
+                var value = fold(argument);
+                if (value == null) return null;
+                values.Add(value.Value);
+            }
+
+            if (call.Name.Isi(FunctionNames.Min))
+            {
+                var result = values[0];
+                for (var i = 1; i < values.Count; i++) if (values[i] < result) result = values[i];
+                return result;
+            }
+
+            if (call.Name.Isi(FunctionNames.Max))
+            {
+                var result = values[0];
+                for (var i = 1; i < values.Count; i++) if (values[i] > result) result = values[i];
+                return result;
+            }
+
+            if (call.Name.Isi(FunctionNames.Clamp) && values.Count == 3)
+            {
+                // clamp(min, val, max) == max(min, min(val, max)); if min > max, min wins.
+                var upper = values[1] < values[2] ? values[1] : values[2];
+                return upper < values[0] ? values[0] : upper;
+            }
+
+            return null;
+        }
+
+        // ---- Normalized expression text ----
 
         private static string SerializeExpression(CalcNode node)
         {
@@ -110,39 +210,48 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             {
                 var args = new List<string>(call.Arguments.Count);
                 foreach (var argument in call.Arguments) args.Add(SerializeOperand(argument, false, 0));
-                return $"{call.Name}({string.Join(", ", args)})";
+                return call.Name + "(" + string.Join(", ", args) + ")";
             }
 
-            return $"calc({SerializeOperand(node, false, 0)})";
+            return "calc(" + SerializeOperand(node, false, 0) + ")";
         }
 
-        /// <summary>
-        /// Serializes an operand of a parent with the given precedence (0 none, 1 + and -, 2 * and /),
-        /// in parentheses where re-parsing would group it differently.
-        /// </summary>
+        // parentPrecedence: 0 = none, 1 = sum-level + and -, 2 = product-level * and /, 3 = unary operand.
+        // Parentheses are added whenever omitting them would change the meaning on re-parse: a
+        // lower-precedence child under a higher-precedence parent, or a same-precedence child on the right
+        // (the operators are left-associative).
         private static string SerializeOperand(CalcNode node, bool isRightOperand, int parentPrecedence)
         {
             switch (node)
             {
                 case NumberCalcNode number:
-                    return ((float)number.Value).ToString(null, CultureInfo.InvariantCulture);
+                    return FormatNumber(number.Value);
 
+                // Units are always written here, unlike Length.ToString which drops the unit of a zero
+                // length - a unitless 0 inside calc() would be a number and break type checking.
                 case DimensionCalcNode dimension:
-                    return new Length((float)dimension.Value, dimension.Unit).ToString(null, CultureInfo.InvariantCulture);
+                    return FormatNumber(dimension.Value) + new Length(0f, dimension.Unit).UnitString;
 
                 case PercentageCalcNode percentage:
-                    return new Length((float)percentage.Value, Length.Unit.Percent).ToString(null, CultureInfo.InvariantCulture);
+                    return FormatNumber(percentage.Value) + "%";
+
+                case AngleCalcNode angle:
+                    return FormatNumber(angle.Value) + new Angle(0f, angle.Unit).UnitString;
 
                 case TimeCalcNode time:
-                    return new Time((float)time.Value, time.Unit).ToString(null, CultureInfo.InvariantCulture);
+                    return new Time((float) time.Value, time.Unit).ToString(null, CultureInfo.InvariantCulture);
 
                 case ResolutionCalcNode resolution:
-                    return new Resolution((float)resolution.Value, resolution.Unit).ToString(null, CultureInfo.InvariantCulture);
+                    return new Resolution((float) resolution.Value, resolution.Unit)
+                        .ToString(null, CultureInfo.InvariantCulture);
 
                 case UnaryCalcNode unary:
                 {
                     var operand = SerializeOperand(unary.Operand, false, 3);
-                    return unary.Negative ? $"-{operand}" : operand;
+                    if (!unary.Negative) return operand;
+
+                    // "--x" would not re-parse as a double negation.
+                    return operand.StartsWith("-", StringComparison.Ordinal) ? "-(" + operand + ")" : "-" + operand;
                 }
 
                 case CallCalcNode call:
@@ -151,107 +260,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 case BinaryCalcNode binary:
                 {
                     var precedence = binary.Operator == '+' || binary.Operator == '-' ? 1 : 2;
-                    var text =
-                        $"{SerializeOperand(binary.Left, false, precedence)} {binary.Operator} {SerializeOperand(binary.Right, true, precedence)}";
-                    var needsParens = precedence < parentPrecedence || (precedence == parentPrecedence && isRightOperand);
-                    return needsParens ? $"({text})" : text;
+                    var text = SerializeOperand(binary.Left, false, precedence) + " " + binary.Operator + " " +
+                               SerializeOperand(binary.Right, true, precedence);
+                    var needsParentheses = precedence < parentPrecedence ||
+                                           (precedence == parentPrecedence && isRightOperand);
+                    return needsParentheses ? "(" + text + ")" : text;
                 }
 
                 default:
                     return string.Empty;
             }
-        }
-
-        private static bool TryFoldPixels(CalcNode node, out double pixels)
-        {
-            switch (node)
-            {
-                case NumberCalcNode number:
-                    pixels = number.Value;
-                    return true;
-
-                case DimensionCalcNode dimension when dimension.Unit != Length.Unit.Em && dimension.Unit != Length.Unit.Rem && dimension.Unit != Length.Unit.Ex:
-                    pixels = new Length((float)dimension.Value, dimension.Unit).ToPixels(0, 0, 0);
-                    return true;
-
-                case UnaryCalcNode unary when TryFoldPixels(unary.Operand, out var operand):
-                    pixels = unary.Negative ? -operand : operand;
-                    return true;
-
-                case BinaryCalcNode binary when TryFoldPixels(binary.Left, out var left) && TryFoldPixels(binary.Right, out var right):
-                    switch (binary.Operator)
-                    {
-                        case '+':
-                            pixels = left + right;
-                            return true;
-                        case '-':
-                            pixels = left - right;
-                            return true;
-                        case '*':
-                            pixels = left * right;
-                            return true;
-                        case '/' when right != 0d:
-                            pixels = left / right;
-                            return true;
-                        default:
-                            pixels = 0;
-                            return false;
-                    }
-
-                case CallCalcNode call:
-                {
-                    var values = new List<double>(call.Arguments.Count);
-                    foreach (var argument in call.Arguments)
-                    {
-                        if (!TryFoldPixels(argument, out var value))
-                        {
-                            pixels = 0;
-                            return false;
-                        }
-
-                        values.Add(value);
-                    }
-
-                    if (call.Name.Isi(FunctionNames.Min))
-                    {
-                        pixels = Min(values);
-                        return true;
-                    }
-
-                    if (call.Name.Isi(FunctionNames.Max))
-                    {
-                        pixels = Max(values);
-                        return true;
-                    }
-
-                    if (call.Name.Isi(FunctionNames.Clamp) && values.Count == 3)
-                    {
-                        pixels = values[0] > values[2] ? values[2] : System.Math.Min(System.Math.Max(values[1], values[0]), values[2]);
-                        return true;
-                    }
-
-                    pixels = 0;
-                    return false;
-                }
-
-                default:
-                    pixels = 0;
-                    return false;
-            }
-        }
-
-        private static double Min(List<double> values)
-        {
-            var result = values[0];
-            for (var i = 1; i < values.Count; i++) if (values[i] < result) result = values[i];
-            return result;
-        }
-
-        private static double Max(List<double> values)
-        {
-            var result = values[0];
-            for (var i = 1; i < values.Count; i++) if (values[i] > result) result = values[i];
-            return result;
         }
     }
 }

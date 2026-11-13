@@ -21,7 +21,6 @@ public sealed class WptCssPositionInsetLogicalParsingTests
     // ─── Longhands: 'auto | <length-percentage>' ──────────────────────────────
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-position-3.yml")]
     [Spec("css-position-3", "#insets")]
     [DataRow("inset-block-start")]
     [DataRow("inset-block-end")]
@@ -33,7 +32,6 @@ public sealed class WptCssPositionInsetLogicalParsingTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-position-3.yml")]
     [Spec("css-position-3", "#insets")]
     [DataRow("inset-block-start")]
     [DataRow("inset-block-end")]
@@ -45,7 +43,6 @@ public sealed class WptCssPositionInsetLogicalParsingTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-position-3.yml")]
     [Spec("css-position-3", "#insets")]
     [DataRow("inset-block-start")]
     [DataRow("inset-block-end")]
@@ -57,7 +54,6 @@ public sealed class WptCssPositionInsetLogicalParsingTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-position-3.yml")]
     [Spec("css-position-3", "#insets")]
     [DataRow("inset-block-start")]
     [DataRow("inset-block-end")]
@@ -69,7 +65,6 @@ public sealed class WptCssPositionInsetLogicalParsingTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-position-3.yml")]
     [Spec("css-position-3", "#insets")]
     [DataRow("inset-block-start")]
     [DataRow("inset-block-end")]
@@ -81,7 +76,6 @@ public sealed class WptCssPositionInsetLogicalParsingTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-position-3.yml")]
     [Spec("css-position-3", "#insets")]
     [DataRow("inset-block-start")]
     [DataRow("inset-block-end")]
@@ -93,7 +87,6 @@ public sealed class WptCssPositionInsetLogicalParsingTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-position-3.yml")]
     [Spec("css-position-3", "#insets")]
     [DataRow("inset-block-start")]
     [DataRow("inset-block-end")]
@@ -206,7 +199,6 @@ public sealed class WptCssPositionInsetLogicalParsingTests
     // ─── z-index: calc() folds to a plain rounded integer (css-position/parsing/z-index-positioned-computed.html) ──
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-values-4.yml")]
     [Spec("css-values-4", "#calc-type-checking")]
     [DataRow("calc(3 - 2)", "1")]
     [DataRow("calc(1.5 + 1.5)", "3")]

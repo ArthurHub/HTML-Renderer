@@ -6,7 +6,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             Converters.FillRuleConverter.OrDefault(FillRule.Nonzero);
 
         public FillRuleProperty()
-            : base(PropertyNames.FillRule, PropertyFlags.Animatable)
+            : base(PropertyNames.FillRule, PropertyFlags.Inherited | PropertyFlags.Animatable)
         {
         }
 

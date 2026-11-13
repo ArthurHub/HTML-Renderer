@@ -74,7 +74,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return new ListValueConverter(converter);
         }
 
-        public static IValueConverter ToConverter<T>(this IReadOnlyDictionary<string, T> values)
+        public static IValueConverter ToConverter<T>(this Dictionary<string, T> values)
         {
             return new DictionaryValueConverter<T>(values);
         }
@@ -84,9 +84,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return new PeriodicValueConverter(converter, labels);
         }
 
-        public static IValueConverter RequiresEnd(this IValueConverter listConverter, IValueConverter endConverter)
+        public static IValueConverter RequiresEnd(this IValueConverter listConverter, IValueConverter endConverter,
+            IReadOnlyDictionary<string, string> layerDefaults = null, IReadOnlyDictionary<string, string> layerFallbacks = null)
         {
-            return new EndListValueConverter(listConverter, endConverter);
+            return new EndListValueConverter(listConverter, endConverter, layerDefaults, layerFallbacks);
         }
 
         public static IValueConverter Required(this IValueConverter converter)
@@ -132,6 +133,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static IValueConverter OrDefault(this IValueConverter primary)
         {
+            // inherit/initial/revert/revert-layer/unset are CSS-wide keywords, valid on every property
+            // (CSS Cascade 4 7.3, Cascade 5 for revert-layer). OrGlobalValue is the full set.
             return primary.OrGlobalValue();
         }
 

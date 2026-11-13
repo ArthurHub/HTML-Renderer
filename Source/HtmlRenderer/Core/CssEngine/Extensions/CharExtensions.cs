@@ -12,7 +12,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static string ToHex(this char character)
         {
-            return ((int)character).ToString("x");
+            return ((int) character).ToString("x");
         }
 
         public static bool IsInRange(this char c, int lower, int upper)
@@ -39,12 +39,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static bool IsUppercaseAscii(this char c)
         {
-            return c >= Symbols.CapitalA && c <= Symbols.CapitalZ;
+            return c is >= Symbols.CapitalA and <= Symbols.CapitalZ;
         }
 
         public static bool IsLowercaseAscii(this char c)
         {
-            return c >= Symbols.LowerA && c <= Symbols.LowerZ;
+            return c is >= Symbols.LowerA and <= Symbols.LowerZ;
         }
 
         public static bool IsAlphanumericAscii(this char c)
@@ -54,8 +54,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static bool IsHex(this char c)
         {
-            return c.IsDigit() || (c >= Symbols.CapitalA && c <= Symbols.CapitalF) ||
-                   (c >= Symbols.LowerA && c <= Symbols.LowerF);
+            return c.IsDigit() || c is >= Symbols.CapitalA and <= Symbols.CapitalF ||
+                   c is >= Symbols.LowerA and <= Symbols.LowerF;
         }
 
         public static bool IsNonAscii(this char c)
@@ -65,9 +65,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static bool IsNonPrintable(this char c)
         {
-            return /*c >= Symbols.Null &&*/ c <= Symbols.Backspace
-                || (c >= Symbols.ShiftOut && c <= Symbols.UnitSeparator)
-                || (c >= Symbols.Delete && c < Symbols.NonBreakingSpace);
+            return c is /*>= Symbols.Null and*/ <= Symbols.Backspace 
+                or >= Symbols.ShiftOut and <= Symbols.UnitSeparator
+                or >= Symbols.Delete and < Symbols.NonBreakingSpace;
         }
 
         public static bool IsLetter(this char c)
@@ -87,17 +87,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static bool IsLineBreak(this char c)
         {
-            return c == Symbols.LineFeed || c == Symbols.CarriageReturn;
+            return c is Symbols.LineFeed or Symbols.CarriageReturn;
         }
 
         public static bool IsSpaceCharacter(this char c)
         {
-            return c == Symbols.Space || c == Symbols.Tab || c == Symbols.LineFeed || c == Symbols.CarriageReturn || c == Symbols.FormFeed;
+            return c is Symbols.Space or Symbols.Tab or Symbols.LineFeed or Symbols.CarriageReturn or Symbols.FormFeed;
         }
 
         public static bool IsDigit(this char c)
         {
-            return c >= Symbols.Zero && c <= Symbols.Nine;
+            return c is >= Symbols.Zero and <= Symbols.Nine;
         }
 
         // HTML forbids the use of Universal Character Set / Unicode code points
@@ -109,7 +109,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static bool IsInvalid(this int c)
         {
             return c == 0 || c > Symbols.MaximumCodepoint ||
-                   (c >= Symbols.UTF16SurrogateMin && c <= Symbols.UTF16SurrogateMax);
+                   c is >= Symbols.UTF16SurrogateMin and <= Symbols.UTF16SurrogateMax;
         }
 
         public static bool IsOneOf(this char c, char a, char b)

@@ -9,17 +9,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         /// <summary>
         ///     Gets a zero value.
         /// </summary>
-        public static readonly Number Zero = new Number(0f, Unit.Integer);
+        public static readonly Number Zero = new(0f, Unit.Integer);
 
         /// <summary>
         ///     Gets the positive infinite value.
         /// </summary>
-        public static readonly Number Infinite = new Number(float.PositiveInfinity, Unit.Float);
+        public static readonly Number Infinite = new(float.PositiveInfinity, Unit.Float);
 
         /// <summary>
         ///     Gets the neutral element.
         /// </summary>
-        public static readonly Number One = new Number(1f, Unit.Integer);
+        public static readonly Number One = new(1f, Unit.Integer);
 
         private readonly Unit _unit;
 
@@ -62,7 +62,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return Value == other.Value && _unit == other._unit;
         }
 
-        internal enum Unit : byte
+        public enum Unit : byte
         {
             Integer,
             Float,

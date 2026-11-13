@@ -33,8 +33,7 @@ sections:
     title: '3 White Space and Wrapping: the white-space property'
     status: partial
     gaps:
-      - Only the keywords normal, pre, nowrap, pre-wrap and pre-line are accepted, not longhand values such as 'preserve nowrap'
-      - break-spaces isn't accepted
+      - break-spaces is laid out like normal
   '#white-space-processing':
     title: 4 White Space Processing & Control Characters
     status: partial
@@ -42,9 +41,10 @@ sections:
       - "Control characters such as U+000B are treated as white space instead of being rendered, see css-text-3 #white-space-processing"
   '#white-space-collapsing':
     title: '4.1 White Space Collapsing: the white-space-collapse property'
-    status: unsupported
+    status: partial
     gaps:
-      - white-space-collapse isn't accepted, collapsing is only controlled through the white-space keywords
+      - discard is rejected
+      - preserve-spaces is laid out like normal
   '#white-space-trim':
     title: '4.2 White Space Trimming: the white-space-trim property'
     status: unsupported
@@ -67,7 +67,7 @@ sections:
     status: supported
   '#tab-size-property':
     title: '4.4 Tab Character Size: the tab-size property'
-    status: unsupported
+    status: parsed-only
   '#text-wrapping':
     title: 5 Text Wrapping
     status: partial
@@ -75,7 +75,7 @@ sections:
       - Wrapping can only be turned off through white-space, text-wrap-mode and text-wrap aren't accepted
   '#text-wrap-mode':
     title: '5.1 Deciding Whether to Wrap: the text-wrap-mode property'
-    status: unsupported
+    status: supported
   '#wrap-inside':
     title: '5.2 Controlling Breaks Within Boxes: the wrap-inside property'
     status: unsupported
@@ -87,10 +87,12 @@ sections:
     status: unsupported
   '#text-wrap-style':
     title: '5.4 Selecting How to Wrap: the text-wrap-style property'
-    status: unsupported
+    status: parsed-only
   '#text-wrap-shorthand':
     title: '5.5 Joint Wrapping Control: the text-wrap shorthand property'
-    status: unsupported
+    status: partial
+    gaps:
+      - "text-wrap-style is ignored, see #text-wrap-style"
   '#line-breaking':
     title: 6 Line Breaking and Word Boundaries
     status: partial
@@ -119,7 +121,7 @@ sections:
       - There are no user preferences or user style sheets
   '#line-break-property':
     title: '6.2 Line Breaking Strictness: the line-break property'
-    status: unsupported
+    status: parsed-only
   '#hyphenation':
     title: '6.3 Hyphenation: Morphological Breaking Within Words'
     status: parsed-only
@@ -130,22 +132,21 @@ sections:
       - Soft hyphens (U+00AD) aren't break opportunities
   '#hyphenate-character':
     title: '6.3.2 Hyphens: the hyphenate-character property'
-    status: unsupported
+    status: parsed-only
   '#hyphenate-size-limits':
     title: '6.3.3 Hyphenation Size Limit: the hyphenate-limit-zone property'
-    status: unsupported
+    status: parsed-only
   '#hyphenate-char-limits':
     title: '6.3.4 Hyphenation Character Limits: the hyphenate-limit-chars property'
-    status: unsupported
+    status: parsed-only
   '#hyphenate-line-limits':
     title: '6.3.5 Hyphenation Line Limits: the hyphenate-limit-lines and hyphenate-limit-last properties'
-    status: unsupported
+    status: parsed-only
   '#overflow-wrap-property':
     title: '6.4 Overflow Wrapping: the overflow-wrap (word-wrap) property'
     status: parsed-only
     gaps:
       - overflow-wrap and word-wrap are ignored, a word that doesn't fit overflows
-      - anywhere isn't accepted
   '#line-break-details':
     title: 6.5 Line Breaking Details
     status: partial
@@ -158,20 +159,22 @@ sections:
     title: '7.1 Text Alignment: the text-align shorthand'
     status: partial
     gaps:
-      - "start, end, match-parent, justify-all and <string> aren't accepted, see css-text-3 #text-align-property"
+      - A <string> is rejected
+      - "match-parent and justify-all are applied like in css-text-3 #text-align-property"
       - The initial value acts as left also when direction is rtl, see CSS 2.1 16.2
   '#character-alignment':
     title: 7.2 Character-based Alignment in a Table Column
     status: unsupported
   '#text-align-all-property':
     title: '7.3 Default Text Alignment: the text-align-all property'
-    status: unsupported
+    status: partial
+    gaps:
+      - match-parent is ignored
   '#text-align-last-property':
     title: '7.4 Last Line Alignment: the text-align-last property'
     status: parsed-only
     gaps:
       - text-align-last is ignored, the last line of justified text is aligned left
-      - match-parent isn't accepted
   '#text-justify-property':
     title: '7.5 Justification Method: the text-justify property'
     status: parsed-only
@@ -253,17 +256,16 @@ sections:
     title: '9.1 First Line Indentation: the text-indent property'
     status: partial
     gaps:
-      - hanging and each-line aren't accepted
+      - A text-indent with hanging or each-line is dropped
       - "The gaps of CSS 2.1 16.1 apply: percentages, anonymous blocks, rtl and inline-blocks"
   '#hanging':
     title: 9.2 Hanging Glyphs
     status: unsupported
   '#hanging-punctuation-property':
     title: '9.2.1 Hanging Punctuation: the hanging-punctuation property'
-    status: unsupported
+    status: parsed-only
   '#bidi-linebox':
     title: 9.3 Bidirectionality and Line Boxes
     status: partial
     gaps:
-      - The line's direction doesn't change which side start and end refer to, see 7.1
       - In rtl text-indent is applied at the left edge, see CSS 2.1 16.1

@@ -13,10 +13,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             _tokenValue = tokenValue;
         }
 
-        /// <summary>
-        /// CSS Conditional 3 §6.1. A value the parser accepts counts as supported, even where layout
-        /// ignores it.
-        /// </summary>
         public bool Check()
         {
             return _property is UnknownProperty == false &&

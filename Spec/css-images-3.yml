@@ -114,14 +114,12 @@ sections:
     status: unsupported
   '#the-image-orientation':
     title: '5.1 Orienting an Image on the Page: the image-orientation property'
-    status: unsupported
-    gaps:
-      - "'image-orientation' isn't parsed"
+    status: parsed-only
   '#the-image-rendering':
     title: '5.2 Determining How To Scale an Image: the image-rendering property'
-    status: unsupported
+    status: parsed-only
     gaps:
-      - "'image-rendering' isn't parsed, the platform decides how images are scaled"
+      - The platform decides how images are scaled
   '#interpolation':
     title: 6 Interpolation
     status: n/a

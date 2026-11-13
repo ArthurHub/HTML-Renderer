@@ -6,19 +6,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     // Like UnorderedOptionsConverter (the WithAny combinator), but matches the operands in any order rather
     // than only in declaration order. WithAny matches greedily left-to-right, which fails whenever an
     // earlier converter claims a token a later one also accepts - e.g. "list-style: none square", where
-    // list-style-type takes "none" before list-style-image can.
+    // list-style-type takes "none" before list-style-image can (TylerBrinks/ExCSS#185).
     //
     // Use this ONLY for shorthands whose operands are order-independent with no positional tie-break. Some
     // "||" (any-order) shorthands still assign longhands by position and so must NOT be reordered: animation's
     // first <time> is animation-duration and the second is animation-delay (CSS Animations 1 3), background's
     // first <visual-box> is background-origin and the second is background-clip (CSS Backgrounds 3 2.10), and
     // transform-origin keeps its length form axis-ordered. The declaration-order matcher (WithAny) already
-    // satisfies those positional rules, so those shorthands stay on it; list-style (CSS Lists 3) and columns
-    // (CSS Multi-column 1) have no such rule and genuinely need order-independent matching.
+    // satisfies those positional rules, so those shorthands stay on it; list-style (CSS Lists 3) has no such
+    // rule and is the shorthand that genuinely needs order-independent matching.
     internal sealed class OrderIndependentOptionsConverter : IValueConverter
     {
         // The reorder search is O(n!); every shorthand that uses this converter has only a few operands, so
-        // cap it well below the large "||" shorthands (background has 7-8 operands) as a safety net.
+        // cap it well below the large "&&" shorthands (background/animation have 7-8) as a safety net.
         private const int MaxReorderableConverters = 6;
 
         private readonly IValueConverter[] _converters;
@@ -158,7 +158,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {
                     var extracted = option.ExtractFor(name);
 
-                    if (extracted != null && extracted.Count > 0)
+                    if (extracted is {Count: > 0})
                     {
                         if (tokens.Count > 0) tokens.Add(Token.Whitespace);
 

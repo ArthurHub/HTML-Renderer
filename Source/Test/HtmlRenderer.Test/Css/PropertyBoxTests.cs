@@ -52,7 +52,7 @@ public sealed class PropertyBoxTests
         var concrete = (BoxShadowProperty)property;
         Assert.IsFalse(concrete.IsInherited);
         Assert.IsTrue(concrete.HasValue);
-        Assert.AreEqual("NONE", concrete.Value);
+        Assert.AreEqual("none", concrete.Value);
         Assert.AreEqual("NONE", concrete.Original);
     }
 
@@ -67,7 +67,7 @@ public sealed class PropertyBoxTests
         var concrete = (BoxShadowProperty)property;
         Assert.IsFalse(concrete.IsInherited);
         Assert.IsTrue(concrete.HasValue);
-        Assert.AreEqual("60px -16px teal", concrete.Value);
+        Assert.AreEqual("60px -16px rgb(0, 128, 128)", concrete.Value);
         Assert.AreEqual("60px -16px teal", concrete.Original);
     }
 
@@ -82,7 +82,7 @@ public sealed class PropertyBoxTests
         var concrete = (BoxShadowProperty)property;
         Assert.IsFalse(concrete.IsInherited);
         Assert.IsTrue(concrete.HasValue);
-        Assert.AreEqual("10px 5px 5px black", concrete.Value);
+        Assert.AreEqual("10px 5px 5px rgb(0, 0, 0)", concrete.Value);
         Assert.AreEqual("10px 5px 5px black", concrete.Original);
     }
 
@@ -97,7 +97,7 @@ public sealed class PropertyBoxTests
         var concrete = (BoxShadowProperty)property;
         Assert.IsFalse(concrete.IsInherited);
         Assert.IsTrue(concrete.HasValue);
-        Assert.AreEqual("3px 3px red, -1em 0 0.4em olive", concrete.Value);
+        Assert.AreEqual("3px 3px rgb(255, 0, 0), -1em 0 0.4em rgb(128, 128, 0)", concrete.Value);
         Assert.AreEqual("3px 3px red, -1em 0 0.4em olive", concrete.Original);
     }
 
@@ -112,7 +112,7 @@ public sealed class PropertyBoxTests
         var concrete = (BoxShadowProperty)property;
         Assert.IsFalse(concrete.IsInherited);
         Assert.IsTrue(concrete.HasValue);
-        Assert.AreEqual("inset 5em 1em gold", concrete.Value);
+        Assert.AreEqual("inset 5em 1em rgb(255, 215, 0)", concrete.Value);
         Assert.AreEqual("inset 5em 1em gold", concrete.Original);
     }
 
@@ -127,7 +127,7 @@ public sealed class PropertyBoxTests
         var concrete = (BoxShadowProperty)property;
         Assert.IsFalse(concrete.IsInherited);
         Assert.IsTrue(concrete.HasValue);
-        Assert.AreEqual("0 0 1em gold", concrete.Value);
+        Assert.AreEqual("0 0 1em rgb(255, 215, 0)", concrete.Value);
         Assert.AreEqual("0 0 1em gold", concrete.Original);
     }
 
@@ -142,7 +142,7 @@ public sealed class PropertyBoxTests
         var concrete = (BoxShadowProperty)property;
         Assert.IsFalse(concrete.IsInherited);
         Assert.IsTrue(concrete.HasValue);
-        Assert.AreEqual("inset 0 0 1em gold", concrete.Value);
+        Assert.AreEqual("inset 0 0 1em rgb(255, 215, 0)", concrete.Value);
         Assert.AreEqual("inset 0 0 1em gold", concrete.Original);
     }
 
@@ -157,7 +157,7 @@ public sealed class PropertyBoxTests
         var concrete = (BoxShadowProperty)property;
         Assert.IsFalse(concrete.IsInherited);
         Assert.IsTrue(concrete.HasValue);
-        Assert.AreEqual("inset 0 0 1em gold, 0 0 1em red", concrete.Value);
+        Assert.AreEqual("inset 0 0 1em rgb(255, 215, 0), 0 0 1em rgb(255, 0, 0)", concrete.Value);
         Assert.AreEqual("inset 0 0 1em gold, 0 0 1em red", concrete.Original);
     }
 
@@ -172,7 +172,7 @@ public sealed class PropertyBoxTests
         var concrete = (BoxShadowProperty)property;
         Assert.IsFalse(concrete.IsInherited);
         Assert.IsTrue(concrete.HasValue);
-        Assert.AreEqual("5px 4px #000", concrete.Value);
+        Assert.AreEqual("5px 4px rgb(0, 0, 0)", concrete.Value);
         Assert.AreEqual("5px 4px #000", concrete.Original);
     }
 
@@ -187,7 +187,7 @@ public sealed class PropertyBoxTests
         var concrete = (BoxShadowProperty)property;
         Assert.IsFalse(concrete.IsInherited);
         Assert.IsTrue(concrete.HasValue);
-        Assert.AreEqual("5px 4px 2px #000", concrete.Value);
+        Assert.AreEqual("5px 4px 2px rgb(0, 0, 0)", concrete.Value);
         Assert.AreEqual("5px 4px 2px #000", concrete.Original);
     }
 

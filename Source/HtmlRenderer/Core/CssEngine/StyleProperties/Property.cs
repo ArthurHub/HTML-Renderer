@@ -23,6 +23,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         internal bool TrySetValue(TokenValue newTokenValue)
         {
             var tokenValue = newTokenValue ?? TokenValue.Initial;
+
+            // A value containing var() can't be validated against this property's grammar here - the
+            // referenced custom property is only known per-element, at cascade time - so keep it verbatim
+            // via Converters.Any and let substitution resolve it later (CSS Variables 1 3).
             var converter = tokenValue.ContainsFunction(FunctionNames.Var) ? Converters.Any : Converter;
             var value = converter.Convert(tokenValue);
 

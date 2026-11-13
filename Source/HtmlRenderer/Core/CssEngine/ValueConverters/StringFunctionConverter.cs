@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// <c>string()</c> (CSS Generated Content 3 §2.7.2).
+    /// The <c>string()</c> function used in <c>content</c> and <c>string-set</c> (GCPM §7.4):
+    /// <c>string(name)</c> with an optional keyword <c>first</c>/<c>last</c>/<c>start</c>/
+    /// <c>first-except</c>. Default keyword is <c>first</c>.
     /// </summary>
     internal sealed class StringFunctionConverter : IValueConverter
     {
@@ -12,41 +15,33 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public IPropertyValue Convert(IEnumerable<Token> value)
         {
-            var first = value.OnlyOrDefault();
-
-            if (!(first is FunctionToken funcToken) || !funcToken.Data.Equals("string", System.StringComparison.OrdinalIgnoreCase))
+            if (value.OnlyOrDefault() is not FunctionToken function ||
+                !function.Data.Equals(FunctionNames.StringFn, StringComparison.OrdinalIgnoreCase))
+            {
                 return null;
+            }
 
-            var argToken = funcToken.ArgumentTokens.FirstOrDefault();
+            var args = function.ArgumentTokens
+                .Where(t => t.Type != TokenType.Comma && t.Type != TokenType.Whitespace &&
+                            t.Type != TokenType.RoundBracketClose)
+                .ToArray();
 
-            if (!(argToken is KeywordToken nameToken))
-                return null;
-
-            var name = nameToken.Data;
+            if (args.Length == 0 || args[0] is not KeywordToken nameToken) return null;
 
             var keyword = "first";
 
-            var args = funcToken.ArgumentTokens
- .Where(t => t.Type != TokenType.Comma && t.Type != TokenType.Whitespace)
-.ToArray();
-
             if (args.Length > 1)
             {
-                if (args[1] is KeywordToken keywordToken)
-                {
-                    var kw = keywordToken.Data.ToLowerInvariant();
-                    if (!ValidKeywords.Contains(kw))
-                        return null;
+                if (args[1] is not KeywordToken keywordToken) return null;
 
-                    keyword = kw;
-                }
-                else
-                {
-                    return null;
-                }
+                var name = keywordToken.Data.ToLowerInvariant();
+                if (!ValidKeywords.Contains(name)) return null;
+                keyword = name;
             }
 
-            return new StringFunctionValue(name, keyword, value);
+            if (args.Length > 2) return null;
+
+            return new StringFunctionValue(nameToken.Data, keyword, value);
         }
 
         public IPropertyValue Construct(Property[] properties)
@@ -67,18 +62,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             }
 
             public string CssText => _keyword == "first"
-             ? $"string({_name})"
-           : $"string({_name}, {_keyword})";
+                ? $"string({_name})"
+                : $"string({_name}, {_keyword})";
 
             public TokenValue Original { get; }
 
-            public TokenValue ExtractFor(string name)
-            {
-                return Original;
-            }
-
-            public string Name => _name;
-            public string Keyword => _keyword;
+            public TokenValue ExtractFor(string name) => Original;
         }
     }
 }

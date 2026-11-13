@@ -3,7 +3,10 @@ using System.Collections.Generic;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// An accepted calc(), min(), max() or clamp() value, <see cref="CssText"/> is the folded text.
+    /// The value produced by <see cref="CalcValueConverter"/> for an accepted calc()/min()/max()/clamp()
+    /// expression. Keeps the parsed <see cref="Node"/> and its type-checked <see cref="Category"/>;
+    /// <see cref="CssText"/> is the canonical text from <see cref="CalcSerializer"/> (folded to a plain
+    /// value where the expression needs no layout context), and <see cref="Original"/> the raw tokens.
     /// </summary>
     internal sealed class CalcValue : IPropertyValue
     {
@@ -15,9 +18,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             Original = new TokenValue(tokens);
         }
 
-        internal CalcNode Node { get; }
+        public CalcNode Node { get; }
 
-        internal CalcCategory Category { get; }
+        public CalcCategory Category { get; }
 
         public string CssText { get; }
 

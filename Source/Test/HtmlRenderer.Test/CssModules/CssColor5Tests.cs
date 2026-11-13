@@ -107,10 +107,7 @@ public sealed class CssColor5Tests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-color-5.yml")]
     [Spec("css-color-5", "#relative-syntax")]
-    [DataRow("rgb(from red b g r)", 0, 0, 255)]
-    [DataRow("hsl(from red calc(h + 120) s l)", 0, 255, 0)]
     [DataRow("oklch(from red l c h)", 255, 0, 0)]
     public void RelativeColor_IsDerivedFromTheOriginColor(string value, int r, int g, int b)
     {
@@ -118,7 +115,15 @@ public sealed class CssColor5Tests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-color-5.yml")]
+    [Spec("css-color-5", "#relative-syntax")]
+    [DataRow("rgb(from red b g r)", 0, 0, 255)]
+    [DataRow("hsl(from red calc(h + 120) s l)", 0, 255, 0)]
+    public void RelativeColor_ChannelsCanBeRearrangedAndComputed(string value, int r, int g, int b)
+    {
+        AssertColor(RColor.FromArgb(255, r, g, b), Color(value));
+    }
+
+    [TestMethod]
     [Spec("css-color-5", "#light-dark")]
     public void LightDark_IsTheLightColorInALightColorScheme()
     {
@@ -136,12 +141,20 @@ public sealed class CssColor5Tests
     }
 
     [TestMethod]
+    [Spec("css-color-5", "#device-cmyk")]
+    [Spec("css-color-5", "#cmyk-rgb")]
+    [DataRow("device-cmyk(0% 0% 0% 100%)", 0, 0, 0)]
+    public void DeviceCmyk_IsConvertedNaively(string value, int r, int g, int b)
+    {
+        Assert.AreEqual(RColor.FromArgb(255, r, g, b), Color($"green;color:{value}"));
+    }
+
+    [TestMethod]
     [Ignore("Gap, see Spec/css-color-5.yml")]
     [Spec("css-color-5", "#device-cmyk")]
     [Spec("css-color-5", "#cmyk-rgb")]
     [DataRow("device-cmyk(0 1 1 0)", 255, 0, 0)]
-    [DataRow("device-cmyk(0% 0% 0% 100%)", 0, 0, 0)]
-    public void DeviceCmyk_IsConvertedNaively(string value, int r, int g, int b)
+    public void DeviceCmyk_NumbersAreConvertedNaively(string value, int r, int g, int b)
     {
         Assert.AreEqual(RColor.FromArgb(255, r, g, b), Color($"green;color:{value}"));
     }

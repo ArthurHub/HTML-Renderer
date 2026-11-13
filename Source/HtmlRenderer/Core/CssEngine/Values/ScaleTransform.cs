@@ -15,7 +15,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public TransformMatrix ComputeMatrix()
         {
-            return new TransformMatrix(_sx, 0f, 0f, 0f, _sy, 0f, 0f, 0f, _sz, 0f, 0f, 0f, 0f, 0f, 0f);
+            return new(_sx, 0f, 0f, 0f, _sy, 0f, 0f, 0f, _sz, 0f, 0f, 0f, 0f, 0f, 0f);
         }
     }
 }

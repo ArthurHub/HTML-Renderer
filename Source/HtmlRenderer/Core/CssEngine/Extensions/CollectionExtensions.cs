@@ -20,8 +20,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             var i = 0;
 
             foreach (var item in items)
-            {
-                if (i++ == index)
+            {   if (i++ == index)
                 {
                     return item;
                 }

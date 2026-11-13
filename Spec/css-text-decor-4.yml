@@ -30,7 +30,7 @@ sections:
       - The lines are drawn in the color of the text
   '#text-decoration-thickness-property':
     title: '2.4 Text Decoration Line Thickness: the text-decoration-thickness property'
-    status: unsupported
+    status: parsed-only
   '#text-decoration-thickness':
     title: 2.4.1 Automatic Thickness of Text Decoration Lines
     status: unsupported
@@ -46,13 +46,12 @@ sections:
     status: partial
     gaps:
       - Only the line is applied, the style and color are ignored, see 2.2 and 2.3
-      - A thickness isn't accepted
   '#text-underline-position-property':
     title: '2.7 Text Underline Position: the text-underline-position property'
-    status: unsupported
+    status: parsed-only
   '#underline-offset':
     title: '2.8 Text Underline Offset: the text-underline-offset property'
-    status: unsupported
+    status: parsed-only
   '#line-offset-zero':
     title: 2.8.1 Underline Offset Origin (Zero Position)
     status: unsupported
@@ -68,7 +67,7 @@ sections:
     title: '2.10 Text Decoration Line Continuity: the text-decoration-skip shorthand and its sub-properties'
     status: partial
     gaps:
-      - text-decoration-skip and its longhands aren't accepted, only their initial values apply
+      - text-decoration-skip and its longhands are ignored, only their initial values apply
   '#text-decoration-skip-self-property':
     title: '2.10.1 Skipping Spaces: the text-decoration-skip-self property'
     status: partial
@@ -88,7 +87,7 @@ sections:
       - The property isn't accepted, only its initial value applies
   '#text-decoration-skip-ink-property':
     title: '2.10.5 Skipping Glyphs: the text-decoration-skip-ink property'
-    status: unsupported
+    status: parsed-only
   '#ink-skip-shape':
     title: 2.10.6 Shaping Interruptions
     status: unsupported
@@ -97,7 +96,7 @@ sections:
     status: unsupported
   '#text-emphasis-style-property':
     title: '3.1 Emphasis Mark Style: the text-emphasis-style property'
-    status: unsupported
+    status: parsed-only
   '#text-emphasis-color-property':
     title: '3.2 Emphasis Mark Color: the text-emphasis-color property'
     status: unsupported

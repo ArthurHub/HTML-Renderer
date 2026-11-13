@@ -27,7 +27,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 other.IsInverse == IsInverse &&
                 other.Type.Is(Type) &&
                 other.Features.Count() == Features.Count())
-            {
+            { 
                 return other.Features.Select(feature =>
                     Features.Any(m => m.Name.Is(feature.Name) && m.Value.Is(feature.Value))).All(isShared => isShared);
             }

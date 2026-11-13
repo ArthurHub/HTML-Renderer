@@ -77,12 +77,7 @@ public sealed class CssUi4Tests
     }
 
     [TestMethod]
-    [DataRow("user-select: none")]
-    [DataRow("pointer-events: none")]
-    [DataRow("interactivity: inert")]
-    [DataRow("accent-color: red")]
     [DataRow("appearance: none")]
-    [DataRow("outline-offset: 2px")]
     public void UnsupportedProperties_AreDropped(string declaration)
     {
         var style = CssConstructionFunctions.ParseDeclarations(declaration);
@@ -91,13 +86,21 @@ public sealed class CssUi4Tests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-ui-4.yml")]
+    [Spec("css-ui-4", "#widget-accent")]
     [DataRow("accent-color: red")]
+    public void AccentColor_IsAccepted(string declaration)
+    {
+        var style = CssConstructionFunctions.ParseDeclarations(declaration);
+
+        Assert.AreEqual(1, style.Length);
+    }
+
+    [TestMethod]
+    [Ignore("Gap, see Spec/css-ui-4.yml")]
+    [Spec("css-ui-4", "#appearance-switching")]
     [DataRow("appearance: none")]
     [DataRow("-webkit-appearance: none")]
-    [Spec("css-ui-4", "#widget-accent")]
-    [Spec("css-ui-4", "#appearance-switching")]
-    public void WidgetProperties_AreAccepted(string declaration)
+    public void Appearance_IsAccepted(string declaration)
     {
         var style = CssConstructionFunctions.ParseDeclarations(declaration);
 

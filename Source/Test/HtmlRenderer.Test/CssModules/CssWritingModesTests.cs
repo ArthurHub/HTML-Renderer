@@ -73,7 +73,6 @@ public sealed class CssWritingModesTests
         Assert.IsGreaterThan(Word(root, "אבג").Right, image.Left);
     }
 
-    [Ignore("Gap, see Spec/css-writing-modes-4.yml")]
     [TestMethod]
     [Spec("css-writing-modes-4", "#block-flow")]
     [DataRow("horizontal-tb")]
@@ -97,7 +96,6 @@ public sealed class CssWritingModesTests
         Assert.IsLessThan(LayoutHarness.FindById(root, "a")!.Location.X, LayoutHarness.FindById(root, "b")!.Location.X);
     }
 
-    [Ignore("Gap, see Spec/css-writing-modes-4.yml")]
     [TestMethod]
     [Spec("css-writing-modes-4", "#text-orientation")]
     [DataRow("mixed")]
@@ -108,7 +106,6 @@ public sealed class CssWritingModesTests
         Assert.AreEqual(value, Value("text-orientation", value));
     }
 
-    [Ignore("Gap, see Spec/css-writing-modes-4.yml")]
     [TestMethod]
     [Spec("css-writing-modes-4", "#text-combine-upright")]
     [DataRow("none")]

@@ -18,9 +18,7 @@ sections:
       - Elements only enter the top layer through script or popover and dialog activation, which the library doesn't have
   '#backdrop':
     title: 3.2 The ::backdrop Pseudo-Element
-    status: unsupported
-    gaps:
-      - "::backdrop invalidates the selector, so a selector list containing it drops the whole rule"
+    status: supported
   '#painting-order':
     title: 4 Painting Order and Stacking Contexts
     status: partial

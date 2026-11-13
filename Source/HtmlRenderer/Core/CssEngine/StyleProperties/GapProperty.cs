@@ -2,7 +2,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal class GapProperty : ShorthandProperty
     {
-        private static readonly IValueConverter StyleConverter = Converters.LengthOrPercentConverter
+        private static readonly IValueConverter StyleConverter = Converters.GapConverter
                                                                            .OrGlobalValue()
                                                                            .Periodic(PropertyNames.RowGap, PropertyNames.ColumnGap);
 

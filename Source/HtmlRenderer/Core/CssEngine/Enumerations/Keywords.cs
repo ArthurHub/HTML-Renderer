@@ -5,9 +5,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Important = "important";
         public static readonly string Inherit = "inherit";
         public static readonly string Initial = "initial";
+        public static readonly string Manual = "manual";
         public static readonly string None = "none";
         public static readonly string Auto = "auto";
-        public static readonly string Manual = "manual";
         public static readonly string From = "from";
         public static readonly string To = "to";
         public static readonly string Always = "always";
@@ -22,6 +22,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string AvoidPage = "avoid-page";
         public static readonly string AvoidColumn = "avoid-column";
         public static readonly string AvoidRegion = "avoid-region";
+        public static readonly string Recto = "recto";
+        public static readonly string Verso = "verso";
         public static readonly string Inset = "inset";
         public static readonly string Outset = "outset";
         public static readonly string Ridge = "ridge";
@@ -29,6 +31,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Fixed = "fixed";
         public static readonly string Local = "local";
         public static readonly string Scroll = "scroll";
+        public static readonly string Clip = "clip";
+        public static readonly string Ellipsis = "ellipsis";
         public static readonly string NoRepeat = "no-repeat";
         public static readonly string Repeat = "repeat";
         public static readonly string RepeatX = "repeat-x";
@@ -52,6 +56,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string TableRowGroup = "table-row-group";
         public static readonly string Flex = "flex";
         public static readonly string InlineFlex = "inline-flex";
+        public static readonly string Contents = "contents";
+        public static readonly string FlowRoot = "flow-root";
         public static readonly string Grid = "grid";
         public static readonly string InlineGrid = "inline-grid";
         public static readonly string Visible = "visible";
@@ -134,6 +140,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Cell = "cell";
         public static readonly string Crosshair = "crosshair";
         public static readonly string Text = "text";
+        public static readonly string BorderArea = "border-area";
         public static readonly string VerticalText = "vertical-text";
         public static readonly string Alias = "alias";
         public static readonly string Copy = "copy";
@@ -177,6 +184,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Linear = "linear";
         public static readonly string StepStart = "step-start";
         public static readonly string StepEnd = "step-end";
+        public static readonly string JumpStart = "jump-start";
+        public static readonly string JumpEnd = "jump-end";
+        public static readonly string JumpNone = "jump-none";
+        public static readonly string JumpBoth = "jump-both";
         public static readonly string Disc = "disc";
         public static readonly string Circle = "circle";
         public static readonly string Square = "square";
@@ -290,6 +301,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string BreakAll = "break-all";
         public static readonly string KeepAll = "keep-all";
         public static readonly string BreakWord = "break-word";
+        public static readonly string Anywhere = "anywhere";
+        public static readonly string MatchParent = "match-parent";
+        public static readonly string InlineStart = "inline-start";
+        public static readonly string InlineEnd = "inline-end";
         public static readonly string Nonzero = "nonzero";
         public static readonly string Evenodd = "evenodd";
         public static readonly string Row = "row";
@@ -305,6 +320,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string AutoFlow = "auto-flow";
         public static readonly string Subgrid = "subgrid";
         public static readonly string Dense = "dense";
+        public static readonly string Span = "span";
         public static readonly string Content = "content";
         public static readonly string Revert = "revert";
         public static readonly string RevertLayer = "revert-layer";
@@ -319,8 +335,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string SelfEnd = "self-end";
         public static readonly string Size = "size";
         public static readonly string InlineSize = "inline-size";
-
-        // The `span` keyword of a grid-placement value (CSS Grid 1 §8.3).
-        public static readonly string Span = "span";
+        public static readonly string NoPreference = "no-preference";
+        public static readonly string Reduce = "reduce";
+        public static readonly string Active = "active";
+        public static readonly string Inverted = "inverted";
+        public static readonly string Standard = "standard";
+        public static readonly string High = "high";
+        public static readonly string Paged = "paged";
     }
 }

@@ -13,7 +13,6 @@ public sealed class GapPropertyTests
     public void GapLegalValues(string value)
         => CssConstructionFunctions.TestForLegalValue<GapProperty>(PropertyNames.Gap, value);
 
-    [Ignore("Gap, see Spec/css-grid-2.yml")]
     [TestMethod]
     [Spec("css-grid-2", "#gutters")]
     public void GapAcceptsNormalKeyword()
@@ -32,7 +31,6 @@ public sealed class GapPropertyTests
         Assert.AreEqual(expectedColumnGap, rule.Style.ColumnGap);
     }
 
-    [Ignore("Gap, see Spec/css-grid-2.yml")]
     [TestMethod]
     [Spec("css-grid-2", "#gutters")]
     public void GapShorthandValueExpanded_Normal()

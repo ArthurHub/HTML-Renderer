@@ -1,9 +1,8 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    internal sealed class TextAlignProperty : Property
+    internal sealed class TextAlignProperty : ShorthandProperty
     {
-        private static readonly IValueConverter StyleConverter =
-            Converters.HorizontalAlignmentConverter.OrDefault(HorizontalAlignment.Left);
+        private static readonly IValueConverter StyleConverter = TextFlowConverters.TextAlignConverter;
 
         internal TextAlignProperty()
             : base(PropertyNames.TextAlign, PropertyFlags.Inherited)

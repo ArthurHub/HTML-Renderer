@@ -32,14 +32,10 @@ sections:
     status: unsupported
   '#running-syntax':
     title: 1.2.1 The running() value
-    status: unsupported
-    gaps:
-      - "'position: running()' is rejected, the element stays in the flow"
+    status: parsed-only
   '#element-syntax':
     title: 1.2.2 The element() value
-    status: unsupported
-    gaps:
-      - "element() is rejected by 'content'"
+    status: parsed-only
   '#footnotes':
     title: 2 Footnotes
     status: unsupported

@@ -68,11 +68,6 @@ public sealed class CssUi3Tests
 
     [TestMethod]
     [DataRow("resize: both")]
-    [DataRow("caret-color: red")]
-    [DataRow("text-overflow: ellipsis")]
-    [DataRow("outline-offset: 2px")]
-    [DataRow("image-rendering: pixelated")]
-    [DataRow("image-orientation: none")]
     public void UnsupportedProperties_AreDropped(string declaration)
     {
         var style = CssConstructionFunctions.ParseDeclarations(declaration);

@@ -39,7 +39,6 @@ sections:
     status: parsed-only
     gaps:
       - font-size-adjust is ignored
-      - Only none and a number are accepted, not from-font or a metric keyword such as ex-height
   '#font-resources':
     title: 4 Font Resources
     status: partial

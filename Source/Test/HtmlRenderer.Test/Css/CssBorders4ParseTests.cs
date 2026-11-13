@@ -1,10 +1,20 @@
 using HtmlRenderer.Test.CssEngineSupport;
+using HtmlRenderer.Test.TestSupport;
+using TheArtOfDev.HtmlRenderer.Core.Utils;
 
 namespace HtmlRenderer.Test.Css;
 
 [TestClass]
 public sealed class CssBorders4ParseTests
 {
+    // The engine keeps the flow-relative longhands, the box maps them to its physical sides
+    private static string PhysicalValue(string declaration, string physical)
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap($"<div id=x style='border:1px solid black;{declaration}'>a</div>"));
+        var box = LayoutHarness.FindById(root, "x");
+        Assert.IsNotNull(box);
+        return CssUtils.GetPropertyValue(box!, physical);
+    }
     [TestMethod]
     [DataRow("border-block-start-color: red", "border-top-color", "red")]
     [DataRow("border-inline-end-color: red", "border-right-color", "red")]
@@ -12,11 +22,8 @@ public sealed class CssBorders4ParseTests
     [Spec("css-borders-4", "#border-color")]
     public void LogicalBorderColor_SetsThePhysicalSide(string declaration, string physical, string value)
     {
-        var style = CssConstructionFunctions.ParseDeclarations(declaration);
-        var expected = CssConstructionFunctions.ParseDeclarations($"{physical}: {value}");
-
-        Assert.AreEqual(expected.GetPropertyValue(physical), style.GetPropertyValue(physical));
-        Assert.AreNotEqual("", style.GetPropertyValue(physical));
+        Assert.AreEqual(PhysicalValue($"{physical}: {value}", physical), PhysicalValue(declaration, physical));
+        Assert.AreNotEqual(PhysicalValue("", physical), PhysicalValue(declaration, physical));
     }
 
     [TestMethod]
@@ -25,9 +32,7 @@ public sealed class CssBorders4ParseTests
     [Spec("css-borders-4", "#border-style")]
     public void LogicalBorderStyle_SetsThePhysicalSide(string declaration, string physical, string value)
     {
-        var style = CssConstructionFunctions.ParseDeclarations(declaration);
-
-        Assert.AreEqual(value, style.GetPropertyValue(physical));
+        Assert.AreEqual(value, PhysicalValue(declaration, physical));
     }
 
     [TestMethod]
@@ -36,9 +41,7 @@ public sealed class CssBorders4ParseTests
     [Spec("css-borders-4", "#border-width")]
     public void LogicalBorderWidth_SetsThePhysicalSide(string declaration, string physical, string value)
     {
-        var style = CssConstructionFunctions.ParseDeclarations(declaration);
-
-        Assert.AreEqual(value, style.GetPropertyValue(physical));
+        Assert.AreEqual(value, PhysicalValue(declaration, physical));
     }
 
     [TestMethod]
@@ -47,9 +50,16 @@ public sealed class CssBorders4ParseTests
     [Spec("css-borders-4", "#border-shorthands")]
     public void LogicalBorderShorthands_SetThePhysicalSides(string declaration, string physical, string value)
     {
-        var style = CssConstructionFunctions.ParseDeclarations(declaration);
+        Assert.AreEqual(value, PhysicalValue(declaration, physical));
+    }
 
-        Assert.AreEqual(value, style.GetPropertyValue(physical));
+    [TestMethod]
+    [DataRow("border-top-radius: 5px", "border-top-right-radius")]
+    [DataRow("border-left-radius: 5px", "border-bottom-left-radius")]
+    [Spec("css-borders-4", "#corner-sizing-side-shorthands")]
+    public void SideRadiusShorthands_RoundBothCornersOfTheSide(string declaration, string corner)
+    {
+        StringAssert.StartsWith(PhysicalValue(declaration, corner), "5px");
     }
 
     [Ignore("Gap, see Spec/css-borders-4.yml")]
@@ -109,7 +119,6 @@ public sealed class CssBorders4ParseTests
         Assert.AreEqual(value, style.GetPropertyValue(physical));
     }
 
-    [Ignore("Gap, see Spec/css-borders-4.yml")]
     [TestMethod]
     [DataRow("corner-top-left-shape: bevel")]
     [DataRow("corner-top-left-shape: superellipse(2)")]

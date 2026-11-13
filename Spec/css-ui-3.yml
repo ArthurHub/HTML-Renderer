@@ -46,9 +46,7 @@ sections:
       - "'invert' is accepted and painted as currentcolor instead of being rejected"
   '#outline-offset':
     title: '4.5 Offsetting the Outline: the outline-offset property'
-    status: unsupported
-    gaps:
-      - "'outline-offset' isn't parsed"
+    status: parsed-only
   '#resizing-and-overflow':
     title: 5 Resizing & Overflow
     status: unsupported
@@ -57,9 +55,9 @@ sections:
     status: n/a
   '#text-overflow':
     title: '5.2 Overflow Ellipsis: the text-overflow property'
-    status: unsupported
+    status: parsed-only
     gaps:
-      - "'text-overflow' isn't parsed, overflowing text is clipped"
+      - Overflowing text is clipped
   '#pointing-keyboard':
     title: 6 Pointing Devices and Keyboards
     status: parsed-only

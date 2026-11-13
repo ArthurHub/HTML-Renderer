@@ -5,7 +5,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         private static readonly IValueConverter StyleConverter = Converters.TextAnchorConverter;
 
         public TextAnchorProperty()
-            : base(PropertyNames.TextAnchor)
+            : base(PropertyNames.TextAnchor, PropertyFlags.Inherited)
         {
         }
 

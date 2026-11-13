@@ -5,6 +5,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         Auto,
         Visible,
         Hidden,
-        Scroll
+        Scroll,
+        Clip
     }
 }

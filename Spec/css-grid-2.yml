@@ -74,7 +74,7 @@ sections:
     title: 7.2.1 Track Sizes
     status: parsed-only
     gaps:
-      - "Negative lengths and non-length dimensions (e.g. 10deg) are accepted as track sizes"
+      - Negative lengths and non-length dimensions (e.g. 10deg) are accepted as track sizes
   '#named-lines':
     title: '7.2.2 Naming Grid Lines: the [<custom-ident>*] syntax'
     status: parsed-only
@@ -184,8 +184,6 @@ sections:
   '#gutters':
     title: '11.1 Gutters: the row-gap, column-gap, and gap properties'
     status: parsed-only
-    gaps:
-      - "'normal' is rejected by 'row-gap' and 'gap'"
   '#auto-margins':
     title: 11.2 Aligning with auto margins
     status: unsupported

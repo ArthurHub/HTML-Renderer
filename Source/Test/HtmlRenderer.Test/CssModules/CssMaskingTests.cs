@@ -8,23 +8,28 @@ namespace HtmlRenderer.Test.CssModules;
 [TestClass]
 public sealed class CssMaskingTests
 {
-    [Ignore("Gap, see Spec/css-masking-1.yml")]
     [TestMethod]
     [Spec("css-masking-1", "#the-clip-path")]
-    [DataRow("url(#clip)")]
     [DataRow("border-box")]
     [DataRow("fill-box")]
     [DataRow("inset(10px) padding-box")]
     [DataRow("content-box circle(10px)")]
-    public void ClipPath_ClipSourceAndGeometryBox_AreParsed(string value)
+    public void ClipPath_GeometryBox_IsParsed(string value)
     {
         Assert.AreEqual(value, Value("clip-path", value));
     }
 
     [Ignore("Gap, see Spec/css-masking-1.yml")]
     [TestMethod]
+    [Spec("css-masking-1", "#the-clip-path")]
+    [DataRow("url(#clip)")]
+    public void ClipPath_UrlIsParsed(string value)
+    {
+        Assert.AreEqual(value, Value("clip-path", value));
+    }
+
+    [TestMethod]
     [Spec("css-masking-1", "#the-clip-rule")]
-    [Spec("css-masking-1", "#the-mask-image")]
     [Spec("css-masking-1", "#the-mask-mode")]
     [Spec("css-masking-1", "#the-mask-repeat")]
     [Spec("css-masking-1", "#the-mask-position")]
@@ -32,9 +37,7 @@ public sealed class CssMaskingTests
     [Spec("css-masking-1", "#the-mask-origin")]
     [Spec("css-masking-1", "#the-mask-size")]
     [Spec("css-masking-1", "#the-mask-composite")]
-    [Spec("css-masking-1", "#the-mask-type")]
     [DataRow("clip-rule", "evenodd")]
-    [DataRow("mask-image", "url(a.png)")]
     [DataRow("mask-mode", "luminance")]
     [DataRow("mask-repeat", "no-repeat")]
     [DataRow("mask-position", "left top")]
@@ -42,8 +45,18 @@ public sealed class CssMaskingTests
     [DataRow("mask-origin", "padding-box")]
     [DataRow("mask-size", "contain")]
     [DataRow("mask-composite", "subtract")]
-    [DataRow("mask-type", "alpha")]
     public void MaskProperties_AreParsed(string property, string value)
+    {
+        Assert.AreEqual(value, Value(property, value));
+    }
+
+    [Ignore("Gap, see Spec/css-masking-1.yml")]
+    [TestMethod]
+    [Spec("css-masking-1", "#the-mask-image")]
+    [Spec("css-masking-1", "#the-mask-type")]
+    [DataRow("mask-image", "url(a.png)")]
+    [DataRow("mask-type", "alpha")]
+    public void MaskImageAndMaskType_AreParsed(string property, string value)
     {
         Assert.AreEqual(value, Value(property, value));
     }

@@ -35,28 +35,27 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private List<Token> Transform(IEnumerable<Token> values)
         {
-            using (var enumerator = values.GetEnumerator())
+            using var enumerator = values.GetEnumerator();
+
+            bool hasCurrent;
+
+            while ((hasCurrent = enumerator.MoveNext()) && enumerator.Current.Type == TokenType.Whitespace)
             {
-                bool hasCurrent;
-                while ((hasCurrent = enumerator.MoveNext()) && enumerator.Current.Type == TokenType.Whitespace)
-                {
-                    //Empty on purpose.
-                }
-
-                // An empty (or whitespace-only) input - e.g. ConvertDefault()'s Enumerable.Empty<Token>() -
-                // must resolve to "no match", not throw, exactly like every other converter's empty-input
-                // behavior (e.g. DictionaryValueConverter's ToIdentifier() returning null).
-                if (!hasCurrent) return null;
-
-                if (enumerator.Current.Type != _type || !enumerator.Current.Data.Isi(_data)) return null;
-                var list = new List<Token>();
-
-                while (enumerator.MoveNext())
-                    if (enumerator.Current.Type != TokenType.Whitespace || list.Count != 0)
-                        list.Add(enumerator.Current);
-
-                return list;
+                //Empty on purpose.
             }
+
+            // Empty (or whitespace-only) input - which ConvertDefault supplies, and VaryStart falls back to -
+            // must resolve to "no match" rather than dereferencing an exhausted enumerator's Current.
+            if (!hasCurrent) return null;
+
+            if (enumerator.Current.Type != _type || !enumerator.Current.Data.Isi(_data)) return null;
+            var list = new List<Token>();
+
+            while (enumerator.MoveNext())
+                if (enumerator.Current.Type != TokenType.Whitespace || list.Count != 0)
+                    list.Add(enumerator.Current);
+
+            return list;
         }
 
         private sealed class StartValue : IPropertyValue

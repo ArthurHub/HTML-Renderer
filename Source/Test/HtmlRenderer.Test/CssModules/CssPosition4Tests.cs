@@ -34,7 +34,6 @@ public sealed class CssPosition4Tests
         Assert.AreEqual(115, a.Location.Y - c.Location.Y, Delta);
     }
 
-    [Ignore("Gap, see Spec/css-position-4.yml")]
     [TestMethod]
     [Spec("css-position-4", "#backdrop")]
     public void BackdropInASelectorList_KeepsTheRuleValid()

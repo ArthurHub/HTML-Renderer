@@ -13,7 +13,6 @@ public sealed class CssGcpmTests
     private const double Delta = 0.5;
     private const double PageHeight = 300;
 
-    [Ignore("Gap, see Spec/css-gcpm-3.yml")]
     [TestMethod]
     [Spec("css-gcpm-3", "#running-syntax")]
     public void PositionRunning_IsAccepted()
@@ -31,7 +30,6 @@ public sealed class CssGcpmTests
         Assert.AreEqual(0, Find(root, "b").Location.Y, Delta);
     }
 
-    [Ignore("Gap, see Spec/css-gcpm-3.yml")]
     [TestMethod]
     [DataRow("content: element(header)")]
     [DataRow("content: element(header, last)")]

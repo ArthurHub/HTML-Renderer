@@ -6,13 +6,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal static class ValueExtensions
     {
-        private static bool IsWeight(int value)
-        {
-            return value == 100 || value == 200 || value == 300 || value == 400 ||
-                   value == 500 || value == 600 || value == 700 || value == 800 ||
-                   value == 900;
-        }
-
         public static Token OnlyOrDefault(this IEnumerable<Token> value)
         {
             var result = default(Token);
@@ -42,7 +35,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var element = value.OnlyOrDefault();
 
-            if (element != null && element.Type == TokenType.Url) return element.Data;
+            if (element is { Type: TokenType.Url }) return element.Data;
 
             return null;
         }
@@ -86,7 +79,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var element = value.OnlyOrDefault();
 
-            if (element != null && element.Type == TokenType.Percentage)
+            if (element is { Type: TokenType.Percentage })
                 return new Percent(((UnitToken)element).Value);
 
             return null;
@@ -97,13 +90,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             var enumerable = value as Token[] ?? value.ToArray();
             var percent = ToPercent(enumerable);
 
-            if (percent != null)
+            if (percent is not null)
             {
                 return percent;
             }
 
             var element = value.OnlyOrDefault();
-            if (!(element is NumberToken token))
+            if (element is not NumberToken token)
             {
                 return null;
             }
@@ -125,13 +118,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             var enumerable = value as Token[] ?? value.ToArray();
             var percent = ToPercent(enumerable);
 
-            if (percent != null)
+            if (percent is not null)
             {
                 return new Number(percent.Value.Value, Number.Unit.Percent);
             }
 
             var element = value.OnlyOrDefault();
-            if (!(element is NumberToken token))
+            if (element is not NumberToken token)
             {
                 return null;
             }
@@ -150,7 +143,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var element = value.OnlyOrDefault();
 
-            if (element != null && element.Type == TokenType.String) return element.Data;
+            if (element is { Type: TokenType.String }) return element.Data;
 
             return null;
         }
@@ -188,6 +181,34 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return null;
         }
 
+        /// <summary>
+        /// An animation-name: a custom identifier (never a CSS-wide keyword) or a quoted string, which
+        /// names the same animation as the identifier spelled the same way. Case is preserved.
+        /// </summary>
+        public static string ToAnimationName(this IEnumerable<Token> value)
+        {
+            var element = value.OnlyOrDefault();
+
+            if (element == null) return null;
+
+            if (element.Type == TokenType.Ident)
+            {
+                var data = element.Data;
+
+                return data.Isi(Keywords.Inherit) || data.Isi(Keywords.Initial) || data.Isi(Keywords.Unset) ||
+                       data.Isi(Keywords.Revert) || data.Isi(Keywords.RevertLayer)
+                    ? null
+                    : data;
+            }
+
+            if (element.Type == TokenType.String)
+            {
+                return "\"" + element.Data.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+            }
+
+            return null;
+        }
+
         public static string ToIdentifierCaseInsensitive(this IEnumerable<Token> value)
         {
             var element = value.OnlyOrDefault();
@@ -214,7 +235,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var element = value.OnlyOrDefault();
 
-            if (element != null && element.Type == TokenType.Number) return ((NumberToken)element).Value;
+            if (element != null && element.Type == TokenType.Number) return ((NumberToken) element).Value;
 
             return null;
         }
@@ -235,9 +256,25 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             var element = value.OnlyOrDefault();
 
-            if (element != null && element.Type == TokenType.Number && ((NumberToken)element).IsInteger)
+            if (element != null && element.Type == TokenType.Number && ((NumberToken) element).IsInteger)
             {
-                return ((NumberToken)element).IntegerValue;
+                return ((NumberToken) element).IntegerValue;
+            }
+
+            // CSS Values 4 10: a calc() whose type is <number> is also valid where an <integer> is
+            // expected, and its result is rounded to the nearest integer (halves away from zero, 10.9).
+            if (element is FunctionToken function && CalcParser.IsCalcFamily(function.Data))
+            {
+                var node = CalcParser.Parse(function);
+                if (node == null || CalcTypeChecker.Check(node) != CalcCategory.Number) return null;
+
+                var number = CalcSerializer.EvaluateNumber(node);
+                if (number == null) return null;
+
+                var rounded = Math.Round(number.Value, MidpointRounding.AwayFromZero);
+                if (double.IsNaN(rounded) || rounded < int.MinValue || rounded > int.MaxValue) return null;
+
+                return (int) rounded;
             }
 
             return null;
@@ -255,10 +292,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return element > 0 ? element : null;
         }
 
-        public static int? ToWeightInteger(this IEnumerable<Token> value)
+        // CSS Fonts 4: font-weight accepts any <number [1,1000]>, fractions included.
+        public static double? ToWeightNumber(this IEnumerable<Token> value)
         {
-            var element = value.ToPositiveInteger();
-            return element.HasValue && IsWeight(element.Value) ? element : null;
+            var element = value.ToSingle();
+            return element >= 1f && element <= 1000f ? element : null;
         }
 
         public static int? ToBinary(this IEnumerable<Token> value)
@@ -284,13 +322,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             var enumerable = value as Token[] ?? value.ToArray();
             var element = enumerable.ToNaturalInteger();
 
-            if (element.HasValue) return (byte)Math.Min(element.Value, 255);
+            if (element.HasValue) return (byte) Math.Min(element.Value, 255);
 
             var percent = enumerable.ToPercent();
 
             if (!percent.HasValue) return null;
 
-            return (byte)(255f * percent.Value.NormalizedValue);
+            return (byte) (255f * percent.Value.NormalizedValue);
         }
 
         public static Angle? ToAngle(this IEnumerable<Token> value)
@@ -299,12 +337,31 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             if (element == null || element.Type != TokenType.Dimension) return null;
 
-            var token = (UnitToken)element;
+            var token = (UnitToken) element;
             var unit = Angle.GetUnit(token.Unit);
 
             if (unit != Angle.Unit.None) return new Angle(token.Value, unit);
 
             return null;
+        }
+
+        /// <summary>
+        /// <c>[ &lt;angle&gt; | &lt;zero&gt; ]</c> - the argument grammar of the CSS Transforms rotate and skew
+        /// functions, which keep the legacy unitless-zero exception that the general <c>&lt;angle&gt;</c>
+        /// grammar (<see cref="ToAngle"/>) does not allow.
+        /// </summary>
+        public static Angle? ToAngleOrZero(this IEnumerable<Token> value)
+        {
+            var tokens = value as Token[] ?? value.ToArray();
+            var angle = tokens.ToAngle();
+
+            if (angle.HasValue) return angle;
+
+            var element = tokens.OnlyOrDefault();
+
+            return element is { Type: TokenType.Number } && ((NumberToken) element).Value == 0f
+                ? new Angle(0f, Angle.Unit.Deg)
+                : null;
         }
 
         public static Angle? ToAngleNumber(this IEnumerable<Token> value)
@@ -330,14 +387,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 switch (element.Type)
                 {
                     case TokenType.Dimension:
-                        {
-                            var token = (UnitToken)element;
-                            var unit = Length.GetUnit(token.Unit);
+                    {
+                        var token = (UnitToken) element;
+                        var unit = Length.GetUnit(token.Unit);
 
-                            if (unit != Length.Unit.None) return new Length(token.Value, unit);
-                            break;
-                        }
-                    case TokenType.Number when ((NumberToken)element).Value == 0f:
+                        if (unit != Length.Unit.None) return new Length(token.Value, unit);
+                        break;
+                    }
+                    case TokenType.Number when ((NumberToken) element).Value == 0f:
                         return Length.Zero;
                 }
             }
@@ -351,7 +408,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             if (element == null || element.Type != TokenType.Dimension) return null;
 
-            var token = (UnitToken)element;
+            var token = (UnitToken) element;
             var unit = Resolution.GetUnit(token.Unit);
 
             if (unit != Resolution.Unit.None) return new Resolution(token.Value, unit);
@@ -365,7 +422,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             if (element == null || element.Type != TokenType.Dimension) return null;
 
-            var token = (UnitToken)element;
+            var token = (UnitToken) element;
             var unit = Time.GetUnit(token.Unit);
 
             if (unit != Time.Unit.None) return new Time(token.Value, unit);
@@ -483,6 +540,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return string.Join(string.Empty, value.Select(m => m.ToValue()));
         }
 
+        // Whether the value contains a call to the named function anywhere, including nested inside another
+        // function's arguments - e.g. var() inside calc(var(--x) + 1px).
         public static bool ContainsFunction(this IEnumerable<Token> tokens, string functionName)
         {
             foreach (var token in tokens)
@@ -503,7 +562,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             if (element != null && element.Type == TokenType.Ident) return Color.FromName(element.Data);
 
-            if (element != null && element.Type == TokenType.Color && !((ColorToken)element).IsValid)
+            if (element != null && element.Type == TokenType.Color && !((ColorToken) element).IsValid)
             {
                 return Color.FromHex(element.Data);
             }

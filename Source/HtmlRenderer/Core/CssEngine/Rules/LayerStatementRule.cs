@@ -4,8 +4,10 @@ using System.IO;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// The statement form of <c>@layer</c>, CSS Cascade 5 §6.4.4.2. Parsed, but the layer order it
-    /// declares isn't used.
+    /// The statement form of <c>@layer</c> (<c>@layer a, b, c;</c>). It declares the relative order of
+    /// one or more named cascade layers without providing any rules; a later block-form
+    /// <see cref="LayerRule"/> attaches rules to a layer already ordered by this statement, per
+    /// <see href="https://www.w3.org/TR/css-cascade-5/#layer-empty">CSS Cascade 5</see>.
     /// </summary>
     internal sealed class LayerStatementRule : Rule
     {

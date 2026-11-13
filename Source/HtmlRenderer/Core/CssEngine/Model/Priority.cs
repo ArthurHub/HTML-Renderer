@@ -8,11 +8,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     {
         [FieldOffset(0)] private readonly uint _priority;
 
-        public static readonly Priority Zero = new Priority(0u);
-        public static readonly Priority OneTag = new Priority(0, 0, 0, 1);
-        public static readonly Priority OneClass = new Priority(0, 0, 1, 0);
-        public static readonly Priority OneId = new Priority(0, 1, 0, 0);
-        public static readonly Priority Inline = new Priority(1, 0, 0, 0);
+        public static readonly Priority Zero = new (0u);
+        public static readonly Priority OneTag = new (0, 0, 0, 1);
+        public static readonly Priority OneClass = new (0, 0, 1, 0);
+        public static readonly Priority OneId = new (0, 1, 0, 0);
+        public static readonly Priority Inline = new (1, 0, 0, 0);
 
         public Priority(uint priority)
         {
@@ -43,7 +43,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static Priority operator +(Priority a, Priority b)
         {
-            return new Priority(a._priority + b._priority);
+            return new(a._priority + b._priority);
         }
 
         public static bool operator ==(Priority a, Priority b)
@@ -87,7 +87,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public override int GetHashCode()
         {
-            return (int)_priority;
+            return (int) _priority;
         }
 
         public int CompareTo(Priority other)

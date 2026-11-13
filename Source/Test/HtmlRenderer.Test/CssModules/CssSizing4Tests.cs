@@ -63,7 +63,6 @@ public sealed class CssSizing4Tests
         Assert.AreEqual(50, Box(root, "b").Size.Height, Delta);
     }
 
-    [Ignore("Gap, see Spec/css-sizing-4.yml")]
     [TestMethod]
     [DataRow("contain-intrinsic-size: 100px 50px")]
     [DataRow("contain-intrinsic-width: auto 100px")]

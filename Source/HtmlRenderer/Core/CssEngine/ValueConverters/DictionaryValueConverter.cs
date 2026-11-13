@@ -4,9 +4,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal sealed class DictionaryValueConverter<T> : IValueConverter
     {
-        private readonly IReadOnlyDictionary<string, T> _values;
+        private readonly Dictionary<string, T> _values;
 
-        public DictionaryValueConverter(IReadOnlyDictionary<string, T> values)
+        public DictionaryValueConverter(Dictionary<string, T> values)
         {
             _values = values;
         }

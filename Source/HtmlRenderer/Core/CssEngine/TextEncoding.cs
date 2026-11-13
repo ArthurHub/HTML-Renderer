@@ -9,8 +9,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal static class TextEncoding
     {
-        public static HashSet<string> AvailableEncodings = new HashSet<string>(from encoding in Encoding.GetEncodings()
-                                                                            select encoding.Name);
+        public static HashSet<string> AvailableEncodings = new(from encoding in Encoding.GetEncodings()
+            select encoding.Name);
 
         public static readonly Encoding Utf8 = new UTF8Encoding(false);
         public static readonly Encoding Utf16Be = new UnicodeEncoding(true, false);
@@ -65,6 +65,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             {
             }
 
+
+            // Catch all since WP8 does throw a different exception than W*.
             return Utf8;
         }
 

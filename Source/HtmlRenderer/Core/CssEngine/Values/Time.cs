@@ -4,7 +4,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal struct Time : IEquatable<Time>, IComparable<Time>, IFormattable
     {
-        public static readonly Time Zero = new Time(0f, Unit.Ms);
+        public static readonly Time Zero = new(0f, Unit.Ms);
 
         public Time(float value, Unit unit)
         {
@@ -19,15 +19,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             get
             {
-                switch (Type)
+                return Type switch
                 {
-                    case Unit.Ms:
-                        return UnitNames.Ms;
-                    case Unit.S:
-                        return UnitNames.S;
-                    default:
-                        return string.Empty;
-                }
+                    Unit.Ms => UnitNames.Ms,
+                    Unit.S => UnitNames.S,
+                    _ => string.Empty
+                };
             }
         }
 
@@ -70,7 +67,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return ToMilliseconds().CompareTo(other.ToMilliseconds());
         }
 
-
+       
         public static Unit GetUnit(string s)
         {
             switch (s)
@@ -94,7 +91,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return ToMilliseconds() == other.ToMilliseconds();
         }
 
-        internal enum Unit : byte
+        public enum Unit : byte
         {
             None,
             Ms,

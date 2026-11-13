@@ -3,12 +3,17 @@ using System.Collections.Generic;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// Parses calc(), min(), max() and clamp() (CSS Values 4 §10.8), both when a declaration is
-    /// converted and again at layout time from the folded text. Returns null on a syntax error.
+    /// Recursive-descent parser for calc()/min()/max()/clamp() expressions (CSS Values 4 §10). Grammar:
+    /// <c>&lt;calc-sum&gt; := &lt;calc-product&gt; (('+'|'-') &lt;calc-product&gt;)*</c>,
+    /// <c>&lt;calc-product&gt; := &lt;calc-value&gt; (('*'|'/') &lt;calc-value&gt;)*</c>,
+    /// <c>&lt;calc-value&gt; := &lt;number&gt; | &lt;dimension&gt; | &lt;percentage&gt; | '(' &lt;calc-sum&gt; ')' | &lt;nested-call&gt; | &lt;unary-sign&gt; &lt;calc-value&gt;</c>.
+    /// Binary <c>+</c>/<c>-</c> require whitespace on both sides; <c>*</c>/<c>/</c> do not. Returns null on
+    /// any grammar violation. An optional set of <c>variables</c> binds identifiers to numbers (the channel keywords
+    /// of a relative color, CSS Color 5 section 4): a bound identifier is a <c>&lt;calc-value&gt;</c> that stands for its number.
     /// </summary>
     internal static class CalcParser
     {
-        public static CalcNode Parse(FunctionToken function)
+        public static CalcNode Parse(FunctionToken function, IReadOnlyDictionary<string, double> variables = null)
         {
             var name = function.Data;
 
@@ -16,8 +21,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             {
                 var tokens = new List<Token>(function.ArgumentTokens);
                 var pos = 0;
-                var node = ParseSum(tokens, ref pos);
-                if (node is null) return null;
+                var node = ParseSum(tokens, ref pos, variables);
+                if (node == null) return null;
 
                 SkipWhitespace(tokens, ref pos);
                 return pos == tokens.Count ? node : null;
@@ -25,7 +30,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             if (name.Isi(FunctionNames.Min) || name.Isi(FunctionNames.Max))
             {
-                var args = ParseCommaSeparatedSums(function, out var groupCount);
+                var args = ParseCommaSeparatedSums(function, variables, out var groupCount);
                 return groupCount >= 1 && args != null
                     ? new CallCalcNode(name.Isi(FunctionNames.Min) ? FunctionNames.Min : FunctionNames.Max, args)
                     : null;
@@ -33,26 +38,33 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             if (name.Isi(FunctionNames.Clamp))
             {
-                var args = ParseCommaSeparatedSums(function, out var groupCount);
+                var args = ParseCommaSeparatedSums(function, variables, out var groupCount);
                 return groupCount == 3 && args != null ? new CallCalcNode(FunctionNames.Clamp, args) : null;
             }
 
             return null;
         }
 
-        private static List<CalcNode> ParseCommaSeparatedSums(FunctionToken function, out int groupCount)
+        public static bool IsCalcFamily(string name)
+        {
+            return name.Isi(FunctionNames.Calc) || name.Isi(FunctionNames.Min) ||
+                   name.Isi(FunctionNames.Max) || name.Isi(FunctionNames.Clamp);
+        }
+
+        private static List<CalcNode> ParseCommaSeparatedSums(FunctionToken function, IReadOnlyDictionary<string, double> variables, out int groupCount)
         {
             var groups = function.ArgumentTokens.ToList();
             groupCount = groups.Count;
 
             var args = new List<CalcNode>(groups.Count);
+
             foreach (var group in groups)
             {
                 if (group.Count == 0) return null;
 
                 var pos = 0;
-                var node = ParseSum(group, ref pos);
-                if (node is null) return null;
+                var node = ParseSum(group, ref pos, variables);
+                if (node == null) return null;
 
                 SkipWhitespace(group, ref pos);
                 if (pos != group.Count) return null;
@@ -63,10 +75,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return args;
         }
 
-        private static CalcNode ParseSum(List<Token> tokens, ref int pos)
+        private static CalcNode ParseSum(List<Token> tokens, ref int pos, IReadOnlyDictionary<string, double> variables)
         {
-            var left = ParseProduct(tokens, ref pos);
-            if (left is null) return null;
+            var left = ParseProduct(tokens, ref pos, variables);
+            if (left == null) return null;
 
             while (true)
             {
@@ -81,7 +93,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     break;
                 }
 
-                // A sign without whitespace before it was already merged into the number token
+                // Binary +/- must have whitespace on both sides; without it this can't be a valid binary
+                // operator here (an attached sign is already merged into the adjacent numeric token).
                 if (!sawWhitespaceBefore) return null;
 
                 var op = tokens[pos].Data[0];
@@ -91,8 +104,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 SkipWhitespace(tokens, ref pos);
                 if (pos == afterOp) return null;
 
-                var right = ParseProduct(tokens, ref pos);
-                if (right is null) return null;
+                var right = ParseProduct(tokens, ref pos, variables);
+                if (right == null) return null;
 
                 left = new BinaryCalcNode(op, left, right);
             }
@@ -100,10 +113,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return left;
         }
 
-        private static CalcNode ParseProduct(List<Token> tokens, ref int pos)
+        private static CalcNode ParseProduct(List<Token> tokens, ref int pos, IReadOnlyDictionary<string, double> variables)
         {
-            var left = ParseValue(tokens, ref pos);
-            if (left is null) return null;
+            var left = ParseValue(tokens, ref pos, variables);
+            if (left == null) return null;
 
             while (true)
             {
@@ -121,8 +134,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 pos++;
                 SkipWhitespace(tokens, ref pos);
 
-                var right = ParseValue(tokens, ref pos);
-                if (right is null) return null;
+                var right = ParseValue(tokens, ref pos, variables);
+                if (right == null) return null;
 
                 left = new BinaryCalcNode(op, left, right);
             }
@@ -130,7 +143,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return left;
         }
 
-        private static CalcNode ParseValue(List<Token> tokens, ref int pos)
+        private static CalcNode ParseValue(List<Token> tokens, ref int pos, IReadOnlyDictionary<string, double> variables)
         {
             SkipWhitespace(tokens, ref pos);
             if (pos >= tokens.Count) return null;
@@ -141,51 +154,25 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             {
                 case TokenType.Number:
                     pos++;
-                    return new NumberCalcNode(((NumberToken)token).Value);
+                    return new NumberCalcNode(((NumberToken) token).Value);
 
                 case TokenType.Percentage:
                     pos++;
-                    return new PercentageCalcNode(((UnitToken)token).Value);
+                    return new PercentageCalcNode(((UnitToken) token).Value);
+
+                // An identifier bound by the caller stands for its number.
+                case TokenType.Ident when variables != null && variables.TryGetValue(token.Data.ToLowerInvariant(), out var bound):
+                    pos++;
+                    return new NumberCalcNode(bound);
 
                 case TokenType.Dimension:
-                {
-                    var unitToken = (UnitToken)token;
-                    var lengthUnit = Length.GetUnit(unitToken.Unit);
-                    if (IsSupportedLengthUnit(lengthUnit))
-                    {
-                        pos++;
-                        return new DimensionCalcNode(unitToken.Value, lengthUnit);
-                    }
-
-                    var angleUnit = Angle.GetUnit(unitToken.Unit);
-                    if (angleUnit != Angle.Unit.None)
-                    {
-                        pos++;
-                        return new AngleCalcNode(unitToken.Value, angleUnit);
-                    }
-
-                    var timeUnit = Time.GetUnit(unitToken.Unit);
-                    if (timeUnit != Time.Unit.None)
-                    {
-                        pos++;
-                        return new TimeCalcNode(unitToken.Value, timeUnit);
-                    }
-
-                    var resolutionUnit = Resolution.GetUnit(unitToken.Unit);
-                    if (resolutionUnit != Resolution.Unit.None)
-                    {
-                        pos++;
-                        return new ResolutionCalcNode(unitToken.Value, resolutionUnit);
-                    }
-
-                    return null;
-                }
+                    return ParseDimension((UnitToken) token, tokens, ref pos);
 
                 case TokenType.RoundBracketOpen:
                 {
                     pos++;
-                    var inner = ParseSum(tokens, ref pos);
-                    if (inner is null) return null;
+                    var inner = ParseSum(tokens, ref pos, variables);
+                    if (inner == null) return null;
 
                     SkipWhitespace(tokens, ref pos);
                     if (pos >= tokens.Count || tokens[pos].Type != TokenType.RoundBracketClose) return null;
@@ -198,23 +185,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     var negative = token.Data == "-";
                     pos++;
 
-                    // Only reachable before ( or a function, a signed number is a single token
+                    // A unary sign must be immediately followed by a parenthesized group or a nested
+                    // function call (a signed number/dimension is already a single token from the lexer).
                     if (pos >= tokens.Count ||
                         (tokens[pos].Type != TokenType.RoundBracketOpen && tokens[pos].Type != TokenType.Function))
                     {
                         return null;
                     }
 
-                    var operand = ParseValue(tokens, ref pos);
-                    return operand is null ? null : new UnaryCalcNode(negative, operand);
+                    var operand = ParseValue(tokens, ref pos, variables);
+                    return operand == null ? null : new UnaryCalcNode(negative, operand);
                 }
 
                 case TokenType.Function:
                 {
-                    var nested = (FunctionToken)token;
+                    var nested = (FunctionToken) token;
                     if (!IsCalcFamily(nested.Data)) return null;
                     pos++;
-                    return Parse(nested);
+                    return Parse(nested, variables);
                 }
 
                 default:
@@ -222,17 +210,96 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             }
         }
 
-        private static bool IsSupportedLengthUnit(Length.Unit unit)
+        private static CalcNode ParseDimension(UnitToken token, List<Token> tokens, ref int pos)
         {
-            return unit == Length.Unit.Em || unit == Length.Unit.Rem || unit == Length.Unit.Ex || unit == Length.Unit.Px ||
-                unit == Length.Unit.Mm || unit == Length.Unit.Cm || unit == Length.Unit.In || unit == Length.Unit.Pt || unit == Length.Unit.Pc;
+            var lengthUnit = Length.GetUnit(token.Unit);
+            if (IsSupportedLengthUnit(lengthUnit))
+            {
+                pos++;
+                return new DimensionCalcNode(token.Value, lengthUnit);
+            }
+
+            var angleUnit = Angle.GetUnit(token.Unit);
+            if (angleUnit != Angle.Unit.None)
+            {
+                pos++;
+                return new AngleCalcNode(token.Value, angleUnit);
+            }
+
+            var timeUnit = Time.GetUnit(token.Unit);
+            if (timeUnit != Time.Unit.None)
+            {
+                pos++;
+                return new TimeCalcNode(token.Value, timeUnit);
+            }
+
+            var resolutionUnit = Resolution.GetUnit(token.Unit);
+            if (resolutionUnit != Resolution.Unit.None)
+            {
+                pos++;
+                return new ResolutionCalcNode(token.Value, resolutionUnit);
+            }
+
+            return null;
         }
 
-        /// <summary>Whether <paramref name="name"/> is calc, min, max or clamp, ignoring case.</summary>
-        public static bool IsCalcFamily(string name)
+        private static bool IsSupportedLengthUnit(Length.Unit unit)
         {
-            return name.Isi(FunctionNames.Calc) || name.Isi(FunctionNames.Min) ||
-                   name.Isi(FunctionNames.Max) || name.Isi(FunctionNames.Clamp);
+            switch (unit)
+            {
+                case Length.Unit.Em:
+                case Length.Unit.Rem:
+                case Length.Unit.Ex:
+                case Length.Unit.Ch:
+                case Length.Unit.Vw:
+                case Length.Unit.Vh:
+                case Length.Unit.Vmin:
+                case Length.Unit.Vmax:
+                case Length.Unit.Px:
+                case Length.Unit.Mm:
+                case Length.Unit.Cm:
+                case Length.Unit.In:
+                case Length.Unit.Pt:
+                case Length.Unit.Pc:
+                case Length.Unit.Q:
+                case Length.Unit.Cap:
+                case Length.Unit.Ic:
+                case Length.Unit.Lh:
+                case Length.Unit.Rlh:
+                case Length.Unit.Rex:
+                case Length.Unit.Rch:
+                case Length.Unit.Rcap:
+                case Length.Unit.Ric:
+                case Length.Unit.Vi:
+                case Length.Unit.Vb:
+                case Length.Unit.Svw:
+                case Length.Unit.Svh:
+                case Length.Unit.Svi:
+                case Length.Unit.Svb:
+                case Length.Unit.Svmin:
+                case Length.Unit.Svmax:
+                case Length.Unit.Lvw:
+                case Length.Unit.Lvh:
+                case Length.Unit.Lvi:
+                case Length.Unit.Lvb:
+                case Length.Unit.Lvmin:
+                case Length.Unit.Lvmax:
+                case Length.Unit.Dvw:
+                case Length.Unit.Dvh:
+                case Length.Unit.Dvi:
+                case Length.Unit.Dvb:
+                case Length.Unit.Dvmin:
+                case Length.Unit.Dvmax:
+                case Length.Unit.Cqw:
+                case Length.Unit.Cqh:
+                case Length.Unit.Cqi:
+                case Length.Unit.Cqb:
+                case Length.Unit.Cqmin:
+                case Length.Unit.Cqmax:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private static void SkipWhitespace(List<Token> tokens, ref int pos)

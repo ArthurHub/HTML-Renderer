@@ -148,15 +148,22 @@ public sealed class GrammarTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "grammar.html#scanner")]
     [DataRow("#x { margin-left: 10PX }")]
     [DataRow("#x { margin-left: 10Px }")]
     [DataRow("#x { font-size: 20px; margin-left: 0.5EM }")]
+    public void Scanner_IsCaseInsensitive(string css)
+    {
+        Assert.AreEqual(10, Styled(css).ActualMarginLeft, Delta);
+    }
+
+    [TestMethod]
+    [Ignore("Gap, see Spec/css21.yml")]
+    [Spec("css21", "grammar.html#scanner")]
     [DataRow("@MEDIA screen { #x { margin-left: 10px } }")]
     [DataRow("@Media screen { #x { margin-left: 10px } }")]
     [DataRow("#x { margin-left: 10px !IMPORTANT } #x { margin-left: 0 }")]
-    public void Scanner_IsCaseInsensitive(string css)
+    public void Scanner_AtKeywordsAndImportantAreCaseInsensitive(string css)
     {
         Assert.AreEqual(10, Styled(css).ActualMarginLeft, Delta);
     }

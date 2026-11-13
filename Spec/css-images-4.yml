@@ -84,7 +84,6 @@ sections:
     status: partial
     gaps:
       - The interpolation method is ignored, see 3.5.2
-      - "a98-rgb, prophoto-rgb and rec2020 are rejected, see css-color-4 #interpolation-space"
       - "A corner direction doesn't depend on the box's aspect ratio, see css-images-3 #linear-gradient-syntax"
   '#color-interpolation':
     title: '3.1.1 Effects of color space on interpolation: examples'
@@ -164,9 +163,7 @@ sections:
     status: unsupported
   '#the-image-resolution':
     title: '6.1 Overriding Image Resolutions: the image-resolution property'
-    status: unsupported
-    gaps:
-      - "'image-resolution' isn't a known property"
+    status: parsed-only
   '#interpolation':
     title: 7 Interpolation
     status: n/a

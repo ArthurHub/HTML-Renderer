@@ -5,7 +5,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         private static readonly IValueConverter StyleConverter = Converters.WordBreakConverter;
 
         public WordBreakProperty()
-            : base(PropertyNames.WordBreak)
+            : base(PropertyNames.WordBreak, PropertyFlags.Inherited)
         {
         }
 

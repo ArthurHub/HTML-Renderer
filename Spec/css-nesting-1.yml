@@ -33,7 +33,6 @@ sections:
     title: '4 Nesting Selector: the & selector'
     status: partial
     gaps:
-      - '&div is accepted and matches like div&'
       - A top-level & is invalid instead of matching like :scope
   '#nested-declarations':
     title: 5 The Nested Declarations Rule

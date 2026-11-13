@@ -1,6 +1,6 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary><c>grid-auto-flow</c>, CSS Grid 2 §7.7.</summary>
+    /// <summary>The <c>grid-auto-flow</c> property (CSS Grid §7.7): the auto-placement direction and packing.</summary>
     internal sealed class GridAutoFlowProperty : Property
     {
         private static readonly IValueConverter StyleConverter = new GridAutoFlowValueConverter().OrDefault();

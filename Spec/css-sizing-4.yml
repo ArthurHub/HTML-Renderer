@@ -53,9 +53,7 @@ sections:
       - Floats and inline-blocks aren't sized to their content as specified, see css-sizing-3 5.1
   '#intrinsic-size-override':
     title: '5.2 Overriding Contained Intrinsic Sizes: the contain-intrinsic-* properties'
-    status: unsupported
-    gaps:
-      - The contain-intrinsic-* properties are dropped by the parser
+    status: parsed-only
   '#last-remembered':
     title: 5.2.1 Last Remembered Size
     status: unsupported

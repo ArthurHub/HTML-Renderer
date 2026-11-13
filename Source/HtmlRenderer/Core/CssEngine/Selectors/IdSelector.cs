@@ -8,7 +8,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         public string Id { get; }
-
+        
         public static IdSelector Create(string name)
         {
             return new IdSelector(name);

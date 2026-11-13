@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     /// <summary>
-    /// A node of a parsed calc(), min(), max() or clamp() expression (CSS Values 4 §10.10).
+    /// AST node for a parsed calc()/min()/max()/clamp() expression (CSS Values 4 §10).
     /// </summary>
     internal abstract class CalcNode
     {

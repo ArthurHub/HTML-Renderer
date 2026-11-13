@@ -188,7 +188,6 @@ public sealed class Selectors4Tests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/selectors-4.yml")]
     [Spec("selectors-4", "#matches")]
     [Spec("selectors-4", "#zero-matches")]
     [Spec("selectors-4", "#forgiving-selector")]
@@ -288,7 +287,6 @@ public sealed class Selectors4Tests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/selectors-4.yml")]
     [Spec("selectors-4", "#attribute-case")]
     [DataRow("[title=foo i]", "FOO")]
     [DataRow("[title='foo' I]", "FOO")]
@@ -433,6 +431,38 @@ public sealed class Selectors4Tests
 
     private static string Document(string css, string body) =>
         $"<!DOCTYPE html><html><head><style>{css}</style></head><body>{body}</body></html>";
+
+    [TestMethod]
+    [Spec("selectors-4", "#video-state")]
+    [Spec("selectors-4", "#media-loading-state")]
+    [Spec("selectors-4", "#sound-state")]
+    [Spec("selectors-4", "#popover-open-state")]
+    [Spec("selectors-4", "#modal-state")]
+    [Spec("selectors-4", "#fullscreen-state")]
+    [Spec("selectors-4", "#pip-state")]
+    [Spec("selectors-4", "#autofill")]
+    [Spec("selectors-4", "#user-pseudos")]
+    [DataRow(":playing")]
+    [DataRow(":paused")]
+    [DataRow(":seeking")]
+    [DataRow(":buffering")]
+    [DataRow(":stalled")]
+    [DataRow(":muted")]
+    [DataRow(":volume-locked")]
+    [DataRow(":popover-open")]
+    [DataRow(":modal")]
+    [DataRow(":fullscreen")]
+    [DataRow(":picture-in-picture")]
+    [DataRow(":autofill")]
+    [DataRow(":user-valid")]
+    [DataRow(":user-invalid")]
+    public void StatesThatNeverOccur_MatchNothingAndKeepTheRule(string pseudoClass)
+    {
+        var body = "<p id='x'>a</p><p id='y'>b</p>";
+
+        Assert.IsFalse(Matches("p" + pseudoClass, body));
+        Assert.IsTrue(Matches("p" + pseudoClass + ", #y", body, "y"));
+    }
 
     private static bool Matches(string selector, string body, string id = "x") =>
         IsRed(Document(selector + " { background-color: #ff0000 }", body), id);

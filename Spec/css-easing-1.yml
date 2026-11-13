@@ -15,8 +15,6 @@ sections:
   '#cubic-bezier-easing-functions':
     title: '2.2 Cubic Bézier easing functions: ease, ease-in, ease-out, ease-in-out, cubic-bezier()'
     status: parsed-only
-    gaps:
-      - x values outside [0, 1] are accepted
   '#cubic-bezier-algo':
     title: 2.2.1 Output of a cubic bézier easing function
     status: unsupported
@@ -25,9 +23,6 @@ sections:
   '#step-easing-functions':
     title: '2.3 Step easing functions: step-start, step-end, steps()'
     status: parsed-only
-    gaps:
-      - The jump-start, jump-end, jump-none and jump-both positions invalidate the declaration
-      - A step count of 0 or below is accepted
   '#step-easing-algo':
     title: 2.3.1 Output of a step easing function
     status: unsupported

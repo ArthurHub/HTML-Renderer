@@ -103,20 +103,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             string separator,
             bool first = true)
         {
-            using(var writer = new StringWriter(sb)){
-                foreach (var element in elements)
+            using var writer = new StringWriter(sb);
+            foreach (var element in elements)
+            {
+                if (first)
                 {
-                    if (first)
-                    {
-                        first = false;
-                    }
-                    else
-                    {
-                        writer.Write(separator);
-                    }
-
-                    element.ToCss(writer, this);
+                    first = false;
                 }
+                else
+                {
+                    writer.Write(separator);
+                }
+
+                element.ToCss(writer, this);
             }
         }
     }

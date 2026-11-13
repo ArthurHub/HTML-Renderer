@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,15 +18,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         internal RuleList Rules { get; }
 
+        /// <summary>Whether the sheet is the user agent stylesheet, the cascade sorts its rules into the user agent origin.</summary>
         internal bool IsUserAgent { get; set; }
 
         /// <summary>
-        /// The resolved absolute URI this stylesheet was loaded from (null for stylesheets with no
-        /// external location, e.g. an inline &lt;style&gt; block or caller-supplied CSS text). Relative
-        /// <c>url()</c> references inside this stylesheet (nested <c>@import</c>, <c>@font-face src</c>)
-        /// resolve against this, not the document's base URI, matching browser behavior for fetched CSS.
+        ///     The <see cref="StylesheetParser.UrlBase"/> the sheet was parsed with, or null.
         /// </summary>
-        internal Uri BaseUri { get; set; }
+        public System.Uri BaseUri { get; internal set; }
 
         public IEnumerable<ICharsetRule> CharacterSetRules => Rules.Where(r => r is CharsetRule).Cast<ICharsetRule>();
         public IEnumerable<IFontFaceRule> FontfaceSetRules => Rules.Where(r => r is FontFaceRule).Cast<IFontFaceRule>();

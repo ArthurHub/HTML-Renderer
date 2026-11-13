@@ -40,7 +40,6 @@ public sealed class CssEasingTests
         Assert.AreEqual(string.Empty, Easing("cubic-bezier(0.1, 0.2, 0.3)"));
     }
 
-    [Ignore("Gap, see Spec/css-easing-1.yml")]
     [TestMethod]
     [Spec("css-easing-1", "#cubic-bezier-easing-functions")]
     [DataRow("cubic-bezier(2, 0, 0, 1)")]
@@ -73,7 +72,6 @@ public sealed class CssEasingTests
         Assert.AreNotEqual(string.Empty, Easing(value));
     }
 
-    [Ignore("Gap, see Spec/css-easing-1.yml")]
     [TestMethod]
     [Spec("css-easing-1", "#step-easing-functions")]
     [DataRow("steps(3, jump-start)")]
@@ -85,7 +83,6 @@ public sealed class CssEasingTests
         Assert.AreEqual(value, Easing(value));
     }
 
-    [Ignore("Gap, see Spec/css-easing-1.yml")]
     [TestMethod]
     [Spec("css-easing-1", "#step-easing-functions")]
     [DataRow("steps(0)")]

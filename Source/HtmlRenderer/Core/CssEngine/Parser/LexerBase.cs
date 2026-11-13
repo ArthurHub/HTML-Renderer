@@ -39,18 +39,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public TextPosition GetCurrentPosition()
         {
-            return new TextPosition(Line, Column, Position);
+            return new(Line, Column, Position);
         }
 
         /// <summary>
-        /// Lexes the next token from the raw <see cref="Source"/> index <paramref name="sourceIndex"/>, e.g. one
-        /// returned by <see cref="InsertionPoint"/>. Unlike setting <see cref="InsertionPoint"/> this is exact
-        /// across <c>\r\n</c> normalization. Line and column aren't rewound.
+        /// Repositions the lexer so the next token is re-lexed from character index
+        /// <paramref name="sourceIndex"/> (a raw <see cref="Source"/> index, as returned by
+        /// <see cref="InsertionPoint"/>). Unlike setting <see cref="InsertionPoint"/> (whose
+        /// <c>BackNative</c> loop is not a faithful inverse across <c>\r\n</c> normalization), this
+        /// restores the character stream exactly — line/column tracking is not rewound (it only affects
+        /// reported positions, never token content). Used by <see cref="StylesheetComposer"/> to rewind a
+        /// CSS-Nesting classification look-ahead so a declaration re-lexes cleanly in value mode.
         /// </summary>
         public void RewindTo(int sourceIndex)
         {
             Source.Index = sourceIndex;
-            // Anything but EOF, Advance() doesn't read past EOF.
+            // Non-EOF so the next Advance() actually reads Source[sourceIndex] rather than short-circuiting.
             Current = Symbols.Null;
         }
 
@@ -123,7 +127,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             var c = NormalizeBackward(Source[Source.Index - 1]);
             if (c == Symbols.LineFeed)
             {
-                Column = _columns.Count != 0 ? _columns.Pop() : (ushort)1;
+                Column = _columns.Count != 0 ? _columns.Pop() : (ushort) 1;
                 Line--;
                 Current = c;
             }

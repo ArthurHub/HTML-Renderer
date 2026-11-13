@@ -5,7 +5,6 @@ namespace HtmlRenderer.Test.CssModules;
 [TestClass]
 public sealed class CssShapesTests
 {
-    [Ignore("Gap, see Spec/css-shapes-1.yml")]
     [TestMethod]
     [DataRow("shape-outside", "circle(50%)")]
     [DataRow("shape-outside", "inset(10px round 5px) margin-box")]

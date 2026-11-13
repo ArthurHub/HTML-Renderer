@@ -7,7 +7,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     internal sealed class PseudoElementSelectorFactory
     {
         private static readonly Lazy<PseudoElementSelectorFactory> Lazy =
-            new Lazy<PseudoElementSelectorFactory>(() => new PseudoElementSelectorFactory());
+            new(() => new PseudoElementSelectorFactory());
 
         private readonly StylesheetParser _parser;
 
@@ -16,6 +16,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         private readonly Dictionary<string, ISelector> _selectors =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                 {
+                    //TODO some lack implementation (selection, content, ...)
+                    // some implementations are dubious (first-line, first-letter, ...)
                     PseudoElementNames.Before,
                     PseudoElementNames.After,
                     PseudoElementNames.Marker,
@@ -23,9 +25,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     PseudoElementNames.FirstLine,
                     PseudoElementNames.FirstLetter,
                     PseudoElementNames.Content,
+                    PseudoElementNames.Placeholder,
+                    PseudoElementNames.Backdrop,
+                    PseudoElementNames.FileSelectorButton,
+                    PseudoElementNames.DetailsContent,
+                    PseudoElementNames.TargetText,
+                    PseudoElementNames.SpellingError,
+                    PseudoElementNames.GrammarError,
+                    PseudoElementNames.Cue,
+                    PseudoElementNames.CueRegion,
+                    PseudoElementNames.ViewTransition,
                 }
-                .ToDictionary(x => x, PseudoElementSelector.Create)
-                ;
+                .ToDictionary(x => x, PseudoElementSelector.Create);
 
         #endregion
 

@@ -5,7 +5,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal sealed class RadialGradient : IImageSource
     {
-        internal enum SizeMode : byte
+        public enum SizeMode : byte
         {
             None,
             ClosestCorner,

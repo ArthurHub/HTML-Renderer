@@ -348,7 +348,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 // re-derived at match time (see DoesSelectorMatch), including for synthesized
                 // pseudo-element boxes whose HtmlTag is null - the tag/class/id index can't
                 // safely represent that, so fall back to a full scan for these.
-                if (compoundSelector.Any(s => s is PseudoElementSelector || s is FirstChildSelector))
+                if (compoundSelector.Any(s => s is PseudoElementSelector || IsChildIndexedPseudoClass(s)))
                 {
                     keys.Add((SelectorBucketKind.Universal, string.Empty));
                     return;
@@ -629,6 +629,14 @@ namespace TheArtOfDev.HtmlRenderer.Core
             return false;
         }
 
+        // Selectors 4 §6.3, the s flag compares the value case-sensitively
+        private static StringComparison ValueComparison(AttrSelectorBase selector)
+        {
+            return selector.CaseSensitivity == AttrCaseSensitivity.Sensitive
+                ? StringComparison.Ordinal
+                : StringComparison.InvariantCultureIgnoreCase;
+        }
+
         private static bool DoesSelectorMatch(AttrMatchSelector attrMatchSelector, CssBox box)
         {
             if (box == null || box.HtmlTag == null || box.HtmlTag.Attributes == null)
@@ -640,7 +648,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             {
                 if (attribute.Key.Equals(attrMatchSelector.Attribute, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    return attribute.Value.Equals(attrMatchSelector.Value, StringComparison.InvariantCultureIgnoreCase);
+                    return attribute.Value.Equals(attrMatchSelector.Value, ValueComparison(attrMatchSelector));
                 }
             }
 
@@ -660,7 +668,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 {
                     var attributeValues = attribute.Value.Split(' ').Where(x => x.Length > 0).ToArray();
 
-                    return attributeValues.Any(value => value.Equals(attrListSelector.Value, StringComparison.InvariantCultureIgnoreCase));
+                    return attributeValues.Any(value => value.Equals(attrListSelector.Value, ValueComparison(attrListSelector)));
                 }
             }
 
@@ -678,7 +686,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             {
                 if (attribute.Key.Equals(attrContainsSelector.Attribute, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    return attribute.Value.IndexOf(attrContainsSelector.Value, StringComparison.InvariantCultureIgnoreCase) >= 0;
+                    return attribute.Value.IndexOf(attrContainsSelector.Value, ValueComparison(attrContainsSelector)) >= 0;
                 }
             }
 
@@ -690,7 +698,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             if (box == null || box.HtmlTag == null || box.HtmlTag.Attributes == null) return false;
             foreach (var attr in box.HtmlTag.Attributes)
                 if (attr.Key.Equals(s.Attribute, StringComparison.InvariantCultureIgnoreCase))
-                    return attr.Value.StartsWith(s.Value, StringComparison.InvariantCultureIgnoreCase);
+                    return attr.Value.StartsWith(s.Value, ValueComparison(s));
             return false;
         }
 
@@ -699,7 +707,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             if (box == null || box.HtmlTag == null || box.HtmlTag.Attributes == null) return false;
             foreach (var attr in box.HtmlTag.Attributes)
                 if (attr.Key.Equals(s.Attribute, StringComparison.InvariantCultureIgnoreCase))
-                    return attr.Value.EndsWith(s.Value, StringComparison.InvariantCultureIgnoreCase);
+                    return attr.Value.EndsWith(s.Value, ValueComparison(s));
             return false;
         }
 
@@ -708,8 +716,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
             if (box == null || box.HtmlTag == null || box.HtmlTag.Attributes == null) return false;
             foreach (var attr in box.HtmlTag.Attributes)
                 if (attr.Key.Equals(s.Attribute, StringComparison.InvariantCultureIgnoreCase))
-                    return attr.Value.Equals(s.Value, StringComparison.InvariantCultureIgnoreCase)
-                        || attr.Value.StartsWith(s.Value + "-", StringComparison.InvariantCultureIgnoreCase);
+                    return attr.Value.Equals(s.Value, ValueComparison(s))
+                        || attr.Value.StartsWith(s.Value + "-", ValueComparison(s));
             return false;
         }
 
@@ -723,6 +731,15 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
             if (pseudoClassSelector.Class == "root")
                 return box.HtmlTag != null && box.HtmlTag.Name.Equals("html", StringComparison.InvariantCultureIgnoreCase);
+
+            // Selectors 4 §13.3 and §13.4, the bare forms are their nth-*() function with An+B = 1
+            switch (pseudoClassSelector.Class)
+            {
+                case "first-child": return MatchesChildPosition(box, 0, 1, AllSelector.Create(), false, false);
+                case "last-child": return MatchesChildPosition(box, 0, 1, AllSelector.Create(), false, true);
+                case "first-of-type": return MatchesChildPosition(box, 0, 1, AllSelector.Create(), true, false);
+                case "last-of-type": return MatchesChildPosition(box, 0, 1, AllSelector.Create(), true, true);
+            }
 
             // CSS 2.1 §5.11.2. There's no history, every link is unvisited and :visited never matches.
             return pseudoClassSelector.Class == "link" && box.IsClickable;
@@ -740,10 +757,15 @@ namespace TheArtOfDev.HtmlRenderer.Core
             return false;
         }
 
-        /// <summary>
-        /// The child-indexed pseudo-classes, Selectors 4 §13.3 and §13.4, including the bare forms like
-        /// :first-child, which PseudoClassSelectorFactory creates with Step 0 and Offset 1.
-        /// </summary>
+        private static bool IsChildIndexedPseudoClass(ISelector selector)
+        {
+            if (selector is ChildSelector) return true;
+            if (!(selector is PseudoClassSelector pseudoClass)) return false;
+            return pseudoClass.Class == "first-child" || pseudoClass.Class == "last-child"
+                || pseudoClass.Class == "first-of-type" || pseudoClass.Class == "last-of-type";
+        }
+
+        /// <summary>The child-indexed pseudo-classes, Selectors 4 §13.3 and §13.4.</summary>
         private static bool DoesSelectorMatch(ChildSelector childSelector, CssBox box)
         {
             if (box == null || box.HtmlTag == null)
@@ -756,6 +778,18 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 return DoesColumnSelectorMatch(childSelector, box, childSelector is LastColumnSelector);
             }
 
+            var sameTypeOnly = childSelector is FirstTypeSelector || childSelector is LastTypeSelector;
+            var fromEnd = childSelector is LastChildSelector || childSelector is LastTypeSelector;
+            return MatchesChildPosition(box, childSelector.Step, childSelector.Offset, childSelector.Kind, sameTypeOnly, fromEnd);
+        }
+
+        private static bool MatchesChildPosition(CssBox box, int step, int offset, ISelector of, bool sameTypeOnly, bool fromEnd)
+        {
+            if (box == null || box.HtmlTag == null)
+            {
+                return false;
+            }
+
             var parentBox = DomUtils.GetNearestParentElementBox(box);
             if (parentBox == null)
             {
@@ -764,7 +798,6 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
             IEnumerable<CssBox> siblingBoxes = parentBox.Boxes.Where(b => b.HtmlTag != null);
 
-            var sameTypeOnly = childSelector is FirstTypeSelector || childSelector is LastTypeSelector;
             if (sameTypeOnly)
             {
                 siblingBoxes = siblingBoxes.Where(b =>
@@ -772,7 +805,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
             }
 
             // The "of S" filter of :nth-child()/:nth-last-child(). Without it Kind is AllSelector.
-            siblingBoxes = siblingBoxes.Where(b => DoesSelectorMatch(childSelector.Kind, b));
+            siblingBoxes = siblingBoxes.Where(b => DoesSelectorMatch(of, b));
 
             var siblings = siblingBoxes.ToList();
             var index = siblings.IndexOf(box);
@@ -781,10 +814,9 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 return false;
             }
 
-            var fromEndPosition = childSelector is LastChildSelector || childSelector is LastTypeSelector;
-            var position = fromEndPosition ? siblings.Count - index : index + 1;
+            var position = fromEnd ? siblings.Count - index : index + 1;
 
-            return MatchesAnPlusB(position, childSelector.Step, childSelector.Offset);
+            return MatchesAnPlusB(position, step, offset);
         }
 
         /// <summary>

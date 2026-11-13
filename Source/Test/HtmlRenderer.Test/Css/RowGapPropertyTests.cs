@@ -22,7 +22,6 @@ public sealed class RowGapPropertyTests
         => CssConstructionFunctions.TestForLegalValue<RowGapProperty>(PropertyNames.RowGap, value);
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-grid-2.yml")]
     [Spec("css-grid-2", "#gutters")]
     public void RowGapAcceptsNormalKeyword()
         => CssConstructionFunctions.TestForLegalValue<RowGapProperty>(PropertyNames.RowGap, "normal");

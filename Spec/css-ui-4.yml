@@ -40,9 +40,7 @@ sections:
       - "'invert' is accepted and painted as currentcolor"
   '#outline-offset':
     title: '3.5 Offsetting the Outline: the outline-offset property'
-    status: unsupported
-    gaps:
-      - "'outline-offset' isn't parsed"
+    status: parsed-only
   '#resizing':
     title: 4 Resizing
     status: n/a
@@ -76,18 +74,18 @@ sections:
     title: 6.1 Controlling content selection
     status: unsupported
     gaps:
-      - "'user-select' and '-webkit-user-select' aren't parsed, the text selection of the controls covers every element"
+      - "'user-select' is ignored and '-webkit-user-select' is rejected, the text selection of the controls covers every element"
       - The user-agent stylesheet doesn't set 'user-select' on button, meter, progress and select
   '#pointer-events-control':
     title: '6.2 Exclusion from Hit-testing: the pointer-events property'
-    status: unsupported
+    status: parsed-only
     gaps:
-      - "'pointer-events' isn't parsed, links stay clickable"
+      - Links stay clickable
   '#inertness':
     title: '6.3 Preventing All Interaction: the interactivity property'
-    status: unsupported
+    status: parsed-only
     gaps:
-      - "'interactivity' isn't parsed, inert content stays clickable and selectable"
+      - Inert content stays clickable and selectable
   '#interest':
     title: '6.4 User Interest Delay: the interest-delay-* properties'
     status: n/a
@@ -96,9 +94,7 @@ sections:
     status: unsupported
   '#widget-accent':
     title: '7.1 Widget Accent Colors: the accent-color property'
-    status: unsupported
-    gaps:
-      - "'accent-color' isn't parsed, widgets aren't drawn, see HTML 15.5.1"
+    status: parsed-only
   '#appearance-switching':
     title: '7.2 Switching appearance: the appearance property'
     status: unsupported

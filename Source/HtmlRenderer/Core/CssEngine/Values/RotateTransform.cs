@@ -19,9 +19,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public TransformMatrix ComputeMatrix()
         {
-            var norm = 1f / (float)Math.Sqrt(X * X + Y * Y + Z * Z);
-            var sina = (float)Math.Sin(Angle);
-            var cosa = (float)Math.Cos(Angle);
+            var norm = 1f / (float) Math.Sqrt(X * X + Y * Y + Z * Z);
+            var sina = (float) Math.Sin(Angle);
+            var cosa = (float) Math.Cos(Angle);
 
             var l = X * norm;
             var m = Y * norm;

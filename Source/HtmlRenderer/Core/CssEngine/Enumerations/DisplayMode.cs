@@ -20,6 +20,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         Flex,
         InlineFlex,
         Grid,
-        InlineGrid
+        InlineGrid,
+        Contents,
+        FlowRoot
     }
 }

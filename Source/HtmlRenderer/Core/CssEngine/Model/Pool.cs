@@ -1,78 +1,72 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
+    /// <summary>
+    /// Scratch-object pools. Per-thread (lock-free) rather than one shared lock-guarded pool: the shared
+    /// lock was a major contention point under concurrent parsing. An instance is only ever held by the
+    /// code that rented it, so a rent and its matching return are safe even if they happen on different
+    /// threads (e.g. across an await): the instance simply lands in the returning thread's pool, and is
+    /// never reachable from two threads at once. Each per-thread stack is bounded.
+    /// </summary>
     internal static class Pool
     {
-        private static readonly Stack<StringBuilder> Builder = new Stack<StringBuilder>();
-        private static readonly Stack<SelectorConstructor> Selector = new Stack<SelectorConstructor>();
-        private static readonly Stack<ValueBuilder> Value = new Stack<ValueBuilder>();
-        private static readonly object Lock = new object();
+        private const int MaxPooled = 64;
+
+        [ThreadStatic] private static Stack<StringBuilder> _builder;
+        [ThreadStatic] private static Stack<SelectorConstructor> _selector;
+        [ThreadStatic] private static Stack<ValueBuilder> _value;
 
         public static StringBuilder NewStringBuilder()
         {
-            lock (Lock)
-            {
-                return Builder.Count == 0 ? new StringBuilder(1024) : Builder.Pop().Clear();
-            }
+            var stack = _builder;
+            return stack == null || stack.Count == 0 ? new StringBuilder(1024) : stack.Pop().Clear();
         }
 
         public static SelectorConstructor NewSelectorConstructor(AttributeSelectorFactory attributeSelector,
             PseudoClassSelectorFactory pseudoClassSelector, PseudoElementSelectorFactory pseudoElementSelector)
         {
-            lock (Lock)
-            {
-                return Selector.Count == 0
-                    ? new SelectorConstructor(attributeSelector, pseudoClassSelector, pseudoElementSelector)
-                    : Selector.Pop().Reset(attributeSelector, pseudoClassSelector, pseudoElementSelector);
-            }
+            var stack = _selector;
+            return stack == null || stack.Count == 0
+                ? new SelectorConstructor(attributeSelector, pseudoClassSelector, pseudoElementSelector)
+                : stack.Pop().Reset(attributeSelector, pseudoClassSelector, pseudoElementSelector);
         }
 
         public static ValueBuilder NewValueBuilder()
         {
-            lock (Lock)
-            {
-                return Value.Count == 0
-                    ? new ValueBuilder()
-                    : Value.Pop().Reset();
-            }
+            var stack = _value;
+            return stack == null || stack.Count == 0
+                ? new ValueBuilder()
+                : stack.Pop().Reset();
         }
 
         public static string ToPool(this StringBuilder sb)
         {
             var result = sb.ToString();
-
-            lock (Lock)
-            {
-                Builder.Push(sb);
-            }
-
+            Push(ref _builder, sb);
             return result;
         }
 
         public static ISelector ToPool(this SelectorConstructor ctor)
         {
             var result = ctor.GetResult();
-
-            lock (Lock)
-            {
-                Selector.Push(ctor);
-            }
-
+            Push(ref _selector, ctor);
             return result;
         }
 
         public static TokenValue ToPool(this ValueBuilder vb)
         {
             var result = vb.GetResult();
-
-            lock (Lock)
-            {
-                Value.Push(vb);
-            }
-
+            Push(ref _value, vb);
             return result;
+        }
+
+        private static void Push<T>(ref Stack<T> stack, T item)
+        {
+            stack ??= new Stack<T>();
+            if (stack.Count < MaxPooled) stack.Push(item);
         }
     }
 }

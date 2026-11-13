@@ -3,7 +3,11 @@ using System.Linq;
 
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary><c>grid-template-areas</c>, CSS Grid 2 §7.3.</summary>
+    /// <summary>
+    /// Validates a <c>grid-template-areas</c> value: the keyword <c>none</c> or a rectangular grid of quoted
+    /// strings accepted by the shared <see cref="GridTemplateAreasGrammar"/> (equal columns per row, each
+    /// named area a single filled rectangle). The authored text is preserved.
+    /// </summary>
     internal sealed class GridTemplateAreasValueConverter : IValueConverter
     {
         public IPropertyValue Convert(IEnumerable<Token> value)
@@ -12,7 +16,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             var isNone = tokens.Length == 1 && tokens[0].Type == TokenType.Ident && tokens[0].Data.Isi(Keywords.None);
 
-            if (!isNone && GridTemplateAreasGrammar.TryParse(tokens) == null)
+            if (!isNone && GridTemplateAreasGrammar.TryParse(tokens) is null)
                 return null;
 
             return new GridTemplateAreasValue(value);

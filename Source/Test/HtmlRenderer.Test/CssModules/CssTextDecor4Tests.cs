@@ -18,7 +18,6 @@ public sealed class CssTextDecor4Tests
         Assert.AreEqual(value, Value("text-decoration-line", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-decor-4.yml")]
     [TestMethod]
     [Spec("css-text-decor-4", "#text-decoration-thickness-property")]
     [DataRow("from-font")]
@@ -29,7 +28,6 @@ public sealed class CssTextDecor4Tests
         Assert.AreEqual(value, Value("text-decoration-thickness", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-decor-4.yml")]
     [TestMethod]
     [Spec("css-text-decor-4", "#text-decoration-property")]
     public void TextDecoration_TakesTheThickness()
@@ -37,7 +35,6 @@ public sealed class CssTextDecor4Tests
         Assert.AreEqual("3px", Value("text-decoration", "underline 3px", "text-decoration-thickness"));
     }
 
-    [Ignore("Gap, see Spec/css-text-decor-4.yml")]
     [TestMethod]
     [Spec("css-text-decor-4", "#text-underline-position-property")]
     [DataRow("under")]
@@ -48,7 +45,6 @@ public sealed class CssTextDecor4Tests
         Assert.AreEqual(value, Value("text-underline-position", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-decor-4.yml")]
     [TestMethod]
     [Spec("css-text-decor-4", "#underline-offset")]
     [DataRow("3px")]
@@ -58,7 +54,6 @@ public sealed class CssTextDecor4Tests
         Assert.AreEqual(value, Value("text-underline-offset", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-decor-4.yml")]
     [TestMethod]
     [Spec("css-text-decor-4", "#text-decoration-skipping")]
     public void TextDecorationSkip_IsParsed()
@@ -98,7 +93,6 @@ public sealed class CssTextDecor4Tests
         Assert.AreEqual("all", Value("text-decoration-skip-spaces", "all"));
     }
 
-    [Ignore("Gap, see Spec/css-text-decor-4.yml")]
     [TestMethod]
     [Spec("css-text-decor-4", "#text-decoration-skip-ink-property")]
     [DataRow("none")]
@@ -108,7 +102,6 @@ public sealed class CssTextDecor4Tests
         Assert.AreEqual(value, Value("text-decoration-skip-ink", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-decor-4.yml")]
     [TestMethod]
     [Spec("css-text-decor-4", "#text-emphasis-style-property")]
     [DataRow("filled dot")]

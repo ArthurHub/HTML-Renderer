@@ -57,7 +57,6 @@ public sealed class CssFonts4PropertyTests
         Assert.AreEqual(value, Value("font-variant", value));
     }
 
-    [Ignore("Gap, see Spec/css-fonts-4.yml")]
     [TestMethod]
     [Spec("css-fonts-4", "#font-variant-prop")]
     [DataRow("all-small-caps")]
@@ -68,17 +67,23 @@ public sealed class CssFonts4PropertyTests
         Assert.AreEqual(value, Value("font-variant", value));
     }
 
-    [Ignore("Gap, see Spec/css-fonts-4.yml")]
     [TestMethod]
     [Spec("css-fonts-4", "#font-prop-desc")]
-    [DataRow("font-weight: 100 900", "100 900")]
     [DataRow("font-weight: 350", "350")]
-    public void FontFace_WeightDescriptor_AcceptsRangesAndAnyNumber(string declaration, string expected)
+    public void FontFace_WeightDescriptor_AcceptsAnyNumber(string declaration, string expected)
     {
         Assert.AreEqual(expected, FontFace(declaration).Weight);
     }
 
     [Ignore("Gap, see Spec/css-fonts-4.yml")]
+    [TestMethod]
+    [Spec("css-fonts-4", "#font-prop-desc")]
+    [DataRow("font-weight: 100 900", "100 900")]
+    public void FontFace_WeightDescriptor_AcceptsRanges(string declaration, string expected)
+    {
+        Assert.AreEqual(expected, FontFace(declaration).Weight);
+    }
+
     [TestMethod]
     [Spec("css-fonts-4", "#font-prop-desc")]
     public void FontFace_StretchDescriptor_AcceptsPercentages()

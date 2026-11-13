@@ -1,6 +1,9 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary><c>grid-template-rows</c>, CSS Grid 2 §7.2.</summary>
+    /// <summary>
+    /// The <c>grid-template-rows</c> property (CSS Grid Layout Module Level 1/2 §7.2). Validated by the
+    /// shared <see cref="GridTrackListGrammar"/>; the authored text is preserved.
+    /// </summary>
     internal sealed class GridTemplateRowsProperty : Property
     {
         private static readonly IValueConverter StyleConverter = new GridTemplateValueConverter().OrDefault();

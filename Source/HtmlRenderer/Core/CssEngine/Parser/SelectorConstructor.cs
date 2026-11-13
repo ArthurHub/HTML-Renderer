@@ -11,12 +11,16 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         private ISelector _temp;
         private ListSelector _group;
         private ComplexSelector _complex;
+        private Combinator _pendingLeadingCombinator = Combinator.Descendent;
+        private List<Combinator> _leadingCombinators;
         private string _attrName;
         private string _attrValue;
         private string _attrOp;
         private string _attrNs;
+        private AttrCaseSensitivity _attrCase;
         private bool _valid;
         private bool _ready;
+        private int _kept;
         private AttributeSelectorFactory _attributeSelector;
         private PseudoElementSelectorFactory _pseudoElementSelector;
         private PseudoClassSelectorFactory _pseudoClassSelector;
@@ -41,7 +45,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         }
 
         private static readonly Dictionary<string, Func<SelectorConstructor, FunctionState>> PseudoClassFunctions =
-            new Dictionary<string, Func<SelectorConstructor, FunctionState>>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {PseudoClassNames.NthChild, ctx => new ChildFunctionState<FirstChildSelector>(ctx)},
                 {PseudoClassNames.NthLastChild, ctx => new ChildFunctionState<LastChildSelector>(ctx)},
@@ -57,11 +61,61 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {PseudoClassNames.Matches, ctx => new MatchesFunctionState(ctx, PseudoClassNames.Matches)},
                 {PseudoClassNames.Is, ctx => new MatchesFunctionState(ctx, PseudoClassNames.Is)},
                 {PseudoClassNames.Where, ctx => new MatchesFunctionState(ctx, PseudoClassNames.Where)},
+                {PseudoClassNames.WebkitAny, ctx => new MatchesFunctionState(ctx, PseudoClassNames.WebkitAny)},
+                {PseudoClassNames.MozAny, ctx => new MatchesFunctionState(ctx, PseudoClassNames.MozAny)},
                 {PseudoClassNames.HostContext, ctx => new HostContextFunctionState(ctx)}
+            };
+
+        // Functional pseudo-classes/elements that are parsed but not interpreted: the argument text is
+        // kept verbatim (whitespace trimmed) as part of the selector's name.
+        private static readonly HashSet<string> VerbatimPseudoClassFunctions =
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                PseudoClassNames.Host,
+                PseudoClassNames.State
+            };
+
+        private static readonly HashSet<string> VerbatimPseudoElementFunctions =
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                PseudoElementNames.Part,
+                PseudoElementNames.Slotted,
+                PseudoElementNames.Highlight,
+                PseudoElementNames.Cue,
+                PseudoElementNames.CueRegion,
+                PseudoElementNames.ViewTransitionGroup,
+                PseudoElementNames.ViewTransitionImagePair,
+                PseudoElementNames.ViewTransitionOld,
+                PseudoElementNames.ViewTransitionNew
             };
 
         public bool IsValid => _valid && _ready;
         public bool IsNested { get; private set; }
+
+        // A forgiving selector list (:is(), :where()) drops an invalid alternative instead of failing the whole list.
+        public bool Forgiving { get; set; }
+
+        internal int KeptAlternatives => _kept;
+
+        public void FinishForgiving()
+        {
+            if (!Forgiving) return;
+
+            if (!_valid || !_ready || _state != State.Data)
+                DropAlternative();
+            else if (_temp != null || _complex != null)
+                _kept++;
+        }
+
+        private void DropAlternative()
+        {
+            _state = State.Data;
+            _combinators.Clear();
+            _temp = null;
+            _complex = null;
+            _valid = true;
+            _ready = true;
+        }
 
         public ISelector GetResult()
         {
@@ -89,6 +143,45 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             }
 
             return _group;
+        }
+
+        // Like GetResult(), but wraps each comma-separated alternative that starts with an explicit
+        // leading combinator (">", "+", "~") in a RelativeSelector, for :has()'s relative selector list.
+        // An alternative with no leading combinator stays a plain selector (implicit descendant).
+        public ISelector GetRelativeResult()
+        {
+            if (!IsValid) return new UnknownSelector();
+
+            if (_complex != null)
+            {
+                _complex.ConcludeSelector(_temp);
+                _temp = _complex;
+                _complex = null;
+            }
+
+            var grouped = _group?.Length ?? 0;
+            var count = grouped + (_temp != null ? 1 : 0);
+            if (count == 0) return AllSelector.Create();
+
+            if (count == 1)
+            {
+                return _temp != null
+                    ? WrapRelative(_pendingLeadingCombinator, _temp)
+                    : WrapRelative(_leadingCombinators[0], _group[0]);
+            }
+
+            var list = new ListSelector();
+            for (var i = 0; i < grouped; i++) list.Add(WrapRelative(_leadingCombinators[i], _group[i]));
+            if (_temp != null) list.Add(WrapRelative(_pendingLeadingCombinator, _temp));
+            return list;
+        }
+
+        private static ISelector WrapRelative(Combinator combinator, ISelector selector)
+        {
+            return combinator == Combinator.Child || combinator == Combinator.AdjacentSibling ||
+                   combinator == Combinator.Sibling
+                ? new RelativeSelector(combinator, selector)
+                : selector;
         }
 
         public void Apply(Token token)
@@ -133,14 +226,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             _attrName = null;
             _attrValue = null;
             _attrNs = null;
+            _attrCase = AttrCaseSensitivity.Default;
             _attrOp = string.Empty;
             _state = State.Data;
             _combinators.Clear();
             _temp = null;
             _group = null;
             _complex = null;
+            _pendingLeadingCombinator = Combinator.Descendent;
+            _leadingCombinators = null;
             _valid = true;
             IsNested = false;
+            Forgiving = false;
+            _kept = 0;
             _ready = true;
             _attributeSelector = attributeSelector;
             _pseudoClassSelector = pseudoClassSelector;
@@ -157,6 +255,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     _attrValue = null;
                     _attrOp = string.Empty;
                     _attrNs = null;
+                    _attrCase = AttrCaseSensitivity.Default;
                     _state = State.Attribute;
                     _ready = false;
                     break;
@@ -264,11 +363,28 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         private void OnAttributeEnd(Token token)
         {
             if (token.Type == TokenType.Whitespace) return;
+
+            if (token.Type == TokenType.Ident && _attrCase == AttrCaseSensitivity.Default &&
+                _attrOp.Length > 0 && _attrValue != null)
+            {
+                if (token.Data.Isi("i"))
+                {
+                    _attrCase = AttrCaseSensitivity.Insensitive;
+                    return;
+                }
+
+                if (token.Data.Isi("s"))
+                {
+                    _attrCase = AttrCaseSensitivity.Sensitive;
+                    return;
+                }
+            }
+
             _state = State.Data;
             _ready = true;
             if (token.Type == TokenType.SquareBracketClose)
             {
-                var selector = _attributeSelector.Create(_attrOp, _attrName, _attrValue, _attrNs);
+                var selector = _attributeSelector.Create(_attrOp, _attrName, _attrValue, _attrNs, _attrCase);
                 Insert(selector);
             }
             else
@@ -287,24 +403,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     _state = State.PseudoElement;
                     return;
                 case TokenType.Function:
+                {
+                    var sel = GetPseudoFunction(token as FunctionToken);
+                    if (sel != null)
                     {
-                        var sel = GetPseudoFunction(token as FunctionToken);
-                        if (sel != null)
-                        {
-                            Insert(sel);
-                            return;
-                        }
+                        Insert(sel);
+                        return;
                     }
+                }
                     break;
                 case TokenType.Ident:
+                {
+                    var sel = _pseudoClassSelector.Create(token.Data);
+                    if (sel != null)
                     {
-                        var sel = _pseudoClassSelector.Create(token.Data);
-                        if (sel != null)
-                        {
-                            Insert(sel);
-                            return;
-                        }
+                        Insert(sel);
+                        return;
                     }
+                }
                     break;
             }
 
@@ -315,15 +431,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             _state = State.Data;
             _ready = true;
-            if (token.Type == TokenType.Ident)
+            var element = token.Type switch
             {
-                var sel = _pseudoElementSelector.Create(token.Data);
-                if (sel != null)
-                {
-                    _valid = _valid && !IsNested;
-                    Insert(sel);
-                    return;
-                }
+                TokenType.Ident => _pseudoElementSelector.Create(token.Data),
+                TokenType.Function when VerbatimPseudoElementFunctions.Contains(token.Data) =>
+                    PseudoElementSelector.Create(VerbatimFunctionText((FunctionToken) token)),
+                _ => null
+            };
+
+            if (element != null)
+            {
+                _valid = _valid && !IsNested;
+                Insert(element);
+                return;
             }
 
             _valid = false;
@@ -341,9 +461,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private void InsertOr()
         {
+            if (Forgiving && (!_valid || _temp == null || _state != State.Data))
+            {
+                DropAlternative();
+                return;
+            }
+
             if (_temp == null) return;
 
-            _group = _group ?? new ListSelector();
+            if (Forgiving) _kept++;
+
+            _group ??= new ListSelector();
 
             if (_complex != null)
             {
@@ -356,6 +484,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 _group.Add(_temp);
             }
 
+            _leadingCombinators ??= new List<Combinator>();
+            _leadingCombinators.Add(_pendingLeadingCombinator);
+            _pendingLeadingCombinator = Combinator.Descendent;
+
             _temp = null;
         }
 
@@ -365,32 +497,27 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             {
                 if (_combinators.Count == 0)
                 {
-                    var compound = _temp as CompoundSelector ?? new CompoundSelector { _temp };
+                    var compound = _temp as CompoundSelector ?? new CompoundSelector {_temp};
 
                     compound.Add(selector);
                     _temp = compound;
                 }
                 else
                 {
-                    _complex = _complex ?? new ComplexSelector();
+                    _complex ??= new ComplexSelector();
 
                     var combinator = GetCombinator();
                     _complex.AppendSelector(_temp, combinator);
-                    _temp = WrapPseudoElement(selector);
+                    _temp = selector;
                 }
             }
             else
             {
+                _pendingLeadingCombinator = _combinators.Count > 0 ? GetCombinator() : Combinator.Descendent;
                 _combinators.Clear();
                 _temp = selector;
             }
         }
-
-        // CssData creates the ::before/::after box only when matching a CompoundSelector, so a
-        // pseudo-element after a combinator ("div ::before") is wrapped in one. A whole selector of
-        // just "::before" isn't, it creates no box, and the UA rule ":before, :after" relies on that.
-        private static ISelector WrapPseudoElement(ISelector selector) =>
-            selector is PseudoElementSelector ? new CompoundSelector { selector } : selector;
 
         private Combinator GetCombinator()
         {
@@ -467,24 +594,32 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private ISelector GetPseudoFunction(FunctionToken arguments)
         {
-            if (!PseudoClassFunctions.TryGetValue(arguments.Data, out var creator)) return null;
-
-            using (var function = creator(this))
+            if (!PseudoClassFunctions.TryGetValue(arguments.Data, out var creator))
             {
-                _ready = false;
-                if (arguments.Any(token => function.Finished(token)))
+                return VerbatimPseudoClassFunctions.Contains(arguments.Data)
+                    ? PseudoClassSelector.Create(VerbatimFunctionText(arguments))
+                    : null;
+            }
+
+            using var function = creator(this);
+            _ready = false;
+            if (arguments.Any(token => function.Finished(token)))
+            {
+                var sel = function.Produce();
+                if (IsNested && function is NotFunctionState)
                 {
-                    var sel = function.Produce();
-                    if (IsNested && function is NotFunctionState)
-                    {
-                        sel = null;
-                    }
-                    _ready = true;
-                    return sel;
+                    sel = null;
                 }
+                _ready = true;
+                return sel;
             }
 
             return null;
+        }
+
+        private static string VerbatimFunctionText(FunctionToken function)
+        {
+            return function.Data.StylesheetFunction(function.ArgumentTokens.ToText().Trim());
         }
 
         private SelectorConstructor CreateChild()
@@ -566,8 +701,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             public override ISelector Produce()
             {
                 var valid = _nested.IsValid;
-                var sel = _nested.GetResult();
-
+                var sel = _nested.GetRelativeResult();
                 return valid ? new HasSelector(sel) : null;
             }
 
@@ -587,6 +721,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             {
                 _selector = parent.CreateChild();
                 _keyword = keyword;
+
+                // :is() and :where() take a forgiving list; the legacy :-webkit-any()/:-moz-any() do not.
+                _selector.Forgiving = keyword == PseudoClassNames.Is || keyword == PseudoClassNames.Where;
             }
 
             protected override bool OnToken(Token token)
@@ -603,6 +740,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             public override ISelector Produce()
             {
+                _selector.FinishForgiving();
+
+                // A forgiving list that kept nothing matches nothing, and is not an error.
+                if (_selector.Forgiving && _selector.KeptAlternatives == 0)
+                    return new MatchesSelector(new UnknownSelector(), _keyword);
+
                 var valid = _selector.IsValid;
                 var sel = _selector.GetResult();
                 return valid ? new MatchesSelector(sel, _keyword) : null;
@@ -648,14 +791,32 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         private sealed class LangFunctionState : FunctionState
         {
+            private readonly List<KeyValuePair<string, bool>> _ranges = new();
             private bool _valid = true;
-            private string _value;
+            private bool _expectValue = true;
 
             protected override bool OnToken(Token token)
             {
-                if (token.Type == TokenType.Ident)
+                if (token.Type is TokenType.Ident or TokenType.String)
                 {
-                    _value = token.Data;
+                    if (_expectValue)
+                    {
+                        _ranges.Add(new KeyValuePair<string, bool>(token.Data, token.Type == TokenType.String));
+                        _expectValue = false;
+                    }
+                    else
+                    {
+                        _valid = false;
+                    }
+                }
+                else if (token.Type == TokenType.Comma)
+                {
+                    if (_expectValue)
+                    {
+                        _valid = false;
+                    }
+
+                    _expectValue = true;
                 }
                 else if (token.Type == TokenType.RoundBracketClose)
                 {
@@ -671,13 +832,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             public override ISelector Produce()
             {
-                if (!_valid || _value == null)
+                if (!_valid || _expectValue)
                 {
                     return null;
                 }
-                var code = PseudoClassNames.Lang.StylesheetFunction(_value);
-                return PseudoClassSelector.Create(code);
 
+                return new LangSelector(_ranges);
             }
         }
 
@@ -688,7 +848,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             protected override bool OnToken(Token token)
             {
-                if ((token.Type == TokenType.Ident || token.Type == TokenType.String))
+                if (token.Type is TokenType.Ident or TokenType.String)
                 {
                     _value = token.Data;
                 }
@@ -780,7 +940,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             public override ISelector Produce()
             {
-                var invalid = !_valid || (_nested != null && !_nested.IsValid);
+                var invalid = !_valid || _nested is { IsValid: false };
                 var sel = _nested?.ToPool() ?? AllSelector.Create();
                 if (invalid)
                 {
@@ -791,15 +951,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
             protected override bool OnToken(Token token)
             {
-                switch (_state)
+                return _state switch
                 {
-                    case ParseState.Initial: return OnInitial(token);
-                    case ParseState.AfterInitialSign: return OnAfterInitialSign(token);
-                    case ParseState.Offset: return OnOffset(token);
-                    case ParseState.AfterOffsetSign: return OnAfterOffsetSign(token);
-                    case ParseState.BeforeOf: return OnBeforeOf(token);
-                    default: return OnAfter(token);
-                }
+                    ParseState.Initial => OnInitial(token),
+                    ParseState.AfterInitialSign => OnAfterInitialSign(token),
+                    ParseState.Offset => OnOffset(token),
+                    ParseState.AfterOffsetSign => OnAfterOffsetSign(token),
+                    ParseState.BeforeOf => OnBeforeOf(token),
+                    _ => OnAfter(token)
+                };
             }
 
             private bool OnAfterInitialSign(Token token)
@@ -809,14 +969,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                     case TokenType.Number:
                         return OnOffset(token);
                     case TokenType.Dimension:
-                        {
-                            var dim = (UnitToken)token;
-                            _valid = _valid && dim.Unit.Isi("n") && int.TryParse(token.Data, out _step);
-                            _step *= _sign;
-                            _sign = 1;
-                            _state = ParseState.Offset;
-                            return false;
-                        }
+                    {
+                        var dim = (UnitToken) token;
+                        _valid = _valid && dim.Unit.Isi("n") && int.TryParse(token.Data, out _step);
+                        _step *= _sign;
+                        _sign = 1;
+                        _state = ParseState.Offset;
+                        return false;
+                    }
                     case TokenType.Ident when token.Data.Isi("n"):
                         _step = _sign;
                         _sign = 1;
@@ -868,15 +1028,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {
                     case TokenType.Whitespace:
                         return false;
-                    case TokenType.Delim when token.Data.IsOneOf("+", "-"):
-                        // CSS Syntax 3 §6.2: "3n + 1", the compact "3n+1" is a signed number below.
-                        _sign = token.Data == "-" ? -1 : 1;
-                        _state = ParseState.AfterOffsetSign;
-                        return false;
                     case TokenType.Number:
-                        _valid = _valid && ((NumberToken)token).IsInteger && int.TryParse(token.Data, out _offset);
+                        _valid = _valid && ((NumberToken) token).IsInteger && int.TryParse(token.Data, out _offset);
                         _offset *= _sign;
                         _state = ParseState.BeforeOf;
+                        return false;
+                    case TokenType.Delim when token.Data.IsOneOf("+", "-"):
+                        // When whitespace separates the offset's sign from its digits the sign arrives as a
+                        // standalone delim token - the "<n-dimension> ['+' | '-'] <signless-integer>"
+                        // production of <a-n-plus-b> (CSS Syntax 3 6.2). The compact form "10n+1" instead
+                        // lexes as one signed <number> and is handled by the Number case above.
+                        _sign = token.Data == "-" ? -1 : +1;
+                        _state = ParseState.AfterOffsetSign;
                         return false;
                     default:
                         return OnBeforeOf(token);
@@ -889,9 +1052,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 {
                     case TokenType.Whitespace:
                         return false;
-                    case TokenType.Number when !token.Data.StartsWith("+", StringComparison.Ordinal) && !token.Data.StartsWith("-", StringComparison.Ordinal):
-                        // CSS Syntax 3 §6.2: a <signless-integer>, "3n + -6" is invalid.
-                        _valid = _valid && ((NumberToken)token).IsInteger && int.TryParse(token.Data, out _offset);
+                    case TokenType.Number when !token.Data.StartsWith("+") && !token.Data.StartsWith("-"):
+                        // The production requires a <signless-integer> here, defined as "a <number-token>
+                        // with its type flag set to integer, and no sign character" (CSS Syntax 3 6.2), so
+                        // "10n + -1" and "10n + +1" are invalid - 6.1 lists "3n + -6" as an invalid example.
+                        _valid = _valid && ((NumberToken) token).IsInteger && int.TryParse(token.Data, out _offset);
                         _offset *= _sign;
                         _state = ParseState.BeforeOf;
                         return false;

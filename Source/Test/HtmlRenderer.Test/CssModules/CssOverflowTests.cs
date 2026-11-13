@@ -6,7 +6,6 @@ namespace HtmlRenderer.Test.CssModules;
 public sealed class CssOverflowTests
 {
     [TestMethod]
-    [Ignore("Gap, see Spec/css-overflow-3.yml")]
     [Spec("css-overflow-3", "#smooth-scrolling")]
     public void ScrollBehavior_IsAccepted()
     {
@@ -16,7 +15,6 @@ public sealed class CssOverflowTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-overflow-3.yml")]
     [Spec("css-overflow-3", "#scrollbar-gutter-property")]
     public void ScrollbarGutter_IsAccepted()
     {

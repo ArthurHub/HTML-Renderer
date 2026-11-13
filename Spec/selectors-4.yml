@@ -23,9 +23,7 @@ sections:
     status: n/a
   '#relative':
     title: 3.4 Relative Selectors
-    status: partial
-    gaps:
-      - "A leading combinator is dropped, ':has(> p)' matches like ':has(p)'"
+    status: supported
   '#pseudo-classes':
     title: 3.5 Pseudo-classes
     status: partial
@@ -48,8 +46,7 @@ sections:
     title: 3.6.3 Pseudo-classing Pseudo-elements
     status: unsupported
     gaps:
-      - "A user action pseudo-class after a pseudo-element, e.g. '::before:hover', invalidates the selector"
-      - "Other simple selectors after a pseudo-element, e.g. '::before.a', are accepted"
+      - Other simple selectors after a pseudo-element, e.g. '::before.a', are accepted
   '#sub-pseudo-elements':
     title: 3.6.4 Sub-pseudo-elements
     status: unsupported
@@ -87,9 +84,7 @@ sections:
     status: supported
   '#matches':
     title: '4.2 The Matches-Any Pseudo-class: :is()'
-    status: partial
-    gaps:
-      - The argument isn't forgiving, an invalid selector in it invalidates the whole rule, see 16.1
+    status: supported
   '#negation':
     title: '4.3 The Negation (Matches-None) Pseudo-class: :not()'
     status: partial
@@ -97,9 +92,7 @@ sections:
       - ":not() inside :not() invalidates the selector"
   '#zero-matches':
     title: '4.4 The Specificity-adjustment Pseudo-class: :where()'
-    status: partial
-    gaps:
-      - The argument isn't forgiving, an invalid selector in it invalidates the whole rule, see 16.1
+    status: supported
   '#relational':
     title: '4.5 The Relational Pseudo-class: :has()'
     status: partial
@@ -127,7 +120,7 @@ sections:
     title: '5.4 The Defined Pseudo-class: :defined'
     status: unsupported
     gaps:
-      - ":defined invalidates the selector, see HTML 4.16.3"
+      - :defined never matches, though every element is defined, see HTML 4.16.3
   '#attribute-selectors':
     title: 6 Attribute selectors
     status: partial
@@ -144,9 +137,7 @@ sections:
       - Values are matched case-insensitively
   '#attribute-case':
     title: 6.3 Case-sensitivity
-    status: unsupported
-    gaps:
-      - "The i and s flags, e.g. [title=foo i], invalidate the selector"
+    status: supported
   '#attrnmsp':
     title: 6.4 Attribute selectors and namespaces
     status: partial
@@ -178,8 +169,7 @@ sections:
     title: '7.2 The Language Pseudo-class: :lang()'
     status: unsupported
     gaps:
-      - ":lang() never matches, see CSS 2.1 5.11.4"
-      - Lists and quoted ranges, e.g. ':lang(fr, de)' or ':lang("*-CH")', invalidate the selector
+      - :lang() never matches, see CSS 2.1 5.11.4
   '#location':
     title: 8 Location Pseudo-classes
     status: partial
@@ -234,19 +224,13 @@ sections:
     status: unsupported
   '#video-state':
     title: '10.1 Media Playback State: the :playing, :paused, and :seeking pseudo-classes'
-    status: unsupported
-    gaps:
-      - ":playing, :paused and :seeking invalidate the selector, see HTML 4.16.3"
+    status: supported
   '#media-loading-state':
     title: '10.2 Media Loading State: the :buffering and :stalled pseudo-classes'
-    status: unsupported
-    gaps:
-      - ":buffering and :stalled invalidate the selector"
+    status: supported
   '#sound-state':
     title: '10.3 Sound State: the :muted and :volume-locked pseudo-classes'
-    status: unsupported
-    gaps:
-      - ":muted and :volume-locked invalidate the selector, see HTML 4.16.3"
+    status: supported
   '#display-state-pseudos':
     title: 11 Element Display State Pseudo-classes
     status: unsupported
@@ -254,27 +238,19 @@ sections:
     title: '11.1 Collapse State: the :open pseudo-class'
     status: unsupported
     gaps:
-      - ":open invalidates the selector, see HTML 4.16.3"
+      - :open never matches, also not an open details or dialog, see HTML 4.16.3
   '#popover-open-state':
     title: '11.2 Popover State: the :popover-open pseudo-class'
-    status: unsupported
-    gaps:
-      - ":popover-open invalidates the selector"
+    status: supported
   '#modal-state':
     title: '11.3 Modal (Exclusive Interaction) State: the :modal pseudo-class'
-    status: unsupported
-    gaps:
-      - ":modal invalidates the selector"
+    status: supported
   '#fullscreen-state':
     title: '11.4 Fullscreen Presentation State: the :fullscreen pseudo-class'
-    status: unsupported
-    gaps:
-      - ":fullscreen invalidates the selector"
+    status: supported
   '#pip-state':
     title: '11.5 Picture-in-Picture Presentation State: the :picture-in-picture pseudo-class'
-    status: unsupported
-    gaps:
-      - ":picture-in-picture invalidates the selector"
+    status: supported
   '#input-pseudos':
     title: 12 The Input Pseudo-classes
     status: unsupported
@@ -298,9 +274,9 @@ sections:
       - ":placeholder-shown never matches, see HTML 4.16.3"
   '#autofill':
     title: '12.1.4 The Automatic Input Pseudo-class: :autofill'
-    status: unsupported
+    status: partial
     gaps:
-      - ":autofill and :-webkit-autofill invalidate the selector"
+      - :-webkit-autofill invalidates the selector
   '#the-default-pseudo':
     title: '12.1.5 The Default-option Pseudo-class: :default'
     status: unsupported
@@ -334,9 +310,7 @@ sections:
       - ":required and :optional never match, see HTML 4.16.3"
   '#user-pseudos':
     title: '12.3.4 The User-interaction Pseudo-classes: :user-valid and :user-invalid'
-    status: unsupported
-    gaps:
-      - ":user-valid and :user-invalid invalidate the selector"
+    status: supported
   '#structural-pseudos':
     title: 13 Tree-Structural pseudo-classes
     status: partial
@@ -419,9 +393,7 @@ sections:
       - "Attribute modifiers are rejected, see 6.3"
   '#forgiving-selector':
     title: 16.1 <forgiving-selector-list> and <forgiving-relative-selector-list>
-    status: unsupported
-    gaps:
-      - "An invalid argument of :is() or :where() invalidates the whole rule instead of being dropped"
+    status: supported
   '#api-hooks':
     title: 17 API Hooks
     status: n/a

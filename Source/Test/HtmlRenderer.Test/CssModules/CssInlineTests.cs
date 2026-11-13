@@ -21,7 +21,6 @@ public sealed class CssInlineTests
         Assert.IsLessThan(RectIndex(g, RColor.FromArgb(0, 0, 255)), RectIndex(g, RColor.FromArgb(255, 0, 0)));
     }
 
-    [Ignore("Gap, see Spec/css-inline-3.yml")]
     [TestMethod]
     [Spec("css-inline-3", "#dominant-baseline-property")]
     [DataRow("auto")]
@@ -72,7 +71,6 @@ public sealed class CssInlineTests
         Assert.AreEqual(value, Value("baseline-source", value));
     }
 
-    [Ignore("Gap, see Spec/css-inline-3.yml")]
     [TestMethod]
     [Spec("css-inline-3", "#alignment-baseline-property")]
     [DataRow("baseline")]
@@ -83,7 +81,6 @@ public sealed class CssInlineTests
         Assert.AreEqual(value, Value("alignment-baseline", value));
     }
 
-    [Ignore("Gap, see Spec/css-inline-3.yml")]
     [TestMethod]
     [Spec("css-inline-3", "#baseline-shift-property")]
     [DataRow("5px")]
@@ -134,7 +131,6 @@ public sealed class CssInlineTests
         Assert.IsLessThan(LayoutHarness.FindById(plain, "x")!.Size.Height, LayoutHarness.FindById(trimmed, "x")!.Size.Height);
     }
 
-    [Ignore("Gap, see Spec/css-inline-3.yml")]
     [TestMethod]
     [Spec("css-inline-3", "#text-box-shorthand")]
     [Spec("css-inline-3", "#text-box-edge")]
@@ -151,7 +147,6 @@ public sealed class CssInlineTests
         Assert.AreEqual("stretch", Value("inline-sizing", "stretch"));
     }
 
-    [Ignore("Gap, see Spec/css-inline-3.yml")]
     [TestMethod]
     [Spec("css-inline-3", "#sizing-drop-initials")]
     [DataRow("3")]

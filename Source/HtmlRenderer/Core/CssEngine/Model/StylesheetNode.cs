@@ -6,7 +6,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal abstract class StylesheetNode : IStylesheetNode
     {
-        private readonly List<IStylesheetNode> _children = new List<IStylesheetNode>();
+        private readonly List<IStylesheetNode> _children = new();
 
         protected void ReplaceAll(IStylesheetNode node)
         {
@@ -30,8 +30,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public void ReplaceChild(IStylesheetNode oldChild, IStylesheetNode newChild)
         {
             for (var i = 0; i < _children.Count; i++)
-            {
-                if (ReferenceEquals(oldChild, _children[i]))
+            {   if (ReferenceEquals(oldChild, _children[i]))
                 {
                     Teardown(oldChild);
                     Setup(newChild);

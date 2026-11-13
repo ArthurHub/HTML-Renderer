@@ -64,16 +64,13 @@ sections:
     status: partial
     gaps:
       - Negative radii are accepted instead of being rejected
-      - "The slash syntax on a longhand, like '10px / 20px', is rejected"
-      - The flow-relative border-start-start-radius etc. aren't known properties
+      - The slash syntax on a longhand, like '10px / 20px', is rejected
   '#corner-sizing':
     title: '3.6 Corner Sizing Shorthands: the border-radius and border-*-radius shorthand properties'
     status: partial
   '#corner-sizing-side-shorthands':
     title: '3.6.1 Sizing The Corners Of One Side: The border-top-radius, border-right-radius, border-bottom-radius, border-left-radius, border-block-start-radius, border-block-end-radius, border-inline-start-radius, border-inline-end-radius shorthands'
-    status: unsupported
-    gaps:
-      - border-top-radius and the other side shorthands aren't known properties
+    status: supported
   '#corner-sizing-shorthand':
     title: '3.6.2 Sizing All Corners At Once: The border-radius shorthand'
     status: partial
@@ -81,9 +78,7 @@ sections:
       - Negative radii are accepted instead of being rejected
   '#corner-shaping':
     title: '3.7 Corner Shaping: the corner-*-shape properties'
-    status: unsupported
-    gaps:
-      - corner-*-shape properties aren't known properties, every corner is round
+    status: parsed-only
   '#corner-shaping-shorthands':
     title: '3.8 Corner Shaping Shorthands: the corner-shape and corner-*-shape shorthand properties'
     status: unsupported
@@ -92,7 +87,7 @@ sections:
     status: unsupported
   '#corner-shaping-shorthand':
     title: '3.8.2 Shaping All Corners At Once: The corner-shape shorthand'
-    status: unsupported
+    status: parsed-only
   '#corner-shorthands':
     title: '3.9 Corner Sizing & Shaping Shorthands: the corner and corner-* shorthand properties'
     status: unsupported
@@ -104,7 +99,7 @@ sections:
     status: unsupported
   '#corner-shorthand':
     title: '3.9.3 Sizing & Shaping All Corners At Once: The corner shorthand'
-    status: unsupported
+    status: parsed-only
   '#corner-shape-rendering':
     title: 3.9.4 Rendering corner-shape
     status: unsupported

@@ -621,7 +621,6 @@ public sealed class SyntaxAndDataTypesTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "syndata.html#strings")]
     [Spec("css-syntax-3", "#consume-string-token")]
     [Spec("css-values-4", "#strings")]

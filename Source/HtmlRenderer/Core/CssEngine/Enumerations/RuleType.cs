@@ -23,6 +23,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         Property,
         Layer,
         LayerStatement,
-        FontPaletteValues
+        FontPaletteValues,
+        StartingStyle,
+        FontFeatureValueSet
     }
 }

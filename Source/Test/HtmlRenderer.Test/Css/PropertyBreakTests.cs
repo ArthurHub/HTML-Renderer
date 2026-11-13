@@ -255,18 +255,28 @@ public sealed class PropertyBreakTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-break-3.yml")]
     [DataRow("break-before", "recto")]
     [DataRow("break-before", "verso")]
-    [DataRow("break-before", "avoid-region")]
-    [DataRow("break-before", "region")]
     [DataRow("break-after", "recto")]
     [DataRow("break-after", "verso")]
+    [Spec("css-break-3", "#break-between")]
+    [Spec("css-break-4", "#break-between")]
+    public void BreakBeforeAfter_AcceptsRectoAndVerso(string name, string value)
+    {
+        var property = ParseDeclaration($"{name}:{value}");
+        Assert.IsTrue(property.HasValue);
+        Assert.AreEqual(value, property.Value);
+    }
+
+    [TestMethod]
+    [Ignore("Gap, see Spec/css-break-3.yml")]
+    [DataRow("break-before", "avoid-region")]
+    [DataRow("break-before", "region")]
     [DataRow("break-after", "avoid-region")]
     [DataRow("break-after", "region")]
     [Spec("css-break-3", "#break-between")]
     [Spec("css-break-4", "#break-between")]
-    public void BreakBeforeAfter_AcceptsRectoVersoAndRegionValues(string name, string value)
+    public void BreakBeforeAfter_AcceptsRegionValues(string name, string value)
     {
         var property = ParseDeclaration($"{name}:{value}");
         Assert.IsTrue(property.HasValue);

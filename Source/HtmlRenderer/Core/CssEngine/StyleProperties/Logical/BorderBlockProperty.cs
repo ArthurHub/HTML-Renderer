@@ -5,12 +5,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     internal sealed class BorderBlockProperty : ShorthandProperty
     {
         private static readonly IValueConverter StyleConverter = WithAny(
-            LineWidthConverter.Option()
-                .For(PropertyNames.BorderTopWidth, PropertyNames.BorderBottomWidth),
-            LineStyleConverter.Option()
-                .For(PropertyNames.BorderTopStyle, PropertyNames.BorderBottomStyle),
-            CurrentColorConverter.Option()
-                .For(PropertyNames.BorderTopColor, PropertyNames.BorderBottomColor)
+            LineWidthConverter.Option().For(PropertyNames.BorderBlockStartWidth, PropertyNames.BorderBlockEndWidth),
+            LineStyleConverter.Option().For(PropertyNames.BorderBlockStartStyle, PropertyNames.BorderBlockEndStyle),
+            CurrentColorConverter.Option().For(PropertyNames.BorderBlockStartColor, PropertyNames.BorderBlockEndColor)
         ).OrDefault();
 
         internal BorderBlockProperty()

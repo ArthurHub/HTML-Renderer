@@ -6,7 +6,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             Converters.StrokeLinecapConverter.OrDefault(StrokeLinecap.Butt);
 
         public StrokeLinecapProperty()
-            : base(PropertyNames.StrokeLinecap, PropertyFlags.Animatable)
+            : base(PropertyNames.StrokeLinecap, PropertyFlags.Inherited | PropertyFlags.Animatable)
         {
         }
 

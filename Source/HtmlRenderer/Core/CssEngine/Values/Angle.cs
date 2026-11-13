@@ -6,11 +6,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
     internal struct Angle : IEquatable<Angle>, IComparable<Angle>, IFormattable
     {
-        public static readonly Angle Zero = new Angle(0f, Unit.Rad);
-        public static readonly Angle HalfQuarter = new Angle(45f, Unit.Deg);
-        public static readonly Angle Quarter = new Angle(90f, Unit.Deg);
-        public static readonly Angle TripleHalfQuarter = new Angle(135f, Unit.Deg);
-        public static readonly Angle Half = new Angle(180f, Unit.Deg);
+        public static readonly Angle Zero = new(0f, Unit.Rad);
+        public static readonly Angle HalfQuarter = new(45f, Unit.Deg);
+        public static readonly Angle Quarter = new(90f, Unit.Deg);
+        public static readonly Angle TripleHalfQuarter = new(135f, Unit.Deg);
+        public static readonly Angle Half = new(180f, Unit.Deg);
 
         public Angle(float value, Unit unit)
         {
@@ -51,7 +51,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static bool operator >=(Angle a, Angle b)
         {
             var result = a.CompareTo(b);
-            return result == 0 || result == 1;
+            return result is 0 or 1;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static bool operator <=(Angle a, Angle b)
         {
             var result = a.CompareTo(b);
-            return result == 0 || result == -1;
+            return result is 0 or -1;
         }
 
         /// <summary>
@@ -105,49 +105,36 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public static Unit GetUnit(string s)
         {
-            switch (s)
+            return s?.ToLowerInvariant() switch
             {
-                case "deg":
-                    return Unit.Deg;
-                case "grad":
-                    return Unit.Grad;
-                case "turn":
-                    return Unit.Turn;
-                case "rad":
-                    return Unit.Rad;
-                default:
-                    return Unit.None;
-            }
+                "deg" => Unit.Deg,
+                "grad" => Unit.Grad,
+                "turn" => Unit.Turn,
+                "rad" => Unit.Rad,
+                _ => Unit.None
+            };
         }
 
         public float ToRadian()
         {
-            switch (Type)
+            return Type switch
             {
-                case Unit.Deg:
-                    return (float)(Math.PI / 180.0 * Value);
-                case Unit.Grad:
-                    return (float)(Math.PI / 200.0 * Value);
-                case Unit.Turn:
-                    return (float)(2.0 * Math.PI * Value);
-                default:
-                    return Value;
-            }
+                Unit.Deg => (float) (Math.PI / 180.0 * Value),
+                Unit.Grad => (float) (Math.PI / 200.0 * Value),
+                Unit.Turn => (float) (2.0 * Math.PI * Value),
+                _ => Value
+            };
         }
 
         public float ToTurns()
         {
-            switch (Type)
+            return Type switch
             {
-                case Unit.Deg:
-                    return (float)(Value / 360.0);
-                case Unit.Grad:
-                    return (float)(Value / 400.0);
-                case Unit.Rad:
-                    return (float)(Value / (2.0 * Math.PI));
-                default:
-                    return Value;
-            }
+                Unit.Deg => (float) (Value / 360.0),
+                Unit.Grad => (float) (Value / 400.0),
+                Unit.Rad => (float) (Value / (2.0 * Math.PI)),
+                _ => Value
+            };
         }
 
         public bool Equals(Angle other)
@@ -158,7 +145,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         /// <summary>
         ///     An enumeration of angle representations.
         /// </summary>
-        internal enum Unit : byte
+        public enum Unit : byte
         {
             None,
             Deg,
@@ -201,7 +188,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         /// <returns>The integer value of the hashcode.</returns>
         public override int GetHashCode()
         {
-            return (int)Value;
+            return (int) Value;
         }
 
         public override string ToString()

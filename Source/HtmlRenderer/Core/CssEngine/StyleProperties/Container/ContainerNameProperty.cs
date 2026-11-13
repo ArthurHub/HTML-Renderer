@@ -3,7 +3,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     internal sealed class ContainerNameProperty : Property
     {
         private static readonly IValueConverter StyleConverter =
-            Converters.StringConverter.OrDefault();
+            Converters.LiteralsConverter.Or(Converters.StringConverter).OrDefault();
 
         internal ContainerNameProperty()
             : base(PropertyNames.ContainerName)

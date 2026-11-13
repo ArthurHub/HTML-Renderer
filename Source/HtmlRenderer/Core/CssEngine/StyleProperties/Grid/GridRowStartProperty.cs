@@ -1,6 +1,9 @@
 namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 {
-    /// <summary><c>grid-row-start</c>, CSS Grid 2 §8.3.</summary>
+    /// <summary>
+    /// The <c>grid-row-start</c> longhand (CSS Grid §8.3), one edge of a grid item's placement.
+    /// Validated by the shared <see cref="GridLineGrammar"/>.
+    /// </summary>
     internal sealed class GridRowStartProperty : Property
     {
         private static readonly IValueConverter StyleConverter = Converters.GridLineConverter.OrDefault();

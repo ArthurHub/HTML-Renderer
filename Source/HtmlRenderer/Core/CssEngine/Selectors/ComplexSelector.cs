@@ -17,6 +17,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public int Length => _selectors.Count;
         public bool IsReady { get; private set; }
 
+        public CombinatorSelector this[int index] => _selectors[index];
+
+        /// <summary>The compounds and their combinators in source order, without copying them.</summary>
+        public IReadOnlyList<CombinatorSelector> Entries => _selectors;
+
+        /// <summary>The last compound (the subject), or <c>null</c> for an empty selector.</summary>
+        public ISelector Subject => _selectors.Count > 0 ? _selectors[_selectors.Count - 1].Selector : null;
+
         public Priority Specificity
         {
             get

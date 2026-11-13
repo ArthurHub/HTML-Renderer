@@ -21,12 +21,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return PropertyFactory.Instance.CreateFontPaletteDescriptor(name);
         }
 
-        protected override void ReplaceWith(IRule rule)
-        {
-            if (rule is FontPaletteValuesRule other) Name = other.Name;
-            base.ReplaceWith(rule);
-        }
-
         public string Name { get; set; }
 
         public string Family

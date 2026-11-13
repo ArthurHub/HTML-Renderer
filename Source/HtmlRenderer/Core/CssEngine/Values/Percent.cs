@@ -7,17 +7,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         /// <summary>
         ///     Gets a zero percent value.
         /// </summary>
-        public static readonly Percent Zero = new Percent(0f);
+        public static readonly Percent Zero = new(0f);
 
         /// <summary>
         ///     Gets a fifty percent value.
         /// </summary>
-        public static readonly Percent Fifty = new Percent(50f);
+        public static readonly Percent Fifty = new(50f);
 
         /// <summary>
         ///     Gets a hundred percent value.
         /// </summary>
-        public static readonly Percent Hundred = new Percent(100f);
+        public static readonly Percent Hundred = new(100f);
 
         public Percent(float value)
         {

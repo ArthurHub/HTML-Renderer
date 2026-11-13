@@ -213,7 +213,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             box.InheritStyle();
 
             // Declarations with var() are resolved after all phases, against the final custom properties
-            var pendingVarProperties = new Dictionary<string, string>();
+            var pendingVarProperties = new Dictionary<string, PendingVarDeclaration>();
 
             // Anonymous boxes aren't elements and match nothing. ::before/::after boxes have no HtmlTag
             // either, but receive the declarations of the rule that created them.
@@ -310,7 +310,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             bool importantPass,
             IDictionary<string, string> revertTarget,
             IDictionary<string, string> customPropertyRevertTarget,
-            Dictionary<string, string> pendingVarProperties)
+            Dictionary<string, PendingVarDeclaration> pendingVarProperties)
         {
             foreach (var rule in rules)
             {
@@ -388,7 +388,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             bool importantPass,
             IDictionary<string, string> revertTarget,
             IDictionary<string, string> customPropertyRevertTarget,
-            Dictionary<string, string> pendingVarProperties)
+            Dictionary<string, PendingVarDeclaration> pendingVarProperties)
         {
             foreach (var prop in stylesheetRule.Style)
             {
@@ -434,19 +434,83 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
                 if (value == null) continue;
 
+                SupersedePendingVarDeclarations(pendingVarProperties, prop.Name);
+
                 if (value.IndexOf("var(", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    // Overwrites any earlier pending entry for this name (last write wins).
-                    pendingVarProperties[prop.Name] = value;
+                    pendingVarProperties[prop.Name] = new PendingVarDeclaration(value);
                 }
-                else
+                else if (IsStyleOnElementAllowed(box, prop.Name, value))
                 {
-                    // A later plain value supersedes an earlier deferred var() value for the same property.
-                    pendingVarProperties.Remove(prop.Name);
-                    if (IsStyleOnElementAllowed(box, prop.Name, value))
-                        CssUtils.SetPropertyValue(box, prop.Name, value);
+                    CssUtils.SetPropertyValue(box, prop.Name, value);
                 }
             }
+        }
+
+        /// <summary>
+        /// A declaration with var() is applied after the cascade, so every later declaration that sets
+        /// the same box field has to win over it, also through a shorthand or a flow-relative name.
+        /// </summary>
+        private static void SupersedePendingVarDeclarations(Dictionary<string, PendingVarDeclaration> pending, string name)
+        {
+            if (pending.Count == 0) return;
+
+            var slots = GetPropertySlots(name);
+            List<string> superseded = null;
+
+            foreach (var entry in pending)
+            {
+                entry.Value.Superseded.UnionWith(slots);
+
+                if (GetPropertySlots(entry.Key).IsSubsetOf(entry.Value.Superseded))
+                {
+                    if (superseded == null) superseded = new List<string>();
+                    superseded.Add(entry.Key);
+                }
+            }
+
+            if (superseded == null) return;
+
+            foreach (var key in superseded)
+                pending.Remove(key);
+        }
+
+        // The physical longhands a declaration sets, the box has one field per longhand
+        private static HashSet<string> GetPropertySlots(string name)
+        {
+            var slots = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            AddPropertySlots(name, slots);
+            return slots;
+        }
+
+        private static void AddPropertySlots(string name, HashSet<string> slots)
+        {
+            var longhands = PropertyFactory.Instance.GetLonghands(name);
+
+            if (longhands.Length == 0)
+            {
+                slots.Add(CssUtils.ToPhysicalPropertyName(name));
+                return;
+            }
+
+            foreach (var longhand in longhands)
+            {
+                if (!longhand.Equals(name, StringComparison.OrdinalIgnoreCase))
+                    AddPropertySlots(longhand, slots);
+            }
+        }
+
+        private sealed class PendingVarDeclaration
+        {
+            public PendingVarDeclaration(string value)
+            {
+                Value = value;
+            }
+
+            public string Value { get; }
+
+            // Longhands a later declaration set, they keep that value
+            public HashSet<string> Superseded { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -539,7 +603,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// CSS Variables 1 §3, substitutes the var() functions of the properties deferred by
         /// <see cref="AssignCssBlock"/> once the box's custom properties have their cascaded values.
         /// </summary>
-        private static void ResolveDeferredVarProperties(CssBox box, Dictionary<string, string> pendingVarProperties)
+        private static void ResolveDeferredVarProperties(CssBox box, Dictionary<string, PendingVarDeclaration> pendingVarProperties)
         {
             if (pendingVarProperties.Count == 0) return;
 
@@ -550,12 +614,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
             foreach (var pending in pendingVarProperties)
             {
                 var name = pending.Key;
-                var rawValue = pending.Value;
+                var rawValue = pending.Value.Value;
                 var result = SubstituteVarReferences(box, rawValue, resolvedCache, resolving, cyclic);
                 var finalValue = result.Success ? result.Value : GetGuaranteedInvalidFallback(box, name);
 
                 if (finalValue != null)
-                    ApplyResolvedPropertyValue(box, name, finalValue);
+                    ApplyResolvedPropertyValue(box, name, finalValue, pending.Value.Superseded);
             }
         }
 
@@ -563,7 +627,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// Parses the substituted value and applies it, a shorthand is only expanded into its longhands
         /// here (CSS Variables 1 §3.2). A value that doesn't parse is dropped.
         /// </summary>
-        private static void ApplyResolvedPropertyValue(CssBox box, string name, string value)
+        private static void ApplyResolvedPropertyValue(CssBox box, string name, string value, HashSet<string> superseded)
         {
             var reparsed = StylesheetParser.Default.ParseDeclaration(name + ": " + value);
 
@@ -575,6 +639,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
 
                 foreach (var longhand in longhands)
                 {
+                    if (superseded.Contains(CssUtils.ToPhysicalPropertyName(longhand.Name)))
+                        continue;
+
                     if (longhand.HasValue && IsStyleOnElementAllowed(box, longhand.Name, longhand.Value))
                         CssUtils.SetPropertyValue(box, longhand.Name, longhand.Value);
                 }
@@ -853,6 +920,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// <returns>true - style allowed, false - not allowed</returns>
         private static bool IsStyleOnElementAllowed(CssBox box, string key, string value)
         {
+            // Layout has no box tree fixup for contents, the element keeps its own box
+            if (key == HtmlConstants.Display && value == CssConstants.Contents)
+                return false;
+
             if (box.HtmlTag != null && key == HtmlConstants.Display)
             {
                 switch (box.HtmlTag.Name)

@@ -3,7 +3,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     internal sealed class PaddingBlockProperty : ShorthandProperty
     {
         private static readonly IValueConverter StyleConverter = Converters.LengthOrPercentConverter.Periodic(
-                PropertyNames.PaddingTop, PropertyNames.PaddingBottom)
+                PropertyNames.PaddingBlockStart, PropertyNames.PaddingBlockEnd)
             .OrDefault(Length.Zero);
 
         internal PaddingBlockProperty()

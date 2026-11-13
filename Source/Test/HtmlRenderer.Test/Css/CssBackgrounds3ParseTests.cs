@@ -59,7 +59,6 @@ public sealed class CssBackgrounds3ParseTests
         Assert.AreEqual("content-box", style.BackgroundClip);
     }
 
-    [Ignore("Gap, see Spec/css-backgrounds-3.yml")]
     [TestMethod]
     [Spec("css-backgrounds-3", "#background")]
     public void BackgroundShorthand_OneBoxValueSetsOriginAndClip()

@@ -79,7 +79,7 @@ public sealed class StrokePropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<StrokeProperty>(property);
         var concrete = (StrokeProperty)property;
-        Assert.IsFalse(concrete.IsInherited);
+        Assert.IsTrue(concrete.IsInherited);
         Assert.IsFalse(concrete.HasValue);
     }
 
@@ -169,7 +169,7 @@ public sealed class StrokePropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<StrokeDashoffsetProperty>(property);
         var concrete = (StrokeDashoffsetProperty)property;
-        Assert.IsFalse(concrete.IsInherited);
+        Assert.IsTrue(concrete.IsInherited);
         Assert.IsFalse(concrete.HasValue);
     }
 
@@ -194,7 +194,7 @@ public sealed class StrokePropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<StrokeDashoffsetProperty>(property);
         var concrete = (StrokeDashoffsetProperty)property;
-        Assert.IsFalse(concrete.IsInherited);
+        Assert.IsTrue(concrete.IsInherited);
         Assert.IsFalse(concrete.HasValue);
     }
 
@@ -245,7 +245,7 @@ public sealed class StrokePropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<StrokeLinecapProperty>(property);
         var concrete = (StrokeLinecapProperty)property;
-        Assert.IsFalse(concrete.IsInherited);
+        Assert.IsTrue(concrete.IsInherited);
         Assert.IsFalse(concrete.HasValue);
     }
 
@@ -296,7 +296,7 @@ public sealed class StrokePropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<StrokeLinejoinProperty>(property);
         var concrete = (StrokeLinejoinProperty)property;
-        Assert.IsFalse(concrete.IsInherited);
+        Assert.IsTrue(concrete.IsInherited);
         Assert.IsFalse(concrete.HasValue);
     }
 
@@ -321,7 +321,7 @@ public sealed class StrokePropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<StrokeMiterlimitProperty>(property);
         var concrete = (StrokeMiterlimitProperty)property;
-        Assert.IsFalse(concrete.IsInherited);
+        Assert.IsTrue(concrete.IsInherited);
         Assert.IsFalse(concrete.HasValue);
     }
 
@@ -333,7 +333,7 @@ public sealed class StrokePropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<StrokeMiterlimitProperty>(property);
         var concrete = (StrokeMiterlimitProperty)property;
-        Assert.IsFalse(concrete.IsInherited);
+        Assert.IsTrue(concrete.IsInherited);
         Assert.IsFalse(concrete.HasValue);
     }
 
@@ -358,7 +358,7 @@ public sealed class StrokePropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<StrokeOpacityProperty>(property);
         var concrete = (StrokeOpacityProperty)property;
-        Assert.IsFalse(concrete.IsInherited);
+        Assert.IsTrue(concrete.IsInherited);
         Assert.IsFalse(concrete.HasValue);
     }
 
@@ -396,7 +396,7 @@ public sealed class StrokePropertyTests
         Assert.IsFalse(property.IsImportant);
         Assert.IsInstanceOfType<StrokeWidthProperty>(property);
         var concrete = (StrokeWidthProperty)property;
-        Assert.IsFalse(concrete.IsInherited);
+        Assert.IsTrue(concrete.IsInherited);
         Assert.IsFalse(concrete.HasValue);
     }
 }

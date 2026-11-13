@@ -105,7 +105,6 @@ public sealed class CssValuesTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-values-4.yml")]
     [Spec("css-values-4", "#numbers")]
     [DataRow("1e1px")]
     [DataRow("1E1px")]
@@ -230,11 +229,18 @@ public sealed class CssValuesTests
     }
 
     [TestMethod]
+    [Spec("css-values-4", "#absolute-lengths")]
+    [DataRow("calc(40Q)")]
+    public void QuarterMillimeter_IsAnAbsoluteUnit(string value)
+    {
+        Assert.AreEqual(96 / 2.54, Styled($"#x{{margin-left:{value}}}").ActualMarginLeft, Delta);
+    }
+
+    [TestMethod]
     [Ignore("Gap, see Spec/css-values-4.yml")]
     [Spec("css-values-4", "#absolute-lengths")]
     [DataRow("40Q")]
-    [DataRow("calc(40Q)")]
-    public void QuarterMillimeter_IsAnAbsoluteUnit(string value)
+    public void QuarterMillimeter_OutsideOfCalc_IsAnAbsoluteUnit(string value)
     {
         Assert.AreEqual(96 / 2.54, Styled($"#x{{margin-left:{value}}}").ActualMarginLeft, Delta);
     }
@@ -299,12 +305,19 @@ public sealed class CssValuesTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-values-4.yml")]
     [Spec("css-values-4", "#comp-func")]
     [DataRow("clamp(30px, 50px, 20px)", 30)]
+    public void Clamp_FavorsTheMinimum(string value, double expected)
+    {
+        Assert.AreEqual(expected, Styled($"#x{{margin-left:{value}}}").ActualMarginLeft, Delta);
+    }
+
+    [TestMethod]
+    [Ignore("Gap, see Spec/css-values-4.yml")]
+    [Spec("css-values-4", "#comp-func")]
     [DataRow("clamp(none, 50px, 20px)", 20)]
     [DataRow("clamp(10px, 5px, none)", 10)]
-    public void Clamp_FavorsTheMinimumAndTakesNone(string value, double expected)
+    public void Clamp_TakesNone(string value, double expected)
     {
         Assert.AreEqual(expected, Styled($"#x{{margin-left:{value}}}").ActualMarginLeft, Delta);
     }
@@ -376,7 +389,6 @@ public sealed class CssValuesTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-values-4.yml")]
     [Spec("css-values-4", "#calc-syntax")]
     [DataRow("calc(2ch)")]
     [DataRow("calc(2vh)")]
@@ -418,7 +430,6 @@ public sealed class CssValuesTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/css-values-4.yml")]
     [Spec("css-values-4", "#calc-type-checking")]
     [DataRow("calc(3)", "3")]
     [DataRow("calc(2.6)", "3")]

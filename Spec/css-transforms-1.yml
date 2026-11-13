@@ -35,9 +35,7 @@ sections:
       - "'transform-origin' is parsed, but transforms aren't applied"
   '#transform-box':
     title: '6 Transform reference box: the transform-box property'
-    status: unsupported
-    gaps:
-      - "'transform-box' isn't parsed"
+    status: parsed-only
   '#svg-transform':
     title: 7 The SVG transform Attribute
     status: unsupported
@@ -67,9 +65,6 @@ sections:
   '#two-d-transform-functions':
     title: 9.1 2D Transform Functions
     status: parsed-only
-    gaps:
-      - skew() with a single angle is rejected
-      - A unitless 0 isn't accepted as an angle in rotate(), skew(), skewX() and skewY()
   '#transform-primitives':
     title: 9.2 Transform function primitives and derivatives
     status: n/a

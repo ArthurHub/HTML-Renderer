@@ -41,6 +41,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Matches = "matches";
         public static readonly string Is = "is";
         public static readonly string Where = "where";
+        public static readonly string WebkitAny = "-webkit-any";
+        public static readonly string MozAny = "-moz-any";
         public static readonly string NthChild = "nth-child";
         public static readonly string NthLastChild = "nth-last-child";
         public static readonly string NthOfType = "nth-of-type";
@@ -51,6 +53,29 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Lang = "lang";
         public static readonly string Contains = "contains";
         public static readonly string HostContext = "host-context";
+        public static readonly string Host = "host";
+        public static readonly string State = "state";
+        public static readonly string Defined = "defined";
+        public static readonly string Modal = "modal";
+        public static readonly string Open = "open";
+        public static readonly string PopoverOpen = "popover-open";
+        public static readonly string Fullscreen = "fullscreen";
+        public static readonly string PictureInPicture = "picture-in-picture";
+        public static readonly string UserValid = "user-valid";
+        public static readonly string UserInvalid = "user-invalid";
+        public static readonly string Autofill = "autofill";
+        public static readonly string TargetWithin = "target-within";
+        public static readonly string LocalLink = "local-link";
+        public static readonly string Current = "current";
+        public static readonly string Past = "past";
+        public static readonly string Future = "future";
+        public static readonly string Playing = "playing";
+        public static readonly string Paused = "paused";
+        public static readonly string Seeking = "seeking";
+        public static readonly string Buffering = "buffering";
+        public static readonly string Stalled = "stalled";
+        public static readonly string Muted = "muted";
+        public static readonly string VolumeLocked = "volume-locked";
         public static readonly string Separator = ":";
     }
 }

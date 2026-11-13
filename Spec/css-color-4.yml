@@ -41,20 +41,19 @@ sections:
     title: 4.1.1 Modern (Space-separated) Color Function Syntax
     status: partial
     gaps:
-      - hsl() and hsla() don't take the modern syntax, the color is transparent
+      - hsl() with numbers instead of percentages, e.g. hsl(120deg 100 50), is transparent
       - The modern rgb() takes neither percentages nor fractions, rgb(100% 0% 0%) is rgb(100 0 0) and rgb(255.5 0 0) is rgb(255 5 0)
-      - calc() isn't accepted inside a color function
   '#color-syntax-legacy':
     title: 4.1.2 Legacy (Comma-separated) Color Function Syntax
     status: partial
     gaps:
-      - rgb() ignores a fourth (alpha) value, hsl() with four values is transparent, and fractions are split at the dot
+      - rgb() ignores a fourth (alpha) value and fractions are split at the dot
       - Invalid color functions are kept, e.g. mixed commas and spaces, an alpha without a slash, numbers mixed with percentages, too few values, and commas in hwb(), lab(), lch(), oklab() and oklch()
   '#alpha-syntax':
     title: '4.2 Representing Transparency in Colors: the <alpha-value> syntax'
     status: partial
     gaps:
-      - rgb() and rgba() ignore an alpha after a slash
+      - rgb() ignores an alpha after a slash
       - A negative alpha isn't clamped to 0
   '#hue-syntax':
     title: '4.3 Representing Cylindrical-coordinate Hues: the <hue> syntax'
@@ -63,14 +62,10 @@ sections:
       - A hwb() hue outside 0..360 degrees isn't wrapped around
   '#missing':
     title: 4.4 “Missing” Color Components and the none Keyword
-    status: partial
-    gaps:
-      - none in rgb() or hsl() makes the color transparent, and a missing alpha is treated as 1 instead of 0
+    status: supported
   '#powerless':
     title: 4.4.1 “Powerless” Color Components
-    status: unsupported
-    gaps:
-      - A powerless hue of a converted color isn't treated as missing when interpolating
+    status: supported
   '#parse-color':
     title: 4.5 Parsing a <color> Value
     status: n/a
@@ -138,7 +133,7 @@ sections:
     status: n/a
   '#lab-colors':
     title: '9 Device-independent Colors: CIE Lab and LCH, Oklab and OkLCh'
-    status: partial
+    status: supported
   '#cie-lab':
     title: 9.1 CIE Lab and LCH
     status: supported
@@ -147,9 +142,7 @@ sections:
     status: supported
   '#specifying-lab-lch':
     title: '9.3 Specifying Lab and LCH: the lab() and lch() functional notations'
-    status: partial
-    gaps:
-      - A negative chroma isn't clamped to 0
+    status: supported
   '#specifying-oklab-oklch':
     title: '9.4 Specifying Oklab and OkLCh: the oklab() and oklch() functional notations'
     status: supported
@@ -164,24 +157,16 @@ sections:
     status: partial
   '#color-function':
     title: '10.1 Specifying Predefined Colors: the color() function'
-    status: unsupported
-    gaps:
-      - color() isn't supported, the declaration is dropped
+    status: supported
   '#predefined-sRGB':
     title: '10.2 The Predefined sRGB Color Space: the sRGB keyword'
-    status: partial
-    gaps:
-      - Only usable as a color-mix() interpolation space, color() isn't supported
+    status: supported
   '#predefined-sRGB-linear':
     title: '10.3 The Predefined Linear-Light sRGB Color Space: the srgb-linear keyword'
-    status: partial
-    gaps:
-      - Only usable as a color-mix() interpolation space, color() isn't supported
+    status: supported
   '#predefined-display-p3':
     title: '10.4 The Predefined Display P3 Color Space: the display-p3 keyword'
-    status: partial
-    gaps:
-      - Only usable as a color-mix() interpolation space, color() isn't supported
+    status: supported
   '#predefined-display-p3-linear':
     title: '10.5 The Predefined Linear-Light Display P3 Color Space: the display-p3-linear keyword'
     status: unsupported
@@ -189,24 +174,16 @@ sections:
       - Not supported as an interpolation space, color-mix() interpolates in sRGB instead
   '#predefined-a98-rgb':
     title: '10.6 The Predefined A98 RGB Color Space: the a98-rgb keyword'
-    status: unsupported
-    gaps:
-      - Not supported as an interpolation space, color-mix() interpolates in sRGB instead
+    status: supported
   '#predefined-prophoto-rgb':
     title: '10.7 The Predefined ProPhoto RGB Color Space: the prophoto-rgb keyword'
-    status: unsupported
-    gaps:
-      - Not supported as an interpolation space, color-mix() interpolates in sRGB instead
+    status: supported
   '#predefined-rec2020':
     title: '10.8 The Predefined ITU-R BT.2020-2 Color Space: the rec2020 keyword'
-    status: unsupported
-    gaps:
-      - Not supported as an interpolation space, color-mix() interpolates in sRGB instead
+    status: supported
   '#predefined-xyz':
     title: '10.9 The Predefined CIE XYZ Color Spaces: the xyz-d50, xyz-d65, and xyz keywords'
-    status: partial
-    gaps:
-      - Only usable as a color-mix() interpolation space, color() isn't supported
+    status: supported
   '#predefined-to-lab-oklab':
     title: 10.10 Converting Predefined Color Spaces to Lab or Oklab
     status: supported
@@ -246,20 +223,16 @@ sections:
     title: 13.3 Color Space for Interpolation
     status: partial
     gaps:
-      - display-p3-linear, a98-rgb, prophoto-rgb and rec2020 aren't supported, see 10.5 to 10.8
+      - display-p3-linear isn't supported, see 10.5
   '#interpolation-missing':
     title: 13.4 Interpolating with Missing Components
-    status: unsupported
-    gaps:
-      - A missing component is interpolated as 0 instead of taking the other color's value
+    status: supported
   '#interpolation-alpha':
     title: 13.5 Interpolating with Alpha
     status: supported
   '#hue-interpolation':
     title: 13.6 Hue Interpolation
-    status: partial
-    gaps:
-      - An interpolated hsl() or hwb() hue below 0 degrees isn't wrapped around, the result is gray or black
+    status: supported
   '#hue-shorter':
     title: 13.6.1 shorter
     status: supported

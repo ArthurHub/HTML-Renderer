@@ -22,7 +22,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public TokenValue GetResult()
         {
-            return new TokenValue(_values);
+            return new(_values);
         }
 
         public void Apply(Token token)
@@ -61,16 +61,17 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 case TokenType.LessThan:
                 case TokenType.LessThanOrEqual:
                 case TokenType.Range:
-                    // A U+... unicode-range value (an @font-face descriptor) is a sequence of Range tokens;
-                    // without this they'd hit the default arm and mark the whole value invalid, so the
-                    // descriptor would be dropped under strict (non-tolerant) parsing - the pipeline default.
+                    // A U+... unicode-range value (an @font-face descriptor) is a sequence of Range tokens.
+                    // Without this they hit the default arm and mark the whole value invalid, so the
+                    // descriptor is dropped entirely under strict (non-tolerant) parsing.
                     Add(token);
                     break;
                 case TokenType.SquareBracketOpen:
                 case TokenType.SquareBracketClose:
-                    // Square brackets are valid in a value: grid line names, e.g.
-                    // `grid-template-columns: [sidebar-start] 200px [sidebar-end]`. Without this they'd hit
-                    // the default arm and the whole declaration would be dropped under strict parsing.
+                    // A grid <line-names> group is written as [name ...] inside a track list. Like the
+                    // unicode-range Range tokens above, these brackets would otherwise hit the default arm
+                    // and drop the whole value under strict parsing; keep them so the grid grammars can
+                    // validate the line-name groups.
                     Add(token);
                     break;
                 case TokenType.Comment:

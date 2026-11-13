@@ -48,7 +48,7 @@ sections:
     status: unsupported
   '#relative-syntax':
     title: 4.2 Relative Color Syntax
-    status: unsupported
+    status: supported
   '#relative-RGB':
     title: 4.3 Relative sRGB Colors
     status: unsupported
@@ -100,17 +100,17 @@ sections:
     status: unsupported
   '#device-cmyk':
     title: '6 Uncalibrated CMYK Colors: the device-cmyk() Function'
-    status: unsupported
+    status: partial
     gaps:
-      - device-cmyk() isn't supported, the declaration is dropped
+      - Numbers instead of percentages are rejected
   '#cmyk-rgb':
     title: 6.1 Naively Converting Between Uncalibrated CMYK and sRGB-Based Color
-    status: unsupported
+    status: supported
   '#light-dark':
     title: '7 Reacting to the used color-scheme: the light-dark() Function'
-    status: unsupported
+    status: partial
     gaps:
-      - light-dark() isn't supported, the declaration is dropped
+      - "Always the light color, color-scheme is ignored, see css-color-adjust-1 #color-scheme-prop"
   '#contrast-color':
     title: '8 Dynamically specifying a text color with adequate contrast: the contrast-color() Function'
     status: unsupported
@@ -123,7 +123,7 @@ sections:
     title: 9.1 Color Space for Interpolation
     status: partial
     gaps:
-      - Custom color spaces aren't supported, and neither are display-p3-linear, a98-rgb, prophoto-rgb and rec2020, see CSS Color 4 13.3
+      - Custom color spaces aren't supported, and neither is display-p3-linear, see CSS Color 4 13.3
   '#resolving-color-values':
     title: 10 Resolving <color> Values
     status: n/a

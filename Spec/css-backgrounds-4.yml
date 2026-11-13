@@ -44,8 +44,7 @@ sections:
     title: '2.7 Background Positioning Shorthand: the background-position shorthand property'
     status: partial
     gaps:
-      - 'Only keywords are painted, see css-backgrounds-3 #background-position'
-      - Three and four value forms that start with 'top' or 'bottom' are rejected
+      - "Only keywords are painted, see css-backgrounds-3 #background-position"
       - "'center' followed by an offset, like 'left center 10px', is accepted"
   '#bg-position-serialization':
     title: 2.7.1 Serialization of background-position values
@@ -55,7 +54,7 @@ sections:
     status: parsed-only
     gaps:
       - "'background-clip' is ignored, see css-backgrounds-3 #background-clip"
-      - "'text' and 'border-area' are rejected"
+      - "'border-area text' is rejected"
   '#background-origin':
     title: '2.9 Positioning Area: the background-origin property'
     status: parsed-only
@@ -78,8 +77,7 @@ sections:
     title: '2.12 Backgrounds Shorthand: the background property'
     status: partial
     gaps:
-      - 'A single box value only sets ''background-origin'', see css-backgrounds-3 #background'
-      - "The clip-only values 'text' and 'border-area' are rejected"
+      - "A single box value only sets 'background-origin', see css-backgrounds-3 #background"
   '#layering':
     title: 3 Layering Multiple Background Images
     status: unsupported

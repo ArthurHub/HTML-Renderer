@@ -1,5 +1,6 @@
 using System.Linq;
 using HtmlRenderer.Test.CssEngineSupport;
+using HtmlRenderer.Test.TestSupport;
 using TheArtOfDev.HtmlRenderer.Core.CssEngine;
 
 namespace HtmlRenderer.Test.CssModules;
@@ -43,14 +44,21 @@ public sealed class CssText4Tests
         Assert.AreEqual("", Value("white-space", "pre-line discard-after"));
     }
 
-    [Ignore("Gap, see Spec/css-text-4.yml")]
     [TestMethod]
     [Spec("css-text-4", "#white-space-collapsing")]
     [DataRow("preserve")]
     [DataRow("preserve-breaks")]
     [DataRow("preserve-spaces")]
-    [DataRow("discard")]
     public void WhiteSpaceCollapse_IsParsed(string value)
+    {
+        Assert.AreEqual(value, Value("white-space-collapse", value));
+    }
+
+    [Ignore("Gap, see Spec/css-text-4.yml")]
+    [TestMethod]
+    [Spec("css-text-4", "#white-space-collapsing")]
+    [DataRow("discard")]
+    public void WhiteSpaceCollapse_AcceptsDiscard(string value)
     {
         Assert.AreEqual(value, Value("white-space-collapse", value));
     }
@@ -63,7 +71,6 @@ public sealed class CssText4Tests
         Assert.AreEqual("discard-before discard-after", Value("white-space-trim", "discard-before discard-after"));
     }
 
-    [Ignore("Gap, see Spec/css-text-4.yml")]
     [TestMethod]
     [Spec("css-text-4", "#tab-size-property")]
     [DataRow("4")]
@@ -73,12 +80,27 @@ public sealed class CssText4Tests
         Assert.AreEqual(value, Value("tab-size", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-4.yml")]
     [TestMethod]
     [Spec("css-text-4", "#text-wrap-mode")]
     public void TextWrapMode_IsParsed()
     {
         Assert.AreEqual("nowrap", Value("text-wrap-mode", "nowrap"));
+    }
+
+    // The box only knows the white-space keyword, the longhands are combined into it
+    [TestMethod]
+    [Spec("css-text-4", "#text-wrap-mode")]
+    [Spec("css-text-4", "#white-space-collapsing")]
+    [DataRow("text-wrap-mode:nowrap", "nowrap")]
+    [DataRow("white-space-collapse:preserve", "pre-wrap")]
+    [DataRow("white-space-collapse:preserve;text-wrap-mode:nowrap", "pre")]
+    [DataRow("white-space-collapse:preserve-breaks", "pre-line")]
+    [DataRow("white-space:pre;text-wrap-mode:wrap", "pre-wrap")]
+    public void Longhands_SetTheWhiteSpaceOfTheBox(string declarations, string whiteSpace)
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap($"<div id=x style='{declarations}'>a</div>"));
+
+        Assert.AreEqual(whiteSpace, LayoutHarness.FindById(root, "x")!.WhiteSpace);
     }
 
     [Ignore("Gap, see Spec/css-text-4.yml")]
@@ -99,7 +121,6 @@ public sealed class CssText4Tests
         Assert.AreEqual("avoid-line", Value(property, "avoid-line"));
     }
 
-    [Ignore("Gap, see Spec/css-text-4.yml")]
     [TestMethod]
     [Spec("css-text-4", "#text-wrap-style")]
     [DataRow("balance")]
@@ -110,14 +131,16 @@ public sealed class CssText4Tests
         Assert.AreEqual(value, Value("text-wrap-style", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-4.yml")]
     [TestMethod]
     [Spec("css-text-4", "#text-wrap-shorthand")]
-    [DataRow("nowrap")]
-    [DataRow("wrap balance")]
-    public void TextWrap_IsParsed(string value)
+    [DataRow("nowrap", "nowrap", "auto")]
+    [DataRow("wrap balance", "wrap", "balance")]
+    public void TextWrap_SetsItsLonghands(string value, string mode, string style)
     {
-        Assert.AreEqual(value, Value("text-wrap", value));
+        var declarations = CssConstructionFunctions.ParseDeclarations($"text-wrap: {value}");
+
+        Assert.AreEqual(mode, declarations.GetPropertyValue("text-wrap-mode"));
+        Assert.AreEqual(style, declarations.GetPropertyValue("text-wrap-style"));
     }
 
     [Ignore("Gap, see Spec/css-text-4.yml")]
@@ -130,7 +153,6 @@ public sealed class CssText4Tests
         Assert.AreEqual(value, Value("word-break", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-4.yml")]
     [TestMethod]
     [Spec("css-text-4", "#line-break-property")]
     [DataRow("strict")]
@@ -140,7 +162,6 @@ public sealed class CssText4Tests
         Assert.AreEqual(value, Value("line-break", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-4.yml")]
     [TestMethod]
     [Spec("css-text-4", "#hyphenate-character")]
     public void HyphenateCharacter_IsParsed()
@@ -148,7 +169,6 @@ public sealed class CssText4Tests
         Assert.AreEqual("\"-\"", Value("hyphenate-character", "\"-\""));
     }
 
-    [Ignore("Gap, see Spec/css-text-4.yml")]
     [TestMethod]
     [Spec("css-text-4", "#hyphenate-size-limits")]
     public void HyphenateLimitZone_IsParsed()
@@ -156,7 +176,6 @@ public sealed class CssText4Tests
         Assert.AreEqual("10%", Value("hyphenate-limit-zone", "10%"));
     }
 
-    [Ignore("Gap, see Spec/css-text-4.yml")]
     [TestMethod]
     [Spec("css-text-4", "#hyphenate-char-limits")]
     public void HyphenateLimitChars_IsParsed()
@@ -164,7 +183,6 @@ public sealed class CssText4Tests
         Assert.AreEqual("6 3 2", Value("hyphenate-limit-chars", "6 3 2"));
     }
 
-    [Ignore("Gap, see Spec/css-text-4.yml")]
     [TestMethod]
     [Spec("css-text-4", "#hyphenate-line-limits")]
     [DataRow("hyphenate-limit-lines", "2")]
@@ -182,7 +200,6 @@ public sealed class CssText4Tests
         Assert.AreEqual("\".\" center", Value("text-align", "\".\" center"));
     }
 
-    [Ignore("Gap, see Spec/css-text-4.yml")]
     [TestMethod]
     [Spec("css-text-4", "#text-align-all-property")]
     public void TextAlignAll_IsParsed()
@@ -265,7 +282,6 @@ public sealed class CssText4Tests
         Assert.AreEqual(value, Value("text-spacing", value));
     }
 
-    [Ignore("Gap, see Spec/css-text-4.yml")]
     [TestMethod]
     [Spec("css-text-4", "#hanging-punctuation-property")]
     [DataRow("first")]

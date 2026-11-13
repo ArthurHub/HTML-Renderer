@@ -11,9 +11,7 @@ sections:
     status: unsupported
   '#color-scheme-prop':
     title: '2.1 Opting Into a Preferred Color Scheme: the color-scheme property'
-    status: unsupported
-    gaps:
-      - "'color-scheme' isn't a known property, only the prefers-color-scheme media feature follows the adapter's color scheme"
+    status: parsed-only
   '#color-scheme-effect':
     title: 2.2 Effects of the Used Color Scheme
     status: unsupported
@@ -32,22 +30,20 @@ sections:
     status: unsupported
   '#forced-color-adjust-prop':
     title: '3.2 Opting Out of a Forced Color Palette: the forced-color-adjust property'
-    status: unsupported
-    gaps:
-      - "'forced-color-adjust' isn't a known property"
+    status: parsed-only
   '#perf':
     title: 4 Performance-based Color Adjustments
     status: unsupported
   '#print-color-adjust':
     title: '4.1 Ink Economy: the print-color-adjust property'
-    status: unsupported
+    status: parsed-only
     gaps:
-      - "'print-color-adjust' isn't a known property, colors are never adjusted for printing, as with 'exact'"
+      - Colors are never adjusted for printing, as with 'exact'
   '#color-adjust':
     title: 4.2 The color-adjust Shorthand
     status: unsupported
     gaps:
-      - "'color-adjust' isn't a known property"
+      - "'color-adjust' is rejected"
   '#color-adjust-emulation':
     title: 5 Emulation
     status: n/a

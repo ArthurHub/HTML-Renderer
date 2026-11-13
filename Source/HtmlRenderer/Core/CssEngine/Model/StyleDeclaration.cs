@@ -102,8 +102,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             return value;
         }
 
+        // The standard spelling of a vendor-prefixed name when vendor aliasing is on; otherwise the name unchanged.
+        private string Canonical(string name)
+        {
+            return _parser != null && _parser.Options.EnableVendorPrefixAliases
+                ? VendorPropertyAliases.Resolve(name)
+                : name;
+        }
+
         private void RemovePropertyByName(string propertyName)
         {
+            propertyName = Canonical(propertyName);
+
             foreach (var declaration in Declarations)
             {
                 if (!declaration.Name.Is(propertyName)) continue;
@@ -119,8 +129,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public string GetPropertyPriority(string propertyName)
         {
+            propertyName = Canonical(propertyName);
             var property = GetProperty(propertyName);
-            if (property != null && property.IsImportant) return Keywords.Important;
+            if (property is {IsImportant: true}) return Keywords.Important;
             if (!IsStrictMode || !PropertyFactory.Instance.IsShorthand(propertyName)) return string.Empty;
 
             var longhands = PropertyFactory.Instance.GetLonghands(propertyName);
@@ -133,6 +144,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public string GetPropertyValue(string propertyName)
         {
+            propertyName = Canonical(propertyName);
             var property = GetProperty(propertyName);
             if (property != null) return property.Value;
 
@@ -161,6 +173,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             if (!string.IsNullOrEmpty(priority) && !priority.Isi(Keywords.Important)) return;
 
+            propertyName = Canonical(propertyName);
             var important = !string.IsNullOrEmpty(priority);
             var mappings = IsStrictMode && PropertyFactory.Instance.IsShorthand(propertyName)
                 ? PropertyFactory.Instance.GetLonghands(propertyName)
@@ -183,6 +196,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 if (value == null) return;
 
                 var property = CreateProperty(propertyName);
+                if (property != null && _parser.Options.EnableVendorPrefixAliases)
+                    value = VendorValueAliases.Normalize(propertyName, property.Name, value);
+
                 if (property == null || !property.TrySetValue(value)) return;
 
                 property.IsImportant = priority != null;
@@ -200,7 +216,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             var property = GetProperty(propertyName);
             if (property != null) return property;
 
-            property = PropertyFactory.Instance.Create(propertyName);
+            property = _parser != null && _parser.Options.EnableVendorPrefixAliases
+                ? VendorPropertyAliases.Create(propertyName)
+                : PropertyFactory.Instance.Create(propertyName);
             if (property != null || IsStrictMode) return property;
 
             return new UnknownProperty(propertyName);
@@ -208,6 +226,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         internal Property GetProperty(string name)
         {
+            name = Canonical(name);
             return Declarations.FirstOrDefault(m => m.Name.Isi(name));
         }
 
@@ -276,9 +295,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             if (shorthand.DeclaredValue.Original.ContainsFunction(FunctionNames.Var))
             {
-                // A var() reference can't be split into per-longhand slices here — the referenced custom
+                // A var() reference can't be split into per-longhand slices here: the referenced custom
                 // property's value is only known per-element, at cascade time. Keep the shorthand
-                // declaration whole so cascade-time substitution + shorthand expansion can handle it once resolved.
+                // declaration whole so substitution and expansion can happen once it is resolved (CSS
+                // Variables 1 3.2).
                 SetLonghand(shorthand);
                 return;
             }
@@ -313,6 +333,30 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public IEnumerable<Property> Declarations => Children.OfType<Property>();
 
+        public string AccentColor
+        {
+            get => GetPropertyValue(PropertyNames.AccentColor);
+            set => SetPropertyValue(PropertyNames.AccentColor, value);
+        }
+
+        public string BackgroundBlendMode
+        {
+            get => GetPropertyValue(PropertyNames.BackgroundBlendMode);
+            set => SetPropertyValue(PropertyNames.BackgroundBlendMode, value);
+        }
+
+        public string BufferedRendering
+        {
+            get => GetPropertyValue(PropertyNames.BufferedRendering);
+            set => SetPropertyValue(PropertyNames.BufferedRendering, value);
+        }
+
+        public string CaretColor
+        {
+            get => GetPropertyValue(PropertyNames.CaretColor);
+            set => SetPropertyValue(PropertyNames.CaretColor, value);
+        }
+
         public string CssText
         {
             get => this.ToCss();
@@ -321,6 +365,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
                 Update(value);
                 RaiseChanged();
             }
+        }
+
+        public string All
+        {
+            get => GetPropertyValue(PropertyNames.All);
+            set => SetPropertyValue(PropertyNames.All, value);
         }
 
         public string AlignContent
@@ -413,6 +463,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.BackfaceVisibility, value);
         }
 
+        public string BackdropFilter
+        {
+            get => GetPropertyValue(PropertyNames.BackdropFilter);
+            set => SetPropertyValue(PropertyNames.BackdropFilter, value);
+        }
+
         public string Background
         {
             get => GetPropertyValue(PropertyNames.Background);
@@ -489,6 +545,222 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             get => GetPropertyValue(PropertyNames.Behavior);
             set => SetPropertyValue(PropertyNames.Behavior, value);
+        }
+
+        public string BorderBlock
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlock);
+            set => SetPropertyValue(PropertyNames.BorderBlock, value);
+        }
+
+        public string BorderBlockColor
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlockColor);
+            set => SetPropertyValue(PropertyNames.BorderBlockColor, value);
+        }
+
+        public string BorderBlockEnd
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlockEnd);
+            set => SetPropertyValue(PropertyNames.BorderBlockEnd, value);
+        }
+
+        public string BorderBlockEndColor
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlockEndColor);
+            set => SetPropertyValue(PropertyNames.BorderBlockEndColor, value);
+        }
+
+        public string BorderBlockEndRadius
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlockEndRadius);
+            set => SetPropertyValue(PropertyNames.BorderBlockEndRadius, value);
+        }
+
+        public string BorderBlockEndStyle
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlockEndStyle);
+            set => SetPropertyValue(PropertyNames.BorderBlockEndStyle, value);
+        }
+
+        public string BorderBlockEndWidth
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlockEndWidth);
+            set => SetPropertyValue(PropertyNames.BorderBlockEndWidth, value);
+        }
+
+        public string BorderBlockStart
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlockStart);
+            set => SetPropertyValue(PropertyNames.BorderBlockStart, value);
+        }
+
+        public string BorderBlockStartColor
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlockStartColor);
+            set => SetPropertyValue(PropertyNames.BorderBlockStartColor, value);
+        }
+
+        public string BorderBlockStartRadius
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlockStartRadius);
+            set => SetPropertyValue(PropertyNames.BorderBlockStartRadius, value);
+        }
+
+        public string BorderBlockStartStyle
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlockStartStyle);
+            set => SetPropertyValue(PropertyNames.BorderBlockStartStyle, value);
+        }
+
+        public string BorderBlockStartWidth
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlockStartWidth);
+            set => SetPropertyValue(PropertyNames.BorderBlockStartWidth, value);
+        }
+
+        public string BorderBlockStyle
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlockStyle);
+            set => SetPropertyValue(PropertyNames.BorderBlockStyle, value);
+        }
+
+        public string BorderBlockWidth
+        {
+            get => GetPropertyValue(PropertyNames.BorderBlockWidth);
+            set => SetPropertyValue(PropertyNames.BorderBlockWidth, value);
+        }
+
+        public string BorderBottomRadius
+        {
+            get => GetPropertyValue(PropertyNames.BorderBottomRadius);
+            set => SetPropertyValue(PropertyNames.BorderBottomRadius, value);
+        }
+
+        public string BorderEndEndRadius
+        {
+            get => GetPropertyValue(PropertyNames.BorderEndEndRadius);
+            set => SetPropertyValue(PropertyNames.BorderEndEndRadius, value);
+        }
+
+        public string BorderEndStartRadius
+        {
+            get => GetPropertyValue(PropertyNames.BorderEndStartRadius);
+            set => SetPropertyValue(PropertyNames.BorderEndStartRadius, value);
+        }
+
+        public string BorderInline
+        {
+            get => GetPropertyValue(PropertyNames.BorderInline);
+            set => SetPropertyValue(PropertyNames.BorderInline, value);
+        }
+
+        public string BorderInlineColor
+        {
+            get => GetPropertyValue(PropertyNames.BorderInlineColor);
+            set => SetPropertyValue(PropertyNames.BorderInlineColor, value);
+        }
+
+        public string BorderInlineEnd
+        {
+            get => GetPropertyValue(PropertyNames.BorderInlineEnd);
+            set => SetPropertyValue(PropertyNames.BorderInlineEnd, value);
+        }
+
+        public string BorderInlineEndColor
+        {
+            get => GetPropertyValue(PropertyNames.BorderInlineEndColor);
+            set => SetPropertyValue(PropertyNames.BorderInlineEndColor, value);
+        }
+
+        public string BorderInlineEndRadius
+        {
+            get => GetPropertyValue(PropertyNames.BorderInlineEndRadius);
+            set => SetPropertyValue(PropertyNames.BorderInlineEndRadius, value);
+        }
+
+        public string BorderInlineEndStyle
+        {
+            get => GetPropertyValue(PropertyNames.BorderInlineEndStyle);
+            set => SetPropertyValue(PropertyNames.BorderInlineEndStyle, value);
+        }
+
+        public string BorderInlineEndWidth
+        {
+            get => GetPropertyValue(PropertyNames.BorderInlineEndWidth);
+            set => SetPropertyValue(PropertyNames.BorderInlineEndWidth, value);
+        }
+
+        public string BorderInlineStart
+        {
+            get => GetPropertyValue(PropertyNames.BorderInlineStart);
+            set => SetPropertyValue(PropertyNames.BorderInlineStart, value);
+        }
+
+        public string BorderInlineStartColor
+        {
+            get => GetPropertyValue(PropertyNames.BorderInlineStartColor);
+            set => SetPropertyValue(PropertyNames.BorderInlineStartColor, value);
+        }
+
+        public string BorderInlineStartRadius
+        {
+            get => GetPropertyValue(PropertyNames.BorderInlineStartRadius);
+            set => SetPropertyValue(PropertyNames.BorderInlineStartRadius, value);
+        }
+
+        public string BorderInlineStartStyle
+        {
+            get => GetPropertyValue(PropertyNames.BorderInlineStartStyle);
+            set => SetPropertyValue(PropertyNames.BorderInlineStartStyle, value);
+        }
+
+        public string BorderInlineStartWidth
+        {
+            get => GetPropertyValue(PropertyNames.BorderInlineStartWidth);
+            set => SetPropertyValue(PropertyNames.BorderInlineStartWidth, value);
+        }
+
+        public string BorderInlineStyle
+        {
+            get => GetPropertyValue(PropertyNames.BorderInlineStyle);
+            set => SetPropertyValue(PropertyNames.BorderInlineStyle, value);
+        }
+
+        public string BorderInlineWidth
+        {
+            get => GetPropertyValue(PropertyNames.BorderInlineWidth);
+            set => SetPropertyValue(PropertyNames.BorderInlineWidth, value);
+        }
+
+        public string BorderLeftRadius
+        {
+            get => GetPropertyValue(PropertyNames.BorderLeftRadius);
+            set => SetPropertyValue(PropertyNames.BorderLeftRadius, value);
+        }
+
+        public string BorderRightRadius
+        {
+            get => GetPropertyValue(PropertyNames.BorderRightRadius);
+            set => SetPropertyValue(PropertyNames.BorderRightRadius, value);
+        }
+
+        public string BorderStartEndRadius
+        {
+            get => GetPropertyValue(PropertyNames.BorderStartEndRadius);
+            set => SetPropertyValue(PropertyNames.BorderStartEndRadius, value);
+        }
+
+        public string BorderStartStartRadius
+        {
+            get => GetPropertyValue(PropertyNames.BorderStartStartRadius);
+            set => SetPropertyValue(PropertyNames.BorderStartStartRadius, value);
+        }
+
+        public string BorderTopRadius
+        {
+            get => GetPropertyValue(PropertyNames.BorderTopRadius);
+            set => SetPropertyValue(PropertyNames.BorderTopRadius, value);
         }
 
         public string Bottom
@@ -785,6 +1057,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.Color, value);
         }
 
+        public string ColorScheme
+        {
+            get => GetPropertyValue(PropertyNames.ColorScheme);
+            set => SetPropertyValue(PropertyNames.ColorScheme, value);
+        }
+
+        public string ColorInterpolation
+        {
+            get => GetPropertyValue(PropertyNames.ColorInterpolation);
+            set => SetPropertyValue(PropertyNames.ColorInterpolation, value);
+        }
+
         public string ColorInterpolationFilters
         {
             get => GetPropertyValue(PropertyNames.ColorInterpolationFilters);
@@ -851,6 +1135,48 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.ColumnWidth, value);
         }
 
+        public string Contain
+        {
+            get => GetPropertyValue(PropertyNames.Contain);
+            set => SetPropertyValue(PropertyNames.Contain, value);
+        }
+
+        public string ContainIntrinsicWidth
+        {
+            get => GetPropertyValue(PropertyNames.ContainIntrinsicWidth);
+            set => SetPropertyValue(PropertyNames.ContainIntrinsicWidth, value);
+        }
+
+        public string ContainIntrinsicHeight
+        {
+            get => GetPropertyValue(PropertyNames.ContainIntrinsicHeight);
+            set => SetPropertyValue(PropertyNames.ContainIntrinsicHeight, value);
+        }
+
+        public string ContainIntrinsicInlineSize
+        {
+            get => GetPropertyValue(PropertyNames.ContainIntrinsicInlineSize);
+            set => SetPropertyValue(PropertyNames.ContainIntrinsicInlineSize, value);
+        }
+
+        public string ContainIntrinsicBlockSize
+        {
+            get => GetPropertyValue(PropertyNames.ContainIntrinsicBlockSize);
+            set => SetPropertyValue(PropertyNames.ContainIntrinsicBlockSize, value);
+        }
+
+        public string ContainIntrinsicSize
+        {
+            get => GetPropertyValue(PropertyNames.ContainIntrinsicSize);
+            set => SetPropertyValue(PropertyNames.ContainIntrinsicSize, value);
+        }
+
+        public string Container
+        {
+            get => GetPropertyValue(PropertyNames.Container);
+            set => SetPropertyValue(PropertyNames.Container, value);
+        }
+
         public string ContainerName
         {
             get => GetPropertyValue(PropertyNames.ContainerName);
@@ -869,6 +1195,216 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.Content, value);
         }
 
+        public string ContentVisibility
+        {
+            get => GetPropertyValue(PropertyNames.ContentVisibility);
+            set => SetPropertyValue(PropertyNames.ContentVisibility, value);
+        }
+
+        public string Corner
+        {
+            get => GetPropertyValue(PropertyNames.Corner);
+            set => SetPropertyValue(PropertyNames.Corner, value);
+        }
+
+        public string CornerBlockEnd
+        {
+            get => GetPropertyValue(PropertyNames.CornerBlockEnd);
+            set => SetPropertyValue(PropertyNames.CornerBlockEnd, value);
+        }
+
+        public string CornerBlockEndShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerBlockEndShape);
+            set => SetPropertyValue(PropertyNames.CornerBlockEndShape, value);
+        }
+
+        public string CornerBlockStart
+        {
+            get => GetPropertyValue(PropertyNames.CornerBlockStart);
+            set => SetPropertyValue(PropertyNames.CornerBlockStart, value);
+        }
+
+        public string CornerBlockStartShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerBlockStartShape);
+            set => SetPropertyValue(PropertyNames.CornerBlockStartShape, value);
+        }
+
+        public string CornerBottom
+        {
+            get => GetPropertyValue(PropertyNames.CornerBottom);
+            set => SetPropertyValue(PropertyNames.CornerBottom, value);
+        }
+
+        public string CornerBottomLeft
+        {
+            get => GetPropertyValue(PropertyNames.CornerBottomLeft);
+            set => SetPropertyValue(PropertyNames.CornerBottomLeft, value);
+        }
+
+        public string CornerBottomLeftShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerBottomLeftShape);
+            set => SetPropertyValue(PropertyNames.CornerBottomLeftShape, value);
+        }
+
+        public string CornerBottomRight
+        {
+            get => GetPropertyValue(PropertyNames.CornerBottomRight);
+            set => SetPropertyValue(PropertyNames.CornerBottomRight, value);
+        }
+
+        public string CornerBottomRightShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerBottomRightShape);
+            set => SetPropertyValue(PropertyNames.CornerBottomRightShape, value);
+        }
+
+        public string CornerBottomShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerBottomShape);
+            set => SetPropertyValue(PropertyNames.CornerBottomShape, value);
+        }
+
+        public string CornerEndEnd
+        {
+            get => GetPropertyValue(PropertyNames.CornerEndEnd);
+            set => SetPropertyValue(PropertyNames.CornerEndEnd, value);
+        }
+
+        public string CornerEndEndShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerEndEndShape);
+            set => SetPropertyValue(PropertyNames.CornerEndEndShape, value);
+        }
+
+        public string CornerEndStart
+        {
+            get => GetPropertyValue(PropertyNames.CornerEndStart);
+            set => SetPropertyValue(PropertyNames.CornerEndStart, value);
+        }
+
+        public string CornerEndStartShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerEndStartShape);
+            set => SetPropertyValue(PropertyNames.CornerEndStartShape, value);
+        }
+
+        public string CornerInlineEnd
+        {
+            get => GetPropertyValue(PropertyNames.CornerInlineEnd);
+            set => SetPropertyValue(PropertyNames.CornerInlineEnd, value);
+        }
+
+        public string CornerInlineEndShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerInlineEndShape);
+            set => SetPropertyValue(PropertyNames.CornerInlineEndShape, value);
+        }
+
+        public string CornerInlineStart
+        {
+            get => GetPropertyValue(PropertyNames.CornerInlineStart);
+            set => SetPropertyValue(PropertyNames.CornerInlineStart, value);
+        }
+
+        public string CornerInlineStartShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerInlineStartShape);
+            set => SetPropertyValue(PropertyNames.CornerInlineStartShape, value);
+        }
+
+        public string CornerLeft
+        {
+            get => GetPropertyValue(PropertyNames.CornerLeft);
+            set => SetPropertyValue(PropertyNames.CornerLeft, value);
+        }
+
+        public string CornerLeftShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerLeftShape);
+            set => SetPropertyValue(PropertyNames.CornerLeftShape, value);
+        }
+
+        public string CornerRight
+        {
+            get => GetPropertyValue(PropertyNames.CornerRight);
+            set => SetPropertyValue(PropertyNames.CornerRight, value);
+        }
+
+        public string CornerRightShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerRightShape);
+            set => SetPropertyValue(PropertyNames.CornerRightShape, value);
+        }
+
+        public string CornerShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerShape);
+            set => SetPropertyValue(PropertyNames.CornerShape, value);
+        }
+
+        public string CornerStartEnd
+        {
+            get => GetPropertyValue(PropertyNames.CornerStartEnd);
+            set => SetPropertyValue(PropertyNames.CornerStartEnd, value);
+        }
+
+        public string CornerStartEndShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerStartEndShape);
+            set => SetPropertyValue(PropertyNames.CornerStartEndShape, value);
+        }
+
+        public string CornerStartStart
+        {
+            get => GetPropertyValue(PropertyNames.CornerStartStart);
+            set => SetPropertyValue(PropertyNames.CornerStartStart, value);
+        }
+
+        public string CornerStartStartShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerStartStartShape);
+            set => SetPropertyValue(PropertyNames.CornerStartStartShape, value);
+        }
+
+        public string CornerTop
+        {
+            get => GetPropertyValue(PropertyNames.CornerTop);
+            set => SetPropertyValue(PropertyNames.CornerTop, value);
+        }
+
+        public string CornerTopLeft
+        {
+            get => GetPropertyValue(PropertyNames.CornerTopLeft);
+            set => SetPropertyValue(PropertyNames.CornerTopLeft, value);
+        }
+
+        public string CornerTopLeftShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerTopLeftShape);
+            set => SetPropertyValue(PropertyNames.CornerTopLeftShape, value);
+        }
+
+        public string CornerTopRight
+        {
+            get => GetPropertyValue(PropertyNames.CornerTopRight);
+            set => SetPropertyValue(PropertyNames.CornerTopRight, value);
+        }
+
+        public string CornerTopRightShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerTopRightShape);
+            set => SetPropertyValue(PropertyNames.CornerTopRightShape, value);
+        }
+
+        public string CornerTopShape
+        {
+            get => GetPropertyValue(PropertyNames.CornerTopShape);
+            set => SetPropertyValue(PropertyNames.CornerTopShape, value);
+        }
+
         public string CounterIncrement
         {
             get => GetPropertyValue(PropertyNames.CounterIncrement);
@@ -881,16 +1417,46 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.CounterReset, value);
         }
 
+        public string FloodColor
+        {
+            get => GetPropertyValue(PropertyNames.FloodColor);
+            set => SetPropertyValue(PropertyNames.FloodColor, value);
+        }
+
+        public string FloodOpacity
+        {
+            get => GetPropertyValue(PropertyNames.FloodOpacity);
+            set => SetPropertyValue(PropertyNames.FloodOpacity, value);
+        }
+
         public string Float
         {
             get => GetPropertyValue(PropertyNames.Float);
             set => SetPropertyValue(PropertyNames.Float, value);
         }
 
+        public string Cx
+        {
+            get => GetPropertyValue(PropertyNames.Cx);
+            set => SetPropertyValue(PropertyNames.Cx, value);
+        }
+
+        public string Cy
+        {
+            get => GetPropertyValue(PropertyNames.Cy);
+            set => SetPropertyValue(PropertyNames.Cy, value);
+        }
+
         public string Cursor
         {
             get => GetPropertyValue(PropertyNames.Cursor);
             set => SetPropertyValue(PropertyNames.Cursor, value);
+        }
+
+        public string D
+        {
+            get => GetPropertyValue(PropertyNames.D);
+            set => SetPropertyValue(PropertyNames.D, value);
         }
 
         public string Direction
@@ -989,6 +1555,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.FlexWrap, value);
         }
 
+        public string FloatReference
+        {
+            get => GetPropertyValue(PropertyNames.FloatReference);
+            set => SetPropertyValue(PropertyNames.FloatReference, value);
+        }
+
         public string Font
         {
             get => GetPropertyValue(PropertyNames.Font);
@@ -1005,6 +1577,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             get => GetPropertyValue(PropertyNames.FontFeatureSettings);
             set => SetPropertyValue(PropertyNames.FontFeatureSettings, value);
+        }
+
+        public string FontKerning
+        {
+            get => GetPropertyValue(PropertyNames.FontKerning);
+            set => SetPropertyValue(PropertyNames.FontKerning, value);
+        }
+
+        public string FontLanguageOverride
+        {
+            get => GetPropertyValue(PropertyNames.FontLanguageOverride);
+            set => SetPropertyValue(PropertyNames.FontLanguageOverride, value);
+        }
+
+        public string FontOpticalSizing
+        {
+            get => GetPropertyValue(PropertyNames.FontOpticalSizing);
+            set => SetPropertyValue(PropertyNames.FontOpticalSizing, value);
         }
 
         public string FontSize
@@ -1031,16 +1621,112 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.FontStyle, value);
         }
 
+        public string FontSynthesis
+        {
+            get => GetPropertyValue(PropertyNames.FontSynthesis);
+            set => SetPropertyValue(PropertyNames.FontSynthesis, value);
+        }
+
+        public string FontSynthesisPosition
+        {
+            get => GetPropertyValue(PropertyNames.FontSynthesisPosition);
+            set => SetPropertyValue(PropertyNames.FontSynthesisPosition, value);
+        }
+
+        public string FontSynthesisSmallCaps
+        {
+            get => GetPropertyValue(PropertyNames.FontSynthesisSmallCaps);
+            set => SetPropertyValue(PropertyNames.FontSynthesisSmallCaps, value);
+        }
+
+        public string FontSynthesisStyle
+        {
+            get => GetPropertyValue(PropertyNames.FontSynthesisStyle);
+            set => SetPropertyValue(PropertyNames.FontSynthesisStyle, value);
+        }
+
+        public string FontSynthesisWeight
+        {
+            get => GetPropertyValue(PropertyNames.FontSynthesisWeight);
+            set => SetPropertyValue(PropertyNames.FontSynthesisWeight, value);
+        }
+
         public string FontVariant
         {
             get => GetPropertyValue(PropertyNames.FontVariant);
             set => SetPropertyValue(PropertyNames.FontVariant, value);
         }
 
+        public string FontVariantAlternates
+        {
+            get => GetPropertyValue(PropertyNames.FontVariantAlternates);
+            set => SetPropertyValue(PropertyNames.FontVariantAlternates, value);
+        }
+
+        public string FontVariantCaps
+        {
+            get => GetPropertyValue(PropertyNames.FontVariantCaps);
+            set => SetPropertyValue(PropertyNames.FontVariantCaps, value);
+        }
+
+        public string FontVariantEastAsian
+        {
+            get => GetPropertyValue(PropertyNames.FontVariantEastAsian);
+            set => SetPropertyValue(PropertyNames.FontVariantEastAsian, value);
+        }
+
+        public string FontVariantEmoji
+        {
+            get => GetPropertyValue(PropertyNames.FontVariantEmoji);
+            set => SetPropertyValue(PropertyNames.FontVariantEmoji, value);
+        }
+
+        public string FontVariantLigatures
+        {
+            get => GetPropertyValue(PropertyNames.FontVariantLigatures);
+            set => SetPropertyValue(PropertyNames.FontVariantLigatures, value);
+        }
+
+        public string FontVariantNumeric
+        {
+            get => GetPropertyValue(PropertyNames.FontVariantNumeric);
+            set => SetPropertyValue(PropertyNames.FontVariantNumeric, value);
+        }
+
+        public string FontVariantPosition
+        {
+            get => GetPropertyValue(PropertyNames.FontVariantPosition);
+            set => SetPropertyValue(PropertyNames.FontVariantPosition, value);
+        }
+
+        public string FontVariationSettings
+        {
+            get => GetPropertyValue(PropertyNames.FontVariationSettings);
+            set => SetPropertyValue(PropertyNames.FontVariationSettings, value);
+        }
+
         public string FontWeight
         {
             get => GetPropertyValue(PropertyNames.FontWeight);
             set => SetPropertyValue(PropertyNames.FontWeight, value);
+        }
+
+        public string FootnoteDisplay
+        {
+            get => GetPropertyValue(PropertyNames.FootnoteDisplay);
+            set => SetPropertyValue(PropertyNames.FootnoteDisplay, value);
+        }
+
+        public string FootnotePolicy
+        {
+            get => GetPropertyValue(PropertyNames.FootnotePolicy);
+            set => SetPropertyValue(PropertyNames.FootnotePolicy, value);
+        }
+
+        public string ForcedColorAdjust
+        {
+            get => GetPropertyValue(PropertyNames.ForcedColorAdjust);
+            set => SetPropertyValue(PropertyNames.ForcedColorAdjust, value);
         }
 
         public string Gap
@@ -1067,10 +1753,88 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.Height, value);
         }
 
+        public string ImageRendering
+        {
+            get => GetPropertyValue(PropertyNames.ImageRendering);
+            set => SetPropertyValue(PropertyNames.ImageRendering, value);
+        }
+
+        public string ImageOrientation
+        {
+            get => GetPropertyValue(PropertyNames.ImageOrientation);
+            set => SetPropertyValue(PropertyNames.ImageOrientation, value);
+        }
+
+        public string ImageResolution
+        {
+            get => GetPropertyValue(PropertyNames.ImageResolution);
+            set => SetPropertyValue(PropertyNames.ImageResolution, value);
+        }
+
         public string ImeMode
         {
             get => GetPropertyValue(PropertyNames.ImeMode);
             set => SetPropertyValue(PropertyNames.ImeMode, value);
+        }
+
+        public string Interactivity
+        {
+            get => GetPropertyValue(PropertyNames.Interactivity);
+            set => SetPropertyValue(PropertyNames.Interactivity, value);
+        }
+
+        public string Isolation
+        {
+            get => GetPropertyValue(PropertyNames.Isolation);
+            set => SetPropertyValue(PropertyNames.Isolation, value);
+        }
+
+        public string Inset
+        {
+            get => GetPropertyValue(PropertyNames.Inset);
+            set => SetPropertyValue(PropertyNames.Inset, value);
+        }
+
+        public string InsetBlock
+        {
+            get => GetPropertyValue(PropertyNames.InsetBlock);
+            set => SetPropertyValue(PropertyNames.InsetBlock, value);
+        }
+
+        public string InsetBlockEnd
+        {
+            get => GetPropertyValue(PropertyNames.InsetBlockEnd);
+            set => SetPropertyValue(PropertyNames.InsetBlockEnd, value);
+        }
+
+        public string InsetBlockStart
+        {
+            get => GetPropertyValue(PropertyNames.InsetBlockStart);
+            set => SetPropertyValue(PropertyNames.InsetBlockStart, value);
+        }
+
+        public string InsetInline
+        {
+            get => GetPropertyValue(PropertyNames.InsetInline);
+            set => SetPropertyValue(PropertyNames.InsetInline, value);
+        }
+
+        public string InsetInlineEnd
+        {
+            get => GetPropertyValue(PropertyNames.InsetInlineEnd);
+            set => SetPropertyValue(PropertyNames.InsetInlineEnd, value);
+        }
+
+        public string InsetInlineStart
+        {
+            get => GetPropertyValue(PropertyNames.InsetInlineStart);
+            set => SetPropertyValue(PropertyNames.InsetInlineStart, value);
+        }
+
+        public string InlineSize
+        {
+            get => GetPropertyValue(PropertyNames.InlineSize);
+            set => SetPropertyValue(PropertyNames.InlineSize, value);
         }
 
         public string JustifyContent
@@ -1121,6 +1885,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.LetterSpacing, value);
         }
 
+        public string LineBreak
+        {
+            get => GetPropertyValue(PropertyNames.LineBreak);
+            set => SetPropertyValue(PropertyNames.LineBreak, value);
+        }
+
+        public string LightingColor
+        {
+            get => GetPropertyValue(PropertyNames.LightingColor);
+            set => SetPropertyValue(PropertyNames.LightingColor, value);
+        }
+
         public string LineHeight
         {
             get => GetPropertyValue(PropertyNames.LineHeight);
@@ -1157,10 +1933,46 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.Margin, value);
         }
 
+        public string MarginBlock
+        {
+            get => GetPropertyValue(PropertyNames.MarginBlock);
+            set => SetPropertyValue(PropertyNames.MarginBlock, value);
+        }
+
+        public string MarginBlockEnd
+        {
+            get => GetPropertyValue(PropertyNames.MarginBlockEnd);
+            set => SetPropertyValue(PropertyNames.MarginBlockEnd, value);
+        }
+
+        public string MarginBlockStart
+        {
+            get => GetPropertyValue(PropertyNames.MarginBlockStart);
+            set => SetPropertyValue(PropertyNames.MarginBlockStart, value);
+        }
+
         public string MarginBottom
         {
             get => GetPropertyValue(PropertyNames.MarginBottom);
             set => SetPropertyValue(PropertyNames.MarginBottom, value);
+        }
+
+        public string MarginInline
+        {
+            get => GetPropertyValue(PropertyNames.MarginInline);
+            set => SetPropertyValue(PropertyNames.MarginInline, value);
+        }
+
+        public string MarginInlineEnd
+        {
+            get => GetPropertyValue(PropertyNames.MarginInlineEnd);
+            set => SetPropertyValue(PropertyNames.MarginInlineEnd, value);
+        }
+
+        public string MarginInlineStart
+        {
+            get => GetPropertyValue(PropertyNames.MarginInlineStart);
+            set => SetPropertyValue(PropertyNames.MarginInlineStart, value);
         }
 
         public string MarginLeft
@@ -1211,6 +2023,72 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.Mask, value);
         }
 
+        public string MathDepth
+        {
+            get => GetPropertyValue(PropertyNames.MathDepth);
+            set => SetPropertyValue(PropertyNames.MathDepth, value);
+        }
+
+        public string MathShift
+        {
+            get => GetPropertyValue(PropertyNames.MathShift);
+            set => SetPropertyValue(PropertyNames.MathShift, value);
+        }
+
+        public string MathStyle
+        {
+            get => GetPropertyValue(PropertyNames.MathStyle);
+            set => SetPropertyValue(PropertyNames.MathStyle, value);
+        }
+
+        public string MaskClip
+        {
+            get => GetPropertyValue(PropertyNames.MaskClip);
+            set => SetPropertyValue(PropertyNames.MaskClip, value);
+        }
+
+        public string MaskComposite
+        {
+            get => GetPropertyValue(PropertyNames.MaskComposite);
+            set => SetPropertyValue(PropertyNames.MaskComposite, value);
+        }
+
+        public string MaskImage
+        {
+            get => GetPropertyValue(PropertyNames.MaskImage);
+            set => SetPropertyValue(PropertyNames.MaskImage, value);
+        }
+
+        public string MaskMode
+        {
+            get => GetPropertyValue(PropertyNames.MaskMode);
+            set => SetPropertyValue(PropertyNames.MaskMode, value);
+        }
+
+        public string MaskOrigin
+        {
+            get => GetPropertyValue(PropertyNames.MaskOrigin);
+            set => SetPropertyValue(PropertyNames.MaskOrigin, value);
+        }
+
+        public string MaskPosition
+        {
+            get => GetPropertyValue(PropertyNames.MaskPosition);
+            set => SetPropertyValue(PropertyNames.MaskPosition, value);
+        }
+
+        public string MaskRepeat
+        {
+            get => GetPropertyValue(PropertyNames.MaskRepeat);
+            set => SetPropertyValue(PropertyNames.MaskRepeat, value);
+        }
+
+        public string MaskSize
+        {
+            get => GetPropertyValue(PropertyNames.MaskSize);
+            set => SetPropertyValue(PropertyNames.MaskSize, value);
+        }
+
         public string MaxHeight
         {
             get => GetPropertyValue(PropertyNames.MaxHeight);
@@ -1233,6 +2111,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             get => GetPropertyValue(PropertyNames.MinWidth);
             set => SetPropertyValue(PropertyNames.MinWidth, value);
+        }
+
+        public string MixBlendMode
+        {
+            get => GetPropertyValue(PropertyNames.MixBlendMode);
+            set => SetPropertyValue(PropertyNames.MixBlendMode, value);
         }
 
         public string Opacity
@@ -1265,6 +2149,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.OutlineColor, value);
         }
 
+        public string OutlineOffset
+        {
+            get => GetPropertyValue(PropertyNames.OutlineOffset);
+            set => SetPropertyValue(PropertyNames.OutlineOffset, value);
+        }
+
         public string OutlineStyle
         {
             get => GetPropertyValue(PropertyNames.OutlineStyle);
@@ -1295,6 +2185,72 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.OverflowY, value);
         }
 
+        public string OverflowClipMargin
+        {
+            get => GetPropertyValue(PropertyNames.OverflowClipMargin);
+            set => SetPropertyValue(PropertyNames.OverflowClipMargin, value);
+        }
+
+        public string OverflowClipMarginTop
+        {
+            get => GetPropertyValue(PropertyNames.OverflowClipMarginTop);
+            set => SetPropertyValue(PropertyNames.OverflowClipMarginTop, value);
+        }
+
+        public string OverflowClipMarginRight
+        {
+            get => GetPropertyValue(PropertyNames.OverflowClipMarginRight);
+            set => SetPropertyValue(PropertyNames.OverflowClipMarginRight, value);
+        }
+
+        public string OverflowClipMarginBottom
+        {
+            get => GetPropertyValue(PropertyNames.OverflowClipMarginBottom);
+            set => SetPropertyValue(PropertyNames.OverflowClipMarginBottom, value);
+        }
+
+        public string OverflowClipMarginLeft
+        {
+            get => GetPropertyValue(PropertyNames.OverflowClipMarginLeft);
+            set => SetPropertyValue(PropertyNames.OverflowClipMarginLeft, value);
+        }
+
+        public string OverflowClipMarginBlock
+        {
+            get => GetPropertyValue(PropertyNames.OverflowClipMarginBlock);
+            set => SetPropertyValue(PropertyNames.OverflowClipMarginBlock, value);
+        }
+
+        public string OverflowClipMarginBlockStart
+        {
+            get => GetPropertyValue(PropertyNames.OverflowClipMarginBlockStart);
+            set => SetPropertyValue(PropertyNames.OverflowClipMarginBlockStart, value);
+        }
+
+        public string OverflowClipMarginBlockEnd
+        {
+            get => GetPropertyValue(PropertyNames.OverflowClipMarginBlockEnd);
+            set => SetPropertyValue(PropertyNames.OverflowClipMarginBlockEnd, value);
+        }
+
+        public string OverflowClipMarginInline
+        {
+            get => GetPropertyValue(PropertyNames.OverflowClipMarginInline);
+            set => SetPropertyValue(PropertyNames.OverflowClipMarginInline, value);
+        }
+
+        public string OverflowClipMarginInlineStart
+        {
+            get => GetPropertyValue(PropertyNames.OverflowClipMarginInlineStart);
+            set => SetPropertyValue(PropertyNames.OverflowClipMarginInlineStart, value);
+        }
+
+        public string OverflowClipMarginInlineEnd
+        {
+            get => GetPropertyValue(PropertyNames.OverflowClipMarginInlineEnd);
+            set => SetPropertyValue(PropertyNames.OverflowClipMarginInlineEnd, value);
+        }
+
         public string OverflowWrap
         {
             get => GetPropertyValue(PropertyNames.WordWrap);
@@ -1307,10 +2263,46 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.Padding, value);
         }
 
+        public string PaddingBlock
+        {
+            get => GetPropertyValue(PropertyNames.PaddingBlock);
+            set => SetPropertyValue(PropertyNames.PaddingBlock, value);
+        }
+
+        public string PaddingBlockEnd
+        {
+            get => GetPropertyValue(PropertyNames.PaddingBlockEnd);
+            set => SetPropertyValue(PropertyNames.PaddingBlockEnd, value);
+        }
+
+        public string PaddingBlockStart
+        {
+            get => GetPropertyValue(PropertyNames.PaddingBlockStart);
+            set => SetPropertyValue(PropertyNames.PaddingBlockStart, value);
+        }
+
         public string PaddingBottom
         {
             get => GetPropertyValue(PropertyNames.PaddingBottom);
             set => SetPropertyValue(PropertyNames.PaddingBottom, value);
+        }
+
+        public string PaddingInline
+        {
+            get => GetPropertyValue(PropertyNames.PaddingInline);
+            set => SetPropertyValue(PropertyNames.PaddingInline, value);
+        }
+
+        public string PaddingInlineEnd
+        {
+            get => GetPropertyValue(PropertyNames.PaddingInlineEnd);
+            set => SetPropertyValue(PropertyNames.PaddingInlineEnd, value);
+        }
+
+        public string PaddingInlineStart
+        {
+            get => GetPropertyValue(PropertyNames.PaddingInlineStart);
+            set => SetPropertyValue(PropertyNames.PaddingInlineStart, value);
         }
 
         public string PaddingLeft
@@ -1349,6 +2341,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.PageBreakInside, value);
         }
 
+        public string PaintOrder
+        {
+            get => GetPropertyValue(PropertyNames.PaintOrder);
+            set => SetPropertyValue(PropertyNames.PaintOrder, value);
+        }
+
         public string Perspective
         {
             get => GetPropertyValue(PropertyNames.Perspective);
@@ -1367,10 +2365,34 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.PointerEvents, value);
         }
 
+        public string PrintColorAdjust
+        {
+            get => GetPropertyValue(PropertyNames.PrintColorAdjust);
+            set => SetPropertyValue(PropertyNames.PrintColorAdjust, value);
+        }
+
         public string RowGap
         {
             get => GetPropertyValue(PropertyNames.RowGap);
             set => SetPropertyValue(PropertyNames.RowGap, value);
+        }
+
+        public string OverscrollBehavior
+        {
+            get => GetPropertyValue(PropertyNames.OverscrollBehavior);
+            set => SetPropertyValue(PropertyNames.OverscrollBehavior, value);
+        }
+
+        public string OverscrollBehaviorX
+        {
+            get => GetPropertyValue(PropertyNames.OverscrollBehaviorX);
+            set => SetPropertyValue(PropertyNames.OverscrollBehaviorX, value);
+        }
+
+        public string OverscrollBehaviorY
+        {
+            get => GetPropertyValue(PropertyNames.OverscrollBehaviorY);
+            set => SetPropertyValue(PropertyNames.OverscrollBehaviorY, value);
         }
 
         public string Quotes
@@ -1383,6 +2405,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             get => GetPropertyValue(PropertyNames.Position);
             set => SetPropertyValue(PropertyNames.Position, value);
+        }
+
+        public string R
+        {
+            get => GetPropertyValue(PropertyNames.R);
+            set => SetPropertyValue(PropertyNames.R, value);
+        }
+
+        public string Rx
+        {
+            get => GetPropertyValue(PropertyNames.Rx);
+            set => SetPropertyValue(PropertyNames.Rx, value);
+        }
+
+        public string Ry
+        {
+            get => GetPropertyValue(PropertyNames.Ry);
+            set => SetPropertyValue(PropertyNames.Ry, value);
         }
 
         public string Right
@@ -1407,6 +2447,108 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             get => GetPropertyValue(PropertyNames.RubyPosition);
             set => SetPropertyValue(PropertyNames.RubyPosition, value);
+        }
+
+        public string ScrollBehavior
+        {
+            get => GetPropertyValue(PropertyNames.ScrollBehavior);
+            set => SetPropertyValue(PropertyNames.ScrollBehavior, value);
+        }
+
+        public string ScrollMargin
+        {
+            get => GetPropertyValue(PropertyNames.ScrollMargin);
+            set => SetPropertyValue(PropertyNames.ScrollMargin, value);
+        }
+
+        public string ScrollMarginTop
+        {
+            get => GetPropertyValue(PropertyNames.ScrollMarginTop);
+            set => SetPropertyValue(PropertyNames.ScrollMarginTop, value);
+        }
+
+        public string ScrollMarginRight
+        {
+            get => GetPropertyValue(PropertyNames.ScrollMarginRight);
+            set => SetPropertyValue(PropertyNames.ScrollMarginRight, value);
+        }
+
+        public string ScrollMarginBottom
+        {
+            get => GetPropertyValue(PropertyNames.ScrollMarginBottom);
+            set => SetPropertyValue(PropertyNames.ScrollMarginBottom, value);
+        }
+
+        public string ScrollMarginLeft
+        {
+            get => GetPropertyValue(PropertyNames.ScrollMarginLeft);
+            set => SetPropertyValue(PropertyNames.ScrollMarginLeft, value);
+        }
+
+        public string ScrollPadding
+        {
+            get => GetPropertyValue(PropertyNames.ScrollPadding);
+            set => SetPropertyValue(PropertyNames.ScrollPadding, value);
+        }
+
+        public string ScrollPaddingTop
+        {
+            get => GetPropertyValue(PropertyNames.ScrollPaddingTop);
+            set => SetPropertyValue(PropertyNames.ScrollPaddingTop, value);
+        }
+
+        public string ScrollPaddingRight
+        {
+            get => GetPropertyValue(PropertyNames.ScrollPaddingRight);
+            set => SetPropertyValue(PropertyNames.ScrollPaddingRight, value);
+        }
+
+        public string ScrollPaddingBottom
+        {
+            get => GetPropertyValue(PropertyNames.ScrollPaddingBottom);
+            set => SetPropertyValue(PropertyNames.ScrollPaddingBottom, value);
+        }
+
+        public string ScrollPaddingLeft
+        {
+            get => GetPropertyValue(PropertyNames.ScrollPaddingLeft);
+            set => SetPropertyValue(PropertyNames.ScrollPaddingLeft, value);
+        }
+
+        public string ScrollSnapAlign
+        {
+            get => GetPropertyValue(PropertyNames.ScrollSnapAlign);
+            set => SetPropertyValue(PropertyNames.ScrollSnapAlign, value);
+        }
+
+        public string ScrollSnapStop
+        {
+            get => GetPropertyValue(PropertyNames.ScrollSnapStop);
+            set => SetPropertyValue(PropertyNames.ScrollSnapStop, value);
+        }
+
+        public string ScrollSnapType
+        {
+            get => GetPropertyValue(PropertyNames.ScrollSnapType);
+            set => SetPropertyValue(PropertyNames.ScrollSnapType, value);
+        }
+
+        public string ShapeImageThreshold
+        {
+            get => GetPropertyValue(PropertyNames.ShapeImageThreshold);
+            set => SetPropertyValue(PropertyNames.ShapeImageThreshold, value);
+        }
+
+        public string ShapeMargin
+        {
+            get => GetPropertyValue(PropertyNames.ShapeMargin);
+            set => SetPropertyValue(PropertyNames.ShapeMargin, value);
+        }
+
+        public string ShapeOutside
+        {
+            get => GetPropertyValue(PropertyNames.ShapeOutside);
+            set => SetPropertyValue(PropertyNames.ShapeOutside, value);
         }
 
         public string Scrollbar3DLightColor
@@ -1449,6 +2591,42 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             get => GetPropertyValue(PropertyNames.ScrollbarTrackColor);
             set => SetPropertyValue(PropertyNames.ScrollbarTrackColor, value);
+        }
+
+        public string ScrollbarColor
+        {
+            get => GetPropertyValue(PropertyNames.ScrollbarColor);
+            set => SetPropertyValue(PropertyNames.ScrollbarColor, value);
+        }
+
+        public string ScrollbarGutter
+        {
+            get => GetPropertyValue(PropertyNames.ScrollbarGutter);
+            set => SetPropertyValue(PropertyNames.ScrollbarGutter, value);
+        }
+
+        public string ScrollbarWidth
+        {
+            get => GetPropertyValue(PropertyNames.ScrollbarWidth);
+            set => SetPropertyValue(PropertyNames.ScrollbarWidth, value);
+        }
+
+        public string ShapeRendering
+        {
+            get => GetPropertyValue(PropertyNames.ShapeRendering);
+            set => SetPropertyValue(PropertyNames.ShapeRendering, value);
+        }
+
+        public string StopColor
+        {
+            get => GetPropertyValue(PropertyNames.StopColor);
+            set => SetPropertyValue(PropertyNames.StopColor, value);
+        }
+
+        public string StopOpacity
+        {
+            get => GetPropertyValue(PropertyNames.StopOpacity);
+            set => SetPropertyValue(PropertyNames.StopOpacity, value);
         }
 
         public string Stroke
@@ -1511,6 +2689,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.TextAlign, value);
         }
 
+        public string TextAlignAll
+        {
+            get => GetPropertyValue(PropertyNames.TextAlignAll);
+            set => SetPropertyValue(PropertyNames.TextAlignAll, value);
+        }
+
         public string TextAlignLast
         {
             get => GetPropertyValue(PropertyNames.TextAlignLast);
@@ -1529,10 +2713,64 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.TextAutospace, value);
         }
 
+        public string TextCombineUpright
+        {
+            get => GetPropertyValue(PropertyNames.TextCombineUpright);
+            set => SetPropertyValue(PropertyNames.TextCombineUpright, value);
+        }
+
         public string TextDecoration
         {
             get => GetPropertyValue(PropertyNames.TextDecoration);
             set => SetPropertyValue(PropertyNames.TextDecoration, value);
+        }
+
+        public string TextDecorationInset
+        {
+            get => GetPropertyValue(PropertyNames.TextDecorationInset);
+            set => SetPropertyValue(PropertyNames.TextDecorationInset, value);
+        }
+
+        public string TextDecorationSkip
+        {
+            get => GetPropertyValue(PropertyNames.TextDecorationSkip);
+            set => SetPropertyValue(PropertyNames.TextDecorationSkip, value);
+        }
+
+        public string TextDecorationSkipInk
+        {
+            get => GetPropertyValue(PropertyNames.TextDecorationSkipInk);
+            set => SetPropertyValue(PropertyNames.TextDecorationSkipInk, value);
+        }
+
+        public string TextDecorationThickness
+        {
+            get => GetPropertyValue(PropertyNames.TextDecorationThickness);
+            set => SetPropertyValue(PropertyNames.TextDecorationThickness, value);
+        }
+
+        public string TextEmphasis
+        {
+            get => GetPropertyValue(PropertyNames.TextEmphasis);
+            set => SetPropertyValue(PropertyNames.TextEmphasis, value);
+        }
+
+        public string TextEmphasisColor
+        {
+            get => GetPropertyValue(PropertyNames.TextEmphasisColor);
+            set => SetPropertyValue(PropertyNames.TextEmphasisColor, value);
+        }
+
+        public string TextEmphasisPosition
+        {
+            get => GetPropertyValue(PropertyNames.TextEmphasisPosition);
+            set => SetPropertyValue(PropertyNames.TextEmphasisPosition, value);
+        }
+
+        public string TextEmphasisStyle
+        {
+            get => GetPropertyValue(PropertyNames.TextEmphasisStyle);
+            set => SetPropertyValue(PropertyNames.TextEmphasisStyle, value);
         }
 
         public string TextIndent
@@ -1547,10 +2785,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.TextJustify, value);
         }
 
+        public string TextOrientation
+        {
+            get => GetPropertyValue(PropertyNames.TextOrientation);
+            set => SetPropertyValue(PropertyNames.TextOrientation, value);
+        }
+
         public string TextOverflow
         {
             get => GetPropertyValue(PropertyNames.TextOverflow);
             set => SetPropertyValue(PropertyNames.TextOverflow, value);
+        }
+
+        public string TextRendering
+        {
+            get => GetPropertyValue(PropertyNames.TextRendering);
+            set => SetPropertyValue(PropertyNames.TextRendering, value);
         }
 
         public string TextShadow
@@ -1565,6 +2815,30 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.TextTransform, value);
         }
 
+        public string TextWrap
+        {
+            get => GetPropertyValue(PropertyNames.TextWrap);
+            set => SetPropertyValue(PropertyNames.TextWrap, value);
+        }
+
+        public string TextWrapMode
+        {
+            get => GetPropertyValue(PropertyNames.TextWrapMode);
+            set => SetPropertyValue(PropertyNames.TextWrapMode, value);
+        }
+
+        public string TextWrapStyle
+        {
+            get => GetPropertyValue(PropertyNames.TextWrapStyle);
+            set => SetPropertyValue(PropertyNames.TextWrapStyle, value);
+        }
+
+        public string TextUnderlineOffset
+        {
+            get => GetPropertyValue(PropertyNames.TextUnderlineOffset);
+            set => SetPropertyValue(PropertyNames.TextUnderlineOffset, value);
+        }
+
         public string TextUnderlinePosition
         {
             get => GetPropertyValue(PropertyNames.TextUnderlinePosition);
@@ -1577,10 +2851,22 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.Top, value);
         }
 
+        public string TouchAction
+        {
+            get => GetPropertyValue(PropertyNames.TouchAction);
+            set => SetPropertyValue(PropertyNames.TouchAction, value);
+        }
+
         public string Transform
         {
             get => GetPropertyValue(PropertyNames.Transform);
             set => SetPropertyValue(PropertyNames.Transform, value);
+        }
+
+        public string TransformBox
+        {
+            get => GetPropertyValue(PropertyNames.TransformBox);
+            set => SetPropertyValue(PropertyNames.TransformBox, value);
         }
 
         public string TransformOrigin
@@ -1593,6 +2879,24 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             get => GetPropertyValue(PropertyNames.TransformStyle);
             set => SetPropertyValue(PropertyNames.TransformStyle, value);
+        }
+
+        public string Translate
+        {
+            get => GetPropertyValue(PropertyNames.Translate);
+            set => SetPropertyValue(PropertyNames.Translate, value);
+        }
+
+        public string Rotate
+        {
+            get => GetPropertyValue(PropertyNames.Rotate);
+            set => SetPropertyValue(PropertyNames.Rotate, value);
+        }
+
+        public string Scale
+        {
+            get => GetPropertyValue(PropertyNames.Scale);
+            set => SetPropertyValue(PropertyNames.Scale, value);
         }
 
         public string Transition
@@ -1631,6 +2935,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.UnicodeBidirectional, value);
         }
 
+        public string UserSelect
+        {
+            get => GetPropertyValue(PropertyNames.UserSelect);
+            set => SetPropertyValue(PropertyNames.UserSelect, value);
+        }
+
+        public string VectorEffect
+        {
+            get => GetPropertyValue(PropertyNames.VectorEffect);
+            set => SetPropertyValue(PropertyNames.VectorEffect, value);
+        }
+
         public string VerticalAlign
         {
             get => GetPropertyValue(PropertyNames.VerticalAlign);
@@ -1647,6 +2963,12 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             get => GetPropertyValue(PropertyNames.WhiteSpace);
             set => SetPropertyValue(PropertyNames.WhiteSpace, value);
+        }
+
+        public string WhiteSpaceCollapse
+        {
+            get => GetPropertyValue(PropertyNames.WhiteSpaceCollapse);
+            set => SetPropertyValue(PropertyNames.WhiteSpaceCollapse, value);
         }
 
         public string Widows
@@ -1679,6 +3001,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
             set => SetPropertyValue(PropertyNames.WritingMode, value);
         }
 
+        public string X
+        {
+            get => GetPropertyValue(PropertyNames.X);
+            set => SetPropertyValue(PropertyNames.X, value);
+        }
+
+        public string Y
+        {
+            get => GetPropertyValue(PropertyNames.Y);
+            set => SetPropertyValue(PropertyNames.Y, value);
+        }
+
         public string ZIndex
         {
             get => GetPropertyValue(PropertyNames.ZIndex);
@@ -1695,6 +3029,48 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         {
             get => GetPropertyValue(PropertyNames.Size);
             set => SetPropertyValue(PropertyNames.Size, value);
+        }
+
+        public string Bleed
+        {
+            get => GetPropertyValue(PropertyNames.Bleed);
+            set => SetPropertyValue(PropertyNames.Bleed, value);
+        }
+
+        public string Marks
+        {
+            get => GetPropertyValue(PropertyNames.Marks);
+            set => SetPropertyValue(PropertyNames.Marks, value);
+        }
+
+        public string BookmarkLabel
+        {
+            get => GetPropertyValue(PropertyNames.BookmarkLabel);
+            set => SetPropertyValue(PropertyNames.BookmarkLabel, value);
+        }
+
+        public string BookmarkLevel
+        {
+            get => GetPropertyValue(PropertyNames.BookmarkLevel);
+            set => SetPropertyValue(PropertyNames.BookmarkLevel, value);
+        }
+
+        public string BookmarkState
+        {
+            get => GetPropertyValue(PropertyNames.BookmarkState);
+            set => SetPropertyValue(PropertyNames.BookmarkState, value);
+        }
+
+        public string BookmarkTarget
+        {
+            get => GetPropertyValue(PropertyNames.BookmarkTarget);
+            set => SetPropertyValue(PropertyNames.BookmarkTarget, value);
+        }
+
+        public string CounterSet
+        {
+            get => GetPropertyValue(PropertyNames.CounterSet);
+            set => SetPropertyValue(PropertyNames.CounterSet, value);
         }
 
         public string PageName

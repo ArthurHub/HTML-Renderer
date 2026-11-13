@@ -6,8 +6,8 @@ using static HtmlRenderer.Test.CssEngineSupport.CssConstructionFunctions;
 namespace HtmlRenderer.Test.Css;
 
 /// <summary>
-/// The flow-relative properties expand to the physical longhands at parse time, so serialization must
-/// not fold physical longhands back into a flow-relative shorthand.
+/// The flow-relative properties are longhands of their own, serialization must not fold physical longhands
+/// into a flow-relative shorthand.
 /// </summary>
 [TestClass]
 public sealed class LogicalPropertySerializationTests
@@ -24,16 +24,15 @@ public sealed class LogicalPropertySerializationTests
     }
 
     [TestMethod]
-    public void LogicalShorthand_ParsesAndExpandsToPhysicalLonghands()
+    public void LogicalShorthand_ExpandsToFlowRelativeLonghands()
     {
         var sheet = ParseStyleSheet("div { margin-block: 3pt 4pt; }");
         var style = (StyleDeclaration)sheet.Rules.OfType<StyleRule>().Single().Style;
 
-        Assert.AreEqual("3pt", style.GetPropertyValue("margin-top"));
-        Assert.AreEqual("4pt", style.GetPropertyValue("margin-bottom"));
-        Assert.AreEqual(string.Empty, style.GetPropertyValue("margin-block-start"));
-        Assert.AreEqual(string.Empty, style.GetPropertyValue("margin-block-end"));
-        Assert.IsFalse(sheet.ToCss().Contains("margin-block:"));
+        Assert.AreEqual("3pt", style.GetPropertyValue("margin-block-start"));
+        Assert.AreEqual("4pt", style.GetPropertyValue("margin-block-end"));
+        Assert.AreEqual(string.Empty, style.GetPropertyValue("margin-top"));
+        Assert.AreEqual(string.Empty, style.GetPropertyValue("margin-bottom"));
     }
 
     [TestMethod]

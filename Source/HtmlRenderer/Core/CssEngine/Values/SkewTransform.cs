@@ -12,8 +12,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
 
         public TransformMatrix ComputeMatrix()
         {
-            var a = (float)Math.Tan(Alpha);
-            var b = (float)Math.Tan(Beta);
+            var a = (float) Math.Tan(Alpha);
+            var b = (float) Math.Tan(Beta);
             return new TransformMatrix(1f, a, 0f, b, 1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 0f, 0f);
         }
 

@@ -31,9 +31,7 @@ sections:
     status: supported
   '#strings':
     title: '4.4 Quoted Strings: the <string> type'
-    status: partial
-    gaps:
-      - A backslash followed by a newline is kept, see CSS 2.1 4.3.7
+    status: supported
   '#urls':
     title: '4.5 Resource Locators: the <url> type'
     status: partial
@@ -74,9 +72,7 @@ sections:
     status: n/a
   '#numbers':
     title: '5.3 Real Numbers: the <number> type'
-    status: partial
-    gaps:
-      - Numbers with an exponent (1e1px) aren't accepted, the declaration is dropped
+    status: supported
   '#combine-numbers':
     title: 5.3.1 Computation and Combination of <number>
     status: n/a
@@ -144,7 +140,7 @@ sections:
     title: '6.2 Absolute Lengths: the cm, mm, Q, in, pt, pc, px units'
     status: partial
     gaps:
-      - Q isn't supported, the declaration is dropped
+      - Q is only resolved inside calc()
   '#other-units':
     title: 7 Other Quantities
     status: partial
@@ -170,7 +166,6 @@ sections:
     status: partial
     gaps:
       - "'background-position' only resolves keywords, see CSS 2.1 14.2.1"
-      - "Four value forms that start with 'top' or 'bottom' are rejected, see css-backgrounds-3 #background-position"
   '#position-parsing':
     title: 8.3.1 Parsing <position>
     status: parsed-only
@@ -193,7 +188,6 @@ sections:
     title: '10.2 Comparison Functions: min(), max(), and clamp()'
     status: partial
     gaps:
-      - clamp() with a minimum above the maximum resolves to the maximum instead of the minimum
       - none isn't accepted as a clamp() bound
   '#round-func':
     title: '10.3 Stepped Value Functions: round(), mod(), and rem()'
@@ -232,12 +226,11 @@ sections:
     title: 10.8 Syntax
     status: partial
     gaps:
-      - calc() only takes em, rem, ex, px, cm, mm, in, pt and pc lengths, any other unit makes it invalid
+      - Units other than em, rem, ex, px, percentages and the absolute lengths resolve to 0, e.g. ch, vh or vmin
   '#calc-type-checking':
     title: 10.9 Type Checking
     status: partial
     gaps:
-      - A number calc() isn't accepted where an <integer> is expected, e.g. in counter-reset
       - A product or quotient of two dimensions makes the calc() invalid even when the result has a valid type
   '#calc-ieee':
     title: 10.9.1 Infinities, NaN, and Signed Zero

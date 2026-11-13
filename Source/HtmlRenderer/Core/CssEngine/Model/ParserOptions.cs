@@ -9,5 +9,10 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public bool AllowInvalidConstraints { get; set; }
         public bool PreserveComments { get; set; }
         public bool PreserveDuplicateProperties { get; set; }
+        /// <summary>
+        ///     Accept vendor-prefixed aliases of standard rules and properties (for example
+        ///     <c>@-webkit-keyframes</c> as <c>@keyframes</c>). Off by default.
+        /// </summary>
+        public bool EnableVendorPrefixAliases { get; set; }
     }
 }

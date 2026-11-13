@@ -68,7 +68,7 @@ public sealed class TokenizationTests
 
         var urlToken = tokenizer.Get();
         Assert.AreEqual(TokenType.Url, urlToken.Type);
-        Assert.IsTrue(((UrlToken)urlToken).IsValid, "UrlToken.IsValid holds whether the url is bad");
+        Assert.IsFalse(((UrlToken)urlToken).IsValid);
 
         Assert.AreEqual(TokenType.Whitespace, tokenizer.Get().Type);
 

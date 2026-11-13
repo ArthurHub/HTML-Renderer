@@ -5,6 +5,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         None,
         Left,
         Right,
-        Both
+        Both,
+        InlineStart,
+        InlineEnd
     }
 }

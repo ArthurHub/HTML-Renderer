@@ -55,9 +55,7 @@ sections:
       - or, not in front of a feature and nested parentheses are invalid, only and is supported
   '#mq-syntax':
     title: 3 Syntax
-    status: partial
-    gaps:
-      - Uppercase units, e.g. 800PX, aren't recognized
+    status: supported
   '#evaluating':
     title: 3.1 Evaluating Media Queries
     status: supported

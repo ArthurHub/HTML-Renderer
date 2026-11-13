@@ -23,14 +23,27 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string RadialGradient = "radial-gradient";
         public static readonly string RepeatingLinearGradient = "repeating-linear-gradient";
         public static readonly string RepeatingRadialGradient = "repeating-radial-gradient";
+        public static readonly string ConicGradient = "conic-gradient";
+        public static readonly string RepeatingConicGradient = "repeating-conic-gradient";
         public static readonly string Image = "image";
+        public static readonly string ImageSet = "image-set";
+        public static readonly string CrossFade = "cross-fade";
+        public static readonly string Element = "element";
         public static readonly string Counter = "counter";
         public static readonly string Counters = "counters";
         public static readonly string Content = "content";
+        public static readonly string StringFn = "string";
+        public static readonly string TargetCounter = "target-counter";
+        public static readonly string TargetCounters = "target-counters";
+        public static readonly string TargetText = "target-text";
+        public static readonly string Leader = "leader";
+        public static readonly string Running = "running";
         public static readonly string Calc = "calc";
+        public static readonly string Style = "style";
         public static readonly string Min = "min";
         public static readonly string Max = "max";
         public static readonly string Clamp = "clamp";
+        public static readonly string Var = "var";
         public static readonly string Toggle = "toggle";
         public static readonly string Translate = "translate";
         public static readonly string TranslateX = "translateX";
@@ -54,6 +67,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string ScaleZ = "scaleZ";
         public static readonly string Steps = "steps";
         public static readonly string CubicBezier = "cubic-bezier";
+        public static readonly string Linear = "linear";
         public static readonly string Perspective = "perspective";
         public static readonly string Gray = "gray";
         public static readonly string Hwb = "hwb";
@@ -62,11 +76,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
         public static readonly string Lch = "lch";
         public static readonly string Oklch = "oklch";
         public static readonly string ColorMix = "color-mix";
-        public static readonly string ConicGradient = "conic-gradient";
-        public static readonly string RepeatingConicGradient = "repeating-conic-gradient";
-        public static readonly string Var = "var";
-        public static readonly string ImageSet = "image-set";
-        public static readonly string CrossFade = "cross-fade";
-        public static readonly string Element = "element";
+        public static readonly string ColorFunction = "color";
+        public static readonly string LightDark = "light-dark";
+        public static readonly string DeviceCmyk = "device-cmyk";
     }
 }
