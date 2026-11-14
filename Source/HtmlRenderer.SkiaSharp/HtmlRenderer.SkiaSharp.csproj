@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <OutputType>Library</OutputType>
+    <RootNamespace>TheArtOfDev.HtmlRenderer.SkiaSharp</RootNamespace>
+  </PropertyGroup>
+  <!-- NuGet Package Properties -->
+  <PropertyGroup>
+    <PackageId>HtmlRenderer.SkiaSharp</PackageId>
+    <Title>HTML Renderer for SkiaSharp</Title>
+    <PackageTags>html render renderer draw skia skiasharp image pdf</PackageTags>
+    <Description>HTML and CSS rendering onto a SkiaSharp canvas, into images and into PDF documents, 100% managed (C#) layout on top of SkiaSharp, on Windows, Linux and macOS.
+
+Features and Benefits:
+---
+* 100% managed layout, depends only on SkiaSharp and HarfBuzzSharp, no browser engine.
+* HTML5 parsing and a modern CSS engine.
+* Renders onto any SKCanvas, into an SKImage of a given or measured size, or into a paginated PDF.
+* Text shaping with HarfBuzz and font fallback for scripts the chosen font lacks.
+* Support separating CSS from HTML by loading stylesheet code separately.
+* Handles "real world" malformed HTML, it doesn't have to be XHTML.
+* Extendable and configurable.</Description>
+    <Summary>HTML and CSS rendering onto a SkiaSharp canvas, into images and into PDF documents, 100% managed (C#) layout on top of SkiaSharp.</Summary>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HtmlRenderer\HtmlRenderer.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="HtmlRenderer.SkiaSharp.Test" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="4.156.0" />
+    <PackageReference Include="SkiaSharp.HarfBuzz" Version="4.156.0" />
+  </ItemGroup>
+</Project>
