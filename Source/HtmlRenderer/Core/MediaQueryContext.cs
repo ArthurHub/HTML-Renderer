@@ -43,10 +43,22 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// <param name="viewportHeight">viewport height in CSS pixels, or 0 when not yet known</param>
         internal static MediaQueryContext FromAdapter(RAdapter adapter, double viewportWidth, double viewportHeight)
         {
-            if (adapter == null) return TypeOnly("all");
+            return FromAdapter(adapter, null, viewportWidth, viewportHeight);
+        }
+
+        /// <summary>
+        /// Builds the context from the adapter's characteristics and the container's viewport.
+        /// </summary>
+        /// <param name="adapter">supplies the colour scheme, and the media type unless one is given</param>
+        /// <param name="mediaType">the container's media type, or null for the adapter's</param>
+        /// <param name="viewportWidth">viewport width in CSS pixels, or 0 when not yet known</param>
+        /// <param name="viewportHeight">viewport height in CSS pixels, or 0 when not yet known</param>
+        internal static MediaQueryContext FromAdapter(RAdapter adapter, string mediaType, double viewportWidth, double viewportHeight)
+        {
+            if (adapter == null) return TypeOnly(mediaType ?? "all");
 
             return new MediaQueryContext(
-                adapter.DefaultMediaType,
+                mediaType ?? adapter.DefaultMediaType,
                 viewportWidth > 0 ? viewportWidth : (double?)null,
                 viewportHeight > 0 ? viewportHeight : (double?)null,
                 96d,

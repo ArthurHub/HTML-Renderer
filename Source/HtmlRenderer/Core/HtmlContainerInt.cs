@@ -443,6 +443,15 @@ namespace TheArtOfDev.HtmlRenderer.Core
             get { return _hasFloatedBoxes; }
         }
 
+        /// <summary>
+        /// The CSS media type <c>@media</c> rules are evaluated against (CSS 2.1 §7.3), or null for the
+        /// adapter's <see cref="RAdapter.DefaultMediaType"/>. Takes effect on the next <see cref="SetHtml"/>.
+        /// </summary>
+        /// <remarks>
+        /// For an adapter that renders to screen and to paper, e.g. SkiaSharp's images and PDFs.
+        /// </remarks>
+        public string MediaType { get; set; }
+
         public RSize PageSize { get; set; }
 
         /// <summary>
@@ -608,7 +617,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
 
                 DomParser parser = new DomParser(_cssParser);
                 (_root, _cssData) = await parser.GenerateCssTree(htmlSource, this, _cssData).ConfigureAwait(false);
-                _cascadeMedia = MediaQueryContext.FromAdapter(_adapter, _maxSize.Width, _maxSize.Height);
+                _cascadeMedia = MediaQueryContext.FromAdapter(_adapter, MediaType, _maxSize.Width, _maxSize.Height);
                 if (_root != null)
                 {
                     _selectionHandler = new SelectionHandler(_root);
@@ -624,7 +633,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             if (_root == null || string.IsNullOrEmpty(_htmlSource) || _cssData == null) return;
 
-            var media = MediaQueryContext.FromAdapter(_adapter, _maxSize.Width, _maxSize.Height);
+            var media = MediaQueryContext.FromAdapter(_adapter, MediaType, _maxSize.Width, _maxSize.Height);
             if (!_cssData.MediaOutcomeChanged(_cascadeMedia, media)) return;
 
             // PerformLayout is synchronous, so this blocks on the async SetHtml
