@@ -331,12 +331,12 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
         public override void DrawPath(RPen pen, RGraphicsPath path)
         {
             var penAdapter = (PenAdapter)pen;
-            _g.DrawGeometry(((GraphicsPathAdapter)path).GetClosedGeometry(), penAdapter.Brush, (float)pen.Width, penAdapter.StrokeStyle);
+            _g.DrawGeometry(((GraphicsPathAdapter)path).GetGeometry(), penAdapter.Brush, (float)pen.Width, penAdapter.StrokeStyle);
         }
 
         public override void DrawPath(RBrush brush, RGraphicsPath path)
         {
-            _g.FillGeometry(((GraphicsPathAdapter)path).GetClosedGeometry(), ((BrushAdapter)brush).Brush);
+            _g.FillGeometry(((GraphicsPathAdapter)path).GetGeometry(), ((BrushAdapter)brush).Brush);
         }
 
         public override void DrawPolygon(RBrush brush, RPoint[] points)
