@@ -28,7 +28,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
         private readonly CanvasPathBuilder _pathBuilder;
 
         /// <summary>
-        /// The closed geometry, built lazily on first <see cref="GetClosedGeometry"/> call.
+        /// The geometry, built lazily on first <see cref="GetGeometry"/> call.
         /// </summary>
         private CanvasGeometry _geometry;
 
@@ -59,15 +59,19 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
         }
 
         /// <summary>
-        /// Close the geometry so no more path adding is allowed and return the instance so it can be rendered.
+        /// End the figure so no more path adding is allowed and return the geometry so it can be rendered.
         /// </summary>
-        public CanvasGeometry GetClosedGeometry()
+        /// <remarks>
+        /// The core strokes the rounded border sides as open paths, a closed figure would add a chord through the box.
+        /// Direct2D fills an open figure as if it were closed.
+        /// </remarks>
+        public CanvasGeometry GetGeometry()
         {
             if (_geometry == null)
             {
                 if (_figureOpen)
                 {
-                    _pathBuilder.EndFigure(CanvasFigureLoop.Closed);
+                    _pathBuilder.EndFigure(CanvasFigureLoop.Open);
                     _figureOpen = false;
                 }
                 _geometry = CanvasGeometry.CreatePath(_pathBuilder);
