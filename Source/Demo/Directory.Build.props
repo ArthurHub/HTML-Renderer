@@ -2,5 +2,8 @@
   <PropertyGroup>
     <Authors>Arthur Teplitzki</Authors>
     <Version>1.5.1</Version>
+    <!-- The test projects reference Demo.Common and are strong-named to see the internals -->
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)../HtmlRenderer.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 </Project>
