@@ -50,7 +50,7 @@ sections:
     title: 5.1 Intrinsic Sizes
     status: partial
     gaps:
-      - Floats and inline-blocks aren't sized to their content as specified, see css-sizing-3 5.1
+      - Inline-blocks aren't sized to their content as specified, see css-sizing-3 5.1
   '#intrinsic-size-override':
     title: '5.2 Overriding Contained Intrinsic Sizes: the contain-intrinsic-* properties'
     status: parsed-only
