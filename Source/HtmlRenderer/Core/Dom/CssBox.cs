@@ -811,6 +811,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                         // Shrink-to-fit, CSS 2.1 §10.3.5 and §10.3.7. GetMinMaxWidth already includes the
                         // padding and border.
                         double minWidth, maxWidth;
+                        MeasureDescendantWords(g);
                         GetMinMaxWidth(out minWidth, out maxWidth);
                         width = Math.Min(Math.Max(minWidth, width), maxWidth);
                     }
@@ -1108,6 +1109,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
                 }
 
                 _wordsSizeMeasured = true;
+            }
+        }
+
+        /// <summary>
+        /// Measures the words of all descendants, <see cref="GetMinMaxWidth"/> needs them before the descendants'
+        /// own layout gets to it.
+        /// </summary>
+        internal void MeasureDescendantWords(RGraphics g)
+        {
+            foreach (var childBox in Boxes)
+            {
+                childBox.MeasureWordsSize(g);
+                childBox.MeasureDescendantWords(g);
             }
         }
 

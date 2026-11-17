@@ -195,7 +195,6 @@ public sealed class WidthIntegrationTests
         Assert.AreEqual(50, f.Size.Width, Delta);
     }
 
-    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#float-width")]
     [Spec("css-sizing-3", "#intrinsic-sizes")]
@@ -255,7 +254,6 @@ public sealed class WidthIntegrationTests
         Assert.AreEqual(160, a.Size.Width, Delta);
     }
 
-    [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#abs-non-replaced-width")]
     [Spec("css-position-3", "#abs-non-replaced-width")]

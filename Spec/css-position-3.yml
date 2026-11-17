@@ -81,7 +81,6 @@ sections:
     status: partial
     gaps:
       - With both insets set, an auto size is its content size instead of the stretch-fit size
-      - The fit-content width is computed before the content is measured, see CSS 2.1 10.3.7
   '#abspos-margins':
     title: 4.2 Auto Margins of Absolutely-Positioned Boxes
     status: partial
