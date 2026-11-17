@@ -17,6 +17,15 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <LangVersion>12.0</LangVersion>
   </PropertyGroup>
+  <!-- A strong-named .NET Framework assembly can only reference strong-named assemblies. The key isn't a secret,
+       strong names aren't a security feature. Keep AssemblyVersion at 2.0.0.0 for all of 2.x, any change of it
+       breaks the binding of strong-named references on .NET Framework. -->
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)HtmlRenderer.snk</AssemblyOriginatorKeyFile>
+    <!-- Used for every InternalsVisibleTo without a Key -->
+    <PublicKey>0024000004800000940000000602000000240000525341310004000001000100698df7331e77920ebd0272d731f2dca43c6c7dfb4e43b0f7a0ec0904072d8c260c2c5f538152d8c0ce3694c68f9c334cc475179ce58539e6cf405ce0c1ab38a265d08f9c12ecb9af87d6aa3841aca9c3cef19021d79a2ca33537df2e94042efce57b27deaa1dcea3f9da856b77f88b8f8c1e2bfa03094c624cd7adf49596d3a4</PublicKey>
+  </PropertyGroup>
   <ItemGroup Condition="'$(IsTestProject)' != 'true'">
     <None Include="../../html.png" Pack="true" PackagePath="\"/>
   </ItemGroup>
