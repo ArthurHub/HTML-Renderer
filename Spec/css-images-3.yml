@@ -56,6 +56,7 @@ sections:
     status: partial
     gaps:
       - repeating-radial-gradient() isn't painted, see 3.2
+      - A repeating gradient whose first and last color stops share a position repeats a hard edge instead of painting the average color
   '#gradient-colors':
     title: 3.4 Defining Gradient Color
     status: partial
@@ -64,6 +65,7 @@ sections:
     status: partial
     gaps:
       - em positions are resolved against 16px instead of the element's font size
+      - A transition hint before the first or after the last color stop is ignored instead of making the gradient invalid
   '#coloring-gradient-line':
     title: 3.4.2 Coloring the Gradient Line
     status: partial
