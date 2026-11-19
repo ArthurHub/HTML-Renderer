@@ -29,6 +29,30 @@ public sealed class OutlineStylePaintIntegrationTests
         Assert.AreEqual(2, rects.Count(r => System.Math.Abs(r.Width - 5) < 0.1));
     }
 
+    [TestMethod]
+    [Spec("css21", "ui.html#dynamic-outlines")]
+    [Spec("css-ui-3", "#outline")]
+    [Spec("css-ui-4", "#outline")]
+    public void SolidOutline_RingStartsJustOutsideTheBorderEdge()
+    {
+        // Border box 104x54 at the origin
+        var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
+            "<div id='b' style='width:100px;height:50px;border:2px solid black;outline:5px solid rgb(51,51,51)'></div>"));
+
+        var g = PaintHarness.PaintBox(container, PaintHarness.FindById(root, "b")!);
+        var bands = g.Log.OfType<RecordingGraphics.DrawRectCall>().Where(r => r.Color == RColor.FromArgb(51, 51, 51)).ToList();
+
+        // Top and bottom bands span the corners, the side bands fill in between
+        var color = RColor.FromArgb(51, 51, 51);
+        CollectionAssert.AreEquivalent(new[]
+        {
+            new RecordingGraphics.DrawRectCall(color, -5, -5, 114, 5),
+            new RecordingGraphics.DrawRectCall(color, -5, 54, 114, 5),
+            new RecordingGraphics.DrawRectCall(color, -5, 0, 5, 54),
+            new RecordingGraphics.DrawRectCall(color, 104, 0, 5, 54),
+        }, bands);
+    }
+
     [Ignore("Gap, see Spec/css-ui-3.yml")]
     [TestMethod]
     [Spec("css-ui-3", "#outline-style")]
