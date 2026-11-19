@@ -122,3 +122,65 @@ internal class RecordingGraphics : RGraphics
 
     public override void Dispose() { }
 }
+
+internal sealed record Arc(RPoint End, double RadiusX, double RadiusY, RGraphicsPath.Corner Corner);
+
+/// <summary>A path that records its points and arcs, and the pen or brush it was drawn with.</summary>
+internal sealed class ShapePath : RGraphicsPath
+{
+    public List<RPoint> Points { get; } = [];
+    public List<Arc> Arcs { get; } = [];
+    public RColor? Brush { get; set; }
+    public RColor? Pen { get; set; }
+    public bool AntiAliased { get; set; }
+
+    public override void Start(double x, double y) => Points.Add(new RPoint(x, y));
+    public override void LineTo(double x, double y) => Points.Add(new RPoint(x, y));
+
+    public override void ArcTo(double x, double y, double radiusX, double radiusY, Corner corner)
+    {
+        Points.Add(new RPoint(x, y));
+        Arcs.Add(new Arc(new RPoint(x, y), radiusX, radiusY, corner));
+    }
+
+    public override void Dispose() { }
+}
+
+/// <summary>Also records the paths, which <see cref="RecordingGraphics"/> drops, and the anti-aliasing mode.</summary>
+internal sealed class ShapeRecordingGraphics : RecordingGraphics
+{
+    public List<ShapePath> Paths { get; } = [];
+
+    public bool AntiAlias { get; private set; }
+
+    public override RGraphicsPath GetGraphicsPath() => new ShapePath();
+
+    public override object SetAntiAliasSmoothingMode()
+    {
+        var prev = AntiAlias;
+        AntiAlias = true;
+        return prev;
+    }
+
+    public override void ReturnPreviousSmoothingMode(object prevMode)
+    {
+        if (prevMode is bool prev)
+            AntiAlias = prev;
+    }
+
+    public override void DrawPath(RPen pen, RGraphicsPath path)
+    {
+        var shape = (ShapePath)path;
+        shape.Pen = pen is MockPen p ? p.Color : RColor.Empty;
+        shape.AntiAliased = AntiAlias;
+        Paths.Add(shape);
+    }
+
+    public override void DrawPath(RBrush brush, RGraphicsPath path)
+    {
+        var shape = (ShapePath)path;
+        shape.Brush = brush is MockBrush b ? b.Color : RColor.Empty;
+        shape.AntiAliased = AntiAlias;
+        Paths.Add(shape);
+    }
+}

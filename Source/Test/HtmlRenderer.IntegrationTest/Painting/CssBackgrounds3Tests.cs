@@ -405,47 +405,4 @@ public sealed class CssBackgrounds3Tests
         PaintHarness.PaintBox(container, box, g);
         return g;
     }
-
-    internal sealed record Arc(RPoint End, double RadiusX, double RadiusY);
-
-    internal sealed class ShapePath : RGraphicsPath
-    {
-        public List<RPoint> Points { get; } = [];
-        public List<Arc> Arcs { get; } = [];
-        public RColor? Brush { get; set; }
-        public RColor? Pen { get; set; }
-
-        public override void Start(double x, double y) => Points.Add(new RPoint(x, y));
-        public override void LineTo(double x, double y) => Points.Add(new RPoint(x, y));
-
-        public override void ArcTo(double x, double y, double radiusX, double radiusY, Corner corner)
-        {
-            Points.Add(new RPoint(x, y));
-            Arcs.Add(new Arc(new RPoint(x, y), radiusX, radiusY));
-        }
-
-        public override void Dispose() { }
-    }
-
-    /// <summary>Also records the paths, which <see cref="RecordingGraphics"/> drops.</summary>
-    internal sealed class ShapeRecordingGraphics : RecordingGraphics
-    {
-        public List<ShapePath> Paths { get; } = [];
-
-        public override RGraphicsPath GetGraphicsPath() => new ShapePath();
-
-        public override void DrawPath(RPen pen, RGraphicsPath path)
-        {
-            var shape = (ShapePath)path;
-            shape.Pen = pen is MockPen p ? p.Color : RColor.Empty;
-            Paths.Add(shape);
-        }
-
-        public override void DrawPath(RBrush brush, RGraphicsPath path)
-        {
-            var shape = (ShapePath)path;
-            shape.Brush = brush is MockBrush b ? b.Color : RColor.Empty;
-            Paths.Add(shape);
-        }
-    }
 }

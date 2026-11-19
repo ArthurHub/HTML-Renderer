@@ -51,6 +51,18 @@ public sealed class BackgroundPaintIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css-backgrounds-3", "#background-color")]
+    public void BackgroundColor_OnAZeroWidthBox_PaintsNothing()
+    {
+        var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
+            "<div id='b' style='width:0;height:50px;background-color:rgb(10,20,30)'></div>"));
+
+        var g = PaintHarness.PaintBox(container, PaintHarness.FindById(root, "b")!);
+
+        Assert.IsFalse(g.Log.OfType<RecordingGraphics.DrawRectCall>().Any(r => r.Color == Fill));
+    }
+
+    [TestMethod]
     [Spec("css21", "colors.html#background-properties")]
     public void BackgroundColorDefault_PaintsNothing()
     {
