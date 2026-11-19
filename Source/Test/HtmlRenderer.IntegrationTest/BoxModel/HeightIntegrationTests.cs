@@ -117,6 +117,29 @@ public sealed class HeightIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visudet.html#inline-replaced-height")]
+    [Spec("css21", "visudet.html#the-height-property")]
+    public void PercentageHeight_InAnAutoHeightContainingBlock_IsTheIntrinsicHeight()
+    {
+        var root = TestImages.Layout($"<div style='width:200px'><img id='i' style='height:50%' src='{Image}'></div>");
+        var r = TestImages.ImageRect(root, "i");
+
+        Assert.AreEqual((40d, 20d), (r.Width, r.Height));
+    }
+
+    [TestMethod]
+    [Spec("css21", "box.html#box-dimensions")]
+    [Spec("css21", "visudet.html#inline-replaced-height")]
+    public void ImageBorderBox_AddsThePaddingAndBordersToTheIntrinsicSize()
+    {
+        var root = TestImages.Layout(
+            $"<img id='i' style='border:solid red;border-width:1px 2px 3px 4px;padding:5px 6px 7px 8px' src='{Image}'>");
+        var r = TestImages.ImageRect(root, "i");
+
+        Assert.AreEqual((60d, 36d), (r.Width, r.Height));
+    }
+
+    [TestMethod]
+    [Spec("css21", "visudet.html#inline-replaced-height")]
     public void BlockImage_AutoHeight_IsTheIntrinsicHeight()
     {
         var root = TestImages.Layout($"<img id='i' style='display:block' src='{Image}'>");

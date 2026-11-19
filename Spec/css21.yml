@@ -491,6 +491,7 @@ sections:
     status: partial
     gaps:
       - Widths in units other than px and % are ignored, the image keeps its intrinsic width
+      - A zero 'width' is ignored, the image keeps its intrinsic width
   visudet.html#blockwidth:
     title: 10.3.3 Block-level, non-replaced elements in normal flow
     status: partial
@@ -534,6 +535,8 @@ sections:
     gaps:
       - "'min-width' is ignored"
       - "'max-width' only applies to images and tables, it's ignored on other non-replaced boxes"
+      - "On an image with a 'height', 'max-width' is ignored, the width follows the intrinsic ratio"
+      - "A zero 'max-width' is ignored on an image"
   visudet.html#the-height-property:
     title: 10.5 Content height
     status: partial
