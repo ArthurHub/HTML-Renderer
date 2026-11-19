@@ -422,7 +422,9 @@ sections:
     status: partial
     gaps:
       - Successive right floats overlap instead of stacking side by side
-      - A float that doesn't fit next to the previous ones moves below the lowest of them instead of as high as possible
+      - A right float overlaps earlier left floats instead of moving below the ones it doesn't fit next to
+      - A left float overlaps the left margin of an earlier right float instead of moving below it, unless that margin reaches the left float's left edge
+      - A left float that doesn't fit next to earlier left floats moves below the lowest of them instead of as high as possible
       - A right float in a block narrower than its block formatting context is placed against an earlier right float outside that block, past its containing block's right edge
   visuren.html#flow-control:
     title: 9.5.2 Controlling flow next to floats
