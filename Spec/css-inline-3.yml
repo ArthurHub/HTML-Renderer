@@ -15,6 +15,7 @@ sections:
     gaps:
       - The start padding, border and margin of an inline box are repeated on every line it's split onto, see CSS 2.1 9.4.2
       - A word wider than the line box starts a new line, leaving an empty line above it, see CSS 2.1 9.4.2
+      - Text raised by vertical-align super sticks out above the line box instead of making it taller, see CSS 2.1 10.8
   '#line-layout':
     title: 2.2 Layout Within Line Boxes
     status: partial
@@ -63,7 +64,7 @@ sections:
     gaps:
       - first, last and the alignment-baseline keywords such as central aren't accepted
       - top, bottom, middle, text-top, text-bottom, lengths and percentages align like baseline, see CSS 2.1 10.8.1
-      - sub and super both move the text to the top of the line, see CSS 2.1 10.8.1
+      - sub and super only move text directly inside the box, e.g. generated content, and sub can end up above the parent's baseline, see CSS 2.1 10.8.1
   '#baseline-source':
     title: '4.2.1 Alignment Baseline Source: the baseline-source longhand'
     status: unsupported

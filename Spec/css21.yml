@@ -595,6 +595,7 @@ sections:
       - Images are aligned with the top of the line instead of sitting on the baseline
       - Vertical margins of an inline-block don't make the line box taller
       - "'line-height' on an inline box is ignored, only the block's own 'line-height' sizes the line"
+      - "Text raised by 'vertical-align: super' sticks out above the line box instead of making it taller"
   visudet.html#leading:
     title: 10.8.1 Leading and half-leading
     status: partial
@@ -605,7 +606,8 @@ sections:
       - "A percentage line-height computes to 0 instead of a percentage of the font size, so the line gets the height of 'normal'"
       - A number is inherited as the parent's computed length instead of the number
       - "'vertical-align' top, bottom, middle, text-top, text-bottom, lengths and percentages are treated as 'baseline'"
-      - "'vertical-align: sub' and 'super' both move the text to the top of the line"
+      - "'vertical-align: sub' and 'super' only move text directly inside the box, e.g. generated content, the text of an element like <sub> stays at the top of the line"
+      - "'vertical-align: sub' lowers the text by half its height from the top of the lowest box on the line, so a subscript in a smaller font ends up above the parent's baseline"
   visufx.html#q11.0:
     title: 11 Visual effects
     status: partial
