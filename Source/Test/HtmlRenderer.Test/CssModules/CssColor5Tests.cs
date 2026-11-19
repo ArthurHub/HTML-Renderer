@@ -75,6 +75,16 @@ public sealed class CssColor5Tests
     }
 
     [TestMethod]
+    [Ignore("Gap, see Spec/css-color-4.yml")]
+    [Spec("css-color-4", "#hex-notation")]
+    [DataRow("color-mix(in srgb, #abg, blue)")]
+    [DataRow("color-mix(in srgb, #12345, blue)")]
+    public void ColorMix_WithAnInvalidHexColor_IsIgnored(string value)
+    {
+        Assert.AreEqual(Green, Color($"green;color:{value}"));
+    }
+
+    [TestMethod]
     [Spec("css-color-5", "#color-mix-percent-norm")]
     [Spec("css-color-5", "#color-mix-result")]
     [DataRow("color-mix(in srgb, red 25%, blue)", 64, 0, 191, 255)]

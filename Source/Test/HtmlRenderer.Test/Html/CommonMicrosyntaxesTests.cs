@@ -140,6 +140,7 @@ public sealed class CommonMicrosyntaxesTests
     [DataRow("#ff000080", 255, 0, 128)]
     [DataRow("chucknorris", 192, 0, 0)]
     [DataRow("rgb(255,0,0)", 0, 37, 0)]
+    [DataRow("#abg", 0x0a, 0x0b, 0)]
     public void LegacyColor_ParsesAnyStringAsHexDigits(string bgcolor, int r, int g, int b)
     {
         AssertColor(r, g, b, Box($"<div id=x bgcolor='{bgcolor}'>a</div>").ActualBackgroundColor);
