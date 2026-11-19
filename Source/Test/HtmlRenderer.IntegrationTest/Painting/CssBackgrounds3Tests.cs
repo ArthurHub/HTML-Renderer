@@ -278,8 +278,15 @@ public sealed class CssBackgrounds3Tests
     {
         var g = PaintShapes("width:20px;height:20px;border-style:inset;border-width:10px;border-color:red blue");
 
-        var top = g.Log.OfType<RecordingGraphics.DrawPolygonCall>().Single(p => p.Points.All(pt => pt.Y <= 10));
+        var polygons = g.Log.OfType<RecordingGraphics.DrawPolygonCall>().ToList();
+        var top = polygons.Single(p => p.Points.All(pt => pt.Y <= 10));
         CollectionAssert.AreEquivalent(new[] { new RPoint(0, 0), new RPoint(40, 0), new RPoint(30, 10), new RPoint(10, 10) }, top.Points);
+        var right = polygons.Single(p => p.Points.All(pt => pt.X >= 30));
+        CollectionAssert.AreEquivalent(new[] { new RPoint(30, 10), new RPoint(40, 0), new RPoint(40, 40), new RPoint(30, 30) }, right.Points);
+        var bottom = polygons.Single(p => p.Points.All(pt => pt.Y >= 30));
+        CollectionAssert.AreEquivalent(new[] { new RPoint(10, 30), new RPoint(30, 30), new RPoint(40, 40), new RPoint(0, 40) }, bottom.Points);
+        var left = polygons.Single(p => p.Points.All(pt => pt.X <= 10));
+        CollectionAssert.AreEquivalent(new[] { new RPoint(0, 0), new RPoint(10, 10), new RPoint(10, 30), new RPoint(0, 40) }, left.Points);
     }
 
     [Ignore("Gap, see Spec/css-backgrounds-3.yml")]

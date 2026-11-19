@@ -118,6 +118,7 @@ sections:
     status: partial
     gaps:
       - A rounded border is stroked along the outer radius moved in by half the border width, so it doesn't follow the outer and inner border curves
+      - The curve at the top of the right border ends at the left border's width instead of the right one's
   '#corner-clipping':
     title: 4.3 Corner Clipping
     status: partial

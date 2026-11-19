@@ -41,8 +41,8 @@ public sealed class BorderStylePaintIntegrationTests
         var g = PaintHarness.PaintBox(container, PaintHarness.FindById(root, "b")!);
 
         // Painted in the order top, left, bottom, right
-        var colors = g.Log.OfType<RecordingGraphics.DrawPolygonCall>().Select(p => p.Color.R).ToList();
-        CollectionAssert.AreEqual(new[] { topLeft, topLeft, bottomRight, bottomRight }, colors.Select(c => (int)c).ToList());
+        var colors = g.Log.OfType<RecordingGraphics.DrawPolygonCall>().Select(p => p.Color).ToList();
+        CollectionAssert.AreEqual(new[] { topLeft, topLeft, bottomRight, bottomRight }.Select(c => RColor.FromArgb(c, c, c)).ToList(), colors);
     }
 
     [Ignore("Gap, see Spec/css21.yml")]
@@ -200,6 +200,31 @@ public sealed class BorderStylePaintIntegrationTests
         // RecordingGraphics doesn't log DrawPath, the absence of lines and polygons shows the rounded path was taken
         Assert.IsFalse(g.Log.OfType<RecordingGraphics.DrawLineCall>().Any());
         Assert.IsFalse(g.Log.OfType<RecordingGraphics.DrawPolygonCall>().Any());
+    }
+
+    [TestMethod]
+    [DataRow("border-top:4px hidden")]
+    [DataRow("border-right:4px hidden")]
+    [DataRow("border-bottom:4px hidden")]
+    [DataRow("border-left:4px hidden")]
+    [DataRow("border-top:0 solid")]
+    [DataRow("border-right:0 solid")]
+    [DataRow("border-bottom:0 solid")]
+    [DataRow("border-left:0 solid")]
+    [DataRow("width:0;border-top:4px solid")]
+    [DataRow("width:0;border-bottom:4px solid")]
+    [Spec("css21", "box.html#border-style-properties")]
+    [Spec("css21", "box.html#border-width-properties")]
+    [Spec("css-backgrounds-3", "#border-style")]
+    [Spec("css-backgrounds-3", "#border-width")]
+    public void HiddenZeroWidthOrEmptyBorder_PaintsNothing(string border)
+    {
+        var (root, container) = PaintHarness.Layout(PaintHarness.Wrap(
+            $"<div id='b' style='width:40px;height:40px;{border} rgb(51,51,51)'></div>"));
+
+        var g = PaintHarness.PaintBox(container, PaintHarness.FindById(root, "b")!);
+
+        Assert.IsFalse(g.Log.Any(c => c is RecordingGraphics.DrawLineCall or RecordingGraphics.DrawPolygonCall));
     }
 
     [TestMethod]
