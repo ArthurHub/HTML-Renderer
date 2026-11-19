@@ -200,6 +200,82 @@ public sealed class BorderRadiusIntegrationTests
         Assert.AreEqual(10, arc.RadiusY, Delta);
     }
 
+    // The rounded border paths below are stroked along the middle of the border. Where the path meets a
+    // straight side it's exact, around the curve it's off by up to half the border width, see the
+    // corner-shaping gap in Spec/css-backgrounds-3.yml.
+
+    private const double HalfBorder = 2;
+
+    [TestMethod]
+    [Spec("css-backgrounds-3", "#corner-shaping")]
+    public void RoundedBorder_TopAndBottomBordersTakeTheCornerCurves()
+    {
+        // Border box 108x108, 4px borders, 10px radii
+        var g = PaintShapes("width:100px;height:100px;border:4px solid;border-color:rgb(1,0,0) rgb(2,0,0) rgb(3,0,0) rgb(4,0,0);border-radius:10px");
+
+        var top = g.Paths.Single(p => p.Pen == RColor.FromArgb(1, 0, 0));
+        CollectionAssert.AreEqual(new[] { RGraphicsPath.Corner.TopLeft, RGraphicsPath.Corner.TopRight }, top.Arcs.Select(a => a.Corner).ToArray());
+        AssertPoint(2, 10, top.Points[0], 0, HalfBorder);
+        AssertPoint(10, 2, top.Points[1], HalfBorder, 0);
+        AssertPoint(98, 2, top.Points[2], HalfBorder, 0);
+        AssertPoint(106, 10, top.Points[3], 0, HalfBorder);
+
+        var bottom = g.Paths.Single(p => p.Pen == RColor.FromArgb(3, 0, 0));
+        CollectionAssert.AreEqual(new[] { RGraphicsPath.Corner.BottomRight, RGraphicsPath.Corner.BottomLeft }, bottom.Arcs.Select(a => a.Corner).ToArray());
+        AssertPoint(106, 98, bottom.Points[0], 0, HalfBorder);
+        AssertPoint(98, 106, bottom.Points[1], HalfBorder, 0);
+        AssertPoint(10, 106, bottom.Points[2], HalfBorder, 0);
+        AssertPoint(2, 98, bottom.Points[3], 0, HalfBorder);
+
+        // The sides run straight between the curves
+        var right = g.Paths.Single(p => p.Pen == RColor.FromArgb(2, 0, 0));
+        Assert.AreEqual(0, right.Arcs.Count);
+        AssertPoint(106, 10, right.Points[0], 0, HalfBorder);
+        AssertPoint(106, 98, right.Points[1], 0, HalfBorder);
+
+        var left = g.Paths.Single(p => p.Pen == RColor.FromArgb(4, 0, 0));
+        Assert.AreEqual(0, left.Arcs.Count);
+        AssertPoint(2, 98, left.Points[0], 0, HalfBorder);
+        AssertPoint(2, 10, left.Points[1], 0, HalfBorder);
+    }
+
+    [TestMethod]
+    [Spec("css-backgrounds-3", "#corner-shaping")]
+    [Spec("css-backgrounds-3", "#corner-transitions")]
+    public void RoundedBorder_WithoutTopAndBottomBorders_TheSidesTakeTheCornerCurves()
+    {
+        // Border box 108x100, a corner without an adjoining border belongs to the side entirely
+        var g = PaintShapes("width:100px;height:100px;border:4px solid;border-color:rgb(1,0,0) rgb(2,0,0) rgb(3,0,0) rgb(4,0,0);border-top:none;border-bottom:none;border-radius:10px");
+
+        Assert.AreEqual(2, g.Paths.Count);
+
+        var right = g.Paths.Single(p => p.Pen == RColor.FromArgb(2, 0, 0));
+        CollectionAssert.AreEqual(new[] { RGraphicsPath.Corner.TopRight, RGraphicsPath.Corner.BottomRight }, right.Arcs.Select(a => a.Corner).ToArray());
+        AssertPoint(98, 0, right.Points[0], HalfBorder, 0);
+        AssertPoint(106, 10, right.Points[1], 0, 0);
+        AssertPoint(106, 90, right.Points[2], 0, 0);
+        AssertPoint(98, 100, right.Points[3], HalfBorder, 0);
+
+        var left = g.Paths.Single(p => p.Pen == RColor.FromArgb(4, 0, 0));
+        CollectionAssert.AreEqual(new[] { RGraphicsPath.Corner.BottomLeft, RGraphicsPath.Corner.TopLeft }, left.Arcs.Select(a => a.Corner).ToArray());
+        AssertPoint(10, 100, left.Points[0], HalfBorder, 0);
+        AssertPoint(2, 90, left.Points[1], 0, 0);
+        AssertPoint(2, 10, left.Points[2], 0, 0);
+        AssertPoint(10, 0, left.Points[3], HalfBorder, 0);
+    }
+
+    [Ignore("Gap, see Spec/css-backgrounds-3.yml")]
+    [TestMethod]
+    [Spec("css-backgrounds-3", "#corner-shaping")]
+    public void RoundedRightBorderAlone_CurveEndsOnTheMiddleOfTheRightBorder()
+    {
+        // Border box 104x100, no left border
+        var g = PaintShapes("width:100px;height:100px;border-right:4px solid black;border-radius:10px");
+
+        var right = g.Paths.Single(p => p.Pen != null);
+        AssertPoint(102, 10, right.Arcs[0].End, 0, 0);
+    }
+
     [TestMethod]
     [DataRow(false, true)]
     [DataRow(true, false)]
@@ -221,6 +297,12 @@ public sealed class BorderRadiusIntegrationTests
         var g = new ShapeRecordingGraphics();
         PaintHarness.PaintBox(container, PaintHarness.FindById(root, "c")!, g);
         return g;
+    }
+
+    private static void AssertPoint(double x, double y, RPoint actual, double xTolerance, double yTolerance)
+    {
+        Assert.AreEqual(x, actual.X, xTolerance + 0.01, $"X of {actual}");
+        Assert.AreEqual(y, actual.Y, yTolerance + 0.01, $"Y of {actual}");
     }
 
     private static CssBox FindDivBox(string css)
