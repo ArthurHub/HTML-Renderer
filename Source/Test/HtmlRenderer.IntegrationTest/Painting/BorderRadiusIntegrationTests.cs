@@ -1,4 +1,5 @@
 using HtmlRenderer.IntegrationTest.TestSupport;
+using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 
@@ -155,6 +156,71 @@ public sealed class BorderRadiusIntegrationTests
 
         Assert.AreEqual(30.0, radii.TLX, 2);
         Assert.AreEqual(30.0, radii.TLY, 2);
+    }
+
+    [TestMethod]
+    [DataRow("80px 40px 0 40px", new[] { 80.0, 40, 0, 40 })]
+    [DataRow("40px 80px 40px 0", new[] { 40.0, 80, 40, 0 })]
+    [DataRow("0 40px 80px 40px", new[] { 0.0, 40, 80, 40 })]
+    [DataRow("40px 0 40px 80px", new[] { 40.0, 0, 40, 80 })]
+    [Spec("css-backgrounds-3", "#corner-overlap")]
+    [Spec("css-borders-4", "#corner-overlap")]
+    public void BorderRadius_OneOversizedCorner_ScalesAllRadiiByTheSmallestRatio(string radius, double[] corners)
+    {
+        // 100x100 box, the two sides at the large corner sum to 120: f = 100 / 120
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            $"<div id='c' style='width:100px;height:100px;border-radius:{radius}'></div>"));
+        var box = LayoutHarness.FindById(root, "c")!;
+
+        var radii = box.ComputeRadii(new RRect(0, 0, 100, 100));
+
+        var expected = corners.Select(c => c * 100 / 120).ToArray();
+        var x = new[] { radii.TLX, radii.TRX, radii.BRX, radii.BLX };
+        var y = new[] { radii.TLY, radii.TRY, radii.BRY, radii.BLY };
+        for (var i = 0; i < expected.Length; i++)
+        {
+            Assert.AreEqual(expected[i], x[i], 0.01, $"x radius {i}");
+            Assert.AreEqual(expected[i], y[i], 0.01, $"y radius {i}");
+        }
+    }
+
+    [TestMethod]
+    [DataRow("border-top-left-radius", RGraphicsPath.Corner.TopLeft)]
+    [DataRow("border-top-right-radius", RGraphicsPath.Corner.TopRight)]
+    [DataRow("border-bottom-right-radius", RGraphicsPath.Corner.BottomRight)]
+    [DataRow("border-bottom-left-radius", RGraphicsPath.Corner.BottomLeft)]
+    [Spec("css-backgrounds-3", "#corner-clipping")]
+    public void SingleRoundedCorner_ClipsTheBackgroundAtThatCornerOnly(string property, RGraphicsPath.Corner corner)
+    {
+        var g = PaintShapes($"width:100px;height:100px;background-color:rgb(10,20,30);{property}:10px");
+
+        var arc = g.Paths.Single(p => p.Brush == Fill).Arcs.Single();
+        Assert.AreEqual(corner, arc.Corner);
+        Assert.AreEqual(10, arc.RadiusX, Delta);
+        Assert.AreEqual(10, arc.RadiusY, Delta);
+    }
+
+    [TestMethod]
+    [DataRow(false, true)]
+    [DataRow(true, false)]
+    public void RoundedBackgroundAndBorder_AreAntiAliasedUnlessAvoided(bool avoid, bool antiAliased)
+    {
+        var g = PaintShapes("width:100px;height:100px;background-color:rgb(10,20,30);border:4px solid black;border-radius:10px", avoid);
+
+        Assert.AreEqual(5, g.Paths.Count);
+        Assert.IsTrue(g.Paths.All(p => p.AntiAliased == antiAliased));
+        Assert.IsFalse(g.AntiAlias, "the previous mode is restored");
+    }
+
+    private static readonly RColor Fill = RColor.FromArgb(10, 20, 30);
+
+    private static ShapeRecordingGraphics PaintShapes(string style, bool avoidGeometryAntialias = false)
+    {
+        var (root, container) = PaintHarness.Layout(PaintHarness.Wrap($"<div id='c' style='{style}'></div>"));
+        container.AvoidGeometryAntialias = avoidGeometryAntialias;
+        var g = new ShapeRecordingGraphics();
+        PaintHarness.PaintBox(container, PaintHarness.FindById(root, "c")!, g);
+        return g;
     }
 
     private static CssBox FindDivBox(string css)
