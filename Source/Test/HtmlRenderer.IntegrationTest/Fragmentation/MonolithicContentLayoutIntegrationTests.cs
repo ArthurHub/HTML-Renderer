@@ -8,6 +8,7 @@ using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Fragments;
 using TheArtOfDev.HtmlRenderer.WinForms;
+using static HtmlRenderer.IntegrationTest.TestSupport.Fragments;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
@@ -55,14 +56,6 @@ public sealed class MonolithicContentLayoutIntegrationTests
 
     private static CssBox FindById(CssBox root, string id) =>
         Walk(root).FirstOrDefault(b => b.HtmlTag?.TryGetAttribute("id") == id)!;
-
-    private static IEnumerable<BoxFragment> Flatten(BoxFragment fragment)
-    {
-        yield return fragment;
-        foreach (var child in fragment.Children)
-            foreach (var descendant in Flatten(child))
-                yield return descendant;
-    }
 
     private static List<BoxFragment> FragmentsOf(HtmlContainerInt container, CssBox box) =>
         container.FragmentTree!.Fragmentainers.SelectMany(f => Flatten(f.Root)).Where(f => ReferenceEquals(f.Box, box)).ToList();

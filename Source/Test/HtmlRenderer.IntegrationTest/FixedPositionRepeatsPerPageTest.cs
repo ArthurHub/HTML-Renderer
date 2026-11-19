@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Fragments;
 using TheArtOfDev.HtmlRenderer.WinForms;
+using static HtmlRenderer.IntegrationTest.TestSupport.Fragments;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest;
 
@@ -63,6 +64,44 @@ public sealed class FixedPositionRepeatsPerPageTest
             Assert.AreEqual(1, markerHits.Count, $"page {i} should show the fixed marker exactly once - not zero (missing) and not more than one (duplicated by both the repeat mechanism and the normal walk)");
             Assert.AreEqual(5.0, markerHits[0].Top, 0.5, $"page {i}'s marker must be at the same page-relative offset (top:5px) as every other page");
         }
+    }
+
+    [TestMethod]
+    [Spec("css-position-3", "#abspos-breaking")]
+    public async Task FixedElementNestedInABlock_GivesTheBlockNoFragmentOnOtherPages()
+    {
+        using var wrapper = new HtmlContainer();
+        await wrapper.SetHtml(
+            """
+            <html><body style="margin:0">
+                <div style="height:50px"></div>
+                <div id="later" style="margin-top:150px">
+                    <div style="position:fixed; top:0; height:20px">PageHeaderMarker</div>
+                    text
+                </div>
+            </body></html>
+            """);
+
+        var container = GetInternal(wrapper);
+        container.PageSize = new TheArtOfDev.HtmlRenderer.Adapters.Entities.RSize(300, 100);
+        container.MarginTop = 0;
+        wrapper.MaxSize = new SizeF(300, 0);
+
+        using var bitmap = new Bitmap(300, 2000);
+        using var g = Graphics.FromImage(bitmap);
+        wrapper.PerformLayout(g);
+
+        var tree = container.FragmentTree;
+        Assert.AreEqual(2, tree.Fragmentainers.Count);
+
+        var pagesWithLater = tree.Fragmentainers
+            .Where(f => Flatten(f.Root).Any(x => x.Box.HtmlTag?.TryGetAttribute("id") == "later"))
+            .Select(f => f.SlotIndex)
+            .ToList();
+        CollectionAssert.AreEqual(new[] { 1 }, pagesWithLater);
+
+        foreach (var fragmentainer in tree.Fragmentainers)
+            Assert.AreEqual(1, AllWords(fragmentainer.Root).Count(w => w.Text == "PageHeaderMarker"));
     }
 
     [TestMethod]

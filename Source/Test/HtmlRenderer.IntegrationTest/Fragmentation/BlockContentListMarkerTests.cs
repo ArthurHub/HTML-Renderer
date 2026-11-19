@@ -6,6 +6,7 @@ using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Fragments;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
+using static HtmlRenderer.IntegrationTest.TestSupport.Fragments;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
@@ -69,6 +70,25 @@ public sealed class BlockContentListMarkerTests
         Assert.AreEqual(1, claims[word].Count);
     }
 
+    [TestMethod]
+    public void AnEmptyItemOnThePageBoundary_HasItsMarkerOnTheNextPage()
+    {
+        var html = PaintHarness.Wrap(
+            "<div style='height:100px'></div>"
+            + "<ul style='margin:0'><li id='empty' style='height:0'></li></ul>"
+            + "<div style='height:50px'>after</div>");
+
+        var (root, container) = PaintHarness.LayoutPaginated(html, pageHeight: 100);
+
+        var item = PaintHarness.FindById(root, "empty")!;
+        var word = item.ListItemBox!.Words.Single();
+        Assert.AreEqual(100, word.Top, 0.5);
+
+        var claims = ClaimsByWord(container);
+        Assert.IsTrue(claims.TryGetValue(word, out var slots), "the marker is claimed by no fragment at all");
+        CollectionAssert.AreEqual(new[] { 1 }, slots);
+    }
+
     // ── Helpers ──────────────────────────────────────────────────────────────
 
     private static IEnumerable<CssBox> Walk(CssBox box)
@@ -79,17 +99,6 @@ public sealed class BlockContentListMarkerTests
                 yield return d;
     }
 
-    private static IEnumerable<BoxFragment> Flatten(BoxFragment fragment)
-    {
-        yield return fragment;
-        foreach (var child in fragment.Children)
-            foreach (var d in Flatten(child))
-                yield return d;
-        if (fragment.MarkerFragment != null)
-            foreach (var d in Flatten(fragment.MarkerFragment))
-                yield return d;
-    }
-
     private static List<CssBox> ListItems(CssBox root) =>
         Walk(root).Where(b => b.Display == CssConstants.ListItem).ToList();
 
@@ -97,7 +106,7 @@ public sealed class BlockContentListMarkerTests
 
     private static List<BoxFragment> FragmentsOf(HtmlContainerInt container, CssBox box) =>
         container.FragmentTree!.Fragmentainers
-            .SelectMany(f => Flatten(f.Root))
+            .SelectMany(f => FlattenWithMarkers(f.Root))
             .Where(f => ReferenceEquals(f.Box, box))
             .ToList();
 
@@ -106,7 +115,7 @@ public sealed class BlockContentListMarkerTests
         var claims = new Dictionary<CssRect, List<int>>(ReferenceEqualityComparer.Instance);
         foreach (var fragmentainer in container.FragmentTree!.Fragmentainers)
         {
-            foreach (var word in Flatten(fragmentainer.Root).SelectMany(f => f.Words))
+            foreach (var word in FlattenWithMarkers(fragmentainer.Root).SelectMany(f => f.Words))
             {
                 if (!claims.TryGetValue(word.Word, out var slots))
                     claims[word.Word] = slots = new List<int>();

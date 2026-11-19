@@ -3,6 +3,7 @@ using HtmlRenderer.IntegrationTest.TestSupport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
+using static HtmlRenderer.IntegrationTest.TestSupport.Fragments;
 
 namespace HtmlRenderer.IntegrationTest.Tables;
 
@@ -151,14 +152,5 @@ public sealed class StructuralCloneBreakValueBehaviourTests
             "<table style='width:100%;border-collapse:collapse'>"
             + $"<thead style='break-inside:avoid'><tr style='{headerRowCss}'><th>Header 1</th><th>Header 2</th></tr></thead>"
             + $"<tbody>{rows}</tbody></table>");
-    }
-
-    private static System.Collections.Generic.IEnumerable<TheArtOfDev.HtmlRenderer.Core.Fragments.BoxFragment> Flatten(
-        TheArtOfDev.HtmlRenderer.Core.Fragments.BoxFragment fragment)
-    {
-        yield return fragment;
-        foreach (var child in fragment.Children)
-            foreach (var descendant in Flatten(child))
-                yield return descendant;
     }
 }

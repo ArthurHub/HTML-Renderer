@@ -7,6 +7,7 @@ using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Fragments;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
+using static HtmlRenderer.IntegrationTest.TestSupport.Fragments;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
@@ -159,17 +160,6 @@ public sealed class StraddlingListMarkerTests
                 yield return d;
     }
 
-    private static IEnumerable<BoxFragment> Flatten(BoxFragment fragment)
-    {
-        yield return fragment;
-        foreach (var child in fragment.Children)
-            foreach (var d in Flatten(child))
-                yield return d;
-        if (fragment.MarkerFragment != null)
-            foreach (var d in Flatten(fragment.MarkerFragment))
-                yield return d;
-    }
-
     private static List<CssBox> ListItems(CssBox root) =>
         Walk(root).Where(b => b.Display == CssConstants.ListItem).ToList();
 
@@ -185,7 +175,7 @@ public sealed class StraddlingListMarkerTests
     /// <summary>The pagination slots <paramref name="box"/> produced a fragment in, in order.</summary>
     private static List<int> SlotsOf(HtmlContainerInt container, CssBox box) =>
         container.FragmentTree!.Fragmentainers
-            .Where(f => Flatten(f.Root).Any(x => ReferenceEquals(x.Box, box)))
+            .Where(f => FlattenWithMarkers(f.Root).Any(x => ReferenceEquals(x.Box, box)))
             .Select(f => f.SlotIndex)
             .ToList();
 
@@ -194,7 +184,7 @@ public sealed class StraddlingListMarkerTests
         var claims = new Dictionary<CssRect, List<int>>(ReferenceEqualityComparer.Instance);
         foreach (var fragmentainer in container.FragmentTree!.Fragmentainers)
         {
-            foreach (var word in Flatten(fragmentainer.Root).SelectMany(f => f.Words))
+            foreach (var word in FlattenWithMarkers(fragmentainer.Root).SelectMany(f => f.Words))
             {
                 if (!claims.TryGetValue(word.Word, out var slots))
                     claims[word.Word] = slots = new List<int>();
