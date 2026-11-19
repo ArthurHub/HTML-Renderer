@@ -70,6 +70,7 @@ sections:
     status: partial
     gaps:
       - "'break-after: avoid' doesn't pull a block without text along to the next page, see CSS 2.1 13.3.3"
+      - "An 'orphans' value larger than the lines a page holds isn't dropped, see CSS 2.1 13.3.3"
   '#best-breaks':
     title: 4.5 Optimizing Unforced Breaks
     status: supported

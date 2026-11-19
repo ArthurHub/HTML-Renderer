@@ -726,6 +726,7 @@ sections:
       - "'page-break-after: avoid' isn't honored when the next box's first child moves to the next page through margin truncation"
       - "At a forced break the previous box's 'margin-bottom' isn't set to 0, it collapses with 'margin-top' at the top of the new page"
       - The top margin of an hr isn't set to 0 at an unforced page break
+      - "An 'orphans' value larger than the lines a page holds isn't dropped, the paragraph's lines run past the page bottom and the lines after the next break overlap them"
   page.html#forced:
     title: 13.3.4 Forced page breaks
     status: partial

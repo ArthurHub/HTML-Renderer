@@ -413,4 +413,56 @@ public sealed class OrphansWidowsIntegrationTests
         Assert.IsTrue(oneBefore, "orphans:1 should leave a single line before the break");
         Assert.IsTrue(oneAfter, "widows:1 should leave a single line after the break");
     }
+
+    private static List<double> LineTops(CssBox box) => box.LineBoxes.Select(l => System.Math.Round(l.LineTop, 1)).ToList();
+
+    // Four 20px text lines and two 40px or 45px images, one per line.
+    private static string ParagraphWithTallLastLines(int imageHeight) =>
+        "<p id='p' style='width:50px;line-height:20px;margin:0;widows:3'>Line1 Line2 Line3 Line4"
+        + string.Concat(Enumerable.Repeat($" <img style='width:40px;height:{imageHeight}px;vertical-align:top'>", 2))
+        + "</p>";
+
+    [TestMethod]
+    [Spec("css21", "page.html#break-inside")]
+    public async Task Widows3_ShiftedRunFillsTheNextPageExactly_TakesTheLineAlong()
+    {
+        var (root, _) = await BuildAsync(ParagraphWithTallLastLines(40));
+
+        CollectionAssert.AreEqual(new[] { 0, 20, 40, 100, 120, 160.0 }, LineTops(FindById(root, "p")));
+    }
+
+    [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#unforced-breaks")]
+    public async Task Widows3_ShiftedRunWouldOverflowTheNextPage_LeavesTheBreakWhereItIs()
+    {
+        var (root, _) = await BuildAsync(ParagraphWithTallLastLines(45));
+
+        CollectionAssert.AreEqual(new[] { 0, 20, 40, 60, 100, 145.0 }, LineTops(FindById(root, "p")));
+    }
+
+    [TestMethod]
+    [DataRow(4, DisplayName = "4 lines")]
+    [DataRow(5, DisplayName = "5 lines, filling the page exactly")]
+    [Spec("css21", "page.html#break-inside")]
+    public async Task Widows4_ParagraphMovedWhole_StartsAtTheTopOfTheNextPage(int lineCount)
+    {
+        var (root, _) = await BuildAsync("<div style='height:60px'></div>" + Paragraph(lineCount, "widows:4"));
+
+        var expected = Enumerable.Range(0, lineCount).Select(i => 100 + i * LineHeight).ToArray();
+        CollectionAssert.AreEqual(expected, LineTops(FindById(root, "p")));
+    }
+
+    [TestMethod]
+    [Ignore("Gap, see Spec/css-break-3.yml")]
+    [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#unforced-breaks")]
+    public async Task Orphans6_MoreLinesThanAPageHolds_BreaksWhereThePageIsFull()
+    {
+        var (root, _) = await BuildAsync(Paragraph(12, "orphans:6"), pageHeight: 110);
+
+        CollectionAssert.AreEqual(
+            new[] { 0, 20, 40, 60, 80, 110, 130, 150, 170, 190, 220, 240.0 },
+            LineTops(FindById(root, "p")));
+    }
 }
