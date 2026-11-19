@@ -25,6 +25,73 @@ public sealed class VerticalAlignIntegrationTests
         return LayoutHarness.Descendants(v).SelectMany(b => b.Words).First().Top;
     }
 
+    /// <summary>
+    /// How far the baseline of the generated text after <c>#v</c> sits below the baseline of "base". The
+    /// generated text is used because its words belong to the box with the 'vertical-align' itself.
+    /// </summary>
+    private static (double Shift, double ParentFontHeight) GeneratedTextBaselineShift(string afterStyle, string body)
+    {
+        var html = $"<html><head><style>#v::after{{content:'gen';{afterStyle}}}</style></head>"
+                   + $"<body style='margin:0'><p id='p' style='margin:0;font-size:20px'>{body}</p></body></html>";
+        var (root, _) = LayoutHarness.Layout(html);
+        var words = LayoutHarness.Descendants(root).SelectMany(b => b.Words).ToList();
+        var parent = words.Single(w => w.Text == "base");
+        var generated = words.Single(w => w.Text == "gen");
+
+        var parentBaseline = parent.Top + parent.OwnerBox.ActualFont.UnderlineOffset;
+        var generatedBaseline = generated.Top + generated.OwnerBox.ActualFont.UnderlineOffset;
+        return (generatedBaseline - parentBaseline, parent.OwnerBox.ActualFont.Height);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visudet.html#leading")]
+    [Spec("css-inline-3", "#transverse-alignment")]
+    public void Super_RaisesTheBaselineAboveTheParentsBaseline()
+    {
+        var (shift, parentFontHeight) = GeneratedTextBaselineShift("vertical-align:super", "base <span id='v'></span>");
+
+        Assert.IsLessThan(0, shift);
+        Assert.IsGreaterThan(-parentFontHeight, shift);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visudet.html#leading")]
+    [Spec("css-inline-3", "#transverse-alignment")]
+    public void Sub_LowersTheBaselineBelowTheParentsBaseline_NextToTallerText()
+    {
+        var (shift, parentFontHeight) = GeneratedTextBaselineShift(
+            "vertical-align:sub", "base <span style='font-size:40px'>Q</span> <span id='v'></span>");
+
+        Assert.IsGreaterThan(0, shift);
+        Assert.IsLessThan(parentFontHeight, shift);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visudet.html#leading")]
+    [Spec("css-inline-3", "#transverse-alignment")]
+    public void Sub_WithASmallerFont_LowersTheBaselineBelowTheParentsBaseline()
+    {
+        var (shift, _) = GeneratedTextBaselineShift("vertical-align:sub;font-size:10px", "base <span id='v'></span>");
+
+        Assert.IsGreaterThan(0, shift);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visudet.html#line-height")]
+    [Spec("css-inline-3", "#line-boxes")]
+    public void Super_MakesTheLineBoxTallerInsteadOfStickingOutOfIt()
+    {
+        var html = "<html><head><style>#v::after{content:'gen';vertical-align:super}</style></head>"
+                   + "<body style='margin:0'><p id='p' style='margin:0;font-size:20px'>base <span id='v'></span></p></body></html>";
+        var (root, _) = LayoutHarness.Layout(html);
+        var p = LayoutHarness.FindById(root, "p")!;
+        var generated = LayoutHarness.Descendants(root).SelectMany(b => b.Words).Single(w => w.Text == "gen");
+
+        Assert.IsGreaterThanOrEqualTo(p.LineBoxes[0].LineTop, generated.Top);
+    }
+
     [Ignore("Gap, see Spec/css21.yml")]
     [Spec("css21", "visudet.html#leading")]
     [TestMethod]
