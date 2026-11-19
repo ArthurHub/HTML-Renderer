@@ -503,7 +503,9 @@ sections:
       - Auto margins compute to 0, a block image is never centered by them
   visudet.html#float-width:
     title: 10.3.5 Floating, non-replaced elements
-    status: supported
+    status: partial
+    gaps:
+      - The shrink-to-fit width of a float around a table with row groups leaves out the border spacing between the columns
   visudet.html#float-replaced-width:
     title: 10.3.6 Floating, replaced elements
     status: supported
@@ -530,7 +532,7 @@ sections:
     status: partial
     gaps:
       - "'min-width' is ignored"
-      - "'max-width' only applies to images, it's ignored on non-replaced boxes"
+      - "'max-width' only applies to images and tables, it's ignored on other non-replaced boxes"
   visudet.html#the-height-property:
     title: 10.5 Content height
     status: partial
@@ -945,6 +947,8 @@ sections:
     gaps:
       - A column group's 'width' doesn't widen its columns
       - The caption's minimum width doesn't widen the table
+      - A spanning cell that isn't the first in its row narrows the column before it below its content width
+      - A spanning cell over a column that is already wider than the others can end up narrower than its content
   tables.html#height-layout:
     title: 17.5.3 Table height algorithms
     status: partial

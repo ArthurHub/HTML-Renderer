@@ -135,6 +135,7 @@ sections:
     gaps:
       - A spanning cell's width is split evenly over its columns instead of in proportion to their widths
       - A column group's 'width' doesn't widen its columns, see CSS 2.1 17.5.2.2
+      - A spanning cell can leave a column it doesn't span, or itself, narrower than the content, see CSS 2.1 17.5.2.2
   '#width-distribution':
     title: 3.9 Available Width Distribution
     status: partial
@@ -144,6 +145,8 @@ sections:
     gaps:
       - "'min-width' on the table is ignored"
       - The caption's minimum width doesn't widen the table, see CSS 2.1 17.5.2.2
+      - "A 'max-width' below the minimum content width narrows the columns below it, clipping their content"
+      - Percentage cell widths adding up to more than 100% make an auto width table wider than its containing block
   '#width-distribution-principles':
     title: 3.9.2 Core distribution principles
     status: n/a
