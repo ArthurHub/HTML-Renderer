@@ -65,6 +65,7 @@ sections:
     gaps:
       - A forced break right after a zero-height box that a forced break moved to a page top makes no new page
       - "A different 'page' value doesn't force a break"
+      - A box after a forced break whose top margin crosses the page boundary skips a page, see CSS 2.1 13.3.4
   '#unforced-breaks':
     title: 4.4 Unforced Breaks
     status: partial
@@ -89,6 +90,7 @@ sections:
       - "At a forced break the previous box's 'margin-bottom' isn't truncated, see CSS 2.1 13.3.3"
       - The top margin of an hr isn't truncated at an unforced break, see CSS 2.1 13.3.3
       - A forced break before the first box of the flow isn't taken, and the margin after it is truncated anyway
+      - A margin after a forced break that by itself reaches the top of the next page is truncated
   '#box-splitting':
     title: 5.3 Splitting Boxes
     status: supported
