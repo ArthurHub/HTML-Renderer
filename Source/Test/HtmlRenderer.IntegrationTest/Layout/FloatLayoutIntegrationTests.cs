@@ -391,6 +391,124 @@ public sealed class FloatLayoutIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#float-position")]
+    public void RightFloat_MarginRight_KeepsItsOuterEdgeAtTheContainingBlockEdge()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'><div id='f' style='float:right;width:150px;height:30px;margin-right:10px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var f = LayoutHarness.FindById(root, "f")!;
+
+        Assert.AreEqual(140, f.Location.X, Delta);
+        Assert.AreEqual(290, f.ActualRight, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#float-position")]
+    public void LeftFloat_NextToARightFloatWhoseMarginFillsTheLine_MovesBelowIt()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<div id='r' style='float:right;width:250px;height:40px;margin-left:50px'></div>"
+            + "<div id='l' style='float:left;width:30px;height:20px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var l = LayoutHarness.FindById(root, "l")!;
+
+        Assert.AreEqual(0, l.Location.X, Delta);
+        Assert.AreEqual(40, l.Location.Y, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visuren.html#float-position")]
+    public void LeftFloat_ThatWouldReachIntoAnEarlierRightFloatsMargin_MovesBelowIt()
+    {
+        // b would end at 130, past r's left outer edge at 110
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<div id='a' style='float:left;width:100px;height:40px'></div>"
+            + "<div id='r' style='float:right;width:150px;height:40px;margin-left:40px'></div>"
+            + "<div id='b' style='float:left;width:30px;height:20px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var b = LayoutHarness.FindById(root, "b")!;
+
+        Assert.AreEqual(0, b.Location.X, Delta);
+        Assert.AreEqual(40, b.Location.Y, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visuren.html#float-position")]
+    public void RightFloat_ThatDoesntFitNextToAnEarlierLeftFloat_MovesBelowIt()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'>"
+            + "<div id='a' style='float:left;width:200px;height:50px'></div>"
+            + "<div id='r' style='float:right;width:150px;height:30px'></div></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var r = LayoutHarness.FindById(root, "r")!;
+
+        Assert.AreEqual(50, r.Location.Y, Delta);
+        Assert.AreEqual(300, r.ActualRight, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#floats")]
+    public void LeftFloat_TextNextToIt_StartsAtItsRightMarginEdge()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'><div style='float:left;width:100px;height:30px;margin-right:10px'></div>"
+            + "<span style='margin-left:5px'>text</span></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+
+        Assert.AreEqual(115, FindWordByText(root, "text")!.Left, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#floats")]
+    public void LeftFloat_EveryLineNextToIt_StartsAtItsRightMarginEdge()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'><div id='f' style='float:left;width:100px;height:50px;margin-right:10px'></div>"
+            + "aaaa bbbb cccc dddd eeee ffff gggg hhhh iiii jjjj kkkk llll mmmm nnnn</div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var f = LayoutHarness.FindById(root, "f")!;
+        var lineStarts = LayoutHarness.Descendants(root).SelectMany(b => b.Words)
+            .Where(w => w.Top < f.ActualBottom)
+            .GroupBy(w => w.Top)
+            .Select(line => line.Min(w => w.Left))
+            .ToList();
+
+        Assert.IsGreaterThan(1, lineStarts.Count);
+        foreach (var lineStart in lineStarts)
+        {
+            Assert.AreEqual(110, lineStart, Delta);
+        }
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#floats")]
+    public void RightFloat_TextNextToIt_EndsBeforeItsLeftMarginEdge()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div style='width:300px'><div id='f' style='float:right;width:100px;height:60px;margin-left:10px'></div>"
+            + "<p id='text' style='margin:0'>aaaa bbbb cccc dddd eeee ffff gggg hhhh iiii jjjj kkkk llll mmmm nnnn oooo pppp</p></div>");
+
+        var (root, _) = LayoutHarness.Layout(html);
+        var f = LayoutHarness.FindById(root, "f")!;
+        var words = WordsOverlappingVerticalSpan(LayoutHarness.FindById(root, "text")!, f.Location.Y, f.ActualBottom);
+
+        Assert.IsNotEmpty(words);
+        Assert.IsLessThanOrEqualTo(190, words.Max(w => w.Right));
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#float-position")]
     public void Float_IsNotHigherThanAnEarlierBlock()
     {
         var html = LayoutHarness.Wrap(
