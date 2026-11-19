@@ -3,6 +3,7 @@ using HtmlRenderer.IntegrationTest.TestSupport;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
 
 namespace HtmlRenderer.IntegrationTest.Painting;
 
@@ -349,11 +350,26 @@ public sealed class BackgroundPaintIntegrationTests
         Assert.IsFalse(g.Log.OfType<RecordingGraphics.DrawRectCall>().Any(r => r.Color == RColor.Empty));
     }
 
+    [Ignore("Gap, see Spec/css-backgrounds-3.yml")]
+    [TestMethod]
+    [Timeout(5000)]
+    [DataRow("repeat-x")]
+    [DataRow("repeat")]
+    [Spec("css-backgrounds-3", "#background-repeat")]
+    public void BackgroundRepeat_ZeroWidthImageRectangle_DoesNotHang(string repeat)
+    {
+        // The image load callback limits the image to a 0x30 rectangle
+        var g = PaintBackground($"width:100px;height:100px;background-image:url(x.png);background-repeat:{repeat};background-position:right",
+            (_, e) => e.Callback(new MockImage(40, 30), 0, 0, 0, 30));
+
+        Assert.IsFalse(g.Log.OfType<RecordingGraphics.DrawRectCall>().Any(r => r.Color == RColor.Empty));
+    }
+
     private static List<RecordingGraphics.DrawRectCall> Fills(RecordingGraphics g) =>
         g.Log.OfType<RecordingGraphics.DrawRectCall>().Where(r => r.Color == Fill).ToList();
 
     /// <summary>Lays out a div with <paramref name="style"/> at the origin, loading images synchronously, and paints it.</summary>
-    private static RecordingGraphics PaintBackground(string style)
+    private static RecordingGraphics PaintBackground(string style, EventHandler<HtmlImageLoadEventArgs>? imageLoad = null)
     {
         var container = new HtmlContainerInt(new MockAdapter())
         {
@@ -362,6 +378,8 @@ public sealed class BackgroundPaintIntegrationTests
             PageSize = new RSize(1000, 4000),
             AvoidAsyncImagesLoading = true
         };
+        if (imageLoad != null)
+            container.ImageLoad += imageLoad;
         container.SetHtml(PaintHarness.Wrap($"<div id='b' style='{style}'></div>")).GetAwaiter().GetResult();
 
         using (var layoutGraphics = new RecordingGraphics())

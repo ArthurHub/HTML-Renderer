@@ -30,6 +30,7 @@ sections:
     gaps:
       - The two-value syntax isn't resolved, 'repeat no-repeat' tiles in both directions
       - "'space' and 'round' are painted as 'repeat'"
+      - Repeating an image with a zero width or height never ends
   '#background-attachment':
     title: '2.5 Affixing Images: the background-attachment property'
     status: partial
