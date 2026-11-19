@@ -403,6 +403,7 @@ sections:
     gaps:
       - The start padding, border and margin of an inline box are repeated at the start of every line it's split onto
       - A word wider than the line box starts a new line, leaving an empty line above it
+      - An inline box whose content only starts on the next line after a wrap gets a border box that begins at the start of that line instead of after its start margin
   visuren.html#relative-positioning:
     title: 9.4.3 Relative positioning
     status: partial
@@ -552,6 +553,7 @@ sections:
     status: partial
     gaps:
       - Vertical padding and border of an inline box can push the line's content down and make the line box taller
+      - The border box of an inline box extends below its content by the top padding instead of the bottom padding
   visudet.html#inline-replaced-height:
     title: 10.6.2 Inline replaced elements, block-level replaced elements in normal flow, 'inline-block' replaced elements in normal flow and floating replaced elements
     status: partial

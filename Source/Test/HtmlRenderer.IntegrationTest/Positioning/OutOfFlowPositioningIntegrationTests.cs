@@ -25,6 +25,21 @@ public sealed class OutOfFlowPositioningIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visuren.html#absolute-positioning")]
+    [Spec("css21", "visudet.html#abs-non-replaced-width")]
+    public void PositionAbsolute_InlineBox_StartsAtItsStaticPositionAndLeavesTheLineAlone()
+    {
+        var html = LayoutHarness.Wrap(
+            "<div>a<span style='position:absolute;margin-left:30px;margin-right:40px;padding-right:9px'>b</span>c</div>");
+        var (root, _) = LayoutHarness.Layout(html);
+        var a = FindWord(root, "a")!;
+
+        // The static position is where 'b' would start in the flow, its left margin comes on top
+        Assert.AreEqual(a.Right + 30, FindWord(root, "b")!.Left, Delta);
+        Assert.AreEqual(a.Right, FindWord(root, "c")!.Left, Delta);
+    }
+
+    [TestMethod]
     [Spec("css21", "box.html#collapsing-margins")]
     public void PositionAbsolute_MarginsDoNotCollapse()
     {

@@ -76,6 +76,81 @@ public sealed class NormalFlowIntegrationTests
     [TestMethod]
     [Spec("css21", "visuren.html#inline-formatting")]
     [Spec("css-inline-3", "#line-boxes")]
+    public void InlineBox_EndMarginBorderAndPadding_PushTheFollowingText()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div>a<span id='s' style='margin-right:10px;border-right:5px solid red;padding-right:7px'>b</span>c</div>"));
+
+        var b = FindWord(root, "b")!;
+        var c = FindWord(root, "c")!;
+        var borderBox = LayoutHarness.FindById(root, "s")!.Rectangles.Values.Single();
+
+        Assert.AreEqual(b.Right + 12, borderBox.Right, Delta);
+        Assert.AreEqual(b.Right + 22, c.Left, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#inline-formatting")]
+    [Spec("css-inline-3", "#line-boxes")]
+    public void InlineBox_StartingOnAWrappedLine_GetsItsStartMarginAndPaddingThere()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div id='d' style='width:100px'>aaa bbb <span style='margin-left:20px;padding-left:5px'>ccccccc</span></div>"));
+
+        var d = LayoutHarness.FindById(root, "d")!;
+        var c = FindWord(root, "ccccccc")!;
+
+        Assert.AreEqual(2, d.LineBoxes.Count);
+        Assert.AreEqual(d.LineBoxes[1].LineTop, c.Top, Delta);
+        Assert.AreEqual(25, c.Left, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#inline-formatting")]
+    public void InlineImage_WrappedToTheNextLine_KeepsItsStartMargin()
+    {
+        var root = TestImages.Layout(
+            $"<div id='d' style='width:60px'>aaa bbb <img id='i' style='margin-left:20px' src='{TestImages.Png(10, 10)}'></div>");
+
+        var d = LayoutHarness.FindById(root, "d")!;
+        var image = LayoutHarness.FindById(root, "i")!.Words.Single();
+
+        Assert.AreEqual(2, d.LineBoxes.Count);
+        Assert.AreEqual(20, image.Left, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visuren.html#inline-formatting")]
+    [Spec("css21", "box.html#box-dimensions")]
+    public void InlineBox_StartingOnAWrappedLine_HasItsBorderEdgeAfterItsStartMargin()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:100px'>aaa bbb <span id='s' style='margin-left:20px;padding-left:5px'>ccccccc</span></div>"));
+
+        var borderBox = LayoutHarness.FindById(root, "s")!.Rectangles.Values.Single();
+
+        Assert.AreEqual(20, borderBox.X, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visudet.html#inline-non-replaced")]
+    public void InlineBox_BottomPadding_ExtendsItsBorderBoxBelowTheContentArea()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div>a <span id='s' style='padding-bottom:10px'>b</span></div>"));
+
+        var b = FindWord(root, "b")!;
+        var borderBox = LayoutHarness.FindById(root, "s")!.Rectangles.Values.Single();
+
+        Assert.AreEqual(b.Top, borderBox.Top, Delta);
+        Assert.AreEqual(b.Bottom + 10, borderBox.Bottom, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#inline-formatting")]
+    [Spec("css-inline-3", "#line-boxes")]
     public void ContentThatDoesNotFit_IsDistributedOverStackedLineBoxes()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
