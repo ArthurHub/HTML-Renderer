@@ -856,6 +856,7 @@ sections:
     gaps:
       - "The initial value acts as 'left' also when 'direction' is 'rtl'"
       - "'justify' stretches preserved white space in 'pre' and 'pre-wrap' text"
+      - "'right' and 'center' leave out the end padding and border of an inline box at the end of the line, so they stick out past the content edge"
   text.html#decoration:
     title: 16.3 Decoration
     status: partial
