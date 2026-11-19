@@ -27,6 +27,7 @@ sections:
     status: partial
     gaps:
       - Consecutive non-row children don't share one anonymous row, misparented boxes get no anonymous table, see CSS 2.1 17.2.1
+      - The cells that follow a non-cell child of a row are moved into its anonymous cell, see CSS 2.1 17.2.1
   '#fixup-boxes':
     title: 2.2.2 Characteristics of fixup boxes
     status: supported

@@ -362,6 +362,7 @@ sections:
     status: partial
     gaps:
       - The first display:none child of an inline-block is moved out of it, next to the anonymous block box around the inline-block
+      - A block in an inline nested in another inline ends up after the content that follows it when an inline holds only the block, or when another block follows later
   visuren.html#inline-boxes:
     title: 9.2.2 Inline-level elements and inline boxes
     status: partial
@@ -907,6 +908,7 @@ sections:
       - Consecutive children of a table or row group that aren't rows each get their own anonymous row instead of sharing one
       - Misparented rows, row groups, columns and captions don't get an anonymous table
       - Anonymous wrappers are appended as the parent's last child instead of taking the place of the boxes they wrap
+      - The cells that follow a non-cell child of a row are moved into its anonymous cell
   tables.html#columns:
     title: 17.3 Columns
     status: partial

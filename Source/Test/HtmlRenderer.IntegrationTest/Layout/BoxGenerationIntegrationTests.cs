@@ -102,6 +102,83 @@ public sealed class BoxGenerationIntegrationTests
 
     [TestMethod]
     [Spec("css21", "visuren.html#anonymous-block-level")]
+    public void BlockInsideNestedInlines_SplitsAllOfThemAroundIt()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:300px'><span>a<em><strong>b<div id='block'>c</div>d</strong></em>e</span></div>"));
+
+        var block = LayoutHarness.FindById(root, "block")!;
+        var a = FindWord(root, "a")!;
+        var b = FindWord(root, "b")!;
+        var d = FindWord(root, "d")!;
+        var e = FindWord(root, "e")!;
+
+        Assert.AreEqual(a.Top, b.Top, Delta);
+        Assert.AreEqual(a.Right, b.Left, Delta);
+        Assert.AreEqual(a.Bottom, block.Location.Y, Delta);
+        Assert.AreEqual(0, block.Location.X, Delta);
+        Assert.AreEqual(300, block.Size.Width, Delta);
+        Assert.AreEqual(block.ActualBottom, d.Top, Delta);
+        Assert.AreEqual(0, d.Left, Delta);
+        Assert.AreEqual(d.Top, e.Top, Delta);
+        Assert.AreEqual(d.Right, e.Left, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#anonymous-block-level")]
+    public void TwoBlocksInsideAnInline_SplitItIntoThreeParts()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div><span>a<div id='b1'>b</div>c<div id='b2'>d</div>e</span></div>"));
+
+        var b1 = LayoutHarness.FindById(root, "b1")!;
+        var b2 = LayoutHarness.FindById(root, "b2")!;
+        var a = FindWord(root, "a")!;
+        var c = FindWord(root, "c")!;
+        var e = FindWord(root, "e")!;
+
+        Assert.AreEqual(a.Bottom, b1.Location.Y, Delta);
+        Assert.AreEqual(b1.ActualBottom, c.Top, Delta);
+        Assert.AreEqual(c.Bottom, b2.Location.Y, Delta);
+        Assert.AreEqual(b2.ActualBottom, e.Top, Delta);
+        Assert.AreEqual(0, c.Left, Delta);
+        Assert.AreEqual(0, e.Left, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visuren.html#anonymous-block-level")]
+    public void BlockInsideANestedInline_FollowedByAnotherBlock_KeepsTheDocumentOrder()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div><span>a<em>b<div id='c'>c</div></em>d<div id='e'>e</div>f</span></div>"));
+
+        var c = LayoutHarness.FindById(root, "c")!;
+        var e = LayoutHarness.FindById(root, "e")!;
+        var d = FindWord(root, "d")!;
+        var f = FindWord(root, "f")!;
+
+        Assert.AreEqual(c.ActualBottom, d.Top, Delta);
+        Assert.AreEqual(d.Bottom, e.Location.Y, Delta);
+        Assert.AreEqual(e.ActualBottom, f.Top, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visuren.html#anonymous-block-level")]
+    public void InlineHoldingOnlyABlock_KeepsTheDocumentOrder()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div><span>a<em><div id='b'>b</div></em>c</span></div>"));
+
+        var b = LayoutHarness.FindById(root, "b")!;
+
+        Assert.AreEqual(FindWord(root, "a")!.Bottom, b.Location.Y, Delta);
+        Assert.AreEqual(b.ActualBottom, FindWord(root, "c")!.Top, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visuren.html#anonymous-block-level")]
     public void BlockInsideInline_IsNotInsetByTheInlinesBorder()
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
