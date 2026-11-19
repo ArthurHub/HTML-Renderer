@@ -503,9 +503,7 @@ sections:
       - Auto margins compute to 0, a block image is never centered by them
   visudet.html#float-width:
     title: 10.3.5 Floating, non-replaced elements
-    status: partial
-    gaps:
-      - The shrink-to-fit width of an auto width float is computed before its content is measured, on the first layout it's 0 or NaN and the text wraps after every word
+    status: supported
   visudet.html#float-replaced-width:
     title: 10.3.6 Floating, replaced elements
     status: supported
@@ -514,7 +512,6 @@ sections:
     status: partial
     gaps:
       - With 'left' and 'right' set, an auto width is 0 instead of filling the space between them
-      - The shrink-to-fit width of an auto width box is computed before its content is measured, on the first layout it's 0 or NaN
       - With 'left', 'right' and 'width' set, auto margins compute to 0 instead of centering the box
       - With 'left' and 'right' auto, the box is placed at the containing block's content edge instead of its static position
   visudet.html#abs-replaced-width:
