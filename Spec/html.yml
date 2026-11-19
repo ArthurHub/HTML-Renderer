@@ -2130,9 +2130,12 @@ sections:
     title: 15.3.11 The hr element
     status: partial
     gaps:
-      - hr isn't centered, has no vertical margins and isn't gray
+      - hr isn't centered and isn't gray, its margins are 1.1em at the top and 0 at the bottom instead of 0.5em
       - align sets text-align instead of the margins
       - size sets the height including the borders, noshade is ignored and color doesn't make the border solid
+      - A zero top margin is replaced with 1.1em
+      - Without top and bottom borders and with a height of at most 2px, hr gets 1px solid top and bottom borders
+      - The width leaves out the side borders, an auto width hr is 2px narrower than its containing block and a percentage is resolved against the containing block minus those borders
   rendering.html#the-fieldset-and-legend-elements:
     title: 15.3.12 The fieldset and legend elements
     status: partial
