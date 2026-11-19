@@ -131,6 +131,7 @@ sections:
     gaps:
       - A gradient with a single color stop is accepted but not painted
       - "em positions are resolved against 16px, see css-images-3 #color-stop-syntax"
+      - "A transition hint outside the color stops is ignored, see css-images-3 #color-stop-syntax"
   '#coloring-gradient-line':
     title: 3.5.2 Coloring the Gradient Line
     status: partial

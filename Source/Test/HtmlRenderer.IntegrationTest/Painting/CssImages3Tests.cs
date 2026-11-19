@@ -14,6 +14,7 @@ public sealed class CssImages3Tests
 
     private static readonly RColor Red = RColor.FromArgb(255, 0, 0);
     private static readonly RColor Blue = RColor.FromArgb(0, 0, 255);
+    private static readonly RColor Lime = RColor.FromArgb(0, 255, 0);
 
     [TestMethod]
     [Spec("css-images-3", "#url-notation")]
@@ -164,6 +165,86 @@ public sealed class CssImages3Tests
         Assert.IsTrue(atHint.Position < 0.3, $"half the color at {atHint.Position}");
     }
 
+    [TestMethod]
+    [DataRow("rgb(0,0,0) 20%, 30%, rgb(200,100,40) 60%", new[] { 255, 100, 50, 20 }, new[] { 255, 141, 71, 28 })]
+    [DataRow("rgba(0,0,0,0) 20%, 30%, rgba(0,0,0,1) 60%", new[] { 128, 0, 0, 0 }, new[] { 180, 0, 0, 0 })]
+    [Spec("css-images-3", "#coloring-gradient-line")]
+    [Spec("css-images-4", "#coloring-gradient-line")]
+    public void ColorHint_BlendsAlongTheCurveThroughTheHint(string stops, int[] atHint, int[] atMiddle)
+    {
+        var (_, gradient) = Paint($"<div id='b' style='width:100px;height:50px;background-image:linear-gradient(to right, {stops})'></div>");
+
+        // The hint is at H = 1/4 of the transition, the color weight is P^(log_H 0.5) = sqrt(P): 1/2 at the hint, sqrt(1/2) halfway
+        AssertColor(atHint, gradient!.Stops.Single(s => Math.Abs(s.Position - 0.3) < 1e-6).Color);
+        AssertColor(atMiddle, gradient.Stops.Single(s => Math.Abs(s.Position - 0.4) < 1e-6).Color);
+    }
+
+    [Ignore("Gap, see Spec/css-images-3.yml")]
+    [TestMethod]
+    [DataRow("red, blue, 50%")]
+    [DataRow("50%, red, blue")]
+    [Spec("css-images-3", "#color-stop-syntax")]
+    public void ColorHint_OutsideTheColorStops_MakesTheGradientInvalid(string stops)
+    {
+        var (_, gradient) = Paint($"<div id='b' style='width:100px;height:50px;background-image:linear-gradient(to right, {stops})'></div>");
+
+        Assert.IsNull(gradient);
+    }
+
+    [TestMethod]
+    [Spec("css-images-3", "#color-stop-syntax")]
+    public void ColorStops_ResolveEm()
+    {
+        var (_, gradient) = Paint("<div id='b' style='width:100px;height:50px;font-size:16px;background-image:linear-gradient(to right, red 1em, blue 2em)'></div>");
+
+        CollectionAssert.AreEqual(new[] { 0.16, 0.32 }, gradient!.Stops.Select(s => Math.Round(s.Position, 3)).ToArray());
+    }
+
+    [TestMethod]
+    [Spec("css-images-3", "#repeating-gradients")]
+    [Spec("css-images-4", "#repeating-gradients")]
+    public void RepeatingLinearGradient_StartingInsideTheLine_RepeatsTheTileBothWays()
+    {
+        var (_, gradient) = Paint("<div id='b' style='width:100px;height:50px;background-image:repeating-linear-gradient(to right, red 10px, lime 30px, blue 50px)'></div>");
+
+        // The same as linear-gradient(red -30px, lime -10px, blue 10px, red 10px, lime 30px, blue 50px, red 50px, ...)
+        var stops = gradient!.Stops;
+        CollectionAssert.AreEqual(new[] { 0.1, 0.5, 0.9 }, stops.Where(s => s.Color == Red).Select(s => Math.Round(s.Position, 3)).ToArray());
+        CollectionAssert.AreEqual(new[] { 0.3, 0.7 }, stops.Where(s => s.Color == Lime).Select(s => Math.Round(s.Position, 3)).ToArray());
+        Assert.AreEqual(0, stops[0].Position);
+        AssertColor(new[] { 255, 0, 128, 128 }, stops[0].Color);
+        Assert.AreEqual(1, stops[^1].Position);
+        AssertColor(new[] { 255, 128, 128, 0 }, stops[^1].Color);
+    }
+
+    [TestMethod]
+    [Spec("css-images-3", "#repeating-gradients")]
+    public void RepeatingLinearGradient_TileSpanningTheLine_IsNotRepeated()
+    {
+        var (_, gradient) = Paint("<div id='b' style='width:100px;height:50px;background-image:repeating-linear-gradient(to right, red, blue)'></div>");
+
+        CollectionAssert.AreEqual(new[] { (Red, 0.0), (Blue, 1.0) }, gradient!.Stops);
+    }
+
+    [Ignore("Gap, see Spec/css-images-3.yml")]
+    [TestMethod]
+    [Spec("css-images-3", "#repeating-gradients")]
+    public void RepeatingLinearGradient_WithAZeroLengthTile_IsTheAverageColor()
+    {
+        var (_, gradient) = Paint("<div id='b' style='width:100px;height:50px;background-image:repeating-linear-gradient(to right, red 50%, blue 50%)'></div>");
+
+        foreach (var stop in gradient!.Stops)
+            AssertColor(new[] { 255, 128, 0, 128 }, stop.Color);
+    }
+
+    private static void AssertColor(int[] argb, RColor actual)
+    {
+        Assert.AreEqual(argb[0], actual.A, 1, $"A of {actual}");
+        Assert.AreEqual(argb[1], actual.R, 1, $"R of {actual}");
+        Assert.AreEqual(argb[2], actual.G, 1, $"G of {actual}");
+        Assert.AreEqual(argb[3], actual.B, 1, $"B of {actual}");
+    }
+
     [Ignore("Gap, see Spec/css-images-3.yml")]
     [TestMethod]
     [Spec("css-images-3", "#coloring-gradient-line")]
@@ -178,13 +259,15 @@ public sealed class CssImages3Tests
     }
 
     [TestMethod]
+    [DataRow("red, blue, red 60%, blue, red", new[] { 0, 0.3, 0.6, 0.8, 1 })]
+    [DataRow("red 10%, blue, lime, red 70%, blue, lime", new[] { 0.1, 0.3, 0.5, 0.7, 0.85, 1 })]
     [Spec("css-images-3", "#color-stop-fixup")]
     [Spec("css-images-4", "#color-stop-fixup")]
-    public void ColorStopFixup_DefaultsTheEndsAndSpacesStopsEvenly()
+    public void ColorStopFixup_DefaultsTheEndsAndSpacesStopsEvenly(string stops, double[] positions)
     {
-        var (_, gradient) = Paint("<div id='b' style='width:100px;height:50px;background-image:linear-gradient(to right, red, blue, red 60%, blue, red)'></div>");
+        var (_, gradient) = Paint($"<div id='b' style='width:100px;height:50px;background-image:linear-gradient(to right, {stops})'></div>");
 
-        CollectionAssert.AreEqual(new[] { 0, 0.3, 0.6, 0.8, 1 }, gradient!.Stops.Select(s => Math.Round(s.Position, 3)).ToArray());
+        CollectionAssert.AreEqual(positions, gradient!.Stops.Select(s => Math.Round(s.Position, 3)).ToArray());
     }
 
     [Ignore("Gap, see Spec/css-images-3.yml")]
