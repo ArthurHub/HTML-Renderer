@@ -78,11 +78,13 @@ sections:
     gaps:
       - Out-of-range values aren't clipped, see CSS 2.1 4.3.6
       - rgb() ignores the alpha, see 4.1.2 and 4.2
+      - Percentages are truncated instead of rounded towards +infinity, rgb(50% 50% 50%) is rgb(127 127 127)
   '#hex-notation':
     title: '5.2 The RGB Hexadecimal Notations: #RRGGBB'
     status: partial
     gaps:
       - "The alpha of 4 and 8 digit hex colors is rounded to two decimals, #f008 gets an alpha of 135 instead of 136"
+      - "A hex color inside a function, e.g. a color-mix() operand, isn't validated, #abg and #12345 are colors"
   '#color-keywords':
     title: 6 Color Keywords
     status: partial

@@ -202,6 +202,16 @@ public sealed class CssColorTests
     }
 
     [TestMethod]
+    [Ignore("Gap, see Spec/css-color-4.yml")]
+    [Spec("css-color-4", "#rgb-functions")]
+    [DataRow("rgb(50%, 50%, 50%)")]
+    [DataRow("rgb(50% 50% 50%)")]
+    public void RgbPercentage_RoundsTowardsPositiveInfinity(string value)
+    {
+        Assert.AreEqual(RColor.FromArgb(255, 128, 128, 128), Color(value));
+    }
+
+    [TestMethod]
     [Spec("css-color-4", "#named-colors")]
     [Spec("css-color-4", "#untagged")]
     [DataRow("rebeccapurple", 102, 51, 153)]
