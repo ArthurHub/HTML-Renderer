@@ -53,6 +53,97 @@ public sealed class HrPlacementTests
         Assert.AreEqual(30, h.Location.Y - a.ActualBottom, Delta);
     }
 
+    [TestMethod]
+    [Spec("html", "rendering.html#the-hr-element-2")]
+    [Spec("css21", "visudet.html#blockwidth")]
+    public void TheRule_StartsAtTheContentEdgeOfItsContainingBlockPlusItsMargin()
+    {
+        var (plain, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:200px'><hr id='h' style='margin:0'></div>"));
+        var (padded, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:200px;padding:0 10px;border:solid black;border-width:0 5px'><hr id='h' style='margin:0'></div>"));
+        var (indented, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:200px'><hr id='h' style='margin:0 30px 0 20px'></div>"));
+
+        var p = LayoutHarness.FindById(plain, "h")!;
+        var q = LayoutHarness.FindById(padded, "h")!;
+        var i = LayoutHarness.FindById(indented, "h")!;
+
+        Assert.AreEqual(0, p.Location.X, Delta);
+        Assert.AreEqual(15, q.Location.X, Delta);
+        Assert.AreEqual(20, i.Location.X, Delta);
+        Assert.AreEqual(p.Size.Width, q.Size.Width, Delta);
+        Assert.AreEqual(p.Size.Width - 50, i.Size.Width, Delta);
+    }
+
+    [TestMethod]
+    [Spec("html", "rendering.html#the-hr-element-2")]
+    [Spec("css21", "visudet.html#normal-block")]
+    [DataRow("", 2)]
+    [DataRow("height:10px", 12)]
+    [DataRow("padding:5px 0", 12)]
+    [DataRow("border:3px solid", 6)]
+    public void TheRule_IsAsTallAsItsHeightPaddingAndBorders(string style, double height)
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            $"<div style='width:200px'><hr id='h' style='margin:0;{style}'></div>"));
+
+        var h = LayoutHarness.FindById(root, "h")!;
+
+        Assert.AreEqual(height, h.ActualBottom - h.Location.Y, 0.01);
+    }
+
+    [Ignore("Gap, see Spec/html.yml")]
+    [TestMethod]
+    [Spec("html", "rendering.html#the-hr-element-2")]
+    public void TheRuleWithoutBorders_HasNoHeight()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:200px'><hr id='h' style='margin:0;border:0'></div>"));
+
+        var h = LayoutHarness.FindById(root, "h")!;
+
+        Assert.AreEqual(0, h.ActualBorderTopWidth);
+        Assert.AreEqual(0, h.ActualBottom - h.Location.Y, 0.01);
+    }
+
+    [Ignore("Gap, see Spec/html.yml")]
+    [TestMethod]
+    [Spec("html", "rendering.html#the-hr-element-2")]
+    public void TheRuleWithAZeroTopMargin_SitsAtTheTopOfItsContainingBlock()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:200px'><hr id='h' style='margin:0'></div>"));
+
+        Assert.AreEqual(0, LayoutHarness.FindById(root, "h")!.Location.Y, Delta);
+    }
+
+    [Ignore("Gap, see Spec/html.yml")]
+    [TestMethod]
+    [Spec("html", "rendering.html#the-hr-element-2")]
+    public void AutoWidthRule_BorderBoxFillsTheContainingBlock()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:200px'><hr id='h' style='margin:0'></div>"));
+
+        var h = LayoutHarness.FindById(root, "h")!;
+
+        Assert.AreEqual(200, h.ActualRight - h.Location.X, 0.01);
+    }
+
+    [Ignore("Gap, see Spec/html.yml")]
+    [TestMethod]
+    [Spec("html", "rendering.html#the-hr-element-2")]
+    public void PercentageWidth_IsRelativeToTheContainingBlock()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:200px'><hr id='h' style='margin:0;width:50%'></div>"));
+
+        var h = LayoutHarness.FindById(root, "h")!;
+
+        Assert.AreEqual(102, h.ActualRight - h.Location.X, 0.01);
+    }
+
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visuren.html#block-formatting")]
