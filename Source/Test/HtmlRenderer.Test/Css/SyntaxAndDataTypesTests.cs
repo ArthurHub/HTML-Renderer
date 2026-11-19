@@ -519,6 +519,110 @@ public sealed class SyntaxAndDataTypesTests
     }
 
     [TestMethod]
+    [Spec("css-syntax-3", "#consume-url-token")]
+    [Spec("css-syntax-3", "#consume-escaped-code-point")]
+    [DataRow(@"url(yel\6C ow)")]
+    [DataRow("url(yel\\6C\tow)")]
+    [DataRow(@"url(yel\00006Cow)")]
+    [DataRow(@"url(ye\6C\6Cow)")]
+    [DataRow(@"url(yel\low)")]
+    [DataRow("url( yellow\t)")]
+    [DataRow("url(\"yel\\6C\r\now\")")]
+    [DataRow("url(\"yel\\6C\now\")")]
+    [DataRow("url('yel\\6C ow')")]
+    public void RelativeUrlWithEscapes_ResolvesTheUnescapedUrlAgainstTheStyleSheet(string value)
+    {
+        var (box, href) = StyledWithFile("style/basic.css", Encoding.UTF8.GetBytes($"#x {{ background-image: {value} }}"));
+
+        StringAssert.Contains(box.BackgroundImage, new Uri(new Uri(href), "yellow").AbsoluteUri);
+    }
+
+    [TestMethod]
+    [Spec("css-syntax-3", "#consume-string-token")]
+    [DataRow("url(\"yel\\\nlow\")")]
+    [DataRow("url('yel\\\r\nlow')")]
+    [DataRow("url('yel\\\flow')")]
+    [DataRow("url('yel\\\rlow')")]
+    public void QuotedUrlWithEscapedNewline_ContinuesTheString(string value)
+    {
+        var (box, href) = StyledWithFile("style/basic.css", Encoding.UTF8.GetBytes($"#x {{ background-image: {value} }}"));
+
+        StringAssert.Contains(box.BackgroundImage, new Uri(new Uri(href), "yellow").AbsoluteUri);
+    }
+
+    [TestMethod]
+    [Spec("css-syntax-3", "#consume-escaped-code-point")]
+    public void HexEscape_EndsAfterSixDigits()
+    {
+        var (box, href) = StyledWithFile("style/basic.css", Encoding.UTF8.GetBytes(@"#x { background-image: url(ye\00006C6ow) }"));
+
+        StringAssert.Contains(box.BackgroundImage, new Uri(new Uri(href), "yel6ow").AbsoluteUri);
+    }
+
+    [TestMethod]
+    [Spec("css-syntax-3", "#consume-escaped-code-point")]
+    [DataRow(@"url(a\0 b)")]
+    [DataRow(@"url(a\D800 b)")]
+    [DataRow(@"url(a\DFFF b)")]
+    [DataRow(@"url(a\110000 b)")]
+    public void HexEscapeOfNullSurrogateOrBeyondUnicode_IsTheReplacementCharacter(string value)
+    {
+        var (box, href) = StyledWithFile("style/basic.css", Encoding.UTF8.GetBytes($"#x {{ background-image: {value} }}"));
+
+        StringAssert.Contains(box.BackgroundImage, new Uri(new Uri(href), "a�b").AbsoluteUri);
+    }
+
+    [TestMethod]
+    [Spec("css-syntax-3", "#consume-escaped-code-point")]
+    public void HexEscapeOfTheLastCodePoint_IsKept()
+    {
+        var (box, href) = StyledWithFile("style/basic.css", Encoding.UTF8.GetBytes(@"#x { background-image: url(a\10FFFF b) }"));
+
+        StringAssert.Contains(box.BackgroundImage, new Uri(new Uri(href), "a" + char.ConvertFromUtf32(0x10FFFF) + "b").AbsoluteUri);
+    }
+
+    [TestMethod]
+    [Spec("css-syntax-3", "#consume-url-token")]
+    [Spec("css-syntax-3", "#consume-string-token")]
+    [DataRow("url(yel'low)")]
+    [DataRow("url(yel\"low)")]
+    [DataRow("url(yel(low)")]
+    [DataRow("url(yel low)")]
+    [DataRow("url(\"yel\nlow\")")]
+    [DataRow("url('yel\rlow')")]
+    [DataRow("url('yel\flow')")]
+    public void BadUrl_IsNotResolvedAgainstTheStyleSheet(string value)
+    {
+        var (box, href) = StyledWithFile("style/basic.css", Encoding.UTF8.GetBytes($"#x {{ background-image: {value} }}"));
+
+        Assert.IsFalse((box.BackgroundImage ?? string.Empty).Contains(new Uri(new Uri(href), ".").AbsoluteUri), box.BackgroundImage);
+    }
+
+    [TestMethod]
+    [Spec("css-values-4", "#url-empty")]
+    [DataRow("url()")]
+    [DataRow("url(\"\")")]
+    public void EmptyUrl_IsNotResolvedAgainstTheStyleSheet(string value)
+    {
+        var (box, href) = StyledWithFile("style/basic.css", Encoding.UTF8.GetBytes($"#x {{ background-image: {value} }}"));
+
+        Assert.IsFalse((box.BackgroundImage ?? string.Empty).Contains(new Uri(new Uri(href), ".").AbsoluteUri), box.BackgroundImage);
+    }
+
+    [TestMethod]
+    [Spec("css21", "syndata.html#uri")]
+    [Spec("css-values-4", "#relative-urls")]
+    [DataRow("")]
+    [DataRow(@" #w { background-image: url(a\41")]
+    public void EveryRelativeUrlInTheStyleSheet_IsResolved(string end)
+    {
+        var css = "#y { background-image: url(first.png) } #z { background: url(bad'url) } #x { background-image: url(yellow) }" + end;
+        var (box, href) = StyledWithFile("style/basic.css", Encoding.UTF8.GetBytes(css));
+
+        StringAssert.Contains(box.BackgroundImage, new Uri(new Uri(href), "yellow").AbsoluteUri);
+    }
+
+    [TestMethod]
     [Spec("css21", "syndata.html#counter")]
     [DataRow("counter(c)", "3")]
     [DataRow("counter( c )", "3")]
