@@ -2157,6 +2157,7 @@ sections:
     status: partial
     gaps:
       - An unavailable image is drawn as an error icon instead of its alt text
+      - An unavailable image with a width and height gets a 2px border around that size and starts 2px left of the line
   rendering.html#attributes-for-embedded-content-and-images:
     title: 15.4.3 Attributes for embedded content and images
     status: partial

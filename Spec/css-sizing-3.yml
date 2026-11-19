@@ -32,7 +32,7 @@ sections:
     title: '3.1.3 Maximum Size Properties: the max-width, max-height, max-inline-size, and max-block-size properties'
     status: partial
     gaps:
-      - "'max-width' only applies to images and 'max-height' doesn't apply to them, see CSS 2.1 10.4 and 10.7"
+      - "'max-width' only applies to images and tables, 'max-height' doesn't apply to images, see CSS 2.1 10.4 and 10.7"
       - "'max-inline-size' and 'max-block-size' are ignored"
   '#sizing-values':
     title: '3.2 Sizing Values: the <length-percentage>, auto | none, stretch, min-content, max-content, and fit-content values'

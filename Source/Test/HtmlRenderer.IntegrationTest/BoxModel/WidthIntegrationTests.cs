@@ -360,6 +360,66 @@ public sealed class WidthIntegrationTests
         Assert.AreEqual((20d, 10d), (r.Width, r.Height));
     }
 
+    [TestMethod]
+    [Spec("css21", "visudet.html#min-max-widths")]
+    [Spec("css-sizing-3", "#max-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
+    public void PercentageMaxWidth_ScalesDownAnImageKeepingItsRatio()
+    {
+        var root = TestImages.Layout($"<div style='width:200px'><img id='i' style='max-width:10%' src='{Image}'></div>");
+        var r = TestImages.ImageRect(root, "i");
+
+        Assert.AreEqual((20d, 10d), (r.Width, r.Height));
+    }
+
+    [TestMethod]
+    [Spec("css21", "visudet.html#min-max-widths")]
+    [Spec("css-sizing-3", "#max-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
+    public void MaxWidthAboveTheImageWidth_HasNoEffect()
+    {
+        var root = TestImages.Layout($"<div style='width:200px;font-size:10px'><img id='i' style='max-width:10em' src='{Image}'></div>");
+        var r = TestImages.ImageRect(root, "i");
+
+        Assert.AreEqual((40d, 20d), (r.Width, r.Height));
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visudet.html#min-max-widths")]
+    [Spec("css-sizing-3", "#max-size-properties")]
+    [Spec("css-sizing-4", "#sizing-properties")]
+    public void MaxWidth_LimitsAnImageWithAHeight()
+    {
+        var root = TestImages.Layout($"<img id='i' style='max-width:20px;height:30px' src='{Image}'>");
+        var r = TestImages.ImageRect(root, "i");
+
+        Assert.AreEqual((20d, 30d), (r.Width, r.Height));
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visudet.html#inline-replaced-width")]
+    [DataRow("width:0")]
+    [DataRow("width:0%")]
+    public void ZeroWidth_MakesTheImageZeroWide(string style)
+    {
+        var root = TestImages.Layout($"<div style='width:200px'><img id='i' style='{style}' src='{Image}'></div>");
+
+        Assert.AreEqual(0, TestImages.ImageRect(root, "i").Width, Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visudet.html#min-max-widths")]
+    [Spec("css-sizing-3", "#max-size-properties")]
+    public void ZeroMaxWidth_MakesTheImageZeroWide()
+    {
+        var root = TestImages.Layout($"<div style='width:200px'><img id='i' style='max-width:0' src='{Image}'></div>");
+
+        Assert.AreEqual(0, TestImages.ImageRect(root, "i").Width, Delta);
+    }
+
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "visudet.html#min-max-widths")]

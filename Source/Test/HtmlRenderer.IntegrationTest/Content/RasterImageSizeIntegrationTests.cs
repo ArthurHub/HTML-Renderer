@@ -35,6 +35,16 @@ public sealed class RasterImageSizeIntegrationTests
         Assert.AreEqual(5, image.Words[0].Height, Delta);
     }
 
+    [Ignore("Gap, see Spec/html.yml")]
+    [TestMethod]
+    [Spec("html", "rendering.html#images-3")]
+    public void UnavailableImage_WithWidthAndHeight_TakesThatSizeAtTheStartOfTheLine()
+    {
+        var root = TestImages.Layout("<div style='width:200px'><img id='i' width='40' height='30' src='data:image/png;base64,AAAA'></div>");
+
+        Assert.AreEqual(new RRect(0, 0, 40, 30), TestImages.ImageRect(root, "i"));
+    }
+
     private static string PngDataUri(int width, int height)
     {
         using var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
