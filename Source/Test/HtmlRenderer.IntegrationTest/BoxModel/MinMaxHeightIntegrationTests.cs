@@ -33,6 +33,30 @@ public sealed class MinMaxHeightIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "visudet.html#min-max-heights")]
+    [Spec("css-sizing-3", "#max-size-properties")]
+    public void MaxHeight_LimitsTheContentBox_PaddingComesOnTop()
+    {
+        var html = LayoutHarness.Wrap("<div id='b' style='max-height:50px;padding:10px'>x<br>y<br>z<br>w</div>");
+        var (root, _) = LayoutHarness.Layout(html);
+        var box = LayoutHarness.FindById(root, "b")!;
+
+        Assert.AreEqual(70, box.ActualBottom - box.Location.Y, Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visudet.html#min-max-heights")]
+    [Spec("css-sizing-3", "#min-size-properties")]
+    public void MinHeightWinsOverConflictingMaxHeight_PaddingComesOnTop()
+    {
+        var html = LayoutHarness.Wrap("<div id='b' style='height:150px;max-height:50px;min-height:80px;padding:10px'>x</div>");
+        var (root, _) = LayoutHarness.Layout(html);
+        var box = LayoutHarness.FindById(root, "b")!;
+
+        Assert.AreEqual(100, box.ActualBottom - box.Location.Y, Delta);
+    }
+
+    [TestMethod]
     [Spec("css21", "visudet.html#the-height-property")]
     public void PercentageHeight_AgainstAutoHeightContainingBlock_ComputesToAuto()
     {
