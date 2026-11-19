@@ -112,6 +112,68 @@ public sealed class CssFonts4IntegrationTests
         Assert.AreEqual(expected, font.Name);
     }
 
+    [TestMethod]
+    [Spec("css-fonts-4", "#font-style-matching")]
+    [DataRow("300 450 500 600", 400, 450)]
+    [DataRow("300 500 600", 400, 500)]
+    [DataRow("100 300 600", 400, 300)]
+    [DataRow("600 800", 400, 600)]
+    [DataRow("400 500", 450, 500)]
+    [DataRow("100 200 500", 300, 200)]
+    [DataRow("400 500", 300, 400)]
+    [DataRow("400 700 900", 600, 700)]
+    [DataRow("300 450", 600, 450)]
+    [DataRow("600 700", 800, 700)]
+    [DataRow("100 200 900", 500, 200)]
+    public void FontFace_Weight_FollowsTheFallbackOrder(string faceWeights, int desired, int expected)
+    {
+        var family = $"F4WeightOrder{faceWeights.Replace(" ", "")}x{desired}";
+        var css = string.Concat(faceWeights.Split(' ').Select(w =>
+            $"@font-face {{ font-family: {family}; src: url({FontUri(WeightFaces[int.Parse(w)].File)}); font-weight: {w} }}"));
+
+        var font = FontOf(css, $"<span id='s' style='font-family:{family};font-weight:{desired}'>x</span>");
+
+        Assert.AreEqual(WeightFaces[expected].Name, font.Name);
+    }
+
+    [TestMethod]
+    [Spec("css-fonts-4", "#font-style-matching")]
+    [DataRow("condensed expanded", "semi-condensed", "condensed")]
+    [DataRow("ultra-condensed semi-expanded", "condensed", "ultra-condensed")]
+    [DataRow("ultra-condensed condensed semi-expanded", "semi-condensed", "condensed")]
+    [DataRow("semi-condensed semi-expanded", "normal", "semi-condensed")]
+    [DataRow("semi-expanded expanded", "semi-condensed", "semi-expanded")]
+    [DataRow("semi-condensed expanded ultra-expanded", "semi-expanded", "expanded")]
+    [DataRow("condensed semi-condensed", "expanded", "semi-condensed")]
+    public void FontFace_Stretch_FollowsTheFallbackOrder(string faceStretches, string desired, string expected)
+    {
+        var family = $"F4StretchOrder{faceStretches.Replace(" ", "").Replace("-", "")}x{desired.Replace("-", "")}";
+        var css = string.Concat(faceStretches.Split(' ').Select(s =>
+            $"@font-face {{ font-family: {family}; src: url({FontUri(StretchFaceFiles[s].File)}); font-stretch: {s} }}"));
+
+        var font = FontOf(css, $"<span id='s' style='font-family:{family};font-stretch:{desired}'>x</span>");
+
+        Assert.AreEqual(StretchFaceFiles[expected].Name, font.Name);
+    }
+
+    [TestMethod]
+    [Spec("css-fonts-4", "#unicode-range-desc")]
+    [DataRow("", "U+30-39", "!!", "22")]
+    [DataRow("U+0-39", "U+30-39", "!!", "22")]
+    [DataRow("U+21-39", "U+21-29", "22", "!!")]
+    public void FontFace_SameDescriptorsWithAnotherUnicodeRange_AreBothKept(string first, string second, string onlyFirst, string both)
+    {
+        var family = $"F4RangeKept{first.Replace("+", "").Replace("-", "")}x{second.Replace("+", "").Replace("-", "")}";
+        string Range(string range) => range.Length == 0 ? "" : $"; unicode-range: {range}";
+        var (root, _) = Layout(
+            $"@font-face {{ font-family: {family}; src: url({FontUri(Sans)}){Range(first)} }}" +
+            $"@font-face {{ font-family: {family}; src: url({FontUri(Mono)}){Range(second)} }}",
+            $"<span id='first' style='font-family:{family}'>{onlyFirst}</span><span id='both' style='font-family:{family}'>{both}</span>");
+
+        Assert.AreEqual("Liberation Sans", Font(TextBox(root, "first")).Name);
+        Assert.AreEqual("Liberation Mono", Font(TextBox(root, "both")).Name);
+    }
+
     [Ignore("Gap, see Spec/css-fonts-4.yml")]
     [TestMethod]
     [Spec("css-fonts-4", "#font-prop-desc")]
@@ -321,6 +383,30 @@ public sealed class CssFonts4IntegrationTests
 
         Assert.IsGreaterThan(LayoutHarness.FindById(root, "xx")!.ActualFont.Size, LayoutHarness.FindById(root, "xxx")!.ActualFont.Size);
     }
+
+    private static readonly Dictionary<int, (string File, string Name)> WeightFaces = new()
+    {
+        [100] = ("Caveat-Regular.ttf", "Caveat"),
+        [200] = ("DancingScript-Regular.ttf", "Dancing Script"),
+        [300] = ("IndieFlower-Regular.ttf", "Indie Flower"),
+        [400] = ("Pacifico-Regular.ttf", "Pacifico"),
+        [450] = ("LiberationMono-Regular.ttf", "Liberation Mono"),
+        [500] = ("LiberationSans-Regular.ttf", "Liberation Sans"),
+        [600] = ("LiberationSerif-Bold.ttf", "Liberation Serif"),
+        [700] = ("NotoSans-Bold.ttf", "Noto Sans"),
+        [800] = ("NotoSerif-Bold.ttf", "Noto Serif"),
+        [900] = ("ComicNeue-Bold.ttf", "Comic Neue"),
+    };
+
+    private static readonly Dictionary<string, (string File, string Name)> StretchFaceFiles = new()
+    {
+        ["ultra-condensed"] = ("Caveat-Regular.ttf", "Caveat"),
+        ["condensed"] = ("DancingScript-Regular.ttf", "Dancing Script"),
+        ["semi-condensed"] = ("IndieFlower-Regular.ttf", "Indie Flower"),
+        ["semi-expanded"] = ("LiberationMono-Regular.ttf", "Liberation Mono"),
+        ["expanded"] = ("LiberationSans-Regular.ttf", "Liberation Sans"),
+        ["ultra-expanded"] = ("LiberationSerif-Regular.ttf", "Liberation Serif"),
+    };
 
     private static string StretchFaces(string family) =>
         $"@font-face {{ font-family: {family}; src: url({FontUri(Sans)}); font-stretch: normal }}" +
