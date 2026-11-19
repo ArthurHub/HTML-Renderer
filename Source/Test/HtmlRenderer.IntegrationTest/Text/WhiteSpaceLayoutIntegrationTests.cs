@@ -138,6 +138,34 @@ public sealed class WhiteSpaceLayoutIntegrationTests
     [TestMethod]
     [Spec("css21", "text.html#white-space-prop")]
     [Spec("css-text-3", "#white-space-property")]
+    public void NoWrap_InlineThatDoesntFitTheRestOfTheLine_MovesToTheNextLineAsAWhole()
+    {
+        var words = Words("<p id='p' style='margin:0;width:100px'>aaa <span style='white-space:nowrap'>bbb ccc ddd</span></p>");
+        var aaa = words.Single(w => w.Text == "aaa");
+        var nowrap = words.Where(w => w.Text is "bbb" or "ccc" or "ddd").ToList();
+
+        Assert.AreEqual(1, nowrap.Select(w => w.Top).Distinct().Count());
+        Assert.IsGreaterThan(aaa.Top, nowrap[0].Top);
+        Assert.AreEqual(0, nowrap[0].Left, 0.5);
+    }
+
+    [TestMethod]
+    [Spec("css-text-3", "#white-space-phase-2")]
+    public void PreWrap_SpacesAtTheEndOfALine_HangInsteadOfWrapping()
+    {
+        var words = Words("<p id='p' style='margin:0;width:100px;white-space:pre-wrap'>aaa bbb ccc                    ddd</p>");
+        var ccc = words.Single(w => w.Text == "ccc");
+        var spaces = words.Single(w => w.Text == new string(' ', 20));
+        var ddd = words.Single(w => w.Text == "ddd");
+
+        Assert.AreEqual(ccc.Top, spaces.Top, 0.5);
+        Assert.IsGreaterThan(spaces.Top, ddd.Top);
+        Assert.AreEqual(0, ddd.Left, 0.5);
+    }
+
+    [TestMethod]
+    [Spec("css21", "text.html#white-space-prop")]
+    [Spec("css-text-3", "#white-space-property")]
     [Spec("css-text-4", "#white-space-property")]
     public void PreLine_CollapsesSpacesButKeepsNewlines()
     {
