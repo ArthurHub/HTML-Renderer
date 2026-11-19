@@ -93,6 +93,7 @@ sections:
       - match-parent is ignored
       - "justify-all doesn't justify the last line, see #text-align-last-property"
       - The initial value acts as left also when direction is rtl, see CSS 2.1 16.2
+      - right and center leave out the end padding and border of an inline box at the end of the line, see CSS 2.1 16.2
   '#text-align-all-property':
     title: '6.2 Default Text Alignment: the text-align-all property'
     status: unsupported

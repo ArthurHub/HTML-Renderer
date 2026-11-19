@@ -3,6 +3,7 @@ using System.Drawing.Imaging;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.WinForms.Adapters;
 
 namespace HtmlRenderer.IntegrationTest.TestSupport;
@@ -57,11 +58,20 @@ internal static class LayoutHarness
             prepare(container.Root!);
         }
 
+        // CssBox.PerformLayout reports exceptions instead of throwing them
+        var layoutErrors = new List<string>();
+        container.RenderError += (_, e) =>
+        {
+            if (e.Type == HtmlRenderErrorType.Layout)
+                layoutErrors.Add(e.Message + ": " + e.Exception);
+        };
+
         using var bitmap = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
         using var g = Graphics.FromImage(bitmap);
         using var graphics = new GraphicsAdapter(g, false);
         container.PerformLayout(graphics);
 
+        Assert.IsEmpty(layoutErrors, string.Join(Environment.NewLine, layoutErrors));
         Assert.IsNotNull(container.Root);
 
         return (container.Root!, container);
