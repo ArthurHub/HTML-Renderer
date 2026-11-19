@@ -733,6 +733,7 @@ sections:
     gaps:
       - A forced break before a first child is dropped instead of breaking before its ancestors, which meet at the same margin
       - "A forced 'page-break-after' on a last child doesn't break before its parent's next sibling"
+      - A box after a forced break whose top margin crosses the page boundary skips a page, it lands on the page after the next
   page.html#best-page-breaks:
     title: 13.3.5 "Best" page breaks
     status: supported

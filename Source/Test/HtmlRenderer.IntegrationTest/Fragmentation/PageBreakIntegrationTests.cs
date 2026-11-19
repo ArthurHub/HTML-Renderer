@@ -254,6 +254,31 @@ public sealed class PageBreakIntegrationTests
             "second's own margin-top should be added normally on top of the forced-break relocation, not truncated");
     }
 
+    [TestMethod]
+    [Ignore("Gap, see Spec/css-break-3.yml")]
+    [Spec("css-break-3", "#break-margins")]
+    public async Task ForcedBreak_MarginEndingExactlyAtThePageTop_IsPreserved()
+    {
+        var (root, container) = await BuildAsync(
+            "<div class='filler' style='height:900px;margin:0;padding:0;border:0'></div>"
+            + "<div class='second' style='page-break-before:always;margin-top:100px'>Second</div>");
+
+        Assert.AreEqual(container.PageTopOf(1) + 100, FindByClass(root, "second").Location.Y, 0.5);
+    }
+
+    [TestMethod]
+    [Ignore("Gap, see Spec/css21.yml")]
+    [Spec("css21", "page.html#forced")]
+    [Spec("css-break-3", "#forced-breaks")]
+    public async Task ForcedBreak_MarginCrossingThePageBoundary_DoesNotSkipAPage()
+    {
+        var (root, container) = await BuildAsync(
+            "<div class='filler' style='height:900px;margin:0;padding:0;border:0'></div>"
+            + "<div class='second' style='page-break-before:always;margin-top:150px'>Second</div>");
+
+        Assert.AreEqual(container.PageTopOf(1) + 150, FindByClass(root, "second").Location.Y, 0.5);
+    }
+
     #region Margin truncation before a container's first child (css-break-3 §5.2)
 
     private static string FirstChildDocument(string outerStyle, string margin = "1200px") =>

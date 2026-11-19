@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
@@ -42,10 +43,19 @@ public sealed class KeepWithNextIntegrationTests
         container.Location = new RPoint(0, MarginTop);
         wrapper.MaxSize = new SizeF(400, 0);
 
+        // CssBox.PerformLayout reports exceptions instead of throwing them
+        var layoutErrors = new List<string>();
+        wrapper.RenderError += (_, e) =>
+        {
+            if (e.Type == HtmlRenderErrorType.Layout)
+                layoutErrors.Add(e.Message + ": " + e.Exception);
+        };
+
         using var bitmap = new Bitmap(400, 60000);
         using var g = Graphics.FromImage(bitmap);
         wrapper.PerformLayout(g);
 
+        Assert.IsEmpty(layoutErrors, string.Join("\n", layoutErrors));
         return (container.Root!, container);
     }
 
@@ -358,5 +368,56 @@ public sealed class KeepWithNextIntegrationTests
         var keepPage = container.PageIndexOf(keep.Location.Y);
         Assert.IsTrue(keepPage >= 1, $"Test setup expects the avoid box to be moved to page 2+, but it is at y={keep.Location.Y}");
         Assert.AreEqual(keepPage, container.PageIndexOf(lead.Location.Y));
+    }
+
+    private static string HeadingAndKeepBox(int keepHeight) =>
+        "<div class='heading' style='height:40px;break-after:avoid'>Heading</div>"
+        + "<div class='keep' style='break-inside:avoid'>"
+        + $"<div style='height:{keepHeight}px'>Keep together</div></div>";
+
+    [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
+    public async Task HeadingAndMovedBox_FillingAPageExactly_MoveTogether()
+    {
+        var (root, _) = await BuildAsync(HeadingAndKeepBox(960));
+
+        Assert.AreEqual(PageHeight, FindByClass(root, "heading").Location.Y, 0.5);
+        Assert.AreEqual(PageHeight + 40, FindByClass(root, "keep").Location.Y, 0.5);
+    }
+
+    [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
+    [Spec("css-break-3", "#unforced-breaks")]
+    public async Task HeadingAndMovedBox_TallerThanAPageTogether_HeadingStaysBehind()
+    {
+        var (root, _) = await BuildAsync(HeadingAndKeepBox(970));
+
+        Assert.AreEqual(900, FindByClass(root, "heading").Location.Y, 0.5);
+        Assert.AreEqual(PageHeight, FindByClass(root, "keep").Location.Y, 0.5);
+    }
+
+    [TestMethod]
+    [Spec("css21", "page.html#allowed-page-breaks")]
+    public async Task BreakAfterAvoid_OnABoxSplitAcrossTheBoundary_DoesNotMoveIt()
+    {
+        var (root, _) = await BuildAsync(
+            "<div class='lead' style='height:150px;break-after:avoid'>Lead</div>"
+            + "<div class='next'>Next</div>");
+
+        Assert.AreEqual(900, FindByClass(root, "lead").Location.Y, 0.5);
+        Assert.AreEqual(1050, FindByClass(root, "next").Location.Y, 0.5);
+    }
+
+    [TestMethod]
+    public async Task BreakAfterAvoid_RunStartingBelowThePageTop_IsNotMovedUp()
+    {
+        var (root, _) = await BuildAsync(
+            "<div class='a' style='height:10px;break-after:avoid'>A</div>"
+            + "<div class='b' style='margin-top:-60px;height:30px;break-after:avoid'>B</div>"
+            + "<div class='c' style='margin-top:30px'>C</div>",
+            fillerHeight: 1005);
+
+        Assert.AreEqual(1005, FindByClass(root, "a").Location.Y, 0.5);
+        Assert.AreEqual(955, FindByClass(root, "b").Location.Y, 0.5);
     }
 }
