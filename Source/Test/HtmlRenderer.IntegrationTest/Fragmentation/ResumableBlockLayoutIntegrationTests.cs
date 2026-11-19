@@ -8,6 +8,7 @@ using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Fragments;
 using TheArtOfDev.HtmlRenderer.WinForms;
+using static HtmlRenderer.IntegrationTest.TestSupport.Fragments;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
@@ -55,14 +56,6 @@ public sealed class ResumableBlockLayoutIntegrationTests
 
     private static CssBox FindById(CssBox root, string id) =>
         Walk(root).FirstOrDefault(b => b.HtmlTag?.TryGetAttribute("id") == id)!;
-
-    private static IEnumerable<BoxFragment> Flatten(BoxFragment fragment)
-    {
-        yield return fragment;
-        foreach (var child in fragment.Children)
-            foreach (var descendant in Flatten(child))
-                yield return descendant;
-    }
 
     private static bool Contains(BoxFragment fragment, CssBox box) =>
         ReferenceEquals(fragment.Box, box) || fragment.Children.Any(c => Contains(c, box));

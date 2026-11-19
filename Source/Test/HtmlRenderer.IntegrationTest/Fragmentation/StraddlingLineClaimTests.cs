@@ -8,6 +8,7 @@ using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Fragments;
 using TheArtOfDev.HtmlRenderer.WinForms;
+using static HtmlRenderer.IntegrationTest.TestSupport.Fragments;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
@@ -48,14 +49,6 @@ public sealed class StraddlingLineClaimTests
         yield return box;
         foreach (var b in box.Boxes)
             foreach (var d in Walk(b))
-                yield return d;
-    }
-
-    private static IEnumerable<BoxFragment> Flatten(BoxFragment fragment)
-    {
-        yield return fragment;
-        foreach (var child in fragment.Children)
-            foreach (var d in Flatten(child))
                 yield return d;
     }
 

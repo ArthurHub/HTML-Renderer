@@ -9,6 +9,7 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 using TheArtOfDev.HtmlRenderer.Core.Fragments;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
 using TheArtOfDev.HtmlRenderer.WinForms;
+using static HtmlRenderer.IntegrationTest.TestSupport.Fragments;
 
 namespace TheArtOfDev.HtmlRenderer.IntegrationTest.Fragmentation;
 
@@ -52,17 +53,6 @@ public sealed class UnreachedWordClaimTests
                 yield return d;
     }
 
-    private static IEnumerable<BoxFragment> Flatten(BoxFragment fragment)
-    {
-        yield return fragment;
-        foreach (var child in fragment.Children)
-            foreach (var d in Flatten(child))
-                yield return d;
-        if (fragment.MarkerFragment != null)
-            foreach (var d in Flatten(fragment.MarkerFragment))
-                yield return d;
-    }
-
     /// <summary>
     /// Every word the document authored, including list-item markers (<see cref="CssBox.ListItemBox"/> - a
     /// field kept separate from <see cref="CssBox.Boxes"/>, so a plain <see cref="Walk"/> alone misses it).
@@ -75,7 +65,7 @@ public sealed class UnreachedWordClaimTests
 
     private static List<CssRect> ClaimedWords(HtmlContainerInt container) =>
         container.FragmentTree!.Fragmentainers
-            .SelectMany(f => Flatten(f.Root))
+            .SelectMany(f => FlattenWithMarkers(f.Root))
             .SelectMany(f => f.Words)
             .Select(w => w.Word)
             .ToList();
@@ -85,7 +75,7 @@ public sealed class UnreachedWordClaimTests
         var claims = new Dictionary<CssRect, List<int>>(ReferenceEqualityComparer.Instance);
         foreach (var fragmentainer in container.FragmentTree!.Fragmentainers)
         {
-            foreach (var word in Flatten(fragmentainer.Root).SelectMany(f => f.Words))
+            foreach (var word in FlattenWithMarkers(fragmentainer.Root).SelectMany(f => f.Words))
             {
                 if (!claims.TryGetValue(word.Word, out var slots))
                     claims[word.Word] = slots = new List<int>();
@@ -137,7 +127,7 @@ public sealed class UnreachedWordClaimTests
         var fragmentainers = container.FragmentTree!.Fragmentainers;
         Assert.IsTrue(fragmentainers.Count > 1, "the fixture must span more than one page");
 
-        var onFirstPage = Flatten(fragmentainers[0].Root).SelectMany(f => f.Words).ToList();
+        var onFirstPage = FlattenWithMarkers(fragmentainers[0].Root).SelectMany(f => f.Words).ToList();
         var authored = WordsIn(root).Count;
 
         Assert.IsTrue(onFirstPage.Count > 0);
