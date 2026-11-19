@@ -9,6 +9,66 @@ namespace HtmlRenderer.IntegrationTest.Tables;
 [TestClass]
 public sealed class AnonymousTableBoxIntegrationTests
 {
+    [TestMethod]
+    [Spec("css21", "tables.html#anonymous-boxes")]
+    [Spec("css-tables-3", "#fixup-algorithm")]
+    public void InlineContentOfATable_IsLaidOutInAnAnonymousRowAndCell()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div class='t' style='display:table;border-spacing:10px'><span class='s'>text</span></div>"));
+
+        AssertInAnonymousCellOfTable(root);
+    }
+
+    [TestMethod]
+    [Spec("css21", "tables.html#anonymous-boxes")]
+    [Spec("css-tables-3", "#fixup-algorithm")]
+    public void InlineContentOfARowGroup_IsLaidOutInAnAnonymousRowAndCell()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div class='t' style='display:table;border-spacing:10px'><div style='display:table-row-group'><span class='s'>text</span></div></div>"));
+
+        AssertInAnonymousCellOfTable(root);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "tables.html#anonymous-boxes")]
+    [Spec("css-tables-3", "#fixup-algorithm")]
+    public void NonCellBeforeACellInARow_GetsItsOwnAnonymousCellNextToTheCell()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='display:table;border-spacing:0'><div class='r' style='display:table-row'>"
+            + "<span>x</span><div class='c' style='display:table-cell'>c</div></div></div>"));
+
+        var row = FindByClass(root, "r")!;
+        var cell = FindByClass(root, "c")!;
+
+        Assert.AreSame(row, cell.ParentBox);
+        Assert.HasCount(2, row.Boxes);
+        Assert.AreEqual(row.Boxes[0].ActualRight, cell.Location.X, 0.5);
+        Assert.AreEqual(row.Boxes[0].Location.Y, cell.Location.Y, 0.5);
+    }
+
+    /// <summary>The span "s" sits in an anonymous cell, inset by the 10px border spacing of table "t".</summary>
+    private static void AssertInAnonymousCellOfTable(CssBox root)
+    {
+        var table = FindByClass(root, "t")!;
+        var span = FindByClass(root, "s")!;
+
+        var cell = span.ParentBox!;
+        Assert.IsNull(cell.HtmlTag);
+        Assert.AreEqual(CssConstants.TableCell, cell.Display);
+        Assert.IsNull(cell.ParentBox!.HtmlTag);
+        Assert.AreEqual(CssConstants.TableRow, cell.ParentBox.Display);
+
+        var word = LayoutHarness.Descendants(span).SelectMany(b => b.Words).Single();
+        Assert.AreEqual(table.Location.X + 10, cell.Location.X, 0.5);
+        Assert.AreEqual(table.Location.Y + 10, cell.Location.Y, 0.5);
+        Assert.AreEqual(cell.Location.X, word.Left, 0.5);
+        Assert.AreEqual(word.Width + 20, table.ActualRight - table.Location.X, 0.5);
+    }
+
     [Ignore("Gap, see Spec/css21.yml")]
     [TestMethod]
     [Spec("css21", "tables.html#anonymous-boxes")]
