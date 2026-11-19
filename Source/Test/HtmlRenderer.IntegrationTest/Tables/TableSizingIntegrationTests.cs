@@ -164,6 +164,155 @@ public sealed class TableSizingIntegrationTests
     }
 
     [TestMethod]
+    [Spec("css21", "tables.html#auto-table-layout")]
+    [Spec("css-tables-3", "#computing-column-measures")]
+    public void SpanningCell_TheColumnsItSpansAreTogetherAsWideAsTheCell()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<table id='t' style='width:10px;border-spacing:4px'>"
+            + "<tr><td id='a' style='padding:0'>x</td><td id='b' style='padding:0'>x</td></tr>"
+            + "<tr><td id='s' colspan='2' style='padding:0'>Supercalifragilisticexpialidocious</td></tr></table>"));
+
+        var s = LayoutHarness.FindById(root, "s")!;
+        var word = LayoutHarness.Descendants(s).SelectMany(b => b.Words).Single().Width;
+
+        Assert.AreEqual(word, Width(s), Delta);
+        Assert.AreEqual(word, Width(LayoutHarness.FindById(root, "a")!) + 4 + Width(LayoutHarness.FindById(root, "b")!), Delta);
+        Assert.AreEqual(word + 2 * 4, Width(LayoutHarness.FindById(root, "t")!), Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "tables.html#auto-table-layout")]
+    [Spec("css-tables-3", "#computing-column-measures")]
+    public void SpanningCellAfterAnotherCell_DoesNotNarrowThatCellsColumn()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<table style='width:10px;border-spacing:0'>"
+            + "<tr><td style='padding:0'>x</td><td style='padding:0'>x</td><td style='padding:0'>x</td></tr>"
+            + "<tr><td id='d' style='padding:0'>Mississippi</td><td colspan='2' style='padding:0'>Supercalifragilisticexpialidocious</td></tr></table>"));
+
+        var d = LayoutHarness.FindById(root, "d")!;
+
+        Assert.IsGreaterThanOrEqualTo(LayoutHarness.Descendants(d).SelectMany(b => b.Words).Single().Width - Delta, Width(d));
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "tables.html#auto-table-layout")]
+    [Spec("css-tables-3", "#computing-column-measures")]
+    public void SpanningCellOverAWideColumn_IsAsWideAsItsContent()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<table style='width:10px;border-spacing:0'>"
+            + "<tr><td style='padding:0'>Mississippi</td><td style='padding:0'>x</td><td style='padding:0'>x</td></tr>"
+            + "<tr><td id='s' colspan='2' style='padding:0'>Supercalifragilisticexpialidocious</td><td style='padding:0'>x</td></tr></table>"));
+
+        var s = LayoutHarness.FindById(root, "s")!;
+
+        Assert.IsGreaterThanOrEqualTo(LayoutHarness.Descendants(s).SelectMany(b => b.Words).Single().Width - Delta, Width(s));
+    }
+
+    [TestMethod]
+    [Spec("css21", "visudet.html#min-max-widths")]
+    [Spec("css-tables-3", "#computing-the-table-width")]
+    public void MaxWidth_LimitsAnAutoWidthTable()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:600px'><table id='t' style='max-width:200px;border-spacing:0'><tr>"
+            + "<td id='a' style='padding:0'>aaa bbb ccc ddd eee fff ggg hhh iii jjj</td>"
+            + "<td id='b' style='padding:0'>aaa bbb ccc ddd eee fff ggg hhh iii jjj</td></tr></table></div>"));
+
+        Assert.AreEqual(200, Width(LayoutHarness.FindById(root, "t")!), Delta);
+        Assert.AreEqual(100, Width(LayoutHarness.FindById(root, "a")!), Delta);
+        Assert.AreEqual(100, Width(LayoutHarness.FindById(root, "b")!), Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visudet.html#min-max-widths")]
+    [Spec("css-tables-3", "#computing-the-table-width")]
+    public void PercentageMaxWidth_IsRelativeToTheContainingBlock()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:400px'><table id='t' style='max-width:50%;border-spacing:0'><tr>"
+            + "<td style='padding:0'>aaa bbb ccc ddd eee fff ggg hhh iii jjj</td>"
+            + "<td style='padding:0'>aaa bbb ccc ddd eee fff ggg hhh iii jjj</td></tr></table></div>"));
+
+        Assert.AreEqual(200, Width(LayoutHarness.FindById(root, "t")!), Delta);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visudet.html#min-max-widths")]
+    [Spec("css-tables-3", "#distributing-width-to-columns")]
+    public void MaxWidth_ColumnWhoseContentFits_KeepsItsMaxContentWidth()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:600px'><table id='t' style='max-width:200px;border-spacing:0'><tr>"
+            + "<td id='a' style='padding:0'>a</td>"
+            + "<td id='b' style='padding:0'>aaa bbb ccc ddd eee fff ggg hhh iii jjj</td></tr></table></div>"));
+
+        var a = LayoutHarness.FindById(root, "a")!;
+
+        Assert.AreEqual(LayoutHarness.Descendants(a).SelectMany(b => b.Words).Single().Width, Width(a), 1);
+        Assert.AreEqual(200, Width(a) + Width(LayoutHarness.FindById(root, "b")!), Delta);
+        Assert.AreEqual(200, Width(LayoutHarness.FindById(root, "t")!), Delta);
+    }
+
+    [Ignore("Gap, see Spec/css-tables-3.yml")]
+    [TestMethod]
+    [Spec("css21", "visudet.html#min-max-widths")]
+    [Spec("css-tables-3", "#computing-the-table-width")]
+    public void MaxWidthBelowTheMinimumContentWidth_DoesNotNarrowTheColumns()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:600px'><table style='max-width:30px;border-spacing:0'><tr>"
+            + "<td id='a' style='padding:0'>Supercalifragilistic</td><td style='padding:0'>Supercalifragilistic</td></tr></table></div>"));
+
+        var a = LayoutHarness.FindById(root, "a")!;
+
+        Assert.AreEqual(LayoutHarness.Descendants(a).SelectMany(b => b.Words).Single().Width, Width(a), 1);
+    }
+
+    [Ignore("Gap, see Spec/css-tables-3.yml")]
+    [TestMethod]
+    [Spec("css21", "tables.html#auto-table-layout")]
+    [Spec("css-tables-3", "#computing-the-table-width")]
+    public void PercentageCellWidthsOverAHundredPercent_DoNotWidenTheTablePastTheContainingBlock()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:400px'><table id='t' style='border-spacing:0'><tr>"
+            + "<td style='width:80%;padding:0'>a</td><td style='width:80%;padding:0'>b</td></tr></table></div>"));
+
+        Assert.AreEqual(400, Width(LayoutHarness.FindById(root, "t")!), 1);
+    }
+
+    [TestMethod]
+    [Spec("css21", "visudet.html#float-width")]
+    [Spec("css21", "tables.html#separated-borders")]
+    public void FloatAroundATable_IsAsWideAsTheTableWithItsBorderSpacing()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:600px'><div id='f' style='float:left'><table id='t' style='border-spacing:10px'>"
+            + "<tr><td style='padding:0;width:50px'>a</td><td style='padding:0;width:50px'>b</td></tr></table></div></div>"));
+
+        Assert.AreEqual(130, Width(LayoutHarness.FindById(root, "t")!), Delta);
+        Assert.AreEqual(130, Width(LayoutHarness.FindById(root, "f")!), Delta);
+    }
+
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visudet.html#float-width")]
+    [Spec("css21", "tables.html#separated-borders")]
+    public void FloatAroundATableWithARowGroup_IsAsWideAsTheTableWithItsBorderSpacing()
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            "<div style='width:600px'><div id='f' style='float:left'><table id='t' style='border-spacing:10px'>"
+            + "<tbody><tr><td style='padding:0;width:50px'>a</td><td style='padding:0;width:50px'>b</td></tr></tbody></table></div></div>"));
+
+        Assert.AreEqual(130, Width(LayoutHarness.FindById(root, "f")!), Delta);
+    }
+
+    [TestMethod]
     [Spec("css21", "tables.html#height-layout")]
     [Spec("css-tables-3", "#computing-the-table-height")]
     public void TableHeight_IsAMinimumHeight()

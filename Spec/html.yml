@@ -2111,7 +2111,7 @@ sections:
       - border gives the table and its cells solid instead of outset and inset borders, border without a value draws none
       - rules and frame are ignored
       - align=middle and align=absmiddle on rows and cells set vertical-align instead of centering the text
-      - table align=left and right set text-align instead of floating, align=center doesn't center a table with a width
+      - table align=left and right set text-align instead of floating, align=right leaves the table short of the right edge by its border spacing, align=center doesn't center a table with a width
       - hidden on rows, row groups and columns doesn't collapse them
       - A form that's a child of table, thead, tbody, tfoot or tr is displayed
   rendering.html#margin-collapsing-quirks:

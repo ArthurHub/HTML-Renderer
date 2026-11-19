@@ -239,6 +239,35 @@ public sealed class TableRenderingTests
     }
 
     [TestMethod]
+    [Spec("html", "rendering.html#tables-2")]
+    public void TableAlignCenter_CentersAnAutoWidthTable()
+    {
+        var box = Box("<div style='width:400px'><table id=x align=center><tr><td>a</td></tr></table></div>");
+        var width = box.ActualRight - box.Location.X;
+
+        Assert.IsLessThan(100, width);
+        Assert.AreEqual((400 - width) / 2, box.Location.X, 0.5);
+    }
+
+    [TestMethod]
+    [Spec("html", "rendering.html#tables-2")]
+    public void TableAlignRight_PutsAnAutoWidthTableAtTheRightEdge()
+    {
+        var box = Box("<div style='width:400px'><table id=x align=right style='border-spacing:0'><tr><td>a</td></tr></table></div>");
+
+        Assert.IsLessThan(100, box.ActualRight - box.Location.X);
+        Assert.AreEqual(400, box.ActualRight, 0.5);
+    }
+
+    [TestMethod]
+    [Ignore("Gap, see Spec/html.yml")]
+    [Spec("html", "rendering.html#tables-2")]
+    public void TableAlignRight_WithBorderSpacing_PutsTheTableAtTheRightEdge()
+    {
+        Assert.AreEqual(400, Box("<div style='width:400px'><table id=x align=right><tr><td>a</td></tr></table></div>").ActualRight, 0.5);
+    }
+
+    [TestMethod]
     [Ignore("Gap, see Spec/html.yml")]
     [Spec("html", "rendering.html#tables-2")]
     public void TableAlignCenter_CentersTheTable()
