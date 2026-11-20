@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Controls;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Utils;
+using TheArtOfDev.HtmlRenderer.WinUI.Utilities;
 
 namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
 {
@@ -21,11 +22,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
     /// Adapter for WinUI Control for core.
     /// </summary>
     /// <remarks>
-    /// Unlike WPF's <see cref="System.Windows.Input.Mouse"/> static queries, WinUI 3 has no queryable
-    /// global mouse-button state - <see cref="HtmlControl"/> caches the last-known pressed/position state
-    /// from its own <c>PointerPressed</c>/<c>PointerReleased</c>/<c>PointerMoved</c> handlers, and this
-    /// adapter (constructed fresh per call, mirroring <c>HtmlRenderer.WPF</c>'s own <c>ControlAdapter</c>
-    /// usage pattern) just reads those cached fields back off it.
+    /// WinUI has no global mouse state to query, the pointer state is the last one <see cref="HtmlControl"/> has seen.
     /// </remarks>
     internal sealed class ControlAdapter : RControl
     {
@@ -85,14 +82,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI.Adapters
 
         public override void DoDragDropCopy(object dragDropData)
         {
-            // WinUI 3 has no synchronous "start a drag now" API analogous to WPF's
-            // System.Windows.DragDrop.DoDragDrop - a drag operation there is always initiated by the
-            // framework via CanDrag/DragStarting on the source element in response to a user gesture, not
-            // called imperatively from application code mid-selection. Wiring that up is a real, separate
-            // piece of work (hooking DragStarting on the CanvasControl/UserControl and populating its
-            // DataPackage from dragDropData) that is out of scope for this foundation skeleton - see the
-            // implementation report's deviations section. Copy-to-clipboard (Ctrl+C) is unaffected, since
-            // it goes through RAdapter.SetToClipboard, not this method.
+            (_control as HtmlControl)?.StartDragDrop((ClipboardHelper.Content)dragDropData);
         }
 
         public override void MeasureString(string str, RFont font, double maxWidth, out int charFit, out double charFitWidth)

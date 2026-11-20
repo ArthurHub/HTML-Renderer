@@ -1,6 +1,6 @@
 # HTML Renderer
 
-**Cross framework** (WinForms/WPF/PDF/Metro/Mono/etc.), **Multipurpose** (UI Controls / Image generation / PDF generation / etc.), **100% managed** (C#), High performance HTML Rendering library.
+**Cross framework** (WinForms/WPF/WinUI/PDF/Mono/etc.), **Multipurpose** (UI Controls / Image generation / PDF generation / etc.), **100% managed** (C#), High performance HTML Rendering library.
 
 The library is 100% managed **C#** code without any external dependencies (no WebBrowser control, ActiveX / COM or MSHTML dll), the only requirement is **.NET Standard 2.0 / .NET 8.0 or higher**.
 
@@ -22,6 +22,7 @@ The latest NuGet packages can be found on NuGet.org:
 
 * [HtmlRenderer.WinForms](https://www.nuget.org/packages/HtmlRenderer.WinForms)
 * [HtmlRenderer.WPF](https://www.nuget.org/packages/HtmlRenderer.WPF)
+* [HtmlRenderer.WinUI](https://www.nuget.org/packages/HtmlRenderer.WinUI)
 * [HtmlRenderer.PdfSharp](https://www.nuget.org/packages/HtmlRenderer.PdfSharp)
 * [HtmlRenderer.Core](https://www.nuget.org/packages/HtmlRenderer.Core)
 
@@ -33,6 +34,7 @@ The latest NuGet packages can be found on NuGet.org:
 * Support text selection, copy-paste and context menu.
 * WinForms controls: HtmlPanel, HtmlLabel and HtmlToolTip.
 * WPF controls: HtmlPanel and HtmlLabel.
+* WinUI 3 controls: HtmlPanel and HtmlLabel.
 * Works on Mono.
 * Create images/PDFs from HTML snippets.
 * Handles "real world" malformed HTML, it doesn't have to be XHTML.
@@ -43,7 +45,7 @@ The latest NuGet packages can be found on NuGet.org:
 * Powerful [Demo application](https://codeplexarchive.org/ProjectTab/Wiki/HtmlRenderer/Documentation/Demo%20application) to explore and learn the library.
 
 
-## WinForms/WPF controls
+## WinForms/WPF/WinUI controls
 
 * *HtmlPanel* - The full power of HTML control build to replace WebBrowser control, accepts HTML, text selection, scrollbars, link click intercept, image load intercept and much more.
 * *HtmlLabel* - As WinForms label but accepts HTML, text selection, auto-size capabilities, transparent background and more.

@@ -11,9 +11,9 @@
 // "The Art of War"
 
 using System;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
@@ -25,6 +25,7 @@ using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
 using TheArtOfDev.HtmlRenderer.WinUI.Utilities;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 
 namespace TheArtOfDev.HtmlRenderer.WinUI
@@ -32,28 +33,38 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
     /// <summary>
     /// Provides HTML rendering using the text property.<br/>
     /// WinUI 3 control that will render html content in it's client rectangle.<br/>
-    /// The control will handle pointer and keyboard events on it to support html text selection,
-    /// copy-paste and mouse clicks.<br/>
+    /// The control will handle pointer and keyboard events on it to support html text selection, copy-paste and mouse clicks.<br/>
     /// <para>
     /// The major differential to use HtmlPanel or HtmlLabel is size and scrollbars.<br/>
     /// If the size of the control depends on the html content the HtmlLabel should be used.<br/>
     /// If the size is set by some kind of layout then HtmlPanel is more suitable, also shows scrollbars if the html contents is larger than the control client rectangle.<br/>
     /// </para>
+    /// <para>
+    /// <h4>LinkClicked event:</h4>
+    /// Raised when the user clicks on a link in the html.<br/>
+    /// Allows canceling the execution of the link.
+    /// </para>
+    /// <para>
+    /// <h4>StylesheetLoad event:</h4>
+    /// Raised when a stylesheet is about to be loaded by file path or URI by link element.<br/>
+    /// This event allows to provide the stylesheet manually or provide new source (file or uri) to load from.<br/>
+    /// If no alternative data is provided the original source will be used.<br/>
+    /// </para>
+    /// <para>
+    /// <h4>ImageLoad event:</h4>
+    /// Raised when an image is about to be loaded by file path or URI.<br/>
+    /// This event allows to provide the image manually, if not handled the image will be loaded from file or download from URI.
+    /// </para>
+    /// <para>
+    /// <h4>RenderError event:</h4>
+    /// Raised when an error occurred during html rendering.<br/>
+    /// </para>
+    /// <para>
+    /// All events are raised on the UI thread.
+    /// </para>
     /// </summary>
-    /// <remarks>
-    /// WinUI 3's <see cref="Microsoft.UI.Xaml.Controls.Control"/> has no <c>OnRender(DrawingContext)</c>
-    /// override point the way WPF's does, so a composed <see cref="CanvasControl"/> child replaces
-    /// inheritance-based rendering - see <see cref="OnCanvasDraw"/>. WinUI 3 also has no
-    /// <c>EventManager.RegisterRoutedEvent</c> equivalent for user-defined bubbling events, so unlike
-    /// <c>HtmlRenderer.WPF</c>'s <c>HtmlControl</c>, whose events are custom <see cref="RoutedEvent"/>s
-    /// wrapped in a generic <c>RoutedEventArgs&lt;T&gt;</c>, this control's events are plain
-    /// <see cref="EventHandler{TEventArgs}"/> (that wrapper type is dropped entirely, not ported).
-    /// </remarks>
     public class HtmlControl : UserControl
     {
-        /// <summary>
-        /// The cursor shapes this control can be asked to show over the rendered html.
-        /// </summary>
         internal enum CursorShape
         {
             Default,
@@ -64,36 +75,18 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         #region Fields and Consts
 
         /// <summary>
-        /// How close together (in milliseconds) two pointer presses must land to be treated as a double-click.
-        /// </summary>
-        private const double DoubleClickThresholdMs = 500;
-
-        /// <summary>
-        /// How close together (in DIPs) two pointer presses must land to be treated as a double-click.
-        /// </summary>
-        private const double DoubleClickThresholdPixels = 4;
-
-        /// <summary>
         /// Underline html container instance.
         /// </summary>
         protected readonly HtmlContainer _htmlContainer;
 
         /// <summary>
-        /// The composed canvas child that all drawing happens on.
+        /// The canvas the html is drawn on.
         /// </summary>
         protected readonly CanvasControl _canvas;
 
         /// <summary>
-        /// The root panel hosting <see cref="_canvas"/> (and, for <see cref="HtmlPanel"/>, its scrollbars).
+        /// The content of the control, holds <see cref="_canvas"/> and any additional chrome like scrollbars.
         /// </summary>
-        /// <remarks>
-        /// WPF's own <c>HtmlPanel</c> adds its scrollbars as raw visual children via
-        /// <c>FrameworkElement.AddVisualChild</c>/<c>GetVisualChild</c>, a WPF-only low-level visual-tree
-        /// API with no WinUI 3 equivalent - <see cref="Microsoft.UI.Xaml.UIElement"/> has no public/protected
-        /// extensibility point for adding a child that isn't part of an actual XAML content tree. A real
-        /// <see cref="Grid"/> panel is used here instead: still a mechanical, idiomatic-WinUI substitute for
-        /// the same "extra chrome children alongside the canvas" need, not a behavioral rewrite.
-        /// </remarks>
         protected readonly Grid _rootPanel;
 
         /// <summary>
@@ -107,12 +100,20 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         protected Point _lastScrollOffset;
 
         /// <summary>
-        /// The dispatcher queue captured at construction time, used to marshal <see cref="HtmlContainer"/>
-        /// events (which can fire on a thread-pool thread - see <see cref="HtmlContainerInt"/>'s async
-        /// operations) back onto the UI thread, mirroring WPF's <c>CheckAccess()</c>/<c>Dispatcher.Invoke</c>
-        /// double-dispatch pattern.
+        /// Used to raise the container events on the UI thread.
         /// </summary>
         private readonly DispatcherQueue _dispatcherQueue;
+
+        /// <summary>
+        /// Canceled when the UI thread's queue shuts down, the queued events then never run.
+        /// </summary>
+        private readonly CancellationToken _dispatcherShutdown;
+
+        /// <summary>
+        /// One per UI thread, the queue keeps its handler alive, so the handler can't reference a control.
+        /// </summary>
+        [ThreadStatic]
+        private static CancellationTokenSource _threadDispatcherShutdown;
 
         /// <summary>
         /// Tracks the in-flight <see cref="SetTextAsync"/> call, if any, so a newer call can supersede an
@@ -120,12 +121,15 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         /// </summary>
         private CancellationTokenSource _pendingLoad;
 
-        private RPoint _lastPointerLocation;
-        private bool _isLeftButtonPressed;
-        private bool _isRightButtonPressed;
+        /// <summary>
+        /// The last pointer state seen by the control, there's no global mouse state to query in WinUI.
+        /// </summary>
+        private PointerPoint _lastPointerPoint;
 
-        private DateTime _lastPointerPressedTime = DateTime.MinValue;
-        private Point _lastPointerPressedPosition;
+        /// <summary>
+        /// The data of the drag operation started by the selection, null if none is in progress.
+        /// </summary>
+        private ClipboardHelper.Content _dragData;
 
         #endregion
 
@@ -145,16 +149,24 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         protected HtmlControl()
         {
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
-
-            _rootPanel = new Grid();
-            _canvas = new CanvasControl
+            if (_threadDispatcherShutdown == null)
             {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-            };
+                var shutdown = new CancellationTokenSource();
+                _dispatcherQueue.ShutdownStarting += (sender, args) => shutdown.Cancel();
+                _threadDispatcherShutdown = shutdown;
+            }
+            _dispatcherShutdown = _threadDispatcherShutdown.Token;
+
+            // A UserControl isn't a tab stop by default, without focus there are no key events for copy and scrolling
+            IsTabStop = true;
+
+            _canvas = new CanvasControl();
             _canvas.Draw += OnCanvasDraw;
+            _rootPanel = new Grid();
             _rootPanel.Children.Add(_canvas);
             Content = _rootPanel;
+
+            DragStarting += OnDragStarting;
 
             _htmlContainer = new HtmlContainer();
             _htmlContainer.LoadComplete += OnLoadCompleteInternal;
@@ -184,17 +196,30 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
 
         /// <summary>
         /// Raised when a stylesheet is about to be loaded by file path or URI by link element.<br/>
+        /// This event allows to provide the stylesheet manually or provide new source (file or uri) to load from.<br/>
+        /// If no alternative data is provided the original source will be used.<br/>
         /// </summary>
         public event EventHandler<HtmlStylesheetLoadEventArgs> StylesheetLoad;
 
         /// <summary>
         /// Raised when an image is about to be loaded by file path or URI.<br/>
+        /// This event allows to provide the image manually, if not handled the image will be loaded from file or download from URI.
         /// </summary>
         public event EventHandler<HtmlImageLoadEventArgs> ImageLoad;
 
         /// <summary>
-        /// Gets or sets a value indicating if image loading only when visible should be avoided (default - false).
+        /// Gets or sets a value indicating if image loading only when visible should be avoided (default - false).<br/>
+        /// True - images are loaded as soon as the html is parsed.<br/>
+        /// False - images that are not visible because of scroll location are not loaded until they are scrolled to.
         /// </summary>
+        /// <remarks>
+        /// Images late loading improve performance if the page contains image outside the visible scroll area, especially if there is large
+        /// amount of images, as all image loading is delayed (downloading and loading into memory).<br/>
+        /// Late image loading may effect the layout and actual size as image without set size will not have actual size until they are loaded
+        /// resulting in layout change during user scroll.<br/>
+        /// Early image loading may also effect the layout if image without known size above the current scroll location are loaded as they
+        /// will push the html elements down.
+        /// </remarks>
         public bool AvoidImagesLateLoading
         {
             get { return (bool)GetValue(AvoidImagesLateLoadingProperty); }
@@ -202,7 +227,8 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         }
 
         /// <summary>
-        /// Is content selection is enabled for the rendered html (default - true).
+        /// Is content selection is enabled for the rendered html (default - true).<br/>
+        /// If set to 'false' the rendered html will be static only with ability to click on links.
         /// </summary>
         public bool IsSelectionEnabled
         {
@@ -254,43 +280,45 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         }
 
         /// <summary>
-        /// The last known pointer location relative to this control, as tracked from its own pointer
-        /// events - WinUI 3 has no queryable global pointer-button state the way WPF's
-        /// <see cref="System.Windows.Input.Mouse"/> does, so <see cref="Adapters.ControlAdapter"/> reads
-        /// this cached value instead.
+        /// The last known pointer location relative to this control.
         /// </summary>
         internal RPoint LastPointerLocation
         {
-            get { return _lastPointerLocation; }
+            get { return _lastPointerPoint != null ? Utils.Convert(_lastPointerPoint.Position) : RPoint.Empty; }
         }
 
         /// <summary>
-        /// Whether the left pointer button was down as of the last pointer event this control observed.
+        /// Whether the left pointer button was down as of the last pointer event of this control.
         /// </summary>
         internal bool IsLeftButtonPressed
         {
-            get { return _isLeftButtonPressed; }
+            get { return _lastPointerPoint != null && _lastPointerPoint.Properties.IsLeftButtonPressed; }
         }
 
         /// <summary>
-        /// Whether the right pointer button was down as of the last pointer event this control observed.
+        /// Whether the right pointer button was down as of the last pointer event of this control.
         /// </summary>
         internal bool IsRightButtonPressed
         {
-            get { return _isRightButtonPressed; }
+            get { return _lastPointerPoint != null && _lastPointerPoint.Properties.IsRightButtonPressed; }
         }
 
         /// <summary>
         /// Get html from the current DOM tree with inline style.
         /// </summary>
+        /// <returns>generated html</returns>
         public virtual string GetHtml()
         {
             return _htmlContainer != null ? _htmlContainer.GetHtml() : null;
         }
 
         /// <summary>
-        /// Get the rectangle of html element as calculated by html layout.
+        /// Get the rectangle of html element as calculated by html layout.<br/>
+        /// Element if found by id (id attribute on the html element).<br/>
+        /// Note: to get the screen rectangle you need to adjust by the hosting control.<br/>
         /// </summary>
+        /// <param name="elementId">the id of the element to get its rectangle</param>
+        /// <returns>the rectangle of the element or null if not found</returns>
         public virtual Rect? GetElementRectangle(string elementId)
         {
             return _htmlContainer != null ? _htmlContainer.GetElementRectangle(elementId) : null;
@@ -305,14 +333,50 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         }
 
         /// <summary>
-        /// Set the cursor shown over this control's rendered html.
+        /// Sets the html of this control and awaits the async load - the real entry point behind the
+        /// <see cref="TextProperty"/>/<see cref="BaseStylesheetProperty"/> dependency-property callbacks,
+        /// for callers that want to await completion or cancel an in-flight load.
         /// </summary>
         /// <remarks>
-        /// <see cref="UIElement.ProtectedCursor"/> is a protected member - it can only be set from within
-        /// a <see cref="UIElement"/> subclass's own code, unlike WPF's public <c>Control.Cursor</c>
-        /// setter, so <see cref="Adapters.ControlAdapter"/> (an external class) calls through this method
-        /// rather than setting a cursor property directly.
+        /// A new call before a previous one finishes supersedes it: the previous call's
+        /// <see cref="HtmlContainer.SetHtml"/> keeps running (it has no mid-flight cancellation point of
+        /// its own) but its post-completion side effects - invalidate, error reporting - are discarded
+        /// once it resumes, so only the newest call's results ever reach the control.
         /// </remarks>
+        /// <param name="html">the html to set</param>
+        /// <param name="cancellationToken">optional: cancel this specific call without affecting others</param>
+        public async Task SetTextAsync(string html, CancellationToken cancellationToken = default)
+        {
+            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            _pendingLoad?.Cancel();
+            _pendingLoad = cts;
+
+            try
+            {
+                await _htmlContainer.SetHtml(html, _baseCssData);
+            }
+            catch (Exception ex)
+            {
+                if (cts == _pendingLoad)
+                {
+                    OnRenderError(new HtmlRenderErrorEventArgs(HtmlRenderErrorType.General, "Failed to set html", ex));
+                }
+                return;
+            }
+
+            if (cts != _pendingLoad || cts.IsCancellationRequested)
+            {
+                return;
+            }
+
+            InvalidateMeasure();
+            _canvas.Invalidate();
+            InvokeMouseMove();
+        }
+
+        /// <summary>
+        /// Set the cursor shown over the control, <see cref="UIElement.ProtectedCursor"/> can only be set from within the control.
+        /// </summary>
         internal void SetCursorShape(CursorShape shape)
         {
             InputSystemCursorShape cursorShape;
@@ -332,58 +396,34 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         }
 
         /// <summary>
-        /// Invalidate the composed canvas, causing a repaint.
+        /// Invalidate the canvas, causing a repaint.
         /// </summary>
         internal void InvalidateCanvas()
         {
-            _canvas?.Invalidate();
+            _canvas.Invalidate();
+        }
+
+        /// <summary>
+        /// Raise the <see cref="RenderError"/> event, for errors outside of the container.
+        /// </summary>
+        internal void ReportError(HtmlRenderErrorType type, string message, Exception exception)
+        {
+            OnRenderError(new HtmlRenderErrorEventArgs(type, message, exception));
+        }
+
+        /// <summary>
+        /// Start dragging the given data with the pointer that is currently pressed on the control.
+        /// </summary>
+        internal void StartDragDrop(ClipboardHelper.Content data)
+        {
+            if (_dragData != null || _lastPointerPoint == null || !_lastPointerPoint.IsInContact)
+                return;
+
+            _dragData = data;
+            _ = DragDropAsync(_lastPointerPoint);
         }
 
         #region Protected methods
-
-        /// <summary>
-        /// Perform paint of the html in the control.
-        /// </summary>
-        private void OnCanvasDraw(CanvasControl sender, CanvasDrawEventArgs args)
-        {
-            var g = args.DrawingSession;
-            var renderSize = new Size(sender.ActualWidth, sender.ActualHeight);
-
-            if (Background is SolidColorBrush backgroundBrush && backgroundBrush.Opacity > 0)
-                g.FillRectangle(new Rect(0, 0, renderSize.Width, renderSize.Height), backgroundBrush.Color);
-
-            var borderThickness = BorderThickness;
-            if (borderThickness != new Thickness(0) && BorderBrush is SolidColorBrush borderColorBrush)
-            {
-                var color = borderColorBrush.Color;
-                if (borderThickness.Top > 0)
-                    g.FillRectangle(new Rect(0, 0, renderSize.Width, borderThickness.Top), color);
-                if (borderThickness.Bottom > 0)
-                    g.FillRectangle(new Rect(0, renderSize.Height - borderThickness.Bottom, renderSize.Width, borderThickness.Bottom), color);
-                if (borderThickness.Left > 0)
-                    g.FillRectangle(new Rect(0, 0, borderThickness.Left, renderSize.Height), color);
-                if (borderThickness.Right > 0)
-                    g.FillRectangle(new Rect(renderSize.Width - borderThickness.Right, 0, borderThickness.Right, renderSize.Height), color);
-            }
-
-            var htmlWidth = HtmlWidth(renderSize);
-            var htmlHeight = HtmlHeight(renderSize);
-            if (_htmlContainer != null && htmlWidth > 0 && htmlHeight > 0)
-            {
-                var clip = new Rect(Padding.Left + borderThickness.Left, Padding.Top + borderThickness.Top, htmlWidth, htmlHeight);
-                using (g.CreateLayer(1f, clip))
-                {
-                    _htmlContainer.Location = new Point(Padding.Left + borderThickness.Left, Padding.Top + borderThickness.Top);
-                    _htmlContainer.PerformPaint(g, clip);
-                }
-
-                if (!_lastScrollOffset.Equals(_htmlContainer.ScrollOffset))
-                {
-                    _lastScrollOffset = _htmlContainer.ScrollOffset;
-                    InvokeMouseMove();
-                }
-            }
-        }
 
         /// <summary>
         /// Handle pointer move to handle hover cursor and text selection.
@@ -391,8 +431,8 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         protected override void OnPointerMoved(PointerRoutedEventArgs e)
         {
             base.OnPointerMoved(e);
-            UpdatePointerState(e);
-            _htmlContainer?.HandleMouseMove(this, Utils.Convert(_lastPointerLocation));
+            _lastPointerPoint = e.GetCurrentPoint(this);
+            _htmlContainer?.HandleMouseMove(this, _lastPointerPoint.Position);
         }
 
         /// <summary>
@@ -405,30 +445,13 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         }
 
         /// <summary>
-        /// Handle pointer press to handle selection, and hand-rolled double-click detection.
+        /// Handle pointer press to handle selection.
         /// </summary>
         protected override void OnPointerPressed(PointerRoutedEventArgs e)
         {
             base.OnPointerPressed(e);
-            UpdatePointerState(e);
-
-            var point = e.GetCurrentPoint(this).Position;
-            var now = DateTime.UtcNow;
-            var isDoubleClick = (now - _lastPointerPressedTime).TotalMilliseconds <= DoubleClickThresholdMs
-                                 && Distance(point, _lastPointerPressedPosition) <= DoubleClickThresholdPixels;
-
-            if (isDoubleClick)
-            {
-                // Reset so a third rapid click starts a fresh detection window rather than chaining.
-                _lastPointerPressedTime = DateTime.MinValue;
-                _htmlContainer?.HandleMouseDoubleClick(this, e);
-            }
-            else
-            {
-                _lastPointerPressedTime = now;
-                _lastPointerPressedPosition = point;
-                _htmlContainer?.HandleMouseDown(this, e);
-            }
+            _lastPointerPoint = e.GetCurrentPoint(this);
+            _htmlContainer?.HandleMouseDown(this, e);
         }
 
         /// <summary>
@@ -437,8 +460,17 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         protected override void OnPointerReleased(PointerRoutedEventArgs e)
         {
             base.OnPointerReleased(e);
-            UpdatePointerState(e);
+            _lastPointerPoint = e.GetCurrentPoint(this);
             _htmlContainer?.HandleMouseUp(this, e);
+        }
+
+        /// <summary>
+        /// Handle double tap to select word under the pointer.
+        /// </summary>
+        protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+        {
+            base.OnDoubleTapped(e);
+            _htmlContainer?.HandleMouseDoubleClick(this, e);
         }
 
         /// <summary>
@@ -497,7 +529,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         {
             if (e.Layout)
                 InvalidateMeasure();
-            _canvas?.Invalidate();
+            _canvas.Invalidate();
         }
 
         /// <summary>
@@ -521,59 +553,83 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         /// </summary>
         protected virtual void InvokeMouseMove()
         {
-            _htmlContainer.HandleMouseMove(this, Utils.Convert(_lastPointerLocation));
-        }
-
-        /// <summary>
-        /// Sets the html of this control and awaits the async load - the real entry point behind the
-        /// <see cref="TextProperty"/>/<see cref="BaseStylesheetProperty"/> dependency-property callbacks.
-        /// </summary>
-        public async Task SetTextAsync(string html, CancellationToken cancellationToken = default)
-        {
-            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            _pendingLoad?.Cancel();
-            _pendingLoad = cts;
-
-            try
-            {
-                await _htmlContainer.SetHtml(html, _baseCssData);
-            }
-            catch (Exception ex)
-            {
-                if (cts == _pendingLoad)
-                {
-                    OnRenderError(new HtmlRenderErrorEventArgs(HtmlRenderErrorType.General, "Failed to set html", ex));
-                }
-                return;
-            }
-
-            if (cts != _pendingLoad || cts.IsCancellationRequested)
-            {
-                return;
-            }
-
-            InvalidateMeasure();
-            _canvas?.Invalidate();
-            InvokeMouseMove();
+            _htmlContainer.HandleMouseMove(this, Utils.Convert(LastPointerLocation));
         }
 
         #endregion
 
         #region Private methods
 
-        private void UpdatePointerState(PointerRoutedEventArgs e)
+        /// <summary>
+        /// Perform paint of the html in the control.
+        /// </summary>
+        private void OnCanvasDraw(CanvasControl sender, CanvasDrawEventArgs args)
         {
-            var point = e.GetCurrentPoint(this);
-            _isLeftButtonPressed = point.Properties.IsLeftButtonPressed;
-            _isRightButtonPressed = point.Properties.IsRightButtonPressed;
-            _lastPointerLocation = Utils.Convert(point.Position);
+            var g = args.DrawingSession;
+            var renderSize = new Size(sender.ActualWidth, sender.ActualHeight);
+
+            if (Background is SolidColorBrush backgroundBrush && backgroundBrush.Opacity > 0)
+                g.FillRectangle(new Rect(0, 0, renderSize.Width, renderSize.Height), backgroundBrush.Color);
+
+            var borderThickness = BorderThickness;
+            if (borderThickness != new Thickness(0) && BorderBrush is SolidColorBrush borderBrush)
+            {
+                var color = borderBrush.Color;
+                if (borderThickness.Top > 0)
+                    g.FillRectangle(new Rect(0, 0, renderSize.Width, borderThickness.Top), color);
+                if (borderThickness.Bottom > 0)
+                    g.FillRectangle(new Rect(0, renderSize.Height - borderThickness.Bottom, renderSize.Width, borderThickness.Bottom), color);
+                if (borderThickness.Left > 0)
+                    g.FillRectangle(new Rect(0, 0, borderThickness.Left, renderSize.Height), color);
+                if (borderThickness.Right > 0)
+                    g.FillRectangle(new Rect(renderSize.Width - borderThickness.Right, 0, borderThickness.Right, renderSize.Height), color);
+            }
+
+            var htmlWidth = HtmlWidth(renderSize);
+            var htmlHeight = HtmlHeight(renderSize);
+            if (_htmlContainer != null && htmlWidth > 0 && htmlHeight > 0)
+            {
+                var clip = new Rect(Padding.Left + borderThickness.Left, Padding.Top + borderThickness.Top, htmlWidth, htmlHeight);
+                using (g.CreateLayer(1f, clip))
+                {
+                    _htmlContainer.Location = new Point(clip.X, clip.Y);
+                    _htmlContainer.PerformPaint(g, clip);
+                }
+
+                if (!_lastScrollOffset.Equals(_htmlContainer.ScrollOffset))
+                {
+                    _lastScrollOffset = _htmlContainer.ScrollOffset;
+                    InvokeMouseMove();
+                }
+            }
         }
 
-        private static double Distance(Point a, Point b)
+        private async Task DragDropAsync(PointerPoint pointerPoint)
         {
-            var dx = a.X - b.X;
-            var dy = a.Y - b.Y;
-            return Math.Sqrt(dx * dx + dy * dy);
+            try
+            {
+                await StartDragAsync(pointerPoint);
+            }
+            catch (Exception ex)
+            {
+                OnRenderError(new HtmlRenderErrorEventArgs(HtmlRenderErrorType.KeyboardMouse, "Failed drag and drop", ex));
+            }
+            finally
+            {
+                _dragData = null;
+            }
+        }
+
+        private void OnDragStarting(UIElement sender, DragStartingEventArgs args)
+        {
+            if (_dragData == null)
+            {
+                args.Cancel = true;
+                return;
+            }
+
+            ClipboardHelper.Fill(args.Data, _dragData);
+            args.AllowedOperations = DataPackageOperation.Copy;
         }
 
         /// <summary>
@@ -611,57 +667,82 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
             }
         }
 
-        #region Private event handlers (marshal onto the UI thread)
+        /// <summary>
+        /// Run the given action on the UI thread and wait for it, the load events need the handler's changes to
+        /// the event args before the container continues.
+        /// </summary>
+        private void InvokeOnUIThread(Action action)
+        {
+            if (_dispatcherQueue.HasThreadAccess)
+            {
+                action();
+                return;
+            }
+
+            // Not disposed, a queued action may still set it after the queue shut down
+            var done = new ManualResetEventSlim();
+            ExceptionDispatchInfo error = null;
+            var queued = _dispatcherQueue.TryEnqueue(() =>
+            {
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    error = ExceptionDispatchInfo.Capture(ex);
+                }
+                finally
+                {
+                    done.Set();
+                }
+            });
+
+            // Once the queue shuts down, there's no one left to raise the event to
+            if (!queued)
+                return;
+
+            try
+            {
+                done.Wait(_dispatcherShutdown);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+
+            error?.Throw();
+        }
 
         private void OnLoadCompleteInternal(object sender, EventArgs e)
         {
-            if (_dispatcherQueue.HasThreadAccess)
-                OnLoadComplete(e);
-            else
-                _dispatcherQueue.TryEnqueue(() => OnLoadComplete(e));
+            InvokeOnUIThread(() => OnLoadComplete(e));
         }
 
         private void OnLinkClickedInternal(object sender, HtmlLinkClickedEventArgs e)
         {
-            if (_dispatcherQueue.HasThreadAccess)
-                OnLinkClicked(e);
-            else
-                _dispatcherQueue.TryEnqueue(() => OnLinkClicked(e));
+            InvokeOnUIThread(() => OnLinkClicked(e));
         }
 
         private void OnRenderErrorInternal(object sender, HtmlRenderErrorEventArgs e)
         {
-            if (_dispatcherQueue.HasThreadAccess)
-                OnRenderError(e);
-            else
-                _dispatcherQueue.TryEnqueue(() => OnRenderError(e));
+            InvokeOnUIThread(() => OnRenderError(e));
         }
 
         private void OnStylesheetLoadInternal(object sender, HtmlStylesheetLoadEventArgs e)
         {
-            if (_dispatcherQueue.HasThreadAccess)
-                OnStylesheetLoad(e);
-            else
-                _dispatcherQueue.TryEnqueue(() => OnStylesheetLoad(e));
+            InvokeOnUIThread(() => OnStylesheetLoad(e));
         }
 
         private void OnImageLoadInternal(object sender, HtmlImageLoadEventArgs e)
         {
-            if (_dispatcherQueue.HasThreadAccess)
-                OnImageLoad(e);
-            else
-                _dispatcherQueue.TryEnqueue(() => OnImageLoad(e));
+            InvokeOnUIThread(() => OnImageLoad(e));
         }
 
         private void OnRefreshInternal(object sender, HtmlRefreshEventArgs e)
         {
-            if (_dispatcherQueue.HasThreadAccess)
-                OnRefresh(e);
-            else
-                _dispatcherQueue.TryEnqueue(() => OnRefresh(e));
+            InvokeOnUIThread(() => OnRefresh(e));
         }
-
-        #endregion
 
         #endregion
     }

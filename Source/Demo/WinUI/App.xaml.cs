@@ -10,15 +10,14 @@
 // - Sun Tsu,
 // "The Art of War"
 
+using System;
+using System.IO;
 using Microsoft.UI.Xaml;
+using TheArtOfDev.HtmlRenderer.Demo.Common;
+using TheArtOfDev.HtmlRenderer.WinUI;
 
 namespace TheArtOfDev.HtmlRenderer.Demo.WinUI
 {
-    /// <summary>
-    /// Minimal application entry point - hosts one <see cref="MainWindow"/> with a single
-    /// <see cref="TheArtOfDev.HtmlRenderer.WinUI.HtmlPanel"/> rendering a hardcoded sample document, just
-    /// enough to prove the WinUI 3 control renders real HTML end to end.
-    /// </summary>
     public partial class App : Application
     {
         private Window _window;
@@ -30,8 +29,23 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinUI
 
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
+            SamplesLoader.Init("WinUI", typeof(HtmlRender).Assembly.GetName().Version.ToString());
+
+            LoadCustomFonts();
+
             _window = new MainWindow();
             _window.Activate();
+        }
+
+        /// <summary>
+        /// Load custom fonts to be used by renderer HTMLs
+        /// </summary>
+        private static void LoadCustomFonts()
+        {
+            // Win2D loads fonts only from files
+            var file = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".ttf");
+            File.WriteAllBytes(file, Common.Resources.CustomFont);
+            HtmlRender.AddFontFamily(new Uri(file));
         }
     }
 }

@@ -49,12 +49,7 @@ jobs:
     - name: Select build target
       id: build-target
       run: |
-        # HtmlRenderer.WinUI/HtmlRenderer.Demo.WinUI (Windows App SDK/Win2D, MSIX PRI generation via
-        # native makepri.exe/makeappx.exe) can only build on Windows - unlike the WinForms/WPF adapters,
-        # which cross-compile cleanly everywhere via EnableWindowsTargeting's reference-assembly story,
-        # there is no non-Windows equivalent for those native tools at all. Non-Windows runners build a
-        # solution filter excluding just those two projects; everything else still builds and tests
-        # identically on every OS.
+        # WinUI needs the Windows-only XAML and MSIX tooling, the other platforms build everything else
         $target = $IsWindows ? "Source/HtmlRenderer.sln" : "Source/HtmlRenderer.CrossPlatform.slnf"
         echo "path=$target" >> $env:GITHUB_OUTPUT
 
@@ -106,6 +101,10 @@ jobs:
 
     - name: Create HtmlRenderer.WPF NuGet package
       run: dotnet pack Source/HtmlRenderer.WPF/HtmlRenderer.WPF.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --no-build --verbosity normal --output ${{ env.NuGetDirectory }}
+
+    - name: Create HtmlRenderer.WinUI NuGet package
+      if: runner.os == 'Windows'
+      run: dotnet pack Source/HtmlRenderer.WinUI/HtmlRenderer.WinUI.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --no-build --verbosity normal --output ${{ env.NuGetDirectory }}
 
     - name: Upload NuGet package artifacts
       uses: actions/upload-artifact@v7
