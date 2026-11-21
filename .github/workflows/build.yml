@@ -82,6 +82,7 @@ jobs:
         if ($failed) { exit 1 }
       env:
         PDF_OUTPUT_DIRECTORY: ${{ github.workspace }}/pdf-artifacts/${{ matrix.platform.name }}-${{ matrix.dotnet.name }}
+        HTML_RENDERER_REGRESSION_OUTPUT_DIRECTORY: ${{ github.workspace }}/image-regression/${{ matrix.platform.name }}-${{ matrix.dotnet.name }}
 
     - name: Spec compliance report
       if: ${{ !cancelled() && runner.os == 'Windows' && matrix.dotnet.name == '.NET 8' }}
@@ -100,6 +101,9 @@ jobs:
 
     - name: Create HtmlRenderer.PdfSharp NuGet package
       run: dotnet pack Source/HtmlRenderer.PdfSharp/HtmlRenderer.PdfSharp.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --no-build --verbosity normal --output ${{ env.NuGetDirectory }}
+
+    - name: Create HtmlRenderer.SkiaSharp NuGet package
+      run: dotnet pack Source/HtmlRenderer.SkiaSharp/HtmlRenderer.SkiaSharp.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --no-build --verbosity normal --output ${{ env.NuGetDirectory }}
 
     - name: Create HtmlRenderer.WinForms NuGet package
       run: dotnet pack Source/HtmlRenderer.WinForms/HtmlRenderer.WinForms.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --no-build --verbosity normal --output ${{ env.NuGetDirectory }}

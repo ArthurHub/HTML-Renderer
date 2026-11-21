@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MSTest" Version="4.5.3" />
+        <!-- SkiaSharp and HarfBuzzSharp only ship the Windows and macOS binaries, the Linux one with fontconfig for the font fallback -->
+        <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="4.156.0" />
+        <PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="14.4.0.100" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\HtmlRenderer.SkiaSharp\HtmlRenderer.SkiaSharp.csproj" />
+        <ProjectReference Include="..\..\Demo\Common\HtmlRenderer.Demo.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting"/>
+    </ItemGroup>
+
+</Project>

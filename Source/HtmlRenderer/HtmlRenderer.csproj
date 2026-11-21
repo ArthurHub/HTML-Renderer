@@ -41,7 +41,9 @@ For existing implementations see: HtmlRenderer.WinForms, HtmlRenderer.WPF and Ht
     <InternalsVisibleTo Include="HtmlRenderer.WPF" />
     <InternalsVisibleTo Include="HtmlRenderer.WinUI" />
     <InternalsVisibleTo Include="HtmlRenderer.PdfSharp" />
+    <InternalsVisibleTo Include="HtmlRenderer.SkiaSharp" />
     <InternalsVisibleTo Include="HtmlRenderer.IntegrationTest" />
+    <InternalsVisibleTo Include="HtmlRenderer.SkiaSharp.Test" />
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="System.Resources.Extensions" Version="10.0.15" />

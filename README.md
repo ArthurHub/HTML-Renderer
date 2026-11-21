@@ -23,6 +23,7 @@ The latest NuGet packages can be found on NuGet.org:
 * [HtmlRenderer.WinForms](https://www.nuget.org/packages/HtmlRenderer.WinForms)
 * [HtmlRenderer.WPF](https://www.nuget.org/packages/HtmlRenderer.WPF)
 * [HtmlRenderer.PdfSharp](https://www.nuget.org/packages/HtmlRenderer.PdfSharp)
+* [HtmlRenderer.SkiaSharp](https://www.nuget.org/packages/HtmlRenderer.SkiaSharp)
 * [HtmlRenderer.Core](https://www.nuget.org/packages/HtmlRenderer.Core)
 
 
