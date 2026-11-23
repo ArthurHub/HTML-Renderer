@@ -38,6 +38,7 @@ sections:
     status: partial
     gaps:
       - "'contents' is ignored, the element keeps its own box"
+      - "'none' on a table row or row group is ignored, see CSS 2.1 9.2.4"
   '#legacy-display':
     title: 2.6 Precomposed Inline-level Display Values
     status: partial
