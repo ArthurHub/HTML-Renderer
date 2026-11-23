@@ -113,6 +113,7 @@ sections:
     status: partial
     gaps:
       - Preserved spaces in pre and pre-wrap text are stretched too, see CSS 2.1 16.2
+      - Justification also stretches within a word that is split by an inline element or after a hyphen, see CSS 2.1 16.2
   '#justify-symbols':
     title: 6.4.2 Handling Symbols and Punctuation
     status: n/a
