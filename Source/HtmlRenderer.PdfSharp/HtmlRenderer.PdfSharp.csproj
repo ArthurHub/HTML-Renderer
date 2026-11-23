@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <RootNamespace>TheArtOfDev.HtmlRenderer.PdfSharp</RootNamespace>
 	<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
@@ -34,6 +34,8 @@ Features and Benefits:
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="PDFsharp" Version="6.2.4" />
+    <!-- PDFsharp depends on 8.0.1, which has known vulnerabilities -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.15" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="FontResolver\Fallback\Tuffy.ttf" />
