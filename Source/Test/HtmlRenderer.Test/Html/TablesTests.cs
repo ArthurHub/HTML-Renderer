@@ -60,6 +60,17 @@ public sealed class TablesTests
     }
 
     [TestMethod]
+    [Ignore("Gap, see Spec/html.yml")]
+    [Spec("html", "tables.html#forming-a-table")]
+    public void Cell_SkipsTheSlotsOfRowspansFromDifferentRows()
+    {
+        var b = Table("<tr><td rowspan=2>a</td><td rowspan=4>b</td><td id=x>c</td></tr><tr><td>d</td></tr>"
+                      + "<tr><td rowspan=2>e</td><td>f</td></tr><tr><td id=y>g</td></tr>", "x", "y");
+
+        Assert.AreEqual(b[0].Location.X, b[1].Location.X, 0.01);
+    }
+
+    [TestMethod]
     [Spec("html", "tables.html#attributes-common-to-td-and-th-elements")]
     [Spec("html", "tables.html#forming-a-table")]
     public void Colspan_CoversTheColumnsItSpans()
