@@ -257,6 +257,21 @@ public sealed class BoxGenerationIntegrationTests
         Assert.AreEqual(LayoutHarness.FindById(root, "a")!.ActualBottom, LayoutHarness.FindById(root, "b")!.Location.Y, Delta);
     }
 
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "visuren.html#display-prop")]
+    [Spec("css-display-3", "#box-generation")]
+    [Spec("css-display-4", "#box-generation")]
+    [DataRow("<tr style='display:none'><td>b</td></tr>")]
+    [DataRow("<tbody style='display:none'><tr><td>b</td></tr></tbody>")]
+    public void DisplayNone_HidesATableRow(string hidden)
+    {
+        var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(
+            $"<table style='border-spacing:0'><tr><td id='a'>a</td></tr>{hidden}<tr><td id='c'>c</td></tr></table>"));
+
+        Assert.AreEqual(LayoutHarness.FindById(root, "a")!.ActualBottom, LayoutHarness.FindById(root, "c")!.Location.Y, Delta);
+    }
+
     [TestMethod]
     [Spec("css21", "visuren.html#display-prop")]
     public void UnknownElement_IsInlineByDefault()

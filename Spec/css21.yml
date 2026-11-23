@@ -376,7 +376,9 @@ sections:
     status: n/a
   visuren.html#display-prop:
     title: 9.2.4 The 'display' property
-    status: supported
+    status: partial
+    gaps:
+      - "'display: none' on a table row or row group is ignored, the row is still laid out and painted"
   visuren.html#positioning-scheme:
     title: 9.3 Positioning schemes
     status: partial
