@@ -2,7 +2,7 @@
 
 **Cross framework** (WinForms/WPF/WinUI/PDF/Mono/etc.), **Multipurpose** (UI Controls / Image generation / PDF generation / etc.), **100% managed** (C#), High performance HTML Rendering library.
 
-The library is 100% managed **C#** code without any external dependencies (no WebBrowser control, ActiveX / COM or MSHTML dll), the only requirement is **.NET Standard 2.0 / .NET 8.0 or higher**.
+The library is 100% managed **C#** code without any external dependencies (no WebBrowser control, ActiveX / COM or MSHTML dll), the only requirement is **.NET Standard 2.0 / .NET 10.0 or higher**.
 
 ![Renderer.png](https://raw.githubusercontent.com/ArthurHub/HTML-Renderer/master/Art/demo_winforms.png)
 
