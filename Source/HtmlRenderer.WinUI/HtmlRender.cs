@@ -126,6 +126,11 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the actual size of the rendered html</returns>
+        /// <remarks>
+        /// Don't call this from a paint handler: loading stylesheets and images can finish after the handler
+        /// returned and the drawing session is disposed. Load once with <see cref="HtmlContainer.SetHtmlAsync"/> instead,
+        /// then call <see cref="HtmlContainer.PerformLayout"/> and <see cref="HtmlContainer.PerformPaint"/> when painting.
+        /// </remarks>
         public static Task<Size> RenderAsync(CanvasDrawingSession g, string html, double left = 0, double top = 0, double maxWidth = 0, CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
@@ -144,6 +149,11 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the actual size of the rendered html</returns>
+        /// <remarks>
+        /// Don't call this from a paint handler: loading stylesheets and images can finish after the handler
+        /// returned and the drawing session is disposed. Load once with <see cref="HtmlContainer.SetHtmlAsync"/> instead,
+        /// then call <see cref="HtmlContainer.PerformLayout"/> and <see cref="HtmlContainer.PerformPaint"/> when painting.
+        /// </remarks>
         public static Task<Size> RenderAsync(CanvasDrawingSession g, string html, Point location, Size maxSize, CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
