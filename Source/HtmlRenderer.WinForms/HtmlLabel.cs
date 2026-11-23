@@ -708,7 +708,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                 try
                 {
                     // Replace .NET's hand cursor with the OS cursor
-                    Win32Utils.SetCursor(Win32Utils.LoadCursor(0, Win32Utils.IdcHand));
+                    Win32Utils.SetCursor(Win32Utils.LoadCursor(IntPtr.Zero, (IntPtr)Win32Utils.IdcHand));
                     m.Result = IntPtr.Zero;
                     return;
                 }
