@@ -235,6 +235,12 @@ public sealed class HtmlRenderingRegressionTests
             return true;
         }
 
+        // The renderer decodes these itself, and Uri.TryCreate only fails on a long one up to .NET 9
+        if (src.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
         if (Uri.TryCreate(src, UriKind.Absolute, out var uri))
         {
             return uri.Scheme != Uri.UriSchemeFile;
