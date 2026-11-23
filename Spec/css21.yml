@@ -857,6 +857,7 @@ sections:
       - "The initial value acts as 'left' also when 'direction' is 'rtl'"
       - "'justify' stretches preserved white space in 'pre' and 'pre-wrap' text"
       - "'right' and 'center' leave out the end padding and border of an inline box at the end of the line, so they stick out past the content edge"
+      - "'justify' also stretches within a word that is split by an inline element or after a hyphen, e.g. HTML<b>rend</b>erer and non-public"
   text.html#decoration:
     title: 16.3 Decoration
     status: partial

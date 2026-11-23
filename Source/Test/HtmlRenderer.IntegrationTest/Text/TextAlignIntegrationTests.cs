@@ -192,6 +192,24 @@ public sealed class TextAlignIntegrationTests
         Assert.AreEqual(a.Right, space.Left, Delta);
     }
 
+    [Ignore("Gap, see Spec/css21.yml")]
+    [TestMethod]
+    [Spec("css21", "text.html#alignment-prop")]
+    [Spec("css-text-3", "#expanding-text")]
+    [Spec("css-text-4", "#expanding-text")]
+    [DataRow("The HTML<b>rend</b>erer", "HTML", "rend")]
+    [DataRow("The HTML<b>rend</b>erer", "rend", "erer")]
+    [DataRow("The non-public", "non-", "public")]
+    public void Justify_DoesntStretchWithinAWord(string start, string first, string second)
+    {
+        var words = Words($"<p id='p' style='margin:0;text-align:justify;width:250px'>{start} ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor</p>");
+        var a = words.First(w => w.Text.Trim() == first);
+        var b = words.First(w => w.Text.Trim() == second);
+
+        Assert.AreEqual(a.Top, b.Top, Delta);
+        Assert.AreEqual(a.Right, b.Left, Delta);
+    }
+
     private static List<CssRect> Words(string bodyHtml)
     {
         var (root, _) = LayoutHarness.Layout(LayoutHarness.Wrap(bodyHtml));
