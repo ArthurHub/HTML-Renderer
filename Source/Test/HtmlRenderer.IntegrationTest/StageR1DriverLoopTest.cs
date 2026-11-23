@@ -27,7 +27,7 @@ public sealed class StageR1DriverLoopTest
     public async Task TwoForcedBreaksInSequence_EachStartsANewPageWithCorrectContent()
     {
         using var wrapper = new HtmlContainer();
-        await wrapper.SetHtml(
+        await wrapper.SetHtmlAsync(
             """
             <html><body>
                 <div style="margin:0;">First page content.</div>
@@ -83,7 +83,7 @@ public sealed class StageR1DriverLoopTest
         using var wrapper = new HtmlContainer();
         var divs = string.Concat(Enumerable.Range(0, 50).Select(i =>
             $"<div style='margin:0; break-before: page;'>Section {i}</div>"));
-        await wrapper.SetHtml($"<html><body>{divs}</body></html>");
+        await wrapper.SetHtmlAsync($"<html><body>{divs}</body></html>");
 
         var container = GetInternal(wrapper);
         container.PageSize = new TheArtOfDev.HtmlRenderer.Adapters.Entities.RSize(500, 700);

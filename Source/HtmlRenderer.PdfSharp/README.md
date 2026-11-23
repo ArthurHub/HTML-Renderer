@@ -28,7 +28,7 @@ class Program
 {
     private static void Main(string[] args)
     {
-        PdfDocument pdf = PdfGenerator.GeneratePdf("<p><h1>Hello World</h1>This is html rendered text</p>", PageSize.A4);
+        PdfDocument pdf = PdfGenerator.GeneratePdfAsync("<p><h1>Hello World</h1>This is html rendered text</p>", PageSize.A4);
         pdf.Save("document.pdf");
     }
 }

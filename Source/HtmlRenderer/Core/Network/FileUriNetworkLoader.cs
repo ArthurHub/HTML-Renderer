@@ -26,7 +26,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Network
         /// <summary>
         /// Creates a loader whose base URI is the current working directory, for rendering an in-memory
         /// HTML string whose relative references should resolve against the process's working directory.
-        /// <see cref="GetPrimaryContents"/> is not supported on an instance created this way — pass the HTML
+        /// <see cref="GetPrimaryContentsAsync"/> is not supported on an instance created this way — pass the HTML
         /// directly instead.
         /// </summary>
         public FileUriNetworkLoader()
@@ -54,7 +54,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Network
         public override RUri BaseUri { get; }
 
         /// <inheritdoc/>
-        public override async Task<string> GetPrimaryContents()
+        public override async Task<string> GetPrimaryContentsAsync()
         {
             if (_primaryFilePath is null)
             {
@@ -70,7 +70,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Network
         }
 
         /// <inheritdoc/>
-        public override Task<RNetworkResponse?> GetResourceStream(RUri uri)
+        public override Task<RNetworkResponse?> GetResourceStreamAsync(RUri uri)
         {
             if (!uri.IsAbsoluteUri || uri.Scheme != "file")
             {

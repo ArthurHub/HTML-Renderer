@@ -22,13 +22,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Network
         /// Not supported by this loader — the HTML string must always be passed directly rather than
         /// loaded via a network loader.
         /// </summary>
-        public override Task<string> GetPrimaryContents()
+        public override Task<string> GetPrimaryContentsAsync()
         {
             return null!;
         }
 
         /// <inheritdoc/>
-        public override Task<RNetworkResponse?> GetResourceStream(RUri uri)
+        public override Task<RNetworkResponse?> GetResourceStreamAsync(RUri uri)
         {
             if (uri.Scheme != "data") return Task.FromResult<RNetworkResponse?>(null);
 

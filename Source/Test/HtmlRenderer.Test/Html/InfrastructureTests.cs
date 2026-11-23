@@ -99,7 +99,7 @@ public sealed class InfrastructureTests
     {
         var loader = new StubLoader(resources ?? [], contentType);
         var container = new HtmlContainerInt(new MockAdapter { NetworkLoader = loader }) { MaxSize = new RSize(1000, 4000), AvoidAsyncImagesLoading = true, AvoidImagesLateLoading = true };
-        container.SetHtml($"<!DOCTYPE html><html><head></head><body>{body}</body></html>").GetAwaiter().GetResult();
+        container.SetHtmlAsync($"<!DOCTYPE html><html><head></head><body>{body}</body></html>").GetAwaiter().GetResult();
         using (var graphics = new RecordingGraphics())
             container.PerformLayout(graphics);
 
@@ -124,9 +124,9 @@ public sealed class InfrastructureTests
 
         public override RUri? BaseUri => new(DocumentUrl);
 
-        public override Task<string> GetPrimaryContents() => Task.FromResult(string.Empty);
+        public override Task<string> GetPrimaryContentsAsync() => Task.FromResult(string.Empty);
 
-        public override Task<RNetworkResponse?> GetResourceStream(RUri uri)
+        public override Task<RNetworkResponse?> GetResourceStreamAsync(RUri uri)
         {
             Requested.Add(uri.AbsoluteUri);
             if (!resources.TryGetValue(uri.AbsoluteUri, out var content))

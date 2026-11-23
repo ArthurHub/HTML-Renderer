@@ -19,14 +19,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Network
         /// Returns the root HTML document as a string. Called once at the start of rendering when no HTML
         /// string is given directly to the render/generate call.
         /// </summary>
-        public abstract Task<string> GetPrimaryContents();
+        public abstract Task<string> GetPrimaryContentsAsync();
 
         /// <summary>
         /// Returns the content of an external resource (a stylesheet, image, or font) referenced by the
         /// document, or <c>null</c> if the resource cannot be resolved.
         /// </summary>
         /// <param name="uri">The resource URI, resolved against <see cref="BaseUri"/> or a <c>&lt;base href&gt;</c> element if relative.</param>
-        public abstract Task<RNetworkResponse?> GetResourceStream(RUri uri);
+        public abstract Task<RNetworkResponse?> GetResourceStreamAsync(RUri uri);
 
         /// <summary>
         /// The document's base URL, used to resolve relative <c>href</c>, <c>src</c>, and CSS <c>url()</c>

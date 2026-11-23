@@ -15,7 +15,7 @@ internal static class LayoutHarness
     /// Lays <paramref name="html"/> out at <paramref name="maxWidth"/> × <paramref name="maxHeight"/> pixels.
     /// </summary>
     /// <param name="prepare">
-    /// Optional: run against the parsed box tree's root after <c>SetHtml</c> and before layout, for a test that
+    /// Optional: run against the parsed box tree's root after <c>SetHtmlAsync</c> and before layout, for a test that
     /// has to put something in the tree the parser cannot produce.
     /// </param>
     /// <param name="adapter">
@@ -56,7 +56,7 @@ internal static class LayoutHarness
             container.PageSize = new RSize(maxWidth, pageHeight.Value);
         }
 
-        container.SetHtml(html);
+        container.SetHtmlAsync(html);
 
         if (prepare is not null)
         {

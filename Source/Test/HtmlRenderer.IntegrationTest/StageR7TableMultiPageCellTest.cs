@@ -51,7 +51,7 @@ public sealed class StageR7TableMultiPageCellTest
         using var wrapper = new HtmlContainer();
         var sentence = "one two three four five six seven eight nine ten ";
         var longCell = string.Concat(Enumerable.Repeat(sentence, 100));
-        await wrapper.SetHtml(
+        await wrapper.SetHtmlAsync(
             $"""
             <html><body>
                 <table style="border-collapse:collapse;">

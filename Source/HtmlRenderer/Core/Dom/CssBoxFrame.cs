@@ -164,7 +164,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         {
             try
             {
-                var networkResponse = await HtmlContainer.Adapter.GetResourceStream(apiUri).ConfigureAwait(false);
+                var networkResponse = await HtmlContainer.Adapter.GetResourceStreamAsync(apiUri).ConfigureAwait(false);
 
                 if (networkResponse == null || networkResponse.ResourceStream == null)
                 {

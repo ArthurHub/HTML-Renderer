@@ -27,7 +27,7 @@ public sealed class StageD4RepeatedHeaderTest
         sb.Append("</tbody></table></body></html>");
 
         using var wrapper = new HtmlContainer();
-        wrapper.SetHtml(sb.ToString()).GetAwaiter().GetResult();
+        wrapper.SetHtmlAsync(sb.ToString()).GetAwaiter().GetResult();
 
         var prop = typeof(HtmlContainer).GetProperty("HtmlContainerInt", BindingFlags.NonPublic | BindingFlags.Instance)!;
         var container = (HtmlContainerInt)prop.GetValue(wrapper)!;

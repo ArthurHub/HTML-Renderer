@@ -105,7 +105,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
                     if (imageLoad != null)
                         container.ImageLoad += imageLoad;
 
-                    await container.SetHtml(html, cssData).ConfigureAwait(false);
+                    await container.SetHtmlAsync(html, cssData).ConfigureAwait(false);
                     container.PerformLayout();
 
                     actualSize = container.ActualSize;
@@ -224,7 +224,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
                         container.StylesheetLoad += stylesheetLoad;
                     if (imageLoad != null)
                         container.ImageLoad += imageLoad;
-                    await container.SetHtml(html, cssData).ConfigureAwait(false);
+                    await container.SetHtmlAsync(html, cssData).ConfigureAwait(false);
 
                     var finalSize = MeasureHtmlByRestrictions(container, minSize, maxSize);
                     container.MaxSize = finalSize;
@@ -300,7 +300,7 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
                     if (imageLoad != null)
                         container.ImageLoad += imageLoad;
 
-                    await container.SetHtml(html, cssData).ConfigureAwait(false);
+                    await container.SetHtmlAsync(html, cssData).ConfigureAwait(false);
                     container.PerformLayout();
                     container.PerformPaint(g, new Rect(0, 0, double.MaxValue, double.MaxValue));
 

@@ -21,7 +21,7 @@ public sealed class OffsetTopLineTopSyncTest
     public async Task EffectiveTop_MatchesLocation_AfterOffsetTopOnAMultiLineBox()
     {
         using var wrapper = new HtmlContainer();
-        await wrapper.SetHtml(
+        await wrapper.SetHtmlAsync(
             """
             <html><body>
                 <h2 style="margin:0;">Heading WordTwo WordThree WordFour WordFive WordSix WordSeven WordEight WordNine WordTen</h2>

@@ -244,9 +244,9 @@ namespace TheArtOfDev.HtmlRenderer.WinUI
         /// <summary>
         /// Init with optional document and stylesheet.
         /// </summary>
-        public Task SetHtml(string htmlSource, CssData baseCssData = null)
+        public Task SetHtmlAsync(string htmlSource, CssData baseCssData = null)
         {
-            return _htmlContainerInt.SetHtml(htmlSource, baseCssData);
+            return _htmlContainerInt.SetHtmlAsync(htmlSource, baseCssData);
         }
 
         /// <summary>

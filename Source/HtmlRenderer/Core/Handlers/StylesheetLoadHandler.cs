@@ -33,7 +33,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// The source can be local file or web URI.<br/>
         /// First raise <see cref="HtmlStylesheetLoadEventArgs"/> event to allow the client to overwrite the stylesheet loading.<br/>
         /// If the event doesn't handle it, the reference is resolved against the document base and fetched
-        /// through <see cref="Adapters.RAdapter.GetResourceStream"/>, uniformly for local files, <c>data:</c>
+        /// through <see cref="Adapters.RAdapter.GetResourceStreamAsync"/>, uniformly for local files, <c>data:</c>
         /// URIs, and remote HTTP(S) sources.
         /// </summary>
         /// <param name="htmlContainer">the container of the html to handle load stylesheet for</param>
@@ -78,7 +78,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 
         /// <summary>
         /// Load stylesheet string from given source (file path or uri), resolved against the document base
-        /// and fetched through <see cref="Adapters.RAdapter.GetResourceStream"/>.
+        /// and fetched through <see cref="Adapters.RAdapter.GetResourceStreamAsync"/>.
         /// </summary>
         /// <param name="htmlContainer">the container of the html to handle load stylesheet for</param>
         /// <param name="src">the file path or uri to load the stylesheet from</param>
@@ -92,7 +92,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                 return string.Empty;
             }
 
-            var networkResponse = await htmlContainer.Adapter.GetResourceStream(uri).ConfigureAwait(false);
+            var networkResponse = await htmlContainer.Adapter.GetResourceStreamAsync(uri).ConfigureAwait(false);
 
             if (networkResponse == null || networkResponse.ResourceStream == null)
             {

@@ -28,7 +28,7 @@ internal static class PaintHarness
             PageSize = new RSize(maxWidth, maxHeight)
         };
 
-        container.SetHtml(html);
+        container.SetHtmlAsync(html);
 
         using var layoutGraphics = new RecordingGraphics();
         container.PerformLayout(layoutGraphics);
@@ -59,7 +59,7 @@ internal static class PaintHarness
         };
         container.SetMargins((int)margin);
 
-        container.SetHtml(html);
+        container.SetHtmlAsync(html);
 
         using var layoutGraphics = new RecordingGraphics();
         container.PerformLayout(layoutGraphics);

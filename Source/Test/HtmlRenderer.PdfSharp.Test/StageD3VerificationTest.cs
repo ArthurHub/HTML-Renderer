@@ -18,7 +18,7 @@ public sealed class StageD3VerificationTest
         var sentence = "This is a moderately long sentence used to build a paragraph that will wrap across many lines and, eventually, across more than one page. ";
         var html = $"<html><body><p>{string.Concat(Enumerable.Repeat(sentence, 100))}</p></body></html>";
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.IsGreaterThan(1, document.Pages.Count);
     }
@@ -40,7 +40,7 @@ public sealed class StageD3VerificationTest
             </body></html>
             """;
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.IsGreaterThanOrEqualTo(2, document.Pages.Count);
     }
@@ -61,7 +61,7 @@ public sealed class StageD3VerificationTest
             </body></html>
             """;
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.IsGreaterThanOrEqualTo(2, document.Pages.Count);
     }

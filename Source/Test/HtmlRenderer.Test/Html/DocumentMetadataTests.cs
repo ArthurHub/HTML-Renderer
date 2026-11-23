@@ -245,7 +245,7 @@ public sealed class DocumentMetadataTests
     {
         var loader = new StubLoader(resources ?? [], contentType);
         var container = new HtmlContainerInt(new MockAdapter { NetworkLoader = loader }) { MaxSize = new RSize(1000, 4000), AvoidAsyncImagesLoading = true };
-        container.SetHtml(html).GetAwaiter().GetResult();
+        container.SetHtmlAsync(html).GetAwaiter().GetResult();
         using (var graphics = new RecordingGraphics())
             container.PerformLayout(graphics);
 
@@ -270,9 +270,9 @@ public sealed class DocumentMetadataTests
 
         public override RUri? BaseUri => new(DocumentUrl);
 
-        public override Task<string> GetPrimaryContents() => Task.FromResult(string.Empty);
+        public override Task<string> GetPrimaryContentsAsync() => Task.FromResult(string.Empty);
 
-        public override Task<RNetworkResponse?> GetResourceStream(RUri uri)
+        public override Task<RNetworkResponse?> GetResourceStreamAsync(RUri uri)
         {
             Requested.Add(uri.AbsoluteUri);
             if (!resources.TryGetValue(uri.AbsoluteUri, out var content))

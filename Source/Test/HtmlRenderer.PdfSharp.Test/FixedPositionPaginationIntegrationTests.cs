@@ -30,7 +30,7 @@ public sealed class FixedPositionPaginationIntegrationTests
             </body></html>
             """;
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.IsGreaterThanOrEqualTo(3, document.Pages.Count, "test content should span at least 3 pages for this to be a meaningful check.");
 

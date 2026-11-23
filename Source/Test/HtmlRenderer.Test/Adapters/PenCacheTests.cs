@@ -8,11 +8,11 @@ namespace HtmlRenderer.Test.Adapters;
 public sealed class PenCacheTests
 {
     [TestMethod]
-    public void PaintingADashedBorder_LeavesThePlainPenOfItsColorUnchanged()
+    public async Task PaintingADashedBorder_LeavesThePlainPenOfItsColorUnchanged()
     {
         var adapter = new MockAdapter();
         var container = new HtmlContainerInt(adapter) { MaxSize = new RSize(800, 600), PageSize = new RSize(800, 600) };
-        container.SetHtml("<html><head></head><body style='margin:0'><div style='border:3px dashed red;height:10px'></div></body></html>");
+        await container.SetHtmlAsync("<html><head></head><body style='margin:0'><div style='border:3px dashed red;height:10px'></div></body></html>");
         var graphics = new RecordingGraphics(adapter);
         container.PerformLayout(graphics);
         container.PerformPaint(graphics);

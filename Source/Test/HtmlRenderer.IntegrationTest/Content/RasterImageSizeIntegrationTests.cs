@@ -22,7 +22,7 @@ public sealed class RasterImageSizeIntegrationTests
             MaxSize = new RSize(1000, 1000),
             AvoidAsyncImagesLoading = true
         };
-        container.SetHtml(LayoutHarness.Wrap($"<img id='i' src='{PngDataUri(7, 5)}'>")).GetAwaiter().GetResult();
+        container.SetHtmlAsync(LayoutHarness.Wrap($"<img id='i' src='{PngDataUri(7, 5)}'>")).GetAwaiter().GetResult();
 
         using var bitmap = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
         using var g = Graphics.FromImage(bitmap);

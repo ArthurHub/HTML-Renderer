@@ -50,7 +50,7 @@ public sealed class StageR7TableCellForcedBreakTest
     public async Task ForcedBreakInsideTableCell_DoesNotOverlapOrLoseContent()
     {
         using var wrapper = new HtmlContainer();
-        await wrapper.SetHtml(
+        await wrapper.SetHtmlAsync(
             """
             <html><body>
                 <table><tr><td>

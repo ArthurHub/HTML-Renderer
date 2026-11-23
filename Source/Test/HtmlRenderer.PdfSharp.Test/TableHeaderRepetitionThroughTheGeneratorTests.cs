@@ -35,7 +35,7 @@ public sealed class TableHeaderRepetitionThroughTheGeneratorTests
             </body></html>
             """;
 
-        return await PdfGenerator.GeneratePdf(html, PageSize.A4, margin: 20);
+        return await PdfGenerator.GeneratePdfAsync(html, PageSize.A4, margin: 20);
     }
 
     private static int HeaderMatchCount(PdfDocument document, int pageIndex)

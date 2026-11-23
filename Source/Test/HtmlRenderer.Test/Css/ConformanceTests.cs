@@ -51,7 +51,7 @@ public sealed class ConformanceTests
     {
         var adapter = new MockAdapter();
         var container = new HtmlContainerInt(adapter) { MaxSize = new RSize(1000, 4000) };
-        container.SetHtml(
+        container.SetHtmlAsync(
             "<html><head><style>p { color: red !important }</style></head><body><p id=x>a</p></body></html>",
             CssData.Parse(adapter, "p { color: green !important }")).GetAwaiter().GetResult();
         using var graphics = new RecordingGraphics();

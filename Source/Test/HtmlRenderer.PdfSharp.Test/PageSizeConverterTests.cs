@@ -4,7 +4,7 @@ namespace HtmlRenderer.PdfSharp.Test;
 
 /// <summary>
 /// Tests for <see cref="PageSizeConverter"/> from the PDFsharp NuGet package, which
-/// <see cref="TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.AddPdfPages(PdfSharp.Pdf.PdfDocument, string, PdfGenerateConfig, TheArtOfDev.HtmlRenderer.Core.Entities.CssData, System.EventHandler{TheArtOfDev.HtmlRenderer.Core.Entities.HtmlStylesheetLoadEventArgs}, System.EventHandler{TheArtOfDev.HtmlRenderer.Core.Entities.HtmlImageLoadEventArgs})"/>
+/// <see cref="TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.AddPdfPagesAsync(PdfSharp.Pdf.PdfDocument, string, PdfGenerateConfig, TheArtOfDev.HtmlRenderer.Core.Entities.CssData, System.EventHandler{TheArtOfDev.HtmlRenderer.Core.Entities.HtmlStylesheetLoadEventArgs}, System.EventHandler{TheArtOfDev.HtmlRenderer.Core.Entities.HtmlImageLoadEventArgs})"/>
 /// calls directly to resolve the page size in points for each configured <see cref="PageSize"/>.
 /// </summary>
 [TestClass]

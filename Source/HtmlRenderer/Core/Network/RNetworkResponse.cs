@@ -5,7 +5,7 @@ using System.IO;
 namespace TheArtOfDev.HtmlRenderer.Core.Network
 {
     /// <summary>
-    /// The result of resolving a resource URI via <see cref="RNetworkLoader.GetResourceStream"/>.
+    /// The result of resolving a resource URI via <see cref="RNetworkLoader.GetResourceStreamAsync"/>.
     /// </summary>
     /// <param name="ResourceStream">The resource's content stream, or <c>null</c> if the resource has no body.</param>
     /// <param name="ResponseHeaders">

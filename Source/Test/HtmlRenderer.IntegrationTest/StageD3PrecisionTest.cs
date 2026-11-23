@@ -16,7 +16,7 @@ public sealed class StageD3PrecisionTest
     private static HtmlContainerInt Layout(string html, int pageWidth, int pageHeight, out HtmlContainer wrapper, out Bitmap bitmap)
     {
         wrapper = new HtmlContainer();
-        wrapper.SetHtml(html).GetAwaiter().GetResult();
+        wrapper.SetHtmlAsync(html).GetAwaiter().GetResult();
 
         var prop = typeof(HtmlContainer).GetProperty("HtmlContainerInt", BindingFlags.NonPublic | BindingFlags.Instance)!;
         var container = (HtmlContainerInt)prop.GetValue(wrapper)!;

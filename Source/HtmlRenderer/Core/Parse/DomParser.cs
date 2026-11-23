@@ -181,7 +181,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                         else if (!string.IsNullOrEmpty(candidate.Url))
                         {
                             var uri = CommonUtils.ResolveAgainstDocumentBase(htmlContainer, candidate.Url, stylesheetBaseUri);
-                            loaded = uri != null && await adapter.AddFontFace(familyName, uri, weight, isItalic, stretch, ranges).ConfigureAwait(false);
+                            loaded = uri != null && await adapter.AddFontFaceAsync(familyName, uri, weight, isItalic, stretch, ranges).ConfigureAwait(false);
                         }
                         else
                         {

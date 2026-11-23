@@ -17,7 +17,7 @@ public sealed class PrintMediaTests
         const string html = "<html><head><style>div { height: 10pt } @media print { div { height: 1000pt } }</style></head>"
             + "<body style='margin:0'><div></div></body></html>";
 
-        using var document = await PdfGenerator.GeneratePdf(html, new PdfGenerateConfig { PageSize = PageSize.A4 });
+        using var document = await PdfGenerator.GeneratePdfAsync(html, new PdfGenerateConfig { PageSize = PageSize.A4 });
 
         Assert.AreEqual(2, document.Pages.Count);
     }

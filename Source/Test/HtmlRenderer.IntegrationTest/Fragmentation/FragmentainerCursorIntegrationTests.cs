@@ -29,7 +29,7 @@ public sealed class FragmentainerCursorIntegrationTests
     private static async Task<(CssBox Root, HtmlContainerInt Container)> BuildAsync(string bodyHtml)
     {
         var wrapper = new HtmlContainer();
-        await wrapper.SetHtml($"<html><body style='margin:0'>{bodyHtml}</body></html>");
+        await wrapper.SetHtmlAsync($"<html><body style='margin:0'>{bodyHtml}</body></html>");
 
         var container = GetInternal(wrapper);
         container.PageSize = new RSize(300, PageHeight);

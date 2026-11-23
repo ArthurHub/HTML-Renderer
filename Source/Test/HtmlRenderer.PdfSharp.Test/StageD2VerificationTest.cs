@@ -22,7 +22,7 @@ public sealed class StageD2VerificationTest
             </body></html>
             """;
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.AreEqual(2, document.Pages.Count);
     }
@@ -35,7 +35,7 @@ public sealed class StageD2VerificationTest
 
         const string html = "<html><body><h1>Title</h1><p>Body text.</p></body></html>";
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.AreEqual(1, document.Pages.Count);
     }
@@ -54,7 +54,7 @@ public sealed class StageD2VerificationTest
             </body></html>
             """;
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.AreEqual(2, document.Pages.Count);
     }
@@ -77,7 +77,7 @@ public sealed class StageD2VerificationTest
             </body></html>
             """;
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.IsGreaterThanOrEqualTo(2, document.Pages.Count);
     }
@@ -93,7 +93,7 @@ public sealed class StageD2VerificationTest
             120));
         var html = $"<html><body>{paragraphs}</body></html>";
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.IsGreaterThan(1, document.Pages.Count);
     }
@@ -107,7 +107,7 @@ public sealed class StageD2VerificationTest
 
         const string html = "<html><body><div style='margin-top:2000pt;'>content</div></body></html>";
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.IsLessThanOrEqualTo(2, document.Pages.Count);
     }
@@ -128,7 +128,7 @@ public sealed class StageD2VerificationTest
             </body></html>
             """;
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.IsGreaterThanOrEqualTo(2, document.Pages.Count);
     }

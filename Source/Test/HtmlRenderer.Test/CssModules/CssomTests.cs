@@ -63,7 +63,7 @@ public sealed class CssomTests
             MaxSize = new RSize(1000, 4000),
             AvoidAsyncImagesLoading = true
         };
-        container.SetHtml(html).GetAwaiter().GetResult();
+        container.SetHtmlAsync(html).GetAwaiter().GetResult();
         using (var graphics = new RecordingGraphics())
             container.PerformLayout(graphics);
 
@@ -74,9 +74,9 @@ public sealed class CssomTests
     {
         public override RUri? BaseUri => new(DocumentUrl);
 
-        public override Task<string> GetPrimaryContents() => Task.FromResult(string.Empty);
+        public override Task<string> GetPrimaryContentsAsync() => Task.FromResult(string.Empty);
 
-        public override Task<RNetworkResponse?> GetResourceStream(RUri uri)
+        public override Task<RNetworkResponse?> GetResourceStreamAsync(RUri uri)
         {
             if (!resources.TryGetValue(uri.AbsoluteUri, out var content))
                 return Task.FromResult<RNetworkResponse?>(null);

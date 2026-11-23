@@ -120,7 +120,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// </summary>
         /// <remarks>
         /// HTML §4.8.4.3.5. A path or URI is resolved against the document base URL and fetched through
-        /// <see cref="RAdapter.GetResourceStream"/>. With <see cref="HtmlContainerInt.AvoidAsyncImagesLoading"/>
+        /// <see cref="RAdapter.GetResourceStreamAsync"/>. With <see cref="HtmlContainerInt.AvoidAsyncImagesLoading"/>
         /// the fetch blocks until the image is loaded, otherwise it runs in the background and the
         /// completion callback requests a re-layout.
         /// </remarks>
@@ -206,7 +206,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 
         /// <summary>
         /// Resolve <paramref name="path"/> (a file path, URI or <c>data:</c> URI) against the document base
-        /// and fetch it through <see cref="RAdapter.GetResourceStream"/>.
+        /// and fetch it through <see cref="RAdapter.GetResourceStreamAsync"/>.
         /// </summary>
         private async Task LoadImageFromPathAsync(string path, bool async)
         {
@@ -220,7 +220,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                     return;
                 }
 
-                var networkResponse = await _htmlContainer.Adapter.GetResourceStream(uri).ConfigureAwait(false);
+                var networkResponse = await _htmlContainer.Adapter.GetResourceStreamAsync(uri).ConfigureAwait(false);
 
                 if (!_disposed && networkResponse != null && networkResponse.ResourceStream != null)
                 {

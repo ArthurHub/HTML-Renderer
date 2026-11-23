@@ -394,7 +394,7 @@ public sealed class CascadeTests
                 e.SetStyleSheet = css;
         };
 
-        container.SetHtml(LayoutHarness.Wrap(body));
+        container.SetHtmlAsync(LayoutHarness.Wrap(body));
         using (var graphics = new RecordingGraphics())
             container.PerformLayout(graphics);
 

@@ -313,9 +313,9 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         /// <param name="htmlSource">the html to init with, init empty if not given</param>
         /// <param name="baseCssData">optional: the stylesheet to init with, init default if not given</param>
-        public Task SetHtml(string htmlSource, CssData baseCssData = null)
+        public Task SetHtmlAsync(string htmlSource, CssData baseCssData = null)
         {
-            return _htmlContainerInt.SetHtml(htmlSource, baseCssData);
+            return _htmlContainerInt.SetHtmlAsync(htmlSource, baseCssData);
         }
 
         /// <summary>

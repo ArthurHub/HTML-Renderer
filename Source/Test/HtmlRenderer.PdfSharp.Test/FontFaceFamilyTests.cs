@@ -45,8 +45,8 @@ public sealed class FontFaceFamilyTests
             fontFace = $"<style>@font-face {{ font-family: '{family}'; src: url(data:font/ttf;base64,{Convert.ToBase64String(bytes.ToArray())}) }}</style>";
         }
 
-        using var withFontFace = await PdfGenerator.GeneratePdf($"<html><head>{fontFace}</head><body>{text}</body></html>", PageSize.A4);
-        using var without = await PdfGenerator.GeneratePdf($"<html><body>{text}</body></html>", PageSize.A4);
+        using var withFontFace = await PdfGenerator.GeneratePdfAsync($"<html><head>{fontFace}</head><body>{text}</body></html>", PageSize.A4);
+        using var without = await PdfGenerator.GeneratePdfAsync($"<html><body>{text}</body></html>", PageSize.A4);
 
         Assert.IsTrue(FontNames(withFontFace).Any(IsTuffyBoldItalic));
         Assert.IsFalse(FontNames(without).Any(IsTuffyBoldItalic));

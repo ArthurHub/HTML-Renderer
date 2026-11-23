@@ -827,7 +827,7 @@ public sealed class SyntaxAndDataTypesTests
             e.SetStyleSheet = "p { color: green }";
         };
 
-        container.SetHtml(Document(css, "<p>a</p>")).GetAwaiter().GetResult();
+        container.SetHtmlAsync(Document(css, "<p>a</p>")).GetAwaiter().GetResult();
         return requested.ToArray();
     }
 
@@ -843,7 +843,7 @@ public sealed class SyntaxAndDataTypesTests
             var href = new Uri(file).AbsoluteUri;
 
             var container = new HtmlContainerInt(new MockAdapter()) { MaxSize = new RSize(1000, 4000) };
-            container.SetHtml($"<html><head><link rel=stylesheet href='{href}'></head><body><div id=x>a</div></body></html>").GetAwaiter().GetResult();
+            container.SetHtmlAsync($"<html><head><link rel=stylesheet href='{href}'></head><body><div id=x>a</div></body></html>").GetAwaiter().GetResult();
             using var graphics = new RecordingGraphics();
             container.PerformLayout(graphics);
 

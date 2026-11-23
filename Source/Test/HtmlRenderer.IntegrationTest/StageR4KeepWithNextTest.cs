@@ -22,7 +22,7 @@ public sealed class StageR4KeepWithNextTest
     private static async Task<FragmentTree> LayoutAsync(string bodyHtml)
     {
         using var wrapper = new HtmlContainer();
-        await wrapper.SetHtml($"<html><body>{bodyHtml}</body></html>");
+        await wrapper.SetHtmlAsync($"<html><body>{bodyHtml}</body></html>");
 
         var container = GetInternal(wrapper);
         container.PageSize = new TheArtOfDev.HtmlRenderer.Adapters.Entities.RSize(595, 800);

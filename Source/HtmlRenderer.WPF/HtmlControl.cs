@@ -74,7 +74,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
 
         /// <summary>
         /// Tracks the in-flight <see cref="SetTextAsync"/> call, if any, so a newer call can supersede an
-        /// older one still awaiting <see cref="HtmlContainer.SetHtml"/> - the stale call's post-await side
+        /// older one still awaiting <see cref="HtmlContainer.SetHtmlAsync"/> - the stale call's post-await side
         /// effects (invalidate/error reporting) are skipped once it resumes, checked by reference equality
         /// against this field.
         /// </summary>
@@ -479,7 +479,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// </summary>
         /// <remarks>
         /// A new call before a previous one finishes supersedes it: the previous call's
-        /// <see cref="HtmlContainer.SetHtml"/> keeps running (it has no mid-flight cancellation point of
+        /// <see cref="HtmlContainer.SetHtmlAsync"/> keeps running (it has no mid-flight cancellation point of
         /// its own) but its post-completion side effects - invalidate, error reporting - are discarded
         /// once it resumes, so only the newest call's results ever reach the control.
         /// </remarks>
@@ -493,7 +493,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
 
             try
             {
-                await _htmlContainer.SetHtml(html, _baseCssData);
+                await _htmlContainer.SetHtmlAsync(html, _baseCssData);
             }
             catch (Exception ex)
             {

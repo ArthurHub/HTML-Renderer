@@ -35,7 +35,7 @@ public sealed class PdfGeneratorTests
             """;
 
         // Act
-        using var document = await PdfGenerator.GeneratePdf(html, config, null, DemoUtils.OnStylesheetLoad, OnImageLoadPdfSharp);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config, null, DemoUtils.OnStylesheetLoad, OnImageLoadPdfSharp);
 
         // Assert
         Assert.AreEqual(1, document.Pages.Count);
@@ -88,7 +88,7 @@ public sealed class PdfGeneratorTests
             """;
 
         // Act
-        using var document = await PdfGenerator.GeneratePdf(html, config, null, DemoUtils.OnStylesheetLoad, null);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config, null, DemoUtils.OnStylesheetLoad, null);
 
         // Assert
         Assert.AreEqual(1, document.Pages.Count);
@@ -118,7 +118,7 @@ public sealed class PdfGeneratorTests
     public async Task GeneratePdf_SimpleHtml_ProducesAtLeastOnePage()
     {
         // Act
-        using var document = await PdfGenerator.GeneratePdf("<p>Hello</p>", PageSize.A4);
+        using var document = await PdfGenerator.GeneratePdfAsync("<p>Hello</p>", PageSize.A4);
 
         // Assert
         Assert.IsTrue(document.Pages.Count >= 1);
@@ -128,7 +128,7 @@ public sealed class PdfGeneratorTests
     public async Task GeneratePdf_SimpleHtml_CanBeSaved()
     {
         // Arrange
-        using var document = await PdfGenerator.GeneratePdf("<p>Hello</p>", PageSize.A4);
+        using var document = await PdfGenerator.GeneratePdfAsync("<p>Hello</p>", PageSize.A4);
 
         // Act
         using var stream = new MemoryStream();

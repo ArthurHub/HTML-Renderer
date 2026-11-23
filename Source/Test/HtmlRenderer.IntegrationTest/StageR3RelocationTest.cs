@@ -22,7 +22,7 @@ public sealed class StageR3RelocationTest
     {
         using var wrapper = new HtmlContainer();
         // A scroll container is monolithic, this one is taller than the 700px page.
-        await wrapper.SetHtml(
+        await wrapper.SetHtmlAsync(
             """
             <html><body>
                 <div style="margin:0; height:250px;">filler</div>

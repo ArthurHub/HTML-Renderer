@@ -2,7 +2,7 @@ using HtmlRenderer.IntegrationTest.TestSupport;
 
 namespace HtmlRenderer.IntegrationTest.Text;
 
-// RegexParserUtils caches its regexes in a static Dictionary, parallel SetHtml calls can corrupt it
+// RegexParserUtils caches its regexes in a static Dictionary, parallel SetHtmlAsync calls can corrupt it
 [DoNotParallelize]
 [TestClass]
 public sealed class StyleElementTextConcatenationTests

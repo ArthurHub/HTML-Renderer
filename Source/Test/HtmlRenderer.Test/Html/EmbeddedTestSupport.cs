@@ -40,9 +40,9 @@ internal static class EmbeddedTestSupport
 
         public override RUri? BaseUri { get; } = new RUri(baseUri);
 
-        public override Task<string> GetPrimaryContents() => Task.FromResult("");
+        public override Task<string> GetPrimaryContentsAsync() => Task.FromResult("");
 
-        public override Task<RNetworkResponse?> GetResourceStream(RUri uri)
+        public override Task<RNetworkResponse?> GetResourceStreamAsync(RUri uri)
         {
             Requests.Add(uri.AbsoluteUri);
             return Task.FromResult<RNetworkResponse?>(null);

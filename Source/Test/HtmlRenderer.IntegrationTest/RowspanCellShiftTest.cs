@@ -49,7 +49,7 @@ public sealed class RowspanCellShiftTest
             // mechanism that can act on the straddling row - otherwise a small table gets moved wholesale
             // and never exercises this bug at all.
             var extraRows = string.Concat(Enumerable.Range(0, 40).Select(i => $"<tr><td>Extra{i}A</td><td>Extra{i}B</td></tr>"));
-            await wrapper.SetHtml(
+            await wrapper.SetHtmlAsync(
                 $"""
                 <html><body>
                     {filler}

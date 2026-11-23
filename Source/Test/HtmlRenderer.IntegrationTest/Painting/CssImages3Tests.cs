@@ -320,7 +320,7 @@ public sealed class CssImages3Tests
             AvoidAsyncImagesLoading = true,
             AvoidImagesLateLoading = true
         };
-        container.SetHtml(PaintHarness.Wrap(body)).GetAwaiter().GetResult();
+        container.SetHtmlAsync(PaintHarness.Wrap(body)).GetAwaiter().GetResult();
 
         using (var layoutGraphics = new RecordingGraphics(adapter))
             container.PerformLayout(layoutGraphics);

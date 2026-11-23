@@ -13,7 +13,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Network
     /// The assembly to search is named directly in the URI's authority rather than configured on the
     /// loader instance, so - like <c>data:</c>/<c>file:</c> - this always resolves the same way regardless
     /// of which <see cref="RNetworkLoader"/> is configured on <see cref="Adapters.RAdapter.NetworkLoader"/>:
-    /// <see cref="Adapters.RAdapter.GetResourceStream"/> intercepts this scheme unconditionally, the same
+    /// <see cref="Adapters.RAdapter.GetResourceStreamAsync"/> intercepts this scheme unconditionally, the same
     /// way it already does for <c>data:</c>/<c>file:</c>.
     /// </summary>
     /// <remarks>
@@ -29,8 +29,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Network
 
         /// <summary>
         /// Creates a loader with no primary document - it only resolves <c>embedded:</c> URIs it's asked
-        /// for via <see cref="GetResourceStream"/> (which is how <see cref="Adapters.RAdapter"/>'s internal,
-        /// always-on instance of this loader is used). <see cref="GetPrimaryContents"/> is not supported on
+        /// for via <see cref="GetResourceStreamAsync"/> (which is how <see cref="Adapters.RAdapter"/>'s internal,
+        /// always-on instance of this loader is used). <see cref="GetPrimaryContentsAsync"/> is not supported on
         /// an instance created this way — pass the HTML directly instead, or use the other constructor.
         /// </summary>
         public EmbeddedResourceNetworkLoader()
@@ -61,7 +61,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Network
         public override RUri? BaseUri => _primaryContentsUri;
 
         /// <inheritdoc/>
-        public override async Task<string> GetPrimaryContents()
+        public override async Task<string> GetPrimaryContentsAsync()
         {
             if (_primaryContentsUri is null)
             {
@@ -69,7 +69,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Network
                     "This EmbeddedResourceNetworkLoader was created without a primary resource; construct it with an assembly and manifest resource name to load the root document, or pass the HTML directly.");
             }
 
-            var networkResponse = await GetResourceStream(_primaryContentsUri).ConfigureAwait(false);
+            var networkResponse = await GetResourceStreamAsync(_primaryContentsUri).ConfigureAwait(false);
 
             if (networkResponse?.ResourceStream is null)
             {
@@ -83,7 +83,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Network
         }
 
         /// <inheritdoc/>
-        public override Task<RNetworkResponse?> GetResourceStream(RUri uri)
+        public override Task<RNetworkResponse?> GetResourceStreamAsync(RUri uri)
         {
             var assemblyName = uri.Uri.Host;
             var resourceName = uri.Uri.AbsolutePath.TrimStart('/');

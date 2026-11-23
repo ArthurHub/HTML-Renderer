@@ -41,7 +41,7 @@ public sealed class ContainerLeftBehindKeepWithNextTest
         {
             using var wrapper = new HtmlContainer();
             var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line</p>", fillerCount));
-            await wrapper.SetHtml(
+            await wrapper.SetHtmlAsync(
                 $"""
                 <html><body>
                     {filler}

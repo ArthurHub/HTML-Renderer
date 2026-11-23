@@ -43,7 +43,7 @@ public sealed class StageR9KeepWithNextAcrossForcedBreakTest
     {
         using var wrapper = new HtmlContainer();
         var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of text</p>", 39));
-        await wrapper.SetHtml(
+        await wrapper.SetHtmlAsync(
             $"""
             <html><body>
                 <div style="margin:0; break-before: page;">ForcedBreakMarker</div>

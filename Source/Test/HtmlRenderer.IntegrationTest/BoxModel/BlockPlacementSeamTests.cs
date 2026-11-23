@@ -17,7 +17,7 @@ namespace HtmlRenderer.IntegrationTest.BoxModel;
 /// to mean is that it finds nothing before it, exactly as a box with no parent always did.
 /// </para>
 /// </remarks>
-// The regex cache in RegexParserUtils isn't thread-safe, parallel SetHtml calls can corrupt it.
+// The regex cache in RegexParserUtils isn't thread-safe, parallel SetHtmlAsync calls can corrupt it.
 [TestClass]
 [DoNotParallelize]
 public sealed class BlockPlacementSeamTests

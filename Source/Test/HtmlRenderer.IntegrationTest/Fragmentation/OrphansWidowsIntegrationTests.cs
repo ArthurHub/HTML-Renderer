@@ -28,7 +28,7 @@ public sealed class OrphansWidowsIntegrationTests
         string bodyHtml, double pageHeight = 100, double pageWidth = 400, int marginTop = 0)
     {
         var wrapper = new HtmlContainer();
-        await wrapper.SetHtml($"<html><body style='margin:0'>{bodyHtml}</body></html>");
+        await wrapper.SetHtmlAsync($"<html><body style='margin:0'>{bodyHtml}</body></html>");
 
         var container = GetInternal(wrapper);
         container.PageSize = new RSize(pageWidth, pageHeight);
