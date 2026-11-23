@@ -48,10 +48,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms.Utilities
         public const int TextAlignBaselineRtl = 256 + 24;
 
         [DllImport("user32.dll")]
-        public static extern int SetCursor(int hCursor);
+        public static extern IntPtr SetCursor(IntPtr hCursor);
 
-        [DllImport("user32.dll")]
-        public static extern int LoadCursor(int hInstance, int lpCursorName);
+        // The cursor name is a pointer, a predefined cursor like IdcHand is an ID cast to one
+        [DllImport("user32.dll", EntryPoint = "LoadCursorW")]
+        public static extern IntPtr LoadCursor(IntPtr hInstance, IntPtr lpCursorName);
 
         /// <summary>
         /// Create a compatible memory HDC from the given HDC.<br/>
