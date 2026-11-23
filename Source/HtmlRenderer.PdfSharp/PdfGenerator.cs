@@ -80,13 +80,9 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// <param name="stylesheet">the stylesheet source to parse</param>
         /// <param name="combineWithDefault">true - combine the parsed CSS data with default CSS data, false - return only the parsed CSS data</param>
         /// <returns>the parsed CSS data</returns>
-        public static Task<CssData> ParseStyleSheet(string stylesheet, bool combineWithDefault = true)
+        public static CssData ParseStyleSheet(string stylesheet, bool combineWithDefault = true)
         {
-            // CssData.Parse -> CssParser.ParseStyleSheet is not itself async yet (its @import resolution
-            // bridges into the async resource-loading pipeline synchronously for now - it's also called
-            // directly from several UI controls' public API, out of scope for this conversion) - wrapped
-            // in Task.FromResult here so this method's own shape matches the rest of this async-only API.
-            return Task.FromResult(CssData.Parse(PdfSharpAdapter.Instance, stylesheet, combineWithDefault));
+            return CssData.Parse(PdfSharpAdapter.Instance, stylesheet, combineWithDefault);
         }
 
         /// <summary>
