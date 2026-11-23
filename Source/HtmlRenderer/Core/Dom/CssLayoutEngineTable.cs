@@ -601,11 +601,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
         /// <param name="g"></param>
         private void LayoutCells(RGraphics g)
         {
-            double startx = Math.Max(_tableBox.ClientLeft + GetHorizontalSpacing(), 0);
-            double starty = Math.Max(_tableBox.ClientTop + GetVerticalSpacing(), 0);
+            // The -1 spacing of collapsed borders mustn't move the cells out of the container
+            var origin = _tableBox.HtmlContainer?.Location ?? RPoint.Empty;
+            double startx = Math.Max(_tableBox.ClientLeft + GetHorizontalSpacing(), origin.X);
+            double starty = Math.Max(_tableBox.ClientTop + GetVerticalSpacing(), origin.Y);
             double cury = starty;
             double maxRight = startx;
-            double maxBottom = 0f;
+            double maxBottom = starty;
             int currentrow = 0;
 
             // HTML's align attribute on the table ends up in text-align
