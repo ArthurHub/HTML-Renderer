@@ -238,6 +238,13 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// </summary>
         protected virtual void OnToolTipPopup(PopupEventArgs e)
         {
+            // Shown for a window that isn't a control, there's no control to measure the html with
+            if (e.AssociatedControl == null)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             //Create fragment container
             var cssClass = string.IsNullOrEmpty(_tooltipCssClass) ? null : string.Format(" class=\"{0}\"", _tooltipCssClass);
             var toolipHtml = string.Format("<div{0}>{1}</div>", cssClass, GetToolTip(e.AssociatedControl));
