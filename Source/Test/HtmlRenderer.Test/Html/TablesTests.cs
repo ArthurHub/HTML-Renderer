@@ -144,7 +144,6 @@ public sealed class TablesTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/html.yml")]
     [Spec("html", "tables.html#forming-a-table")]
     public void Colspan_AddsColumns()
     {
@@ -154,7 +153,6 @@ public sealed class TablesTests
     }
 
     [TestMethod]
-    [Ignore("Gap, see Spec/html.yml")]
     [Spec("html", "tables.html#forming-a-table")]
     public void CellSpanningPastTheOtherRows_IsLaidOut()
     {

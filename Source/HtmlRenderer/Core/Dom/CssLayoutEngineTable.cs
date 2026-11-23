@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TheArtOfDev.HtmlRenderer.Adapters;
 using TheArtOfDev.HtmlRenderer.Adapters.Entities;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
@@ -293,8 +294,9 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
             }
             else
             {
+                // A cell takes as many columns as its colspan, HTML 4.9.12.1
                 foreach (CssBox b in _allRows)
-                    _columnCount = Math.Max(_columnCount, b.Boxes.Count);
+                    _columnCount = Math.Max(_columnCount, b.Boxes.Sum(cell => Math.Max(GetColSpan(cell), 1)));
             }
 
             //Initialize column widths array with NaNs

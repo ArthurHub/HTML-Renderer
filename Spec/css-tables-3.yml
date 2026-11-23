@@ -55,12 +55,11 @@ sections:
     status: partial
     gaps:
       - colspan and rowspan are read from any element, not only from td and th
-      - colspan doesn't add columns, see HTML 4.9.12.1
   '#dimensioning-the-row-column-grid--step2':
     title: 3.3.2 Track merging
     status: unsupported
     gaps:
-      - Columns that only spanning cells cover aren't merged, a colspan past the column count breaks the table layout, see HTML 4.9.12.1
+      - Columns that only spanning cells cover aren't merged
   '#missing-cells-fixup':
     title: 3.4 Missing cells fixup
     status: supported

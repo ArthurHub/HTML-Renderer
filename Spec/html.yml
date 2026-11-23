@@ -892,8 +892,6 @@ sections:
     title: 4.9.12.1 Forming a table
     status: partial
     gaps:
-      - The column count is the highest number of cells in a row, colspan doesn't add columns, so a cell past it gets no width
-      - A cell spanning past that column count breaks the layout of the whole table
       - Cells past the columns declared by col and colgroup aren't laid out
       - A colspan of 0 or below breaks the layout of the whole table instead of counting as 1
       - colspan isn't clamped to 1000
