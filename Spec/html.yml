@@ -900,6 +900,7 @@ sections:
       - span, colspan and rowspan with trailing characters, e.g. 2px, count as 1 instead of using the leading digits
       - A span with a fraction is rounded instead of cut off, e.g. 1.5 counts as 2
       - A rowspan reaching past its row group continues into the next one
+      - A cell after slots covered by rowspans that start in different rows is placed in one of those slots instead of after them
   tables.html#header-and-data-cell-semantics:
     title: 4.9.12.2 Forming relationships between data cells and header cells
     status: n/a
