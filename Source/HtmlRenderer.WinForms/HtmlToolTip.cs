@@ -406,22 +406,21 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             Draw -= OnToolTipDraw;
             Disposed -= OnToolTipDisposed;
 
+            if (_linkHandlingTimer != null)
+            {
+                _linkHandlingTimer.Tick -= OnLinkHandlingTimerTick;
+                _linkHandlingTimer.Dispose();
+                _linkHandlingTimer = null;
+            }
+
             if (_htmlContainer != null)
             {
+                _htmlContainer.LinkClicked -= OnLinkClicked;
                 _htmlContainer.RenderError -= OnRenderError;
                 _htmlContainer.StylesheetLoad -= OnStylesheetLoad;
                 _htmlContainer.ImageLoad -= OnImageLoad;
                 _htmlContainer.Dispose();
                 _htmlContainer = null;
-            }
-
-            if (_linkHandlingTimer != null)
-            {
-                _linkHandlingTimer.Dispose();
-                _linkHandlingTimer = null;
-
-                if (_htmlContainer != null)
-                    _htmlContainer.LinkClicked -= OnLinkClicked;
             }
         }
 
