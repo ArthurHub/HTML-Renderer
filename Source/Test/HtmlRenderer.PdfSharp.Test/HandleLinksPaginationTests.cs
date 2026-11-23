@@ -73,4 +73,27 @@ public sealed class HandleLinksPaginationTests
         // (indexing document.Pages out of range) or silently land on the wrong page.
         Assert.IsLessThanOrEqualTo(6, document.Pages.Count, "the 2500pt content-empty gap should be skipped, not paginated through as blank pages");
     }
+
+    [TestMethod]
+    [Spec("html", "browsing-the-web.html#scrolling-to-a-fragment")]
+    [DataRow("#")]
+    [DataRow("#top")]
+    [DataRow("#TOP")]
+    public async Task EmptyOrTopFragment_LinksToTheFirstPage(string href)
+    {
+        var config = new PdfGenerateConfig { PageSize = PageSize.A4 };
+        config.SetMargins(20);
+
+        var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of body text</p>", 150));
+        var html = $"<html><body>{filler}<p><a href='{href}'>back to the top</a></p></body></html>";
+
+        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var stream = new MemoryStream();
+        document.Save(stream);
+
+        var lastPage = document.Pages[document.Pages.Count - 1];
+        Assert.AreEqual(1, lastPage.Annotations.Count);
+        var destination = lastPage.Annotations[0].Elements["/Dest"]!.ToString();
+        StringAssert.StartsWith(destination, $"[{document.Pages[0].Reference!.ObjectNumber} 0 R ");
+    }
 }

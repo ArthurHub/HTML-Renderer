@@ -256,15 +256,11 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
                     if (link.IsAnchor)
                     {
                         // create link to another page in the document
-                        var anchorRect = container.GetElementRectangle(link.AnchorId);
-                        if (anchorRect.HasValue)
+                        var anchorPageIdx = AnchorPage(container, tree, slotToPage, link.AnchorId);
+                        // document links to the same page as the link is not allowed
+                        if (anchorPageIdx.HasValue && pageIndex != anchorPageIdx.Value)
                         {
-                            var anchorSlot = SlotContaining(tree, anchorRect.Value.Top);
-                            // document links to the same page as the link is not allowed
-                            if (anchorSlot.HasValue && slotToPage.TryGetValue(anchorSlot.Value, out var anchorPageIdx) && pageIndex != anchorPageIdx)
-                            {
-                                document.Pages[pageIndex].AddDocumentLink(new PdfRectangle(xRect), anchorPageIdx + 1); // PdfSharp page numbers are one-based
-                            }
+                            document.Pages[pageIndex].AddDocumentLink(new PdfRectangle(xRect), anchorPageIdx.Value + 1); // PdfSharp page numbers are one-based
                         }
                     }
                     else
@@ -281,6 +277,22 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp
         /// or null if it falls in no materialized fragmentainer's band (e.g. an anchor inside a
         /// content-empty page slot that was skipped, or past the end of the document).
         /// </summary>
+        /// <summary>
+        /// The PDF page index the fragment of an anchor link points to, null if it points nowhere.
+        /// </summary>
+        /// <remarks>
+        /// An empty fragment, and top without an element of that id, is the top of the document, HTML 7.4.6.4.
+        /// </remarks>
+        private static int? AnchorPage(HtmlContainer container, FragmentTree tree, Dictionary<int, int> slotToPage, string fragment)
+        {
+            var anchorRect = fragment.Length > 0 ? container.GetElementRectangle(fragment) : null;
+            if (!anchorRect.HasValue)
+                return fragment.Length == 0 || string.Equals(fragment, "top", StringComparison.OrdinalIgnoreCase) ? 0 : null;
+
+            var anchorSlot = SlotContaining(tree, anchorRect.Value.Top);
+            return anchorSlot.HasValue && slotToPage.TryGetValue(anchorSlot.Value, out var anchorPageIdx) ? anchorPageIdx : null;
+        }
+
         private static int? SlotContaining(FragmentTree tree, double y)
         {
             foreach (var fragmentainer in tree.Fragmentainers)
