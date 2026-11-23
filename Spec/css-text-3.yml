@@ -59,6 +59,9 @@ sections:
   '#line-breaking':
     title: 5 Line Breaking and Word Boundaries
     status: partial
+    gaps:
+      - Only CJK ideographs from U+4E00 to U+FA2D are break opportunities, a run of kana doesn't break and overflows the line
+      - CJK punctuation like the fullwidth comma sticks to the next character instead of the previous one, so a line can start with it
   '#word-break-property':
     title: '5.1 Breaking Rules for Letters: the word-break property'
     status: partial

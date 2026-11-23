@@ -50,6 +50,29 @@ public sealed class CssText3IntegrationTests
 
     [Ignore("Gap, see Spec/css-text-3.yml")]
     [TestMethod]
+    [Spec("css-text-3", "#line-breaking")]
+    [Spec("css-text-4", "#line-breaking")]
+    public void Normal_BreaksBetweenKana()
+    {
+        var p = Paragraph("<p id='p' style='width:50px'>あいうえおかきくけこさしすせそ</p>");
+
+        Assert.IsGreaterThan(1, LinesWithText(p));
+    }
+
+    [Ignore("Gap, see Spec/css-text-3.yml")]
+    [TestMethod]
+    [Spec("css-text-3", "#line-breaking")]
+    [Spec("css-text-4", "#line-breaking")]
+    public void CjkComma_DoesntStartALine()
+    {
+        var p = Paragraph("<p id='p' style='width:110px'>中文中文中文中，中文中文</p>");
+
+        Assert.IsGreaterThan(1, LinesWithText(p));
+        Assert.IsFalse(p.LineBoxes.Any(lb => lb.Words.FirstOrDefault(w => !w.IsSpaces)?.Text.StartsWith('，') == true));
+    }
+
+    [Ignore("Gap, see Spec/css-text-3.yml")]
+    [TestMethod]
     [Spec("css-text-3", "#word-break-property")]
     [Spec("css-text-4", "#word-break-property")]
     public void BreakWord_BreaksAWordThatOverflows()
