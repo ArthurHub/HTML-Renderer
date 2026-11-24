@@ -1958,8 +1958,6 @@ namespace TheArtOfDev.HtmlRenderer.Core.Dom
 
             var bottomInset = ActualPaddingBottom - ActualBorderBottomWidth;
             var pen = g.GetPen(ActualColor);
-            pen.Width = 1;
-            pen.DashStyle = RDashStyle.Solid;
 
             // CSS 2.1 §16.3.1, the value can list several lines.
             foreach (var line in TextDecoration.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
