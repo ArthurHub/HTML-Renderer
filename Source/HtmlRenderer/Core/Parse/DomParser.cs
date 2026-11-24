@@ -52,51 +52,75 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         }
 
         /// <summary>
-        /// Generate css tree by parsing the given html and applying the given css style data on it.
+        /// Parses the html and loads everything the box tree is built from: the style sheets of the
+        /// document and its <c>@font-face</c> fonts. The only step that does I/O.
         /// </summary>
         /// <param name="html">the html to parse</param>
         /// <param name="htmlContainer">the html container to use for reference resolve</param>
-        /// <param name="cssData">the css data to use</param>
-        /// <returns>the root of the generated tree</returns>
-        public async Task<(CssBox root, CssData cssData)> GenerateCssTree(string html, HtmlContainerInt htmlContainer, CssData cssData)
+        /// <param name="cssData">the base css data, the document's style sheets are added to a copy</param>
+        /// <returns>the parsed document, to pass to <see cref="BuildCssTree"/>, and the css data with the document's style sheets</returns>
+        public async Task<(CssBox root, CssData cssData)> LoadAsync(string html, HtmlContainerInt htmlContainer, CssData cssData)
         {
-            var root = HtmlParser.ParseDocument(html);
+            var root = ParseDocument(html, htmlContainer);
             if (root != null)
             {
-                root.HtmlContainer = htmlContainer;
-
                 (cssData, _) = await CascadeParseStyles(root, htmlContainer, cssData, false).ConfigureAwait(false);
 
                 await RegisterFontFaces(cssData, htmlContainer).ConfigureAwait(false);
-
-                // The device @media queries are evaluated against: media type and colour scheme come
-                // from the platform adapter, the viewport from the container's max size (which is the
-                // available width/height at this point; zero means "not known yet", and geometry
-                // conditions then match permissively).
-                var media = MediaQueryContext.FromAdapter(
-                    htmlContainer.Adapter, htmlContainer.MaxSize.Width, htmlContainer.MaxSize.Height);
-
-                CascadeApplyStyles(root, cssData, media);
-
-                SetTextSelectionStyle(htmlContainer, cssData);
-
-                CssCounterEngine.ResolveCounters(root);
-
-                CorrectTextBoxes(root);
-
-                CorrectImgBoxes(root);
-
-                CorrectLineBreaksBlocks(root);
-
-                CorrectInlineBoxesParent(root);
-
-                CorrectBlockInsideInline(root);
-
-                CorrectInlineBoxesParent(root);
-
-                CorrectAnonymousTables(root);
             }
             return (root, cssData);
+        }
+
+        /// <summary>
+        /// Parses the html again, for building a new box tree from already loaded css data.
+        /// </summary>
+        public CssBox ParseDocument(string html, HtmlContainerInt htmlContainer)
+        {
+            var root = HtmlParser.ParseDocument(html);
+            if (root != null)
+                root.HtmlContainer = htmlContainer;
+            return root;
+        }
+
+        /// <summary>
+        /// Builds the box tree of a parsed document by applying the css data to it. Synchronous, all
+        /// resources it needs were loaded by <see cref="LoadAsync"/>. Changes the tree, so each build
+        /// needs a freshly parsed document.
+        /// </summary>
+        /// <param name="root">the parsed document</param>
+        /// <param name="htmlContainer">the html container to use for reference resolve</param>
+        /// <param name="cssData">the css data from <see cref="LoadAsync"/></param>
+        public void BuildCssTree(CssBox root, HtmlContainerInt htmlContainer, CssData cssData)
+        {
+            if (root == null)
+                return;
+
+            // The device @media queries are evaluated against: media type and colour scheme come
+            // from the platform adapter, the viewport from the container's max size (which is the
+            // available width/height at this point; zero means "not known yet", and geometry
+            // conditions then match permissively).
+            var media = MediaQueryContext.FromAdapter(
+                htmlContainer.Adapter, htmlContainer.MaxSize.Width, htmlContainer.MaxSize.Height);
+
+            CascadeApplyStyles(root, cssData, media);
+
+            SetTextSelectionStyle(htmlContainer, cssData);
+
+            CssCounterEngine.ResolveCounters(root);
+
+            CorrectTextBoxes(root);
+
+            CorrectImgBoxes(root);
+
+            CorrectLineBreaksBlocks(root);
+
+            CorrectInlineBoxesParent(root);
+
+            CorrectBlockInsideInline(root);
+
+            CorrectInlineBoxesParent(root);
+
+            CorrectAnonymousTables(root);
         }
 
 
