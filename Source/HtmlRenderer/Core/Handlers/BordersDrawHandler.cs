@@ -282,21 +282,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// </summary>
         private static RPen GetPen(RGraphics g, string style, RColor color, double width)
         {
-            var p = g.GetPen(color);
-            p.Width = width;
             switch (style)
             {
-                case "solid":
-                    p.DashStyle = RDashStyle.Solid;
-                    break;
                 case "dotted":
-                    p.DashStyle = RDashStyle.Dot;
-                    break;
+                    return g.GetPen(color, width, RDashStyle.Dot);
                 case "dashed":
-                    p.DashStyle = RDashStyle.Dash;
-                    break;
+                    return g.GetPen(color, width, RDashStyle.Dash);
+                default:
+                    return g.GetPen(color, width, RDashStyle.Solid);
             }
-            return p;
         }
 
         /// <summary>

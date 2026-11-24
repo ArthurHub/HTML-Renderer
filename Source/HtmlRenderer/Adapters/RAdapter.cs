@@ -45,12 +45,13 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         /// <summary>
         /// cache of brush color to brush instance
         /// </summary>
+        /// <remarks>The adapter is shared by every container, the caches are locked on themselves.</remarks>
         private readonly Dictionary<RColor, RBrush> _brushesCache = new Dictionary<RColor, RBrush>();
 
         /// <summary>
-        /// cache of pen color to pen instance
+        /// cache of pens, a cached pen is never changed, since another thread may be drawing with it
         /// </summary>
-        private readonly Dictionary<RColor, RPen> _penCache = new Dictionary<RColor, RPen>();
+        private readonly Dictionary<(RColor Color, double Width, RDashStyle DashStyle), RPen> _penCache = new Dictionary<(RColor, double, RDashStyle), RPen>();
 
         /// <summary>
         /// cache of all the font used not to create same font again and again
@@ -256,18 +257,36 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         }
 
         /// <summary>
-        /// Get cached pen instance for the given color.
+        /// Get cached solid pen instance for the given color, 1 wide.
         /// </summary>
         /// <param name="color">the color to get pen for</param>
-        /// <returns>pen instance</returns>
+        /// <returns>pen instance, don't change it</returns>
         public RPen GetPen(RColor color)
         {
-            RPen pen;
-            if (!_penCache.TryGetValue(color, out pen))
+            return GetPen(color, 1, RDashStyle.Solid);
+        }
+
+        /// <summary>
+        /// Get cached pen instance for the given color, width and dash style.
+        /// </summary>
+        /// <param name="color">the color to get pen for</param>
+        /// <param name="width">the width of the pen</param>
+        /// <param name="dashStyle">the dash style of the pen</param>
+        /// <returns>pen instance, don't change it</returns>
+        public RPen GetPen(RColor color, double width, RDashStyle dashStyle)
+        {
+            lock (_penCache)
             {
-                _penCache[color] = pen = CreatePen(color);
+                RPen pen;
+                if (!_penCache.TryGetValue((color, width, dashStyle), out pen))
+                {
+                    pen = CreatePen(color);
+                    pen.Width = width;
+                    pen.DashStyle = dashStyle;
+                    _penCache[(color, width, dashStyle)] = pen;
+                }
+                return pen;
             }
-            return pen;
         }
 
         /// <summary>
@@ -277,12 +296,15 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         /// <returns>brush instance</returns>
         public RBrush GetSolidBrush(RColor color)
         {
-            RBrush brush;
-            if (!_brushesCache.TryGetValue(color, out brush))
+            lock (_brushesCache)
             {
-                _brushesCache[color] = brush = CreateSolidBrush(color);
+                RBrush brush;
+                if (!_brushesCache.TryGetValue(color, out brush))
+                {
+                    _brushesCache[color] = brush = CreateSolidBrush(color);
+                }
+                return brush;
             }
-            return brush;
         }
 
         /// <summary>
@@ -372,7 +394,13 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         public virtual async Task<bool> AddFontFace(string familyName, RUri uri, int weight, bool isItalic, int stretch, IReadOnlyList<CodepointRange> ranges)
         {
             RFontFamily fontFamily;
-            if (!_fontFaceCache.TryGetValue(uri.AbsoluteUri, out fontFamily))
+            bool cached;
+            lock (_fontFaceCache)
+            {
+                cached = _fontFaceCache.TryGetValue(uri.AbsoluteUri, out fontFamily);
+            }
+
+            if (!cached)
             {
                 var networkResponse = await GetResourceStream(uri).ConfigureAwait(false);
                 if (networkResponse == null || networkResponse.ResourceStream == null)
@@ -404,7 +432,14 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
                     return false;
                 }
 
-                _fontFaceCache[uri.AbsoluteUri] = fontFamily;
+                lock (_fontFaceCache)
+                {
+                    // Another container may have loaded the same face in the mean time, keep the first
+                    if (_fontFaceCache.TryGetValue(uri.AbsoluteUri, out var existing))
+                        fontFamily = existing;
+                    else
+                        _fontFaceCache[uri.AbsoluteUri] = fontFamily;
+                }
             }
 
             _fontsHandler.AddFontFace(familyName, fontFamily, weight, isItalic, stretch, ranges);

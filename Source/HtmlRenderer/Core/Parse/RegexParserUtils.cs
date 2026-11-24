@@ -10,7 +10,7 @@
 // - Sun Tsu,
 // "The Art of War"
 
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 
 namespace TheArtOfDev.HtmlRenderer.Core.Parse
@@ -87,7 +87,8 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// <summary>
         /// the regexes cache that is used by the parser so not to create regex each time
         /// </summary>
-        private static readonly Dictionary<string, Regex> _regexes = new Dictionary<string, Regex>();
+        /// <remarks>Shared by every container, which can lay out on different threads.</remarks>
+        private static readonly ConcurrentDictionary<string, Regex> _regexes = new ConcurrentDictionary<string, Regex>();
 
         #endregion
 
@@ -186,13 +187,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
         /// <returns>the regex instance</returns>
         private static Regex GetRegex(string regex)
         {
-            Regex r;
-            if (!_regexes.TryGetValue(regex, out r))
-            {
-                r = new Regex(regex, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                _regexes[regex] = r;
-            }
-            return r;
+            return _regexes.GetOrAdd(regex, r => new Regex(r, RegexOptions.IgnoreCase | RegexOptions.Singleline));
         }
     }
 }

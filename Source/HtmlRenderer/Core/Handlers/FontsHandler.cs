@@ -66,6 +66,11 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         private readonly RAdapter _adapter;
 
         /// <summary>
+        /// Guards the dictionaries below, the adapter and with it this handler is shared by every container.
+        /// </summary>
+        private readonly object _lock = new object();
+
+        /// <summary>
         /// Allow to map not installed fonts to different
         /// </summary>
         private readonly Dictionary<string, string> _fontsMapping = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
@@ -107,16 +112,19 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <returns>true - font exists by given family name, false - otherwise</returns>
         public bool IsFontExists(string family)
         {
-            bool exists = _existingFontFamilies.ContainsKey(family);
-            if (!exists)
+            lock (_lock)
             {
-                string mappedFamily;
-                if (_fontsMapping.TryGetValue(family, out mappedFamily))
+                bool exists = _existingFontFamilies.ContainsKey(family);
+                if (!exists)
                 {
-                    exists = _existingFontFamilies.ContainsKey(mappedFamily);
+                    string mappedFamily;
+                    if (_fontsMapping.TryGetValue(family, out mappedFamily))
+                    {
+                        exists = _existingFontFamilies.ContainsKey(mappedFamily);
+                    }
                 }
+                return exists;
             }
-            return exists;
         }
 
         /// <summary>
@@ -126,12 +134,15 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// </summary>
         public RFontFamily TryGetExistingFamily(string family)
         {
-            FontFamilyModel model;
-            if (!_existingFontFamilies.TryGetValue(family, out model))
+            lock (_lock)
             {
-                return null;
+                FontFamilyModel model;
+                if (!_existingFontFamilies.TryGetValue(family, out model))
+                {
+                    return null;
+                }
+                return model.SimpleFamily ?? (model.Faces.Count > 0 ? model.Faces[0].FontFamily : null);
             }
-            return model.SimpleFamily ?? (model.Faces.Count > 0 ? model.Faces[0].FontFamily : null);
         }
 
         /// <summary>
@@ -140,15 +151,18 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <param name="fontFamily">The font family to add.</param>
         public void AddFontFamily(RFontFamily fontFamily)
         {
-            ArgChecker.AssertArgNotNull(fontFamily, "family");
-
-            FontFamilyModel model;
-            if (!_existingFontFamilies.TryGetValue(fontFamily.Name, out model))
+            lock (_lock)
             {
-                model = new FontFamilyModel { Name = fontFamily.Name };
-                _existingFontFamilies[fontFamily.Name] = model;
+                ArgChecker.AssertArgNotNull(fontFamily, "family");
+
+                FontFamilyModel model;
+                if (!_existingFontFamilies.TryGetValue(fontFamily.Name, out model))
+                {
+                    model = new FontFamilyModel { Name = fontFamily.Name };
+                    _existingFontFamilies[fontFamily.Name] = model;
+                }
+                model.SimpleFamily = fontFamily;
             }
-            model.SimpleFamily = fontFamily;
         }
 
         /// <summary>
@@ -160,10 +174,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <param name="toFamily">the font family to replace with</param>
         public void AddFontFamilyMapping(string fromFamily, string toFamily)
         {
-            ArgChecker.AssertArgNotNullOrEmpty(fromFamily, "fromFamily");
-            ArgChecker.AssertArgNotNullOrEmpty(toFamily, "toFamily");
+            lock (_lock)
+            {
+                ArgChecker.AssertArgNotNullOrEmpty(fromFamily, "fromFamily");
+                ArgChecker.AssertArgNotNullOrEmpty(toFamily, "toFamily");
 
-            _fontsMapping[fromFamily] = toFamily;
+                _fontsMapping[fromFamily] = toFamily;
+            }
         }
 
         /// <summary>
@@ -178,29 +195,32 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <param name="ranges">the <c>unicode-range</c>, or null for any character</param>
         public void AddFontFace(string familyName, RFontFamily fontFamily, int weight, bool isItalic, int stretch, IReadOnlyList<CodepointRange> ranges)
         {
-            ArgChecker.AssertArgNotNullOrEmpty(familyName, "familyName");
-            ArgChecker.AssertArgNotNull(fontFamily, "fontFamily");
-
-            FontFamilyModel model;
-            if (!_existingFontFamilies.TryGetValue(familyName, out model))
+            lock (_lock)
             {
-                model = new FontFamilyModel { Name = familyName };
-                _existingFontFamilies[familyName] = model;
-            }
+                ArgChecker.AssertArgNotNullOrEmpty(familyName, "familyName");
+                ArgChecker.AssertArgNotNull(fontFamily, "fontFamily");
 
-            for (var i = model.Faces.Count - 1; i >= 0; i--)
-            {
-                if (IsSameFaceSlot(model.Faces[i], weight, isItalic, stretch, ranges))
+                FontFamilyModel model;
+                if (!_existingFontFamilies.TryGetValue(familyName, out model))
                 {
-                    model.Faces.RemoveAt(i);
+                    model = new FontFamilyModel { Name = familyName };
+                    _existingFontFamilies[familyName] = model;
                 }
+
+                for (var i = model.Faces.Count - 1; i >= 0; i--)
+                {
+                    if (IsSameFaceSlot(model.Faces[i], weight, isItalic, stretch, ranges))
+                    {
+                        model.Faces.RemoveAt(i);
+                    }
+                }
+
+                model.Faces.Add(new FontFaceEntry(weight, isItalic, stretch, ranges, fontFamily));
+
+                // A new face can change which face is nearest for a request.
+                _fontsCache.Remove(familyName);
+                _faceFontsCache.Remove(familyName);
             }
-
-            model.Faces.Add(new FontFaceEntry(weight, isItalic, stretch, ranges, fontFamily));
-
-            // A new face can change which face is nearest for a request.
-            _fontsCache.Remove(familyName);
-            _faceFontsCache.Remove(familyName);
         }
 
         /// <summary>
@@ -210,31 +230,34 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// <returns>cached font instance</returns>
         public RFont GetCachedFont(string family, double size, RFontStyle style)
         {
-            var font = TryGetFont(family, size, style);
-            if (font == null)
+            lock (_lock)
             {
-                if (!_existingFontFamilies.ContainsKey(family))
-                {
-                    string mappedFamily;
-                    if (_fontsMapping.TryGetValue(family, out mappedFamily))
-                    {
-                        font = TryGetFont(mappedFamily, size, style);
-                        if (font == null)
-                        {
-                            font = CreateFont(mappedFamily, size, style);
-                            _fontsCache[mappedFamily][size][style] = font;
-                        }
-                    }
-                }
-
+                var font = TryGetFont(family, size, style);
                 if (font == null)
                 {
-                    font = CreateFont(family, size, style);
-                }
+                    if (!_existingFontFamilies.ContainsKey(family))
+                    {
+                        string mappedFamily;
+                        if (_fontsMapping.TryGetValue(family, out mappedFamily))
+                        {
+                            font = TryGetFont(mappedFamily, size, style);
+                            if (font == null)
+                            {
+                                font = CreateFont(mappedFamily, size, style);
+                                _fontsCache[mappedFamily][size][style] = font;
+                            }
+                        }
+                    }
 
-                _fontsCache[family][size][style] = font;
+                    if (font == null)
+                    {
+                        font = CreateFont(family, size, style);
+                    }
+
+                    _fontsCache[family][size][style] = font;
+                }
+                return font;
             }
-            return font;
         }
 
         /// <summary>
@@ -254,27 +277,30 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
         /// </returns>
         public RFont GetCachedFont(string family, double size, RFontStyle style, int weight, int stretch, int? codepoint)
         {
-            FontFamilyModel model;
-            if (_existingFontFamilies.TryGetValue(family, out model) && model.Faces.Count > 0)
+            lock (_lock)
             {
-                var requestedItalic = (style & RFontStyle.Italic) != 0;
-
-                FontFaceEntry face;
-                if (TryFindNearestFace(model, weight, requestedItalic, stretch, codepoint, out face))
+                FontFamilyModel model;
+                if (_existingFontFamilies.TryGetValue(family, out model) && model.Faces.Count > 0)
                 {
-                    return GetCachedFaceFont(family, face, size, style, weight, requestedItalic, stretch, codepoint ?? -1);
+                    var requestedItalic = (style & RFontStyle.Italic) != 0;
+
+                    FontFaceEntry face;
+                    if (TryFindNearestFace(model, weight, requestedItalic, stretch, codepoint, out face))
+                    {
+                        return GetCachedFaceFont(family, face, size, style, weight, requestedItalic, stretch, codepoint ?? -1);
+                    }
+
+                    if (codepoint != null)
+                    {
+                        // Don't substitute a face that doesn't cover the character.
+                        return null;
+                    }
+
+                    // Can't happen, AddFontFace always leaves a face registered.
                 }
 
-                if (codepoint != null)
-                {
-                    // Don't substitute a face that doesn't cover the character.
-                    return null;
-                }
-
-                // Can't happen, AddFontFace always leaves a face registered.
+                return GetCachedFont(family, size, style);
             }
-
-            return GetCachedFont(family, size, style);
         }
 
 

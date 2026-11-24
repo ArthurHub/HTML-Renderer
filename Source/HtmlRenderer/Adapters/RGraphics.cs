@@ -56,13 +56,25 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         }
 
         /// <summary>
-        /// Get color pen.
+        /// Get solid color pen, 1 wide.
         /// </summary>
         /// <param name="color">the color to get the pen for</param>
-        /// <returns>pen instance</returns>
+        /// <returns>pen instance, shared, don't change it</returns>
         public RPen GetPen(RColor color)
         {
             return _adapter.GetPen(color);
+        }
+
+        /// <summary>
+        /// Get color pen with the given width and dash style.
+        /// </summary>
+        /// <param name="color">the color to get the pen for</param>
+        /// <param name="width">the width of the pen</param>
+        /// <param name="dashStyle">the dash style of the pen</param>
+        /// <returns>pen instance, shared, don't change it</returns>
+        public RPen GetPen(RColor color, double width, RDashStyle dashStyle)
+        {
+            return _adapter.GetPen(color, width, dashStyle);
         }
 
         /// <summary>
