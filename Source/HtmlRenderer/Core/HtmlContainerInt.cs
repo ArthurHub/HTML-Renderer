@@ -125,12 +125,10 @@ namespace TheArtOfDev.HtmlRenderer.Core
         private CssData _cssData;
 
         /// <summary>
-        /// The html and base stylesheet last given to <see cref="SetHtmlAsync"/>, kept so the cascade can be
-        /// re-run when a viewport change alters which <c>@media</c> rules apply.
+        /// The html last given to <see cref="SetHtmlAsync"/>, kept so the box tree can be built again
+        /// when a viewport change alters which <c>@media</c> rules apply.
         /// </summary>
         private string _htmlSource;
-
-        private CssData _baseCssData;
 
         /// <summary>
         /// The device the current cascade was computed against.
@@ -599,26 +597,37 @@ namespace TheArtOfDev.HtmlRenderer.Core
         {
             Clear();
             _htmlSource = htmlSource;
-            _baseCssData = baseCssData;
 
             if (!string.IsNullOrEmpty(htmlSource))
             {
                 _loadComplete = false;
                 _cssData = baseCssData ?? _adapter.DefaultCssData;
 
-                DomParser parser = new DomParser(_cssParser);
-                (_root, _cssData) = await parser.GenerateCssTree(htmlSource, this, _cssData).ConfigureAwait(false);
-                _cascadeMedia = MediaQueryContext.FromAdapter(_adapter, _maxSize.Width, _maxSize.Height);
-                if (_root != null)
-                {
-                    _selectionHandler = new SelectionHandler(_root);
-                }
+                var parser = new DomParser(_cssParser);
+                CssBox root;
+                (root, _cssData) = await parser.LoadAsync(htmlSource, this, _cssData).ConfigureAwait(false);
+                BuildRoot(parser, root);
+            }
+        }
+
+        /// <summary>
+        /// Builds the box tree from a parsed document and the loaded <see cref="_cssData"/>, and makes it the root.
+        /// </summary>
+        private void BuildRoot(DomParser parser, CssBox root)
+        {
+            parser.BuildCssTree(root, this, _cssData);
+            _root = root;
+            _cascadeMedia = MediaQueryContext.FromAdapter(_adapter, _maxSize.Width, _maxSize.Height);
+            if (_root != null)
+            {
+                _selectionHandler = new SelectionHandler(_root);
             }
         }
 
         /// <summary>
         /// Re-runs the cascade when a viewport change flips the outcome of an <c>@media</c> condition
-        /// (CSS Conditional 3 §2), by parsing the document again.
+        /// (CSS Conditional 3 §2), by building the box tree again. Loads nothing, the style sheets and
+        /// fonts from <see cref="SetHtmlAsync"/> are reused, so it's safe in a synchronous layout.
         /// </summary>
         private void RefreshMediaDependentCascade()
         {
@@ -627,8 +636,10 @@ namespace TheArtOfDev.HtmlRenderer.Core
             var media = MediaQueryContext.FromAdapter(_adapter, _maxSize.Width, _maxSize.Height);
             if (!_cssData.MediaOutcomeChanged(_cascadeMedia, media)) return;
 
-            // PerformLayout is synchronous, so this blocks on the async SetHtmlAsync
-            SetHtmlAsync(_htmlSource, _baseCssData).GetAwaiter().GetResult();
+            var parser = new DomParser(_cssParser);
+            var root = parser.ParseDocument(_htmlSource, this);
+            Clear();
+            BuildRoot(parser, root);
         }
 
         /// <summary>
