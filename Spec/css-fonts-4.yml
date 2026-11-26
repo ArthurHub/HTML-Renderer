@@ -115,7 +115,10 @@ sections:
     status: supported
   '#font-family-desc':
     title: '4.2 Font family: the font-family descriptor'
-    status: supported
+    status: partial
+    gaps:
+      - In PDF, a face named like a system family only replaces the system face of the same weight, style and stretch, the other system faces stay matchable
+      - In PDF, a face stays registered for every later document in the process, also for documents whose style sheets don't declare it
   '#src-desc':
     title: '4.3 Font reference: the src descriptor'
     status: partial
