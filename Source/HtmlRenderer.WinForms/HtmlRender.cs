@@ -148,6 +148,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the size required for the html</returns>
+        /// <remarks>
+        /// Don't call this from a paint handler: loading stylesheets and images can finish after the handler
+        /// returned and the graphics is disposed. Load once with <see cref="HtmlContainer.SetHtmlAsync"/> instead,
+        /// then call <see cref="HtmlContainer.PerformLayout"/> and <see cref="HtmlContainer.PerformPaint"/> when painting.
+        /// </remarks>
         public static Task<SizeF> MeasureAsync(Graphics g, string html, float maxWidth = 0, CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
@@ -168,6 +173,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the size required for the html</returns>
+        /// <remarks>
+        /// Don't call this from a paint handler: loading stylesheets and images can finish after the handler
+        /// returned and the graphics is disposed. Load once with <see cref="HtmlContainer.SetHtmlAsync"/> instead,
+        /// then call <see cref="HtmlContainer.PerformLayout"/> and <see cref="HtmlContainer.PerformPaint"/> when painting.
+        /// </remarks>
         public static Task<SizeF> MeasureGdiPlusAsync(Graphics g, string html, float maxWidth = 0, CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
@@ -191,6 +201,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the actual size of the rendered html</returns>
+        /// <remarks>
+        /// Don't call this from a paint handler: loading stylesheets and images can finish after the handler
+        /// returned and the graphics is disposed. Load once with <see cref="HtmlContainer.SetHtmlAsync"/> instead,
+        /// then call <see cref="HtmlContainer.PerformLayout"/> and <see cref="HtmlContainer.PerformPaint"/> when painting.
+        /// </remarks>
         public static Task<SizeF> RenderAsync(Graphics g, string html, float left = 0, float top = 0, float maxWidth = 0, CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
@@ -215,6 +230,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the actual size of the rendered html</returns>
+        /// <remarks>
+        /// Don't call this from a paint handler: loading stylesheets and images can finish after the handler
+        /// returned and the graphics is disposed. Load once with <see cref="HtmlContainer.SetHtmlAsync"/> instead,
+        /// then call <see cref="HtmlContainer.PerformLayout"/> and <see cref="HtmlContainer.PerformPaint"/> when painting.
+        /// </remarks>
         public static Task<SizeF> RenderAsync(Graphics g, string html, PointF location, SizeF maxSize, CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
@@ -238,6 +258,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the actual size of the rendered html</returns>
+        /// <remarks>
+        /// Don't call this from a paint handler: loading stylesheets and images can finish after the handler
+        /// returned and the graphics is disposed. Load once with <see cref="HtmlContainer.SetHtmlAsync"/> instead,
+        /// then call <see cref="HtmlContainer.PerformLayout"/> and <see cref="HtmlContainer.PerformPaint"/> when painting.
+        /// </remarks>
         public static Task<SizeF> RenderGdiPlusAsync(Graphics g, string html, float left = 0, float top = 0, float maxWidth = 0, CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
@@ -262,6 +287,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the actual size of the rendered html</returns>
+        /// <remarks>
+        /// Don't call this from a paint handler: loading stylesheets and images can finish after the handler
+        /// returned and the graphics is disposed. Load once with <see cref="HtmlContainer.SetHtmlAsync"/> instead,
+        /// then call <see cref="HtmlContainer.PerformLayout"/> and <see cref="HtmlContainer.PerformPaint"/> when painting.
+        /// </remarks>
         public static Task<SizeF> RenderGdiPlusAsync(Graphics g, string html, PointF location, SizeF maxSize, CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
@@ -475,7 +505,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                     container.StylesheetLoad += stylesheetLoad;
                 if (imageLoad != null)
                     container.ImageLoad += imageLoad;
-                await container.SetHtml(html, cssData).ConfigureAwait(false);
+                await container.SetHtmlAsync(html, cssData).ConfigureAwait(false);
 
                 var finalSize = MeasureHtmlByRestrictions(container, minSize, maxSize);
                 container.MaxSize = finalSize;
@@ -594,7 +624,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                     container.StylesheetLoad += stylesheetLoad;
                 if (imageLoad != null)
                     container.ImageLoad += imageLoad;
-                await container.SetHtml(html, cssData).ConfigureAwait(false);
+                await container.SetHtmlAsync(html, cssData).ConfigureAwait(false);
 
                 var finalSize = MeasureHtmlByRestrictions(container, minSize, maxSize);
                 container.MaxSize = finalSize;
@@ -645,7 +675,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                     if (imageLoad != null)
                         container.ImageLoad += imageLoad;
 
-                    await container.SetHtml(html, cssData).ConfigureAwait(false);
+                    await container.SetHtmlAsync(html, cssData).ConfigureAwait(false);
                     container.PerformLayout(g);
 
                     actualSize = container.ActualSize;
@@ -747,7 +777,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                     if (imageLoad != null)
                         container.ImageLoad += imageLoad;
 
-                    await container.SetHtml(html, cssData).ConfigureAwait(false);
+                    await container.SetHtmlAsync(html, cssData).ConfigureAwait(false);
                     container.PerformLayout(g);
                     container.PerformPaint(g);
 

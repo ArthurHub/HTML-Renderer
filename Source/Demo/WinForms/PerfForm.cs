@@ -81,7 +81,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinForms
                     {
                         foreach (var html in _perfTestSamples)
                         {
-                            htmlContainer.SetHtml(html);
+                            htmlContainer.SetHtmlAsync(html);
 
                             if (layout)
                                 htmlContainer.PerformLayout(g);

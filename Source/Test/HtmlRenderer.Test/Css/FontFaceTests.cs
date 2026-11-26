@@ -131,7 +131,7 @@ public sealed class FontFaceTests
         var loader = new StyleSheetLoader("@font-face { font-family: F; src: " + src + " }");
         var container = new HtmlContainerInt(new MockAdapter { NetworkLoader = loader }) { AvoidAsyncImagesLoading = true };
 
-        container.SetHtml("<html><head><link rel=stylesheet href=css/fonts.css></head><body>a</body></html>").GetAwaiter().GetResult();
+        container.SetHtmlAsync("<html><head><link rel=stylesheet href=css/fonts.css></head><body>a</body></html>").GetAwaiter().GetResult();
 
         return loader.Requests;
     }
@@ -142,9 +142,9 @@ public sealed class FontFaceTests
 
         public override RUri? BaseUri => new("https://example.com/doc/index.html");
 
-        public override Task<string> GetPrimaryContents() => Task.FromResult(string.Empty);
+        public override Task<string> GetPrimaryContentsAsync() => Task.FromResult(string.Empty);
 
-        public override Task<RNetworkResponse?> GetResourceStream(RUri uri)
+        public override Task<RNetworkResponse?> GetResourceStreamAsync(RUri uri)
         {
             Requests.Add(uri.AbsoluteUri);
             if (uri.AbsoluteUri != "https://example.com/doc/css/fonts.css")

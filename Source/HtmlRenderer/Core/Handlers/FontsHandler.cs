@@ -185,7 +185,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
 
         /// <summary>
         /// Registers one <c>@font-face</c> face under <paramref name="familyName"/>. A face with the same
-        /// descriptors replaces the earlier one, the rules are registered again on every <c>SetHtml</c>.
+        /// descriptors replaces the earlier one, the rules are registered again on every <c>SetHtmlAsync</c>.
         /// </summary>
         /// <param name="familyName">the family name of the <c>@font-face</c> rule</param>
         /// <param name="fontFamily">the loaded face</param>

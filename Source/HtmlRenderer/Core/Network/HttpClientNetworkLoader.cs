@@ -32,14 +32,14 @@ namespace TheArtOfDev.HtmlRenderer.Core.Network
         public override RUri? BaseUri => primaryContentsUri != null ? new RUri(primaryContentsUri) : null;
 
         /// <inheritdoc/>
-        public override async Task<string> GetPrimaryContents()
+        public override async Task<string> GetPrimaryContentsAsync()
         {
             if (BaseUri is null)
             {
                 throw new InvalidOperationException("Primary contents URL is not set.");
             }
 
-            var networkResponse = await GetResourceStream(BaseUri).ConfigureAwait(false);
+            var networkResponse = await GetResourceStreamAsync(BaseUri).ConfigureAwait(false);
 
             if (networkResponse?.ResourceStream is null)
             {
@@ -53,7 +53,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Network
         }
 
         /// <inheritdoc/>
-        public override async Task<RNetworkResponse?> GetResourceStream(RUri uri)
+        public override async Task<RNetworkResponse?> GetResourceStreamAsync(RUri uri)
         {
             var response = await httpClient.GetAsync(uri.Uri).ConfigureAwait(false);
 

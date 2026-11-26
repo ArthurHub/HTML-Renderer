@@ -213,7 +213,7 @@ public sealed class CssValues5Tests
         var requested = new List<string>();
         var container = new HtmlContainerInt(new MockAdapter()) { MaxSize = new RSize(800, 600) };
         container.ImageLoad += (_, e) => requested.Add(e.Src);
-        container.SetHtml($"<html><head><style>#x{{width:10px;height:10px}} {css}</style></head><body>{body}</body></html>");
+        container.SetHtmlAsync($"<html><head><style>#x{{width:10px;height:10px}} {css}</style></head><body>{body}</body></html>");
         using var graphics = new RecordingGraphics();
         container.PerformLayout(graphics);
         container.PerformPaint(graphics);

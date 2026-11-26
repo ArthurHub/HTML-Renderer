@@ -389,7 +389,7 @@ public sealed class CssBackgrounds3Tests
             PageSize = new RSize(1000, 4000),
             AvoidAsyncImagesLoading = true
         };
-        container.SetHtml(PaintHarness.Wrap($"<div id='b' style='{style}'></div>")).GetAwaiter().GetResult();
+        container.SetHtmlAsync(PaintHarness.Wrap($"<div id='b' style='{style}'></div>")).GetAwaiter().GetResult();
 
         using (var layoutGraphics = new RecordingGraphics())
             container.PerformLayout(layoutGraphics);

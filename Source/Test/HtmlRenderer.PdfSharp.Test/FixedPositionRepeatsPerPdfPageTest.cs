@@ -36,10 +36,10 @@ public sealed class FixedPositionRepeatsPerPdfPageTest
         var sentence = "This is a moderately long sentence used to build a paragraph that will wrap across many lines and, eventually, across more than one page. ";
         var body = $"<p>{string.Concat(Enumerable.Repeat(sentence, 200))}</p>";
 
-        using var withFixed = await PdfGenerator.GeneratePdf(
+        using var withFixed = await PdfGenerator.GeneratePdfAsync(
             $"""<html><body><div style="position:fixed; top:5px; left:5px;">FixedHeaderMarkerText</div>{body}</body></html>""",
             config);
-        using var withoutFixed = await PdfGenerator.GeneratePdf($"<html><body>{body}</body></html>", config);
+        using var withoutFixed = await PdfGenerator.GeneratePdfAsync($"<html><body>{body}</body></html>", config);
 
         Assert.IsGreaterThanOrEqualTo(3, withoutFixed.Pages.Count, "test content should span at least 3 pages for this to be meaningful");
         Assert.AreEqual(withoutFixed.Pages.Count, withFixed.Pages.Count, "adding a fixed header should not itself change how many pages the body content needs");

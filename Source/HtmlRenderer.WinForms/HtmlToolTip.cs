@@ -248,11 +248,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             //Create fragment container
             var cssClass = string.IsNullOrEmpty(_tooltipCssClass) ? null : string.Format(" class=\"{0}\"", _tooltipCssClass);
             var toolipHtml = string.Format("<div{0}>{1}</div>", cssClass, GetToolTip(e.AssociatedControl));
-            // Bridges into the async HtmlContainer.SetHtml from this synchronous event handler.
+            // Bridges into the async HtmlContainer.SetHtmlAsync from this synchronous event handler.
             // Deliberately, permanently blocking: WinForms' ToolTip.Popup is a synchronous framework
             // callback with no async variant - e.ToolTipSize must be set before this method returns or
             // the tooltip won't position correctly, so there is no way to make this fire-and-forget.
-            _htmlContainer.SetHtml(toolipHtml, _baseCssData).GetAwaiter().GetResult();
+            _htmlContainer.SetHtmlAsync(toolipHtml, _baseCssData).GetAwaiter().GetResult();
             _htmlContainer.MaxSize = MaximumSize;
 
             //Measure size of the container

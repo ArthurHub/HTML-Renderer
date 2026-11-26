@@ -29,7 +29,7 @@ public sealed class StraddlingLineClaimTests
         string bodyHtml, double pageHeight = 842, double pageWidth = 600, int marginTop = 10)
     {
         var wrapper = new HtmlContainer();
-        await wrapper.SetHtml($"<html><body style='margin:0'>{bodyHtml}</body></html>");
+        await wrapper.SetHtmlAsync($"<html><body style='margin:0'>{bodyHtml}</body></html>");
 
         var container = GetInternal(wrapper);
         container.PageSize = new RSize(pageWidth, pageHeight);

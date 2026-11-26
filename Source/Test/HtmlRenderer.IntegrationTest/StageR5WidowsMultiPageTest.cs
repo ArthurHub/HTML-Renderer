@@ -44,7 +44,7 @@ public sealed class StageR5WidowsMultiPageTest
         // Page height 100 against a 24px line leaves 4px of slack per page, every page break lines up.
         var sentence = "Alpha bravo charlie delta echo foxtrot golf hotel india juliet kilo lima mike november oscar papa quebec romeo sierra tango uniform victor whiskey ";
         var paragraph = string.Concat(Enumerable.Repeat(sentence, 40));
-        await wrapper.SetHtml($"<html><body><p style='margin:0; widows: 3;'>{paragraph}</p></body></html>");
+        await wrapper.SetHtmlAsync($"<html><body><p style='margin:0; widows: 3;'>{paragraph}</p></body></html>");
 
         var container = GetInternal(wrapper);
         container.PageSize = new TheArtOfDev.HtmlRenderer.Adapters.Entities.RSize(220, 100);
@@ -72,7 +72,7 @@ public sealed class StageR5WidowsMultiPageTest
         using var wrapper = new HtmlContainer();
         // Every page is full, so widows:3 on the last page can only be met by overflowing the one before.
         var words = string.Concat(Enumerable.Repeat("word ", 300));
-        await wrapper.SetHtml($"<html><body><p style='margin:0; widows: 3;'>{words}</p></body></html>");
+        await wrapper.SetHtmlAsync($"<html><body><p style='margin:0; widows: 3;'>{words}</p></body></html>");
 
         var container = GetInternal(wrapper);
         container.PageSize = new TheArtOfDev.HtmlRenderer.Adapters.Entities.RSize(60, 100);

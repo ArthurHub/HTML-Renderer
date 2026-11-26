@@ -25,7 +25,7 @@ public sealed class StageD4VerificationTest
             </body></html>
             """;
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.IsGreaterThan(1, document.Pages.Count);
     }

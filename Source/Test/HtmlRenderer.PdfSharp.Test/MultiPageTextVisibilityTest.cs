@@ -21,7 +21,7 @@ public sealed class MultiPageTextVisibilityTest
         var sentence = "This is a moderately long sentence used to build a paragraph that will wrap across many lines and, eventually, across more than one page. ";
         var html = $"<html><body><p>{string.Concat(Enumerable.Repeat(sentence, 200))}</p></body></html>";
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.IsGreaterThanOrEqualTo(3, document.Pages.Count, "Test content should span at least 3 pages for this to be a meaningful check.");
 

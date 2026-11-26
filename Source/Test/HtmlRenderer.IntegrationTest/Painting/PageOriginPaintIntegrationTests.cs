@@ -44,7 +44,7 @@ public sealed class PageOriginPaintIntegrationTests
             Location = new RPoint(0, 300),
             PageSize = new RSize(99999, 99999)
         };
-        container.SetHtml(PaintHarness.Wrap(
+        container.SetHtmlAsync(PaintHarness.Wrap(
             "<div style='margin:0;height:400px'>top</div><p style='margin:0'>BottomMarker</p>"));
 
         using var layout = new RecordingGraphics();

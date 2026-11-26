@@ -140,7 +140,7 @@ public sealed class HighlightPaintIntegrationTests
             AvoidImagesLateLoading = images
         };
 
-        container.SetHtml($"<html><head><style>{css}</style></head><body style='margin:0'>{body}</body></html>");
+        container.SetHtmlAsync($"<html><head><style>{css}</style></head><body style='margin:0'>{body}</body></html>");
         using var layoutGraphics = new RecordingGraphics();
         container.PerformLayout(layoutGraphics);
 

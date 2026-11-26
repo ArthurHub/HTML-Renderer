@@ -31,7 +31,7 @@ public sealed class KeepWithNextIntegrationTests
     private static async Task<(CssBox Root, HtmlContainerInt Container)> BuildAsync(string sectionHtml, double fillerHeight = 900)
     {
         var wrapper = new HtmlContainer();
-        await wrapper.SetHtml(
+        await wrapper.SetHtmlAsync(
             $"<html><body style='margin:0'>"
             + $"<div class='filler' style='height:{fillerHeight}px'>filler</div>"
             + sectionHtml

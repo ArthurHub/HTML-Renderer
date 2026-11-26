@@ -52,7 +52,7 @@ public sealed class TableHeaderPdfRenderingTests
             </body></html>
             """;
 
-        using var document = await PdfGenerator.GeneratePdf(html, PageSize.A4, margin: 20);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, PageSize.A4, margin: 20);
 
         Assert.IsGreaterThanOrEqualTo(2, document.Pages.Count, $"PDF should have at least 2 pages but has {document.Pages.Count}");
         AssertHeaderRepeatsOnEveryPage(document);
@@ -76,7 +76,7 @@ public sealed class TableHeaderPdfRenderingTests
             </body></html>
             """;
 
-        using var document = await PdfGenerator.GeneratePdf(html, PageSize.A4, margin: 20);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, PageSize.A4, margin: 20);
 
         Assert.IsGreaterThanOrEqualTo(3, document.Pages.Count, $"PDF should have at least 3 pages but has {document.Pages.Count}");
         AssertHeaderRepeatsOnEveryPage(document);
@@ -107,7 +107,7 @@ public sealed class TableHeaderPdfRenderingTests
             </body></html>
             """;
 
-        using var document = await PdfGenerator.GeneratePdf(html, PageSize.A4, margin: 20);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, PageSize.A4, margin: 20);
 
         Assert.IsGreaterThanOrEqualTo(2, document.Pages.Count, "PDF should have at least 2 pages for complex header test");
         AssertHeaderRepeatsOnEveryPage(document);
@@ -126,7 +126,7 @@ public sealed class TableHeaderPdfRenderingTests
             </table></body></html>
             """;
 
-        using var document = await PdfGenerator.GeneratePdf(html, PageSize.A4, margin: 20);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, PageSize.A4, margin: 20);
 
         Assert.AreEqual(1, document.Pages.Count, "this fixture is deliberately small enough to fit on one page");
 

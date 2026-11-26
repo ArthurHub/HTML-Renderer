@@ -178,7 +178,7 @@ public sealed class CssInlineTests
     private static RecordingGraphics Paint(string body)
     {
         var container = new HtmlContainerInt(new MockAdapter()) { MaxSize = new RSize(800, 600), PageSize = new RSize(800, 600) };
-        container.SetHtml($"<html><head></head><body style='margin:0'>{body}</body></html>");
+        container.SetHtmlAsync($"<html><head></head><body style='margin:0'>{body}</body></html>");
         var graphics = new RecordingGraphics();
         container.PerformLayout(graphics);
         container.PerformPaint(graphics);

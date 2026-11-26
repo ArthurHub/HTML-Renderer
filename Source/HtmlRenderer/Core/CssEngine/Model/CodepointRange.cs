@@ -8,7 +8,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.CssEngine
     /// int-codepoint convention) rather than PeachPDF's <c>Rune</c>-based <c>RuneRange</c> - see
     /// <see cref="Utils.UnicodeRangeParser"/> for why: <c>System.Text.Rune</c> only exists on
     /// <c>net8.0</c>, not this project's <c>netstandard2.0</c> leg. Public: it appears in
-    /// <see cref="Adapters.RAdapter.AddFontFace"/>'s public signature, for a custom adapter implementation
+    /// <see cref="Adapters.RAdapter.AddFontFaceAsync"/>'s public signature, for a custom adapter implementation
     /// outside this assembly.
     /// </summary>
     public readonly struct CodepointRange

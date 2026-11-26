@@ -17,7 +17,7 @@ public sealed class PageRuleTests
     {
         var config = new PdfGenerateConfig { PageSize = PageSize.A4, MarginTop = marginTop, MarginBottom = marginBottom };
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         return document.Pages.Count;
     }

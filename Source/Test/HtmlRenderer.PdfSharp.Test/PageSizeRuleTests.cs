@@ -10,7 +10,7 @@ namespace HtmlRenderer.PdfSharp.Test;
 public sealed class PageSizeRuleTests
 {
     private static async Task<PdfDocument> Generate(string css, string body = "<p>x</p>") =>
-        await PdfGenerator.GeneratePdf(
+        await PdfGenerator.GeneratePdfAsync(
             $"<html><head><style>{css}</style></head><body>{body}</body></html>",
             new PdfGenerateConfig { PageSize = PageSize.A4 });
 

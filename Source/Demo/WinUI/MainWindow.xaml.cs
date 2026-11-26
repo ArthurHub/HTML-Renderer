@@ -90,7 +90,7 @@ namespace TheArtOfDev.HtmlRenderer.Demo.WinUI
                 // Off the UI thread, as the image conversion blocks on Win2D
                 var pdfFile = await Task.Run(async () =>
                 {
-                    var doc = await PdfGenerator.GeneratePdf(html, config, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoadPdfSharp);
+                    var doc = await PdfGenerator.GeneratePdfAsync(html, config, null, DemoUtils.OnStylesheetLoad, HtmlRenderingHelper.OnImageLoadPdfSharp);
                     var file = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".pdf");
                     doc.Save(file);
                     return file;

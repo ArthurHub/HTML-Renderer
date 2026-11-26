@@ -125,7 +125,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         private CssData _cssData;
 
         /// <summary>
-        /// The html and base stylesheet last given to <see cref="SetHtml"/>, kept so the cascade can be
+        /// The html and base stylesheet last given to <see cref="SetHtmlAsync"/>, kept so the cascade can be
         /// re-run when a viewport change alters which <c>@media</c> rules apply.
         /// </summary>
         private string _htmlSource;
@@ -595,7 +595,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
         /// </summary>
         /// <param name="htmlSource">the html to init with, init empty if not given</param>
         /// <param name="baseCssData">optional: the stylesheet to init with, init default if not given</param>
-        public async Task SetHtml(string htmlSource, CssData baseCssData = null)
+        public async Task SetHtmlAsync(string htmlSource, CssData baseCssData = null)
         {
             Clear();
             _htmlSource = htmlSource;
@@ -627,8 +627,8 @@ namespace TheArtOfDev.HtmlRenderer.Core
             var media = MediaQueryContext.FromAdapter(_adapter, _maxSize.Width, _maxSize.Height);
             if (!_cssData.MediaOutcomeChanged(_cascadeMedia, media)) return;
 
-            // PerformLayout is synchronous, so this blocks on the async SetHtml
-            SetHtml(_htmlSource, _baseCssData).GetAwaiter().GetResult();
+            // PerformLayout is synchronous, so this blocks on the async SetHtmlAsync
+            SetHtmlAsync(_htmlSource, _baseCssData).GetAwaiter().GetResult();
         }
 
         /// <summary>

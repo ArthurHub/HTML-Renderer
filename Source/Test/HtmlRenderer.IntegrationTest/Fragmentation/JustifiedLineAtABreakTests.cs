@@ -28,7 +28,7 @@ public sealed class JustifiedLineAtABreakTests
     private static async Task<(CssBox Root, HtmlContainerInt Container)> BuildAsync(string bodyHtml, double pageWidth = 200)
     {
         var wrapper = new HtmlContainer();
-        await wrapper.SetHtml($"<html><body style='margin:0'>{bodyHtml}</body></html>");
+        await wrapper.SetHtmlAsync($"<html><body style='margin:0'>{bodyHtml}</body></html>");
 
         var container = GetInternal(wrapper);
         container.PageSize = new RSize(pageWidth, 300);

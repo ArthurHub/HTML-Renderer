@@ -4,7 +4,7 @@ using TheArtOfDev.HtmlRenderer.Core.Dom;
 
 namespace HtmlRenderer.IntegrationTest.Text;
 
-// The regex cache in RegexParserUtils isn't thread-safe, parallel SetHtml calls can corrupt it.
+// The regex cache in RegexParserUtils isn't thread-safe, parallel SetHtmlAsync calls can corrupt it.
 [DoNotParallelize]
 [TestClass]
 public sealed class SmallCapsIntegrationTests

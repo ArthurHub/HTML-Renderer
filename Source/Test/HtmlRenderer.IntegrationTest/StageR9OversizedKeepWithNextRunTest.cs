@@ -48,7 +48,7 @@ public sealed class StageR9OversizedKeepWithNextRunTest
         using var wrapper = new HtmlContainer();
         var runMembers = string.Concat(Enumerable.Range(0, 60).Select(i =>
             $"<p style='margin:0; break-after: avoid;'>RunMember{i} filler filler filler filler filler</p>"));
-        await wrapper.SetHtml(
+        await wrapper.SetHtmlAsync(
             $"""
             <html><body>
                 <div style="margin:0;">TopMarker</div>

@@ -66,7 +66,7 @@ public sealed class CssValuesTests
         var requested = new List<string>();
         var container = new HtmlContainerInt(new MockAdapter()) { MaxSize = new RSize(800, 600) };
         container.ImageLoad += (_, e) => requested.Add(e.Src);
-        container.SetHtml($"<html><head><style>#x{{width:10px;height:10px;background-image:{value}}}</style></head><body><div id=x></div></body></html>");
+        container.SetHtmlAsync($"<html><head><style>#x{{width:10px;height:10px;background-image:{value}}}</style></head><body><div id=x></div></body></html>");
         using var graphics = new RecordingGraphics();
         container.PerformLayout(graphics);
         container.PerformPaint(graphics);

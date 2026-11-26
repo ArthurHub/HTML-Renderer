@@ -92,7 +92,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF.Adapters
             // DataUriNetworkLoader-only - safer for unattended/server-side PDF generation, matching
             // PeachPDF's own default), WPF is an interactive UI backend where fetching a real http(s):
             // image or stylesheet out of the box is the expected behavior. data:/file: URIs still resolve
-            // the same way regardless (RAdapter.GetResourceStream intercepts both before ever consulting
+            // the same way regardless (RAdapter.GetResourceStreamAsync intercepts both before ever consulting
             // NetworkLoader), so only http(s): actually reaches this loader in practice.
             NetworkLoader = new HttpClientNetworkLoader(_sharedHttpClient, (Uri)null);
 

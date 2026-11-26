@@ -25,7 +25,7 @@ public sealed class StageF1VerificationTest
             </body></html>
             """;
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.IsGreaterThan(1, document.Pages.Count);
 
@@ -51,7 +51,7 @@ public sealed class StageF1VerificationTest
 
         const string html = "<html><body><div style='margin-top:2000pt;'>content</div></body></html>";
 
-        using var document = await PdfGenerator.GeneratePdf(html, config);
+        using var document = await PdfGenerator.GeneratePdfAsync(html, config);
 
         Assert.IsLessThanOrEqualTo(2, document.Pages.Count);
     }

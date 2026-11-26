@@ -59,8 +59,8 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         private readonly FontsHandler _fontsHandler;
 
         /// <summary>
-        /// Dedup cache for <see cref="AddFontFace"/>, keyed by the resolved resource's absolute URI - since
-        /// the orchestrator re-runs <c>@font-face</c> registration on every <c>SetHtml</c> and this adapter
+        /// Dedup cache for <see cref="AddFontFaceAsync"/>, keyed by the resolved resource's absolute URI - since
+        /// the orchestrator re-runs <c>@font-face</c> registration on every <c>SetHtmlAsync</c> and this adapter
         /// is a process-wide singleton, re-registering the same face's bytes with the platform text engine
         /// on every call would leak native font handles (WinForms' <c>PrivateFontCollection.AddMemoryFont</c>/
         /// WPF's <c>AddFontMemResourceEx</c> both register a *new* resource each call, even for identical
@@ -191,7 +191,7 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         /// </summary>
         /// <param name="uri">the resource URI, already resolved to absolute against <see cref="BaseUri"/> or a <c>&lt;base href&gt;</c> element</param>
         /// <returns>the resolved resource, or null if it could not be resolved</returns>
-        public Task<RNetworkResponse> GetResourceStream(RUri uri)
+        public Task<RNetworkResponse> GetResourceStreamAsync(RUri uri)
         {
             // Without local file access BaseUri can be null and a relative reference stays relative.
             // RUri.Scheme throws on it and the loaders don't check, so it's answered as unresolved here.
@@ -203,7 +203,7 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
             if (uri.Scheme == "data")
             {
                 var dataLoader = NetworkLoader as DataUriNetworkLoader ?? new DataUriNetworkLoader();
-                return dataLoader.GetResourceStream(uri);
+                return dataLoader.GetResourceStreamAsync(uri);
             }
 
             if (uri.Scheme == "file")
@@ -216,16 +216,16 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
                 }
 
                 var fileLoader = NetworkLoader as FileUriNetworkLoader ?? InternalFileLoader;
-                return fileLoader.GetResourceStream(uri);
+                return fileLoader.GetResourceStreamAsync(uri);
             }
 
             if (uri.Scheme == EmbeddedResourceNetworkLoader.Scheme)
             {
                 var embeddedLoader = NetworkLoader as EmbeddedResourceNetworkLoader ?? InternalEmbeddedResourceLoader;
-                return embeddedLoader.GetResourceStream(uri);
+                return embeddedLoader.GetResourceStreamAsync(uri);
             }
 
-            return NetworkLoader.GetResourceStream(uri);
+            return NetworkLoader.GetResourceStreamAsync(uri);
         }
 
         /// <summary>
@@ -342,7 +342,7 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
 
         /// <summary>
         /// Check if the given font exists in the system by font family name, including the families
-        /// registered by <see cref="AddFontFace"/>. <see cref="Core.Parse.CssParser.ParseFontFamily"/> uses
+        /// registered by <see cref="AddFontFaceAsync"/>. <see cref="Core.Parse.CssParser.ParseFontFamily"/> uses
         /// it to pick the first available family of a <c>font-family</c> list.
         /// </summary>
         /// <param name="font">the font name to check</param>
@@ -378,7 +378,7 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
 
         /// <summary>
         /// Loads one <c>url()</c> item of an <c>@font-face</c> <c>src</c> (CSS Fonts 4 §4.3.2) through
-        /// <see cref="GetResourceStream"/> and registers it as a face of <paramref name="familyName"/>.
+        /// <see cref="GetResourceStreamAsync"/> and registers it as a face of <paramref name="familyName"/>.
         /// </summary>
         /// <param name="familyName">the family name of the <c>@font-face</c> rule</param>
         /// <param name="uri">the absolute URI of the item</param>
@@ -391,7 +391,7 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         /// Virtual for the PdfSharp backend, which needs the font bytes for embedding and keeps the faces
         /// in its own font resolver.
         /// </remarks>
-        public virtual async Task<bool> AddFontFace(string familyName, RUri uri, int weight, bool isItalic, int stretch, IReadOnlyList<CodepointRange> ranges)
+        public virtual async Task<bool> AddFontFaceAsync(string familyName, RUri uri, int weight, bool isItalic, int stretch, IReadOnlyList<CodepointRange> ranges)
         {
             RFontFamily fontFamily;
             bool cached;
@@ -402,7 +402,7 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
 
             if (!cached)
             {
-                var networkResponse = await GetResourceStream(uri).ConfigureAwait(false);
+                var networkResponse = await GetResourceStreamAsync(uri).ConfigureAwait(false);
                 if (networkResponse == null || networkResponse.ResourceStream == null)
                 {
                     return false;
@@ -452,7 +452,7 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         /// the registered families, not against full font names.
         /// </summary>
         /// <returns>false if there's no such family, the caller then tries the next item</returns>
-        /// <remarks>Virtual for the PdfSharp backend, see <see cref="AddFontFace"/>.</remarks>
+        /// <remarks>Virtual for the PdfSharp backend, see <see cref="AddFontFaceAsync"/>.</remarks>
         public virtual bool AddFontFaceFromLocalFamily(string familyName, string localFamilyName, int weight, bool isItalic, int stretch, IReadOnlyList<CodepointRange> ranges)
         {
             var localFamily = _fontsHandler.TryGetExistingFamily(localFamilyName);
@@ -492,7 +492,7 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
         /// <returns>font instance, or null when <paramref name="codepoint"/> is given and no registered face covers it</returns>
         /// <remarks>
         /// Virtual so the PdfSharp backend can override it to bypass <see cref="FontsHandler"/>'s shared
-        /// registry entirely, for the same reason as <see cref="AddFontFace"/> - see its doc comment.
+        /// registry entirely, for the same reason as <see cref="AddFontFaceAsync"/> - see its doc comment.
         /// </remarks>
         public virtual RFont GetFont(string family, double size, RFontStyle style, int weight, int stretch, int? codepoint)
         {
@@ -687,7 +687,7 @@ namespace TheArtOfDev.HtmlRenderer.Adapters
 
         /// <summary>
         /// Registers the bytes of an <c>@font-face</c> font file with the platform text engine and returns
-        /// the family of the loaded face. Not called when <see cref="AddFontFace"/> is overridden.
+        /// the family of the loaded face. Not called when <see cref="AddFontFaceAsync"/> is overridden.
         /// </summary>
         /// <param name="fontBytes">the font file (TTF/OTF)</param>
         /// <param name="filePath">where the bytes came from, for diagnostics</param>

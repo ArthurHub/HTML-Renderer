@@ -38,7 +38,7 @@ public sealed class FixedPositionRepeatsPerPageTest
     {
         using var wrapper = new HtmlContainer();
         var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of body text</p>", 60));
-        await wrapper.SetHtml(
+        await wrapper.SetHtmlAsync(
             $"""
             <html><body>
                 <div style="position:fixed; top:5px; left:5px;">PageHeaderMarker</div>
@@ -71,7 +71,7 @@ public sealed class FixedPositionRepeatsPerPageTest
     public async Task FixedElementNestedInABlock_GivesTheBlockNoFragmentOnOtherPages()
     {
         using var wrapper = new HtmlContainer();
-        await wrapper.SetHtml(
+        await wrapper.SetHtmlAsync(
             """
             <html><body style="margin:0">
                 <div style="height:50px"></div>
@@ -111,7 +111,7 @@ public sealed class FixedPositionRepeatsPerPageTest
         // Continuous media, no PageSize, so no page grid to repeat on
         using var wrapper = new HtmlContainer();
         var filler = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of body text</p>", 60));
-        await wrapper.SetHtml(
+        await wrapper.SetHtmlAsync(
             $"""
             <html><body>
                 <div style="position:fixed; top:5px; left:5px;">PageHeaderMarker</div>

@@ -137,7 +137,7 @@ public sealed class LinksTests
     {
         var container = new HtmlContainerInt(new MockAdapter()) { MaxSize = new RSize(1000, 1000) };
         container.StylesheetLoad += (_, e) => e.SetStyleSheet = "p { color: red }";
-        container.SetHtml($"<html><head>{link}</head><body><p id=x>a</p></body></html>");
+        container.SetHtmlAsync($"<html><head>{link}</head><body><p id=x>a</p></body></html>");
         using var graphics = new RecordingGraphics();
         container.PerformLayout(graphics);
 

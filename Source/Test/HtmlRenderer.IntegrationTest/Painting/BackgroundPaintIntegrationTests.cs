@@ -380,7 +380,7 @@ public sealed class BackgroundPaintIntegrationTests
         };
         if (imageLoad != null)
             container.ImageLoad += imageLoad;
-        container.SetHtml(PaintHarness.Wrap($"<div id='b' style='{style}'></div>")).GetAwaiter().GetResult();
+        container.SetHtmlAsync(PaintHarness.Wrap($"<div id='b' style='{style}'></div>")).GetAwaiter().GetResult();
 
         using (var layoutGraphics = new RecordingGraphics())
             container.PerformLayout(layoutGraphics);

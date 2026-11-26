@@ -152,7 +152,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
                     if (imageLoad != null)
                         container.ImageLoad += imageLoad;
 
-                    await container.SetHtml(html, cssData).ConfigureAwait(false);
+                    await container.SetHtmlAsync(html, cssData).ConfigureAwait(false);
                     container.PerformLayout();
 
                     actualSize = container.ActualSize;
@@ -176,6 +176,11 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the actual size of the rendered html</returns>
+        /// <remarks>
+        /// Don't call this from a paint handler: loading stylesheets and images can finish after the handler
+        /// returned and the drawing context is disposed. Load once with <see cref="HtmlContainer.SetHtmlAsync"/> instead,
+        /// then call <see cref="HtmlContainer.PerformLayout"/> and <see cref="HtmlContainer.PerformPaint"/> when painting.
+        /// </remarks>
         public static Task<Size> RenderAsync(DrawingContext g, string html, double left = 0, double top = 0, double maxWidth = 0, CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
@@ -199,6 +204,11 @@ namespace TheArtOfDev.HtmlRenderer.WPF
         /// <param name="stylesheetLoad">optional: can be used to overwrite stylesheet resolution logic</param>
         /// <param name="imageLoad">optional: can be used to overwrite image resolution logic</param>
         /// <returns>the actual size of the rendered html</returns>
+        /// <remarks>
+        /// Don't call this from a paint handler: loading stylesheets and images can finish after the handler
+        /// returned and the drawing context is disposed. Load once with <see cref="HtmlContainer.SetHtmlAsync"/> instead,
+        /// then call <see cref="HtmlContainer.PerformLayout"/> and <see cref="HtmlContainer.PerformPaint"/> when painting.
+        /// </remarks>
         public static Task<Size> RenderAsync(DrawingContext g, string html, Point location, Size maxSize, CssData cssData = null,
             EventHandler<HtmlStylesheetLoadEventArgs> stylesheetLoad = null, EventHandler<HtmlImageLoadEventArgs> imageLoad = null)
         {
@@ -297,7 +307,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
                         container.StylesheetLoad += stylesheetLoad;
                     if (imageLoad != null)
                         container.ImageLoad += imageLoad;
-                    await container.SetHtml(html, cssData).ConfigureAwait(false);
+                    await container.SetHtmlAsync(html, cssData).ConfigureAwait(false);
 
                     var finalSize = MeasureHtmlByRestrictions(container, minSize, maxSize);
                     container.MaxSize = finalSize;
@@ -409,7 +419,7 @@ namespace TheArtOfDev.HtmlRenderer.WPF
                     if (imageLoad != null)
                         container.ImageLoad += imageLoad;
 
-                    await container.SetHtml(html, cssData).ConfigureAwait(false);
+                    await container.SetHtmlAsync(html, cssData).ConfigureAwait(false);
                     container.PerformLayout();
                     container.PerformPaint(g, new Rect(0, 0, double.MaxValue, double.MaxValue));
 

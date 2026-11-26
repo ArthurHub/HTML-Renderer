@@ -24,7 +24,7 @@ public sealed class StageD2FragmentBucketingSmokeTest
     {
         using var wrapper = new HtmlContainer();
         var paragraphs = string.Concat(Enumerable.Repeat("<p style='margin:0;'>filler line of text for pagination</p>", 80));
-        await wrapper.SetHtml($"<html><body>{paragraphs}</body></html>");
+        await wrapper.SetHtmlAsync($"<html><body>{paragraphs}</body></html>");
 
         var container = GetInternal(wrapper);
         container.PageSize = new TheArtOfDev.HtmlRenderer.Adapters.Entities.RSize(500, 700);
@@ -62,7 +62,7 @@ public sealed class StageD2FragmentBucketingSmokeTest
     public async Task HugeMargin_SkipsBlankFragmentainers()
     {
         using var wrapper = new HtmlContainer();
-        await wrapper.SetHtml("<html><body><div style='margin-top:3000px;'>content</div></body></html>");
+        await wrapper.SetHtmlAsync("<html><body><div style='margin-top:3000px;'>content</div></body></html>");
 
         var container = GetInternal(wrapper);
         container.PageSize = new TheArtOfDev.HtmlRenderer.Adapters.Entities.RSize(500, 700);
