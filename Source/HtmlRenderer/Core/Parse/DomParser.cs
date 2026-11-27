@@ -74,7 +74,7 @@ namespace TheArtOfDev.HtmlRenderer.Core.Parse
                 // available width/height at this point; zero means "not known yet", and geometry
                 // conditions then match permissively).
                 var media = MediaQueryContext.FromAdapter(
-                    htmlContainer.Adapter, htmlContainer.MaxSize.Width, htmlContainer.MaxSize.Height);
+                    htmlContainer.Adapter, htmlContainer.MediaType, htmlContainer.MaxSize.Width, htmlContainer.MaxSize.Height);
 
                 CascadeApplyStyles(root, cssData, media);
 

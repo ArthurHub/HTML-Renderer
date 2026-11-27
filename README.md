@@ -24,6 +24,7 @@ The latest NuGet packages can be found on NuGet.org:
 * [HtmlRenderer.WPF](https://www.nuget.org/packages/HtmlRenderer.WPF)
 * [HtmlRenderer.WinUI](https://www.nuget.org/packages/HtmlRenderer.WinUI)
 * [HtmlRenderer.PdfSharp](https://www.nuget.org/packages/HtmlRenderer.PdfSharp)
+* [HtmlRenderer.SkiaSharp](https://www.nuget.org/packages/HtmlRenderer.SkiaSharp)
 * [HtmlRenderer.Core](https://www.nuget.org/packages/HtmlRenderer.Core)
 
 
